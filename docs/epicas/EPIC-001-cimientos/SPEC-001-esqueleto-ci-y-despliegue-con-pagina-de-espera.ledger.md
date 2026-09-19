@@ -6,8 +6,8 @@ epica: EPIC-001
 # Ledger — SPEC-001 Esqueleto, CI y despliegue con página de espera
 
 ## Resumen
-- Fase: borrador
-- Rama: `ft/SPEC-001-esqueleto-ci-y-despliegue-con-pagina-de-espera`
+- Fase: hecho (verificación GREEN en vuelta 2: CA-1..CA-12 y CA-14 ✅; CA-13 ⚠️ pendiente de merge a `main`, precondición DNS verificada)
+- Rama: `ft/SPEC-001-esqueleto-ci-y-despliegue-con-pagina-de-espera` · PR #1 (borrador); código en `dd3c5a3` (sin cambios desde la vuelta 1), ledger vuelta 1 en `e086c7d`
 
 ## Matriz de criterios de aceptación
 <!-- Escritores: sdd-implementador rellena Implementado y Test; sdd-verificador rellena Verif. y Estado. Nunca al revés. -->
@@ -15,29 +15,59 @@ epica: EPIC-001
 <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
-| CA-1 | | | | ❌ |
-| CA-2 | | | | ❌ |
-| CA-3 | | | | ❌ |
-| CA-4 | | | | ❌ |
-| CA-5 | | | | ❌ |
-| CA-6 | | | | ❌ |
-| CA-7 | | | | ❌ |
-| CA-8 | | | | ❌ |
-| CA-9 | | | | ❌ |
-| CA-10 | | | | ❌ |
-| CA-11 | | | | ❌ |
-| CA-12 | | | | ❌ |
-| CA-13 | | | | ❌ |
-| CA-14 | | | | ❌ |
+| CA-1 | `package.json` (scripts `typecheck`/`lint`/`test`/`build`/`gates`, `engines.node` 24.x, next 16.3.5, react 19.3.0), `tsconfig.json` (`strict: true`), `biome.json`, `next.config.ts`, `vitest.config.mts` | `npm run gates` → exit 0 en local (Node 26.4.0, ver F-2); `npx tsc --showConfig` muestra `"strict": true` | `rm -rf node_modules .next && npm ci` → 0; `npm run gates` → 0, orden observado `tsc --noEmit` → `biome check .` → `vitest run` (3 passed) → `next build` (rutas `/`, `/_not-found`, `/es`); `npx tsc --showConfig` → `"strict": true`; `engines.node` `24.x`, `next` 16.3.5, `react` 19.3.0. Local con Node 26.4.0 (F-2); en CI (run 35475851480) `setup-node` resolvió **v24.20.0** en ambos jobs | ✅ |
+| CA-2 | `src/i18n/gl.ts`, `src/i18n/es.ts`, `src/i18n/index.ts` | `src/i18n/i18n.test.ts` (3 casos: mismas claves, ninguna vacía, `t(locale)`); mutación: borrar `switchLocale` de `es.ts` → `1 failed` | `vitest run` → 3 passed. Mutación (`sed '/switchLocale/d' src/i18n/es.ts`) → `1 failed | 2 passed`, `AssertionError: expected [ 'heading', 'title', 'waiting' ] to deeply equal [...]`; fichero restaurado, `git status` limpio | ✅ |
+| CA-3 | `src/components/WaitingPage.tsx` (solo consume `t(locale)`), `src/i18n/*` | `e2e/waiting.spec.ts` › «CA-3 h1 and paragraph come literally from the i18n file» (× `/` y `/es`, importa `gl`/`es`) | Playwright (script propio contra `next start`, 360×640 y 1440×900): `h1` = «Todo o fútbol galego nunha pantalla» / «Todo el fútbol gallego en una pantalla», `p` = «Estamos a preparar o marcador. Volve pronto.» / «Estamos preparando el marcador. Vuelve pronto.» — idénticos a `gl.ts`/`es.ts`. `grep` de texto visible en `.tsx`: solo «marcador», «▮», «gal» (logotipo, D-1). `npm run e2e` → 17 passed | ✅ |
+| CA-4 | `src/app/(gl)/{layout,page}.tsx`, `src/app/(es)/es/{layout,page}.tsx` (N-1), enlace en `WaitingPage.tsx` | `e2e/waiting.spec.ts` › «CA-4 responds 200 with the right <html lang>», «CA-4 language link leads to the other locale» (× 2 rutas), «CA-4 /gl is not a route» | Playwright: `/` → 200, `lang="gl"`, enlace `href="/es"` («Castellano»); `/es` → 200, `lang="es"`, enlace `href="/"` («Galego»); `/gl` → 404. e2e 17 passed (incluye click en el enlace y `toHaveURL`) | ✅ |
+| CA-5 | `src/app/metadata.ts` (`robots: { index: false, follow: false }`, N-4) | `e2e/waiting.spec.ts` › «CA-5 has the noindex meta» (× 2 rutas) | Playwright: `meta[name=robots]` = `noindex, nofollow` en `/` y `/es` (ambos viewports) | ✅ |
+| CA-6 | `src/app/globals.css` (`@font-face` × 6, `:root`), `src/components/WaitingPage.module.css` (`.logo` 800 + `font-synthesis: none`, `.mark`), `public/fonts/Geist-ExtraBold.woff2` (release 1.8.0, OFL) | `e2e/waiting.spec.ts` › «CA-6 brand and tokens are applied» (× 2 rutas); añade comprobación de `FontFace` Geist 800 `loaded` (ver F-3); mutación: sin la cara 800 → `2 failed` | Estilos computados (Playwright, 4 combinaciones): logo `marcador▮gal`, `.mark` color `rgb(86, 219, 143)`, `font-weight` 800, `font-synthesis` none, body bg `rgb(17, 17, 16)`, color `rgb(245, 241, 234)`, `font-family` empieza por `Geist`, `document.fonts.check('800 1em Geist')` true, FontFace Geist 800 `loaded`. Mutación (`mv public/fonts/Geist-ExtraBold.woff2` fuera) + `npx playwright test -g CA-6` → `2 failed` (`Expected: true, Received: false` en la aserción de peso 800); fuente restaurada (46636 bytes), `git status` limpio | ✅ |
+| CA-7 | `src/app/globals.css` bloque `:root` (`--bg`, `--fg`, `--fg-muted`, `--marca`, `--line`, `--sans`, `--mono`; N-3) | `grep -rnE '#[0-9a-fA-F]{3,8}\b' src --include='*.tsx' --include='*.ts' --include='*.module.css'` → vacío (exit 1); diff contra `_tokens.css`: mismos nombres y valores, hex en minúsculas (F-1) | `grep` de la spec → sin salida, exit 1. Hex en `src/` solo en `globals.css:46-50` (`:root`). Diff por token contra `_tokens.css` (insensible a mayúsculas): `--bg`, `--fg`, `--fg-muted`, `--marca`, `--line` idénticos; `--sans`/`--mono` idénticos salvo comillas `'`→`"` (Biome) | ✅ |
+| CA-8 | `src/app/globals.css` (`@font-face` con `url(/fonts/…)`), `public/fonts/*.woff2`; sin `<link>` externo ni cookies | `e2e/waiting.spec.ts` › «CA-8 no third-party requests, no cookies, fonts served 200» (× 2 rutas; lee los `url(/fonts/*.woff2)` de `globals.css` y pide cada uno) | Playwright `page.on('request')` en `/` y `/es`: 0 peticiones fuera de `http://localhost:3101`; `context.cookies()` = `[]`; `document.cookie` vacío; `curl -sI localhost:3101/` sin `Set-Cookie` ni `X-Powered-By`. e2e CA-8 pide los 6 `.woff2` referenciados → 200 | ✅ |
+| CA-9 | `WaitingPage.module.css` (`.switch` `min-height: 44px`, `.main` sin anchos fijos), `globals.css` (`:focus-visible` outline 2px) | `e2e/waiting.spec.ts` › «CA-9 at 360×640…» y «CA-9 at 1440×900…» (× 2 rutas; scrollWidth, altura del enlace, foco por Tab) | Playwright: 360×640 → `scrollWidth` 360 = `clientWidth` 360; 1440×900 → 1440 = 1440 (ambas rutas). Enlace de idioma `boundingClientRect.height` = 44. Tras `Tab`: `activeElement` = el enlace, `outline` `solid 2px rgb(86, 219, 143)`. Capturas en `_qa/SPEC-001/` | ✅ |
+| CA-10 | `playwright.config.ts` (proyecto único `chromium`; `webServer: npm run build && npm run start -- --port 3100`, `reuseExistingServer: false`), script `e2e` en `package.json` | `npm run e2e` → `17 passed` en local | `npx playwright install chromium` → 0; `npm run e2e` → `17 passed (4.3s)`, exit 0. `playwright.config.ts`: un solo proyecto `chromium`, `webServer.command` = `npm run build && npm run start -- --port 3100` (nunca `next dev`), `reuseExistingServer: false`. Los 17 casos cubren CA-3..CA-9 y ninguno está vacío | ✅ |
+| CA-11 | `.github/workflows/ci.yml` (on `pull_request` + `push` a `main`; jobs `gates` y `e2e` con `setup-node` `node-version-file: .nvmrc` + `cache: npm`) | Pendiente de PR (la abre el orquestador tras verificación): `gh pr checks` | `ci.yml`: `on: pull_request` + `push.branches: [main]`; `gates` = checkout + `setup-node` (`node-version-file: .nvmrc`, `cache: npm`) + `npm ci` + `npm run gates`; `e2e` = ídem + `npx playwright install --with-deps chromium` + `npm run e2e`. `gh pr checks 1 --watch` → `gates pass 32s`, `e2e pass 51s` (run 35475851480, `event: pull_request`, `headSha` = `dd3c5a3` = HEAD local). Log: `node: v24.20.0` en ambos jobs; e2e `17 passed (13.6s)` | ✅ |
+| CA-12 | `.env.example` (6 claves sin valor), `.gitignore` (`.env`, `.env.*`, `!.env.example`) | `git check-ignore -q .env` → 0; `git check-ignore -q .env.example` → 1; bucle `grep -rqF` por cada valor de `.env` sobre el árbol (sin node_modules/.next/.git) → 0 coincidencias | `.env.example`: exactamente las 6 claves de la spec, todas con valor vacío (0 líneas que no sean `CLAVE=`). `git check-ignore -q .env` → 0; `git check-ignore -q .env.example` → 1. Bucle sobre `.env` local sin mostrar valores: 1 valor ≥ 8 caracteres, `git grep -qF -- "$v" HEAD` → 0 coincidencias en el árbol commiteado | ✅ |
+| CA-13 | — (precondición humana H-1..H-3 no ejecutada) | Pendiente: `curl` a `https://marcador.gal` y `/es` tras H-1..H-3 y merge a `main` | Pendiente de merge (sin despliegue de producción todavía). Precondición verificada: `dig +short marcador.gal NS` → `ns1.vercel-dns.com.`, `ns2.vercel-dns.com.`; A apex → `216.150.1.193`, `216.150.16.193`. Hoy `curl` a `https://marcador.gal`, `/es` y `www` → 404 (Vercel sin producción). Reverificar tras el merge. *(Vuelta 2, 2026-09-20: sin cambios; sigue pendiente de merge. Precondición documentada: H-1..H-3 hechas y DNS en Vercel; falta el push a `main`.)* | ⚠️ |
+| CA-14 | — (precondición humana H-1 no ejecutada) | Pendiente: `gh pr view --comments` + `curl` a la URL de preview | `gh pr view 1 --comments`: el bot `vercel` publicó la preview `https://marcadorgal-git-ft-spec-001-e-5f3999-albertofojo-5908s-projects.vercel.app` (Ready). Vuelta 1: `/` y `/es` → **302** a `vercel.com/sso-api` (Deployment Protection), ver F-SPEC-001-7. **Vuelta 2 (2026-09-20, tras desactivar el humano la protección de previews):** `curl -s -o /dev/null -w '%{http_code}'` → `/` **200**, `/es` **200**, `/fonts/Geist-ExtraBold.woff2` **200** (`font/woff2`, 46636 bytes), `/gl` 404. HTML servido: `<html lang="gl">` + `<meta name="robots" content="noindex, nofollow"/>` + h1 «Todo o fútbol galego nunha pantalla» en `/`; `<html lang="es">` + misma meta + «Todo el fútbol gallego en una pantalla» en `/es`. 0 cabeceras `Set-Cookie`. `data-dpl-id` = `dpl_Aohu2WPPwTDbsdtGfxMCqTb7JXEc`, el mismo deployment «Ready» que enlaza el comentario del bot `vercel` en `gh pr view 1 --comments` (URL de preview idéntica) y el check `Vercel` de la PR | ✅ |
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
+**GREEN** — 2026-09-20 (vuelta 2) — sdd-verificador.
+Único cambio desde la vuelta 1: acto humano en Vercel (Alberto Fojo, 2026-09-20) desactivando Deployment Protection para previews. Sin cambios de código: `git diff --quiet dd3c5a3 HEAD -- src e2e package.json` → idénticos; el único commit posterior a `dd3c5a3` es `e086c7d` (ledger + capturas `_qa/`), por lo que CA-1..CA-12 no se repiten y conservan la evidencia de la vuelta 1. CA-11 reconfirmado: `gh pr checks 1` → `gates pass 25s`, `e2e pass 53s` (run 35476184016, `event: pull_request`, `headSha` = `e086c7d` = head de la PR), más checks `Vercel` y `Vercel Preview Comments` en `pass`. **CA-14 ✅** con la evidencia de la matriz (200 en `/`, `/es` y la fuente; `lang` y `noindex` correctos; sin cookies). CA-13 sigue ⚠️ «pendiente de merge»: no es un defecto, es que aún no hay push a `main`; se reverifica con `curl` a `https://marcador.gal` y `/es` tras el merge. Spec transicionada a `hecho`.
+
+### Vuelta 1 — RED (2026-09-20)
+CA-1..CA-12 verificados en verde en local (clon limpio de `node_modules`, `npm ci`, `npm run gates`, `npm run e2e`, mutaciones de CA-2 y CA-6, Playwright a 360×640 y 1440×900) y en la PR #1 (`gates` y `e2e` en verde con Node 24.20.0). CA-13 pendiente de merge con precondición DNS verificada. **CA-14 falla tal como está enunciado**: la preview existe y el bot comentó, pero responde 302 a `vercel.com/sso-api` (Deployment Protection) en `/` y `/es` en vez de 200, y ese 302 además fija una cookie de Vercel. No es un defecto de código: exige un acto humano en Vercel (F-SPEC-001-7) y reverificación con un `curl`. Spec mantenida en `en-revision` por indicación del orquestador.
+
+Findings:
+1. **CA-14** — Esperado: `curl` a la preview devuelve 200 en `/` y `/es`. Observado: `302 Location: https://vercel.com/sso-api?url=<preview>` (+ `Set-Cookie: _vercel_sso_nonce`). Acción (humano, Vercel › Project › Settings › Deployment Protection): desactivar la protección para previews (o, si se quiere mantener, añadir «Protection Bypass for Automation» y que sdd-arquitecto reescriba CA-14 para que el `curl` use la cabecera de bypass). Después: `curl -s -o /dev/null -w '%{http_code}' <preview>/` y `/es` → 200 cierra el CA.
 
 ## Evidencia visual
 <!-- Tabla CA → captura en _qa/SPEC-001/. Informe HTML opcional: _qa/SPEC-001/informe.html -->
+Capturas de la página real (`next build && next start`, Chromium, tras `Tab` para mostrar el foco), en `docs/epicas/EPIC-001-cimientos/_qa/SPEC-001/`:
+| CA | Captura |
+|---|---|
+| CA-3, CA-4, CA-6, CA-9 (`/`, 360×640) | `gl-360x640.png` |
+| CA-3, CA-4, CA-6, CA-9 (`/es`, 360×640) | `es-360x640.png` |
+| CA-3, CA-4, CA-6, CA-9 (`/`, 1440×900) | `gl-1440x900.png` |
+| CA-3, CA-4, CA-6, CA-9 (`/es`, 1440×900) | `es-1440x900.png` |
 
 ## Salvedades / follow-ups
 <!-- IDs F-SPEC-001-1, F-SPEC-001-2… con destino (spec futura o EPIC-MEJORA). -->
+- **F-SPEC-001-1** Biome formatea los hex de `globals.css` a minúsculas (`#f5f1ea`) mientras `_tokens.css` los tiene en mayúsculas; mismo valor. Destino: spec de tokens (test de paridad insensible a mayúsculas).
+- **F-SPEC-001-2** Gates y e2e ejecutados en local con Node 26.4.0 (no hay `nvm`; `.nvmrc` y `engines` siguen en 24). La ejecución con Node 24 la aporta CI. Destino: verificación de CA-11. *(Verificador: confirmado, CI resolvió v24.20.0 en `gates` y `e2e`.)*
+- **F-SPEC-001-3** `document.fonts.check('800 1em Geist')` devuelve `true` aunque falte la cara 800 (cae a la 600), así que el e2e añade una comprobación estricta de `FontFace` 800 cargada. Destino: sdd-arquitecto, redacción de CA similares en futuras specs (SPEC-001 no se edita). *(Verificador: confirmado por mutación; la aserción literal de la spec no detecta la ausencia, la estricta sí.)*
+- **F-SPEC-001-4** `next-env.d.ts` y `*.tsbuildinfo` van en `.gitignore`: Next 16 los regenera y `next-env.d.ts` importa `.next/types`, inexistente en un clon limpio. `tsc --noEmit` pasa sin ellos (los tipos globales entran por `import type { NextConfig } from "next"`). Informativo.
+- **F-SPEC-001-5** `next build` reescribe `tsconfig.json` (`jsx: react-jsx`, `include` con `.next/dev/types`); se ha commiteado tal cual lo deja Next. Informativo.
+- **F-SPEC-001-6** `public/fonts/LICENSE.txt` es el heredado (OFL 1.1, © 2023 Vercel); `Geist-ExtraBold.woff2` viene del release 1.8.0 cuyo `OFL.txt` dice © 2024 The Geist Project Authors, misma licencia. Destino: EPIC-MEJORA (actualizar el fichero de licencia al del release).
+- **F-SPEC-001-7** (verificador) **CERRADO 2026-09-20.** La preview de Vercel de la PR #1 estaba tras Deployment Protection (302 a `vercel.com/sso-api`), así que CA-14 no se cumplía con `curl` anónimo y H-1 no lo contemplaba. Cierre: acto humano (Alberto Fojo) desactivando la protección para previews en Vercel; reverificado con `curl` → 200 en `/`, `/es` y `/fonts/Geist-ExtraBold.woff2`, sin `Set-Cookie`. Residual para sdd-arquitecto: las specs futuras con CA de preview deben listar «previews sin Deployment Protection» entre los actos humanos (H-*).
+- **F-SPEC-001-8** (verificador, informativo) `.heading` pide `font-weight: 700` pero solo hay caras Geist 400/500/600/800; Chromium resuelve al 800 (no sintetiza). Sin efecto en los CA. Destino: spec de tokens (decidir si se añade la cara 700 o se fija el título a 800).
 
 ## Cómo retomar (handoff)
 <!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->
+- Hecho en local: CA-1..CA-10 y CA-12 con código, tests y comandos en verde (`npm ci && npm run gates`; `npx playwright install chromium && npm run e2e`).
+- CA-11: verificado en verde en la PR #1 (run 35475851480).
+- CA-14: cerrado en la vuelta 2 (Deployment Protection desactivada; preview → 200).
+- CA-13: pendiente de merge a `main`; DNS ya apunta a Vercel. Tras el merge, quien cierre la PR reverifica con `curl -s -o /dev/null -w '%{http_code}' https://marcador.gal` y `/es` → 200 (y `www` → 307/308 al apex) y anota el resultado aquí.
+- Spec en `hecho` (GREEN, vuelta 2). Siguiente paso: sdd-documentalista (README describe el esqueleto, tablero) y marcar la PR como lista para merge.
+- Commits en la rama: `f7861c4` esqueleto, `ad10ed0` i18n, `8d8aa34` página de espera, `3fe5689` e2e, `298b3f9` ci, `7c7c30b` `.env.example`, `dd3c5a3` ledger del implementador, más `e086c7d` (ledger vuelta 1, RED) y el de esta vuelta 2 (GREEN).
+- Para reproducir: Node 24 (`.nvmrc`), `npm ci`, `npm run gates`, `npx playwright install chromium`, `npm run e2e`. El e2e levanta `next start` en el puerto 3100.

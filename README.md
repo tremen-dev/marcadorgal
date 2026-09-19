@@ -12,7 +12,19 @@ datos. Inspiración de marcadorgalego.gal, no sucesión.
 
 ## Estado
 
-**Commit fundacional, sin código.** Ver `docs/tablero.md` y `docs/roadmap.md`.
+**Esqueleto funcional entregado por SPEC-001:** Next.js 16 con App Router,
+página de espera bilingüe (galego/español) en `src/app/` (App Router), CI configurado
+(GitHub Actions con jobs gates y e2e), tests unitarios con Vitest y e2e con Playwright (chromium). Listo para desarrollo: sin datos aún, sin fuentes, sin
+ingesta.
+
+## Arranque
+
+```bash
+npm ci
+npm run dev          # Servidor en http://localhost:3000
+npm run gates        # Lint, type, test (Biome, TypeScript, Vitest)
+npx playwright install chromium && npm run e2e  # Tests e2e (Playwright)
+```
 
 ## Cómo se trabaja aquí
 
@@ -28,6 +40,7 @@ en el ledger de cada spec. Empieza por `FOUNDATION.md`.
 | `docs/fundacion/vision.md` | Problema, público, promesa, métricas norte |
 | `docs/fundacion/dominio.md` | Glosario canónico |
 | `docs/fundacion/reglas.md` | Reglas de negocio RN-01..RN-11 |
+| `docs/epicas/` | Épicas, specs y ledgers (evidencia de verificación) |
 | `docs/adr/` | Decisiones técnicas |
 | `docs/diseno/` | Sistema de diseño (vinculante) |
 | `docs/roadmap.md` | Secuencia de épicas |
