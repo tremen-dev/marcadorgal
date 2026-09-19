@@ -13,9 +13,8 @@ datos. Inspiración de marcadorgalego.gal, no sucesión.
 ## Estado
 
 **Esqueleto funcional entregado por SPEC-001:** Next.js 16 con App Router,
-página de espera bilingüe (galego/español) en `pages/`, CI configurado
-(GitHub Actions con jobs gates y e2e), tests de arquitectura y e2e con Vitest
-y Playwright (chromium). Listo para desarrollo: sin datos aún, sin fuentes, sin
+página de espera bilingüe (galego/español) en `src/app/` (App Router), CI configurado
+(GitHub Actions con jobs gates y e2e), tests unitarios con Vitest y e2e con Playwright (chromium). Listo para desarrollo: sin datos aún, sin fuentes, sin
 ingesta.
 
 ## Arranque

@@ -10,7 +10,7 @@ Marcador de resultados en directo de las cinco divisiones españolas con equipos
 gallegos (Primera, Segunda, Primera RFEF G1, Segunda RFEF G1, Tercera RFEF G1),
 jornada completa, en una sola pantalla y en galego. Proyecto de tremen.dev.
 
-**SPEC-001 completa:** esqueleto Next.js 16 con página de espera bilingüe (gl/es), CI con gates y e2e, tests de arquitectura y e2e con Vitest y Playwright. El siguiente paso es la spec (b) de EPIC-001: modelo zod, migraciones y test de arquitectura.
+**SPEC-001 completa:** esqueleto Next.js 16 con página de espera bilingüe (gl/es), CI con gates y e2e, tests unitarios con Vitest y e2e con Playwright. El siguiente paso es la spec (b) de EPIC-001: modelo zod, migraciones y test de arquitectura.
 
 ### Herencia
 
