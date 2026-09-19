@@ -3,6 +3,11 @@
 
 Actualizado: 2026-09-20
 
+## EPIC-001 — cimientos (aprobada)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
+
 ## ADRs
 
 | ADR | Estado | Título | Último cambio |
