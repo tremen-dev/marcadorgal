@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&display=swap');
+:root{
+  --bg:#111110; --bg-elev:#1A1815; --bg-step:#221F1A;
+  --line:#2A2620; --line-strong:#3D362C;
+  --fg:#F5F1EA; --fg-muted:#A7A5A0; --fg-prov:#8E8C88; --fg-dim:#716F6C;
+  --marca:#56DB8F; --marca-deep:#35C177; --marca-ink:#04160C;
+  --directo:#FF6B00; --amber:#F0B135; --alerta:#FF655A;
+  --sans:'Geist',ui-sans-serif,system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+  --mono:'Geist Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:var(--marca);text-decoration:none}
+a:hover{color:var(--fg);text-decoration:underline}
+.n{font-family:var(--mono);font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1}
+.eyebrow{font:600 11px/1 var(--mono);letter-spacing:.15em;text-transform:uppercase;color:var(--marca)}
+.rule{flex:1;height:1px;background:var(--line)}
+.dotrule{flex:1;height:1px;background-image:linear-gradient(90deg,var(--line-strong) 50%,transparent 50%);background-size:6px 1px}

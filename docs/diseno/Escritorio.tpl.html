@@ -1,0 +1,468 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&display=swap');
+    :root{
+      --sans:'Geist',ui-sans-serif,system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+      --mono:'Geist Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    body{margin:0;background:#111110;color:#F5F1EA;font-family:var(--sans);-webkit-font-smoothing:antialiased}
+    a{color:#56DB8F;text-decoration:none}
+    a:hover{color:#F5F1EA;text-decoration:underline}
+    .n{font-family:var(--mono);font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1}
+    .stk{display:flex;flex-direction:column;gap:4px;min-width:0}
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 900px; background: #111110; display: flex; flex-direction: column; overflow: hidden">
+
+  <div style="height: 56px; flex: none; display: flex; align-items: center; gap: 28px; padding: 0 20px; border-bottom: 1px solid #2A2620">
+    <span style="font: 800 21px/1 var(--sans); letter-spacing: -.045em; color: #F5F1EA">marcador<span style="color: #56DB8F">▮</span>gal</span>
+    <div style="display: flex; gap: 22px">
+      <span style="font: 600 13px/1 var(--sans); color: #F5F1EA; padding-bottom: 4px; box-shadow: inset 0 -2px 0 #56DB8F">{{ t.xornada }}</span>
+      <span style="font: 500 13px/1 var(--sans); color: #A7A5A0">{{ t.global }}</span>
+      <span style="font: 500 13px/1 var(--sans); color: #A7A5A0">{{ t.tables }}</span>
+    </div>
+    <span style="flex: 1"></span>
+    <div style="display: flex; align-items: center; gap: 8px; padding: 7px 12px; border: 1px solid #2A2620; border-radius: 8px; width: 200px">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#716F6C" stroke-width="1.75" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <span style="font: 400 13px/1 var(--sans); color: #716F6C">{{ t.search }}</span>
+    </div>
+    <div style="display: inline-flex; align-items: center; gap: 2px; font: 500 12px/1 var(--mono)">
+      <span style="{{ glStyle }}" onClick="{{ setGl }}">gl</span>
+      <span style="color: #716F6C; opacity: .45">·</span>
+      <span style="{{ esStyle }}" onClick="{{ setEs }}">es</span>
+    </div>
+  </div>
+
+  <div style="height: 44px; flex: none; display: flex; align-items: center; gap: 4px; padding: 0 20px; border-bottom: 1px solid #2A2620; background: #131211">
+    <span style="font: 400 15px/1 var(--sans); color: #716F6C; padding-right: 8px">‹</span>
+    <span style="padding: 6px 12px; border-radius: 7px; font: 500 12px/1 var(--mono); color: #716F6C">{{ t.d0 }}</span>
+    <span style="padding: 6px 12px; border-radius: 7px; background: #56DB8F; font: 600 12px/1 var(--mono); color: #04160C">{{ t.d1 }}</span>
+    <span style="padding: 6px 12px; border-radius: 7px; font: 500 12px/1 var(--mono); color: #716F6C">{{ t.d2 }}</span>
+    <span style="padding: 6px 12px; border-radius: 7px; font: 500 12px/1 var(--mono); color: #716F6C">{{ t.d3 }}</span>
+    <span style="font: 400 15px/1 var(--sans); color: #716F6C; padding-left: 8px">›</span>
+    <span style="flex: 1"></span>
+    <div style="display: flex; gap: 6px">
+      <span style="{{ fAll }}" onClick="{{ setAll }}">{{ t.all }} <span class="n" style="opacity: .55">{{ nAll }}</span></span>
+      <span style="{{ fLive }}" onClick="{{ setLive }}">{{ t.live }} <span class="n">{{ nLive }}</span></span>
+      <span style="{{ fFin }}" onClick="{{ setFin }}">{{ t.fin }} <span class="n" style="opacity: .55">{{ nFin }}</span></span>
+      <span style="{{ fFav }}" onClick="{{ setFav }}">★ <span class="n" style="opacity: .55">{{ nFav }}</span></span>
+    </div>
+  </div>
+
+  <div style="flex: 1; display: flex; min-height: 0">
+
+    <div style="width: 236px; flex: none; border-right: 1px solid #2A2620; padding: 16px 0; overflow: hidden">
+      <div style="font: 600 10px/1 var(--mono); letter-spacing: .13em; text-transform: uppercase; color: #716F6C; padding: 0 18px 10px">{{ t.mine }}</div>
+      <sc-for list="{{ nav }}" as="c" hint-placeholder-count="12">
+        <div style="{{ c.rowStyle }}" onClick="{{ c.toggle }}">
+          <span style="{{ c.nameStyle }}">{{ c.name }}</span>
+          <span style="{{ c.countStyle }}">{{ c.count }}</span>
+          <span style="font: 400 10px/1 var(--sans); color: #716F6C">{{ c.arrow }}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="flex: 1; min-width: 0; overflow: hidden">
+      <sc-for list="{{ rows }}" as="it" hint-placeholder-count="14">
+        <div style="{{ it.wrapStyle }}">
+          <div style="{{ it.headStyle }}" onClick="{{ it.toggle }}">
+            <span style="font: 600 11px/1 var(--mono); letter-spacing: .11em; text-transform: uppercase; color: #56DB8F">{{ it.name }}</span>
+            <span class="n" style="font-size: 11px; color: #716F6C">{{ it.round }}</span>
+            <span style="flex: 1"></span>
+            <span style="{{ it.liveStyle }}">{{ it.liveTxt }}</span>
+            <span style="font: 400 12px/1 var(--sans); color: #716F6C">{{ it.arrow }}</span>
+          </div>
+          <div style="{{ it.rowStyle }}" onClick="{{ it.pick }}">
+            <div style="display: flex; align-items: center; gap: 6px">
+              <span style="{{ it.dotStyle }}"></span>
+              <span style="{{ it.gutStyle }}">{{ it.gut }}</span>
+            </div>
+            <div class="stk">
+              <span style="{{ it.homeStyle }}">{{ it.home }}</span>
+              <span style="{{ it.awayStyle }}">{{ it.away }}</span>
+            </div>
+            <div class="stk" style="text-align: right">
+              <span style="{{ it.hsStyle }}">{{ it.hs }}</span>
+              <span style="{{ it.asStyle }}">{{ it.as }}</span>
+            </div>
+            <div style="display: flex; justify-content: center"><span style="{{ it.badgeStyle }}">{{ it.badge }}</span></div>
+            <div style="{{ it.starWrap }}" onClick="{{ it.toggleStar }}">{{ it.star }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="width: 372px; flex: none; border-left: 1px solid #2A2620; background: #131211; overflow: hidden">
+
+      <div style="{{ emptyStyle }}">
+        <div style="font: 600 15px/1.3 var(--sans); color: #A7A5A0; margin-bottom: 8px">{{ t.pick }}</div>
+        <div style="font: 400 13px/1.5 var(--sans); color: #716F6C; max-width: 240px">{{ t.pickHint }}</div>
+      </div>
+
+      <div style="{{ detailStyle }}">
+        <div style="padding: 18px 20px 16px; border-bottom: 1px solid #2A2620">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px">
+            <span style="font: 600 10px/1.2 var(--mono); letter-spacing: .11em; text-transform: uppercase; color: #56DB8F">{{ sel.comp }}</span>
+            <span style="flex: 1"></span>
+            <span style="{{ sel.stateStyle }}">{{ sel.state }}</span>
+          </div>
+          <div style="display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 12px">
+            <div style="text-align: right; font: 600 15px/1.25 var(--sans); color: #F5F1EA">{{ sel.home }}</div>
+            <div style="{{ sel.scoreStyle }}">{{ sel.score }}</div>
+            <div style="font: 600 15px/1.25 var(--sans); color: #F5F1EA">{{ sel.away }}</div>
+          </div>
+          <div style="display: flex; justify-content: center; margin-top: 14px">
+            <span style="{{ sel.qualStyle }}">{{ sel.qual }}</span>
+          </div>
+        </div>
+
+        <div style="padding: 16px 20px; border-bottom: 1px solid #2A2620">
+          <div style="font: 600 10px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: #716F6C; margin-bottom: 12px">{{ t.trace }}</div>
+          <sc-for list="{{ trace }}" as="tr" hint-placeholder-count="3">
+            <div style="display: flex; gap: 8px; font: 500 11px/1.4 var(--mono); margin-bottom: 8px">
+              <span style="{{ tr.iconStyle }}">{{ tr.icon }}</span>
+              <span style="{{ tr.textStyle }}">{{ tr.text }}</span>
+              <span style="color: #716F6C">{{ tr.time }}</span>
+            </div>
+          </sc-for>
+          <div style="margin-top: 4px; padding-top: 10px; border-top: 1px dashed #3D362C; font: 500 11px/1.4 var(--mono); color: #716F6C">{{ sel.rule }}</div>
+        </div>
+
+        <div style="padding: 16px 20px">
+          <div style="font: 600 10px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: #716F6C; margin-bottom: 12px">{{ t.log }}</div>
+          <sc-for list="{{ log }}" as="d" hint-placeholder-count="4">
+            <div style="display: grid; grid-template-columns: 74px 42px minmax(0, 1fr) 50px; align-items: center; gap: 6px; padding: 6px 0; border-bottom: 1px solid #1D1A16">
+              <span class="n" style="font-size: 10px; color: #716F6C">{{ d.time }}</span>
+              <span style="{{ d.scoreStyle }}">{{ d.score }}</span>
+              <span style="{{ d.qualStyle }}">{{ d.qual }}</span>
+              <span class="n" style="font-size: 10px; color: #56DB8F; text-align: right">{{ d.rule }}</span>
+            </div>
+          </sc-for>
+          <div style="margin-top: 10px; font: 400 11px/1.45 var(--sans); color: #716F6C">{{ t.logNote }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{}'>
+class Component extends DCLogic {
+  //__SHARED__
+
+  constructor(props) {
+    super(props);
+    var stars = {};
+    var comps = this.data();
+    for (var i = 0; i < comps.length; i++) {
+      for (var j = 0; j < comps[i][3].length; j++) {
+        if (comps[i][3][j][7]) stars[comps[i][0] + ':' + j] = true;
+      }
+    }
+    this.state = { lang: 'gl', filter: 'all', stars: stars, collapsed: {}, sel: 'pf1:0' };
+  }
+
+  passes(m, key) {
+    var f = this.state.filter;
+    if (f === 'live') return m[0] === 'L' || m[0] === 'D' || m[0] === 'S';
+    if (f === 'fin') return m[0] === 'F';
+    if (f === 'fav') return !!this.state.stars[key];
+    return true;
+  }
+
+  detail(byId, t) {
+    var key = this.state.sel;
+    if (!key || !byId[key.split(':')[0]]) return null;
+    var id = key.split(':')[0];
+    var idx = parseInt(key.split(':')[1], 10);
+    var comp = byId[id];
+    var m = comp[3][idx];
+    if (!m) return null;
+
+    var st = m[0];
+    var live = st === 'L' || st === 'D';
+    var nosig = st === 'S';
+    var sched = st === 'P';
+    var apr = st === 'A';
+
+    var stateTxt = live ? m[1] : (nosig ? m[1] : (apr ? t.postLong : (st === 'F' ? 'FIN' : m[1])));
+    var stateColor = live ? '#FF6B00' : (nosig ? '#FF655A' : (apr ? '#F0B135' : '#A7A5A0'));
+
+    var qualKey = nosig ? 'nosig' : (apr ? 'conf' : m[6]);
+    var qualTxt = t[qualKey];
+    var qualColor = qualKey === 'conf' ? '#56DB8F' : (qualKey === 'prov' ? '#8E8C88' : (qualKey === 'pend' ? '#F0B135' : '#FF655A'));
+    var ruleTxt = qualKey === 'conf' ? 'RN-02 · 2 ' + (this.state.lang === 'gl' ? 'fontes independentes' : 'fuentes independientes') + ' ≥ 0.7'
+      : (qualKey === 'prov' ? 'RN-03 · 1 ' + (this.state.lang === 'gl' ? 'fonte' : 'fuente') + ' < 0.9'
+      : (qualKey === 'pend' ? 'RN-06 · kickoff + 110 min' : 'RN-07 · 17 min'));
+
+    var score = sched ? m[1] : (apr ? '–' : m[3] + '–' + m[4]);
+    var scoreColor = sched ? '#A7A5A0' : (apr ? '#716F6C'
+      : (m[6] === 'prov' ? '#8E8C88' : (m[6] === 'pend' ? '#F0B135' : (nosig ? '#FF655A' : '#F5F1EA'))));
+
+    var trace = [];
+    if (qualKey === 'conf') {
+      trace.push({ ok: 1, text: 'ceroacero.es · ' + t.weight + ' 0.7', time: '18:41:12Z' });
+      trace.push({ ok: 1, text: 'besoccer.es · ' + t.weight + ' 0.7', time: '18:42:03Z' });
+    } else if (qualKey === 'prov') {
+      trace.push({ ok: 1, text: 'besoccer.es · ' + t.weight + ' 0.7', time: '18:39:51Z' });
+      trace.push({ ok: 0, text: 'ceroacero.es · sen dato', time: '—' });
+    } else if (qualKey === 'pend') {
+      trace.push({ ok: 1, text: 'ceroacero.es · ' + t.weight + ' 0.7', time: '19:04:22Z' });
+      trace.push({ ok: 0, text: 'besoccer.es · sen peche', time: '—' });
+    } else {
+      trace.push({ ok: 0, text: 'ceroacero.es · sen dato', time: '18:26:40Z' });
+      trace.push({ ok: 0, text: 'besoccer.es · sen dato', time: '18:25:03Z' });
+    }
+    trace.push({ ok: -1, text: 'futgal.es · ' + t.noCrawl, time: 'robots' });
+
+    var log = [];
+    if (sched || apr) {
+      log.push({ time: '11:02:10Z', score: '–', qual: t.conf, rule: 'RN-06' });
+    } else {
+      log.push({ time: '18:42:03Z', score: m[3] + '-' + m[4], qual: qualTxt, rule: ruleTxt.split(' ')[0] });
+      log.push({ time: '18:41:12Z', score: m[3] + '-' + m[4], qual: t.prov, rule: 'RN-03' });
+      if (m[3] > 0 || m[4] > 0) log.push({ time: '18:12:40Z', score: '0-0', qual: t.conf, rule: 'RN-02' });
+      log.push({ time: '17:32:05Z', score: '0-0', qual: t.conf, rule: 'RN-06' });
+    }
+
+    return {
+      comp: comp[1], home: m[2], away: m[5], score: score, scoreColor: scoreColor,
+      state: stateTxt, stateColor: stateColor, qual: qualTxt, qualColor: qualColor,
+      rule: t.rule + ' ' + ruleTxt, trace: trace, log: log
+    };
+  }
+
+  renderVals() {
+    var self = this;
+    var lang = this.state.lang;
+    var t = this.strings()[lang];
+    var comps = this.data();
+    var stars = this.state.stars;
+    var collapsed = this.state.collapsed;
+
+    var byId = {};
+    var nAll = 0, nLive = 0, nFin = 0, nFav = 0;
+    comps.forEach(function (c) {
+      byId[c[0]] = c;
+      c[3].forEach(function (m, j) {
+        nAll++;
+        if (m[0] === 'L' || m[0] === 'D' || m[0] === 'S') { nLive++; }
+        if (m[0] === 'F') { nFin++; }
+        if (stars[c[0] + ':' + j]) { nFav++; }
+      });
+    });
+
+    var toggleComp = function (id) {
+      return function () {
+        var c = {};
+        for (var p in collapsed) { c[p] = collapsed[p]; }
+        c[id] = !c[id];
+        self.setState({ collapsed: c });
+      };
+    };
+
+    var nav = comps.map(function (c) {
+      var liveN = 0;
+      c[3].forEach(function (m) { if (m[0] === 'L' || m[0] === 'D') { liveN++; } });
+      var isSel = self.state.sel && self.state.sel.split(':')[0] === c[0];
+      return {
+        name: c[1],
+        rowStyle: 'display:flex;align-items:center;gap:8px;padding:7px 18px;cursor:pointer;'
+          + (isSel ? 'background:#1A1815;box-shadow:inset 2px 0 0 #56DB8F;' : ''),
+        nameStyle: 'flex:1;min-width:0;font-family:var(--sans);font-size:12.5px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:'
+          + (isSel ? '600' : '500') + ';color:' + (isSel ? '#F5F1EA' : '#A7A5A0') + ';',
+        count: liveN > 0 ? String(liveN) : String(c[3].length),
+        countStyle: 'font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:11px;color:'
+          + (liveN > 0 ? '#FF6B00' : '#716F6C') + ';',
+        arrow: collapsed[c[0]] ? '▸' : '▾',
+        toggle: toggleComp(c[0])
+      };
+    });
+
+    var GRID = 'display:grid;grid-template-columns:56px minmax(0,1fr) 46px 34px 26px;align-items:center;gap:8px;padding:8px 16px;border-bottom:1px solid #1D1A16;cursor:pointer;';
+    var NAME = 'font-family:var(--sans);font-size:14px;line-height:1.25;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+    var SC = 'font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:14px;line-height:1.25;font-weight:600;';
+
+    var rows = [];
+    comps.forEach(function (comp) {
+      var id = comp[0];
+      var liveN = 0;
+      comp[3].forEach(function (m) { if (m[0] === 'L' || m[0] === 'D') { liveN++; } });
+      var isCollapsed = !!collapsed[id];
+
+      var head = {
+        isHead: true,
+        wrapStyle: '',
+        headStyle: 'display:flex;align-items:center;gap:9px;padding:9px 16px;background:#1A1815;border-top:1px solid #2A2620;border-bottom:1px solid #2A2620;cursor:pointer;',
+        rowStyle: 'display:none',
+        name: comp[1],
+        round: t.round + ' ' + comp[2],
+        liveTxt: liveN > 0 ? String(liveN) : '',
+        liveStyle: liveN > 0
+          ? 'padding:3px 7px;border-radius:999px;background:rgba(255,107,0,.12);font:600 10px/1.2 var(--mono);color:#FF6B00'
+          : 'display:none',
+        arrow: isCollapsed ? '▸' : '▾',
+        toggle: toggleComp(id),
+        pick: function () {}, toggleStar: function () {},
+        dotStyle: 'display:none', gutStyle: 'display:none', homeStyle: 'display:none',
+        awayStyle: 'display:none', hsStyle: 'display:none', asStyle: 'display:none',
+        badgeStyle: 'display:none', starWrap: 'display:none',
+        gut: '', home: '', away: '', hs: '', as: '', badge: '', star: ''
+      };
+      rows.push(head);
+
+      if (isCollapsed) { return; }
+
+      comp[3].forEach(function (m, idx) {
+        var key = id + ':' + idx;
+        if (!self.passes(m, key)) { return; }
+
+        var st = m[0];
+        var starred = !!stars[key];
+        var isSel = self.state.sel === key;
+        var live = st === 'L' || st === 'D';
+        var nosig = st === 'S';
+        var fin = st === 'F';
+        var sched = st === 'P';
+        var apr = st === 'A';
+
+        var tint = live ? 'background:#1E1A16;box-shadow:inset 2px 0 0 #FF6B00;'
+          : (nosig ? 'box-shadow:inset 2px 0 0 #FF655A;' : '');
+        if (isSel) { tint += 'background:#221F1A;'; }
+
+        var gutColor = live ? '#FF6B00'
+          : (nosig ? '#FF655A' : (apr ? '#F0B135'
+          : (fin ? (m[6] === 'pend' ? '#F0B135' : '#A7A5A0') : '#A7A5A0')));
+
+        var scColor, scExtra = '';
+        if (sched || apr) { scColor = '#716F6C'; }
+        else if (m[6] === 'prov') { scColor = '#8E8C88'; }
+        else if (m[6] === 'pend') { scColor = '#F0B135'; }
+        else if (nosig) { scColor = '#FF655A'; scExtra = 'border-bottom:1px dashed #FF655A;'; }
+        else { scColor = '#F5F1EA'; }
+
+        var hc = '#F5F1EA', ac = '#F5F1EA', hw = '500', aw = '500';
+        var hsc = scColor, asc = scColor;
+        if (fin) {
+          if (m[3] > m[4]) { hw = '600'; ac = '#A7A5A0'; asc = '#A7A5A0'; }
+          else if (m[4] > m[3]) { aw = '600'; hc = '#A7A5A0'; hsc = '#A7A5A0'; }
+        } else if (apr) { hc = '#8E8C88'; ac = '#8E8C88'; }
+
+        var badge = '', badgeStyle = 'display:none';
+        if (m[6] === 'prov' && !sched && !apr) {
+          badge = 'prov';
+          badgeStyle = 'padding:2px 5px;border-radius:999px;border:1px solid #3D362C;font:600 9px/1.2 var(--mono);letter-spacing:.05em;text-transform:uppercase;color:#8E8C88';
+        } else if (m[6] === 'pend') {
+          badge = '?';
+          badgeStyle = 'padding:2px 6px;border-radius:999px;border:1px solid #F0B135;font:600 9px/1.2 var(--mono);color:#F0B135';
+        } else if (nosig) {
+          badge = '!';
+          badgeStyle = 'padding:2px 6px;border-radius:999px;border:1px solid #FF655A;font:600 9px/1.2 var(--mono);color:#FF655A';
+        }
+
+        rows.push({
+          isHead: false,
+          wrapStyle: '',
+          headStyle: 'display:none',
+          rowStyle: GRID + tint,
+          name: '', round: '', liveTxt: '', liveStyle: 'display:none', arrow: '',
+          toggle: function () {},
+          dotStyle: live
+            ? 'width:6px;height:6px;border-radius:50%;background:#FF6B00;box-shadow:0 0 8px #FF6B00;flex:none;'
+            : 'display:none',
+          gut: apr ? t.post.toUpperCase() : (fin ? 'FIN' : m[1]),
+          gutStyle: 'font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:12px;font-weight:600;letter-spacing:.03em;color:' + gutColor + ';',
+          home: m[2],
+          homeStyle: NAME + 'font-weight:' + hw + ';color:' + hc + ';',
+          away: m[5],
+          awayStyle: NAME + 'font-weight:' + aw + ';color:' + ac + ';',
+          hs: sched || apr ? '–' : String(m[3]),
+          hsStyle: SC + 'color:' + hsc + ';' + scExtra,
+          as: sched || apr ? '–' : String(m[4]),
+          asStyle: SC + 'color:' + asc + ';' + scExtra,
+          badge: badge,
+          badgeStyle: badgeStyle,
+          star: starred ? '★' : '☆',
+          starWrap: 'display:flex;justify-content:flex-end;font-family:var(--sans);font-size:14px;cursor:pointer;color:' + (starred ? '#56DB8F' : '#3D362C') + ';',
+          pick: function () { self.setState({ sel: key }); },
+          toggleStar: function (e) {
+            if (e && e.stopPropagation) { e.stopPropagation(); }
+            var s = {};
+            for (var p in stars) { s[p] = stars[p]; }
+            if (s[key]) { delete s[key]; } else { s[key] = true; }
+            self.setState({ stars: s });
+          }
+        });
+      });
+    });
+
+    var d = this.detail(byId, t);
+    var sel = d || { comp: '', home: '', away: '', score: '', state: '', qual: '', rule: '', scoreColor: '#F5F1EA', stateColor: '#A7A5A0', qualColor: '#56DB8F' };
+
+    var PILL_ON = 'padding:6px 13px;border-radius:999px;background:#221F1A;border:1px solid #3D362C;font:600 12px/1 var(--sans);color:#F5F1EA;cursor:pointer';
+    var PILL_OFF = 'padding:6px 13px;border-radius:999px;border:1px solid #2A2620;font:600 12px/1 var(--sans);color:#A7A5A0;cursor:pointer';
+    var LIVE_ON = 'padding:6px 13px;border-radius:999px;background:rgba(255,107,0,.14);border:1px solid #FF6B00;font:600 12px/1 var(--sans);color:#FF6B00;cursor:pointer';
+    var LIVE_OFF = 'padding:6px 13px;border-radius:999px;border:1px solid rgba(255,107,0,.4);font:600 12px/1 var(--sans);color:#FF6B00;cursor:pointer';
+    var LANG_ON = 'padding:6px 8px;border-radius:6px;background:rgba(86,219,143,.12);color:#56DB8F;text-transform:uppercase;letter-spacing:.05em;cursor:pointer';
+    var LANG_OFF = 'padding:6px 8px;border-radius:6px;color:#716F6C;text-transform:uppercase;letter-spacing:.05em;cursor:pointer';
+
+    t.logNote = lang === 'gl'
+      ? 'Log append-only: a última liña é a vixente. As observacións non se corrixen nunca (RN-13).'
+      : 'Log append-only: la última línea es la vigente. Las observaciones no se corrigen nunca (RN-13).';
+
+    return {
+      t: t, nav: nav, rows: rows,
+      sel: {
+        comp: sel.comp, home: sel.home, away: sel.away, score: sel.score, qual: sel.qual,
+        state: sel.state, rule: sel.rule,
+        scoreStyle: 'font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:38px;font-weight:800;line-height:1;letter-spacing:-.03em;color:' + sel.scoreColor + ';',
+        stateStyle: 'font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:11px;font-weight:600;color:' + sel.stateColor + ';',
+        qualStyle: 'padding:5px 11px;border-radius:999px;border:1px solid ' + sel.qualColor + '55;background:' + sel.qualColor + '1A;font:600 11px/1.2 var(--mono);color:' + sel.qualColor + ';'
+      },
+      trace: (d ? d.trace : []).map(function (x) {
+        return {
+          icon: x.ok === 1 ? '✓' : (x.ok === 0 ? '×' : '·'),
+          iconStyle: 'color:' + (x.ok === 1 ? '#56DB8F' : (x.ok === 0 ? '#FF655A' : '#716F6C')) + ';',
+          text: x.text,
+          textStyle: 'flex:1;min-width:0;color:' + (x.ok === -1 ? '#716F6C' : '#A7A5A0') + ';',
+          time: x.time
+        };
+      }),
+      log: (d ? d.log : []).map(function (x) {
+        return {
+          time: x.time, score: x.score, rule: x.rule, qual: x.qual,
+          scoreStyle: 'font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:12px;font-weight:600;color:#F5F1EA;',
+          qualStyle: 'font-family:var(--sans);font-size:11px;color:#A7A5A0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'
+        };
+      }),
+      emptyStyle: d ? 'display:none' : 'padding:60px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;',
+      detailStyle: d ? '' : 'display:none',
+      nAll: nAll, nLive: nLive, nFin: nFin, nFav: nFav,
+      glStyle: lang === 'gl' ? LANG_ON : LANG_OFF,
+      esStyle: lang === 'es' ? LANG_ON : LANG_OFF,
+      setGl: function () { self.setState({ lang: 'gl' }); },
+      setEs: function () { self.setState({ lang: 'es' }); },
+      fAll: this.state.filter === 'all' ? PILL_ON : PILL_OFF,
+      fLive: this.state.filter === 'live' ? LIVE_ON : LIVE_OFF,
+      fFin: this.state.filter === 'fin' ? PILL_ON : PILL_OFF,
+      fFav: this.state.filter === 'fav' ? PILL_ON : PILL_OFF,
+      setAll: function () { self.setState({ filter: 'all' }); },
+      setLive: function () { self.setState({ filter: 'live' }); },
+      setFin: function () { self.setState({ filter: 'fin' }); },
+      setFav: function () { self.setState({ filter: 'fav' }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

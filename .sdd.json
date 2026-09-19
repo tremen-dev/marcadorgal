@@ -1,0 +1,6 @@
+{
+  "idioma": "es",
+  "rutasVigiladas": ["src/", "supabase/", "data/"],
+  "linter": "auto",
+  "gates": { "requireSpec": true, "protegeVerdad": true, "calidad": "npm run gates" }
+}

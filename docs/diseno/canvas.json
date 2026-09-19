@@ -1,0 +1,81 @@
+{
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1040,
+      "h": 3150,
+      "title": "01 · Fundamentos"
+    },
+    {
+      "file": "Componentes.dc.html",
+      "x": 1140,
+      "y": 0,
+      "w": 980,
+      "h": 2600,
+      "title": "02 · Compoñentes"
+    },
+    {
+      "file": "Marca.dc.html",
+      "x": 2220,
+      "y": 0,
+      "w": 800,
+      "h": 1900,
+      "title": "03 · Semente de marca"
+    },
+    {
+      "file": "Escritorio.dc.html",
+      "x": 0,
+      "y": 3290,
+      "w": 1440,
+      "h": 900,
+      "title": "04 · Vista Xornada — escritorio (vivo)",
+      "is_interactive": true
+    },
+    {
+      "file": "Movil.dc.html",
+      "x": 1560,
+      "y": 3290,
+      "w": 390,
+      "h": 844,
+      "title": "05 · Móbil 390×844 (vivo)",
+      "is_interactive": true
+    },
+    {
+      "file": "Global.dc.html",
+      "x": 2050,
+      "y": 3290,
+      "w": 1440,
+      "h": 900,
+      "title": "06 · Vista Global — 12 competicións (vivo)",
+      "is_interactive": true
+    }
+  ],
+  "annotations": [
+    {
+      "id": "nota-lectura",
+      "x": -360,
+      "y": 0,
+      "w": 280,
+      "text": "Por onde empezar\n\n01 Fundamentos — cor, tipografía e a semántica do marcador (estado × cualificador).\n02 Compoñentes — as dúas filas: ampla e compacta.\n03 Marca — sementes de logo, non logo.\n04/05/06 — o sistema posto a traballar."
+    },
+    {
+      "id": "nota-vivo",
+      "x": -360,
+      "y": 3290,
+      "w": 280,
+      "text": "Estes tres funcionan\n\nProba: os filtros (Todos · Directo · Rematados · ★), o selector gl · es, pregar unha competición na súa cabeceira, e o ★ de cada fila. No escritorio, tocar unha fila cambia o panel da dereita: traza e historial de decisións son distintos segundo o cualificador do partido.\n\nNo móbil, o control Xornada · Global troca entre a fila ampla e a compacta."
+    },
+    {
+      "id": "nota-mostra",
+      "x": -360,
+      "y": 3730,
+      "w": 280,
+      "text": "Datos de mostra\n\nOs nomes de equipo son canónicos reais da RFGF, pero os resultados, os minutos e o reparto de clubs por categoría están inventados para poder ver a densidade. Ningunha cifra destas pantallas é un dato."
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

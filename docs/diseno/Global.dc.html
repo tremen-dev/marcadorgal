@@ -1,0 +1,464 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&display=swap');
+    :root{
+      --sans:'Geist',ui-sans-serif,system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+      --mono:'Geist Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    body{margin:0;background:#111110;color:#F5F1EA;font-family:var(--sans);-webkit-font-smoothing:antialiased}
+    a{color:#56DB8F;text-decoration:none}
+    a:hover{color:#F5F1EA;text-decoration:underline}
+    .n{font-family:var(--mono);font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1}
+    .col{flex:1;min-width:0;display:flex;flex-direction:column}
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 900px; background: #111110; display: flex; flex-direction: column; overflow: hidden">
+
+  <div style="height: 56px; flex: none; display: flex; align-items: center; gap: 28px; padding: 0 20px; border-bottom: 1px solid #2A2620">
+    <span style="font: 800 21px/1 var(--sans); letter-spacing: -.045em; color: #F5F1EA">marcador<span style="color: #56DB8F">▮</span>gal</span>
+    <div style="display: flex; gap: 22px">
+      <span style="font: 500 13px/1 var(--sans); color: #A7A5A0">{{ t.xornada }}</span>
+      <span style="font: 600 13px/1 var(--sans); color: #F5F1EA; padding-bottom: 4px; box-shadow: inset 0 -2px 0 #56DB8F">{{ t.global }}</span>
+      <span style="font: 500 13px/1 var(--sans); color: #A7A5A0">{{ t.tables }}</span>
+    </div>
+    <span style="flex: 1"></span>
+    <span class="n" style="font-size: 11px; color: #716F6C">{{ shown }}</span>
+    <div style="display: inline-flex; align-items: center; gap: 2px; font: 500 12px/1 var(--mono)">
+      <span style="{{ glStyle }}" onClick="{{ setGl }}">gl</span>
+      <span style="color: #716F6C; opacity: .45">·</span>
+      <span style="{{ esStyle }}" onClick="{{ setEs }}">es</span>
+    </div>
+  </div>
+
+  <div style="height: 44px; flex: none; display: flex; align-items: center; gap: 4px; padding: 0 20px; border-bottom: 1px solid #2A2620; background: #131211">
+    <span style="font: 400 15px/1 var(--sans); color: #716F6C; padding-right: 8px">‹</span>
+    <span style="padding: 6px 12px; border-radius: 7px; font: 500 12px/1 var(--mono); color: #716F6C">{{ t.d0 }}</span>
+    <span style="padding: 6px 12px; border-radius: 7px; background: #56DB8F; font: 600 12px/1 var(--mono); color: #04160C">{{ t.d1 }}</span>
+    <span style="padding: 6px 12px; border-radius: 7px; font: 500 12px/1 var(--mono); color: #716F6C">{{ t.d2 }}</span>
+    <span style="padding: 6px 12px; border-radius: 7px; font: 500 12px/1 var(--mono); color: #716F6C">{{ t.d3 }}</span>
+    <span style="font: 400 15px/1 var(--sans); color: #716F6C; padding-left: 8px">›</span>
+    <span style="flex: 1"></span>
+    <div style="display: flex; gap: 6px">
+      <span style="{{ fAll }}" onClick="{{ setAll }}">{{ t.all }} <span class="n" style="opacity: .55">{{ nAll }}</span></span>
+      <span style="{{ fLive }}" onClick="{{ setLive }}">{{ t.live }} <span class="n">{{ nLive }}</span></span>
+      <span style="{{ fFin }}" onClick="{{ setFin }}">{{ t.fin }} <span class="n" style="opacity: .55">{{ nFin }}</span></span>
+      <span style="{{ fFav }}" onClick="{{ setFav }}">★ <span class="n" style="opacity: .55">{{ nFav }}</span></span>
+    </div>
+  </div>
+
+  <div style="flex: 1; min-height: 0; display: flex; gap: 12px; padding: 14px 16px; overflow: hidden">
+    <div class="col">
+      <sc-for list="{{ c1 }}" as="it" hint-placeholder-count="8">
+        <sc-if value="{{ it.isHeader }}" hint-placeholder-val="{{ true }}">
+          <div style="{{ it.headStyle }}" onClick="{{ it.toggle }}">
+            <span style="font: 600 10px/1.2 var(--mono); letter-spacing: .09em; text-transform: uppercase; color: #56DB8F; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ it.name }}</span>
+            <span style="flex: 1"></span>
+            <span style="{{ it.liveStyle }}">{{ it.liveTxt }}</span>
+            <span class="n" style="font-size: 10px; color: #716F6C">{{ it.round }}</span>
+            <span style="font: 400 10px/1 var(--sans); color: #716F6C">{{ it.arrow }}</span>
+          </div>
+        </sc-if>
+        <sc-if value="{{ it.isRow }}" hint-placeholder-val="{{ true }}">
+          <div style="{{ it.rowStyle }}" onClick="{{ it.pick }}">
+            <span style="{{ it.gutStyle }}">{{ it.gut }}</span>
+            <span style="{{ it.homeStyle }}" title="{{ it.home }}">{{ it.home }}</span>
+            <span style="{{ it.midStyle }}">{{ it.mid }}</span>
+            <span style="{{ it.awayStyle }}" title="{{ it.away }}">{{ it.away }}</span>
+            <span style="{{ it.starStyle }}">{{ it.star }}</span>
+          </div>
+        </sc-if>
+        <sc-if value="{{ it.isEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 7px 8px; font: 400 11px/1.3 var(--sans); color: #716F6C; text-align: center">{{ t.none }}</div>
+        </sc-if>
+      </sc-for>
+    </div>
+    <div class="col">
+      <sc-for list="{{ c2 }}" as="it" hint-placeholder-count="8">
+        <sc-if value="{{ it.isHeader }}" hint-placeholder-val="{{ true }}">
+          <div style="{{ it.headStyle }}" onClick="{{ it.toggle }}">
+            <span style="font: 600 10px/1.2 var(--mono); letter-spacing: .09em; text-transform: uppercase; color: #56DB8F; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ it.name }}</span>
+            <span style="flex: 1"></span>
+            <span style="{{ it.liveStyle }}">{{ it.liveTxt }}</span>
+            <span class="n" style="font-size: 10px; color: #716F6C">{{ it.round }}</span>
+            <span style="font: 400 10px/1 var(--sans); color: #716F6C">{{ it.arrow }}</span>
+          </div>
+        </sc-if>
+        <sc-if value="{{ it.isRow }}" hint-placeholder-val="{{ true }}">
+          <div style="{{ it.rowStyle }}" onClick="{{ it.pick }}">
+            <span style="{{ it.gutStyle }}">{{ it.gut }}</span>
+            <span style="{{ it.homeStyle }}" title="{{ it.home }}">{{ it.home }}</span>
+            <span style="{{ it.midStyle }}">{{ it.mid }}</span>
+            <span style="{{ it.awayStyle }}" title="{{ it.away }}">{{ it.away }}</span>
+            <span style="{{ it.starStyle }}">{{ it.star }}</span>
+          </div>
+        </sc-if>
+        <sc-if value="{{ it.isEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 7px 8px; font: 400 11px/1.3 var(--sans); color: #716F6C; text-align: center">{{ t.none }}</div>
+        </sc-if>
+      </sc-for>
+    </div>
+    <div class="col">
+      <sc-for list="{{ c3 }}" as="it" hint-placeholder-count="8">
+        <sc-if value="{{ it.isHeader }}" hint-placeholder-val="{{ true }}">
+          <div style="{{ it.headStyle }}" onClick="{{ it.toggle }}">
+            <span style="font: 600 10px/1.2 var(--mono); letter-spacing: .09em; text-transform: uppercase; color: #56DB8F; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ it.name }}</span>
+            <span style="flex: 1"></span>
+            <span style="{{ it.liveStyle }}">{{ it.liveTxt }}</span>
+            <span class="n" style="font-size: 10px; color: #716F6C">{{ it.round }}</span>
+            <span style="font: 400 10px/1 var(--sans); color: #716F6C">{{ it.arrow }}</span>
+          </div>
+        </sc-if>
+        <sc-if value="{{ it.isRow }}" hint-placeholder-val="{{ true }}">
+          <div style="{{ it.rowStyle }}" onClick="{{ it.pick }}">
+            <span style="{{ it.gutStyle }}">{{ it.gut }}</span>
+            <span style="{{ it.homeStyle }}" title="{{ it.home }}">{{ it.home }}</span>
+            <span style="{{ it.midStyle }}">{{ it.mid }}</span>
+            <span style="{{ it.awayStyle }}" title="{{ it.away }}">{{ it.away }}</span>
+            <span style="{{ it.starStyle }}">{{ it.star }}</span>
+          </div>
+        </sc-if>
+        <sc-if value="{{ it.isEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 7px 8px; font: 400 11px/1.3 var(--sans); color: #716F6C; text-align: center">{{ t.none }}</div>
+        </sc-if>
+      </sc-for>
+    </div>
+    <div class="col">
+      <sc-for list="{{ c4 }}" as="it" hint-placeholder-count="8">
+        <sc-if value="{{ it.isHeader }}" hint-placeholder-val="{{ true }}">
+          <div style="{{ it.headStyle }}" onClick="{{ it.toggle }}">
+            <span style="font: 600 10px/1.2 var(--mono); letter-spacing: .09em; text-transform: uppercase; color: #56DB8F; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ it.name }}</span>
+            <span style="flex: 1"></span>
+            <span style="{{ it.liveStyle }}">{{ it.liveTxt }}</span>
+            <span class="n" style="font-size: 10px; color: #716F6C">{{ it.round }}</span>
+            <span style="font: 400 10px/1 var(--sans); color: #716F6C">{{ it.arrow }}</span>
+          </div>
+        </sc-if>
+        <sc-if value="{{ it.isRow }}" hint-placeholder-val="{{ true }}">
+          <div style="{{ it.rowStyle }}" onClick="{{ it.pick }}">
+            <span style="{{ it.gutStyle }}">{{ it.gut }}</span>
+            <span style="{{ it.homeStyle }}" title="{{ it.home }}">{{ it.home }}</span>
+            <span style="{{ it.midStyle }}">{{ it.mid }}</span>
+            <span style="{{ it.awayStyle }}" title="{{ it.away }}">{{ it.away }}</span>
+            <span style="{{ it.starStyle }}">{{ it.star }}</span>
+          </div>
+        </sc-if>
+        <sc-if value="{{ it.isEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 7px 8px; font: 400 11px/1.3 var(--sans); color: #716F6C; text-align: center">{{ t.none }}</div>
+        </sc-if>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="height: 30px; flex: none; display: flex; align-items: center; gap: 16px; padding: 0 20px; border-top: 1px solid #2A2620; background: #131211">
+    <span style="font: 800 11px/1 var(--sans); letter-spacing: -.04em; color: #716F6C">marcador<span style="color: #56DB8F">▮</span>gal</span>
+    <span style="font: 400 11px/1 var(--sans); color: #716F6C">{{ t.hint }}</span>
+    <span style="flex: 1"></span>
+    <span class="n" style="font-size: 10px; color: #3D362C">{{ t.stamp }}</span>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{}'>
+class Component extends DCLogic {
+/* Bloque de lóxica compartido a man polos artboards interactivos.
+   Non se importa: os artboards non comparten runtime, así que cada un leva a súa copia. */
+  data() {
+    return [
+      ['t3g1','Terceira RFEF G1',4,[
+        ['L',"31'",'Bergantiños FC',1,1,'UD Somozas','conf',1],
+        ['L',"29'",'CD Barco',0,2,'Polvorín FC','conf',0],
+        ['L',"28'",'Arosa SC',0,0,'Silva SD','conf',1],
+        ['D','DESC','SD Compostela',2,0,'Ourense CF','conf',0],
+        ['F','FIN','Rápido de Bouzas',1,1,'Deportivo Fabril','conf',0],
+        ['P','18:30','Coruxo FC',null,null,'UD Ourense','conf',0],
+        ['P','19:00','Racing Villalbés',null,null,'Estradense','conf',0]
+      ]],
+      ['pf1','Preferente Futgal G1',4,[
+        ['L',"67'",'Alondras CF',2,1,'Céltiga FC','conf',1],
+        ['L',"72'",'Villalonga FC',1,0,'CD Ribadumia','prov',0],
+        ['D','DESC','Choco SD',0,0,'As Pontes CF','conf',0],
+        ['S',"55'",'Atlético Arnoia',0,0,'CD Barbadás','conf',0],
+        ['F','FIN','Fisterra CF',3,1,'CD Beluso','conf',0],
+        ['F','FIN','Sofán CF',2,2,'Órdenes SC','pend',0],
+        ['A','APR','Portonovo SD',null,null,'Boiro FC','conf',0]
+      ]],
+      ['pf2','Preferente Futgal G2',4,[
+        ['L',"64'",'CD Cerceda',2,0,'SD Brigantium','conf',0],
+        ['L',"61'",'Noia CF',1,1,'Xallas CF','conf',0],
+        ['F','FIN','Betanzos CF',0,3,'Laracha CF','conf',0],
+        ['F','FIN','Dubra CF',1,0,'Negreira CF','prov',0],
+        ['P','18:00','Muros SD',null,null,'Viveiro CF','conf',0],
+        ['P','18:30','Ribadeo FC',null,null,'Alertanavia','conf',0]
+      ]],
+      ['pf3','Preferente Futgal G3',4,[
+        ['L',"58'",'Moaña CF',1,2,'Bueu Atlético','conf',0],
+        ['F','FIN','Cambados SC',2,1,'Gran Peña FC','conf',0],
+        ['F','FIN','Sárdoma CF',0,0,'Atl. Arousana','conf',0],
+        ['P','18:00','Pontellas FC',null,null,'Mos CF','conf',0],
+        ['P','19:00','Redondela CF',null,null,'Tomiño CF','conf',0]
+      ]],
+      ['g1a','Primeira Galega G1',3,[
+        ['L',"70'",'Órdenes SC B',0,1,'Sada CF','prov',0],
+        ['F','FIN','Arteixo CF',2,0,'Culleredo CF','conf',0],
+        ['F','FIN','Ponte dos Brozos',1,1,'Oleiros SD','conf',0],
+        ['P','17:30','Carballo CF',null,null,'Cambre CF','conf',0],
+        ['P','18:00','Ares CF',null,null,'Mugardos CF','conf',0]
+      ]],
+      ['g1b','Primeira Galega G2',3,[
+        ['L',"66'",'Antas de Ulla',1,0,'Chantada CF','conf',0],
+        ['F','FIN','Monforte CF',3,2,'Sarria CF','conf',0],
+        ['F','FIN','Burela FC',0,0,'Foz CF','pend',0],
+        ['P','17:00','Guitiriz CF',null,null,'Meira CF','conf',0],
+        ['P','18:00','Palas CF',null,null,'Bóveda CF','conf',0]
+      ]],
+      ['g2a','Segunda Galega G1',3,[
+        ['F','FIN','Melide CF',2,1,'Arzúa CF','conf',0],
+        ['F','FIN','Boimorto CF',0,2,'Curtis CF','conf',0],
+        ['P','16:30','Sigüeiro CF',null,null,'Val do Dubra','conf',0],
+        ['P','17:00','Teo CF',null,null,'Ames CF','conf',0]
+      ]],
+      ['g2b','Segunda Galega G2',3,[
+        ['L',"52'",'Verín CF',0,0,'Xinzo CF','conf',0],
+        ['F','FIN','Celanova CF',1,3,'Allariz CF','conf',0],
+        ['P','17:00','Maceda CF',null,null,'Castro Caldelas','conf',0],
+        ['A','APR','O Carballiño',null,null,'Ribadavia CF','conf',0]
+      ]],
+      ['fem','Primeira Galega feminina',3,[
+        ['L',"48'",'Victoria CF',2,0,'Sárdoma CF','conf',0],
+        ['F','FIN','Orzán SD',1,1,'Friol CF','conf',0],
+        ['F','FIN','Sporting Guardés B',3,0,'Racing Feminino','prov',0],
+        ['P','17:00','Deportivo ABANCA B',null,null,'Viajes InterRías','conf',0]
+      ]],
+      ['ea','LALIGA EA Sports',4,[
+        ['L',"38'",'RC Celta',1,0,'Rayo Vallecano','conf',1],
+        ['F','FIN','Real Betis',2,2,'Girona FC','conf',0],
+        ['P','18:30','Villarreal CF',null,null,'Athletic Club','conf',0],
+        ['P','21:00','Real Madrid',null,null,'RCD Espanyol','conf',0]
+      ]],
+      ['hyp','LALIGA Hypermotion',5,[
+        ['L',"41'",'RC Deportivo',2,1,'SD Huesca','conf',1],
+        ['F','FIN','Racing de Ferrol',0,1,'Real Zaragoza','conf',0],
+        ['P','18:00','Albacete BP',null,null,'CD Mirandés','conf',0],
+        ['P','20:30','Sporting de Gijón',null,null,'Cádiz CF','conf',0]
+      ]],
+      ['p1f','Primeira Federación G1',4,[
+        ['L',"35'",'SD Ponferradina',0,0,'Real Unión','conf',0],
+        ['F','FIN','Pontevedra CF',1,0,'Zamora CF','conf',0],
+        ['P','17:00','CD Lugo',null,null,'Barakaldo CF','conf',0],
+        ['P','19:00','Cultural Leonesa',null,null,'SD Amorebieta','conf',0]
+      ]]
+    ];
+  }
+
+  strings() {
+    return {
+      gl: { xornada:'Xornada', global:'Global', tables:'Clasificacións', all:'Todos', live:'Directo',
+            fin:'Rematados', d0:'ven 29', d1:'SÁB 30', d2:'dom 31', d3:'lun 01', none:'nada aquí',
+            post:'apr', postLong:'aprazado', round:'xornada', search:'Buscar equipo', trace:'Traza',
+            log:'Historial de decisións', conf:'confirmado', prov:'provisional',
+            pend:'pendente de confirmar', nosig:'sen sinal', pick:'Escolle un partido',
+            pickHint:'Toca calquera fila para ver de onde vén o seu marcador.',
+            mine:'As miñas ligas', nat:'Nacional', follow:'Equipos seguidos', more:'Máis',
+            hint:'Toca unha fila para seguila · toca a competición para pregala',
+            noCrawl:'non rastrexable', weight:'peso', rule:'regra', stamp:'sáb 30 · 18:43' },
+      es: { xornada:'Jornada', global:'Global', tables:'Clasificaciones', all:'Todos', live:'En directo',
+            fin:'Finalizados', d0:'vie 29', d1:'SÁB 30', d2:'dom 31', d3:'lun 01', none:'nada aquí',
+            post:'apl', postLong:'aplazado', round:'jornada', search:'Buscar equipo', trace:'Traza',
+            log:'Historial de decisiones', conf:'confirmado', prov:'provisional',
+            pend:'pendiente de confirmar', nosig:'sin señal', pick:'Elige un partido',
+            pickHint:'Toca cualquier fila para ver de dónde viene su marcador.',
+            mine:'Mis ligas', nat:'Nacional', follow:'Equipos seguidos', more:'Más',
+            hint:'Toca una fila para seguirla · toca la competición para plegarla',
+            noCrawl:'no rastreable', weight:'peso', rule:'regla', stamp:'sáb 30 · 18:43' }
+    };
+  }
+
+
+  constructor(props) {
+    super(props);
+    var stars = {};
+    var comps = this.data();
+    for (var i = 0; i < comps.length; i++) {
+      for (var j = 0; j < comps[i][3].length; j++) {
+        if (comps[i][3][j][7]) stars[comps[i][0] + ':' + j] = true;
+      }
+    }
+    this.state = { lang: 'gl', filter: 'all', stars: stars, collapsed: {} };
+  }
+
+  passes(m, key) {
+    var f = this.state.filter;
+    if (f === 'live') return m[0] === 'L' || m[0] === 'D' || m[0] === 'S';
+    if (f === 'fin') return m[0] === 'F';
+    if (f === 'fav') return !!this.state.stars[key];
+    return true;
+  }
+
+  buildColumn(ids, byId, t) {
+    var self = this;
+    var stars = this.state.stars;
+    var collapsed = this.state.collapsed;
+    var HEAD = 'display:flex;align-items:center;gap:7px;padding:7px 8px;background:#1A1815;border:1px solid #2A2620;border-radius:8px;cursor:pointer;';
+    var GRID = 'display:grid;grid-template-columns:32px minmax(0,1fr) 46px minmax(0,1fr) 14px;align-items:center;gap:4px;padding:5px 8px;border-bottom:1px solid #1D1A16;cursor:pointer;';
+    var NAME = 'font-family:var(--sans);font-size:12.5px;line-height:1.3;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+    var GUT = 'font:600 10px/1 var(--mono);font-variant-numeric:tabular-nums;';
+    var MID = 'font:600 12.5px/1 var(--mono);font-variant-numeric:tabular-nums;text-align:center;';
+    var items = [];
+
+    ids.forEach(function (id) {
+      var comp = byId[id];
+      var matches = comp[3];
+      var liveN = 0;
+      matches.forEach(function (m) { if (m[0] === 'L' || m[0] === 'D') liveN++; });
+      var isCollapsed = !!collapsed[id];
+
+      items.push({
+        isHeader: true, isRow: false, isEmpty: false,
+        headStyle: HEAD + (items.length === 0 ? '' : 'margin-top:14px;'),
+        name: comp[1],
+        round: t.round + ' ' + comp[2],
+        liveTxt: liveN > 0 ? String(liveN) : '',
+        liveStyle: liveN > 0
+          ? 'padding:2px 6px;border-radius:999px;background:rgba(255,107,0,.14);font:600 9px/1.2 var(--mono);color:#FF6B00'
+          : 'display:none',
+        arrow: isCollapsed ? '▸' : '▾',
+        toggle: function () {
+          var c = {};
+          for (var p in collapsed) { c[p] = collapsed[p]; }
+          c[id] = !c[id];
+          self.setState({ collapsed: c });
+        }
+      });
+
+      if (isCollapsed) { return; }
+
+      var shown = 0;
+      matches.forEach(function (m, idx) {
+        var key = id + ':' + idx;
+        if (!self.passes(m, key)) { return; }
+        shown++;
+
+        var st = m[0];
+        var starred = !!stars[key];
+        var live = st === 'L' || st === 'D';
+        var nosig = st === 'S';
+        var fin = st === 'F';
+        var sched = st === 'P';
+        var apr = st === 'A';
+
+        var tint = live ? 'background:#1E1A16;box-shadow:inset 2px 0 0 #FF6B00;'
+          : (nosig ? 'box-shadow:inset 2px 0 0 #FF655A;' : '');
+
+        var gutColor = live ? '#FF6B00'
+          : (nosig ? '#FF655A'
+          : (apr ? '#F0B135'
+          : (fin ? (m[6] === 'pend' ? '#F0B135' : '#A7A5A0') : '#716F6C')));
+        var gutText = sched ? '' : (apr ? t.post.toUpperCase() : m[1]);
+
+        var mid, midColor, midExtra = '';
+        if (sched) { mid = m[1]; midColor = '#A7A5A0'; }
+        else if (apr) { mid = '–'; midColor = '#716F6C'; }
+        else {
+          mid = m[3] + '-' + m[4];
+          if (m[6] === 'prov') { midColor = '#8E8C88'; }
+          else if (m[6] === 'pend') { midColor = '#F0B135'; }
+          else if (nosig) { midColor = '#FF655A'; midExtra = 'border-bottom:1px dashed #FF655A;'; }
+          else { midColor = '#F5F1EA'; }
+        }
+
+        var hc = '#F5F1EA', ac = '#F5F1EA', hw = '500', aw = '500';
+        if (fin) {
+          if (m[3] > m[4]) { hw = '600'; ac = '#A7A5A0'; }
+          else if (m[4] > m[3]) { aw = '600'; hc = '#A7A5A0'; }
+        } else if (apr) { hc = '#8E8C88'; ac = '#8E8C88'; }
+
+        items.push({
+          isHeader: false, isRow: true, isEmpty: false,
+          rowStyle: GRID + tint,
+          gut: gutText,
+          gutStyle: GUT + 'color:' + gutColor + ';',
+          home: m[2],
+          homeStyle: NAME + 'text-align:right;font-weight:' + hw + ';color:' + hc + ';',
+          away: m[5],
+          awayStyle: NAME + 'text-align:left;font-weight:' + aw + ';color:' + ac + ';',
+          mid: mid,
+          midStyle: MID + 'color:' + midColor + ';' + midExtra,
+          star: starred ? '★' : '☆',
+          starStyle: 'font:400 11px/1 var(--sans);text-align:right;color:' + (starred ? '#56DB8F' : '#2A2620') + ';',
+          pick: function () {
+            var s = {};
+            for (var p in stars) { s[p] = stars[p]; }
+            if (s[key]) { delete s[key]; } else { s[key] = true; }
+            self.setState({ stars: s });
+          }
+        });
+      });
+
+      if (shown === 0) { items.push({ isHeader: false, isRow: false, isEmpty: true }); }
+    });
+
+    return items;
+  }
+
+  renderVals() {
+    var self = this;
+    var lang = this.state.lang;
+    var t = this.strings()[lang];
+    var comps = this.data();
+    var stars = this.state.stars;
+
+    var byId = {};
+    var nAll = 0, nLive = 0, nFin = 0, nFav = 0;
+    comps.forEach(function (c) {
+      byId[c[0]] = c;
+      c[3].forEach(function (m, j) {
+        nAll++;
+        if (m[0] === 'L' || m[0] === 'D' || m[0] === 'S') { nLive++; }
+        if (m[0] === 'F') { nFin++; }
+        if (stars[c[0] + ':' + j]) { nFav++; }
+      });
+    });
+
+    var PILL_ON = 'padding:6px 13px;border-radius:999px;background:#221F1A;border:1px solid #3D362C;font:600 12px/1 var(--sans);color:#F5F1EA;cursor:pointer';
+    var PILL_OFF = 'padding:6px 13px;border-radius:999px;border:1px solid #2A2620;font:600 12px/1 var(--sans);color:#A7A5A0;cursor:pointer';
+    var LIVE_ON = 'padding:6px 13px;border-radius:999px;background:rgba(255,107,0,.14);border:1px solid #FF6B00;font:600 12px/1 var(--sans);color:#FF6B00;cursor:pointer';
+    var LIVE_OFF = 'padding:6px 13px;border-radius:999px;border:1px solid rgba(255,107,0,.4);font:600 12px/1 var(--sans);color:#FF6B00;cursor:pointer';
+    var LANG_ON = 'padding:6px 8px;border-radius:6px;background:rgba(86,219,143,.12);color:#56DB8F;text-transform:uppercase;letter-spacing:.05em;cursor:pointer';
+    var LANG_OFF = 'padding:6px 8px;border-radius:6px;color:#716F6C;text-transform:uppercase;letter-spacing:.05em;cursor:pointer';
+
+    return {
+      t: t,
+      shown: comps.length + ' ' + (lang === 'gl' ? 'competicións' : 'competiciones'),
+      c1: this.buildColumn(['t3g1', 'pf1'], byId, t),
+      c2: this.buildColumn(['pf2', 'pf3', 'g1a'], byId, t),
+      c3: this.buildColumn(['g1b', 'g2a', 'g2b', 'fem'], byId, t),
+      c4: this.buildColumn(['ea', 'hyp', 'p1f'], byId, t),
+      nAll: nAll, nLive: nLive, nFin: nFin, nFav: nFav,
+      glStyle: lang === 'gl' ? LANG_ON : LANG_OFF,
+      esStyle: lang === 'es' ? LANG_ON : LANG_OFF,
+      setGl: function () { self.setState({ lang: 'gl' }); },
+      setEs: function () { self.setState({ lang: 'es' }); },
+      fAll: this.state.filter === 'all' ? PILL_ON : PILL_OFF,
+      fLive: this.state.filter === 'live' ? LIVE_ON : LIVE_OFF,
+      fFin: this.state.filter === 'fin' ? PILL_ON : PILL_OFF,
+      fFav: this.state.filter === 'fav' ? PILL_ON : PILL_OFF,
+      setAll: function () { self.setState({ filter: 'all' }); },
+      setLive: function () { self.setState({ filter: 'live' }); },
+      setFin: function () { self.setState({ filter: 'fin' }); },
+      setFav: function () { self.setState({ filter: 'fav' }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

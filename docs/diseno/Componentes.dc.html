@@ -1,0 +1,321 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&display=swap');
+    :root{
+      --sans:'Geist',ui-sans-serif,system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+      --mono:'Geist Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    body{margin:0;background:#111110;color:#F5F1EA;font-family:var(--sans);-webkit-font-smoothing:antialiased}
+    a{color:#56DB8F;text-decoration:none}
+    a:hover{color:#F5F1EA;text-decoration:underline}
+    .n{font-family:var(--mono);font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1}
+    .cap{font:400 12px/1.45 var(--sans);color:#A7A5A0}
+  </style>
+</helmet>
+
+<div style="padding: 48px 44px 64px; background: #111110; min-height: 100%">
+
+  <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 14px">
+    <span style="font: 600 11px/1 var(--mono); letter-spacing: .15em; text-transform: uppercase; color: #56DB8F">/ 02 — compoñentes</span>
+    <span style="flex: 1; height: 1px; background-image: linear-gradient(90deg, #3D362C 50%, transparent 50%); background-size: 6px 1px"></span>
+  </div>
+  <h1 style="margin: 0 0 8px; font: 700 30px/1.05 var(--sans); letter-spacing: -.035em; color: #F5F1EA">A fila é o produto</h1>
+  <p style="margin: 0 0 40px; max-width: 700px; font: 400 15px/1.55 var(--sans); color: #A7A5A0; text-wrap: pretty">
+    Todo o demais é chrome arredor dela. Hai <strong style="color: #F5F1EA; font-weight: 600">dúas</strong>: a
+    <strong style="color: #F5F1EA; font-weight: 600">ampla</strong>, que apila os equipos e é a da vista Xornada, e a
+    <strong style="color: #F5F1EA; font-weight: 600">compacta</strong>, que os pon a un lado e outro do marcador e é a que
+    permite ver doce competicións á vez. Ningunha das dúas leva imaxes, así que as dúas se len igual de ben
+    nun 4G malo que nunha pantalla grande.
+  </p>
+
+  <!-- anatomía -->
+  <div style="font: 600 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: #716F6C; margin-bottom: 14px">Anatomía</div>
+  <div style="border: 1px solid #2A2620; border-radius: 14px; background: #1A1815; padding: 28px 24px 20px; margin-bottom: 14px">
+    <div style="display: grid; grid-template-columns: 56px minmax(0, 1fr) 52px 32px; gap: 0; align-items: center; border: 1px dashed #3D362C; border-radius: 8px; padding: 8px 10px">
+      <div style="font: 600 13px/1 var(--mono); font-variant-numeric: tabular-nums; color: #A7A5A0">18:00</div>
+      <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+        <span style="font: 500 15px/1.2 var(--sans); letter-spacing: -.01em; color: #F5F1EA">Bergantiños FC</span>
+        <span style="font: 500 15px/1.2 var(--sans); letter-spacing: -.01em; color: #F5F1EA">UD Somozas</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px; text-align: right">
+        <span style="font: 600 15px/1.2 var(--mono); font-variant-numeric: tabular-nums; color: #716F6C">–</span>
+        <span style="font: 600 15px/1.2 var(--mono); font-variant-numeric: tabular-nums; color: #716F6C">–</span>
+      </div>
+      <div style="display: flex; justify-content: flex-end"><span style="font: 400 15px/1 var(--sans); color: #3D362C">☆</span></div>
+    </div>
+    <div style="display: grid; grid-template-columns: 56px minmax(0, 1fr) 52px 32px; gap: 0; margin-top: 12px; padding: 0 10px">
+      <div style="border-top: 1px solid #56DB8F; padding-top: 8px"><span class="n" style="font-size: 10px; color: #56DB8F">ESTADO 56px</span></div>
+      <div style="border-top: 1px solid #56DB8F; padding-top: 8px; margin-left: 6px"><span class="n" style="font-size: 10px; color: #56DB8F">EQUIPOS flex, trunca</span></div>
+      <div style="border-top: 1px solid #56DB8F; padding-top: 8px; margin-left: 6px"><span class="n" style="font-size: 10px; color: #56DB8F">CIFRAS 52</span></div>
+      <div style="border-top: 1px solid #56DB8F; padding-top: 8px; margin-left: 6px"><span class="n" style="font-size: 10px; color: #56DB8F">☆ 32</span></div>
+    </div>
+  </div>
+  <p class="cap" style="margin: 0 0 44px; max-width: 700px">
+    A columna de estado e a de cifras teñen ancho fixo: son as que se actualizan, e o que se
+    actualiza non pode mover o que non cambia. O nome do equipo trunca con elipse antes de
+    empurrar nada. O ☆ é o único control da fila.
+  </p>
+
+  <!-- variantes -->
+  <div style="font: 600 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: #716F6C; margin-bottom: 14px">As oito filas que existen</div>
+  <div style="border: 1px solid #2A2620; border-radius: 14px; overflow: hidden; background: #1A1815; margin-bottom: 14px">
+
+    <div style="display: grid; grid-template-columns: 56px minmax(0, 1fr) 52px 32px; align-items: center; padding: 9px 16px; border-bottom: 1px solid #2A2620">
+      <div style="font: 600 13px/1 var(--mono); font-variant-numeric: tabular-nums; color: #A7A5A0">18:00</div>
+      <div style="display: flex; flex-direction: column; gap: 4px"><span style="font: 500 15px/1.2 var(--sans); color: #F5F1EA">Bergantiños FC</span><span style="font: 500 15px/1.2 var(--sans); color: #F5F1EA">UD Somozas</span></div>
+      <div style="display: flex; flex-direction: column; gap: 4px; text-align: right"><span style="font: 600 15px/1.2 var(--mono); color: #716F6C">–</span><span style="font: 600 15px/1.2 var(--mono); color: #716F6C">–</span></div>
+      <div style="display: flex; justify-content: flex-end; font: 400 15px/1 var(--sans); color: #3D362C">☆</div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 56px minmax(0, 1fr) 52px 32px; align-items: center; padding: 9px 16px; border-bottom: 1px solid #2A2620; background: #1E1A16; box-shadow: inset 2px 0 0 #FF6B00">
+      <div style="display: flex; align-items: center; gap: 6px"><span style="width: 6px; height: 6px; border-radius: 50%; background: #FF6B00; box-shadow: 0 0 8px #FF6B00"></span><span style="font: 600 13px/1 var(--mono); font-variant-numeric: tabular-nums; color: #FF6B00">67'</span></div>
+      <div style="display: flex; flex-direction: column; gap: 4px"><span style="font: 500 15px/1.2 var(--sans); color: #F5F1EA">Alondras CF</span><span style="font: 500 15px/1.2 var(--sans); color: #F5F1EA">Céltiga FC</span></div>
+      <div style="display: flex; flex-direction: column; gap: 4px; text-align: right"><span style="font: 600 15px/1.2 var(--mono); color: #F5F1EA">2</span><span style="font: 600 15px/1.2 var(--mono); color: #F5F1EA">1</span></div>
+      <div style="display: flex; justify-content: flex-end; font: 400 15px/1 var(--sans); color: #56DB8F">★</div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 56px minmax(0, 1fr) 52px 32px; align-items: center; padding: 9px 16px; border-bottom: 1px solid #2A2620; background: #1E1A16; box-shadow: inset 2px 0 0 #FF6B00">
+      <div style="font: 600 12px/1 var(--mono); letter-spacing: .05em; color: #FF6B00">DESC</div>
+      <div style="display: flex; flex-direction: column; gap: 4px"><span style="font: 500 15px/1.2 var(--sans); color: #F5F1EA">CD Barco</span><span style="font: 500 15px/1.2 var(--sans); color: #F5F1EA">Polvorín FC</span></div>
+      <div style="display: flex; flex-direction: column; gap: 4px; text-align: right"><span style="font: 600 15px/1.2 var(--mono); color: #F5F1EA">0</span><span style="font: 600 15px/1.2 var(--mono); color: #F5F1EA">0</span></div>
+      <div style="display: flex; justify-content: flex-end; font: 400 15px/1 var(--sans); color: #3D362C">☆</div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 56px minmax(0, 1fr) 52px 32px; align-items: center; padding: 9px 16px; border-bottom: 1px solid #2A2620; background: #1E1A16; box-shadow: inset 2px 0 0 #FF6B00">
+      <div style="display: flex; align-items: center; gap: 6px"><span style="width: 6px; height: 6px; border-radius: 50%; background: #FF6B00; box-shadow: 0 0 8px #FF6B00"></span><span style="font: 600 13px/1 var(--mono); font-variant-numeric: tabular-nums; color: #FF6B00">72'</span></div>
+      <div style="display: flex; flex-direction: column; gap: 4px"><span style="font: 500 15px/1.2 var(--sans); color: #F5F1EA">Rácing Villalbés</span><span style="font: 500 15px/1.2 var(--sans); color: #F5F1EA">SD Estradense</span></div>
+      <div style="display: flex; flex-direction: column; gap: 4px; text-align: right"><span style="font: 600 15px/1.2 var(--mono); color: #8E8C88">1</span><span style="font: 600 15px/1.2 var(--mono); color: #8E8C88">0</span></div>
+      <div style="display: flex; justify-content: flex-end; align-items: center"><span style="padding: 2px 5px; border-radius: 999px; border: 1px solid #3D362C; font: 600 9px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: #8E8C88">prov</span></div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 56px minmax(0, 1fr) 52px 32px; align-items: center; padding: 9px 16px; border-bottom: 1px solid #2A2620; box-shadow: inset 2px 0 0 #FF655A">
+      <div style="font: 600 12px/1 var(--mono); letter-spacing: .05em; color: #FF655A">55'</div>
+      <div style="display: flex; flex-direction: column; gap: 4px"><span style="font: 500 15px/1.2 var(--sans); color: #F5F1EA">Céltiga FC</span><span style="font: 500 15px/1.2 var(--sans); color: #F5F1EA">Villalonga FC</span></div>
+      <div style="display: flex; flex-direction: column; gap: 4px; text-align: right"><span style="font: 600 15px/1.2 var(--mono); color: #FF655A; border-bottom: 1px dashed #FF655A">0</span><span style="font: 600 15px/1.2 var(--mono); color: #FF655A; border-bottom: 1px dashed #FF655A">0</span></div>
+      <div style="display: flex; justify-content: flex-end; font: 400 13px/1 var(--sans); color: #FF655A">!</div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 56px minmax(0, 1fr) 52px 32px; align-items: center; padding: 9px 16px; border-bottom: 1px solid #2A2620">
+      <div style="font: 600 12px/1 var(--mono); letter-spacing: .05em; color: #A7A5A0">FIN</div>
+      <div style="display: flex; flex-direction: column; gap: 4px"><span style="font: 600 15px/1.2 var(--sans); color: #F5F1EA">Arosa SC</span><span style="font: 500 15px/1.2 var(--sans); color: #A7A5A0">Silva SD</span></div>
+      <div style="display: flex; flex-direction: column; gap: 4px; text-align: right"><span style="font: 600 15px/1.2 var(--mono); color: #F5F1EA">3</span><span style="font: 600 15px/1.2 var(--mono); color: #A7A5A0">0</span></div>
+      <div style="display: flex; justify-content: flex-end; font: 400 15px/1 var(--sans); color: #3D362C">☆</div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 56px minmax(0, 1fr) 52px 32px; align-items: center; padding: 9px 16px; border-bottom: 1px solid #2A2620">
+      <div style="font: 600 12px/1 var(--mono); letter-spacing: .05em; color: #F0B135">FIN</div>
+      <div style="display: flex; flex-direction: column; gap: 4px"><span style="font: 500 15px/1.2 var(--sans); color: #F5F1EA">Choco SD</span><span style="font: 500 15px/1.2 var(--sans); color: #F5F1EA">CD Ribadumia</span></div>
+      <div style="display: flex; flex-direction: column; gap: 4px; text-align: right"><span style="font: 600 15px/1.2 var(--mono); color: #F0B135">2</span><span style="font: 600 15px/1.2 var(--mono); color: #F0B135">2</span></div>
+      <div style="display: flex; justify-content: flex-end; align-items: center"><span style="padding: 2px 5px; border-radius: 999px; border: 1px solid #F0B135; font: 600 9px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: #F0B135">?</span></div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 56px minmax(0, 1fr) 52px 32px; align-items: center; padding: 9px 16px">
+      <div style="font: 600 12px/1 var(--mono); letter-spacing: .05em; color: #F0B135">APR</div>
+      <div style="display: flex; flex-direction: column; gap: 4px"><span style="font: 500 15px/1.2 var(--sans); color: #8E8C88">Atlético Arnoia</span><span style="font: 500 15px/1.2 var(--sans); color: #8E8C88">CD Barbadás</span></div>
+      <div style="display: flex; align-items: center; justify-content: flex-end; grid-column: 3 / 5"><span style="font: 500 12px/1 var(--sans); color: #F0B135">aprazado</span></div>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px 24px; margin-bottom: 44px">
+    <div class="cap"><strong style="color: #F5F1EA; font-weight: 600">Programado.</strong> Hora onde iría o marcador; guións, non ceros.</div>
+    <div class="cap"><strong style="color: #F5F1EA; font-weight: 600">En directo.</strong> Filete ember de 2px á esquerda, fondo un chisco máis claro. A fila destaca sen berrar.</div>
+    <div class="cap"><strong style="color: #F5F1EA; font-weight: 600">Descanso.</strong> Mesma fila viva, sen minuto que correr.</div>
+    <div class="cap"><strong style="color: #F5F1EA; font-weight: 600">Provisional.</strong> Cifras en gris + etiqueta <span class="n" style="font-size:11px">prov</span> no sitio do ☆.</div>
+    <div class="cap"><strong style="color: #F5F1EA; font-weight: 600">Sen sinal.</strong> Filete vermello e cifras subliñadas: levan 15 min sen actualizarse.</div>
+    <div class="cap"><strong style="color: #F5F1EA; font-weight: 600">Rematado.</strong> O gañador en peso 600; o perdedor baixa a muted. Ler quen gañou sen ler os números.</div>
+    <div class="cap"><strong style="color: #F5F1EA; font-weight: 600">Pendente de confirmar.</strong> Rematou por tempo esgotado; ninguén o pechou.</div>
+    <div class="cap"><strong style="color: #F5F1EA; font-weight: 600">Aprazado / suspendido.</strong> Equipos apagados, sen cifras. Ocupa fila, non atención.</div>
+  </div>
+
+  <!-- fila compacta -->
+  <div style="font: 600 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: #716F6C; margin-bottom: 14px">A fila compacta — vista Global</div>
+  <div style="display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; margin-bottom: 14px">
+    <div style="border: 1px solid #2A2620; border-radius: 14px; background: #1A1815; padding: 28px 24px 20px">
+      <div style="display: grid; grid-template-columns: 32px minmax(0, 1fr) 46px minmax(0, 1fr) 14px; gap: 4px; align-items: center; border: 1px dashed #3D362C; border-radius: 8px; padding: 6px 8px">
+        <span style="font: 600 10px/1 var(--mono); color: #FF6B00">67'</span>
+        <span style="font: 500 12.5px/1.3 var(--sans); text-align: right; color: #F5F1EA">Alondras CF</span>
+        <span style="font: 600 12.5px/1 var(--mono); font-variant-numeric: tabular-nums; text-align: center; color: #F5F1EA">2-1</span>
+        <span style="font: 500 12.5px/1.3 var(--sans); color: #F5F1EA">Céltiga FC</span>
+        <span style="font: 400 11px/1 var(--sans); text-align: right; color: #2A2620">☆</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 32px minmax(0, 1fr) 46px minmax(0, 1fr) 14px; gap: 4px; margin-top: 12px; padding: 0 8px">
+        <div style="border-top: 1px solid #56DB8F; padding-top: 8px"><span class="n" style="font-size: 9px; color: #56DB8F">ESTADO 32</span></div>
+        <div style="border-top: 1px solid #56DB8F; padding-top: 8px"><span class="n" style="font-size: 9px; color: #56DB8F">LOCAL →</span></div>
+        <div style="border-top: 1px solid #56DB8F; padding-top: 8px"><span class="n" style="font-size: 9px; color: #56DB8F">46</span></div>
+        <div style="border-top: 1px solid #56DB8F; padding-top: 8px"><span class="n" style="font-size: 9px; color: #56DB8F">← VISITANTE</span></div>
+        <div style="border-top: 1px solid #56DB8F; padding-top: 8px"><span class="n" style="font-size: 9px; color: #56DB8F">★</span></div>
+      </div>
+      <div style="height: 1px; background: #2A2620; margin: 22px 0 18px"></div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px">
+        <div class="cap"><strong style="color: #F5F1EA; font-weight: 600">Simetría arredor do marcador.</strong> O local aliñado á dereita, o visitante á esquerda: a columna de cifras é unha liña recta que baixa por toda a táboa, e o ollo percórrea sen ler nomes.</div>
+        <div class="cap"><strong style="color: #F5F1EA; font-weight: 600">O centro leva a hora se aínda non empezou.</strong> <span class="n" style="font-size: 11px">18:00</span> ocupa exactamente o sitio de <span class="n" style="font-size: 11px">2-1</span>. Nunca hai un oco.</div>
+        <div class="cap"><strong style="color: #F5F1EA; font-weight: 600">Un só filete de estado.</strong> Sen punto pulsante: a 30&nbsp;px o minuto en ember xa é sinal dabondo, e o punto só engade ruído.</div>
+        <div class="cap"><strong style="color: #F5F1EA; font-weight: 600">Os nomes truncan con elipse.</strong> Non se abrevian nin se traducen: son os canónicos da RFGF. O nome completo vai no <span class="n" style="font-size: 11px">title</span>.</div>
+      </div>
+    </div>
+
+    <div>
+      <div style="border: 1px solid #2A2620; border-radius: 12px; background: #1A1815; overflow: hidden">
+        <div style="display: flex; align-items: center; gap: 7px; padding: 7px 8px; background: #221F1A; border-bottom: 1px solid #2A2620">
+          <span style="font: 600 10px/1.2 var(--mono); letter-spacing: .09em; text-transform: uppercase; color: #56DB8F">Preferente Futgal G1</span>
+          <span style="flex: 1"></span>
+          <span style="padding: 2px 6px; border-radius: 999px; background: rgba(255,107,0,.14); font: 600 9px/1.2 var(--mono); color: #FF6B00">3</span>
+          <span class="n" style="font-size: 10px; color: #716F6C">xornada 4</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 32px minmax(0,1fr) 46px minmax(0,1fr) 14px; gap: 4px; align-items: center; padding: 5px 8px; border-bottom: 1px solid #1D1A16; background: #1E1A16; box-shadow: inset 2px 0 0 #FF6B00">
+          <span style="font: 600 10px/1 var(--mono); color: #FF6B00">67'</span>
+          <span style="font: 500 12.5px/1.3 var(--sans); text-align: right; color: #F5F1EA">Alondras CF</span>
+          <span style="font: 600 12.5px/1 var(--mono); text-align: center; color: #F5F1EA">2-1</span>
+          <span style="font: 500 12.5px/1.3 var(--sans); color: #F5F1EA">Céltiga FC</span>
+          <span style="font: 400 11px/1 var(--sans); text-align: right; color: #56DB8F">★</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 32px minmax(0,1fr) 46px minmax(0,1fr) 14px; gap: 4px; align-items: center; padding: 5px 8px; border-bottom: 1px solid #1D1A16; background: #1E1A16; box-shadow: inset 2px 0 0 #FF6B00">
+          <span style="font: 600 10px/1 var(--mono); color: #FF6B00">72'</span>
+          <span style="font: 500 12.5px/1.3 var(--sans); text-align: right; color: #F5F1EA">Villalonga FC</span>
+          <span style="font: 600 12.5px/1 var(--mono); text-align: center; color: #8E8C88">1-0</span>
+          <span style="font: 500 12.5px/1.3 var(--sans); color: #F5F1EA">CD Ribadumia</span>
+          <span style="font: 400 11px/1 var(--sans); text-align: right; color: #2A2620">☆</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 32px minmax(0,1fr) 46px minmax(0,1fr) 14px; gap: 4px; align-items: center; padding: 5px 8px; border-bottom: 1px solid #1D1A16; box-shadow: inset 2px 0 0 #FF655A">
+          <span style="font: 600 10px/1 var(--mono); color: #FF655A">55'</span>
+          <span style="font: 500 12.5px/1.3 var(--sans); text-align: right; color: #F5F1EA">Atl. Arnoia</span>
+          <span style="font: 600 12.5px/1 var(--mono); text-align: center; color: #FF655A; border-bottom: 1px dashed #FF655A">0-0</span>
+          <span style="font: 500 12.5px/1.3 var(--sans); color: #F5F1EA">CD Barbadás</span>
+          <span style="font: 400 11px/1 var(--sans); text-align: right; color: #2A2620">☆</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 32px minmax(0,1fr) 46px minmax(0,1fr) 14px; gap: 4px; align-items: center; padding: 5px 8px; border-bottom: 1px solid #1D1A16">
+          <span style="font: 600 10px/1 var(--mono); color: #A7A5A0">FIN</span>
+          <span style="font: 600 12.5px/1.3 var(--sans); text-align: right; color: #F5F1EA">Fisterra CF</span>
+          <span style="font: 600 12.5px/1 var(--mono); text-align: center; color: #F5F1EA">3-1</span>
+          <span style="font: 500 12.5px/1.3 var(--sans); color: #A7A5A0">CD Beluso</span>
+          <span style="font: 400 11px/1 var(--sans); text-align: right; color: #2A2620">☆</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 32px minmax(0,1fr) 46px minmax(0,1fr) 14px; gap: 4px; align-items: center; padding: 5px 8px; border-bottom: 1px solid #1D1A16">
+          <span style="font: 600 10px/1 var(--mono); color: #F0B135">FIN</span>
+          <span style="font: 500 12.5px/1.3 var(--sans); text-align: right; color: #F5F1EA">Sofán CF</span>
+          <span style="font: 600 12.5px/1 var(--mono); text-align: center; color: #F0B135">2-2</span>
+          <span style="font: 500 12.5px/1.3 var(--sans); color: #F5F1EA">Órdenes SC</span>
+          <span style="font: 400 11px/1 var(--sans); text-align: right; color: #2A2620">☆</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 32px minmax(0,1fr) 46px minmax(0,1fr) 14px; gap: 4px; align-items: center; padding: 5px 8px; border-bottom: 1px solid #1D1A16">
+          <span></span>
+          <span style="font: 500 12.5px/1.3 var(--sans); text-align: right; color: #F5F1EA">Coruxo FC</span>
+          <span style="font: 600 12.5px/1 var(--mono); text-align: center; color: #A7A5A0">18:30</span>
+          <span style="font: 500 12.5px/1.3 var(--sans); color: #F5F1EA">UD Ourense</span>
+          <span style="font: 400 11px/1 var(--sans); text-align: right; color: #2A2620">☆</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 32px minmax(0,1fr) 46px minmax(0,1fr) 14px; gap: 4px; align-items: center; padding: 5px 8px">
+          <span style="font: 600 10px/1 var(--mono); color: #F0B135">APR</span>
+          <span style="font: 500 12.5px/1.3 var(--sans); text-align: right; color: #8E8C88">Portonovo SD</span>
+          <span style="font: 600 12.5px/1 var(--mono); text-align: center; color: #716F6C">–</span>
+          <span style="font: 500 12.5px/1.3 var(--sans); color: #8E8C88">Boiro FC</span>
+          <span style="font: 400 11px/1 var(--sans); text-align: right; color: #2A2620">☆</span>
+        </div>
+      </div>
+      <p class="cap" style="margin: 10px 0 0">Unha columna enteira nun bloque de 340&nbsp;px. Catro delas caben nun escritorio de 1440 sen paneis laterais: doce competicións, sesenta partidos, unha pantalla.</p>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 32px; margin-bottom: 44px">
+    <div style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-top: 1px solid #2A2620">
+      <span style="font: 600 11px/1.5 var(--mono); color: #56DB8F">XOR</span>
+      <span class="cap"><strong style="color: #F5F1EA; font-weight: 600">Vista Xornada.</strong> Fila ampla, unha competición debaixo doutra, panel de detalle á dereita. É a vista para <em style="font-style: normal; color: #F5F1EA">seguir</em> un partido: cabe a traza, o historial de decisións e o marcador grande.</span>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-top: 1px solid #2A2620">
+      <span style="font: 600 11px/1.5 var(--mono); color: #56DB8F">GLO</span>
+      <span class="cap"><strong style="color: #F5F1EA; font-weight: 600">Vista Global.</strong> Fila compacta en columnas, todas as categorías á vez, sen paneis. É a vista para <em style="font-style: normal; color: #F5F1EA">ollar</em>: a promesa de «todo o fútbol galego nunha pantalla» é literalmente esta.</span>
+    </div>
+  </div>
+
+  <!-- cabeceira competición + traza -->
+  <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; margin-bottom: 44px">
+    <div>
+      <div style="font: 600 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: #716F6C; margin-bottom: 14px">Cabeceira de competición</div>
+      <div style="border: 1px solid #2A2620; border-radius: 12px; background: #1A1815; overflow: hidden">
+        <div style="display: flex; align-items: center; gap: 10px; padding: 11px 16px; background: #221F1A">
+          <span style="font: 600 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: #56DB8F">Preferente Futgal G1</span>
+          <span style="font: 500 11px/1 var(--mono); color: #716F6C">xornada 4</span>
+          <span style="flex: 1"></span>
+          <span style="display: inline-flex; align-items: center; gap: 5px; padding: 3px 7px; border-radius: 999px; background: rgba(255,107,0,.12); font: 600 10px/1 var(--mono); color: #FF6B00"><span style="width: 5px; height: 5px; border-radius: 50%; background: #FF6B00"></span>4 en directo</span>
+          <span style="font: 400 13px/1 var(--sans); color: #716F6C">▾</span>
+        </div>
+        <div style="padding: 13px 16px; font: 400 13px/1.45 var(--sans); color: #A7A5A0">Nome canónico da RFGF, en verde marca. Nunca se traduce nin se abrevia. Colapsable, e o estado do colapso lémbrase.</div>
+      </div>
+    </div>
+    <div>
+      <div style="font: 600 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: #716F6C; margin-bottom: 14px">Traza de fonte — RN-12</div>
+      <div style="border: 1px solid #3D362C; border-radius: 12px; background: #221F1A; padding: 16px; box-shadow: 0 24px 60px -28px rgba(0,0,0,.7)">
+        <div style="display: flex; align-items: center; gap: 8px; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px dashed #3D362C">
+          <span style="font: 600 12px/1 var(--mono); color: #F5F1EA">Alondras CF 2 – 1 Céltiga FC</span>
+          <span style="flex: 1"></span>
+          <span style="font: 500 11px/1 var(--mono); color: #56DB8F">confirmado</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 7px; font: 500 11px/1.4 var(--mono); color: #A7A5A0">
+          <div style="display: flex; gap: 8px"><span style="color: #56DB8F">✓</span><span style="flex: 1">ceroacero.es · peso 0.7</span><span style="color: #716F6C">18:41:12Z</span></div>
+          <div style="display: flex; gap: 8px"><span style="color: #56DB8F">✓</span><span style="flex: 1">besoccer.es · peso 0.7</span><span style="color: #716F6C">18:42:03Z</span></div>
+          <div style="display: flex; gap: 8px"><span style="color: #716F6C">·</span><span style="flex: 1; color: #716F6C">futgal.es · non rastrexable</span><span style="color: #716F6C">robots.txt</span></div>
+        </div>
+        <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #3D362C; font: 500 11px/1.4 var(--mono); color: #716F6C">regra RN-02 · 2 fontes independentes ≥ 0.7</div>
+      </div>
+      <p class="cap" style="margin: 10px 0 0">Ao tocar o marcador. Ningunha cifra publicada é anónima: sempre se pode ver que regra a produciu e que observacións a sosteñen.</p>
+    </div>
+  </div>
+
+  <!-- controis -->
+  <div style="font: 600 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: #716F6C; margin-bottom: 14px">Controis</div>
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+
+    <div style="border: 1px solid #2A2620; border-radius: 12px; background: #1A1815; padding: 20px">
+      <div style="display: flex; gap: 6px; margin-bottom: 14px">
+        <span style="padding: 8px 14px; border-radius: 999px; background: #56DB8F; color: #04160C; font: 600 13px/1 var(--sans)">Todos</span>
+        <span style="padding: 8px 14px; border-radius: 999px; border: 1px solid #3D362C; color: #A7A5A0; font: 600 13px/1 var(--sans); display: inline-flex; align-items: center; gap: 6px"><span style="width: 5px; height: 5px; border-radius: 50%; background: #FF6B00"></span>Directo</span>
+        <span style="padding: 8px 14px; border-radius: 999px; border: 1px solid #3D362C; color: #A7A5A0; font: 600 13px/1 var(--sans)">Rematados</span>
+        <span style="padding: 8px 14px; border-radius: 999px; border: 1px solid #3D362C; color: #A7A5A0; font: 600 13px/1 var(--sans)">★ 3</span>
+      </div>
+      <div class="cap">Filtros. Alto de toque 34px + 10px de área invisible arredor = 44px reais. O activo é sólido, non subliñado.</div>
+    </div>
+
+    <div style="border: 1px solid #2A2620; border-radius: 12px; background: #1A1815; padding: 20px">
+      <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 14px">
+        <div style="display: inline-flex; align-items: center; gap: 2px; font: 500 12px/1 var(--mono)">
+          <span style="padding: 7px 9px; border-radius: 6px; background: rgba(86,219,143,.12); color: #56DB8F; text-transform: uppercase; letter-spacing: .05em">gl</span>
+          <span style="color: #716F6C; opacity: .45">·</span>
+          <span style="padding: 7px 9px; border-radius: 6px; color: #716F6C; text-transform: uppercase; letter-spacing: .05em">es</span>
+        </div>
+        <span style="width: 1px; height: 28px; background: #2A2620"></span>
+        <span style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border: 1px solid #3D362C; border-radius: 10px; font: 600 13px/1 var(--sans); color: #F5F1EA">Ver clasificación <span style="font-family: var(--mono); color: #56DB8F">→</span></span>
+      </div>
+      <div class="cap">Galego por defecto (D-2). O selector é presentación; a lingua vive na ruta, non nunha cookie: cero cookies.</div>
+    </div>
+
+    <div style="border: 1px solid #2A2620; border-radius: 12px; background: #1A1815; padding: 20px">
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 10px; background: rgba(255,101,90,.10); border: 1px solid rgba(255,101,90,.35); margin-bottom: 14px">
+        <span style="font: 600 13px/1 var(--mono); color: #FF655A">!</span>
+        <span style="flex: 1; font: 400 13px/1.4 var(--sans); color: #F5F1EA">Céltiga FC – Villalonga FC leva <strong style="font-weight: 600">17 min</strong> sen sinal</span>
+        <span style="font: 600 12px/1 var(--sans); color: #FF655A">Revisar</span>
+      </div>
+      <div class="cap">Alerta do panel do operador. Nunca aparece na pantalla pública: o público ve o subliñado punteado, non a alerta.</div>
+    </div>
+
+    <div style="border: 1px solid #2A2620; border-radius: 12px; background: #1A1815; padding: 20px">
+      <div style="display: flex; gap: 10px; margin-bottom: 14px">
+        <span style="display: inline-flex; align-items: center; gap: 10px; padding: 14px 20px; border-radius: 10px; background: #56DB8F; color: #04160C; font: 600 15px/1 var(--sans)">Seguir este partido <span style="font-family: var(--mono)">→</span></span>
+        <span style="display: inline-flex; align-items: center; gap: 10px; padding: 14px 20px; border-radius: 10px; border: 1px solid #3D362C; color: #F5F1EA; font: 600 15px/1 var(--sans)">Compartir</span>
+      </div>
+      <div class="cap">Botóns herdados de tremen.dev: radio 10px, mesma altura, o primario en cor de marca. Un só primario por pantalla.</div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

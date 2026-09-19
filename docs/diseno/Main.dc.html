@@ -1,0 +1,359 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&display=swap');
+    :root{
+      --bg:#111110; --bg-elev:#1A1815; --bg-step:#221F1A;
+      --line:#2A2620; --line-strong:#3D362C;
+      --fg:#F5F1EA; --fg-muted:#A7A5A0; --fg-prov:#8E8C88; --fg-dim:#716F6C;
+      --marca:#56DB8F; --marca-deep:#35C177; --marca-ink:#04160C;
+      --directo:#FF6B00; --amber:#F0B135; --alerta:#FF655A;
+      --sans:'Geist',ui-sans-serif,system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+      --mono:'Geist Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+    a{color:var(--marca);text-decoration:none}
+    a:hover{color:var(--fg);text-decoration:underline}
+    .n{font-family:var(--mono);font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1}
+  </style>
+</helmet>
+
+<div style="padding: 48px 44px 64px; background: #111110; min-height: 100%">
+
+  <!-- ── cabeceira ── -->
+  <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 14px">
+    <span style="font: 600 11px/1 var(--mono); letter-spacing: .15em; text-transform: uppercase; color: #56DB8F">/ 01 — fundamentos</span>
+    <span style="flex: 1; height: 1px; background-image: linear-gradient(90deg, #3D362C 50%, transparent 50%); background-size: 6px 1px"></span>
+    <span style="font: 500 11px/1 var(--mono); letter-spacing: .06em; color: #716F6C">v0.1 · 2026-09-01</span>
+  </div>
+
+  <div style="display: flex; align-items: baseline; gap: 18px; margin-bottom: 10px">
+    <span style="font: 800 40px/1 var(--sans); letter-spacing: -.045em; color: #F5F1EA">marcador<span style="color: #56DB8F">▮</span>gal</span>
+    <span style="font: 500 13px/1 var(--mono); color: #716F6C">unha marca de tremen.dev</span>
+  </div>
+  <p style="margin: 0 0 6px; max-width: 720px; font: 400 17px/1.55 var(--sans); color: #A7A5A0; text-wrap: pretty">
+    Sistema de deseño do marcador do fútbol galego. Chasis herdado de tremen.dev
+    —escuro cálido, Geist, retículas punteadas, radios brandos— cun acento de marca
+    propio, porque nun marcador a cor da marca nunca pode ser a cor do que está vivo.
+  </p>
+  <p style="margin: 0; max-width: 720px; font: 400 15px/1.55 var(--sans); color: #716F6C; text-wrap: pretty">
+    Densidade antes que tarxetas · móbil primeiro e con mala cobertura · galego por defecto (D-2)
+    · números tabulares sempre · sen escudos de clubs, que son marcas rexistradas.
+  </p>
+
+  <!-- ── 02 cor ── -->
+  <div style="display: flex; align-items: center; gap: 14px; margin: 52px 0 20px">
+    <span style="font: 600 11px/1 var(--mono); letter-spacing: .12em; color: #56DB8F">/ 02 — cor</span>
+    <span style="flex: 1; height: 1px; background: #2A2620"></span>
+    <span style="font: 500 11px/1 var(--mono); color: #716F6C">contraste medido sobre #111110</span>
+  </div>
+
+  <div style="font: 600 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: #716F6C; margin-bottom: 12px">Superficies</div>
+  <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-bottom: 28px">
+    <div style="border: 1px solid #2A2620; border-radius: 10px; overflow: hidden">
+      <div style="height: 64px; background: #111110"></div>
+      <div style="padding: 10px 12px; border-top: 1px solid #2A2620"><div style="font: 600 12px/1.3 var(--sans); color: #F5F1EA">--bg</div><div class="n" style="font-size: 11px; color: #716F6C; margin-top: 3px">#111110</div></div>
+    </div>
+    <div style="border: 1px solid #2A2620; border-radius: 10px; overflow: hidden">
+      <div style="height: 64px; background: #1A1815"></div>
+      <div style="padding: 10px 12px; border-top: 1px solid #2A2620"><div style="font: 600 12px/1.3 var(--sans); color: #F5F1EA">--bg-elev</div><div class="n" style="font-size: 11px; color: #716F6C; margin-top: 3px">#1A1815</div></div>
+    </div>
+    <div style="border: 1px solid #2A2620; border-radius: 10px; overflow: hidden">
+      <div style="height: 64px; background: #221F1A"></div>
+      <div style="padding: 10px 12px; border-top: 1px solid #2A2620"><div style="font: 600 12px/1.3 var(--sans); color: #F5F1EA">--bg-step</div><div class="n" style="font-size: 11px; color: #716F6C; margin-top: 3px">#221F1A</div></div>
+    </div>
+    <div style="border: 1px solid #2A2620; border-radius: 10px; overflow: hidden">
+      <div style="height: 64px; background: #2A2620"></div>
+      <div style="padding: 10px 12px; border-top: 1px solid #2A2620"><div style="font: 600 12px/1.3 var(--sans); color: #F5F1EA">--line</div><div class="n" style="font-size: 11px; color: #716F6C; margin-top: 3px">#2A2620</div></div>
+    </div>
+    <div style="border: 1px solid #2A2620; border-radius: 10px; overflow: hidden">
+      <div style="height: 64px; background: #3D362C"></div>
+      <div style="padding: 10px 12px; border-top: 1px solid #2A2620"><div style="font: 600 12px/1.3 var(--sans); color: #F5F1EA">--line-strong</div><div class="n" style="font-size: 11px; color: #716F6C; margin-top: 3px">#3D362C</div></div>
+    </div>
+  </div>
+
+  <div style="font: 600 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: #716F6C; margin-bottom: 12px">Texto</div>
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 28px">
+    <div style="border: 1px solid #2A2620; border-radius: 10px; padding: 16px; background: #1A1815">
+      <div style="font: 700 24px/1 var(--sans); color: #F5F1EA">Aa 0-9</div>
+      <div style="font: 600 12px/1.3 var(--sans); color: #F5F1EA; margin-top: 12px">--fg</div>
+      <div class="n" style="font-size: 11px; color: #716F6C; margin-top: 3px">#F5F1EA · 16.8:1</div>
+      <div style="font: 400 12px/1.4 var(--sans); color: #A7A5A0; margin-top: 6px">Marcador confirmado, nomes de equipo</div>
+    </div>
+    <div style="border: 1px solid #2A2620; border-radius: 10px; padding: 16px; background: #1A1815">
+      <div style="font: 700 24px/1 var(--sans); color: #A7A5A0">Aa 0-9</div>
+      <div style="font: 600 12px/1.3 var(--sans); color: #F5F1EA; margin-top: 12px">--fg-muted</div>
+      <div class="n" style="font-size: 11px; color: #716F6C; margin-top: 3px">#A7A5A0 · 7.7:1</div>
+      <div style="font: 400 12px/1.4 var(--sans); color: #A7A5A0; margin-top: 6px">Hora de saque, metadatos, texto secundario</div>
+    </div>
+    <div style="border: 1px solid #2A2620; border-radius: 10px; padding: 16px; background: #1A1815">
+      <div style="font: 700 24px/1 var(--sans); color: #8E8C88">Aa 0-9</div>
+      <div style="font: 600 12px/1.3 var(--sans); color: #F5F1EA; margin-top: 12px">--fg-prov</div>
+      <div class="n" style="font-size: 11px; color: #716F6C; margin-top: 3px">#8E8C88 · 5.6:1</div>
+      <div style="font: 400 12px/1.4 var(--sans); color: #A7A5A0; margin-top: 6px">Marcador <strong style="color: #F5F1EA; font-weight: 600">provisional</strong>. Gris, nunca por debaixo de 4.5:1</div>
+    </div>
+    <div style="border: 1px solid #2A2620; border-radius: 10px; padding: 16px; background: #1A1815">
+      <div style="font: 700 24px/1 var(--sans); color: #716F6C">Aa 0-9</div>
+      <div style="font: 600 12px/1.3 var(--sans); color: #F5F1EA; margin-top: 12px">--fg-dim</div>
+      <div class="n" style="font-size: 11px; color: #716F6C; margin-top: 3px">#716F6C · 3.8:1</div>
+      <div style="font: 400 12px/1.4 var(--sans); color: #A7A5A0; margin-top: 6px">Só decoración e separadores. Nunca un dato</div>
+    </div>
+  </div>
+
+  <div style="font: 600 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: #716F6C; margin-bottom: 12px">Acentos</div>
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px">
+    <div style="border: 1px solid #2A2620; border-radius: 10px; overflow: hidden">
+      <div style="height: 76px; background: #56DB8F"></div>
+      <div style="padding: 12px; border-top: 1px solid #2A2620; background: #1A1815">
+        <div style="font: 600 13px/1.3 var(--sans); color: #56DB8F">--marca</div>
+        <div class="n" style="font-size: 11px; color: #716F6C; margin: 3px 0 8px">#56DB8F · 10.7:1 · oklch(.80 .16 155)</div>
+        <div style="font: 400 12px/1.45 var(--sans); color: #A7A5A0">Marca, cabeceiras de competición, nav activo, traza de confirmación. <strong style="color: #F5F1EA; font-weight: 600">Nunca un estado.</strong></div>
+      </div>
+    </div>
+    <div style="border: 1px solid #2A2620; border-radius: 10px; overflow: hidden">
+      <div style="height: 76px; background: #FF6B00"></div>
+      <div style="padding: 12px; border-top: 1px solid #2A2620; background: #1A1815">
+        <div style="font: 600 13px/1.3 var(--sans); color: #FF6B00">--directo</div>
+        <div class="n" style="font-size: 11px; color: #716F6C; margin: 3px 0 8px">#FF6B00 · 6.6:1 · ember tremen</div>
+        <div style="font: 400 12px/1.45 var(--sans); color: #A7A5A0">Só <strong style="color: #F5F1EA; font-weight: 600">live</strong>: minuto, punto pulsante, gol recente. O único laranxa da pantalla.</div>
+      </div>
+    </div>
+    <div style="border: 1px solid #2A2620; border-radius: 10px; overflow: hidden">
+      <div style="height: 76px; background: #F0B135"></div>
+      <div style="padding: 12px; border-top: 1px solid #2A2620; background: #1A1815">
+        <div style="font: 600 13px/1.3 var(--sans); color: #F0B135">--amber</div>
+        <div class="n" style="font-size: 11px; color: #716F6C; margin: 3px 0 8px">#F0B135 · 9.9:1 · oklch(.80 .15 80)</div>
+        <div style="font: 400 12px/1.45 var(--sans); color: #A7A5A0">Pendente de confirmar · aprazado · suspendido. O que precisa unha persoa.</div>
+      </div>
+    </div>
+    <div style="border: 1px solid #2A2620; border-radius: 10px; overflow: hidden">
+      <div style="height: 76px; background: #FF655A"></div>
+      <div style="padding: 12px; border-top: 1px solid #2A2620; background: #1A1815">
+        <div style="font: 600 13px/1.3 var(--sans); color: #FF655A">--alerta</div>
+        <div class="n" style="font-size: 11px; color: #716F6C; margin: 3px 0 8px">#FF655A · 6.5:1 · oklch(.70 .19 27)</div>
+        <div style="font: 400 12px/1.45 var(--sans); color: #A7A5A0">Sen sinal · conflito entre fontes. Rompe a lectura a propósito.</div>
+      </div>
+    </div>
+  </div>
+  <div style="border-left: 2px solid #3D362C; padding: 2px 0 2px 14px; font: 400 13px/1.5 var(--sans); color: #A7A5A0; margin-bottom: 8px; max-width: 860px">
+    Sen celeste e sen branquiazul (<span class="n" style="color:#716F6C">docs/negocio/marca.md</span>). Os catro acentos comparten croma e claridade en oklch,
+    así que ningún berra máis que os outros: o que xerarquiza é <em style="color:#F5F1EA; font-style: normal">onde</em> se usan, non canto brillan.
+  </div>
+
+  <!-- ── 03 tipografía ── -->
+  <div style="display: flex; align-items: center; gap: 14px; margin: 52px 0 20px">
+    <span style="font: 600 11px/1 var(--mono); letter-spacing: .12em; color: #56DB8F">/ 03 — tipografía</span>
+    <span style="flex: 1; height: 1px; background: #2A2620"></span>
+    <span style="font: 500 11px/1 var(--mono); color: #716F6C">Geist · Geist Mono</span>
+  </div>
+
+  <div style="display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 20px; margin-bottom: 20px">
+    <div style="border: 1px solid #2A2620; border-radius: 14px; padding: 24px; background: #1A1815">
+      <div style="display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 14px 18px; align-items: baseline">
+        <span class="n" style="font-size: 11px; color: #716F6C">display</span>
+        <span style="font: 800 44px/1 var(--sans); letter-spacing: -.045em">2 · 1</span>
+        <span class="n" style="font-size: 11px; color: #716F6C">44 / 800</span>
+        <span style="font: 400 12px/1.4 var(--sans); color: #A7A5A0; grid-column: 2">Marcador da ficha de partido</span>
+        <span class="n" style="font-size: 11px; color: #716F6C">score</span>
+        <span style="font: 600 20px/1 var(--mono); font-variant-numeric: tabular-nums">2 &nbsp;1</span>
+        <span class="n" style="font-size: 11px; color: #716F6C">20 / 600</span>
+        <span style="font: 400 12px/1.4 var(--sans); color: #A7A5A0; grid-column: 2">Marcador na lista. Mono e tabular: as columnas non bailan</span>
+        <span class="n" style="font-size: 11px; color: #716F6C">equipo</span>
+        <span style="font: 500 15px/1.2 var(--sans); letter-spacing: -.01em">Rácing Villalbés</span>
+        <span class="n" style="font-size: 11px; color: #716F6C">15 / 500</span>
+        <span style="font: 400 12px/1.4 var(--sans); color: #A7A5A0; grid-column: 2">Nome canónico RFGF. Nunca se traduce</span>
+        <span class="n" style="font-size: 11px; color: #716F6C">estado</span>
+        <span style="font: 600 13px/1 var(--mono); font-variant-numeric: tabular-nums; color: #FF6B00">67'</span>
+        <span class="n" style="font-size: 11px; color: #716F6C">13 / 600</span>
+        <span style="font: 400 12px/1.4 var(--sans); color: #A7A5A0; grid-column: 2">Minuto, hora de saque, FIN, APR</span>
+        <span class="n" style="font-size: 11px; color: #716F6C">eyebrow</span>
+        <span style="font: 600 11px/1 var(--mono); letter-spacing: .15em; text-transform: uppercase; color: #56DB8F">preferente futgal g1</span>
+        <span class="n" style="font-size: 11px; color: #716F6C">11 / 600</span>
+        <span style="font: 400 12px/1.4 var(--sans); color: #A7A5A0; grid-column: 2">Cabeceira de competición</span>
+      </div>
+    </div>
+
+    <div style="border: 1px solid #2A2620; border-radius: 14px; padding: 24px; background: #1A1815; display: flex; flex-direction: column; gap: 16px">
+      <div>
+        <div style="font: 600 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: #716F6C; margin-bottom: 10px">Por que tabular</div>
+        <div style="display: flex; gap: 24px">
+          <div>
+            <div style="font: 400 11px/1 var(--sans); color: #FF655A; margin-bottom: 8px">proporcional ✗</div>
+            <div style="font: 600 20px/1.5 var(--sans); font-variant-numeric: proportional-nums; color: #8E8C88">11<br>10<br>&nbsp;3</div>
+          </div>
+          <div>
+            <div style="font: 400 11px/1 var(--sans); color: #56DB8F; margin-bottom: 8px">tabular ✓</div>
+            <div style="font: 600 20px/1.5 var(--mono); font-variant-numeric: tabular-nums; color: #F5F1EA">11<br>10<br>&nbsp;3</div>
+          </div>
+        </div>
+      </div>
+      <div style="height: 1px; background: #2A2620"></div>
+      <div style="font: 400 13px/1.5 var(--sans); color: #A7A5A0; text-wrap: pretty">
+        Trinta filas de marcador son unha columna de números. Se cambian de ancho ao actualizarse,
+        a fila salta e o ollo perde o sitio. <strong style="color: #F5F1EA; font-weight: 600">Todo díxito do sistema é tabular</strong>,
+        e as fontes de reserva escóllense polas súas métricas, non pola súa forma.
+      </div>
+      <div class="n" style="font-size: 11px; line-height: 1.6; color: #716F6C">
+        --sans: 'Geist', ui-sans-serif, system-ui, …<br>
+        --mono: 'Geist Mono', ui-monospace, 'SF Mono', …
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 04 semántica ── -->
+  <div style="display: flex; align-items: center; gap: 14px; margin: 52px 0 8px">
+    <span style="font: 600 11px/1 var(--mono); letter-spacing: .12em; color: #56DB8F">/ 04 — semántica do marcador</span>
+    <span style="flex: 1; height: 1px; background: #2A2620"></span>
+    <span style="font: 500 11px/1 var(--mono); color: #716F6C">docs/fundacion/dominio.md</span>
+  </div>
+  <p style="margin: 0 0 18px; max-width: 860px; font: 400 14px/1.55 var(--sans); color: #A7A5A0; text-wrap: pretty">
+    O estado e o cualificador son <strong style="color: #F5F1EA; font-weight: 600">dous eixes independentes</strong>, e a interface ten que
+    poder mostralos á vez: un partido pode estar en directo e ser provisional. O estado vive na columna esquerda; o cualificador,
+    na cor do marcador. Ningún dos dous se codifica só con cor.
+  </p>
+
+  <div style="border: 1px solid #2A2620; border-radius: 14px; overflow: hidden; background: #1A1815; margin-bottom: 20px">
+    <div style="display: grid; grid-template-columns: 120px 150px minmax(0, 1fr); gap: 0; font: 600 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: #716F6C; background: #221F1A; border-bottom: 1px solid #2A2620">
+      <div style="padding: 12px 16px">estado</div><div style="padding: 12px 16px">na interface</div><div style="padding: 12px 16px">regra</div>
+    </div>
+    <div style="display: grid; grid-template-columns: 120px 150px minmax(0, 1fr); align-items: center; border-bottom: 1px solid #2A2620">
+      <div class="n" style="padding: 13px 16px; font-size: 13px; color: #F5F1EA">scheduled</div>
+      <div style="padding: 13px 16px; font: 600 13px/1 var(--mono); font-variant-numeric: tabular-nums; color: #A7A5A0">18:00</div>
+      <div style="padding: 13px 16px; font: 400 13px/1.4 var(--sans); color: #A7A5A0">Programado. Hora de saque en vez de marcador</div>
+    </div>
+    <div style="display: grid; grid-template-columns: 120px 150px minmax(0, 1fr); align-items: center; border-bottom: 1px solid #2A2620">
+      <div class="n" style="padding: 13px 16px; font-size: 13px; color: #F5F1EA">live</div>
+      <div style="padding: 13px 16px; display: flex; align-items: center; gap: 7px"><span style="width: 6px; height: 6px; border-radius: 50%; background: #FF6B00; box-shadow: 0 0 8px #FF6B00"></span><span style="font: 600 13px/1 var(--mono); font-variant-numeric: tabular-nums; color: #FF6B00">67'</span></div>
+      <div style="padding: 13px 16px; font: 400 13px/1.4 var(--sans); color: #A7A5A0">En xogo. Punto pulsante + minuto en ember (RN-06)</div>
+    </div>
+    <div style="display: grid; grid-template-columns: 120px 150px minmax(0, 1fr); align-items: center; border-bottom: 1px solid #2A2620">
+      <div class="n" style="padding: 13px 16px; font-size: 13px; color: #F5F1EA">finished</div>
+      <div style="padding: 13px 16px; font: 600 12px/1 var(--mono); letter-spacing: .06em; color: #A7A5A0">FIN</div>
+      <div style="padding: 13px 16px; font: 400 13px/1.4 var(--sans); color: #A7A5A0">Rematado. O marcador queda en bone a peso completo</div>
+    </div>
+    <div style="display: grid; grid-template-columns: 120px 150px minmax(0, 1fr); align-items: center; border-bottom: 1px solid #2A2620">
+      <div class="n" style="padding: 13px 16px; font-size: 13px; color: #F5F1EA">postponed</div>
+      <div style="padding: 13px 16px; font: 600 12px/1 var(--mono); letter-spacing: .06em; color: #F0B135">APR</div>
+      <div style="padding: 13px 16px; font: 400 13px/1.4 var(--sans); color: #A7A5A0">Aprazado. Só fonte oficial ou humano pode traelo aquí</div>
+    </div>
+    <div style="display: grid; grid-template-columns: 120px 150px minmax(0, 1fr); align-items: center">
+      <div class="n" style="padding: 13px 16px; font-size: 13px; color: #F5F1EA">suspended</div>
+      <div style="padding: 13px 16px; font: 600 12px/1 var(--mono); letter-spacing: .06em; color: #F0B135">SUS</div>
+      <div style="padding: 13px 16px; font: 400 13px/1.4 var(--sans); color: #A7A5A0">Suspendido. Mesma porta que o aprazamento</div>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+    <div style="border: 1px solid #2A2620; border-radius: 12px; padding: 18px; background: #1A1815">
+      <div style="display: flex; align-items: baseline; gap: 12px; margin-bottom: 10px">
+        <span style="font: 600 20px/1 var(--mono); font-variant-numeric: tabular-nums; color: #F5F1EA">2&nbsp;–&nbsp;1</span>
+        <span style="font: 600 13px/1 var(--sans); color: #F5F1EA">confirmado</span>
+      </div>
+      <div style="font: 400 13px/1.45 var(--sans); color: #A7A5A0">Fonte de peso ≥ 0.9, ou dúas fontes independentes ≥ 0.7 coincidentes (RN-02). Marcador a peso completo, sen etiqueta: o normal non se anuncia.</div>
+    </div>
+    <div style="border: 1px solid #2A2620; border-radius: 12px; padding: 18px; background: #1A1815">
+      <div style="display: flex; align-items: baseline; gap: 12px; margin-bottom: 10px">
+        <span style="font: 600 20px/1 var(--mono); font-variant-numeric: tabular-nums; color: #8E8C88">2&nbsp;–&nbsp;1</span>
+        <span style="display: inline-flex; padding: 3px 7px; border-radius: 999px; background: #221F1A; border: 1px solid #3D362C; font: 600 10px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: #8E8C88">prov</span>
+      </div>
+      <div style="font: 400 13px/1.45 var(--sans); color: #A7A5A0">Unha soa fonte de peso &lt; 0.9 (RN-03). Gris <em style="font-style: normal; color: #F5F1EA">e</em> etiqueta: a cor soa non é accesible. Mellor provisional a tempo que confirmado tarde.</div>
+    </div>
+    <div style="border: 1px solid #2A2620; border-radius: 12px; padding: 18px; background: #1A1815">
+      <div style="display: flex; align-items: baseline; gap: 12px; margin-bottom: 10px">
+        <span style="font: 600 20px/1 var(--mono); font-variant-numeric: tabular-nums; color: #F0B135">1&nbsp;–&nbsp;1</span>
+        <span style="font: 600 13px/1 var(--sans); color: #F0B135">pendente de confirmar</span>
+      </div>
+      <div style="font: 400 13px/1.45 var(--sans); color: #A7A5A0">Chegou a <span class="n" style="font-size: 12px">finished</span> por tempo esgotado, sen fonte que o peche (RN-06). Ámbar: agarda por unha persoa.</div>
+    </div>
+    <div style="border: 1px solid #2A2620; border-radius: 12px; padding: 18px; background: #1A1815">
+      <div style="display: flex; align-items: baseline; gap: 12px; margin-bottom: 10px">
+        <span style="font: 600 20px/1 var(--mono); font-variant-numeric: tabular-nums; color: #FF655A; border-bottom: 1px dashed #FF655A; padding-bottom: 2px">0&nbsp;–&nbsp;0</span>
+        <span style="font: 600 13px/1 var(--sans); color: #FF655A">sen sinal</span>
+      </div>
+      <div style="font: 400 13px/1.45 var(--sans); color: #A7A5A0">Partido en directo sen observación nova en 15 min (RN-07). Subliñado punteado: o dato está vello e dicímolo.</div>
+    </div>
+  </div>
+
+  <!-- ── 05 densidade ── -->
+  <div style="display: flex; align-items: center; gap: 14px; margin: 52px 0 20px">
+    <span style="font: 600 11px/1 var(--mono); letter-spacing: .12em; color: #56DB8F">/ 05 — densidade e retícula</span>
+    <span style="flex: 1; height: 1px; background: #2A2620"></span>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px">
+    <div style="border: 1px solid #2A2620; border-radius: 12px; padding: 18px; background: #1A1815">
+      <div style="font: 700 30px/1 var(--mono); font-variant-numeric: tabular-nums; color: #56DB8F">52<span style="font-size: 15px; color: #716F6C">/</span>30<span style="font-size: 15px; color: #716F6C">px</span></div>
+      <div style="font: 600 12px/1.3 var(--sans); color: #F5F1EA; margin-top: 10px">Fila ampla / fila compacta</div>
+      <div style="font: 400 12px/1.45 var(--sans); color: #A7A5A0; margin-top: 5px">A ampla apila os dous equipos; a compacta ponos a un lado e outro do marcador</div>
+    </div>
+    <div style="border: 1px solid #2A2620; border-radius: 12px; padding: 18px; background: #1A1815">
+      <div style="font: 700 30px/1 var(--mono); font-variant-numeric: tabular-nums; color: #56DB8F">11<span style="font-size: 15px; color: #716F6C">→</span>16</div>
+      <div style="font: 600 12px/1.3 var(--sans); color: #F5F1EA; margin-top: 10px">Filas nun móbil de 844px</div>
+      <div style="font: 400 12px/1.45 var(--sans); color: #A7A5A0; margin-top: 5px">Amplas → compactas, sen rolar e coa barra inferior posta</div>
+    </div>
+    <div style="border: 1px solid #2A2620; border-radius: 12px; padding: 18px; background: #1A1815">
+      <div style="font: 700 30px/1 var(--mono); font-variant-numeric: tabular-nums; color: #56DB8F">4<span style="font-size: 15px; color: #716F6C">px</span></div>
+      <div style="font: 600 12px/1.3 var(--sans); color: #F5F1EA; margin-top: 10px">Paso de espazo</div>
+      <div style="font: 400 12px/1.45 var(--sans); color: #A7A5A0; margin-top: 5px">4 · 8 · 12 · 16 · 24 · 32 · 48. Radios 8 · 10 · 14 · 999</div>
+    </div>
+    <div style="border: 1px solid #2A2620; border-radius: 12px; padding: 18px; background: #1A1815">
+      <div style="font: 700 30px/1 var(--mono); font-variant-numeric: tabular-nums; color: #56DB8F">0<span style="font-size: 15px; color: #716F6C">imaxes</span></div>
+      <div style="font: 600 12px/1.3 var(--sans); color: #F5F1EA; margin-top: 10px">Por fila</div>
+      <div style="font: 400 12px/1.45 var(--sans); color: #A7A5A0; margin-top: 5px">Sen escudos: son marcas rexistradas, e ademais pesan</div>
+    </div>
+  </div>
+
+  <div style="border-left: 2px solid #F0B135; background: rgba(240,177,53,.06); padding: 14px 16px; border-radius: 0 10px 10px 0; margin-top: 4px; max-width: 860px">
+    <div style="font: 600 12px/1.3 var(--sans); color: #F0B135; margin-bottom: 5px">A concesión, dita en voz alta</div>
+    <div style="font: 400 13px/1.5 var(--sans); color: #A7A5A0; text-wrap: pretty">
+      A fila compacta baixa de 44&nbsp;px. En escritorio non importa —é rato, non dedo—, pero no móbil queda en 40 e
+      iso está por debaixo do chan de toque. É unha concesión deliberada: a vista Global existe precisamente para
+      ver moitas categorías á vez, e a 44&nbsp;px deixa de compensar fronte á vista Xornada. Mitigación: o único
+      control da fila é o ★, a fila enteira é a zona activa, e a vista Xornada —a que se usa para operar— queda en 52.
+    </div>
+  </div>
+
+  <!-- ── 06 non negociables ── -->
+  <div style="display: flex; align-items: center; gap: 14px; margin: 52px 0 20px">
+    <span style="font: 600 11px/1 var(--mono); letter-spacing: .12em; color: #56DB8F">/ 06 — o que o sistema non fai</span>
+    <span style="flex: 1; height: 1px; background: #2A2620"></span>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 32px">
+    <div style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-top: 1px solid #2A2620">
+      <span style="font: 600 13px/1.45 var(--mono); color: #FF655A">✗</span>
+      <span style="font: 400 13px/1.45 var(--sans); color: #A7A5A0"><strong style="color: #F5F1EA; font-weight: 600">Escudos de clubs.</strong> Son marcas rexistradas e sen política de uso non se publican. A identidade dun equipo é o seu nome canónico.</span>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-top: 1px solid #2A2620">
+      <span style="font: 600 13px/1.45 var(--mono); color: #FF655A">✗</span>
+      <span style="font: 400 13px/1.45 var(--sans); color: #A7A5A0"><strong style="color: #F5F1EA; font-weight: 600">Celeste nin branquiazul.</strong> O marcador é de todas as comarcas; ningunha paleta de club.</span>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-top: 1px solid #2A2620">
+      <span style="font: 600 13px/1.45 var(--mono); color: #FF655A">✗</span>
+      <span style="font: 400 13px/1.45 var(--sans); color: #A7A5A0"><strong style="color: #F5F1EA; font-weight: 600">Tópicos rurais.</strong> A Preferente xógase en Vigo, A Coruña, Ourense e Ferrol igual que en calquera vila (D-8).</span>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-top: 1px solid #2A2620">
+      <span style="font: 600 13px/1.45 var(--mono); color: #FF655A">✗</span>
+      <span style="font: 400 13px/1.45 var(--sans); color: #A7A5A0"><strong style="color: #F5F1EA; font-weight: 600">Tarxetas.</strong> Nin carruseles, nin heroes, nin bloques con esquinas moi redondas. Filas.</span>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-top: 1px solid #2A2620">
+      <span style="font: 600 13px/1.45 var(--mono); color: #FF655A">✗</span>
+      <span style="font: 400 13px/1.45 var(--sans); color: #A7A5A0"><strong style="color: #F5F1EA; font-weight: 600">Cor como único código.</strong> Todo estado leva tamén texto ou forma: mala pantalla, sol, daltonismo.</span>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-top: 1px solid #2A2620">
+      <span style="font: 600 13px/1.45 var(--mono); color: #FF655A">✗</span>
+      <span style="font: 400 13px/1.45 var(--sans); color: #A7A5A0"><strong style="color: #F5F1EA; font-weight: 600">Un marcador sen orixe.</strong> Toda cifra publicada pode dicir de onde vén (RN-12).</span>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>
