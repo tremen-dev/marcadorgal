@@ -2,7 +2,7 @@
 
 > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.
 > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.
-> Última actualización: 2026-09-20 (commit fundacional).
+> Última actualización: 2026-09-20 (SPEC-001 hecho).
 
 ## Qué es y en qué punto está
 
@@ -10,11 +10,7 @@ Marcador de resultados en directo de las cinco divisiones españolas con equipos
 gallegos (Primera, Segunda, Primera RFEF G1, Segunda RFEF G1, Tercera RFEF G1),
 jornada completa, en una sola pantalla y en galego. Proyecto de tremen.dev.
 
-**Punto actual: sin código.** Existe la constitución (`FOUNDATION.md`, D-1 a
-D-10), la fundación (`docs/fundacion/`), cinco ADR aprobados, el sistema de
-diseño heredado (`docs/diseno/`) y el roadmap. El siguiente paso es que
-sdd-producto formalice EPIC-001 (Cimientos) y sdd-arquitecto escriba su primera
-spec.
+**SPEC-001 completa:** esqueleto Next.js 16 con página de espera bilingüe (gl/es), CI con gates y e2e, tests de arquitectura y e2e con Vitest y Playwright. El siguiente paso es la spec (b) de EPIC-001: modelo zod, migraciones y test de arquitectura.
 
 ### Herencia
 
