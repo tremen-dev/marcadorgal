@@ -1,9 +1,11 @@
 ---
 id: ADR-001
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-09-20, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-09-20, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # ADR-001: Stack
 
