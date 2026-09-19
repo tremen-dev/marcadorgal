@@ -26,7 +26,8 @@ jobs:
         run: node tools/medir-directo.mjs "${{ inputs.intervalo_s || '90' }}" "${{ inputs.duracion_min || '100' }}"
       - name: Resumen (solo cambios)
         if: always()
-        run: grep -vE ' tick #' tools/medicion-*.log || true
+        run: |
+          grep -vE ' tick ' tools/medicion-*.log || true
       - uses: actions/upload-artifact@v4
         if: always()
         with:
