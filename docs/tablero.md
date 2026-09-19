@@ -7,6 +7,7 @@ Actualizado: 2026-09-20
 
 | Spec | Estado | Último cambio |
 |---|---|---|
+| SPEC-001 — esqueleto-ci-y-despliegue-con-pagina-de-espera | aprobada | 2026-09-20 (Alberto Fojo) |
 
 ## ADRs
 
@@ -20,3 +21,4 @@ Actualizado: 2026-09-20
 
 ## Resumen
 
+- aprobada: 1
