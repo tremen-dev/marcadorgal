@@ -112,3 +112,13 @@ export const TOUCH_TARGET_PX = 44;
 export const FOCUS_RING_PX = 2;
 export const INPUT_FONT_PX = 16;
 export const HAIRLINE_PX = 1;
+
+// The self-hosted faces served from public/fonts/ and declared in globals.css.
+export const FACES = [
+  { family: "Geist", weight: 400, file: "Geist-Regular.woff2" },
+  { family: "Geist", weight: 500, file: "Geist-Medium.woff2" },
+  { family: "Geist", weight: 600, file: "Geist-SemiBold.woff2" },
+  { family: "Geist", weight: 800, file: "Geist-ExtraBold.woff2" },
+  { family: "Geist Mono", weight: 500, file: "GeistMono-Medium.woff2" },
+  { family: "Geist Mono", weight: 600, file: "GeistMono-SemiBold.woff2" },
+] as const;

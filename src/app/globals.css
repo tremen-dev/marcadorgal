@@ -45,6 +45,7 @@
 
 html {
   color-scheme: dark;
+  font-variant-numeric: tabular-nums;
 }
 
 *,
