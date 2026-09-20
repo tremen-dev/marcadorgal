@@ -8,6 +8,7 @@ Actualizado: 2026-09-20
 | Spec | Estado | Último cambio |
 |---|---|---|
 | SPEC-001 — esqueleto-ci-y-despliegue-con-pagina-de-espera | hecho | 2026-09-20 (sdd-verificador) |
+| SPEC-002 — modelo-zod-migraciones-base-y-test-de-arquitectura | aprobada | 2026-09-20 (Alberto Fojo) |
 
 ## ADRs
 
@@ -18,7 +19,9 @@ Actualizado: 2026-09-20
 | ADR-003 | aprobada | contrato-de-fuentes | 2026-09-20 (Alberto Fojo) |
 | ADR-004 | aprobada | motor-de-decisiones-por-prioridad | 2026-09-20 (Alberto Fojo) |
 | ADR-005 | aprobada | sistema-de-diseno-heredado | 2026-09-20 (Alberto Fojo) |
+| ADR-006 | aprobada | esquema-base-y-acceso-a-datos-ids-append-only-version-de-decision-y-rls | 2026-09-20 (Alberto Fojo) |
 
 ## Resumen
 
 - hecho: 1
+- aprobada: 1
