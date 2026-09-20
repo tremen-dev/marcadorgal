@@ -2,13 +2,14 @@
 id: SPEC-002
 tipo: spec
 epica: EPIC-001
-estado: en-revision
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-09-20, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-09-20, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-09-20, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-09-21, por: sdd-implementador}
+  - {estado: hecho, fecha: 2026-09-21, por: sdd-verificador}
 ---
 # SPEC-002 — Modelo zod, migraciones base y test de arquitectura
 

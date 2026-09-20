@@ -6,7 +6,7 @@ epica: EPIC-001
 # Ledger — SPEC-002 Modelo zod, migraciones base y test de arquitectura
 
 ## Resumen
-- Fase: en-revision (verificación de sdd-verificador en curso: 14/15 CA en verde en local; CA-1 a la espera de `gates` y `e2e` en la PR #2)
+- Fase: hecho (GREEN de sdd-verificador el 2026-09-21; 15/15 CA)
 - Rama: `ft/SPEC-002-modelo-zod-migraciones-base-y-test-de-arquitectura`
 
 ## Matriz de criterios de aceptación
@@ -15,7 +15,7 @@ epica: EPIC-001
 <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
-| CA-1 | `package.json` (`zod` ^4.6.5, `postgres` ^3.4.9, `server-only` 0.0.1; scripts `db:push`, `test:db`), `tools/db-push.mjs` (`process.loadEnvFile` + `supabase db push --db-url`, sin imprimir la URL), `vitest.config.mts` (`exclude: **/*.db.test.ts`) | `rm -rf node_modules && npm ci && env -u DATABASE_URL npm run gates` → exit 0 (46 tests, Node 26.4.0 local, F-SPEC-002-3) | `npm ci` (exit 0) + `env -u DATABASE_URL npm run gates` → exit 0: typecheck ok, Biome «Checked 33 files», Vitest `4 files / 46 passed`, `next build` ok (Node 26.4.0 local, ver F-SPEC-002-3). `package.json`: `zod ^4.6.5`, `postgres ^3.4.9`, `server-only 0.0.1`, scripts `db:push`/`test:db` como pide el CA; `vitest.config.mts` excluye `**/*.db.test.ts`. CI en PR #2: pendiente del push de este ledger (el workflow `ci` no se había ejecutado en la PR; ver veredicto) | ⚠️ |
+| CA-1 | `package.json` (`zod` ^4.6.5, `postgres` ^3.4.9, `server-only` 0.0.1; scripts `db:push`, `test:db`), `tools/db-push.mjs` (`process.loadEnvFile` + `supabase db push --db-url`, sin imprimir la URL), `vitest.config.mts` (`exclude: **/*.db.test.ts`) | `rm -rf node_modules && npm ci && env -u DATABASE_URL npm run gates` → exit 0 (46 tests, Node 26.4.0 local, F-SPEC-002-3) | `npm ci` (exit 0) + `env -u DATABASE_URL npm run gates` → exit 0: typecheck ok, Biome «Checked 33 files», Vitest `4 files / 46 passed`, `next build` ok (Node 26.4.0 local, ver F-SPEC-002-3). `package.json`: `zod ^4.6.5`, `postgres ^3.4.9`, `server-only 0.0.1`, scripts `db:push`/`test:db` como pide el CA; `vitest.config.mts` excluye `**/*.db.test.ts`. CI en PR #2 (`gh run view`, workflow `ci`, evento `pull_request`): run 35540929865 sobre `3e06bfd` → `gates` success, `e2e` success (2026-09-20T22:13Z); run 35541169029 sobre `69ae89b` (ledger) → `gates` y `e2e` success (22:17Z), ambos con Node 24 vía `.nvmrc` | ✅ |
 | CA-2 | `src/model/vocab.ts` (`MatchStatus`, `Qualifier`, `DecisionRule`, `AlertKind`, `Season`) | `src/model/model.test.ts` › «CA-2 closed vocabularies» (5 casos: `.options` exactos; `halftime`, `RN-04`, `RN-06`, `2026/27` rechazados) | Leído `src/model/vocab.ts`: cinco enums con las listas exactas y en orden; `npm test` → `CA-2 closed vocabularies` 5/5 (`halftime`, `RN-04`, `RN-06`, `2026/27` rechazados) | ✅ |
 | CA-3 | `src/model/instant.ts` (`Instant = z.iso.datetime()`) | `src/model/model.test.ts` › «CA-3 instants» (2 casos); `grep -rn "z.date()" src/model` → vacío | `instant.ts` = `z.iso.datetime()`; `npm test` → `CA-3 instants` 2/2 (acepta `…Z` y `….000Z`; rechaza offset, local, `Date`, epoch). `grep -rn "z.date()" src/model` → vacío (exit 1) | ✅ |
 | CA-4 | `src/model/ids.ts` (slug branded `CompetitionId`/`TeamId`/`SourceId`, `MatchId` no vacío, `ObservationId`/`DecisionId`/`AlertId` uuid) | `src/model/model.test.ts` › «CA-4 branded ids» (4 casos, incluye `// @ts-expect-error` TeamId→CompetitionId); mutación: quitar `.brand` → `tsc` falla con TS2578 | `ids.ts`: slug `^[a-z0-9]+(-[a-z0-9]+)*$` con `.brand` en los 7 ids, `MatchId` `min(1)`, uuid en los tres de log; `npm test` → `CA-4 branded ids` 4/4. Mutación propia: quitar `.brand` de `CompetitionId` → `tsc --noEmit` falla con `TS2578 Unused '@ts-expect-error'` en `model.test.ts:114`; restaurado | ✅ |
@@ -33,7 +33,7 @@ epica: EPIC-001
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
-- 2026-09-21 — **PENDIENTE (CI)**. Gates locales, `test:db`, dry-run de migraciones, inspección propia del esquema en `dev` (tablas, tipos, CHECK, triggers, RLS, políticas, extensiones, `board`) y mutaciones a mano (CA-4, CA-7, CA-9, CA-10, CA-11, CA-12, CA-14) en verde; todo coincide con ADR-006 §1-§6. El workflow `ci` no se había ejecutado en la PR #2 (solo checks de Vercel; `gh run list --branch …` vacío); este commit se empuja para provocar el evento `synchronize` y se cierra el veredicto con su resultado.
+- 2026-09-21 — **GREEN**. 15/15 CA en verde. Gates locales sin `DATABASE_URL` (46 tests, typecheck, Biome, build) y CI de la PR #2 (`gates` + `e2e`, Node 24) en verde; `npm run test:db` → 17/17 contra `dev`; `supabase db push --dry-run` sin pendientes; inspección propia del esquema en `dev` (8 tablas, 0 `timestamp without time zone`, CHECK de estados/marcador, 5 triggers, RLS en las 8 tablas, 5 políticas `public_read` exactas, `pg_cron`/`pg_net`, `board` con `security_invoker=true` y LEFT JOIN LATERAL) coincide punto por punto con ADR-006 §1-§6; mutaciones a mano en transacción con rollback (UPDATE/DELETE/TRUNCATE → `append-only`, `halftime`/`live` sin marcador/`scheduled` con marcador → 23514, `RN-04`/`sen_sinal`+`finished`/`observation_ids` vacío → 23514, versiones 1 y 2 automáticas, repetida → 23505, `anon` → 0 filas en `alerts`/`team_aliases`/`ingest_attempts`, INSERT → 42501) y mutaciones de código (CA-4 TS2578, CA-7 2 failed, CA-14 1 failed) con el árbol restaurado. Sin UI. Salvedades informativas en F-SPEC-002-3 y F-SPEC-002-7/8.
 
 ## Evidencia visual
 <!-- Tabla CA → captura en _qa/SPEC-002/. Informe HTML opcional: _qa/SPEC-002/informe.html -->
@@ -46,6 +46,9 @@ n-a (sin UI).
 - **F-SPEC-002-3** Gates y `test:db` ejecutados en local con Node 26.4.0 (sin `nvm`; `.nvmrc` sigue en 24). `test:db` no corre en CI (N-7). Destino: verificación.
 - **F-SPEC-002-4** `supabase init` genera `config.toml` con los valores por defecto del stack local (puertos, `openai_api_key = "env(OPENAI_API_KEY)"` para Studio); no se usa sin Docker y se commitea tal cual. Informativo.
 - **F-SPEC-002-5** `Observation` y `Decision` se construyen con `MatchState.and(z.object(...))` (intersección zod); el tipo inferido es `MatchState & {...}` como pide CA-6. Si EPIC-002 necesita `.extend`/`.pick` sobre ellas, habrá que reconstruir la unión opción a opción. Informativo.
+- **F-SPEC-002-7** (verificador) `observations.raw_ref` es `text not null` como pide CA-9, pero la base acepta la cadena vacía (`''`) que el modelo zod rechaza (`min(1)`). Toda escritura entra por el servidor tras `parse`, así que no rompe ningún CA; si EPIC-002 quiere el invariante también en SQL, añadir `check (raw_ref <> '')` en su spec. Informativo.
+- **F-SPEC-002-8** (verificador) Con rol `anon`, `update matches …` no lanza 42501 sino que afecta 0 filas (RLS sin política de UPDATE filtra todas las filas; el privilegio lo concede Supabase por defecto). Cumple ADR-006 §6 («sin política, RLS deniega») y no hay escritura posible; anotado para la RLS del operador en EPIC-004. Informativo.
+- **F-SPEC-002-9** (verificador) Verificación local con Node 26.4.0 (no hay Node 24 instalado; `.nvmrc` 24). CI de la PR corre con Node 24 y está en verde, lo que cubre la diferencia para `gates`/`e2e`; `test:db` solo se ha ejecutado con Node 26 (N-7). Informativo.
 - **F-SPEC-002-6** El orquestador pidió push de la rama al terminar, mientras el fichero de rol lo prohíbe; se ha hecho push (sin PR ni merge) por instrucción explícita del orquestador. Informativo.
 
 ## Cómo retomar (handoff)
@@ -53,4 +56,4 @@ n-a (sin UI).
 - Hecho en local: CA-1..CA-15 con código, tests y comandos en verde. Base `dev` con las seis migraciones aplicadas (tablas vacías).
 - Reproducir: `npm ci && env -u DATABASE_URL npm run gates` (46 tests); con `.env` local: `npm run test:db` (aplica migraciones pendientes y corre 17 tests con rollback); `set -a; . ./.env; set +a; supabase db push --dry-run --db-url "$DATABASE_URL"` → sin pendientes.
 - Mutaciones de la spec verificadas: CA-4 (sin `.brand` → TS2578), CA-7 (`aplazado` → 1 failed), CA-14 (`src/sources/x/a.ts` → 1 failed).
-- Siguiente paso: sdd-verificador (rellena Verif./Estado, anota fecha y salida de `test:db` según N-7). Sin PR abierta.
+- Verificado GREEN el 2026-09-21 (sdd-verificador): spec en `hecho`. PR #2 (borrador) con `gates` y `e2e` en verde; queda el cierre humano (revisión y merge) y sdd-documentalista (tablero e índices).
