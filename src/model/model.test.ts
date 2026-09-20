@@ -130,6 +130,12 @@ describe("CA-5 match state with score", () => {
     expect(ok({ status: "suspended", score, minute: null })).toBe(true);
   });
 
+  it("covers exactly the MatchStatus vocabulary", () => {
+    expect(MatchState.options.map((o) => o.shape.status.value)).toEqual(
+      MatchStatus.options,
+    );
+  });
+
   it("rejects live without score", () => {
     expect(ok({ status: "live", score: null, minute: 10 })).toBe(false);
   });
@@ -274,5 +280,34 @@ describe("CA-6 entities", () => {
         matchId: fixtures.match.id,
       }).success,
     ).toBe(true);
+  });
+});
+
+describe("CA-7 JSON round trip", () => {
+  const entities = [
+    ["Competition", Competition, fixtures.competition],
+    ["Team", Team, fixtures.team],
+    ["Match", Match, fixtures.match],
+    ["Observation", Observation, fixtures.observation],
+    ["Decision", Decision, fixtures.decision],
+    ["Alert", Alert, fixtures.alert],
+  ] as const;
+
+  it.each(entities)(
+    "%s survives parse → stringify → parse",
+    (_name, schema, fixture) => {
+      const first = schema.parse(fixture);
+      const json = JSON.stringify(first);
+      expect(json).not.toContain("Date");
+      expect(schema.parse(JSON.parse(json))).toEqual(first);
+    },
+  );
+
+  it("no Date instance leaves the model", () => {
+    const walk = (v: unknown): boolean =>
+      v instanceof Date ||
+      (typeof v === "object" && v !== null && Object.values(v).some(walk));
+    for (const [, schema, fixture] of entities)
+      expect(walk(schema.parse(fixture))).toBe(false);
   });
 });
