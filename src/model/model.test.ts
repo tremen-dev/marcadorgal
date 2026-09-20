@@ -1,18 +1,24 @@
 import { describe, expect, it } from "vitest";
 import {
+  Alert,
   AlertId,
   AlertKind,
+  Competition,
   CompetitionId,
+  Decision,
   DecisionId,
   DecisionRule,
   Instant,
+  Match,
   MatchId,
   MatchState,
   MatchStatus,
+  Observation,
   ObservationId,
   Qualifier,
   Season,
   SourceId,
+  Team,
   TeamId,
 } from "./index";
 
@@ -145,5 +151,128 @@ describe("CA-5 match state with score", () => {
     expect(
       ok({ status: "live", score: { home: 1.5, away: 0 }, minute: 1 }),
     ).toBe(false);
+  });
+});
+
+const uuid = (n: number) => `00000000-0000-4000-8000-00000000000${n}`;
+const fixtures = {
+  competition: {
+    id: "tercera-rfef-g1",
+    season: "2026-27",
+    name: "Tercera RFEF Grupo 1",
+    tier: 5,
+  },
+  team: { id: "ud-ourense", name: "UD Ourense" },
+  match: {
+    id: "2026-27:tercera-rfef-g1:r1:ud-ourense:cd-arenteiro",
+    competitionId: "tercera-rfef-g1",
+    season: "2026-27",
+    round: 1,
+    kickoff: "2026-09-20T16:00:00Z",
+    homeTeamId: "ud-ourense",
+    awayTeamId: "cd-arenteiro",
+  },
+  observation: {
+    id: uuid(1),
+    matchId: "2026-27:tercera-rfef-g1:r1:ud-ourense:cd-arenteiro",
+    sourceId: "operator",
+    status: "live",
+    score: { home: 1, away: 0 },
+    minute: 37,
+    observedAt: "2026-09-20T16:37:00Z",
+    receivedAt: "2026-09-20T16:37:05Z",
+    rawRef: "raw/operator/2026-09-20T16:37:05Z.json",
+  },
+  decision: {
+    id: uuid(2),
+    matchId: "2026-27:tercera-rfef-g1:r1:ud-ourense:cd-arenteiro",
+    version: 1,
+    status: "live",
+    score: { home: 1, away: 0 },
+    minute: 37,
+    qualifier: "confirmado",
+    rule: "operator",
+    observationIds: [uuid(1)],
+    decidedAt: "2026-09-20T16:37:06Z",
+  },
+  alert: {
+    id: uuid(3),
+    kind: "unresolved_team",
+    matchId: null,
+    openedAt: "2026-09-20T16:37:06Z",
+    resolvedAt: null,
+    details: { rawRef: "raw/x.json", home: "Ourense", away: "Arenteiro" },
+  },
+} as const;
+
+describe("CA-6 entities", () => {
+  it("parse the fixtures", () => {
+    expect(Competition.safeParse(fixtures.competition).success).toBe(true);
+    expect(Team.safeParse(fixtures.team).success).toBe(true);
+    expect(Match.safeParse(fixtures.match).success).toBe(true);
+    expect(Observation.safeParse(fixtures.observation).success).toBe(true);
+    expect(Decision.safeParse(fixtures.decision).success).toBe(true);
+    expect(Alert.safeParse(fixtures.alert).success).toBe(true);
+  });
+
+  it("Competition tier is 1..5", () => {
+    expect(
+      Competition.safeParse({ ...fixtures.competition, tier: 6 }).success,
+    ).toBe(false);
+    expect(
+      Competition.safeParse({ ...fixtures.competition, tier: 0 }).success,
+    ).toBe(false);
+  });
+
+  it("Match round is >= 1 and home differs from away", () => {
+    expect(Match.safeParse({ ...fixtures.match, round: 0 }).success).toBe(
+      false,
+    );
+    expect(
+      Match.safeParse({ ...fixtures.match, awayTeamId: "ud-ourense" }).success,
+    ).toBe(false);
+  });
+
+  it("Observation carries the match state and a non-empty rawRef", () => {
+    expect(
+      Observation.safeParse({ ...fixtures.observation, rawRef: "" }).success,
+    ).toBe(false);
+    expect(
+      Observation.safeParse({ ...fixtures.observation, score: null }).success,
+    ).toBe(false);
+  });
+
+  it("Decision needs version >= 1, at least one observation and sen_sinal only when live", () => {
+    expect(
+      Decision.safeParse({ ...fixtures.decision, version: 0 }).success,
+    ).toBe(false);
+    expect(
+      Decision.safeParse({ ...fixtures.decision, observationIds: [] }).success,
+    ).toBe(false);
+    expect(
+      Decision.safeParse({ ...fixtures.decision, qualifier: "sen_sinal" })
+        .success,
+    ).toBe(true);
+    expect(
+      Decision.safeParse({
+        ...fixtures.decision,
+        status: "finished",
+        minute: null,
+        qualifier: "sen_sinal",
+      }).success,
+    ).toBe(false);
+  });
+
+  it("Alert needs a match unless the team is unresolved", () => {
+    expect(
+      Alert.safeParse({ ...fixtures.alert, kind: "conflict" }).success,
+    ).toBe(false);
+    expect(
+      Alert.safeParse({
+        ...fixtures.alert,
+        kind: "conflict",
+        matchId: fixtures.match.id,
+      }).success,
+    ).toBe(true);
   });
 });
