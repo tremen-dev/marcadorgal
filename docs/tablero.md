@@ -1,14 +1,14 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-09-20
+Actualizado: 2026-09-21
 
 ## EPIC-001 — cimientos (aprobada)
 
 | Spec | Estado | Último cambio |
 |---|---|---|
 | SPEC-001 — esqueleto-ci-y-despliegue-con-pagina-de-espera | hecho | 2026-09-20 (sdd-verificador) |
-| SPEC-002 — modelo-zod-migraciones-base-y-test-de-arquitectura | aprobada | 2026-09-20 (Alberto Fojo) |
+| SPEC-002 — modelo-zod-migraciones-base-y-test-de-arquitectura | hecho | 2026-09-21 (sdd-verificador) |
 
 ## ADRs
 
@@ -23,5 +23,4 @@ Actualizado: 2026-09-20
 
 ## Resumen
 
-- hecho: 1
-- aprobada: 1
+- hecho: 2

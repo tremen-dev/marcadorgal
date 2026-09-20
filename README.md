@@ -12,17 +12,18 @@ datos. Inspiración de marcadorgalego.gal, no sucesión.
 
 ## Estado
 
-**Esqueleto funcional entregado por SPEC-001:** Next.js 16 con App Router,
-página de espera bilingüe (galego/español) en `src/app/` (App Router), CI configurado
-(GitHub Actions con jobs gates y e2e), tests unitarios con Vitest y e2e con Playwright (chromium). Listo para desarrollo: sin datos aún, sin fuentes, sin
-ingesta.
+**SPEC-001 entregada:** Next.js 16 con App Router, página de espera bilingüe (galego/español) en `src/app/` (App Router), CI configurado (GitHub Actions con jobs gates y e2e), tests unitarios con Vitest y e2e con Playwright (chromium).
+
+**SPEC-002 entregada:** modelo zod en `src/model/` (vocabulario de estados, cualificadores, reglas y alertas), migraciones base en `supabase/migrations/` (ocho tablas: competitions, teams, team_aliases, matches, observations, decisions, alerts, ingest_attempts; vista `board` de solo lectura; RLS en todas las tablas; extensiones pg_cron y pg_net para ingesta), test de arquitectura que prohíbe a `src/sources/**` importar fuera de `src/model` (corre en `npm run gates`), y tests de integración contra la base (`npm run test:db`).
 
 ## Arranque
 
 ```bash
 npm ci
 npm run dev          # Servidor en http://localhost:3000
-npm run gates        # Lint, type, test (Biome, TypeScript, Vitest)
+npm run gates        # Typecheck, lint, test y build (tsc, Biome, Vitest, next build)
+npm run db:push      # Aplica migraciones sobre la base de `DATABASE_URL`
+npm run test:db      # Tests de integración (requiere `.env` con `DATABASE_URL`)
 npx playwright install chromium && npm run e2e  # Tests e2e (Playwright)
 ```
 

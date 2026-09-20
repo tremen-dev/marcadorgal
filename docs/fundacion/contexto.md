@@ -2,7 +2,7 @@
 
 > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.
 > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.
-> Última actualización: 2026-09-20 (SPEC-001 hecho).
+> Última actualización: 2026-09-21 (SPEC-002 hecho).
 
 ## Qué es y en qué punto está
 
@@ -10,7 +10,9 @@ Marcador de resultados en directo de las cinco divisiones españolas con equipos
 gallegos (Primera, Segunda, Primera RFEF G1, Segunda RFEF G1, Tercera RFEF G1),
 jornada completa, en una sola pantalla y en galego. Proyecto de tremen.dev.
 
-**SPEC-001 completa:** esqueleto Next.js 16 con página de espera bilingüe (gl/es), CI con gates y e2e, tests unitarios con Vitest y e2e con Playwright. El siguiente paso es la spec (b) de EPIC-001: modelo zod, migraciones y test de arquitectura.
+**SPEC-001 completa:** esqueleto Next.js 16 con página de espera bilingüe (gl/es), CI con gates y e2e, tests unitarios con Vitest y e2e con Playwright.
+
+**SPEC-002 completa:** modelo zod en `src/model/`, migraciones base aplicadas en `dev` (ocho tablas, vista `board`, RLS, extensiones pg_cron y pg_net), test de arquitectura. El siguiente paso es la spec (c) de EPIC-001: tokens de diseño como código e i18n.
 
 ### Herencia
 
@@ -61,6 +63,7 @@ La base legal de cada fuente la gestiona el titular fuera del repo (D-7).
 - ADR-003 Contrato de fuentes `SourceAdapter` y registro.
 - ADR-004 Motor de decisiones por prioridad, monotonía, conflicto y silencio.
 - ADR-005 Sistema de diseño heredado, vinculante, con sus excepciones.
+- ADR-006 Esquema base y acceso a datos: ids, append-only por trigger, versión de Decision, board, RLS.
 
 ## Riesgos y preguntas abiertas
 
