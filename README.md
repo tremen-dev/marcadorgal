@@ -16,12 +16,12 @@ datos. Inspiración de marcadorgalego.gal, no sucesión.
 
 **SPEC-002 entregada:** modelo zod en `src/model/` (vocabulario de estados, cualificadores, reglas y alertas), migraciones base en `supabase/migrations/` (ocho tablas: competitions, teams, team_aliases, matches, observations, decisions, alerts, ingest_attempts; vista `board` de solo lectura; RLS en todas las tablas; extensiones pg_cron y pg_net para ingesta), test de arquitectura que prohíbe a `src/sources/**` importar fuera de `src/model` (corre en `npm run gates`), y tests de integración contra la base (`npm run test:db`).
 
-## Arranque
-
+**SPEC-003 entregada:** tokens de diseño tipados en `src/design/tokens.ts` (colores, tipografía, escalas, espaciado, medidas y variables semánticas de estado), CSS generado (`npm run tokens:css`) con test de paridad contra `docs/diseno/_tokens.css`, i18n tipada en `src/i18n/` (diccionarios de galego y español con tipos de `dominio.md`), reglas sin hex sueltos en componentes y sin shorthand `font:` en CSS de `src/` (para preservar `font-variant-numeric: tabular-nums` en números).
 ```bash
 npm ci
 npm run dev          # Servidor en http://localhost:3000
 npm run gates        # Typecheck, lint, test y build (tsc, Biome, Vitest, next build)
+npm run tokens:css   # Regenera src/design/tokens.css desde tokens.ts
 npm run db:push      # Aplica migraciones sobre la base de `DATABASE_URL`
 npm run test:db      # Tests de integración (requiere `.env` con `DATABASE_URL`)
 npx playwright install chromium && npm run e2e  # Tests e2e (Playwright)

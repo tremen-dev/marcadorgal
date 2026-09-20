@@ -43,10 +43,10 @@ Salvedades del implementador revisadas: F-SPEC-003-1 (aviso `MODULE_TYPELESS_PAC
 <!-- Tabla CA → captura en _qa/SPEC-003/. Informe HTML opcional: _qa/SPEC-003/informe.html -->
 | CA | Captura | Qué muestra |
 |---|---|---|
-| CA-7, CA-11 | `_qa/SPEC-003/gl-1440x900.png` | / en escritorio (vuelta 2, `2d93b0d`): colores de body/marca/muted = COLORS, h1 a 800, textos gl; todos los elementos de texto computan `font-variant-numeric: tabular-nums` (RED-1 cerrado); render idéntico a la vuelta 1 salvo la variante numérica |
-| CA-7, CA-11 | `_qa/SPEC-003/gl-360x640.png` | / en móvil (vuelta 2): sin overflow horizontal (scrollWidth 360/360), enlace 83×44 px |
-| CA-7, CA-11 | `_qa/SPEC-003/es-1440x900.png` | /es en escritorio (vuelta 2): textos es, mismos colores, `tabular-nums` en todo texto |
-| CA-7, CA-11 | `_qa/SPEC-003/es-360x640.png` | /es en móvil (vuelta 2): sin overflow, enlace 57.56×44 px |
+| CA-7, CA-11 | `docs/epicas/EPIC-001-cimientos/_qa/SPEC-003/gl-1440x900-v2.png` | / en escritorio (vuelta 2, `2d93b0d`): colores de body/marca/muted = COLORS, h1 a 800, textos gl; todos los elementos de texto computan `font-variant-numeric: tabular-nums` (RED-1 cerrado); render idéntico a la vuelta 1 salvo la variante numérica |
+| CA-7, CA-11 | `docs/epicas/EPIC-001-cimientos/_qa/SPEC-003/gl-360x640-v2.png` | / en móvil (vuelta 2): sin overflow horizontal (scrollWidth 360/360), enlace 83×44 px |
+| CA-7, CA-11 | `docs/epicas/EPIC-001-cimientos/_qa/SPEC-003/es-1440x900-v2.png` | /es en escritorio (vuelta 2): textos es, mismos colores, `tabular-nums` en todo texto |
+| CA-7, CA-11 | `docs/epicas/EPIC-001-cimientos/_qa/SPEC-003/es-360x640-v2.png` | /es en móvil (vuelta 2): sin overflow, enlace 57.56×44 px |
 
 Las capturas de la vuelta 1 no estaban en el repositorio (el ledger las nombraba pero `git ls-files _qa` estaba vacío); las cuatro presentes son de la vuelta 2 y se commitean con este ledger.
 
