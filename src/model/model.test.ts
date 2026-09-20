@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   AlertKind,
   DecisionRule,
+  Instant,
   MatchStatus,
   Qualifier,
   Season,
@@ -51,5 +52,19 @@ describe("CA-2 closed vocabularies", () => {
   it("Season is YYYY-YY", () => {
     expect(Season.safeParse("2026-27").success).toBe(true);
     expect(Season.safeParse("2026/27").success).toBe(false);
+  });
+});
+
+describe("CA-3 instants", () => {
+  it("accepts ISO-8601 UTC with Z, with or without milliseconds", () => {
+    expect(Instant.safeParse("2026-09-20T18:30:00Z").success).toBe(true);
+    expect(Instant.safeParse("2026-09-20T18:30:00.000Z").success).toBe(true);
+  });
+
+  it("rejects offsets, local time, Date and epoch numbers", () => {
+    expect(Instant.safeParse("2026-09-20T20:30:00+02:00").success).toBe(false);
+    expect(Instant.safeParse("2026-09-20T18:30:00").success).toBe(false);
+    expect(Instant.safeParse(new Date()).success).toBe(false);
+    expect(Instant.safeParse(1758393000).success).toBe(false);
   });
 });
