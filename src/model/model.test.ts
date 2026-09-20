@@ -7,6 +7,7 @@ import {
   DecisionRule,
   Instant,
   MatchId,
+  MatchState,
   MatchStatus,
   ObservationId,
   Qualifier,
@@ -107,5 +108,42 @@ describe("CA-4 branded ids", () => {
     // @ts-expect-error a TeamId is not a CompetitionId
     const competition: CompetitionId = team;
     expect(competition).toBe(team);
+  });
+});
+
+describe("CA-5 match state with score", () => {
+  const ok = (v: unknown) => MatchState.safeParse(v).success;
+  const score = { home: 1, away: 0 };
+
+  it("accepts the five states with their score and minute shapes", () => {
+    expect(ok({ status: "scheduled", score: null, minute: null })).toBe(true);
+    expect(ok({ status: "postponed", score: null, minute: null })).toBe(true);
+    expect(ok({ status: "live", score, minute: 37 })).toBe(true);
+    expect(ok({ status: "live", score, minute: null })).toBe(true);
+    expect(ok({ status: "finished", score, minute: null })).toBe(true);
+    expect(ok({ status: "suspended", score, minute: null })).toBe(true);
+  });
+
+  it("rejects live without score", () => {
+    expect(ok({ status: "live", score: null, minute: 10 })).toBe(false);
+  });
+
+  it("rejects scheduled with score", () => {
+    expect(ok({ status: "scheduled", score, minute: null })).toBe(false);
+  });
+
+  it("rejects finished with minute", () => {
+    expect(ok({ status: "finished", score, minute: 90 })).toBe(false);
+  });
+
+  it("bounds minute and score", () => {
+    expect(ok({ status: "live", score, minute: 131 })).toBe(false);
+    expect(ok({ status: "live", score, minute: -1 })).toBe(false);
+    expect(
+      ok({ status: "live", score: { home: -1, away: 0 }, minute: 1 }),
+    ).toBe(false);
+    expect(
+      ok({ status: "live", score: { home: 1.5, away: 0 }, minute: 1 }),
+    ).toBe(false);
   });
 });
