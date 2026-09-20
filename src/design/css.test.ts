@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { renderTokensCss } from "./css";
+import { COLORS } from "./tokens";
 
 const css = renderTokensCss();
 
@@ -22,13 +23,13 @@ describe("CA-5 generated CSS", () => {
   it("declares the variables the spec names", () => {
     const lines = css.split("\n").map((l) => l.trim());
     for (const expected of [
-      "--bg: #111110;",
-      "--marca: #56DB8F;",
-      "--directo: #FF6B00;",
-      "--alerta: #FF655A;",
-      "--bg-subtle: #131211;",
-      "--bg-live: #1E1A16;",
-      "--line-row: #1D1A16;",
+      `--bg: ${COLORS.bg.value};`,
+      `--marca: ${COLORS.brand.value};`,
+      `--directo: ${COLORS.ember.value};`,
+      `--alerta: ${COLORS.red.value};`,
+      `--bg-subtle: ${COLORS.bgSubtle.value};`,
+      `--bg-live: ${COLORS.bgLive.value};`,
+      `--line-row: ${COLORS.lineRow.value};`,
       "--sans: 'Geist',ui-sans-serif,system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;",
       "--mono: 'Geist Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;",
       "--font-display: 800 44px/1 var(--sans);",

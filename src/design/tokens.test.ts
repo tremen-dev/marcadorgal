@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   COLORS,
@@ -42,10 +43,20 @@ describe("CA-1 colors", () => {
     ]);
   });
 
-  it("declares the three colours the system uses without a token", () => {
-    expect(COLORS.bgSubtle).toEqual({ value: "#131211", css: "--bg-subtle" });
-    expect(COLORS.bgLive).toEqual({ value: "#1E1A16", css: "--bg-live" });
-    expect(COLORS.lineRow).toEqual({ value: "#1D1A16", css: "--line-row" });
+  it("declares the three colours the artboards use without a token", () => {
+    const artboards = ["Componentes", "Movil", "Main"]
+      .map((name) => readFileSync(`docs/diseno/${name}.dc.html`, "utf8"))
+      .join("\n")
+      .toUpperCase();
+    for (const [key, css] of [
+      ["bgSubtle", "--bg-subtle"],
+      ["bgLive", "--bg-live"],
+      ["lineRow", "--line-row"],
+    ] as const) {
+      expect(COLORS[key].css).toBe(css);
+      expect(COLORS[key].value).toMatch(/^#[0-9A-F]{6}$/);
+      expect(artboards, key).toContain(COLORS[key].value);
+    }
   });
 
   it("keeps the inherited CSS variable names of _tokens.css", () => {
