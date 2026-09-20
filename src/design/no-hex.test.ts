@@ -43,6 +43,6 @@ describe("CA-11 WaitingPage.module.css consumes tokens.css", () => {
     expect(css).toMatch(
       /\.switch\s*\{[^}]*min-height:\s*var\(--touch-target\);/,
     );
-    expect(css).toMatch(/\.heading\s*\{[^}]*font:\s*800 /);
+    expect(css).toMatch(/\.heading\s*\{[^}]*font-weight:\s*800;/);
   });
 });

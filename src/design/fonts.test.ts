@@ -1,4 +1,5 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, globSync, readFileSync } from "node:fs";
+import { relative } from "node:path";
 import { describe, expect, it } from "vitest";
 import { FACES } from "./tokens";
 
@@ -52,5 +53,22 @@ describe("CA-7 fonts and digits", () => {
     expect(globals).toMatch(
       /html\s*\{[^}]*font-variant-numeric:\s*tabular-nums;/,
     );
+  });
+
+  // The `font:` shorthand resets font-variant-numeric to `normal`, so any
+  // element styled with it would lose the tabular digits inherited from html.
+  it("no CSS under src/ uses the font shorthand", () => {
+    const files = globSync("src/**/*.css").map((f) =>
+      relative(process.cwd(), f),
+    );
+    expect(files).toContain("src/components/WaitingPage.module.css");
+    const offenders = files.flatMap((file) =>
+      readFileSync(file, "utf8")
+        .split("\n")
+        .flatMap((line, i) =>
+          /^\s*font\s*:/.test(line) ? [`${file}:${i + 1}`] : [],
+        ),
+    );
+    expect(offenders).toEqual([]);
   });
 });

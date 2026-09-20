@@ -9,7 +9,10 @@
 }
 
 .logo {
-  font: 800 clamp(28px, 6vw, 46px) / 1 var(--sans);
+  font-weight: 800;
+  font-size: clamp(28px, 6vw, 46px);
+  line-height: 1;
+  font-family: var(--sans);
   letter-spacing: var(--tracking-display);
   font-synthesis: none;
   color: var(--fg);
@@ -21,14 +24,20 @@
 
 .heading {
   margin: 0;
-  font: 800 clamp(28px, 5vw, 40px) / 1.05 var(--sans);
+  font-weight: 800;
+  font-size: clamp(28px, 5vw, 40px);
+  line-height: 1.05;
+  font-family: var(--sans);
   letter-spacing: -0.035em;
   text-wrap: balance;
 }
 
 .waiting {
   margin: var(--space-12) 0 0;
-  font: 400 clamp(16px, 2vw, 18px) / 1.55 var(--sans);
+  font-weight: 400;
+  font-size: clamp(16px, 2vw, 18px);
+  line-height: 1.55;
+  font-family: var(--sans);
   color: var(--fg-muted);
   text-wrap: pretty;
 }
@@ -46,5 +55,8 @@
   align-items: center;
   min-height: var(--touch-target);
   padding: 0 var(--space-4);
-  font: 500 15px / 1 var(--sans);
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1;
+  font-family: var(--sans);
 }
