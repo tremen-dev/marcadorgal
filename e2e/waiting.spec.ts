@@ -19,8 +19,8 @@ for (const route of routes) {
       page,
     }) => {
       await page.goto(route.path);
-      await expect(page.locator("h1")).toHaveText(route.dict.heading);
-      await expect(page.locator("main p")).toHaveText(route.dict.waiting);
+      await expect(page.locator("h1")).toHaveText(route.dict.waiting.heading);
+      await expect(page.locator("main p")).toHaveText(route.dict.waiting.body);
     });
 
     test("CA-4 responds 200 with the right <html lang>", async ({ page }) => {
@@ -31,7 +31,9 @@ for (const route of routes) {
 
     test("CA-4 language link leads to the other locale", async ({ page }) => {
       await page.goto(route.path);
-      await page.getByRole("link", { name: route.dict.switchLocale }).click();
+      await page
+        .getByRole("link", { name: route.dict.common.switchLocale })
+        .click();
       await expect(page).toHaveURL(route.other);
     });
 
@@ -106,7 +108,9 @@ for (const route of routes) {
           return el.scrollWidth - el.clientWidth;
         });
         expect(overflow).toBeLessThanOrEqual(0);
-        const link = page.getByRole("link", { name: route.dict.switchLocale });
+        const link = page.getByRole("link", {
+          name: route.dict.common.switchLocale,
+        });
         const box = await link.boundingBox();
         expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
         await page.keyboard.press("Tab");
