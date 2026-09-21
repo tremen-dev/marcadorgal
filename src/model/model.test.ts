@@ -20,7 +20,7 @@ import {
   SourceId,
   Team,
   TeamId,
-} from "./index";
+} from "./index.ts";
 
 describe("CA-2 closed vocabularies", () => {
   it("MatchStatus has the five states in order", () => {
@@ -93,11 +93,15 @@ describe("CA-4 branded ids", () => {
     expect(SourceId.safeParse("").success).toBe(false);
   });
 
-  it("MatchId is any non-empty string", () => {
+  it("MatchId is a slug", () => {
     expect(
-      MatchId.safeParse("2026-27:tercera-rfef-g1:r1:ud-ourense-cd-ourense")
+      MatchId.safeParse("tercera-rfef-g1-2026-27-j1-ud-ourense-cd-arenteiro")
         .success,
     ).toBe(true);
+    expect(
+      MatchId.safeParse("2026-27:tercera-rfef-g1:r1:ud-ourense:cd-arenteiro")
+        .success,
+    ).toBe(false);
     expect(MatchId.safeParse("").success).toBe(false);
   });
 
@@ -170,7 +174,7 @@ const fixtures = {
   },
   team: { id: "ud-ourense", name: "UD Ourense" },
   match: {
-    id: "2026-27:tercera-rfef-g1:r1:ud-ourense:cd-arenteiro",
+    id: "tercera-rfef-g1-2026-27-j1-ud-ourense-cd-arenteiro",
     competitionId: "tercera-rfef-g1",
     season: "2026-27",
     round: 1,
@@ -180,7 +184,7 @@ const fixtures = {
   },
   observation: {
     id: uuid(1),
-    matchId: "2026-27:tercera-rfef-g1:r1:ud-ourense:cd-arenteiro",
+    matchId: "tercera-rfef-g1-2026-27-j1-ud-ourense-cd-arenteiro",
     sourceId: "operator",
     status: "live",
     score: { home: 1, away: 0 },
@@ -191,7 +195,7 @@ const fixtures = {
   },
   decision: {
     id: uuid(2),
-    matchId: "2026-27:tercera-rfef-g1:r1:ud-ourense:cd-arenteiro",
+    matchId: "tercera-rfef-g1-2026-27-j1-ud-ourense-cd-arenteiro",
     version: 1,
     status: "live",
     score: { home: 1, away: 0 },
@@ -219,6 +223,19 @@ describe("CA-6 entities", () => {
     expect(Observation.safeParse(fixtures.observation).success).toBe(true);
     expect(Decision.safeParse(fixtures.decision).success).toBe(true);
     expect(Alert.safeParse(fixtures.alert).success).toBe(true);
+  });
+
+  it("Team shortName is optional, non-empty and different from name (N-11)", () => {
+    expect(
+      Team.safeParse({ ...fixtures.team, shortName: "Ourense" }).success,
+    ).toBe(true);
+    expect(Team.safeParse({ ...fixtures.team, shortName: "" }).success).toBe(
+      false,
+    );
+    expect(
+      Team.safeParse({ ...fixtures.team, shortName: "UD Ourense" }).success,
+    ).toBe(false);
+    expect(Team.parse(fixtures.team)).not.toHaveProperty("shortName");
   });
 
   it("Competition tier is 1..5", () => {

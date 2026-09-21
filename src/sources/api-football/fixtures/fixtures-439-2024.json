@@ -1,0 +1,1905 @@
+{
+  "get": "fixtures",
+  "parameters": {
+    "league": "439",
+    "season": "2024"
+  },
+  "errors": [],
+  "results": 27,
+  "paging": {
+    "current": 1,
+    "total": 1
+  },
+  "response": [
+    {
+      "fixture": {
+        "id": 1280909,
+        "referee": "Óscar Martínez",
+        "timezone": "UTC",
+        "date": "2024-09-08T10:00:00+00:00",
+        "timestamp": 1725789600,
+        "periods": {
+          "first": 1725789600,
+          "second": 1725793200
+        },
+        "venue": {
+          "id": 6709,
+          "name": "Estadio Alcalde Manuel Candocia",
+          "city": "As Somozas"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": null
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 1",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 9616,
+          "name": "Somozas",
+          "logo": "https://media.api-sports.io/football/teams/9616.png",
+          "winner": false
+        },
+        "away": {
+          "id": 20255,
+          "name": "Celta de Vigo III",
+          "logo": "https://media.api-sports.io/football/teams/20255.png",
+          "winner": true
+        }
+      },
+      "goals": {
+        "home": 0,
+        "away": 1
+      },
+      "score": {
+        "halftime": {
+          "home": 0,
+          "away": 1
+        },
+        "fulltime": {
+          "home": 0,
+          "away": 1
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280914,
+        "referee": "Sergio Miguens",
+        "timezone": "UTC",
+        "date": "2024-09-08T10:00:00+00:00",
+        "timestamp": 1725789600,
+        "periods": {
+          "first": 1725789600,
+          "second": 1725793200
+        },
+        "venue": {
+          "id": null,
+          "name": "Ponte Dos Brozos Sintético",
+          "city": "La Coruña"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": null
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 1",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 19650,
+          "name": "Atlético Arteixo",
+          "logo": "https://media.api-sports.io/football/teams/19650.png",
+          "winner": false
+        },
+        "away": {
+          "id": 15307,
+          "name": "Viveiro",
+          "logo": "https://media.api-sports.io/football/teams/15307.png",
+          "winner": true
+        }
+      },
+      "goals": {
+        "home": 0,
+        "away": 1
+      },
+      "score": {
+        "halftime": {
+          "home": 0,
+          "away": 0
+        },
+        "fulltime": {
+          "home": 0,
+          "away": 1
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280911,
+        "referee": "José Fernández",
+        "timezone": "UTC",
+        "date": "2024-09-08T15:30:00+00:00",
+        "timestamp": 1725809400,
+        "periods": {
+          "first": 1725809400,
+          "second": 1725813000
+        },
+        "venue": {
+          "id": 21102,
+          "name": "Estadio Novo San Pedro",
+          "city": "Sanxenxo"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": null
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 1",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 24610,
+          "name": "Villalonga",
+          "logo": "https://media.api-sports.io/football/teams/24610.png",
+          "winner": false
+        },
+        "away": {
+          "id": 9615,
+          "name": "Silva",
+          "logo": "https://media.api-sports.io/football/teams/9615.png",
+          "winner": true
+        }
+      },
+      "goals": {
+        "home": 0,
+        "away": 1
+      },
+      "score": {
+        "halftime": {
+          "home": 0,
+          "away": 0
+        },
+        "fulltime": {
+          "home": 0,
+          "away": 1
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280913,
+        "referee": "Miguel Castro",
+        "timezone": "UTC",
+        "date": "2024-09-08T16:00:00+00:00",
+        "timestamp": 1725811200,
+        "periods": {
+          "first": 1725811200,
+          "second": 1725814800
+        },
+        "venue": {
+          "id": 6698,
+          "name": "Estadio A Lomba",
+          "city": "Vilagarcía de Arousa"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": null
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 1",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 9605,
+          "name": "Arosa",
+          "logo": "https://media.api-sports.io/football/teams/9605.png",
+          "winner": false
+        },
+        "away": {
+          "id": 22130,
+          "name": "Sarriana",
+          "logo": "https://media.api-sports.io/football/teams/22130.png",
+          "winner": true
+        }
+      },
+      "goals": {
+        "home": 0,
+        "away": 1
+      },
+      "score": {
+        "halftime": {
+          "home": 0,
+          "away": 1
+        },
+        "fulltime": {
+          "home": 0,
+          "away": 1
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1305872,
+        "referee": "Rubén Extremadura",
+        "timezone": "UTC",
+        "date": "2024-09-08T16:00:00+00:00",
+        "timestamp": 1725811200,
+        "periods": {
+          "first": 1725811200,
+          "second": 1725814800
+        },
+        "venue": {
+          "id": 6705,
+          "name": "Estadio O Couto",
+          "city": "Ourense"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": null
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 1",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 9617,
+          "name": "UD Ourense",
+          "logo": "https://media.api-sports.io/football/teams/9617.png",
+          "winner": true
+        },
+        "away": {
+          "id": 17534,
+          "name": "Noia",
+          "logo": "https://media.api-sports.io/football/teams/17534.png",
+          "winner": false
+        }
+      },
+      "goals": {
+        "home": 2,
+        "away": 0
+      },
+      "score": {
+        "halftime": {
+          "home": 1,
+          "away": 0
+        },
+        "fulltime": {
+          "home": 2,
+          "away": 0
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280917,
+        "referee": "Pablo García",
+        "timezone": "UTC",
+        "date": "2024-09-08T16:00:00+00:00",
+        "timestamp": 1725811200,
+        "periods": {
+          "first": 1725811200,
+          "second": 1725814800
+        },
+        "venue": {
+          "id": 19294,
+          "name": "Estadio Os Carrís",
+          "city": "Barbadás"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": null
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 1",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 20442,
+          "name": "Barbadás",
+          "logo": "https://media.api-sports.io/football/teams/20442.png",
+          "winner": false
+        },
+        "away": {
+          "id": 9614,
+          "name": "CD Lugo B",
+          "logo": "https://media.api-sports.io/football/teams/9614.png",
+          "winner": true
+        }
+      },
+      "goals": {
+        "home": 0,
+        "away": 1
+      },
+      "score": {
+        "halftime": {
+          "home": 0,
+          "away": 0
+        },
+        "fulltime": {
+          "home": 0,
+          "away": 1
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280916,
+        "referee": "Alfonso Alcalá",
+        "timezone": "UTC",
+        "date": "2024-09-08T16:00:00+00:00",
+        "timestamp": 1725811200,
+        "periods": {
+          "first": 1725811200,
+          "second": 1725814800
+        },
+        "venue": {
+          "id": 20150,
+          "name": "Estadio García Hermanos",
+          "city": "Betanzos"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": null
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 1",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 22128,
+          "name": "Betanzos",
+          "logo": "https://media.api-sports.io/football/teams/22128.png",
+          "winner": false
+        },
+        "away": {
+          "id": 9618,
+          "name": "Villalbés",
+          "logo": "https://media.api-sports.io/football/teams/9618.png",
+          "winner": true
+        }
+      },
+      "goals": {
+        "home": 0,
+        "away": 3
+      },
+      "score": {
+        "halftime": {
+          "home": 0,
+          "away": 2
+        },
+        "fulltime": {
+          "home": 0,
+          "away": 3
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280910,
+        "referee": "Alejandro Castro",
+        "timezone": "UTC",
+        "date": "2024-09-08T16:00:00+00:00",
+        "timestamp": 1725811200,
+        "periods": {
+          "first": 1725811200,
+          "second": 1725814800
+        },
+        "venue": {
+          "id": 20359,
+          "name": "Campo Municipal de Barraña",
+          "city": "Boiro"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": null
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 1",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 22566,
+          "name": "Boiro",
+          "logo": "https://media.api-sports.io/football/teams/22566.png",
+          "winner": false
+        },
+        "away": {
+          "id": 9611,
+          "name": "Estradense",
+          "logo": "https://media.api-sports.io/football/teams/9611.png",
+          "winner": true
+        }
+      },
+      "goals": {
+        "home": 0,
+        "away": 1
+      },
+      "score": {
+        "halftime": {
+          "home": 0,
+          "away": 0
+        },
+        "fulltime": {
+          "home": 0,
+          "away": 1
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280912,
+        "referee": "Borja Cardoso",
+        "timezone": "UTC",
+        "date": "2024-09-08T17:15:00+00:00",
+        "timestamp": 1725815700,
+        "periods": {
+          "first": 1725815700,
+          "second": 1725819300
+        },
+        "venue": {
+          "id": null,
+          "name": "Campo Futbol Valladares",
+          "city": "Vigo"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": null
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 1",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 24609,
+          "name": "Valladares",
+          "logo": "https://media.api-sports.io/football/teams/24609.png",
+          "winner": true
+        },
+        "away": {
+          "id": 9603,
+          "name": "Alondras",
+          "logo": "https://media.api-sports.io/football/teams/9603.png",
+          "winner": false
+        }
+      },
+      "goals": {
+        "home": 2,
+        "away": 0
+      },
+      "score": {
+        "halftime": {
+          "home": 1,
+          "away": 0
+        },
+        "fulltime": {
+          "home": 2,
+          "away": 0
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1305873,
+        "referee": "Iván Abel",
+        "timezone": "UTC",
+        "date": "2024-09-14T14:00:00+00:00",
+        "timestamp": 1726322400,
+        "periods": {
+          "first": null,
+          "second": null
+        },
+        "venue": {
+          "id": 6708,
+          "name": "Campo Municipal de Fútbol Rodrigo García Vizoso",
+          "city": "La Coruña"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": null
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 2",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 9615,
+          "name": "Silva",
+          "logo": "https://media.api-sports.io/football/teams/9615.png",
+          "winner": true
+        },
+        "away": {
+          "id": 22566,
+          "name": "Boiro",
+          "logo": "https://media.api-sports.io/football/teams/22566.png",
+          "winner": false
+        }
+      },
+      "goals": {
+        "home": 3,
+        "away": 1
+      },
+      "score": {
+        "halftime": {
+          "home": 1,
+          "away": 0
+        },
+        "fulltime": {
+          "home": 3,
+          "away": 1
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280921,
+        "referee": "Adrián Estévez",
+        "timezone": "UTC",
+        "date": "2024-09-14T16:00:00+00:00",
+        "timestamp": 1726329600,
+        "periods": {
+          "first": 1726329600,
+          "second": 1726333200
+        },
+        "venue": {
+          "id": 6696,
+          "name": "Campo do Morrazo",
+          "city": "Cangas"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": null
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 2",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 9603,
+          "name": "Alondras",
+          "logo": "https://media.api-sports.io/football/teams/9603.png",
+          "winner": true
+        },
+        "away": {
+          "id": 24610,
+          "name": "Villalonga",
+          "logo": "https://media.api-sports.io/football/teams/24610.png",
+          "winner": false
+        }
+      },
+      "goals": {
+        "home": 2,
+        "away": 1
+      },
+      "score": {
+        "halftime": {
+          "home": 2,
+          "away": 0
+        },
+        "fulltime": {
+          "home": 2,
+          "away": 1
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280925,
+        "referee": "Miguel Ferrol",
+        "timezone": "UTC",
+        "date": "2024-09-15T10:00:00+00:00",
+        "timestamp": 1726394400,
+        "periods": {
+          "first": 1726394400,
+          "second": 1726398000
+        },
+        "venue": {
+          "id": 6710,
+          "name": "Estadio Municipal A Magdalena",
+          "city": "Villalba"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": null
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 2",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 9618,
+          "name": "Villalbés",
+          "logo": "https://media.api-sports.io/football/teams/9618.png",
+          "winner": null
+        },
+        "away": {
+          "id": 9617,
+          "name": "UD Ourense",
+          "logo": "https://media.api-sports.io/football/teams/9617.png",
+          "winner": null
+        }
+      },
+      "goals": {
+        "home": 1,
+        "away": 1
+      },
+      "score": {
+        "halftime": {
+          "home": 1,
+          "away": 1
+        },
+        "fulltime": {
+          "home": 1,
+          "away": 1
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280923,
+        "referee": "Sergio Espasandín",
+        "timezone": "UTC",
+        "date": "2024-09-15T10:00:00+00:00",
+        "timestamp": 1726394400,
+        "periods": {
+          "first": 1726394400,
+          "second": 1726398000
+        },
+        "venue": {
+          "id": 10971,
+          "name": "Estadio Municipal de Cantarrana",
+          "city": "Viveiro"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": null
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 2",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 15307,
+          "name": "Viveiro",
+          "logo": "https://media.api-sports.io/football/teams/15307.png",
+          "winner": true
+        },
+        "away": {
+          "id": 9605,
+          "name": "Arosa",
+          "logo": "https://media.api-sports.io/football/teams/9605.png",
+          "winner": false
+        }
+      },
+      "goals": {
+        "home": 1,
+        "away": 0
+      },
+      "score": {
+        "halftime": {
+          "home": 1,
+          "away": 0
+        },
+        "fulltime": {
+          "home": 1,
+          "away": 0
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280924,
+        "referee": "Carlos Martinez",
+        "timezone": "UTC",
+        "date": "2024-09-15T16:00:00+00:00",
+        "timestamp": 1726416000,
+        "periods": {
+          "first": 1726416000,
+          "second": 1726419600
+        },
+        "venue": {
+          "id": 22472,
+          "name": "Estadio San Lázaro",
+          "city": "Noia"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": null
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 2",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 17534,
+          "name": "Noia",
+          "logo": "https://media.api-sports.io/football/teams/17534.png",
+          "winner": true
+        },
+        "away": {
+          "id": 19650,
+          "name": "Atlético Arteixo",
+          "logo": "https://media.api-sports.io/football/teams/19650.png",
+          "winner": false
+        }
+      },
+      "goals": {
+        "home": 1,
+        "away": 0
+      },
+      "score": {
+        "halftime": {
+          "home": 0,
+          "away": 0
+        },
+        "fulltime": {
+          "home": 1,
+          "away": 0
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280918,
+        "referee": "Ivan Carrillo",
+        "timezone": "UTC",
+        "date": "2024-09-15T16:00:00+00:00",
+        "timestamp": 1726416000,
+        "periods": {
+          "first": 1726416000,
+          "second": 1726419600
+        },
+        "venue": {
+          "id": 6665,
+          "name": "Campo de Fútbol Municipal de Barreiro",
+          "city": "Vigo"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": null
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 2",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 20255,
+          "name": "Celta de Vigo III",
+          "logo": "https://media.api-sports.io/football/teams/20255.png",
+          "winner": null
+        },
+        "away": {
+          "id": 20442,
+          "name": "Barbadás",
+          "logo": "https://media.api-sports.io/football/teams/20442.png",
+          "winner": null
+        }
+      },
+      "goals": {
+        "home": 0,
+        "away": 0
+      },
+      "score": {
+        "halftime": {
+          "home": 0,
+          "away": 0
+        },
+        "fulltime": {
+          "home": 0,
+          "away": 0
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280922,
+        "referee": "Marcos Padín",
+        "timezone": "UTC",
+        "date": "2024-09-15T16:00:00+00:00",
+        "timestamp": 1726416000,
+        "periods": {
+          "first": 1726416000,
+          "second": 1726419600
+        },
+        "venue": {
+          "id": 20151,
+          "name": "Estadio Municipal De Ribela",
+          "city": "Sarria"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": null
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 2",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 22130,
+          "name": "Sarriana",
+          "logo": "https://media.api-sports.io/football/teams/22130.png",
+          "winner": true
+        },
+        "away": {
+          "id": 24609,
+          "name": "Valladares",
+          "logo": "https://media.api-sports.io/football/teams/24609.png",
+          "winner": false
+        }
+      },
+      "goals": {
+        "home": 3,
+        "away": 0
+      },
+      "score": {
+        "halftime": {
+          "home": 2,
+          "away": 0
+        },
+        "fulltime": {
+          "home": 3,
+          "away": 0
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280919,
+        "referee": "Juan Dávila",
+        "timezone": "UTC",
+        "date": "2024-09-15T16:30:00+00:00",
+        "timestamp": 1726417800,
+        "periods": {
+          "first": 1726417800,
+          "second": 1726421400
+        },
+        "venue": {
+          "id": 6704,
+          "name": "Campo Municipal do Concello da Estrada",
+          "city": "A Estrada"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": null
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 2",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 9611,
+          "name": "Estradense",
+          "logo": "https://media.api-sports.io/football/teams/9611.png",
+          "winner": true
+        },
+        "away": {
+          "id": 9616,
+          "name": "Somozas",
+          "logo": "https://media.api-sports.io/football/teams/9616.png",
+          "winner": false
+        }
+      },
+      "goals": {
+        "home": 3,
+        "away": 1
+      },
+      "score": {
+        "halftime": {
+          "home": 0,
+          "away": 0
+        },
+        "fulltime": {
+          "home": 3,
+          "away": 1
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280926,
+        "referee": "Gustavo Vidal",
+        "timezone": "UTC",
+        "date": "2024-09-15T17:00:00+00:00",
+        "timestamp": 1726419600,
+        "periods": {
+          "first": 1726419600,
+          "second": 1726423200
+        },
+        "venue": {
+          "id": 10966,
+          "name": "Campo de Fútbol A Cheda",
+          "city": "Lugo"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": null
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 2",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 9614,
+          "name": "CD Lugo B",
+          "logo": "https://media.api-sports.io/football/teams/9614.png",
+          "winner": null
+        },
+        "away": {
+          "id": 22128,
+          "name": "Betanzos",
+          "logo": "https://media.api-sports.io/football/teams/22128.png",
+          "winner": null
+        }
+      },
+      "goals": {
+        "home": 0,
+        "away": 0
+      },
+      "score": {
+        "halftime": {
+          "home": 0,
+          "away": 0
+        },
+        "fulltime": {
+          "home": 0,
+          "away": 0
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280928,
+        "referee": "Alfonso Alcalá",
+        "timezone": "UTC",
+        "date": "2024-09-22T10:00:00+00:00",
+        "timestamp": 1726999200,
+        "periods": {
+          "first": 1726999200,
+          "second": 1727002800
+        },
+        "venue": {
+          "id": 6709,
+          "name": "Estadio Alcalde Manuel Candocia",
+          "city": "As Somozas"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": 6
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 3",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 9616,
+          "name": "Somozas",
+          "logo": "https://media.api-sports.io/football/teams/9616.png",
+          "winner": false
+        },
+        "away": {
+          "id": 9615,
+          "name": "Silva",
+          "logo": "https://media.api-sports.io/football/teams/9615.png",
+          "winner": true
+        }
+      },
+      "goals": {
+        "home": 0,
+        "away": 1
+      },
+      "score": {
+        "halftime": {
+          "home": 0,
+          "away": 0
+        },
+        "fulltime": {
+          "home": 0,
+          "away": 1
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280933,
+        "referee": "Pablo García",
+        "timezone": "UTC",
+        "date": "2024-09-22T10:00:00+00:00",
+        "timestamp": 1726999200,
+        "periods": {
+          "first": 1726999200,
+          "second": 1727002800
+        },
+        "venue": {
+          "id": 19133,
+          "name": "Ponte Dos Brozos Sintético",
+          "city": "La Coruña"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": null
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 3",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 19650,
+          "name": "Atlético Arteixo",
+          "logo": "https://media.api-sports.io/football/teams/19650.png",
+          "winner": false
+        },
+        "away": {
+          "id": 9618,
+          "name": "Villalbés",
+          "logo": "https://media.api-sports.io/football/teams/9618.png",
+          "winner": true
+        }
+      },
+      "goals": {
+        "home": 0,
+        "away": 2
+      },
+      "score": {
+        "halftime": {
+          "home": 0,
+          "away": 2
+        },
+        "fulltime": {
+          "home": 0,
+          "away": 2
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280932,
+        "referee": "Alexandre Represas",
+        "timezone": "UTC",
+        "date": "2024-09-22T15:00:00+00:00",
+        "timestamp": 1727017200,
+        "periods": {
+          "first": 1727017200,
+          "second": 1727020800
+        },
+        "venue": {
+          "id": 6698,
+          "name": "Estadio A Lomba",
+          "city": "Vilagarcía de Arousa"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": 5
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 3",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 9605,
+          "name": "Arosa",
+          "logo": "https://media.api-sports.io/football/teams/9605.png",
+          "winner": false
+        },
+        "away": {
+          "id": 17534,
+          "name": "Noia",
+          "logo": "https://media.api-sports.io/football/teams/17534.png",
+          "winner": true
+        }
+      },
+      "goals": {
+        "home": 0,
+        "away": 2
+      },
+      "score": {
+        "halftime": {
+          "home": 0,
+          "away": 1
+        },
+        "fulltime": {
+          "home": 0,
+          "away": 2
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280930,
+        "referee": "Raul Garcia",
+        "timezone": "UTC",
+        "date": "2024-09-22T15:30:00+00:00",
+        "timestamp": 1727019000,
+        "periods": {
+          "first": 1727019000,
+          "second": 1727022600
+        },
+        "venue": {
+          "id": 21102,
+          "name": "Estadio Novo San Pedro",
+          "city": "Sanxenxo"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": 7
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 3",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 24610,
+          "name": "Villalonga",
+          "logo": "https://media.api-sports.io/football/teams/24610.png",
+          "winner": false
+        },
+        "away": {
+          "id": 22130,
+          "name": "Sarriana",
+          "logo": "https://media.api-sports.io/football/teams/22130.png",
+          "winner": true
+        }
+      },
+      "goals": {
+        "home": 2,
+        "away": 3
+      },
+      "score": {
+        "halftime": {
+          "home": 1,
+          "away": 1
+        },
+        "fulltime": {
+          "home": 2,
+          "away": 3
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1305691,
+        "referee": "Miguel Castro",
+        "timezone": "UTC",
+        "date": "2024-09-22T16:00:00+00:00",
+        "timestamp": 1727020800,
+        "periods": {
+          "first": 1727020800,
+          "second": 1727024400
+        },
+        "venue": {
+          "id": 6705,
+          "name": "Estadio O Couto",
+          "city": "Ourense"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": 5
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 3",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 9617,
+          "name": "UD Ourense",
+          "logo": "https://media.api-sports.io/football/teams/9617.png",
+          "winner": true
+        },
+        "away": {
+          "id": 9614,
+          "name": "CD Lugo B",
+          "logo": "https://media.api-sports.io/football/teams/9614.png",
+          "winner": false
+        }
+      },
+      "goals": {
+        "home": 3,
+        "away": 2
+      },
+      "score": {
+        "halftime": {
+          "home": 3,
+          "away": 1
+        },
+        "fulltime": {
+          "home": 3,
+          "away": 2
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280927,
+        "referee": "Adam Rodríguez",
+        "timezone": "UTC",
+        "date": "2024-09-22T16:00:00+00:00",
+        "timestamp": 1727020800,
+        "periods": {
+          "first": 1727020800,
+          "second": 1727024400
+        },
+        "venue": {
+          "id": 6665,
+          "name": "Campo de Fútbol Municipal de Barreiro",
+          "city": "Vigo"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": 6
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 3",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 20255,
+          "name": "Celta de Vigo III",
+          "logo": "https://media.api-sports.io/football/teams/20255.png",
+          "winner": false
+        },
+        "away": {
+          "id": 9611,
+          "name": "Estradense",
+          "logo": "https://media.api-sports.io/football/teams/9611.png",
+          "winner": true
+        }
+      },
+      "goals": {
+        "home": 0,
+        "away": 1
+      },
+      "score": {
+        "halftime": {
+          "home": 0,
+          "away": 0
+        },
+        "fulltime": {
+          "home": 0,
+          "away": 1
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280935,
+        "referee": "Jorge Méndez",
+        "timezone": "UTC",
+        "date": "2024-09-22T16:00:00+00:00",
+        "timestamp": 1727020800,
+        "periods": {
+          "first": 1727020800,
+          "second": 1727024400
+        },
+        "venue": {
+          "id": 19294,
+          "name": "Estadio Os Carrís",
+          "city": "Barbadás"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": null
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 3",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 20442,
+          "name": "Barbadás",
+          "logo": "https://media.api-sports.io/football/teams/20442.png",
+          "winner": true
+        },
+        "away": {
+          "id": 22128,
+          "name": "Betanzos",
+          "logo": "https://media.api-sports.io/football/teams/22128.png",
+          "winner": false
+        }
+      },
+      "goals": {
+        "home": 2,
+        "away": 0
+      },
+      "score": {
+        "halftime": {
+          "home": 0,
+          "away": 0
+        },
+        "fulltime": {
+          "home": 2,
+          "away": 0
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280929,
+        "referee": "Gabriel Polo Fraga",
+        "timezone": "UTC",
+        "date": "2024-09-22T16:00:00+00:00",
+        "timestamp": 1727020800,
+        "periods": {
+          "first": 1727020800,
+          "second": 1727024400
+        },
+        "venue": {
+          "id": 20359,
+          "name": "Campo Municipal de Barraña",
+          "city": "Boiro"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": 5
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 3",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 22566,
+          "name": "Boiro",
+          "logo": "https://media.api-sports.io/football/teams/22566.png",
+          "winner": null
+        },
+        "away": {
+          "id": 9603,
+          "name": "Alondras",
+          "logo": "https://media.api-sports.io/football/teams/9603.png",
+          "winner": null
+        }
+      },
+      "goals": {
+        "home": 0,
+        "away": 0
+      },
+      "score": {
+        "halftime": {
+          "home": 0,
+          "away": 0
+        },
+        "fulltime": {
+          "home": 0,
+          "away": 0
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    },
+    {
+      "fixture": {
+        "id": 1280931,
+        "referee": "Óscar Martínez",
+        "timezone": "UTC",
+        "date": "2024-09-22T17:00:00+00:00",
+        "timestamp": 1727024400,
+        "periods": {
+          "first": 1727024400,
+          "second": 1727028000
+        },
+        "venue": {
+          "id": null,
+          "name": "Campo Futbol Valladares",
+          "city": "Vigo"
+        },
+        "status": {
+          "long": "Match Finished",
+          "short": "FT",
+          "elapsed": 90,
+          "extra": 4
+        }
+      },
+      "league": {
+        "id": 439,
+        "name": "Tercera División RFEF - Group 1",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/439.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024,
+        "round": "Group 1 - 3",
+        "standings": true
+      },
+      "teams": {
+        "home": {
+          "id": 24609,
+          "name": "Valladares",
+          "logo": "https://media.api-sports.io/football/teams/24609.png",
+          "winner": null
+        },
+        "away": {
+          "id": 15307,
+          "name": "Viveiro",
+          "logo": "https://media.api-sports.io/football/teams/15307.png",
+          "winner": null
+        }
+      },
+      "goals": {
+        "home": 0,
+        "away": 0
+      },
+      "score": {
+        "halftime": {
+          "home": 0,
+          "away": 0
+        },
+        "fulltime": {
+          "home": 0,
+          "away": 0
+        },
+        "extratime": {
+          "home": null,
+          "away": null
+        },
+        "penalty": {
+          "home": null,
+          "away": null
+        }
+      }
+    }
+  ]
+}

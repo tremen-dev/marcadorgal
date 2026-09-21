@@ -7,10 +7,10 @@ import {
   ObservationId,
   SourceId,
   TeamId,
-} from "./ids";
-import { Instant } from "./instant";
-import { MatchState } from "./state";
-import { AlertKind, DecisionRule, Qualifier, Season } from "./vocab";
+} from "./ids.ts";
+import { Instant } from "./instant.ts";
+import { MatchState } from "./state.ts";
+import { AlertKind, DecisionRule, Qualifier, Season } from "./vocab.ts";
 
 export const Competition = z.object({
   id: CompetitionId,
@@ -20,10 +20,18 @@ export const Competition = z.object({
 });
 export type Competition = z.infer<typeof Competition>;
 
-export const Team = z.object({
-  id: TeamId,
-  name: z.string().min(1),
-});
+// name: the federation's short official form; shortName: declared compact
+// form for the board row, never derived (N-11).
+export const Team = z
+  .object({
+    id: TeamId,
+    name: z.string().min(1),
+    shortName: z.string().min(1).optional(),
+  })
+  .refine((t) => t.shortName !== t.name, {
+    message: "shortName must differ from name",
+    path: ["shortName"],
+  });
 export type Team = z.infer<typeof Team>;
 
 export const Match = z

@@ -1,0 +1,434 @@
+{
+  "competitions": {
+    "primera-division": "Primeira División",
+    "segunda-division": "Segunda División",
+    "primera-rfef-g1": "Primeira Federación · Grupo 1",
+    "segunda-rfef-g1": "Segunda Federación · Grupo 1",
+    "tercera-rfef-g1": "Terceira Federación · Grupo 1"
+  },
+  "teams": {
+    "primera-division": {
+      "alaves": {
+        "name": "Deportivo Alavés",
+        "shortName": "Alavés"
+      },
+      "athletic-club": {
+        "name": "Athletic Club",
+        "shortName": "Athletic"
+      },
+      "atletico-madrid": {
+        "name": "Atlético de Madrid",
+        "shortName": "Atlético"
+      },
+      "barcelona": {
+        "name": "FC Barcelona",
+        "shortName": "Barcelona"
+      },
+      "celta-vigo": {
+        "id": "celta",
+        "name": "RC Celta",
+        "shortName": "Celta"
+      },
+      "deportivo-la-coruna": {
+        "id": "deportivo",
+        "name": "RC Deportivo",
+        "shortName": "Deportivo"
+      },
+      "elche": {
+        "name": "Elche CF",
+        "shortName": "Elche"
+      },
+      "espanyol": {
+        "name": "RCD Espanyol",
+        "shortName": "Espanyol"
+      },
+      "getafe": {
+        "name": "Getafe CF",
+        "shortName": "Getafe"
+      },
+      "levante": {
+        "name": "Levante UD",
+        "shortName": "Levante"
+      },
+      "malaga": {
+        "name": "Málaga CF",
+        "shortName": "Málaga"
+      },
+      "osasuna": {
+        "name": "CA Osasuna",
+        "shortName": "Osasuna"
+      },
+      "racing-santander": {
+        "name": "Real Racing Club",
+        "shortName": "Racing"
+      },
+      "rayo-vallecano": {
+        "name": "Rayo Vallecano",
+        "shortName": "Rayo"
+      },
+      "real-betis": {
+        "name": "Real Betis",
+        "shortName": "Betis"
+      },
+      "real-madrid": {
+        "name": "Real Madrid"
+      },
+      "real-sociedad": {
+        "name": "Real Sociedad"
+      },
+      "sevilla": {
+        "name": "Sevilla FC",
+        "shortName": "Sevilla"
+      },
+      "valencia": {
+        "name": "Valencia CF",
+        "shortName": "Valencia"
+      },
+      "villarreal": {
+        "name": "Villarreal CF",
+        "shortName": "Villarreal"
+      }
+    },
+    "segunda-division": {
+      "ad-ceuta-fc": {
+        "id": "ceuta",
+        "name": "AD Ceuta",
+        "shortName": "Ceuta"
+      },
+      "albacete": {
+        "name": "Albacete Balompié",
+        "shortName": "Albacete"
+      },
+      "almeria": {
+        "name": "UD Almería",
+        "shortName": "Almería"
+      },
+      "burgos": {
+        "name": "Burgos CF",
+        "shortName": "Burgos"
+      },
+      "cadiz": {
+        "name": "Cádiz CF",
+        "shortName": "Cádiz"
+      },
+      "castellon": {
+        "name": "CD Castellón",
+        "shortName": "Castellón"
+      },
+      "celta-de-vigo-ii": {
+        "id": "celta-fortuna",
+        "name": "Celta Fortuna"
+      },
+      "cordoba": {
+        "name": "Córdoba CF",
+        "shortName": "Córdoba"
+      },
+      "eibar": {
+        "name": "SD Eibar",
+        "shortName": "Eibar"
+      },
+      "eldense": {
+        "name": "CD Eldense",
+        "shortName": "Eldense"
+      },
+      "fc-andorra": {
+        "id": "andorra",
+        "name": "FC Andorra",
+        "shortName": "Andorra"
+      },
+      "girona": {
+        "name": "Girona FC",
+        "shortName": "Girona"
+      },
+      "granada-cf": {
+        "id": "granada",
+        "name": "Granada CF",
+        "shortName": "Granada"
+      },
+      "las-palmas": {
+        "name": "UD Las Palmas",
+        "shortName": "Las Palmas"
+      },
+      "leganes": {
+        "name": "CD Leganés",
+        "shortName": "Leganés"
+      },
+      "mallorca": {
+        "name": "RCD Mallorca",
+        "shortName": "Mallorca"
+      },
+      "oviedo": {
+        "name": "Real Oviedo",
+        "shortName": "Oviedo"
+      },
+      "real-sociedad-ii": {
+        "id": "real-sociedad-b",
+        "name": "Real Sociedad B"
+      },
+      "sabadell": {
+        "name": "CE Sabadell",
+        "shortName": "Sabadell"
+      },
+      "sporting-gijon": {
+        "id": "sporting",
+        "name": "Real Sporting",
+        "shortName": "Sporting"
+      },
+      "tenerife": {
+        "name": "CD Tenerife",
+        "shortName": "Tenerife"
+      },
+      "valladolid": {
+        "name": "Real Valladolid",
+        "shortName": "Valladolid"
+      }
+    },
+    "primera-rfef-g1": {
+      "arenas-getxo": {
+        "id": "arenas",
+        "name": "Arenas Club",
+        "shortName": "Arenas"
+      },
+      "athletic-club-ii": {
+        "id": "bilbao-athletic",
+        "name": "Bilbao Athletic"
+      },
+      "barakaldo": {
+        "name": "Barakaldo CF",
+        "shortName": "Barakaldo"
+      },
+      "cacereno": {
+        "name": "CP Cacereño",
+        "shortName": "Cacereño"
+      },
+      "cd-coria": {
+        "id": "coria",
+        "name": "CD Coria",
+        "shortName": "Coria"
+      },
+      "cultural-leonesa": {
+        "name": "Cultural Leonesa",
+        "shortName": "Cultural"
+      },
+      "deportivo-la-coruna-ii": {
+        "id": "deportivo-fabril",
+        "name": "Deportivo Fabril",
+        "shortName": "Fabril"
+      },
+      "extremadura-1924": {
+        "id": "extremadura",
+        "name": "CD Extremadura 1924",
+        "shortName": "Extremadura"
+      },
+      "lugo": {
+        "name": "CD Lugo",
+        "shortName": "Lugo"
+      },
+      "merida-ad": {
+        "id": "merida",
+        "name": "Mérida AD",
+        "shortName": "Mérida"
+      },
+      "mirandes": {
+        "name": "CD Mirandés",
+        "shortName": "Mirandés"
+      },
+      "ponferradina": {
+        "name": "SD Ponferradina",
+        "shortName": "Ponferradina"
+      },
+      "pontevedra": {
+        "name": "Pontevedra CF",
+        "shortName": "Pontevedra"
+      },
+      "racing-ferrol": {
+        "name": "Racing de Ferrol",
+        "shortName": "Racing Ferrol"
+      },
+      "real-aviles": {
+        "id": "aviles",
+        "name": "Real Avilés Industrial",
+        "shortName": "Avilés"
+      },
+      "real-union": {
+        "name": "Real Unión Club",
+        "shortName": "Real Unión"
+      },
+      "ud-logrones": {
+        "id": "logrones",
+        "name": "UD Logroñés",
+        "shortName": "Logroñés"
+      },
+      "ud-ourense": {
+        "name": "UD Ourense"
+      },
+      "unionistas-de-salamanca": {
+        "id": "unionistas",
+        "name": "Unionistas de Salamanca CF",
+        "shortName": "Unionistas"
+      },
+      "zamora": {
+        "name": "Zamora CF",
+        "shortName": "Zamora"
+      }
+    },
+    "segunda-rfef-g1": {
+      "amorebieta": {
+        "name": "SD Amorebieta",
+        "shortName": "Amorebieta"
+      },
+      "arosa": {
+        "name": "Arosa SC",
+        "shortName": "Arosa"
+      },
+      "atletico-astorga": {
+        "id": "astorga",
+        "name": "Atlético Astorga FC",
+        "shortName": "Astorga"
+      },
+      "basconia": {
+        "name": "CD Basconia",
+        "shortName": "Basconia"
+      },
+      "bergantinos": {
+        "name": "Bergantiños FC",
+        "shortName": "Bergantiños"
+      },
+      "compostela": {
+        "name": "SD Compostela",
+        "shortName": "Compostela"
+      },
+      "coruxo": {
+        "name": "Coruxo FC",
+        "shortName": "Coruxo"
+      },
+      "deportivo-alaves-ii": {
+        "id": "alaves-b",
+        "name": "Deportivo Alavés B",
+        "shortName": "Alavés B"
+      },
+      "eibar-ii": {
+        "id": "eibar-b",
+        "name": "SD Eibar B",
+        "shortName": "Eibar B"
+      },
+      "gernika": {
+        "name": "SD Gernika Club",
+        "shortName": "Gernika"
+      },
+      "gimnastica-torrelavega": {
+        "id": "gimnastica",
+        "name": "RS Gimnástica de Torrelavega",
+        "shortName": "Gimnástica"
+      },
+      "llanera": {
+        "name": "UD Llanera",
+        "shortName": "Llanera"
+      },
+      "marino-de-luanco": {
+        "id": "marino",
+        "name": "Marino de Luanco",
+        "shortName": "Marino"
+      },
+      "ourense-cf": {
+        "name": "Ourense CF"
+      },
+      "portugalete": {
+        "name": "Club Portugalete",
+        "shortName": "Portugalete"
+      },
+      "racing-santander-ii": {
+        "id": "rayo-cantabria",
+        "name": "Rayo Cantabria"
+      },
+      "real-oviedo-ii": {
+        "id": "oviedo-vetusta",
+        "name": "Real Oviedo Vetusta",
+        "shortName": "Vetusta"
+      },
+      "sestao-river": {
+        "name": "Sestao River Club",
+        "shortName": "Sestao River"
+      }
+    },
+    "tercera-rfef-g1": {
+      "alondras": {
+        "name": "Alondras CF",
+        "shortName": "Alondras"
+      },
+      "antela": {
+        "name": "CD Antela",
+        "shortName": "Antela"
+      },
+      "arenteiro": {
+        "name": "CD Arenteiro",
+        "shortName": "Arenteiro"
+      },
+      "atletico-arteixo": {
+        "name": "Atlético Arteixo",
+        "shortName": "Arteixo"
+      },
+      "barco": {
+        "name": "CD Barco",
+        "shortName": "Barco"
+      },
+      "boiro": {
+        "name": "CD Boiro",
+        "shortName": "Boiro"
+      },
+      "celta-de-vigo-iii": {
+        "id": "celta-c",
+        "name": "RC Celta C",
+        "shortName": "Celta C"
+      },
+      "celtiga": {
+        "name": "Céltiga FC",
+        "shortName": "Céltiga"
+      },
+      "coruna": {
+        "id": "montaneros",
+        "name": "Atlético Coruña Montañeros",
+        "shortName": "Montañeros"
+      },
+      "estradense": {
+        "name": "CD Estradense",
+        "shortName": "Estradense"
+      },
+      "lalin": {
+        "name": "CD Lalín",
+        "shortName": "Lalín"
+      },
+      "pontevedra-ii": {
+        "id": "pontevedra-b",
+        "name": "Pontevedra CF B",
+        "shortName": "Pontevedra B"
+      },
+      "portonovo-sd": {
+        "id": "portonovo",
+        "name": "Portonovo SD",
+        "shortName": "Portonovo"
+      },
+      "sarriana": {
+        "name": "SD Sarriana",
+        "shortName": "Sarriana"
+      },
+      "silva": {
+        "name": "Silva SD",
+        "shortName": "Silva"
+      },
+      "somozas": {
+        "name": "UD Somozas",
+        "shortName": "Somozas"
+      },
+      "villalbes": {
+        "name": "Racing Villalbés",
+        "shortName": "Villalbés"
+      },
+      "viveiro": {
+        "name": "Viveiro CF",
+        "shortName": "Viveiro"
+      }
+    }
+  },
+  "policy": "name = forma corta federativa con siglas (decisión Alberto Fojo 2026-09-21); competition.name = forma galega para mostrar en todas las lenguas; ids técnicos sin cambio salvo los listados con id nuevo"
+}

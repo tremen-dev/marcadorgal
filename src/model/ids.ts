@@ -11,8 +11,8 @@ export type TeamId = z.infer<typeof TeamId>;
 export const SourceId = slug.brand<"SourceId">();
 export type SourceId = z.infer<typeof SourceId>;
 
-// Derived from the declared calendar; its shape is fixed by the calendar spec.
-export const MatchId = z.string().min(1).brand<"MatchId">();
+// Derived from the declared calendar (SPEC-004 CA-2): a slug like the other ids.
+export const MatchId = slug.brand<"MatchId">();
 export type MatchId = z.infer<typeof MatchId>;
 
 export const ObservationId = z.uuid().brand<"ObservationId">();

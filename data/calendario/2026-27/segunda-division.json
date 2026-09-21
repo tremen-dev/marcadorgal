@@ -1,0 +1,2892 @@
+{
+  "competition": {
+    "id": "segunda-division",
+    "season": "2026-27",
+    "name": "Segunda División",
+    "tier": 2
+  },
+  "teams": [
+    {
+      "id": "ceuta",
+      "name": "AD Ceuta",
+      "shortName": "Ceuta"
+    },
+    {
+      "id": "albacete",
+      "name": "Albacete Balompié",
+      "shortName": "Albacete"
+    },
+    {
+      "id": "almeria",
+      "name": "UD Almería",
+      "shortName": "Almería"
+    },
+    {
+      "id": "burgos",
+      "name": "Burgos CF",
+      "shortName": "Burgos"
+    },
+    {
+      "id": "cadiz",
+      "name": "Cádiz CF",
+      "shortName": "Cádiz"
+    },
+    {
+      "id": "castellon",
+      "name": "CD Castellón",
+      "shortName": "Castellón"
+    },
+    {
+      "id": "celta-fortuna",
+      "name": "Celta Fortuna"
+    },
+    {
+      "id": "cordoba",
+      "name": "Córdoba CF",
+      "shortName": "Córdoba"
+    },
+    {
+      "id": "eibar",
+      "name": "SD Eibar",
+      "shortName": "Eibar"
+    },
+    {
+      "id": "eldense",
+      "name": "CD Eldense",
+      "shortName": "Eldense"
+    },
+    {
+      "id": "andorra",
+      "name": "FC Andorra",
+      "shortName": "Andorra"
+    },
+    {
+      "id": "girona",
+      "name": "Girona FC",
+      "shortName": "Girona"
+    },
+    {
+      "id": "granada",
+      "name": "Granada CF",
+      "shortName": "Granada"
+    },
+    {
+      "id": "las-palmas",
+      "name": "UD Las Palmas",
+      "shortName": "Las Palmas"
+    },
+    {
+      "id": "leganes",
+      "name": "CD Leganés",
+      "shortName": "Leganés"
+    },
+    {
+      "id": "mallorca",
+      "name": "RCD Mallorca",
+      "shortName": "Mallorca"
+    },
+    {
+      "id": "oviedo",
+      "name": "Real Oviedo",
+      "shortName": "Oviedo"
+    },
+    {
+      "id": "real-sociedad-b",
+      "name": "Real Sociedad B"
+    },
+    {
+      "id": "sabadell",
+      "name": "CE Sabadell",
+      "shortName": "Sabadell"
+    },
+    {
+      "id": "sporting",
+      "name": "Real Sporting",
+      "shortName": "Sporting"
+    },
+    {
+      "id": "tenerife",
+      "name": "CD Tenerife",
+      "shortName": "Tenerife"
+    },
+    {
+      "id": "valladolid",
+      "name": "Real Valladolid",
+      "shortName": "Valladolid"
+    }
+  ],
+  "matches": [
+    {
+      "round": 1,
+      "kickoff": "2026-08-14T18:30:00Z",
+      "home": "real-sociedad-b",
+      "away": "castellon"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-15T15:00:00Z",
+      "home": "andorra",
+      "away": "ceuta"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-15T17:00:00Z",
+      "home": "cadiz",
+      "away": "celta-fortuna"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-15T17:00:00Z",
+      "home": "oviedo",
+      "away": "granada"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-15T19:30:00Z",
+      "home": "mallorca",
+      "away": "valladolid"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-16T15:00:00Z",
+      "home": "eibar",
+      "away": "tenerife"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-16T17:00:00Z",
+      "home": "burgos",
+      "away": "cordoba"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-16T17:00:00Z",
+      "home": "girona",
+      "away": "leganes"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-16T19:30:00Z",
+      "home": "las-palmas",
+      "away": "albacete"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-17T17:00:00Z",
+      "home": "sporting",
+      "away": "sabadell"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-17T19:30:00Z",
+      "home": "almeria",
+      "away": "eldense"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-21T19:00:00Z",
+      "home": "cordoba",
+      "away": "girona"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-22T15:00:00Z",
+      "home": "oviedo",
+      "away": "leganes"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-22T17:00:00Z",
+      "home": "ceuta",
+      "away": "las-palmas"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-22T17:00:00Z",
+      "home": "albacete",
+      "away": "real-sociedad-b"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-22T19:30:00Z",
+      "home": "eldense",
+      "away": "cadiz"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-23T15:00:00Z",
+      "home": "eibar",
+      "away": "valladolid"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-23T17:00:00Z",
+      "home": "castellon",
+      "away": "sabadell"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-23T17:00:00Z",
+      "home": "sporting",
+      "away": "burgos"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-23T19:30:00Z",
+      "home": "tenerife",
+      "away": "almeria"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-24T17:00:00Z",
+      "home": "celta-fortuna",
+      "away": "andorra"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-24T19:30:00Z",
+      "home": "granada",
+      "away": "mallorca"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-28T19:00:00Z",
+      "home": "tenerife",
+      "away": "sporting"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-29T15:00:00Z",
+      "home": "sabadell",
+      "away": "almeria"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-29T17:00:00Z",
+      "home": "albacete",
+      "away": "oviedo"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-29T17:00:00Z",
+      "home": "leganes",
+      "away": "eldense"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-29T19:30:00Z",
+      "home": "girona",
+      "away": "las-palmas"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-30T15:00:00Z",
+      "home": "andorra",
+      "away": "eibar"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-30T17:00:00Z",
+      "home": "cadiz",
+      "away": "valladolid"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-30T17:00:00Z",
+      "home": "mallorca",
+      "away": "ceuta"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-30T19:30:00Z",
+      "home": "cordoba",
+      "away": "granada"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-31T17:00:00Z",
+      "home": "burgos",
+      "away": "real-sociedad-b"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-31T19:30:00Z",
+      "home": "celta-fortuna",
+      "away": "castellon"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-04T18:30:00Z",
+      "home": "las-palmas",
+      "away": "leganes"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-05T12:00:00Z",
+      "home": "real-sociedad-b",
+      "away": "tenerife"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-05T14:15:00Z",
+      "home": "sporting",
+      "away": "girona"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-05T16:30:00Z",
+      "home": "ceuta",
+      "away": "celta-fortuna"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-05T16:30:00Z",
+      "home": "valladolid",
+      "away": "andorra"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-05T19:00:00Z",
+      "home": "eldense",
+      "away": "mallorca"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-06T12:00:00Z",
+      "home": "eibar",
+      "away": "granada"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-06T14:15:00Z",
+      "home": "oviedo",
+      "away": "burgos"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-06T16:30:00Z",
+      "home": "castellon",
+      "away": "albacete"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-06T19:00:00Z",
+      "home": "almeria",
+      "away": "cadiz"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-07T18:30:00Z",
+      "home": "sabadell",
+      "away": "cordoba"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-11T18:30:00Z",
+      "home": "burgos",
+      "away": "ceuta"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-12T12:00:00Z",
+      "home": "andorra",
+      "away": "real-sociedad-b"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-12T14:15:00Z",
+      "home": "cadiz",
+      "away": "las-palmas"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-12T16:30:00Z",
+      "home": "girona",
+      "away": "castellon"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-12T16:30:00Z",
+      "home": "granada",
+      "away": "albacete"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-12T19:00:00Z",
+      "home": "cordoba",
+      "away": "almeria"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-13T12:00:00Z",
+      "home": "sporting",
+      "away": "eldense"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-13T14:15:00Z",
+      "home": "valladolid",
+      "away": "oviedo"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-13T16:30:00Z",
+      "home": "mallorca",
+      "away": "sabadell"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-13T19:00:00Z",
+      "home": "tenerife",
+      "away": "leganes"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-14T18:30:00Z",
+      "home": "celta-fortuna",
+      "away": "eibar"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-18T18:30:00Z",
+      "home": "albacete",
+      "away": "cordoba"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-19T12:00:00Z",
+      "home": "real-sociedad-b",
+      "away": "mallorca"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-19T14:15:00Z",
+      "home": "andorra",
+      "away": "sporting"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-19T16:30:00Z",
+      "home": "castellon",
+      "away": "tenerife"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-19T16:30:00Z",
+      "home": "eldense",
+      "away": "eibar"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-19T19:00:00Z",
+      "home": "cadiz",
+      "away": "girona"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-20T12:00:00Z",
+      "home": "sabadell",
+      "away": "oviedo"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-20T14:15:00Z",
+      "home": "ceuta",
+      "away": "valladolid"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-20T16:30:00Z",
+      "home": "almeria",
+      "away": "celta-fortuna"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-20T16:30:00Z",
+      "home": "las-palmas",
+      "away": "burgos"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-20T19:00:00Z",
+      "home": "leganes",
+      "away": "granada"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-25T18:30:00Z",
+      "home": "girona",
+      "away": "albacete"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-26T12:00:00Z",
+      "home": "ceuta",
+      "away": "real-sociedad-b"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-26T14:15:00Z",
+      "home": "granada",
+      "away": "andorra"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-26T16:30:00Z",
+      "home": "celta-fortuna",
+      "away": "sabadell"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-26T16:30:00Z",
+      "home": "tenerife",
+      "away": "cadiz"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-27T12:00:00Z",
+      "home": "valladolid",
+      "away": "cordoba"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-27T14:15:00Z",
+      "home": "mallorca",
+      "away": "almeria"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-27T16:30:00Z",
+      "home": "burgos",
+      "away": "eldense"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-27T16:30:00Z",
+      "home": "eibar",
+      "away": "las-palmas"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-27T19:00:00Z",
+      "home": "oviedo",
+      "away": "sporting"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-28T18:30:00Z",
+      "home": "leganes",
+      "away": "castellon"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "albacete",
+      "away": "eibar"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "almeria",
+      "away": "burgos"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "cadiz",
+      "away": "leganes"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "castellon",
+      "away": "ceuta"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "cordoba",
+      "away": "tenerife"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "eldense",
+      "away": "oviedo"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "girona",
+      "away": "mallorca"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "las-palmas",
+      "away": "valladolid"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "real-sociedad-b",
+      "away": "granada"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "sabadell",
+      "away": "andorra"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "sporting",
+      "away": "celta-fortuna"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "ceuta",
+      "away": "sabadell"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "almeria",
+      "away": "leganes"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "burgos",
+      "away": "granada"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "cadiz",
+      "away": "sporting"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "celta-fortuna",
+      "away": "real-sociedad-b"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "eldense",
+      "away": "cordoba"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "andorra",
+      "away": "castellon"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "mallorca",
+      "away": "las-palmas"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "oviedo",
+      "away": "eibar"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "tenerife",
+      "away": "girona"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "valladolid",
+      "away": "albacete"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "ceuta",
+      "away": "oviedo"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "burgos",
+      "away": "sabadell"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "celta-fortuna",
+      "away": "tenerife"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "eibar",
+      "away": "mallorca"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "girona",
+      "away": "andorra"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "granada",
+      "away": "cadiz"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "las-palmas",
+      "away": "castellon"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "leganes",
+      "away": "cordoba"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "real-sociedad-b",
+      "away": "almeria"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "sporting",
+      "away": "albacete"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "valladolid",
+      "away": "eldense"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "albacete",
+      "away": "eldense"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "almeria",
+      "away": "oviedo"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "cadiz",
+      "away": "ceuta"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "castellon",
+      "away": "sporting"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "cordoba",
+      "away": "eibar"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "andorra",
+      "away": "burgos"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "girona",
+      "away": "celta-fortuna"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "granada",
+      "away": "valladolid"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "las-palmas",
+      "away": "real-sociedad-b"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "leganes",
+      "away": "mallorca"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "sabadell",
+      "away": "tenerife"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "ceuta",
+      "away": "sporting"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "albacete",
+      "away": "sabadell"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "burgos",
+      "away": "castellon"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "celta-fortuna",
+      "away": "cordoba"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "eibar",
+      "away": "almeria"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "eldense",
+      "away": "granada"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "mallorca",
+      "away": "cadiz"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "oviedo",
+      "away": "las-palmas"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "real-sociedad-b",
+      "away": "girona"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "tenerife",
+      "away": "andorra"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "valladolid",
+      "away": "leganes"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "burgos",
+      "away": "celta-fortuna"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "cadiz",
+      "away": "oviedo"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "castellon",
+      "away": "eibar"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "cordoba",
+      "away": "ceuta"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "andorra",
+      "away": "mallorca"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "girona",
+      "away": "almeria"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "granada",
+      "away": "tenerife"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "las-palmas",
+      "away": "eldense"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "leganes",
+      "away": "albacete"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "sabadell",
+      "away": "real-sociedad-b"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "sporting",
+      "away": "valladolid"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "albacete",
+      "away": "celta-fortuna"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "almeria",
+      "away": "andorra"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "eibar",
+      "away": "cadiz"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "eldense",
+      "away": "sabadell"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "granada",
+      "away": "las-palmas"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "leganes",
+      "away": "burgos"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "mallorca",
+      "away": "cordoba"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "oviedo",
+      "away": "girona"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "real-sociedad-b",
+      "away": "sporting"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "tenerife",
+      "away": "ceuta"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "valladolid",
+      "away": "castellon"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "ceuta",
+      "away": "almeria"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "burgos",
+      "away": "albacete"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "castellon",
+      "away": "eldense"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "celta-fortuna",
+      "away": "valladolid"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "cordoba",
+      "away": "oviedo"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "andorra",
+      "away": "leganes"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "girona",
+      "away": "eibar"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "real-sociedad-b",
+      "away": "cadiz"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "sabadell",
+      "away": "granada"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "sporting",
+      "away": "las-palmas"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "tenerife",
+      "away": "mallorca"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "albacete",
+      "away": "tenerife"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "almeria",
+      "away": "sporting"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "cadiz",
+      "away": "cordoba"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "eibar",
+      "away": "burgos"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "eldense",
+      "away": "girona"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "granada",
+      "away": "ceuta"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "las-palmas",
+      "away": "andorra"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "leganes",
+      "away": "sabadell"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "mallorca",
+      "away": "castellon"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "oviedo",
+      "away": "celta-fortuna"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "valladolid",
+      "away": "real-sociedad-b"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "ceuta",
+      "away": "albacete"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "burgos",
+      "away": "cadiz"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "castellon",
+      "away": "almeria"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "celta-fortuna",
+      "away": "mallorca"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "cordoba",
+      "away": "las-palmas"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "andorra",
+      "away": "oviedo"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "girona",
+      "away": "valladolid"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "real-sociedad-b",
+      "away": "leganes"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "sabadell",
+      "away": "eibar"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "sporting",
+      "away": "granada"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "tenerife",
+      "away": "eldense"
+    },
+    {
+      "round": 18,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "almeria",
+      "away": "albacete"
+    },
+    {
+      "round": 18,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "cadiz",
+      "away": "sabadell"
+    },
+    {
+      "round": 18,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "cordoba",
+      "away": "castellon"
+    },
+    {
+      "round": 18,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "eibar",
+      "away": "sporting"
+    },
+    {
+      "round": 18,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "eldense",
+      "away": "andorra"
+    },
+    {
+      "round": 18,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "granada",
+      "away": "girona"
+    },
+    {
+      "round": 18,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "las-palmas",
+      "away": "celta-fortuna"
+    },
+    {
+      "round": 18,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "leganes",
+      "away": "ceuta"
+    },
+    {
+      "round": 18,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "mallorca",
+      "away": "burgos"
+    },
+    {
+      "round": 18,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "oviedo",
+      "away": "real-sociedad-b"
+    },
+    {
+      "round": 18,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "valladolid",
+      "away": "tenerife"
+    },
+    {
+      "round": 19,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "ceuta",
+      "away": "eibar"
+    },
+    {
+      "round": 19,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "albacete",
+      "away": "mallorca"
+    },
+    {
+      "round": 19,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "almeria",
+      "away": "valladolid"
+    },
+    {
+      "round": 19,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "burgos",
+      "away": "girona"
+    },
+    {
+      "round": 19,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "castellon",
+      "away": "granada"
+    },
+    {
+      "round": 19,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "celta-fortuna",
+      "away": "eldense"
+    },
+    {
+      "round": 19,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "andorra",
+      "away": "cadiz"
+    },
+    {
+      "round": 19,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "real-sociedad-b",
+      "away": "cordoba"
+    },
+    {
+      "round": 19,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "sabadell",
+      "away": "las-palmas"
+    },
+    {
+      "round": 19,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "sporting",
+      "away": "leganes"
+    },
+    {
+      "round": 19,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "tenerife",
+      "away": "oviedo"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "cadiz",
+      "away": "albacete"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "cordoba",
+      "away": "andorra"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "eibar",
+      "away": "real-sociedad-b"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "eldense",
+      "away": "ceuta"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "girona",
+      "away": "sabadell"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "granada",
+      "away": "almeria"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "las-palmas",
+      "away": "tenerife"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "leganes",
+      "away": "celta-fortuna"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "mallorca",
+      "away": "sporting"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "oviedo",
+      "away": "castellon"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "valladolid",
+      "away": "burgos"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "ceuta",
+      "away": "girona"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "albacete",
+      "away": "andorra"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "almeria",
+      "away": "las-palmas"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "castellon",
+      "away": "cadiz"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "celta-fortuna",
+      "away": "granada"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "leganes",
+      "away": "eibar"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "mallorca",
+      "away": "oviedo"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "real-sociedad-b",
+      "away": "eldense"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "sabadell",
+      "away": "valladolid"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "sporting",
+      "away": "cordoba"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "tenerife",
+      "away": "burgos"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "burgos",
+      "away": "sporting"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "cadiz",
+      "away": "mallorca"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "castellon",
+      "away": "leganes"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "cordoba",
+      "away": "sabadell"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "eibar",
+      "away": "celta-fortuna"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "eldense",
+      "away": "albacete"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "andorra",
+      "away": "tenerife"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "granada",
+      "away": "real-sociedad-b"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "las-palmas",
+      "away": "girona"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "oviedo",
+      "away": "almeria"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "valladolid",
+      "away": "ceuta"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "albacete",
+      "away": "granada"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "almeria",
+      "away": "cordoba"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "cadiz",
+      "away": "eldense"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "celta-fortuna",
+      "away": "burgos"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "girona",
+      "away": "oviedo"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "leganes",
+      "away": "valladolid"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "mallorca",
+      "away": "andorra"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "real-sociedad-b",
+      "away": "las-palmas"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "sabadell",
+      "away": "ceuta"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "sporting",
+      "away": "castellon"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "tenerife",
+      "away": "eibar"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "ceuta",
+      "away": "tenerife"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "burgos",
+      "away": "leganes"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "cordoba",
+      "away": "mallorca"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "eibar",
+      "away": "albacete"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "eldense",
+      "away": "castellon"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "andorra",
+      "away": "almeria"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "girona",
+      "away": "real-sociedad-b"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "granada",
+      "away": "sabadell"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "las-palmas",
+      "away": "sporting"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "oviedo",
+      "away": "cadiz"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "valladolid",
+      "away": "celta-fortuna"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "albacete",
+      "away": "valladolid"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "almeria",
+      "away": "eibar"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "castellon",
+      "away": "las-palmas"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "celta-fortuna",
+      "away": "girona"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "cordoba",
+      "away": "cadiz"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "leganes",
+      "away": "oviedo"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "mallorca",
+      "away": "eldense"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "real-sociedad-b",
+      "away": "andorra"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "sabadell",
+      "away": "burgos"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "sporting",
+      "away": "ceuta"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "tenerife",
+      "away": "granada"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "ceuta",
+      "away": "mallorca"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "albacete",
+      "away": "castellon"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "burgos",
+      "away": "almeria"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "cadiz",
+      "away": "real-sociedad-b"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "eldense",
+      "away": "tenerife"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "andorra",
+      "away": "celta-fortuna"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "girona",
+      "away": "cordoba"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "granada",
+      "away": "leganes"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "las-palmas",
+      "away": "eibar"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "oviedo",
+      "away": "sabadell"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "valladolid",
+      "away": "sporting"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "almeria",
+      "away": "ceuta"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "castellon",
+      "away": "girona"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "celta-fortuna",
+      "away": "las-palmas"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "cordoba",
+      "away": "burgos"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "eibar",
+      "away": "oviedo"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "leganes",
+      "away": "cadiz"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "mallorca",
+      "away": "granada"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "real-sociedad-b",
+      "away": "valladolid"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "sabadell",
+      "away": "eldense"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "sporting",
+      "away": "andorra"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "tenerife",
+      "away": "albacete"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "ceuta",
+      "away": "leganes"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "albacete",
+      "away": "burgos"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "cadiz",
+      "away": "almeria"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "castellon",
+      "away": "andorra"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "eldense",
+      "away": "celta-fortuna"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "girona",
+      "away": "sporting"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "granada",
+      "away": "cordoba"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "las-palmas",
+      "away": "sabadell"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "mallorca",
+      "away": "real-sociedad-b"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "oviedo",
+      "away": "tenerife"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "valladolid",
+      "away": "eibar"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "almeria",
+      "away": "castellon"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "burgos",
+      "away": "mallorca"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "celta-fortuna",
+      "away": "oviedo"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "cordoba",
+      "away": "valladolid"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "eibar",
+      "away": "eldense"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "andorra",
+      "away": "girona"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "las-palmas",
+      "away": "granada"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "leganes",
+      "away": "tenerife"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "real-sociedad-b",
+      "away": "ceuta"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "sabadell",
+      "away": "albacete"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "sporting",
+      "away": "cadiz"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "ceuta",
+      "away": "andorra"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "albacete",
+      "away": "las-palmas"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "cadiz",
+      "away": "granada"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "castellon",
+      "away": "celta-fortuna"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "eldense",
+      "away": "sporting"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "girona",
+      "away": "burgos"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "mallorca",
+      "away": "leganes"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "oviedo",
+      "away": "cordoba"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "real-sociedad-b",
+      "away": "eibar"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "tenerife",
+      "away": "sabadell"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "valladolid",
+      "away": "almeria"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "almeria",
+      "away": "real-sociedad-b"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "burgos",
+      "away": "tenerife"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "cordoba",
+      "away": "eldense"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "eibar",
+      "away": "ceuta"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "andorra",
+      "away": "albacete"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "granada",
+      "away": "castellon"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "las-palmas",
+      "away": "oviedo"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "leganes",
+      "away": "girona"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "sabadell",
+      "away": "celta-fortuna"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "sporting",
+      "away": "mallorca"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "valladolid",
+      "away": "cadiz"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "ceuta",
+      "away": "granada"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "albacete",
+      "away": "almeria"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "castellon",
+      "away": "cordoba"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "celta-fortuna",
+      "away": "sporting"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "eibar",
+      "away": "andorra"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "eldense",
+      "away": "leganes"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "girona",
+      "away": "cadiz"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "oviedo",
+      "away": "valladolid"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "real-sociedad-b",
+      "away": "burgos"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "sabadell",
+      "away": "mallorca"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "tenerife",
+      "away": "las-palmas"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "burgos",
+      "away": "oviedo"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "cadiz",
+      "away": "castellon"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "cordoba",
+      "away": "celta-fortuna"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "andorra",
+      "away": "eldense"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "granada",
+      "away": "eibar"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "las-palmas",
+      "away": "ceuta"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "leganes",
+      "away": "almeria"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "mallorca",
+      "away": "girona"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "real-sociedad-b",
+      "away": "albacete"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "sporting",
+      "away": "tenerife"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "valladolid",
+      "away": "sabadell"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "albacete",
+      "away": "ceuta"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "almeria",
+      "away": "tenerife"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "castellon",
+      "away": "burgos"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "celta-fortuna",
+      "away": "cadiz"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "eibar",
+      "away": "cordoba"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "andorra",
+      "away": "valladolid"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "girona",
+      "away": "granada"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "las-palmas",
+      "away": "mallorca"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "oviedo",
+      "away": "eldense"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "sabadell",
+      "away": "leganes"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "sporting",
+      "away": "real-sociedad-b"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "ceuta",
+      "away": "castellon"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "cadiz",
+      "away": "andorra"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "celta-fortuna",
+      "away": "almeria"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "cordoba",
+      "away": "albacete"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "eldense",
+      "away": "burgos"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "granada",
+      "away": "oviedo"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "leganes",
+      "away": "las-palmas"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "mallorca",
+      "away": "eibar"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "sabadell",
+      "away": "sporting"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "tenerife",
+      "away": "real-sociedad-b"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "valladolid",
+      "away": "girona"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "ceuta",
+      "away": "eldense"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "albacete",
+      "away": "leganes"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "almeria",
+      "away": "granada"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "burgos",
+      "away": "valladolid"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "castellon",
+      "away": "mallorca"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "eibar",
+      "away": "sabadell"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "andorra",
+      "away": "cordoba"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "girona",
+      "away": "tenerife"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "las-palmas",
+      "away": "cadiz"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "real-sociedad-b",
+      "away": "celta-fortuna"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "sporting",
+      "away": "oviedo"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "cadiz",
+      "away": "eibar"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "celta-fortuna",
+      "away": "ceuta"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "cordoba",
+      "away": "real-sociedad-b"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "eldense",
+      "away": "almeria"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "andorra",
+      "away": "las-palmas"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "granada",
+      "away": "burgos"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "leganes",
+      "away": "sporting"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "oviedo",
+      "away": "albacete"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "sabadell",
+      "away": "girona"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "tenerife",
+      "away": "castellon"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "valladolid",
+      "away": "mallorca"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "ceuta",
+      "away": "cadiz"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "albacete",
+      "away": "girona"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "almeria",
+      "away": "sabadell"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "burgos",
+      "away": "andorra"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "castellon",
+      "away": "valladolid"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "eibar",
+      "away": "leganes"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "eldense",
+      "away": "las-palmas"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "granada",
+      "away": "sporting"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "mallorca",
+      "away": "celta-fortuna"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "real-sociedad-b",
+      "away": "oviedo"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "tenerife",
+      "away": "cordoba"
+    },
+    {
+      "round": 39,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "cadiz",
+      "away": "burgos"
+    },
+    {
+      "round": 39,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "castellon",
+      "away": "real-sociedad-b"
+    },
+    {
+      "round": 39,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "celta-fortuna",
+      "away": "albacete"
+    },
+    {
+      "round": 39,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "cordoba",
+      "away": "leganes"
+    },
+    {
+      "round": 39,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "andorra",
+      "away": "sabadell"
+    },
+    {
+      "round": 39,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "girona",
+      "away": "eldense"
+    },
+    {
+      "round": 39,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "las-palmas",
+      "away": "almeria"
+    },
+    {
+      "round": 39,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "mallorca",
+      "away": "tenerife"
+    },
+    {
+      "round": 39,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "oviedo",
+      "away": "ceuta"
+    },
+    {
+      "round": 39,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "sporting",
+      "away": "eibar"
+    },
+    {
+      "round": 39,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "valladolid",
+      "away": "granada"
+    },
+    {
+      "round": 40,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "ceuta",
+      "away": "cordoba"
+    },
+    {
+      "round": 40,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "albacete",
+      "away": "sporting"
+    },
+    {
+      "round": 40,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "almeria",
+      "away": "girona"
+    },
+    {
+      "round": 40,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "burgos",
+      "away": "las-palmas"
+    },
+    {
+      "round": 40,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "eibar",
+      "away": "castellon"
+    },
+    {
+      "round": 40,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "eldense",
+      "away": "real-sociedad-b"
+    },
+    {
+      "round": 40,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "granada",
+      "away": "celta-fortuna"
+    },
+    {
+      "round": 40,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "leganes",
+      "away": "andorra"
+    },
+    {
+      "round": 40,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "oviedo",
+      "away": "mallorca"
+    },
+    {
+      "round": 40,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "sabadell",
+      "away": "cadiz"
+    },
+    {
+      "round": 40,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "tenerife",
+      "away": "valladolid"
+    },
+    {
+      "round": 41,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "burgos",
+      "away": "eibar"
+    },
+    {
+      "round": 41,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "cadiz",
+      "away": "tenerife"
+    },
+    {
+      "round": 41,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "castellon",
+      "away": "oviedo"
+    },
+    {
+      "round": 41,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "celta-fortuna",
+      "away": "leganes"
+    },
+    {
+      "round": 41,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "eldense",
+      "away": "valladolid"
+    },
+    {
+      "round": 41,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "andorra",
+      "away": "granada"
+    },
+    {
+      "round": 41,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "girona",
+      "away": "ceuta"
+    },
+    {
+      "round": 41,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "las-palmas",
+      "away": "cordoba"
+    },
+    {
+      "round": 41,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "mallorca",
+      "away": "albacete"
+    },
+    {
+      "round": 41,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "real-sociedad-b",
+      "away": "sabadell"
+    },
+    {
+      "round": 41,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "sporting",
+      "away": "almeria"
+    },
+    {
+      "round": 42,
+      "kickoff": "2027-06-06T15:00:00Z",
+      "home": "ceuta",
+      "away": "burgos"
+    },
+    {
+      "round": 42,
+      "kickoff": "2027-06-06T15:00:00Z",
+      "home": "albacete",
+      "away": "cadiz"
+    },
+    {
+      "round": 42,
+      "kickoff": "2027-06-06T15:00:00Z",
+      "home": "almeria",
+      "away": "mallorca"
+    },
+    {
+      "round": 42,
+      "kickoff": "2027-06-06T15:00:00Z",
+      "home": "cordoba",
+      "away": "sporting"
+    },
+    {
+      "round": 42,
+      "kickoff": "2027-06-06T15:00:00Z",
+      "home": "eibar",
+      "away": "girona"
+    },
+    {
+      "round": 42,
+      "kickoff": "2027-06-06T15:00:00Z",
+      "home": "granada",
+      "away": "eldense"
+    },
+    {
+      "round": 42,
+      "kickoff": "2027-06-06T15:00:00Z",
+      "home": "leganes",
+      "away": "real-sociedad-b"
+    },
+    {
+      "round": 42,
+      "kickoff": "2027-06-06T15:00:00Z",
+      "home": "oviedo",
+      "away": "andorra"
+    },
+    {
+      "round": 42,
+      "kickoff": "2027-06-06T15:00:00Z",
+      "home": "sabadell",
+      "away": "castellon"
+    },
+    {
+      "round": 42,
+      "kickoff": "2027-06-06T15:00:00Z",
+      "home": "tenerife",
+      "away": "celta-fortuna"
+    },
+    {
+      "round": 42,
+      "kickoff": "2027-06-06T15:00:00Z",
+      "home": "valladolid",
+      "away": "las-palmas"
+    }
+  ]
+}

@@ -1,0 +1,2390 @@
+{
+  "competition": {
+    "id": "primera-division",
+    "season": "2026-27",
+    "name": "Primeira División",
+    "tier": 1
+  },
+  "teams": [
+    {
+      "id": "alaves",
+      "name": "Deportivo Alavés",
+      "shortName": "Alavés"
+    },
+    {
+      "id": "athletic-club",
+      "name": "Athletic Club",
+      "shortName": "Athletic"
+    },
+    {
+      "id": "atletico-madrid",
+      "name": "Atlético de Madrid",
+      "shortName": "Atlético"
+    },
+    {
+      "id": "barcelona",
+      "name": "FC Barcelona",
+      "shortName": "Barcelona"
+    },
+    {
+      "id": "celta",
+      "name": "RC Celta",
+      "shortName": "Celta"
+    },
+    {
+      "id": "deportivo",
+      "name": "RC Deportivo",
+      "shortName": "Deportivo"
+    },
+    {
+      "id": "elche",
+      "name": "Elche CF",
+      "shortName": "Elche"
+    },
+    {
+      "id": "espanyol",
+      "name": "RCD Espanyol",
+      "shortName": "Espanyol"
+    },
+    {
+      "id": "getafe",
+      "name": "Getafe CF",
+      "shortName": "Getafe"
+    },
+    {
+      "id": "levante",
+      "name": "Levante UD",
+      "shortName": "Levante"
+    },
+    {
+      "id": "malaga",
+      "name": "Málaga CF",
+      "shortName": "Málaga"
+    },
+    {
+      "id": "osasuna",
+      "name": "CA Osasuna",
+      "shortName": "Osasuna"
+    },
+    {
+      "id": "racing-santander",
+      "name": "Real Racing Club",
+      "shortName": "Racing"
+    },
+    {
+      "id": "rayo-vallecano",
+      "name": "Rayo Vallecano",
+      "shortName": "Rayo"
+    },
+    {
+      "id": "real-betis",
+      "name": "Real Betis",
+      "shortName": "Betis"
+    },
+    {
+      "id": "real-madrid",
+      "name": "Real Madrid"
+    },
+    {
+      "id": "real-sociedad",
+      "name": "Real Sociedad"
+    },
+    {
+      "id": "sevilla",
+      "name": "Sevilla FC",
+      "shortName": "Sevilla"
+    },
+    {
+      "id": "valencia",
+      "name": "Valencia CF",
+      "shortName": "Valencia"
+    },
+    {
+      "id": "villarreal",
+      "name": "Villarreal CF",
+      "shortName": "Villarreal"
+    }
+  ],
+  "matches": [
+    {
+      "round": 1,
+      "kickoff": "2026-08-15T17:30:00Z",
+      "home": "alaves",
+      "away": "getafe"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-15T19:30:00Z",
+      "home": "sevilla",
+      "away": "rayo-vallecano"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-16T15:00:00Z",
+      "home": "racing-santander",
+      "away": "villarreal"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-16T17:00:00Z",
+      "home": "espanyol",
+      "away": "levante"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-17T19:00:00Z",
+      "home": "deportivo",
+      "away": "elche"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-19T19:00:00Z",
+      "home": "atletico-madrid",
+      "away": "malaga"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-25T19:00:00Z",
+      "home": "valencia",
+      "away": "real-betis"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-26T19:00:00Z",
+      "home": "real-madrid",
+      "away": "real-sociedad"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-27T18:30:00Z",
+      "home": "celta",
+      "away": "osasuna"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-27T19:00:00Z",
+      "home": "barcelona",
+      "away": "athletic-club"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-20T19:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "alaves"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-21T19:00:00Z",
+      "home": "real-betis",
+      "away": "real-sociedad"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-22T15:00:00Z",
+      "home": "athletic-club",
+      "away": "sevilla"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-22T17:30:00Z",
+      "home": "valencia",
+      "away": "celta"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-22T19:30:00Z",
+      "home": "espanyol",
+      "away": "real-madrid"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-23T15:00:00Z",
+      "home": "atletico-madrid",
+      "away": "villarreal"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-23T17:30:00Z",
+      "home": "getafe",
+      "away": "racing-santander"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-23T19:30:00Z",
+      "home": "elche",
+      "away": "barcelona"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-24T17:30:00Z",
+      "home": "osasuna",
+      "away": "levante"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-24T19:30:00Z",
+      "home": "malaga",
+      "away": "deportivo"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-28T17:00:00Z",
+      "home": "racing-santander",
+      "away": "elche"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-28T19:30:00Z",
+      "home": "alaves",
+      "away": "villarreal"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-29T15:00:00Z",
+      "home": "levante",
+      "away": "real-betis"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-29T17:00:00Z",
+      "home": "real-sociedad",
+      "away": "espanyol"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-29T19:30:00Z",
+      "home": "sevilla",
+      "away": "atletico-madrid"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-30T15:00:00Z",
+      "home": "real-madrid",
+      "away": "malaga"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-30T17:30:00Z",
+      "home": "deportivo",
+      "away": "valencia"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-30T19:30:00Z",
+      "home": "celta",
+      "away": "athletic-club"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-31T17:30:00Z",
+      "home": "osasuna",
+      "away": "getafe"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-31T19:30:00Z",
+      "home": "barcelona",
+      "away": "rayo-vallecano"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-04T19:00:00Z",
+      "home": "real-betis",
+      "away": "real-madrid"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-05T14:15:00Z",
+      "home": "athletic-club",
+      "away": "atletico-madrid"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-05T16:30:00Z",
+      "home": "rayo-vallecano",
+      "away": "racing-santander"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-05T19:00:00Z",
+      "home": "villarreal",
+      "away": "deportivo"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-06T14:15:00Z",
+      "home": "valencia",
+      "away": "barcelona"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-06T16:30:00Z",
+      "home": "alaves",
+      "away": "osasuna"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-06T16:30:00Z",
+      "home": "malaga",
+      "away": "levante"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-06T19:00:00Z",
+      "home": "espanyol",
+      "away": "sevilla"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-07T17:00:00Z",
+      "home": "getafe",
+      "away": "celta"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-07T19:30:00Z",
+      "home": "elche",
+      "away": "real-sociedad"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-11T19:00:00Z",
+      "home": "sevilla",
+      "away": "valencia"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-12T12:00:00Z",
+      "home": "racing-santander",
+      "away": "alaves"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-12T14:15:00Z",
+      "home": "osasuna",
+      "away": "espanyol"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-12T16:30:00Z",
+      "home": "athletic-club",
+      "away": "elche"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-12T19:00:00Z",
+      "home": "real-madrid",
+      "away": "rayo-vallecano"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-13T12:00:00Z",
+      "home": "celta",
+      "away": "malaga"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-13T14:15:00Z",
+      "home": "levante",
+      "away": "barcelona"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-13T16:30:00Z",
+      "home": "getafe",
+      "away": "deportivo"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-13T19:00:00Z",
+      "home": "real-sociedad",
+      "away": "atletico-madrid"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-14T19:00:00Z",
+      "home": "villarreal",
+      "away": "real-betis"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-03T19:00:00Z",
+      "home": "real-sociedad",
+      "away": "celta"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-15T17:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "espanyol"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-15T18:00:00Z",
+      "home": "alaves",
+      "away": "valencia"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-15T19:30:00Z",
+      "home": "elche",
+      "away": "real-madrid"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-16T17:00:00Z",
+      "home": "atletico-madrid",
+      "away": "osasuna"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-16T17:00:00Z",
+      "home": "deportivo",
+      "away": "sevilla"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-16T19:30:00Z",
+      "home": "barcelona",
+      "away": "racing-santander"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-16T19:30:00Z",
+      "home": "levante",
+      "away": "athletic-club"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-17T17:00:00Z",
+      "home": "real-betis",
+      "away": "getafe"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-17T19:30:00Z",
+      "home": "malaga",
+      "away": "villarreal"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-18T19:00:00Z",
+      "home": "espanyol",
+      "away": "elche"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-19T12:00:00Z",
+      "home": "osasuna",
+      "away": "rayo-vallecano"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-19T14:15:00Z",
+      "home": "athletic-club",
+      "away": "alaves"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-19T16:30:00Z",
+      "home": "celta",
+      "away": "racing-santander"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-19T19:00:00Z",
+      "home": "sevilla",
+      "away": "barcelona"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-20T12:00:00Z",
+      "home": "getafe",
+      "away": "malaga"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-20T14:15:00Z",
+      "home": "atletico-madrid",
+      "away": "real-madrid"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-20T16:30:00Z",
+      "home": "deportivo",
+      "away": "real-betis"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-20T16:30:00Z",
+      "home": "villarreal",
+      "away": "levante"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-20T19:00:00Z",
+      "home": "valencia",
+      "away": "real-sociedad"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-09T19:00:00Z",
+      "home": "malaga",
+      "away": "espanyol"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-10T12:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "athletic-club"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-10T14:15:00Z",
+      "home": "alaves",
+      "away": "atletico-madrid"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-10T16:30:00Z",
+      "home": "barcelona",
+      "away": "getafe"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-10T19:00:00Z",
+      "home": "real-madrid",
+      "away": "villarreal"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-11T12:00:00Z",
+      "home": "elche",
+      "away": "celta"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-11T14:15:00Z",
+      "home": "real-sociedad",
+      "away": "deportivo"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-11T16:30:00Z",
+      "home": "real-betis",
+      "away": "osasuna"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-11T19:00:00Z",
+      "home": "racing-santander",
+      "away": "valencia"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-12T19:00:00Z",
+      "home": "levante",
+      "away": "sevilla"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-16T19:00:00Z",
+      "home": "deportivo",
+      "away": "levante"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-17T12:00:00Z",
+      "home": "espanyol",
+      "away": "atletico-madrid"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-17T14:15:00Z",
+      "home": "villarreal",
+      "away": "elche"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-17T16:30:00Z",
+      "home": "real-betis",
+      "away": "barcelona"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-17T19:00:00Z",
+      "home": "valencia",
+      "away": "athletic-club"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-18T12:00:00Z",
+      "home": "osasuna",
+      "away": "racing-santander"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-18T14:15:00Z",
+      "home": "celta",
+      "away": "alaves"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-18T16:30:00Z",
+      "home": "malaga",
+      "away": "real-sociedad"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-18T19:00:00Z",
+      "home": "real-madrid",
+      "away": "sevilla"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-19T19:00:00Z",
+      "home": "getafe",
+      "away": "rayo-vallecano"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "alaves",
+      "away": "malaga"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "athletic-club",
+      "away": "getafe"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "atletico-madrid",
+      "away": "deportivo"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "celta",
+      "away": "real-betis"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "racing-santander",
+      "away": "espanyol"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "elche"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "real-sociedad",
+      "away": "levante"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "sevilla",
+      "away": "osasuna"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "valencia",
+      "away": "villarreal"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-25T20:00:00Z",
+      "home": "barcelona",
+      "away": "real-madrid"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "athletic-club",
+      "away": "real-sociedad"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "barcelona",
+      "away": "alaves"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "deportivo",
+      "away": "osasuna"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "elche",
+      "away": "valencia"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "getafe",
+      "away": "sevilla"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "levante",
+      "away": "atletico-madrid"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "racing-santander",
+      "away": "real-madrid"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "celta"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "real-betis",
+      "away": "malaga"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "villarreal",
+      "away": "espanyol"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "atletico-madrid",
+      "away": "barcelona"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "celta",
+      "away": "levante"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "elche",
+      "away": "real-betis"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "espanyol",
+      "away": "deportivo"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "malaga",
+      "away": "racing-santander"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "osasuna",
+      "away": "athletic-club"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "real-sociedad",
+      "away": "rayo-vallecano"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "sevilla",
+      "away": "alaves"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "valencia",
+      "away": "real-madrid"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "villarreal",
+      "away": "getafe"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "alaves",
+      "away": "deportivo"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "athletic-club",
+      "away": "espanyol"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "barcelona",
+      "away": "villarreal"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "getafe",
+      "away": "atletico-madrid"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "levante",
+      "away": "elche"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "osasuna",
+      "away": "malaga"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "racing-santander",
+      "away": "real-sociedad"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "valencia"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "real-madrid",
+      "away": "celta"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "sevilla",
+      "away": "real-betis"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "celta",
+      "away": "villarreal"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "deportivo",
+      "away": "barcelona"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "elche",
+      "away": "atletico-madrid"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "espanyol",
+      "away": "getafe"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "levante",
+      "away": "racing-santander"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "malaga",
+      "away": "athletic-club"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "real-betis",
+      "away": "rayo-vallecano"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "real-madrid",
+      "away": "alaves"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "real-sociedad",
+      "away": "sevilla"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "valencia",
+      "away": "osasuna"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "alaves",
+      "away": "espanyol"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "athletic-club",
+      "away": "real-madrid"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "atletico-madrid",
+      "away": "real-betis"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "barcelona",
+      "away": "celta"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "getafe",
+      "away": "valencia"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "osasuna",
+      "away": "elche"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "racing-santander",
+      "away": "deportivo"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "levante"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "sevilla",
+      "away": "malaga"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "villarreal",
+      "away": "real-sociedad"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "atletico-madrid",
+      "away": "valencia"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "deportivo",
+      "away": "athletic-club"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "elche",
+      "away": "sevilla"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "espanyol",
+      "away": "celta"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "levante",
+      "away": "alaves"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "malaga",
+      "away": "barcelona"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "real-betis",
+      "away": "racing-santander"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "real-madrid",
+      "away": "osasuna"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "real-sociedad",
+      "away": "getafe"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "villarreal",
+      "away": "rayo-vallecano"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "alaves",
+      "away": "elche"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "athletic-club",
+      "away": "real-betis"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "barcelona",
+      "away": "real-sociedad"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "celta",
+      "away": "atletico-madrid"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "deportivo",
+      "away": "real-madrid"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "getafe",
+      "away": "levante"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "osasuna",
+      "away": "villarreal"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "malaga"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "sevilla",
+      "away": "racing-santander"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "valencia",
+      "away": "espanyol"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "celta",
+      "away": "deportivo"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "espanyol",
+      "away": "barcelona"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "levante",
+      "away": "valencia"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "malaga",
+      "away": "elche"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "racing-santander",
+      "away": "athletic-club"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "atletico-madrid"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "real-betis",
+      "away": "alaves"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "real-madrid",
+      "away": "getafe"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "real-sociedad",
+      "away": "osasuna"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "villarreal",
+      "away": "sevilla"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "alaves",
+      "away": "real-sociedad"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "athletic-club",
+      "away": "villarreal"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "atletico-madrid",
+      "away": "racing-santander"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "deportivo",
+      "away": "rayo-vallecano"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "elche",
+      "away": "getafe"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "espanyol",
+      "away": "real-betis"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "osasuna",
+      "away": "barcelona"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "real-madrid",
+      "away": "levante"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "sevilla",
+      "away": "celta"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "valencia",
+      "away": "malaga"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "atletico-madrid",
+      "away": "real-sociedad"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "barcelona",
+      "away": "elche"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "celta",
+      "away": "valencia"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "getafe",
+      "away": "athletic-club"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "levante",
+      "away": "espanyol"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "malaga",
+      "away": "real-madrid"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "racing-santander",
+      "away": "osasuna"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "sevilla"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "real-betis",
+      "away": "deportivo"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "villarreal",
+      "away": "alaves"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "alaves",
+      "away": "barcelona"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "athletic-club",
+      "away": "levante"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "deportivo",
+      "away": "atletico-madrid"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "elche",
+      "away": "rayo-vallecano"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "espanyol",
+      "away": "villarreal"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "getafe",
+      "away": "osasuna"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "racing-santander",
+      "away": "celta"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "real-madrid",
+      "away": "real-betis"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "real-sociedad",
+      "away": "malaga"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "valencia",
+      "away": "sevilla"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "atletico-madrid",
+      "away": "espanyol"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "barcelona",
+      "away": "valencia"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "celta",
+      "away": "getafe"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "levante",
+      "away": "real-sociedad"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "malaga",
+      "away": "alaves"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "osasuna",
+      "away": "deportivo"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "real-madrid"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "real-betis",
+      "away": "elche"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "sevilla",
+      "away": "athletic-club"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "villarreal",
+      "away": "racing-santander"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "alaves",
+      "away": "celta"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "athletic-club",
+      "away": "osasuna"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "barcelona",
+      "away": "atletico-madrid"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "deportivo",
+      "away": "malaga"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "elche",
+      "away": "levante"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "espanyol",
+      "away": "rayo-vallecano"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "getafe",
+      "away": "villarreal"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "real-betis",
+      "away": "sevilla"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "real-sociedad",
+      "away": "real-madrid"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "valencia",
+      "away": "racing-santander"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "celta",
+      "away": "rayo-vallecano"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "elche",
+      "away": "deportivo"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "levante",
+      "away": "malaga"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "osasuna",
+      "away": "atletico-madrid"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "racing-santander",
+      "away": "getafe"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "real-madrid",
+      "away": "athletic-club"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "real-sociedad",
+      "away": "real-betis"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "sevilla",
+      "away": "espanyol"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "valencia",
+      "away": "alaves"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "villarreal",
+      "away": "barcelona"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "alaves",
+      "away": "racing-santander"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "athletic-club",
+      "away": "celta"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "atletico-madrid",
+      "away": "elche"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "barcelona",
+      "away": "levante"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "deportivo",
+      "away": "real-sociedad"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "espanyol",
+      "away": "osasuna"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "malaga",
+      "away": "real-betis"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "getafe"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "sevilla",
+      "away": "real-madrid"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "villarreal",
+      "away": "valencia"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "athletic-club",
+      "away": "barcelona"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "celta",
+      "away": "espanyol"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "getafe",
+      "away": "alaves"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "levante",
+      "away": "deportivo"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "malaga",
+      "away": "atletico-madrid"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "osasuna",
+      "away": "sevilla"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "racing-santander",
+      "away": "rayo-vallecano"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "real-betis",
+      "away": "villarreal"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "real-madrid",
+      "away": "valencia"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "real-sociedad",
+      "away": "elche"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "alaves",
+      "away": "athletic-club"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "atletico-madrid",
+      "away": "celta"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "barcelona",
+      "away": "real-betis"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "deportivo",
+      "away": "getafe"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "elche",
+      "away": "malaga"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "espanyol",
+      "away": "racing-santander"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "osasuna"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "sevilla",
+      "away": "real-sociedad"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "valencia",
+      "away": "levante"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "villarreal",
+      "away": "real-madrid"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "alaves",
+      "away": "sevilla"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "athletic-club",
+      "away": "valencia"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "barcelona",
+      "away": "deportivo"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "elche",
+      "away": "villarreal"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "getafe",
+      "away": "real-sociedad"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "malaga",
+      "away": "rayo-vallecano"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "osasuna",
+      "away": "celta"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "racing-santander",
+      "away": "atletico-madrid"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "real-betis",
+      "away": "levante"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "real-madrid",
+      "away": "espanyol"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "atletico-madrid",
+      "away": "getafe"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "celta",
+      "away": "real-madrid"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "espanyol",
+      "away": "athletic-club"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "levante",
+      "away": "osasuna"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "racing-santander",
+      "away": "real-betis"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "barcelona"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "real-sociedad",
+      "away": "alaves"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "sevilla",
+      "away": "elche"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "valencia",
+      "away": "deportivo"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "villarreal",
+      "away": "malaga"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "athletic-club",
+      "away": "racing-santander"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "barcelona",
+      "away": "sevilla"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "deportivo",
+      "away": "villarreal"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "elche",
+      "away": "alaves"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "getafe",
+      "away": "espanyol"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "levante",
+      "away": "rayo-vallecano"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "malaga",
+      "away": "osasuna"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "real-betis",
+      "away": "celta"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "real-madrid",
+      "away": "atletico-madrid"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "real-sociedad",
+      "away": "valencia"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "alaves",
+      "away": "real-betis"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "atletico-madrid",
+      "away": "levante"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "celta",
+      "away": "elche"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "espanyol",
+      "away": "malaga"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "osasuna",
+      "away": "real-madrid"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "racing-santander",
+      "away": "barcelona"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "real-sociedad"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "sevilla",
+      "away": "deportivo"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "valencia",
+      "away": "getafe"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "villarreal",
+      "away": "athletic-club"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "alaves",
+      "away": "rayo-vallecano"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "atletico-madrid",
+      "away": "sevilla"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "barcelona",
+      "away": "espanyol"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "deportivo",
+      "away": "celta"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "elche",
+      "away": "osasuna"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "getafe",
+      "away": "real-madrid"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "levante",
+      "away": "villarreal"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "malaga",
+      "away": "valencia"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "real-betis",
+      "away": "athletic-club"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "real-sociedad",
+      "away": "racing-santander"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-21T15:00:00Z",
+      "home": "athletic-club",
+      "away": "deportivo"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-21T15:00:00Z",
+      "home": "celta",
+      "away": "barcelona"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-21T15:00:00Z",
+      "home": "espanyol",
+      "away": "real-sociedad"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-21T15:00:00Z",
+      "home": "getafe",
+      "away": "real-betis"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-21T15:00:00Z",
+      "home": "osasuna",
+      "away": "alaves"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-21T15:00:00Z",
+      "home": "racing-santander",
+      "away": "malaga"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-21T15:00:00Z",
+      "home": "real-madrid",
+      "away": "elche"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-21T15:00:00Z",
+      "home": "sevilla",
+      "away": "levante"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-21T15:00:00Z",
+      "home": "valencia",
+      "away": "rayo-vallecano"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-21T15:00:00Z",
+      "home": "villarreal",
+      "away": "atletico-madrid"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "atletico-madrid",
+      "away": "alaves"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "barcelona",
+      "away": "osasuna"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "celta",
+      "away": "sevilla"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "deportivo",
+      "away": "racing-santander"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "elche",
+      "away": "espanyol"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "levante",
+      "away": "real-madrid"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "malaga",
+      "away": "getafe"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "villarreal"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "real-betis",
+      "away": "valencia"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "real-sociedad",
+      "away": "athletic-club"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "alaves",
+      "away": "levante"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "athletic-club",
+      "away": "malaga"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "getafe",
+      "away": "elche"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "osasuna",
+      "away": "real-sociedad"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "racing-santander",
+      "away": "sevilla"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "deportivo"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "real-betis",
+      "away": "espanyol"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "real-madrid",
+      "away": "barcelona"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "valencia",
+      "away": "atletico-madrid"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "villarreal",
+      "away": "celta"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "atletico-madrid",
+      "away": "rayo-vallecano"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "deportivo",
+      "away": "alaves"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "elche",
+      "away": "athletic-club"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "espanyol",
+      "away": "valencia"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "levante",
+      "away": "getafe"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "malaga",
+      "away": "celta"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "osasuna",
+      "away": "real-betis"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "real-madrid",
+      "away": "racing-santander"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "real-sociedad",
+      "away": "barcelona"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "sevilla",
+      "away": "villarreal"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "alaves",
+      "away": "real-madrid"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "atletico-madrid",
+      "away": "athletic-club"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "barcelona",
+      "away": "malaga"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "celta",
+      "away": "real-sociedad"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "deportivo",
+      "away": "espanyol"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "racing-santander",
+      "away": "levante"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "real-betis"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "sevilla",
+      "away": "getafe"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "valencia",
+      "away": "elche"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "villarreal",
+      "away": "osasuna"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "athletic-club",
+      "away": "rayo-vallecano"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "elche",
+      "away": "racing-santander"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "espanyol",
+      "away": "alaves"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "getafe",
+      "away": "barcelona"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "levante",
+      "away": "celta"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "malaga",
+      "away": "sevilla"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "osasuna",
+      "away": "valencia"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "real-betis",
+      "away": "atletico-madrid"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "real-madrid",
+      "away": "deportivo"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "real-sociedad",
+      "away": "villarreal"
+    }
+  ]
+}

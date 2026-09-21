@@ -2,7 +2,7 @@
 
 > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.
 > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.
-> Última actualización: 2026-09-21 (SPEC-003 hecho).
+> Última actualización: 2026-09-21 (SPEC-004 hecho).
 
 ## Qué es y en qué punto está
 
@@ -16,7 +16,9 @@ jornada completa, en una sola pantalla y en galego. Proyecto de tremen.dev.
 
 **SPEC-003 completa:** tokens de diseño tipados en `src/design/tokens.ts`, CSS generado (`npm run tokens:css`) con test de paridad contra `docs/diseno/_tokens.css`, i18n tipada en `src/i18n/` con diccionarios de galego y español con tipos de `dominio.md`, reglas sin hex sueltos en `src/` y sin shorthand `font:` en CSS de `src/` (para preservar `font-variant-numeric: tabular-nums` en números).
 
-El siguiente paso es la spec (d) de EPIC-001: calendario declarado y cargador.
+**SPEC-004 completa:** calendario declarado en `data/calendario/2026-27/` (cinco competiciones, 1.834 partidos, nombres federativos), alias del proveedor en `data/alias/2026-27/`, importador de API-Football (`npm run calendario:sync`, `npm run calendario:load`, `npm run calendario:xornada`).
+
+El siguiente paso es el cierre humano de EPIC-001 y el arranque de EPIC-002 (ingesta y motor) con sdd-producto.
 
 ### Herencia
 
@@ -52,12 +54,11 @@ el motor, luego la pantalla.
 
 Registro en `src/sources/registry.ts`. Tipos soportados por el contrato: API de
 proveedor (pull), web con acuerdo (pull), webhook (push), operador (push).
-Candidata para la primera fuente automática: API-Football (plan Pro, ~19 $/mes,
-cubre las cinco divisiones incluidos los grupos de Tercera, refresco cada 15 s,
-una llamada devuelve todos los partidos en juego). Pendiente verificar en su
-dashboard que Tercera G1 tiene cargada la 2026-27 con eventos. Alternativas:
-Sportmonks (sin directo en Segunda RFEF), BeSoccer API (sin precio público).
-La base legal de cada fuente la gestiona el titular fuera del repo (D-7).
+API-Football Pro está contratado desde 2026-09-21 y ya es el importador de
+calendario. La verificación de cobertura de Tercera G1 (306 partidos, 34
+jornadas, eventos con minuto) está hecha. Alternativas sin directo: Sportmonks
+(sin directo en Segunda RFEF), BeSoccer API (sin precio público). La base legal
+de cada fuente la gestiona el titular fuera del repo (D-7).
 
 ## Decisiones clave hasta hoy
 
@@ -71,13 +72,9 @@ La base legal de cada fuente la gestiona el titular fuera del repo (D-7).
 
 ## Riesgos y preguntas abiertas
 
-- **Cobertura real de Tercera G1 en el proveedor.** Se verifica con cuenta
-  gratuita antes de pagar, y se mide una jornada real antes de cerrar EPIC-002.
 - **pg_cron a 30 s.** Documentado como soportado; se comprueba en la primera
   spec de ingesta. Respaldo: Vercel Cron a 1 min.
 - **Pico de conexiones Realtime** en un Celta-Depor. Plan Pro de Supabase da
   500; el exceso se factura. Se mide en la primera jornada pública.
 - **Coste de plataforma al lanzar:** Vercel Pro 20 $ + Supabase Pro 25 $ +
   proveedor 19 $ ≈ 64 $/mes.
-- **Calendario declarado a mano.** Cinco competiciones × 38 jornadas. Se
-  genera desde el proveedor y se revisa, no se teclea.

@@ -1,0 +1,1936 @@
+{
+  "competition": {
+    "id": "segunda-rfef-g1",
+    "season": "2026-27",
+    "name": "Segunda Federación · Grupo 1",
+    "tier": 4
+  },
+  "teams": [
+    {
+      "id": "amorebieta",
+      "name": "SD Amorebieta",
+      "shortName": "Amorebieta"
+    },
+    {
+      "id": "arosa",
+      "name": "Arosa SC",
+      "shortName": "Arosa"
+    },
+    {
+      "id": "astorga",
+      "name": "Atlético Astorga FC",
+      "shortName": "Astorga"
+    },
+    {
+      "id": "basconia",
+      "name": "CD Basconia",
+      "shortName": "Basconia"
+    },
+    {
+      "id": "bergantinos",
+      "name": "Bergantiños FC",
+      "shortName": "Bergantiños"
+    },
+    {
+      "id": "compostela",
+      "name": "SD Compostela",
+      "shortName": "Compostela"
+    },
+    {
+      "id": "coruxo",
+      "name": "Coruxo FC",
+      "shortName": "Coruxo"
+    },
+    {
+      "id": "alaves-b",
+      "name": "Deportivo Alavés B",
+      "shortName": "Alavés B"
+    },
+    {
+      "id": "eibar-b",
+      "name": "SD Eibar B",
+      "shortName": "Eibar B"
+    },
+    {
+      "id": "gernika",
+      "name": "SD Gernika Club",
+      "shortName": "Gernika"
+    },
+    {
+      "id": "gimnastica",
+      "name": "RS Gimnástica de Torrelavega",
+      "shortName": "Gimnástica"
+    },
+    {
+      "id": "llanera",
+      "name": "UD Llanera",
+      "shortName": "Llanera"
+    },
+    {
+      "id": "marino",
+      "name": "Marino de Luanco",
+      "shortName": "Marino"
+    },
+    {
+      "id": "ourense-cf",
+      "name": "Ourense CF"
+    },
+    {
+      "id": "portugalete",
+      "name": "Club Portugalete",
+      "shortName": "Portugalete"
+    },
+    {
+      "id": "rayo-cantabria",
+      "name": "Rayo Cantabria"
+    },
+    {
+      "id": "oviedo-vetusta",
+      "name": "Real Oviedo Vetusta",
+      "shortName": "Vetusta"
+    },
+    {
+      "id": "sestao-river",
+      "name": "Sestao River Club",
+      "shortName": "Sestao River"
+    }
+  ],
+  "matches": [
+    {
+      "round": 1,
+      "kickoff": "2026-09-05T15:00:00Z",
+      "home": "alaves-b",
+      "away": "coruxo"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-09-05T15:00:00Z",
+      "home": "oviedo-vetusta",
+      "away": "eibar-b"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-09-05T16:00:00Z",
+      "home": "astorga",
+      "away": "portugalete"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-09-05T17:00:00Z",
+      "home": "gimnastica",
+      "away": "llanera"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-09-06T10:00:00Z",
+      "home": "amorebieta",
+      "away": "arosa"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-09-06T10:00:00Z",
+      "home": "compostela",
+      "away": "marino"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-09-06T10:00:00Z",
+      "home": "gernika",
+      "away": "bergantinos"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-09-06T10:00:00Z",
+      "home": "rayo-cantabria",
+      "away": "sestao-river"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-09-06T15:00:00Z",
+      "home": "ourense-cf",
+      "away": "basconia"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-09-12T14:00:00Z",
+      "home": "eibar-b",
+      "away": "gimnastica"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-09-13T09:30:00Z",
+      "home": "portugalete",
+      "away": "compostela"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-09-13T10:00:00Z",
+      "home": "llanera",
+      "away": "alaves-b"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-09-13T10:30:00Z",
+      "home": "basconia",
+      "away": "astorga"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-09-13T15:00:00Z",
+      "home": "arosa",
+      "away": "gernika"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-09-13T15:00:00Z",
+      "home": "bergantinos",
+      "away": "amorebieta"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-09-13T15:00:00Z",
+      "home": "coruxo",
+      "away": "rayo-cantabria"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-09-13T15:00:00Z",
+      "home": "marino",
+      "away": "ourense-cf"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-09-13T17:00:00Z",
+      "home": "sestao-river",
+      "away": "oviedo-vetusta"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-09-19T10:00:00Z",
+      "home": "basconia",
+      "away": "arosa"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-09-19T15:00:00Z",
+      "home": "astorga",
+      "away": "marino"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-09-19T17:00:00Z",
+      "home": "ourense-cf",
+      "away": "eibar-b"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-09-19T17:30:00Z",
+      "home": "portugalete",
+      "away": "coruxo"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-09-20T10:00:00Z",
+      "home": "alaves-b",
+      "away": "oviedo-vetusta"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-09-20T10:00:00Z",
+      "home": "gimnastica",
+      "away": "bergantinos"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-09-20T14:45:00Z",
+      "home": "rayo-cantabria",
+      "away": "amorebieta"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-09-20T15:00:00Z",
+      "home": "compostela",
+      "away": "sestao-river"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-09-20T15:00:00Z",
+      "home": "gernika",
+      "away": "llanera"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-26T15:00:00Z",
+      "home": "amorebieta",
+      "away": "ourense-cf"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-26T16:30:00Z",
+      "home": "sestao-river",
+      "away": "astorga"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-27T10:00:00Z",
+      "home": "oviedo-vetusta",
+      "away": "gimnastica"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-27T10:30:00Z",
+      "home": "llanera",
+      "away": "rayo-cantabria"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-27T13:30:00Z",
+      "home": "eibar-b",
+      "away": "compostela"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-27T15:00:00Z",
+      "home": "arosa",
+      "away": "alaves-b"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-27T15:00:00Z",
+      "home": "bergantinos",
+      "away": "portugalete"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-27T15:00:00Z",
+      "home": "coruxo",
+      "away": "gernika"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-27T15:00:00Z",
+      "home": "marino",
+      "away": "basconia"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-10-03T14:30:00Z",
+      "home": "rayo-cantabria",
+      "away": "eibar-b"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-10-03T15:00:00Z",
+      "home": "astorga",
+      "away": "amorebieta"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-10-03T15:00:00Z",
+      "home": "basconia",
+      "away": "llanera"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-10-03T15:00:00Z",
+      "home": "gimnastica",
+      "away": "marino"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-10-03T16:00:00Z",
+      "home": "portugalete",
+      "away": "alaves-b"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "bergantinos",
+      "away": "coruxo"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "compostela",
+      "away": "oviedo-vetusta"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "gernika",
+      "away": "sestao-river"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "ourense-cf",
+      "away": "arosa"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-10-10T10:30:00Z",
+      "home": "eibar-b",
+      "away": "basconia"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "amorebieta",
+      "away": "portugalete"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "arosa",
+      "away": "bergantinos"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "astorga",
+      "away": "ourense-cf"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "coruxo",
+      "away": "compostela"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "alaves-b",
+      "away": "gernika"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "llanera",
+      "away": "marino"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "oviedo-vetusta",
+      "away": "rayo-cantabria"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "sestao-river",
+      "away": "gimnastica"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "arosa",
+      "away": "llanera"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "bergantinos",
+      "away": "oviedo-vetusta"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "compostela",
+      "away": "astorga"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "gernika",
+      "away": "amorebieta"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "gimnastica",
+      "away": "alaves-b"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "marino",
+      "away": "sestao-river"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "ourense-cf",
+      "away": "coruxo"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "portugalete",
+      "away": "eibar-b"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "rayo-cantabria",
+      "away": "basconia"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "amorebieta",
+      "away": "coruxo"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "astorga",
+      "away": "gernika"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "basconia",
+      "away": "portugalete"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "alaves-b",
+      "away": "rayo-cantabria"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "eibar-b",
+      "away": "bergantinos"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "llanera",
+      "away": "compostela"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "marino",
+      "away": "oviedo-vetusta"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "ourense-cf",
+      "away": "gimnastica"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "sestao-river",
+      "away": "arosa"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "amorebieta",
+      "away": "gimnastica"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "bergantinos",
+      "away": "ourense-cf"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "compostela",
+      "away": "basconia"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "coruxo",
+      "away": "sestao-river"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "alaves-b",
+      "away": "eibar-b"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "gernika",
+      "away": "marino"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "portugalete",
+      "away": "arosa"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "rayo-cantabria",
+      "away": "astorga"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "oviedo-vetusta",
+      "away": "llanera"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "arosa",
+      "away": "compostela"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "basconia",
+      "away": "amorebieta"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "eibar-b",
+      "away": "astorga"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "gimnastica",
+      "away": "gernika"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "llanera",
+      "away": "bergantinos"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "marino",
+      "away": "rayo-cantabria"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "ourense-cf",
+      "away": "portugalete"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "oviedo-vetusta",
+      "away": "coruxo"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "sestao-river",
+      "away": "alaves-b"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "amorebieta",
+      "away": "eibar-b"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "astorga",
+      "away": "arosa"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "basconia",
+      "away": "alaves-b"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "bergantinos",
+      "away": "sestao-river"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "compostela",
+      "away": "ourense-cf"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "coruxo",
+      "away": "llanera"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "gernika",
+      "away": "oviedo-vetusta"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "portugalete",
+      "away": "marino"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "rayo-cantabria",
+      "away": "gimnastica"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "arosa",
+      "away": "eibar-b"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "bergantinos",
+      "away": "basconia"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "alaves-b",
+      "away": "compostela"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "gernika",
+      "away": "rayo-cantabria"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "gimnastica",
+      "away": "portugalete"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "llanera",
+      "away": "ourense-cf"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "marino",
+      "away": "coruxo"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "oviedo-vetusta",
+      "away": "astorga"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "sestao-river",
+      "away": "amorebieta"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "amorebieta",
+      "away": "llanera"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "arosa",
+      "away": "oviedo-vetusta"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "astorga",
+      "away": "alaves-b"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "basconia",
+      "away": "sestao-river"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "compostela",
+      "away": "bergantinos"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "coruxo",
+      "away": "gimnastica"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "eibar-b",
+      "away": "marino"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "ourense-cf",
+      "away": "gernika"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "portugalete",
+      "away": "rayo-cantabria"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "coruxo",
+      "away": "eibar-b"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "alaves-b",
+      "away": "bergantinos"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "gernika",
+      "away": "portugalete"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "gimnastica",
+      "away": "compostela"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "llanera",
+      "away": "astorga"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "marino",
+      "away": "amorebieta"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "rayo-cantabria",
+      "away": "arosa"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "oviedo-vetusta",
+      "away": "basconia"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "sestao-river",
+      "away": "ourense-cf"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "amorebieta",
+      "away": "oviedo-vetusta"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "arosa",
+      "away": "gimnastica"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "astorga",
+      "away": "coruxo"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "basconia",
+      "away": "gernika"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "bergantinos",
+      "away": "marino"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "compostela",
+      "away": "rayo-cantabria"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "eibar-b",
+      "away": "sestao-river"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "ourense-cf",
+      "away": "alaves-b"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "portugalete",
+      "away": "llanera"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "astorga",
+      "away": "gimnastica"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "coruxo",
+      "away": "basconia"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "alaves-b",
+      "away": "amorebieta"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "gernika",
+      "away": "compostela"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "llanera",
+      "away": "eibar-b"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "marino",
+      "away": "arosa"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "rayo-cantabria",
+      "away": "bergantinos"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "oviedo-vetusta",
+      "away": "ourense-cf"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "sestao-river",
+      "away": "portugalete"
+    },
+    {
+      "round": 17,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "amorebieta",
+      "away": "compostela"
+    },
+    {
+      "round": 17,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "arosa",
+      "away": "coruxo"
+    },
+    {
+      "round": 17,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "bergantinos",
+      "away": "astorga"
+    },
+    {
+      "round": 17,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "alaves-b",
+      "away": "marino"
+    },
+    {
+      "round": 17,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "eibar-b",
+      "away": "gernika"
+    },
+    {
+      "round": 17,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "gimnastica",
+      "away": "basconia"
+    },
+    {
+      "round": 17,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "ourense-cf",
+      "away": "rayo-cantabria"
+    },
+    {
+      "round": 17,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "portugalete",
+      "away": "oviedo-vetusta"
+    },
+    {
+      "round": 17,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "sestao-river",
+      "away": "llanera"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "basconia",
+      "away": "rayo-cantabria"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "bergantinos",
+      "away": "eibar-b"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "compostela",
+      "away": "arosa"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "coruxo",
+      "away": "portugalete"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "gernika",
+      "away": "alaves-b"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "gimnastica",
+      "away": "amorebieta"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "marino",
+      "away": "llanera"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "ourense-cf",
+      "away": "astorga"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "oviedo-vetusta",
+      "away": "sestao-river"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "arosa",
+      "away": "sestao-river"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "astorga",
+      "away": "basconia"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "coruxo",
+      "away": "ourense-cf"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "alaves-b",
+      "away": "gimnastica"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "eibar-b",
+      "away": "amorebieta"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "llanera",
+      "away": "gernika"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "portugalete",
+      "away": "bergantinos"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "rayo-cantabria",
+      "away": "marino"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "oviedo-vetusta",
+      "away": "compostela"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "amorebieta",
+      "away": "rayo-cantabria"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "basconia",
+      "away": "ourense-cf"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "bergantinos",
+      "away": "arosa"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "compostela",
+      "away": "portugalete"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "eibar-b",
+      "away": "alaves-b"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "gimnastica",
+      "away": "oviedo-vetusta"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "llanera",
+      "away": "coruxo"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "marino",
+      "away": "astorga"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "sestao-river",
+      "away": "gernika"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-02-06T16:00:00Z",
+      "home": "astorga",
+      "away": "sestao-river"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-02-06T16:00:00Z",
+      "home": "coruxo",
+      "away": "amorebieta"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-02-06T16:00:00Z",
+      "home": "alaves-b",
+      "away": "basconia"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-02-06T16:00:00Z",
+      "home": "gernika",
+      "away": "arosa"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-02-06T16:00:00Z",
+      "home": "marino",
+      "away": "eibar-b"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-02-06T16:00:00Z",
+      "home": "ourense-cf",
+      "away": "compostela"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-02-06T16:00:00Z",
+      "home": "portugalete",
+      "away": "gimnastica"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-02-06T16:00:00Z",
+      "home": "rayo-cantabria",
+      "away": "llanera"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-02-06T16:00:00Z",
+      "home": "oviedo-vetusta",
+      "away": "bergantinos"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "amorebieta",
+      "away": "astorga"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "arosa",
+      "away": "portugalete"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "basconia",
+      "away": "marino"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "bergantinos",
+      "away": "compostela"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "gernika",
+      "away": "ourense-cf"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "gimnastica",
+      "away": "eibar-b"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "llanera",
+      "away": "oviedo-vetusta"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "rayo-cantabria",
+      "away": "alaves-b"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "sestao-river",
+      "away": "coruxo"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "astorga",
+      "away": "rayo-cantabria"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "compostela",
+      "away": "gimnastica"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "coruxo",
+      "away": "bergantinos"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "alaves-b",
+      "away": "sestao-river"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "eibar-b",
+      "away": "arosa"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "marino",
+      "away": "gernika"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "ourense-cf",
+      "away": "llanera"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "portugalete",
+      "away": "basconia"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "oviedo-vetusta",
+      "away": "amorebieta"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "amorebieta",
+      "away": "alaves-b"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "arosa",
+      "away": "ourense-cf"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "basconia",
+      "away": "eibar-b"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "bergantinos",
+      "away": "gernika"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "compostela",
+      "away": "coruxo"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "gimnastica",
+      "away": "astorga"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "llanera",
+      "away": "portugalete"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "rayo-cantabria",
+      "away": "oviedo-vetusta"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "sestao-river",
+      "away": "marino"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "amorebieta",
+      "away": "basconia"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "astorga",
+      "away": "compostela"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "eibar-b",
+      "away": "rayo-cantabria"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "gernika",
+      "away": "coruxo"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "llanera",
+      "away": "arosa"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "marino",
+      "away": "gimnastica"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "ourense-cf",
+      "away": "bergantinos"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "portugalete",
+      "away": "sestao-river"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "oviedo-vetusta",
+      "away": "alaves-b"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "arosa",
+      "away": "rayo-cantabria"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "basconia",
+      "away": "oviedo-vetusta"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "compostela",
+      "away": "amorebieta"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "coruxo",
+      "away": "marino"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "alaves-b",
+      "away": "astorga"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "eibar-b",
+      "away": "llanera"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "gimnastica",
+      "away": "ourense-cf"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "portugalete",
+      "away": "gernika"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "sestao-river",
+      "away": "bergantinos"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "astorga",
+      "away": "oviedo-vetusta"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "bergantinos",
+      "away": "alaves-b"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "coruxo",
+      "away": "arosa"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "gernika",
+      "away": "basconia"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "llanera",
+      "away": "gimnastica"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "marino",
+      "away": "portugalete"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "ourense-cf",
+      "away": "amorebieta"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "rayo-cantabria",
+      "away": "compostela"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "sestao-river",
+      "away": "eibar-b"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "amorebieta",
+      "away": "sestao-river"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "arosa",
+      "away": "astorga"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "basconia",
+      "away": "gimnastica"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "compostela",
+      "away": "llanera"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "alaves-b",
+      "away": "ourense-cf"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "eibar-b",
+      "away": "portugalete"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "marino",
+      "away": "bergantinos"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "rayo-cantabria",
+      "away": "coruxo"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "oviedo-vetusta",
+      "away": "gernika"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "arosa",
+      "away": "marino"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "bergantinos",
+      "away": "llanera"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "compostela",
+      "away": "alaves-b"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "coruxo",
+      "away": "astorga"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "gernika",
+      "away": "eibar-b"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "gimnastica",
+      "away": "rayo-cantabria"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "ourense-cf",
+      "away": "oviedo-vetusta"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "portugalete",
+      "away": "amorebieta"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "sestao-river",
+      "away": "basconia"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "amorebieta",
+      "away": "gernika"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "astorga",
+      "away": "bergantinos"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "basconia",
+      "away": "compostela"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "alaves-b",
+      "away": "portugalete"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "eibar-b",
+      "away": "coruxo"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "gimnastica",
+      "away": "arosa"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "llanera",
+      "away": "sestao-river"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "rayo-cantabria",
+      "away": "ourense-cf"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "oviedo-vetusta",
+      "away": "marino"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "arosa",
+      "away": "amorebieta"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "bergantinos",
+      "away": "rayo-cantabria"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "coruxo",
+      "away": "oviedo-vetusta"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "eibar-b",
+      "away": "ourense-cf"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "gernika",
+      "away": "gimnastica"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "llanera",
+      "away": "basconia"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "marino",
+      "away": "alaves-b"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "portugalete",
+      "away": "astorga"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "sestao-river",
+      "away": "compostela"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "amorebieta",
+      "away": "marino"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "astorga",
+      "away": "llanera"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "basconia",
+      "away": "bergantinos"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "compostela",
+      "away": "eibar-b"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "alaves-b",
+      "away": "arosa"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "gimnastica",
+      "away": "coruxo"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "ourense-cf",
+      "away": "sestao-river"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "rayo-cantabria",
+      "away": "gernika"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "oviedo-vetusta",
+      "away": "portugalete"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "arosa",
+      "away": "basconia"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "bergantinos",
+      "away": "gimnastica"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "coruxo",
+      "away": "alaves-b"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "eibar-b",
+      "away": "oviedo-vetusta"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "gernika",
+      "away": "astorga"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "llanera",
+      "away": "amorebieta"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "marino",
+      "away": "compostela"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "portugalete",
+      "away": "ourense-cf"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "sestao-river",
+      "away": "rayo-cantabria"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "amorebieta",
+      "away": "bergantinos"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "astorga",
+      "away": "eibar-b"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "basconia",
+      "away": "coruxo"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "compostela",
+      "away": "gernika"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "alaves-b",
+      "away": "llanera"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "gimnastica",
+      "away": "sestao-river"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "ourense-cf",
+      "away": "marino"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "rayo-cantabria",
+      "away": "portugalete"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "oviedo-vetusta",
+      "away": "arosa"
+    }
+  ]
+}

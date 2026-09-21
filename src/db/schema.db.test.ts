@@ -65,11 +65,12 @@ const decision = (
 afterAll(() => sql.end());
 
 describe("CA-9 schema", () => {
-  it("has the eight tables and no timestamp without time zone", async () => {
+  it("has the nine tables and no timestamp without time zone", async () => {
     const tables = await sql`select table_name from information_schema.tables
       where table_schema = 'public' and table_type = 'BASE TABLE' order by table_name`;
     expect(tables.map((t) => t.table_name)).toEqual([
       "alerts",
+      "calendar_loads",
       "competitions",
       "decisions",
       "ingest_attempts",
@@ -180,7 +181,9 @@ describe("CA-11 board", () => {
         tier: 5,
         round: 1,
         home_team_name: "Home",
+        home_short_name: null,
         away_team_name: "Away",
+        away_short_name: null,
         status: "scheduled",
         home_score: null,
         away_score: null,
@@ -238,8 +241,10 @@ describe("CA-11 board", () => {
       "kickoff",
       "home_team_id",
       "home_team_name",
+      "home_short_name",
       "away_team_id",
       "away_team_name",
+      "away_short_name",
       "status",
       "home_score",
       "away_score",
@@ -267,7 +272,7 @@ describe("CA-12 extensions and RLS", () => {
     expect(rows.map((r) => r.extname).sort()).toEqual(["pg_cron", "pg_net"]);
   });
 
-  it("enables RLS on the eight tables and reads only the public five", async () => {
+  it("enables RLS on the nine tables and reads only the public five", async () => {
     const rows = await sql`select c.relname, c.relrowsecurity,
         (select count(*)::int from pg_policies p where p.tablename = c.relname) as policies
       from pg_class c join pg_namespace n on n.oid = c.relnamespace
@@ -277,6 +282,7 @@ describe("CA-12 extensions and RLS", () => {
       Object.fromEntries(rows.map((r) => [r.relname, r.policies])),
     ).toEqual({
       alerts: 0,
+      calendar_loads: 0,
       competitions: 1,
       decisions: 1,
       ingest_attempts: 0,
