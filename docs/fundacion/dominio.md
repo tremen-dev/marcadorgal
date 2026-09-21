@@ -16,12 +16,12 @@
 | **Raw capture** | La respuesta cruda de una fuente, guardada antes de parsear. | Storage con retención de 30 días. D-6. |
 | **Observation** | Lo que una fuente dice de un partido en un instante: estado, marcador, minuto. Inmutable, append-only. | Referencia a su raw capture. RN-07. |
 | **Decision** | Lo que se publica de un partido: estado, marcador, minuto, cualificador, regla aplicada y observaciones que la sostienen. Append-only; la última por partido es la vigente. | Solo la escribe el motor. D-5. |
-| **Motor de decisiones** | Función pura que, dada la Decision vigente y las Observations recientes, devuelve la nueva Decision o nada. | `src/decide/`. RN-01..RN-06. |
+| **Motor de decisiones** | Función pura que, dada la Decision vigente y las Observations recientes —o su ausencia—, devuelve la nueva Decision, las Alerts que abrir y las que cerrar, o nada. | `src/decide/`. RN-01..RN-06. El adaptador que lo conecta a la transacción del tick vive en `src/ingest/`. |
 | **Prioridad** | Número entero por (fuente, competición). Mayor gana. El operador tiene la máxima. | Configuración, no código. |
-| **Alert** | Registro de que el motor no pudo publicar con confianza: conflicto, retroceso, silencio. | Tabla `alerts`. La ve el operador, nunca el público. |
+| **Alert** | Aviso al operador de que algo no encajó: el motor retuvo lo que iba a publicar, publicó algo que ninguna fuente confirmó, o la ingesta no supo a qué partido atribuir una observación. | Tabla `alerts`; las clases, en `AlertKind`. `unresolved_team` la abre la ingesta y es la única sin `match_id` (RN-10). La ve el operador, nunca el público. |
 | **Operador** | La persona que corrige o completa marcadores desde el panel. Entra como fuente `operator`. | Nunca edita Decisions a mano. D-5. |
 | **Ventana** | Intervalo en que un partido merece sondeo: de kickoff − 10 min a kickoff + 150 min, o hasta `finished`. | Fuera de ventana el tick no llama a nadie. |
-| **Tick** | Una ejecución de la ingesta: recorre las fuentes `pull` con partidos en ventana, guarda crudo, parsea, inserta Observations y ejecuta el motor. | Disparado por pg_cron cada 30 s y por Vercel Cron cada minuto como respaldo. |
+| **Tick** | Una ejecución de la ingesta: recorre las fuentes `pull` con partidos en ventana, guarda crudo, parsea, inserta Observations y ejecuta el motor: con lo observado, y al final sobre todos los partidos en ventana, hayan hablado las fuentes o no. | Disparado por pg_cron cada 30 s y por Vercel Cron cada minuto como respaldo. |
 | **Board** | La proyección de solo lectura que ve el público: Decision vigente por partido, unida a equipos y competición. | Vista SQL. Lo único que lee la web. |
 | **Estado de partido** | Uno de cinco: `scheduled` (Programado), `live` (En xogo), `finished` (Rematado), `postponed` (Aprazado), `suspended` (Suspendido). | El descanso no es un estado: es un momento dentro de `live`. |
 | **Cualificador** | Matiz de una Decision: `confirmado`, `provisional` (una sola fuente no oficial), `sen_sinal` (live sin datos en 15 min). | Siempre con etiqueta textual junto al color. |
