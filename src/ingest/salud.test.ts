@@ -52,7 +52,7 @@ describe("SPEC-008 CA-7 tickSalud", () => {
     expect(report.text).toContain("100%");
   });
 
-  it("a failed run in the last hour turns it red, naming the job", () => {
+  it("a failed run inside the short window turns it red, naming the job", () => {
     const report = tickSalud(
       clean({
         runs: [
@@ -75,6 +75,64 @@ describe("SPEC-008 CA-7 tickSalud", () => {
       }),
     );
     expect(report.ok).toBe(true);
+  });
+
+  // The two pegas found when running step 5 of the start-up (F-SPEC-008-13).
+  it("stays green when the hour had failures but the short window is clean", () => {
+    // The blip at -30 min is over; the last ten minutes are all succeeded.
+    const report = tickSalud(
+      clean({
+        runs: [
+          { jobname: "ingest-tick", status: "failed", startTime: at(-30) },
+          { jobname: "ingest-tick", status: "failed", startTime: at(-29) },
+          { jobname: "ingest-tick", status: "succeeded", startTime: at(-2) },
+          { jobname: "ingest-tick", status: "succeeded", startTime: at(-1) },
+        ],
+      }),
+    );
+    expect(report.ok).toBe(true);
+    // The hour stays on screen, and the report says so out loud.
+    expect(report.text).toContain("última hora");
+    expect(report.text).toContain("2 problema(s) en la última hora");
+    expect(report.text).toContain("OK");
+  });
+
+  it("an attempt that failed before the short window no longer holds it red", () => {
+    const report = tickSalud(
+      clean({
+        attempts: [
+          {
+            startedAt: at(-40),
+            sourceId: "api-football",
+            ok: false,
+            error: "provider 503",
+            details: null,
+          },
+        ],
+      }),
+    );
+    expect(report.ok).toBe(true);
+    // Still visible in its own block: green does not mean hidden.
+    expect(report.text).toContain("provider 503");
+  });
+
+  it("caps the list of failures and counts the rest", () => {
+    const runs = Array.from({ length: 40 }, (_, i) => ({
+      jobname: "ingest-tick",
+      status: "failed",
+      startTime: at(-50 + i),
+    }));
+    const report = tickSalud(clean({ runs }));
+    const lines = report.text
+      .split("\n")
+      .filter((line) => line.includes("FALLO"));
+    expect(lines).toHaveLength(5);
+    expect(report.text).toContain("y 35 más");
+    // Newest first: the five printed are the five that matter.
+    expect(lines[0]).toContain(at(-11));
+    expect(lines[4]).toContain(at(-15));
+    // The whole report still fits on a screen.
+    expect(report.text.split("\n").length).toBeLessThan(40);
   });
 
   it("an attempt with ok false turns it red, with its error", () => {

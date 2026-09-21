@@ -1,4 +1,10 @@
-import { HOUR_MS, type Instant, shiftInstant } from "../model/index.ts";
+import {
+  HOUR_MS,
+  type Instant,
+  MINUTE_MS,
+  shiftInstant,
+} from "../model/index.ts";
+import { SALUD_FAILURES_SHOWN, SALUD_RECENT_MINUTES } from "./constants.ts";
 
 // The tool of the Friday (N-5): it says whether the tick is alive before
 // there is any match to observe, which is when it can still be fixed. Pure:
@@ -62,10 +68,24 @@ const detailsOf = (details: unknown): string =>
 
 export function tickSalud(input: SaludInput): SaludReport {
   const since = shiftInstant(input.now, -HOUR_MS);
+  // The short window decides the verdict; the hour is only context.
+  const recentSince = shiftInstant(
+    input.now,
+    -SALUD_RECENT_MINUTES * MINUTE_MS,
+  );
+
   const runs = input.runs.filter((r) => r.startTime >= since);
-  const failed = runs.filter((r) => r.status !== "succeeded");
-  const attempts = input.attempts.filter((a) => a.startedAt >= since);
-  const broken = attempts.filter((a) => a.ok === false);
+  // Newest first, so the five that get printed are the five that matter.
+  const failed = runs
+    .filter((r) => r.status !== "succeeded")
+    .toSorted((a, b) => (a.startTime < b.startTime ? 1 : -1));
+  const recentRuns = runs.filter((r) => r.startTime >= recentSince);
+  const failedRecent = recentRuns.filter((r) => r.status !== "succeeded");
+
+  const broken = input.attempts.filter(
+    (a) => a.ok === false && a.startedAt >= since,
+  );
+  const brokenRecent = broken.filter((a) => a.startedAt >= recentSince);
 
   const out: string[] = [`tick:salud · ${input.now}`, ""];
 
@@ -79,16 +99,28 @@ export function tickSalud(input: SaludInput): SaludReport {
     ),
   );
 
-  out.push("", `ejecuciones (última hora): ${runs.length}`);
+  out.push(
+    "",
+    `ejecuciones (últimos ${SALUD_RECENT_MINUTES} min): ${recentRuns.length}` +
+      `  ·  succeeded: ${percent(recentRuns.length - failedRecent.length, recentRuns.length)}` +
+      "   ← decide el semáforo",
+  );
+  out.push(
+    `ejecuciones (última hora): ${runs.length}` +
+      `  ·  succeeded: ${percent(runs.length - failed.length, runs.length)}`,
+  );
   const byStatus = new Map<string, number>();
   for (const run of runs)
     byStatus.set(run.status, (byStatus.get(run.status) ?? 0) + 1);
   out.push(
     ...list([...byStatus].map(([status, count]) => `  ${status}: ${count}`)),
   );
-  out.push(`  succeeded: ${percent(runs.length - failed.length, runs.length)}`);
-  for (const run of failed)
+  // At most five, newest first: a ten minute outage used to print a hundred
+  // identical lines and bury the blocks that matter.
+  for (const run of failed.slice(0, SALUD_FAILURES_SHOWN))
     out.push(`  FALLO  ${run.startTime}  ${run.jobname}  ${run.status}`);
+  const hidden = failed.length - SALUD_FAILURES_SHOWN;
+  if (hidden > 0) out.push(`  … y ${hidden} más`);
 
   out.push("", "respuestas de pg_net (últimas 10):");
   out.push(
@@ -118,8 +150,15 @@ export function tickSalud(input: SaludInput): SaludReport {
     ...list(input.matches.map((m) => `  ${m.kickoff}  ${m.status}  ${m.id}`)),
   );
 
-  const ok = failed.length === 0 && broken.length === 0;
+  // The verdict is about now, not about the hour: what is already fixed does
+  // not keep the light red, but it is still said out loud.
+  const ok = failedRecent.length === 0 && brokenRecent.length === 0;
+  const stale = failed.length + (broken.length - brokenRecent.length);
   out.push("", ok ? "OK" : "REVISAR: el tick no está sano");
+  if (ok && stale > 0)
+    out.push(
+      `  (${stale} problema(s) en la última hora, ninguno en los últimos ${SALUD_RECENT_MINUTES} min)`,
+    );
 
   return { ok, text: redact(out.join("\n"), input.secrets) };
 }

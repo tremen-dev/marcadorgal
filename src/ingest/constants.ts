@@ -9,6 +9,18 @@ export const WINDOW_AFTER_MINUTES = 150;
 // tolerates the jitter of the two triggers. Worst case: two calls 25 s apart.
 export const CADENCE_JITTER_SECONDS = 5;
 
+// The traffic light of npm run tick:salud (CA-7, N-5). The verdict is decided
+// on a short window and not on the whole hour: a blip at 18:00 fixed at 18:10
+// would otherwise keep the report red until 19:00, and a semaphore nobody
+// believes is a semaphore nobody looks at. Ten minutes is ~20 runs of a job
+// that fires every 30 s —enough that a healthy tick shows up— and it is
+// shorter than the fifteen minutes of RN-05, so the report turns red before
+// the engine starts opening silence alerts. The hour stays on screen as
+// context, with at most five failures listed and a count for the rest: the
+// whole report has to fit in one screen while a matchday is running.
+export const SALUD_RECENT_MINUTES = 10;
+export const SALUD_FAILURES_SHOWN = 5;
+
 // Raw retention (D-6, ADR-007 §5): thirty days, purged by the tick itself at
 // most once a day, retried an hour after a failure, a thousand keys per call.
 export const RAW_RETENTION_DAYS = 30;
