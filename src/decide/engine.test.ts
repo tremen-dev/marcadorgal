@@ -275,3 +275,83 @@ describe("CA-3 idempotence (H-1)", () => {
     expect(decision?.decidedAt).toBe(at(50));
   });
 });
+
+describe("CA-4 RN-03 monotony and the regression alert", () => {
+  const vigente = current(live(2, 1, 70));
+
+  it("holds the current score and takes the proposed status and minute", () => {
+    const observation = obs("ten", 49, live(2, 0, 75));
+    const { decision, open } = decide(
+      input({ current: vigente, observations: [observation] }),
+    );
+    expect(decision).toMatchObject({
+      status: "live",
+      score: { home: 2, away: 1 },
+      minute: 75,
+      rule: "RN-03",
+    });
+    expect(open).toEqual([
+      {
+        kind: "regression",
+        matchId: MATCH.id,
+        details: {
+          sourceId: "ten",
+          observationId: observation.id,
+          current: { home: 2, away: 1 },
+          proposed: { home: 2, away: 0 },
+        },
+      },
+    ]);
+  });
+
+  it("never mixes sides: 1-2 against 2-1 holds 2-1, not 2-2", () => {
+    const { decision } = decide(
+      input({ current: vigente, observations: [obs("ten", 49, live(1, 2, 75))] }),
+    );
+    expect(decision).toMatchObject({ score: { home: 2, away: 1 } });
+  });
+
+  it("does not fire when both sides grow", () => {
+    const { decision, open } = decide(
+      input({ current: vigente, observations: [obs("ten", 49, live(3, 1, 75))] }),
+    );
+    expect(decision).toMatchObject({
+      score: { home: 3, away: 1 },
+      rule: "RN-01",
+    });
+    expect(open).toEqual([]);
+  });
+
+  it("does not apply to the operator (RN-03)", () => {
+    const { decision, open } = decide(
+      input({
+        current: vigente,
+        observations: [obs("operator", 49, live(2, 0, 75))],
+      }),
+    );
+    expect(decision).toMatchObject({
+      score: { home: 2, away: 0 },
+      rule: "operator",
+    });
+    expect(open).toEqual([]);
+  });
+
+  it("does not apply when the current decision carries no score", () => {
+    const { decision, open } = decide(
+      input({
+        current: current(scheduled),
+        observations: [obs("ten", 49, live(0, 0, 3))],
+      }),
+    );
+    expect(decision).toMatchObject({ status: "live", rule: "RN-01" });
+    expect(open).toEqual([]);
+  });
+
+  it("does not apply when the proposed state carries no score", () => {
+    const { decision, open } = decide(
+      input({ current: vigente, observations: [obs("fifty", 49, postponed)] }),
+    );
+    expect(decision).toMatchObject({ status: "postponed", rule: "RN-01" });
+    expect(open).toEqual([]);
+  });
+});

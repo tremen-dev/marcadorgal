@@ -1,6 +1,5 @@
 import {
   type AlertKind,
-  type Decision,
   type DecisionRule,
   FEDERATION_PRIORITY,
   type Instant,
@@ -12,6 +11,7 @@ import {
   type ObservationId,
   OPERATOR_PRIORITY,
   type Qualifier,
+  type Score,
 } from "../model/index.ts";
 import {
   KICKOFF_GRACE_MINUTES,
@@ -84,6 +84,15 @@ function transitionAllowed(
   // A match that was already over when the first observation arrived (N-4).
   if (fresh && to === "finished") return instantDiff(kickoff, now) >= 0;
   return true;
+}
+
+// RN-03: the proposed state keeps its status and its minute, but wears the
+// score that is already published. Sides are never mixed.
+function holdingScore(state: MatchState, score: Score): MatchState {
+  if (state.status === "live") return { ...state, score };
+  if (state.status === "finished" || state.status === "suspended")
+    return { status: state.status, score, minute: null };
+  return state;
 }
 
 const sameScore = (a: MatchState, b: MatchState) =>
@@ -199,6 +208,28 @@ export function decide(input: EngineInput): EngineOutput {
   )
     return publish(null);
 
-  // 2. RN-01: the winner, as it comes.
+  // 2. RN-03 monotonía: a score never goes down but by the operator. The
+  //    proposed status is published wearing the current score, and the
+  //    retreat leaves an Alert for the operator (N-3).
+  const held = current?.score ?? null;
+  if (
+    held !== null &&
+    proposed.score !== null &&
+    (proposed.score.home < held.home || proposed.score.away < held.away)
+  ) {
+    open.push({
+      kind: "regression",
+      matchId,
+      details: {
+        sourceId: winner.observation.sourceId,
+        observationId: winner.observation.id,
+        current: { home: held.home, away: held.away },
+        proposed: { home: proposed.score.home, away: proposed.score.away },
+      },
+    });
+    return publish(settle(holdingScore(proposed, held), "RN-03", winner));
+  }
+
+  // 3. RN-01: the winner, as it comes.
   return publish(settle(proposed, "RN-01", winner));
 }
