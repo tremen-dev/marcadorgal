@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-09-21
+Actualizado: 2026-09-22
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -19,6 +19,13 @@ Actualizado: 2026-09-21
 | SPEC-005 — contrato-sourceadapter-registro-de-fuentes-y-adaptador-de-resultados-de-api-football | hecho | 2026-09-21 (sdd-verificador) |
 | SPEC-006 — raw-store-en-storage-ventanas-por-partido-y-tick-de-ingesta | hecho | 2026-09-21 (sdd-verificador) |
 | SPEC-007 — motor-de-decisiones-cualificador-y-alertas | hecho | 2026-09-21 (sdd-verificador) |
+| SPEC-008 — despliegue-del-tick-pg-cron-vercel-cron-variables-y-sincronizacion-del-calendario | hecho | 2026-09-22 (sdd-verificador) |
+| SPEC-009 — jornada-de-medicion-e-informe | aprobada | 2026-09-21 (Alberto Fojo) |
+
+## EPIC-MANT — mantenimiento (borrador)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
 
 ## ADRs
 
@@ -32,7 +39,9 @@ Actualizado: 2026-09-21
 | ADR-006 | aprobada | esquema-base-y-acceso-a-datos-ids-append-only-version-de-decision-y-rls | 2026-09-20 (Alberto Fojo) |
 | ADR-007 | aprobada | raw-store-en-supabase-storage-bucket-claves-escritura-y-retencion | 2026-09-21 (Alberto Fojo) |
 | ADR-008 | aprobada | nucleo-de-ingesta-tick-autenticado-cadencia-concurrencia-y-puntos-de-enganche | 2026-09-21 (Alberto Fojo) |
+| ADR-009 | aprobada | ejecucion-del-motor-enganche-por-observaciones-barrido-por-ausencia-y-precisiones-a-rn-02-rn-04 | 2026-09-21 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 7
+- hecho: 8
+- aprobada: 1

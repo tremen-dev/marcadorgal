@@ -56,6 +56,27 @@ Pendientes de especificar, con su procedencia:
   escritas para evitar una dependencia (verificado que no había alternativa en
   Node 26 ni en el lock). Sobra el día que entre una librería de YAML al
   proyecto. Procedencia: SPEC-008 O-1.
+- **M-4 — `sql.array` en `src/ingest/engine.ts`.** Tres apariciones de `sql.array`
+  en las consultas de `decideMatches` (CA-4 de SPEC-008). Hoy se salvan porque
+  `decideMatches` siempre corre dentro de una transacción ya abierta (`src/app/api/ingest/tick/route.ts`
+  L78: `db.transaction`), así que el mapa de tipos de postgres.js está caliente.
+  Fuera de transacción fallan en frío con `PostgresError: op ANY/ALL (array) requires array on right side`.
+  Modo de fallo: ejecutar `decideMatches` directamente sin transacción (p. ej., en
+  un endpoint nuevo o en un cron aparte). Arreglo: cambiarlas a arrays JS planos,
+  como ya se hizo en `src/ingest/cron.ts` (F-SPEC-008-11). Hay un comentario en
+  el código (F-SPEC-008-12). Procedencia: SPEC-008 CA-3 verificación, 2026-09-22.
+- **M-5 — El orden de `diff.newTeams` depende del locale** en `src/calendar/sync.ts:196`.
+  La línea usa `localeCompare` para ordenar los nombres de equipos nuevos en el
+  cuerpo del PR. Solo afecta al texto del PR, nunca a los ficheros JSON de
+  `data/calendario/` ni `data/alias/`. Modo de fallo: cosmético (cambio de orden
+  en diferentes entornos según el locale del sistema). Arreglo: usar comparación
+  de code point en vez de locale. Procedencia: SPEC-008 O-9, 2026-09-22.
+- **M-6 — `tickSalud` cuenta `running` como fallo.** En `src/ingest/salud.ts`,
+  una ejecución de `cron.job_run_details` con estado `running` se lee como FALLO
+  en el cálculo del porcentaje de éxito. Modo de fallo: llamar a `npm run tick:salud`
+  justo en el instante en que pg_cron está ejecutando un job dispara un falso
+  REVISAR. Arreglo: excluir el estado `running` del conteo de intentos, como
+  solo cuenta lo terminal (`succeeded`/`failed`). Procedencia: SPEC-008 O-3, 2026-09-22.
 
 ## Riesgos
 
