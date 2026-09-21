@@ -225,6 +225,19 @@ describe("CA-6 entities", () => {
     expect(Alert.safeParse(fixtures.alert).success).toBe(true);
   });
 
+  it("Team shortName is optional, non-empty and different from name (N-11)", () => {
+    expect(
+      Team.safeParse({ ...fixtures.team, shortName: "Ourense" }).success,
+    ).toBe(true);
+    expect(Team.safeParse({ ...fixtures.team, shortName: "" }).success).toBe(
+      false,
+    );
+    expect(
+      Team.safeParse({ ...fixtures.team, shortName: "UD Ourense" }).success,
+    ).toBe(false);
+    expect(Team.parse(fixtures.team)).not.toHaveProperty("shortName");
+  });
+
   it("Competition tier is 1..5", () => {
     expect(
       Competition.safeParse({ ...fixtures.competition, tier: 6 }).success,

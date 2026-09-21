@@ -50,6 +50,35 @@ describe("CA-1 CalendarFile", () => {
     expect(validateCalendar(calendar, ctx)).toEqual([]);
   });
 
+  it("accepts an optional shortName per team (N-11)", () => {
+    const withShort = {
+      ...calendar,
+      teams: calendar.teams.map((t, i) =>
+        i === 0 ? { ...t, shortName: "Ourense" } : t,
+      ),
+    };
+    expect(validateCalendar(withShort, ctx)).toEqual([]);
+  });
+
+  it("rejects an empty shortName or one equal to name", () => {
+    const empty = {
+      ...calendar,
+      teams: [
+        { ...calendar.teams[0], shortName: "" },
+        ...calendar.teams.slice(1),
+      ],
+    };
+    expect(paths(validateCalendar(empty, ctx))).toContain("teams.0.shortName");
+    const same = {
+      ...calendar,
+      teams: [
+        { ...calendar.teams[0], shortName: calendar.teams[0].name },
+        ...calendar.teams.slice(1),
+      ],
+    };
+    expect(paths(validateCalendar(same, ctx))).toContain("teams.0.shortName");
+  });
+
   it("rejects an unknown key such as providerId, with its path", () => {
     const withProvider = {
       ...calendar,

@@ -284,6 +284,33 @@ describe("CA-6 syncCalendar", () => {
     expect(diff.newTeams).toEqual([]);
   });
 
+  it("(d) keeps shortName of existing teams and never gives one to new teams", () => {
+    const { calendar: first, aliases } = initial();
+    const current = CalendarFile.parse({
+      ...first,
+      teams: first.teams
+        .filter((t) => t.id !== "compostela")
+        .map((t) => (t.id === "ourense" ? { ...t, shortName: "Ou" } : t)),
+      matches: first.matches.filter(
+        (m) => m.home !== "compostela" && m.away !== "compostela",
+      ),
+    });
+    const { calendar } = syncCalendar({
+      current,
+      aliases,
+      imported,
+      competition,
+      sourceId,
+    });
+    expect(calendar.teams.find((t) => t.id === "ourense")).toEqual({
+      id: "ourense",
+      name: "Ourense",
+      shortName: "Ou",
+    });
+    for (const t of calendar.teams.filter((t) => t.id !== "ourense"))
+      expect(t).not.toHaveProperty("shortName");
+  });
+
   it("(e) copies ignoredRounds and lists unconfirmed matches", () => {
     const { diff } = initial();
     expect(diff.ignoredRounds).toEqual({ "Promotion Play-offs - final": 2 });
