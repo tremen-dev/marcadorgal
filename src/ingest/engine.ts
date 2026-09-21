@@ -210,6 +210,18 @@ const group = <T>(rows: T[], key: (row: T) => string): Map<string, T[]> => {
 
 // Runs the engine over a set of matches inside a transaction that is already
 // open: the caller owns it (afterInsert) or opens it (the sweep).
+//
+// That "already open" is not only about atomicity: the sql.array() calls in
+// this file depend on it. sql.array resolves an element type into its array
+// type through options.shared.typeArrayMap, which postgres.js fills only when
+// a connection finishes opening, and the parameter is built while the
+// template is assembled. On the first statement of a fresh pool the map is
+// still empty, the value binds as text instead of text[] and Postgres answers
+// "op ANY/ALL (array) requires array on right side" — which is precisely how
+// npm run cron:setup died (see the note in src/ingest/cron.ts). Here begin has
+// already run by the time these lines execute, so the map is warm. Nothing
+// enforces that; if these queries ever move out of a transaction they must
+// pass plain JS arrays, as cron.ts now does.
 export async function decideMatches(
   tx: IngestTx,
   matchIds: readonly string[],
