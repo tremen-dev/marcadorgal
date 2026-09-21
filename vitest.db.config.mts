@@ -10,13 +10,14 @@ try {
 export default defineConfig({
   resolve: {
     alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
       "server-only": fileURLToPath(
         new URL("./tools/empty-module.mjs", import.meta.url),
       ),
     },
   },
   test: {
-    include: ["src/db/**/*.db.test.ts"],
+    include: ["src/**/*.db.test.ts"],
     fileParallelism: false,
   },
 });
