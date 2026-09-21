@@ -450,12 +450,6 @@
     },
     {
       "round": 6,
-      "kickoff": "2026-09-16T19:30:00Z",
-      "home": "levante",
-      "away": "athletic-club"
-    },
-    {
-      "round": 6,
       "kickoff": "2026-09-17T17:00:00Z",
       "home": "real-betis",
       "away": "getafe"
@@ -465,6 +459,12 @@
       "kickoff": "2026-09-17T19:30:00Z",
       "home": "malaga",
       "away": "villarreal"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-10-21T18:00:00Z",
+      "home": "levante",
+      "away": "athletic-club"
     },
     {
       "round": 7,

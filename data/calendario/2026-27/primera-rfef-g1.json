@@ -12,13 +12,18 @@
       "shortName": "Arenas"
     },
     {
-      "id": "bilbao-athletic",
-      "name": "Bilbao Athletic"
+      "id": "aviles",
+      "name": "Real Avilés Industrial",
+      "shortName": "Avilés"
     },
     {
       "id": "barakaldo",
       "name": "Barakaldo CF",
       "shortName": "Barakaldo"
+    },
+    {
+      "id": "bilbao-athletic",
+      "name": "Bilbao Athletic"
     },
     {
       "id": "cacereno",
@@ -44,6 +49,11 @@
       "id": "extremadura",
       "name": "CD Extremadura 1924",
       "shortName": "Extremadura"
+    },
+    {
+      "id": "logrones",
+      "name": "UD Logroñés",
+      "shortName": "Logroñés"
     },
     {
       "id": "lugo",
@@ -76,19 +86,9 @@
       "shortName": "Racing Ferrol"
     },
     {
-      "id": "aviles",
-      "name": "Real Avilés Industrial",
-      "shortName": "Avilés"
-    },
-    {
       "id": "real-union",
       "name": "Real Unión Club",
       "shortName": "Real Unión"
-    },
-    {
-      "id": "logrones",
-      "name": "UD Logroñés",
-      "shortName": "Logroñés"
     },
     {
       "id": "ud-ourense",
@@ -571,14 +571,14 @@
     {
       "round": 8,
       "kickoff": "2026-10-18T16:15:00Z",
-      "home": "coria",
-      "away": "bilbao-athletic"
+      "home": "aviles",
+      "away": "ud-ourense"
     },
     {
       "round": 8,
       "kickoff": "2026-10-18T16:15:00Z",
-      "home": "aviles",
-      "away": "ud-ourense"
+      "home": "coria",
+      "away": "bilbao-athletic"
     },
     {
       "round": 8,
@@ -595,6 +595,12 @@
     {
       "round": 9,
       "kickoff": "2026-10-25T16:00:00Z",
+      "home": "aviles",
+      "away": "logrones"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-25T16:00:00Z",
       "home": "cacereno",
       "away": "zamora"
     },
@@ -631,12 +637,6 @@
     {
       "round": 9,
       "kickoff": "2026-10-25T16:00:00Z",
-      "home": "aviles",
-      "away": "logrones"
-    },
-    {
-      "round": 9,
-      "kickoff": "2026-10-25T16:00:00Z",
       "home": "real-union",
       "away": "lugo"
     },
@@ -649,14 +649,14 @@
     {
       "round": 10,
       "kickoff": "2026-11-01T16:00:00Z",
-      "home": "bilbao-athletic",
-      "away": "cacereno"
+      "home": "barakaldo",
+      "away": "pontevedra"
     },
     {
       "round": 10,
       "kickoff": "2026-11-01T16:00:00Z",
-      "home": "barakaldo",
-      "away": "pontevedra"
+      "home": "bilbao-athletic",
+      "away": "cacereno"
     },
     {
       "round": 10,
@@ -669,6 +669,12 @@
       "kickoff": "2026-11-01T16:00:00Z",
       "home": "extremadura",
       "away": "unionistas"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "logrones",
+      "away": "mirandes"
     },
     {
       "round": 10,
@@ -691,12 +697,6 @@
     {
       "round": 10,
       "kickoff": "2026-11-01T16:00:00Z",
-      "home": "logrones",
-      "away": "mirandes"
-    },
-    {
-      "round": 10,
-      "kickoff": "2026-11-01T16:00:00Z",
       "home": "ud-ourense",
       "away": "cultural-leonesa"
     },
@@ -711,6 +711,12 @@
       "kickoff": "2026-11-08T16:00:00Z",
       "home": "arenas",
       "away": "deportivo-fabril"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "aviles",
+      "away": "extremadura"
     },
     {
       "round": 11,
@@ -753,12 +759,6 @@
       "kickoff": "2026-11-08T16:00:00Z",
       "home": "racing-ferrol",
       "away": "logrones"
-    },
-    {
-      "round": 11,
-      "kickoff": "2026-11-08T16:00:00Z",
-      "home": "aviles",
-      "away": "extremadura"
     },
     {
       "round": 11,
@@ -793,6 +793,12 @@
     {
       "round": 12,
       "kickoff": "2026-11-15T16:00:00Z",
+      "home": "logrones",
+      "away": "arenas"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-15T16:00:00Z",
       "home": "lugo",
       "away": "mirandes"
     },
@@ -811,12 +817,6 @@
     {
       "round": 12,
       "kickoff": "2026-11-15T16:00:00Z",
-      "home": "logrones",
-      "away": "arenas"
-    },
-    {
-      "round": 12,
-      "kickoff": "2026-11-15T16:00:00Z",
       "home": "ud-ourense",
       "away": "merida"
     },
@@ -889,6 +889,12 @@
     {
       "round": 14,
       "kickoff": "2026-11-29T16:00:00Z",
+      "home": "aviles",
+      "away": "mirandes"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-29T16:00:00Z",
       "home": "bilbao-athletic",
       "away": "cultural-leonesa"
     },
@@ -907,6 +913,12 @@
     {
       "round": 14,
       "kickoff": "2026-11-29T16:00:00Z",
+      "home": "logrones",
+      "away": "barakaldo"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-29T16:00:00Z",
       "home": "lugo",
       "away": "ud-ourense"
     },
@@ -919,20 +931,8 @@
     {
       "round": 14,
       "kickoff": "2026-11-29T16:00:00Z",
-      "home": "aviles",
-      "away": "mirandes"
-    },
-    {
-      "round": 14,
-      "kickoff": "2026-11-29T16:00:00Z",
       "home": "real-union",
       "away": "arenas"
-    },
-    {
-      "round": 14,
-      "kickoff": "2026-11-29T16:00:00Z",
-      "home": "logrones",
-      "away": "barakaldo"
     },
     {
       "round": 14,
@@ -1009,6 +1009,12 @@
     {
       "round": 16,
       "kickoff": "2026-12-13T16:00:00Z",
+      "home": "aviles",
+      "away": "merida"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-13T16:00:00Z",
       "home": "bilbao-athletic",
       "away": "ud-ourense"
     },
@@ -1041,12 +1047,6 @@
       "kickoff": "2026-12-13T16:00:00Z",
       "home": "racing-ferrol",
       "away": "cacereno"
-    },
-    {
-      "round": 16,
-      "kickoff": "2026-12-13T16:00:00Z",
-      "home": "aviles",
-      "away": "merida"
     },
     {
       "round": 16,
@@ -1087,6 +1087,12 @@
     {
       "round": 17,
       "kickoff": "2026-12-20T16:00:00Z",
+      "home": "logrones",
+      "away": "real-union"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-20T16:00:00Z",
       "home": "lugo",
       "away": "barakaldo"
     },
@@ -1117,26 +1123,26 @@
     {
       "round": 17,
       "kickoff": "2026-12-20T16:00:00Z",
-      "home": "logrones",
-      "away": "real-union"
-    },
-    {
-      "round": 17,
-      "kickoff": "2026-12-20T16:00:00Z",
       "home": "ud-ourense",
       "away": "deportivo-fabril"
     },
     {
       "round": 18,
       "kickoff": "2027-01-03T16:00:00Z",
-      "home": "bilbao-athletic",
-      "away": "lugo"
+      "home": "aviles",
+      "away": "cacereno"
     },
     {
       "round": 18,
       "kickoff": "2027-01-03T16:00:00Z",
       "home": "barakaldo",
       "away": "merida"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "bilbao-athletic",
+      "away": "lugo"
     },
     {
       "round": 18,
@@ -1167,12 +1173,6 @@
       "kickoff": "2027-01-03T16:00:00Z",
       "home": "ponferradina",
       "away": "arenas"
-    },
-    {
-      "round": 18,
-      "kickoff": "2027-01-03T16:00:00Z",
-      "home": "aviles",
-      "away": "cacereno"
     },
     {
       "round": 18,
@@ -1207,6 +1207,12 @@
     {
       "round": 19,
       "kickoff": "2027-01-10T16:00:00Z",
+      "home": "logrones",
+      "away": "bilbao-athletic"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-10T16:00:00Z",
       "home": "lugo",
       "away": "extremadura"
     },
@@ -1237,26 +1243,26 @@
     {
       "round": 19,
       "kickoff": "2027-01-10T16:00:00Z",
-      "home": "logrones",
-      "away": "bilbao-athletic"
-    },
-    {
-      "round": 19,
-      "kickoff": "2027-01-10T16:00:00Z",
       "home": "ud-ourense",
       "away": "zamora"
     },
     {
       "round": 20,
       "kickoff": "2027-01-17T16:00:00Z",
-      "home": "bilbao-athletic",
-      "away": "arenas"
+      "home": "aviles",
+      "away": "real-union"
     },
     {
       "round": 20,
       "kickoff": "2027-01-17T16:00:00Z",
       "home": "barakaldo",
       "away": "racing-ferrol"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "bilbao-athletic",
+      "away": "arenas"
     },
     {
       "round": 20,
@@ -1287,12 +1293,6 @@
       "kickoff": "2027-01-17T16:00:00Z",
       "home": "pontevedra",
       "away": "cultural-leonesa"
-    },
-    {
-      "round": 20,
-      "kickoff": "2027-01-17T16:00:00Z",
-      "home": "aviles",
-      "away": "real-union"
     },
     {
       "round": 20,
@@ -1327,6 +1327,12 @@
     {
       "round": 21,
       "kickoff": "2027-01-24T16:00:00Z",
+      "home": "logrones",
+      "away": "zamora"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-24T16:00:00Z",
       "home": "lugo",
       "away": "aviles"
     },
@@ -1353,12 +1359,6 @@
       "kickoff": "2027-01-24T16:00:00Z",
       "home": "real-union",
       "away": "extremadura"
-    },
-    {
-      "round": 21,
-      "kickoff": "2027-01-24T16:00:00Z",
-      "home": "logrones",
-      "away": "zamora"
     },
     {
       "round": 21,
@@ -1393,6 +1393,12 @@
     {
       "round": 22,
       "kickoff": "2027-01-31T16:00:00Z",
+      "home": "logrones",
+      "away": "lugo"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-31T16:00:00Z",
       "home": "ponferradina",
       "away": "racing-ferrol"
     },
@@ -1401,12 +1407,6 @@
       "kickoff": "2027-01-31T16:00:00Z",
       "home": "pontevedra",
       "away": "barakaldo"
-    },
-    {
-      "round": 22,
-      "kickoff": "2027-01-31T16:00:00Z",
-      "home": "logrones",
-      "away": "lugo"
     },
     {
       "round": 22,
@@ -1429,14 +1429,20 @@
     {
       "round": 23,
       "kickoff": "2027-02-06T16:00:00Z",
-      "home": "bilbao-athletic",
-      "away": "coria"
+      "home": "aviles",
+      "away": "arenas"
     },
     {
       "round": 23,
       "kickoff": "2027-02-06T16:00:00Z",
       "home": "barakaldo",
       "away": "deportivo-fabril"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-06T16:00:00Z",
+      "home": "bilbao-athletic",
+      "away": "coria"
     },
     {
       "round": 23,
@@ -1477,12 +1483,6 @@
     {
       "round": 23,
       "kickoff": "2027-02-06T16:00:00Z",
-      "home": "aviles",
-      "away": "arenas"
-    },
-    {
-      "round": 23,
-      "kickoff": "2027-02-06T16:00:00Z",
       "home": "real-union",
       "away": "unionistas"
     },
@@ -1513,6 +1513,12 @@
     {
       "round": 24,
       "kickoff": "2027-02-14T16:00:00Z",
+      "home": "logrones",
+      "away": "merida"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-14T16:00:00Z",
       "home": "mirandes",
       "away": "cacereno"
     },
@@ -1527,12 +1533,6 @@
       "kickoff": "2027-02-14T16:00:00Z",
       "home": "pontevedra",
       "away": "racing-ferrol"
-    },
-    {
-      "round": 24,
-      "kickoff": "2027-02-14T16:00:00Z",
-      "home": "logrones",
-      "away": "merida"
     },
     {
       "round": 24,
@@ -1549,14 +1549,20 @@
     {
       "round": 25,
       "kickoff": "2027-02-21T16:00:00Z",
-      "home": "bilbao-athletic",
-      "away": "mirandes"
+      "home": "aviles",
+      "away": "coria"
     },
     {
       "round": 25,
       "kickoff": "2027-02-21T16:00:00Z",
       "home": "barakaldo",
       "away": "logrones"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "bilbao-athletic",
+      "away": "mirandes"
     },
     {
       "round": 25,
@@ -1587,12 +1593,6 @@
       "kickoff": "2027-02-21T16:00:00Z",
       "home": "racing-ferrol",
       "away": "arenas"
-    },
-    {
-      "round": 25,
-      "kickoff": "2027-02-21T16:00:00Z",
-      "home": "aviles",
-      "away": "coria"
     },
     {
       "round": 25,
@@ -1633,6 +1633,12 @@
     {
       "round": 26,
       "kickoff": "2027-02-28T16:00:00Z",
+      "home": "logrones",
+      "away": "aviles"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-28T16:00:00Z",
       "home": "mirandes",
       "away": "merida"
     },
@@ -1641,12 +1647,6 @@
       "kickoff": "2027-02-28T16:00:00Z",
       "home": "ponferradina",
       "away": "pontevedra"
-    },
-    {
-      "round": 26,
-      "kickoff": "2027-02-28T16:00:00Z",
-      "home": "logrones",
-      "away": "aviles"
     },
     {
       "round": 26,
@@ -1669,14 +1669,20 @@
     {
       "round": 27,
       "kickoff": "2027-03-07T16:00:00Z",
-      "home": "bilbao-athletic",
-      "away": "ponferradina"
+      "home": "aviles",
+      "away": "zamora"
     },
     {
       "round": 27,
       "kickoff": "2027-03-07T16:00:00Z",
       "home": "barakaldo",
       "away": "ud-ourense"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "bilbao-athletic",
+      "away": "ponferradina"
     },
     {
       "round": 27,
@@ -1717,12 +1723,6 @@
     {
       "round": 27,
       "kickoff": "2027-03-07T16:00:00Z",
-      "home": "aviles",
-      "away": "zamora"
-    },
-    {
-      "round": 27,
-      "kickoff": "2027-03-07T16:00:00Z",
       "home": "real-union",
       "away": "cacereno"
     },
@@ -1759,6 +1759,12 @@
     {
       "round": 28,
       "kickoff": "2027-03-14T16:00:00Z",
+      "home": "logrones",
+      "away": "racing-ferrol"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-14T16:00:00Z",
       "home": "mirandes",
       "away": "pontevedra"
     },
@@ -1767,12 +1773,6 @@
       "kickoff": "2027-03-14T16:00:00Z",
       "home": "real-union",
       "away": "bilbao-athletic"
-    },
-    {
-      "round": 28,
-      "kickoff": "2027-03-14T16:00:00Z",
-      "home": "logrones",
-      "away": "racing-ferrol"
     },
     {
       "round": 28,
@@ -1791,6 +1791,12 @@
       "kickoff": "2027-03-21T16:00:00Z",
       "home": "arenas",
       "away": "extremadura"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "aviles",
+      "away": "deportivo-fabril"
     },
     {
       "round": 29,
@@ -1833,12 +1839,6 @@
       "kickoff": "2027-03-21T16:00:00Z",
       "home": "racing-ferrol",
       "away": "bilbao-athletic"
-    },
-    {
-      "round": 29,
-      "kickoff": "2027-03-21T16:00:00Z",
-      "home": "aviles",
-      "away": "deportivo-fabril"
     },
     {
       "round": 29,
@@ -1849,6 +1849,12 @@
     {
       "round": 30,
       "kickoff": "2027-03-28T15:00:00Z",
+      "home": "aviles",
+      "away": "barakaldo"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-28T15:00:00Z",
       "home": "bilbao-athletic",
       "away": "pontevedra"
     },
@@ -1873,26 +1879,20 @@
     {
       "round": 30,
       "kickoff": "2027-03-28T15:00:00Z",
+      "home": "logrones",
+      "away": "cacereno"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-28T15:00:00Z",
       "home": "lugo",
       "away": "ponferradina"
     },
     {
       "round": 30,
       "kickoff": "2027-03-28T15:00:00Z",
-      "home": "aviles",
-      "away": "barakaldo"
-    },
-    {
-      "round": 30,
-      "kickoff": "2027-03-28T15:00:00Z",
       "home": "real-union",
       "away": "racing-ferrol"
-    },
-    {
-      "round": 30,
-      "kickoff": "2027-03-28T15:00:00Z",
-      "home": "logrones",
-      "away": "cacereno"
     },
     {
       "round": 30,
@@ -1909,14 +1909,14 @@
     {
       "round": 31,
       "kickoff": "2027-04-04T15:00:00Z",
-      "home": "bilbao-athletic",
-      "away": "logrones"
+      "home": "barakaldo",
+      "away": "coria"
     },
     {
       "round": 31,
       "kickoff": "2027-04-04T15:00:00Z",
-      "home": "barakaldo",
-      "away": "coria"
+      "home": "bilbao-athletic",
+      "away": "logrones"
     },
     {
       "round": 31,
@@ -1975,6 +1975,12 @@
     {
       "round": 32,
       "kickoff": "2027-04-11T15:00:00Z",
+      "home": "aviles",
+      "away": "cultural-leonesa"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-11T15:00:00Z",
       "home": "coria",
       "away": "merida"
     },
@@ -1993,26 +1999,20 @@
     {
       "round": 32,
       "kickoff": "2027-04-11T15:00:00Z",
+      "home": "logrones",
+      "away": "ponferradina"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-11T15:00:00Z",
       "home": "lugo",
       "away": "bilbao-athletic"
     },
     {
       "round": 32,
       "kickoff": "2027-04-11T15:00:00Z",
-      "home": "aviles",
-      "away": "cultural-leonesa"
-    },
-    {
-      "round": 32,
-      "kickoff": "2027-04-11T15:00:00Z",
       "home": "real-union",
       "away": "barakaldo"
-    },
-    {
-      "round": 32,
-      "kickoff": "2027-04-11T15:00:00Z",
-      "home": "logrones",
-      "away": "ponferradina"
     },
     {
       "round": 32,
@@ -2053,6 +2053,12 @@
     {
       "round": 33,
       "kickoff": "2027-04-18T15:00:00Z",
+      "home": "logrones",
+      "away": "ud-ourense"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-18T15:00:00Z",
       "home": "mirandes",
       "away": "lugo"
     },
@@ -2073,12 +2079,6 @@
       "kickoff": "2027-04-18T15:00:00Z",
       "home": "racing-ferrol",
       "away": "coria"
-    },
-    {
-      "round": 33,
-      "kickoff": "2027-04-18T15:00:00Z",
-      "home": "logrones",
-      "away": "ud-ourense"
     },
     {
       "round": 33,
@@ -2095,6 +2095,12 @@
     {
       "round": 34,
       "kickoff": "2027-04-25T15:00:00Z",
+      "home": "aviles",
+      "away": "bilbao-athletic"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-25T15:00:00Z",
       "home": "barakaldo",
       "away": "ponferradina"
     },
@@ -2127,12 +2133,6 @@
       "kickoff": "2027-04-25T15:00:00Z",
       "home": "merida",
       "away": "racing-ferrol"
-    },
-    {
-      "round": 34,
-      "kickoff": "2027-04-25T15:00:00Z",
-      "home": "aviles",
-      "away": "bilbao-athletic"
     },
     {
       "round": 34,
@@ -2161,6 +2161,12 @@
     {
       "round": 35,
       "kickoff": "2027-05-02T15:00:00Z",
+      "home": "logrones",
+      "away": "coria"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-05-02T15:00:00Z",
       "home": "lugo",
       "away": "real-union"
     },
@@ -2193,12 +2199,6 @@
       "kickoff": "2027-05-02T15:00:00Z",
       "home": "racing-ferrol",
       "away": "extremadura"
-    },
-    {
-      "round": 35,
-      "kickoff": "2027-05-02T15:00:00Z",
-      "home": "logrones",
-      "away": "coria"
     },
     {
       "round": 35,
@@ -2215,6 +2215,12 @@
     {
       "round": 36,
       "kickoff": "2027-05-09T15:00:00Z",
+      "home": "aviles",
+      "away": "racing-ferrol"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-05-09T15:00:00Z",
       "home": "barakaldo",
       "away": "lugo"
     },
@@ -2241,12 +2247,6 @@
       "kickoff": "2027-05-09T15:00:00Z",
       "home": "extremadura",
       "away": "bilbao-athletic"
-    },
-    {
-      "round": 36,
-      "kickoff": "2027-05-09T15:00:00Z",
-      "home": "aviles",
-      "away": "racing-ferrol"
     },
     {
       "round": 36,
@@ -2281,6 +2281,12 @@
     {
       "round": 37,
       "kickoff": "2027-05-16T15:00:00Z",
+      "home": "logrones",
+      "away": "unionistas"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-16T15:00:00Z",
       "home": "lugo",
       "away": "arenas"
     },
@@ -2313,12 +2319,6 @@
       "kickoff": "2027-05-16T15:00:00Z",
       "home": "racing-ferrol",
       "away": "cultural-leonesa"
-    },
-    {
-      "round": 37,
-      "kickoff": "2027-05-16T15:00:00Z",
-      "home": "logrones",
-      "away": "unionistas"
     },
     {
       "round": 37,
@@ -2335,6 +2335,12 @@
     {
       "round": 38,
       "kickoff": "2027-05-23T15:00:00Z",
+      "home": "aviles",
+      "away": "ponferradina"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-23T15:00:00Z",
       "home": "barakaldo",
       "away": "cacereno"
     },
@@ -2361,12 +2367,6 @@
       "kickoff": "2027-05-23T15:00:00Z",
       "home": "extremadura",
       "away": "lugo"
-    },
-    {
-      "round": 38,
-      "kickoff": "2027-05-23T15:00:00Z",
-      "home": "aviles",
-      "away": "ponferradina"
     },
     {
       "round": 38,
