@@ -16,7 +16,7 @@ export default defineConfig({
     },
   },
   test: {
-    include: ["src/db/**/*.db.test.ts"],
+    include: ["src/**/*.db.test.ts"],
     fileParallelism: false,
   },
 });
