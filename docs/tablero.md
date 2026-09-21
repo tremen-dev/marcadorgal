@@ -16,7 +16,7 @@ Actualizado: 2026-09-21
 
 | Spec | Estado | Último cambio |
 |---|---|---|
-| SPEC-005 — contrato-sourceadapter-registro-de-fuentes-y-adaptador-de-resultados-de-api-football | aprobada | 2026-09-21 (Alberto Fojo) |
+| SPEC-005 — contrato-sourceadapter-registro-de-fuentes-y-adaptador-de-resultados-de-api-football | hecho | 2026-09-21 (sdd-verificador) |
 
 ## ADRs
 
@@ -31,5 +31,4 @@ Actualizado: 2026-09-21
 
 ## Resumen
 
-- hecho: 4
-- aprobada: 1
+- hecho: 5
