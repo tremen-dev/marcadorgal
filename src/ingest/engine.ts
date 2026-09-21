@@ -65,6 +65,12 @@ type DecisionRow = StateRow & {
   decided_at: Date;
 };
 
+type LastHeardRow = {
+  match_id: string;
+  observed_at: Date;
+  status: MatchStatus;
+};
+
 type ObservationRow = StateRow & {
   id: string;
   match_id: string;
@@ -238,6 +244,21 @@ export async function decideMatches(
     order by observed_at`;
   const observationsOf = group(observations, (row) => row.match_id);
 
+  // The fourth query (N-9), with no window at all: one row per match, served
+  // by the same index. A silent match has nothing inside the fifteen minutes
+  // above, and it is precisely the silent match whose trace has to say when
+  // it was last heard from.
+  const lastHeardRows = await sql<LastHeardRow[]>`
+    select distinct on (match_id) match_id, observed_at, status
+    from observations where match_id = any(${any})
+    order by match_id, observed_at desc`;
+  const lastHeardOf = new Map(
+    lastHeardRows.map((row) => [
+      row.match_id,
+      { observedAt: instant(row.observed_at), status: row.status },
+    ]),
+  );
+
   for (const row of matches) {
     counts.matches += 1;
     const match: EngineMatch = {
@@ -251,6 +272,7 @@ export async function decideMatches(
       current: current === undefined ? null : toDecision(current),
       observations: (observationsOf.get(row.id) ?? []).map(toObservation),
       priority: priorityLookup(sources, row.competition_id),
+      lastHeard: lastHeardOf.get(row.id) ?? null,
       now,
     });
     if (output.decision !== null) {

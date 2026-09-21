@@ -74,11 +74,21 @@ const decisionRow = (over: Record<string, unknown> = {}) => ({
   ...over,
 });
 
+const lastHeardRow = (over: Record<string, unknown> = {}) => ({
+  match_id: MATCH,
+  observed_at: timestamptz(at(-40)),
+  status: "live",
+  ...over,
+});
+
+const LAST_HEARD = "distinct on (match_id) match_id, observed_at, status";
+
 const answering =
   (over: Record<string, unknown[]> = {}) =>
   (text: string): unknown[] => {
     if (text.includes("from matches")) return over.matches ?? [matchRow];
     if (text.includes("from decisions")) return over.decisions ?? [];
+    if (text.includes(LAST_HEARD)) return over.lastHeard ?? [];
     if (text.includes("from observations")) return over.observations ?? [];
     if (text.startsWith("insert into alerts")) return over.alerts ?? [];
     if (text.startsWith("update alerts")) return over.resolved ?? [];
@@ -88,8 +98,8 @@ const answering =
 const find = (calls: Call[], fragment: string) =>
   calls.find((c) => c.text.includes(fragment));
 
-describe("CA-9 the three queries", () => {
-  it("asks for the matches, their current decisions and fifteen minutes of observations", async () => {
+describe("CA-9 the four queries", () => {
+  it("asks for the matches, their current decisions, fifteen minutes of observations and the last thing heard", async () => {
     const { tx, calls } = fakeTx(answering());
     await decideMatches(tx, [MATCH, MATCH, "other-match"], NOW, SOURCES);
 
@@ -104,10 +114,21 @@ describe("CA-9 the three queries", () => {
     expect(decisions?.text).toContain("order by match_id, version desc");
     expect(decisions?.values[0]).toEqual(ids);
 
-    const observations = find(calls, "from observations");
+    const observations = calls.find(
+      (c) =>
+        c.text.includes("from observations") && !c.text.includes(LAST_HEARD),
+    );
     expect(observations?.text).toContain("observed_at >= ?");
     expect(observations?.text).toContain("order by observed_at");
     expect(observations?.values).toEqual([ids, at(-15)]);
+
+    // The fourth (N-9): one row per match, no window at all.
+    const lastHeard = find(calls, LAST_HEARD);
+    expect(lastHeard?.text).toContain("from observations");
+    expect(lastHeard?.text).toContain("order by match_id, observed_at desc");
+    expect(lastHeard?.text).not.toContain("observed_at >= ?");
+    expect(lastHeard?.values).toEqual([ids]);
+    expect(calls).toHaveLength(4);
   });
 
   it("asks nothing with no match ids", async () => {
@@ -186,6 +207,40 @@ describe("CA-9 opening and resolving alerts", () => {
     const { tx } = fakeTx(answering({ ...regression, alerts: [] }));
     expect(await decideMatches(tx, [MATCH], NOW, SOURCES)).toMatchObject({
       alerts: 0,
+    });
+  });
+
+  it("hands the last thing heard to decide, however old it is (N-9)", async () => {
+    const { tx, calls } = fakeTx(
+      answering({
+        decisions: [decisionRow({ minute: 90 })],
+        matches: [{ ...matchRow, kickoff: timestamptz(at(-121)) }],
+        lastHeard: [lastHeardRow()],
+        alerts: [{ id: "alert-3" }],
+      }),
+    );
+    await decideMatches(tx, [MATCH], NOW, SOURCES);
+    const insert = find(calls, "insert into alerts");
+    expect(insert?.values[0]).toBe("forced_finish");
+    expect(insert?.values[2]).toMatchObject({
+      lastObservedAt: at(-40),
+      lastStatus: "live",
+    });
+  });
+
+  it("leaves the trace empty when the match was never observed", async () => {
+    const { tx, calls } = fakeTx(
+      answering({
+        decisions: [decisionRow({ minute: 90 })],
+        matches: [{ ...matchRow, kickoff: timestamptz(at(-121)) }],
+        lastHeard: [],
+        alerts: [{ id: "alert-4" }],
+      }),
+    );
+    await decideMatches(tx, [MATCH], NOW, SOURCES);
+    expect(find(calls, "insert into alerts")?.values[2]).toMatchObject({
+      lastObservedAt: null,
+      lastStatus: null,
     });
   });
 

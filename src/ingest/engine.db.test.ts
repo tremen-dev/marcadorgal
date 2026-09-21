@@ -80,120 +80,133 @@ const alerts = (tx: TransactionSql, matchId: string) =>
 afterAll(() => sql.end());
 
 describe("CA-11 the engine against the database", () => {
-  it("writes the whole life of a match: RN-01, RN-03 and the forced finish", () =>
-    rollback(async (tx) => {
-      const matchId = await seedMatch(tx);
-      const tick = engineTx(tx);
-      await observe(tx, matchId, 0, 0, 1, at(-2));
-      const winner = await observe(tx, matchId, 1, 0, 20, at(-1));
+  it(
+    "writes the whole life of a match: RN-01, RN-03 and the forced finish",
+    () =>
+      rollback(async (tx) => {
+        const matchId = await seedMatch(tx);
+        const tick = engineTx(tx);
+        await observe(tx, matchId, 0, 0, 1, at(-2));
+        const winner = await observe(tx, matchId, 1, 0, 20, at(-1));
 
-      // One Decision, version 1, citing the winning observation (RN-06).
-      expect(await decideMatches(tick, [matchId], at(0), SOURCES)).toEqual({
-        matches: 1,
-        decisions: 1,
-        alerts: 0,
-        resolved: 0,
-      });
-      let rows = await decisions(tx, matchId);
-      expect(rows).toHaveLength(1);
-      expect(rows[0]).toMatchObject({
-        version: 1,
-        status: "live",
-        home_score: 1,
-        away_score: 0,
-        minute: 20,
-        qualifier: "provisional",
-        rule: "RN-01",
-      });
-      expect(rows[0].observation_ids).toEqual([winner]);
+        // One Decision, version 1, citing the winning observation (RN-06).
+        expect(await decideMatches(tick, [matchId], at(0), SOURCES)).toEqual({
+          matches: 1,
+          decisions: 1,
+          alerts: 0,
+          resolved: 0,
+        });
+        let rows = await decisions(tx, matchId);
+        expect(rows).toHaveLength(1);
+        expect(rows[0]).toMatchObject({
+          version: 1,
+          status: "live",
+          home_score: 1,
+          away_score: 0,
+          minute: 20,
+          qualifier: "provisional",
+          rule: "RN-01",
+        });
+        expect(rows[0].observation_ids).toEqual([winner]);
 
-      // The board shows it, dated by the observation it cites (RN-11).
-      const [board] = await tx`select status, home_score, away_score, minute,
+        // The board shows it, dated by the observation it cites (RN-11).
+        const [board] = await tx`select status, home_score, away_score, minute,
         qualifier, decision_version, observed_at from board where match_id = ${matchId}`;
-      expect(board).toMatchObject({
-        status: "live",
-        home_score: 1,
-        away_score: 0,
-        minute: 20,
-        qualifier: "provisional",
-        decision_version: 1,
-      });
-      expect((board.observed_at as Date).toISOString()).toBe(at(-1));
+        expect(board).toMatchObject({
+          status: "live",
+          home_score: 1,
+          away_score: 0,
+          minute: 20,
+          qualifier: "provisional",
+          decision_version: 1,
+        });
+        expect((board.observed_at as Date).toISOString()).toBe(at(-1));
 
-      // A retreat: the published score holds and an alert is opened (RN-03).
-      await observe(tx, matchId, 0, 0, 21, at(0));
-      expect(await decideMatches(tick, [matchId], at(0), SOURCES)).toEqual({
-        matches: 1,
-        decisions: 1,
-        alerts: 1,
-        resolved: 0,
-      });
-      rows = await decisions(tx, matchId);
-      expect(rows).toHaveLength(2);
-      expect(rows[1]).toMatchObject({
-        version: 2,
-        home_score: 1,
-        away_score: 0,
-        minute: 21,
-        rule: "RN-03",
-      });
-      let open = await alerts(tx, matchId);
-      expect(open).toHaveLength(1);
-      expect(open[0]).toMatchObject({ kind: "regression", resolved_at: null });
-      expect(open[0].details).toMatchObject({
-        sourceId: "api-football",
-        current: { home: 1, away: 0 },
-        proposed: { home: 0, away: 0 },
-      });
+        // A retreat: the published score holds and an alert is opened (RN-03).
+        const lastHeard = at(0);
+        await observe(tx, matchId, 0, 0, 21, lastHeard);
+        expect(await decideMatches(tick, [matchId], at(0), SOURCES)).toEqual({
+          matches: 1,
+          decisions: 1,
+          alerts: 1,
+          resolved: 0,
+        });
+        rows = await decisions(tx, matchId);
+        expect(rows).toHaveLength(2);
+        expect(rows[1]).toMatchObject({
+          version: 2,
+          home_score: 1,
+          away_score: 0,
+          minute: 21,
+          rule: "RN-03",
+        });
+        let open = await alerts(tx, matchId);
+        expect(open).toHaveLength(1);
+        expect(open[0]).toMatchObject({
+          kind: "regression",
+          resolved_at: null,
+        });
+        expect(open[0].details).toMatchObject({
+          sourceId: "api-football",
+          current: { home: 1, away: 0 },
+          proposed: { home: 0, away: 0 },
+        });
 
-      // Running it again writes no row and opens no second alert.
-      expect(await decideMatches(tick, [matchId], at(0), SOURCES)).toEqual({
-        matches: 1,
-        decisions: 0,
-        alerts: 0,
-        resolved: 0,
-      });
-      expect(await decisions(tx, matchId)).toHaveLength(2);
-      expect(await alerts(tx, matchId)).toHaveLength(1);
+        // Running it again writes no row and opens no second alert.
+        expect(await decideMatches(tick, [matchId], at(0), SOURCES)).toEqual({
+          matches: 1,
+          decisions: 0,
+          alerts: 0,
+          resolved: 0,
+        });
+        expect(await decisions(tx, matchId)).toHaveLength(2);
+        expect(await alerts(tx, matchId)).toHaveLength(1);
 
-      // Nobody closed the match: RN-02 does, with its trace (H-5).
-      expect(await decideMatches(tick, [matchId], at(121), SOURCES)).toEqual({
-        matches: 1,
-        decisions: 1,
-        alerts: 1,
-        resolved: 0,
-      });
-      rows = await decisions(tx, matchId);
-      expect(rows).toHaveLength(3);
-      expect(rows[2]).toMatchObject({
-        version: 3,
-        status: "finished",
-        home_score: 1,
-        away_score: 0,
-        minute: null,
-        qualifier: "provisional",
-        rule: "RN-02",
-      });
-      open = await alerts(tx, matchId);
-      expect(open).toHaveLength(2);
-      const forced = open.find((a) => a.kind === "forced_finish");
-      expect(forced?.match_id).toBe(matchId);
-      expect(forced?.details).toMatchObject({
-        score: { home: 1, away: 0 },
-        minute: 21,
-        kickoff: KICKOFF,
-      });
+        // Nobody closed the match: RN-02 does, with its trace (H-5).
+        expect(await decideMatches(tick, [matchId], at(121), SOURCES)).toEqual({
+          matches: 1,
+          decisions: 1,
+          alerts: 1,
+          resolved: 0,
+        });
+        rows = await decisions(tx, matchId);
+        expect(rows).toHaveLength(3);
+        expect(rows[2]).toMatchObject({
+          version: 3,
+          status: "finished",
+          home_score: 1,
+          away_score: 0,
+          minute: null,
+          qualifier: "provisional",
+          rule: "RN-02",
+        });
+        open = await alerts(tx, matchId);
+        expect(open).toHaveLength(2);
+        const forced = open.find((a) => a.kind === "forced_finish");
+        expect(forced?.match_id).toBe(matchId);
+        // The trace names the last observation, 121 minutes old and therefore
+        // outside the fifteen minute window: the fourth query of CA-9 at work.
+        expect(forced?.details).toMatchObject({
+          score: { home: 1, away: 0 },
+          minute: 21,
+          kickoff: KICKOFF,
+          lastObservedAt: lastHeard,
+          lastStatus: "live",
+        });
 
-      // And the sweep run again neither closes it twice nor alerts twice.
-      expect(await decideMatches(tick, [matchId], at(121), SOURCES)).toEqual({
-        matches: 1,
-        decisions: 0,
-        alerts: 0,
-        resolved: 0,
-      });
-      expect(await decisions(tx, matchId)).toHaveLength(3);
-      expect(await alerts(tx, matchId)).toHaveLength(2);
-    }));
+        // And the sweep run again neither closes it twice nor alerts twice.
+        expect(await decideMatches(tick, [matchId], at(121), SOURCES)).toEqual({
+          matches: 1,
+          decisions: 0,
+          alerts: 0,
+          resolved: 0,
+        });
+        expect(await decisions(tx, matchId)).toHaveLength(3);
+        expect(await alerts(tx, matchId)).toHaveLength(2);
+      }),
+    // Six runs of the engine against a remote database, four queries each.
+    30_000,
+  );
 
   it("resolves the silence when the signal comes back", () =>
     rollback(async (tx) => {
