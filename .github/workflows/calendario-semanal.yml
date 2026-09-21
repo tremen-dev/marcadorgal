@@ -1,0 +1,105 @@
+# Sincronización semanal del calendario declarado (SPEC-008 CA-8, H-5).
+# El calendario de data/calendario/** es la fuente de verdad (D-3): el sync
+# propone en un PR y un humano ve los aplazamientos antes de que entren en
+# base. calendario:sync reescribe ficheros, así que no puede vivir en una
+# función serverless de filesystem de solo lectura.
+name: calendario-semanal
+on:
+  schedule:
+    # Martes a las 05:00Z: entre jornadas, con tiempo de revisar antes del
+    # viernes.
+    - cron: '0 5 * * 2'
+  workflow_dispatch:
+    inputs:
+      temporada:
+        default: '2026-27'
+      cargar:
+        description: "si: corre solo el job load contra la base"
+        default: 'no'
+  push:
+    branches: [main]
+    paths:
+      - 'data/calendario/**'
+      - 'data/alias/**'
+
+jobs:
+  sync:
+    if: github.event_name != 'push' && inputs.cargar != 'si'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      TEMPORADA: ${{ inputs.temporada || '2026-27' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Sincronizar contra el proveedor
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        run: npm run calendario:sync -- "$TEMPORADA" | tee sync-diff.txt
+      - name: ¿Hay diff en el calendario declarado?
+        id: diff
+        run: |
+          if [ -z "$(git status --porcelain data/calendario data/alias)" ]; then
+            echo "cambios=no" >> "$GITHUB_OUTPUT"
+            echo "El proveedor no trae cambios: no se abre PR."
+          else
+            echo "cambios=si" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Abrir o actualizar el PR
+        if: steps.diff.outputs.cambios == 'si'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          fecha="$(date -u +%Y-%m-%d)"
+          rama="chore/calendario-$fecha"
+          {
+            echo "Sincronización semanal del calendario declarado de \`$TEMPORADA\`."
+            echo
+            echo "Salida de \`npm run calendario:sync\`:"
+            echo
+            echo '```'
+            cat sync-diff.txt
+            echo '```'
+            echo
+            echo "Fusiona solo si los aplazamientos y los cambios de horario son correctos (D-3)."
+          } > cuerpo.md
+          rm -f sync-diff.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$rama"
+          git add data/calendario data/alias
+          git commit -m "chore(calendario): sincronización semanal $fecha"
+          git push --force-with-lease origin "$rama"
+          if gh pr view "$rama" --json number >/dev/null 2>&1; then
+            gh pr edit "$rama" --body-file cuerpo.md
+          else
+            gh pr create --base main --head "$rama" \
+              --title "chore(calendario): sincronización semanal $fecha" \
+              --body-file cuerpo.md
+          fi
+
+  load:
+    if: github.event_name == 'push' || inputs.cargar == 'si'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TEMPORADA: ${{ inputs.temporada || '2026-27' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Cargar el calendario en la base
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run calendario:load -- "$TEMPORADA"

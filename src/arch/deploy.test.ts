@@ -49,3 +49,39 @@ describe("SPEC-008 CA-5 the cron path carries the alias", () => {
     expect(existsSync(file)).toBe(true);
   });
 });
+
+// CA-8: the weekly sync runs in GitHub Actions and not in a serverless
+// function, because calendario:sync rewrites data/calendario/** and
+// data/alias/** and the declared calendar is the source of truth (D-3, H-5).
+const workflow = readFileSync(
+  path.join(root, ".github/workflows/calendario-semanal.yml"),
+  "utf8",
+);
+
+describe("SPEC-008 CA-8 calendario-semanal.yml", () => {
+  it("runs weekly on Tuesday and can be launched by hand", () => {
+    expect(workflow).toContain("cron: '0 5 * * 2'");
+    expect(workflow).toContain("workflow_dispatch:");
+  });
+
+  it("syncs against the provider and opens a PR only when there is a diff", () => {
+    expect(workflow).toContain("npm run calendario:sync --");
+    expect(workflow).toContain(
+      "git status --porcelain data/calendario data/alias",
+    );
+    expect(workflow).toContain("if: steps.diff.outputs.cambios == 'si'");
+    expect(workflow).toContain('rama="chore/calendario-$fecha"');
+  });
+
+  it("loads into the database on a push to main that touched the data", () => {
+    expect(workflow).toContain("branches: [main]");
+    expect(workflow).toContain("- 'data/calendario/**'");
+    expect(workflow).toContain("- 'data/alias/**'");
+    expect(workflow).toContain("npm run calendario:load --");
+    expect(workflow).toContain("secrets.DATABASE_URL");
+  });
+
+  it("takes the provider key from secrets and never from the repo", () => {
+    expect(workflow).toContain("secrets.API_FOOTBALL_KEY");
+  });
+});
