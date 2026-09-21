@@ -1,5 +1,5 @@
 import { afterAll, describe, expect, it } from "vitest";
-import { getSql } from "./client";
+import { getSql } from "./client.ts";
 
 const sql = getSql();
 afterAll(() => sql.end());
