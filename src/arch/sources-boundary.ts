@@ -7,7 +7,9 @@ const MODEL_DIR = "src/model";
 const SOURCES_DIR = "src/sources";
 
 // Import specifiers a source adapter may use (FOUNDATION: src/sources/* only
-// imports from src/model). `file` is repo-relative, posix or native.
+// imports from src/model). A file directly under src/sources/ (the registry,
+// SPEC-005 CA-9) may also import its own level, never an adapter folder.
+// `file` is repo-relative, posix or native.
 export function checkSourceImports(file: string, source: string): Violation[] {
   const posixFile = file.split(path.sep).join(path.posix.sep);
   const isTest = /\.test\.tsx?$/.test(posixFile);
@@ -27,6 +29,14 @@ function ownSourceDir(file: string): string | null {
   return match ? `${SOURCES_DIR}/${match[1]}` : null;
 }
 
+const isTopLevel = (file: string): boolean =>
+  /^(?:.*\/)?src\/sources\/[^/]+$/.test(file);
+
+// Same level as a top-level file: src/sources/<name>, no deeper.
+const sameTopLevel = (resolved: string): boolean =>
+  resolved.startsWith(`${SOURCES_DIR}/`) &&
+  !resolved.slice(SOURCES_DIR.length + 1).includes("/");
+
 function disallowed(
   specifier: string,
   file: string,
@@ -41,7 +51,11 @@ function disallowed(
     const resolved = path.posix.join(path.posix.dirname(file), specifier);
     if (within(resolved, MODEL_DIR)) return null;
     if (ownDir && within(resolved, ownDir)) return null;
-    return `relative import must stay inside ${MODEL_DIR}/ or ${ownDir ?? `${SOURCES_DIR}/<id>`}/`;
+    if (!ownDir && isTopLevel(file) && sameTopLevel(resolved)) return null;
+    const own = ownDir
+      ? `${ownDir}/`
+      : `${SOURCES_DIR}/ at the same level (never an adapter folder)`;
+    return `relative import must stay inside ${MODEL_DIR}/ or ${own}`;
   }
   return `only zod, node:*, @/model/* and relative imports of ${MODEL_DIR}/ or the adapter folder are allowed`;
 }

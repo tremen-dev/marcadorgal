@@ -16,6 +16,28 @@ export const id = "acme";
 
 const file = "src/sources/acme/adapter.ts";
 
+describe("SPEC-005 CA-9 files directly under src/sources/", () => {
+  it("accepts a same-level relative import such as ./registry.ts", () => {
+    expect(
+      checkSourceImports(
+        "src/sources/registry.test.ts",
+        `import { SOURCES } from "./registry.ts";`,
+      ),
+    ).toEqual([]);
+  });
+
+  it("never accepts an import of an adapter folder from the top level", () => {
+    const violations = checkSourceImports(
+      "src/sources/registry.ts",
+      `import { adapter } from "./api-football/results.ts";`,
+    );
+    expect(violations).toHaveLength(1);
+    expect(violations[0]).toMatchObject({
+      specifier: "./api-football/results.ts",
+    });
+  });
+});
+
 describe("CA-14 checkSourceImports", () => {
   it("accepts zod, node:, @/model, model-relative and same-folder imports", () => {
     expect(checkSourceImports(file, adapter)).toEqual([]);

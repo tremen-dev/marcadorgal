@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { Match } from "./entities.ts";
-import { type CompetitionId, MatchId, SourceId, type TeamId } from "./ids.ts";
+import { CompetitionId, MatchId, SourceId, type TeamId } from "./ids.ts";
 import { Instant } from "./instant.ts";
 import { MatchState } from "./state.ts";
 
@@ -116,3 +116,41 @@ export interface SourceAdapter {
   // Identity: reads the adapter's own alias; null when unresolved (RN-10).
   resolveTeam(external: string, competition: CompetitionId): TeamId | null;
 }
+
+// Priority bands (N-4): 1-49 providers, 50-99 federation, 100 the operator
+// (RN-01; not in the registry until EPIC-004).
+export const FEDERATION_PRIORITY = 50;
+export const OPERATOR_PRIORITY = 100;
+
+// One entry of src/sources/registry.ts (ADR-003, D-7): configuration, never
+// code. legalBasis is only annotated; the code never evaluates it.
+export const SourceConfig = z
+  .strictObject({
+    id: SourceId,
+    kind: z.enum(["pull", "push"]),
+    competitions: z.array(CompetitionId).min(1),
+    priority: z.record(CompetitionId, z.int().min(1).max(99)),
+    minIntervalSeconds: z.int().min(1),
+    userAgent: z.string().min(1),
+    legalBasis: z.string().min(1),
+  })
+  .superRefine((config, ctx) => {
+    const covered = new Set<string>(config.competitions);
+    for (const competition of Object.keys(config.priority)) {
+      if (!covered.has(competition))
+        ctx.addIssue({
+          code: "custom",
+          path: ["priority", competition],
+          message: `priority for a competition not covered: ${competition}`,
+        });
+    }
+    for (const competition of config.competitions) {
+      if (!(competition in config.priority))
+        ctx.addIssue({
+          code: "custom",
+          path: ["priority"],
+          message: `missing priority for ${competition}`,
+        });
+    }
+  });
+export type SourceConfig = z.infer<typeof SourceConfig>;
