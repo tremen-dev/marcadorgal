@@ -28,6 +28,7 @@ const ProviderTeam = z.looseObject({
 
 const ProviderFixture = z.looseObject({
   fixture: z.looseObject({
+    id: z.union([z.int(), z.string().min(1)]),
     date: z.string().min(1),
     status: z.looseObject({ short: z.string() }),
   }),
@@ -84,6 +85,7 @@ export const apiFootballCalendar: CalendarImporter = {
       teams.set(home, { externalId: home, externalName: f.teams.home.name });
       teams.set(away, { externalId: away, externalName: f.teams.away.name });
       matches.push({
+        externalId: String(f.fixture.id),
         round: Number(round[2]),
         kickoff: toInstant(f.fixture.date),
         home,

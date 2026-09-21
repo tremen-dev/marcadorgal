@@ -83,6 +83,25 @@ describe("CA-11 readSeasons", () => {
     ]);
   });
 
+  it("validates match aliases against the ids derived from the season's calendars (SPEC-005 CA-3)", () => {
+    const j1 = "test-cal-2024-25-j1-test-a-test-b";
+    const good = dataDir({
+      "calendario/2024-25/test-cal.json": calendar,
+      "alias/2024-25/test-source.json": { ...aliases, matches: { "7": j1 } },
+    });
+    expect(readSeasons(good, "2024-25")[0].issues).toEqual([]);
+    const bad = dataDir({
+      "calendario/2024-25/test-cal.json": calendar,
+      "alias/2024-25/test-source.json": {
+        ...aliases,
+        matches: { "7": "test-cal-2024-25-j9-test-a-test-b" },
+      },
+    });
+    expect(readSeasons(bad, "2024-25")[0].issues.map((i) => i.path)).toEqual([
+      "matches.7",
+    ]);
+  });
+
   it("reports a missing season", () => {
     const root = dataDir({});
     const seasons = readSeasons(root, "2024-25");

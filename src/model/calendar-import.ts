@@ -12,6 +12,8 @@ export const ImportedTeam = z.strictObject({
 export type ImportedTeam = z.infer<typeof ImportedTeam>;
 
 export const ImportedMatch = z.strictObject({
+  // The provider's match id, kept only in data/alias (SPEC-005 CA-3, N-3).
+  externalId: z.string().min(1),
   round: z.int().min(1),
   kickoff: Instant,
   home: z.string().min(1),

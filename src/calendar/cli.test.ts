@@ -71,6 +71,13 @@ describe("CA-7 calendario:sync", () => {
           teamId: "arenteiro",
         },
       ],
+      rematched: [
+        {
+          externalId: "1003",
+          from: j2,
+          to: MatchId.parse("tercera-rfef-g1-2026-27-j2-arosa-arenteiro"),
+        },
+      ],
       unconfirmed: [j2],
       ignoredRounds: { "Promotion Play-offs - final": 2 },
     });
@@ -84,5 +91,7 @@ describe("CA-7 calendario:sync", () => {
     expect(text).toContain("2026-09-14T18:00:00Z");
     expect(text).toContain("CD Arenteiro");
     expect(text).toContain("Promotion Play-offs - final");
+    expect(text).toMatch(/rematched: 1/);
+    expect(text).toContain("tercera-rfef-g1-2026-27-j2-arosa-arenteiro");
   });
 });

@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { COMPETITIONS } from "./importers.ts";
+import { matchId } from "./match-id.ts";
 import {
   AliasFile,
   CalendarFile,
@@ -107,9 +108,30 @@ describe.each(aliasFiles.map((a) => [`${a.season}/${a.sourceId}`, a] as const))(
         .flatMap((c) => c.data.teams.map((t) => t.id)),
     );
 
+    const matchIds = new Set(
+      calendars
+        .filter((c) => c.season === season)
+        .flatMap((c) =>
+          c.data.matches.map((m) =>
+            matchId({
+              competitionId: c.data.competition.id,
+              season,
+              round: m.round,
+              homeTeamId: m.home,
+              awayTeamId: m.away,
+            }),
+          ),
+        ),
+    );
+
     it("passes validateAliases against the union of the season's calendars", () => {
       expect(
-        validateAliases(data, { season, sourceId, knownTeams: teamIds }),
+        validateAliases(data, {
+          season,
+          sourceId,
+          knownTeams: teamIds,
+          knownMatches: matchIds,
+        }),
       ).toEqual([]);
     });
 

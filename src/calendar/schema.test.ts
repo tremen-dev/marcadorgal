@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { AliasEntry, AliasFile as ModelAliasFile } from "../model/index.ts";
 import {
   AliasFile,
   CalendarFile,
@@ -191,10 +192,13 @@ const aliases = {
     { externalId: "9599", externalName: "Arenteiro", teamId: "cd-arenteiro" },
   ],
 };
+const j1 = "tercera-rfef-g1-2026-27-j1-ud-ourense-cd-arenteiro";
+const j2 = "tercera-rfef-g1-2026-27-j2-cd-arenteiro-ud-ourense";
 const aliasCtx = {
   season: "2026-27",
   sourceId: "api-football",
   knownTeams: ["ud-ourense", "cd-arenteiro"],
+  knownMatches: [j1, j2],
 };
 
 describe("CA-3 AliasFile", () => {
@@ -255,5 +259,55 @@ describe("CA-3 AliasFile", () => {
   it("rejects an extra key", () => {
     const extra = { ...aliases, provider: "api-football" };
     expect(paths(validateAliases(extra, aliasCtx))).toContain("provider");
+  });
+});
+
+describe("SPEC-005 CA-3 alias in src/model and match aliases", () => {
+  it("AliasFile and AliasEntry live in src/model and schema.ts reexports them", () => {
+    expect(AliasFile).toBe(ModelAliasFile);
+    expect(
+      AliasEntry.safeParse({
+        externalId: "1",
+        externalName: "X",
+        teamId: "ud-ourense",
+      }).success,
+    ).toBe(true);
+  });
+
+  it("a file without matches validates with no issues", () => {
+    expect(validateAliases(aliases, aliasCtx)).toEqual([]);
+    expect(AliasFile.parse(aliases)).not.toHaveProperty("matches");
+  });
+
+  it("accepts matches whose values are known match ids", () => {
+    const withMatches = { ...aliases, matches: { "1001": j1, "1002": j2 } };
+    expect(validateAliases(withMatches, aliasCtx)).toEqual([]);
+  });
+
+  it("rejects a match alias whose value is not a known match", () => {
+    const unknown = {
+      ...aliases,
+      matches: { "1001": "tercera-rfef-g1-2026-27-j9-ud-ourense-cd-arenteiro" },
+    };
+    expect(paths(validateAliases(unknown, aliasCtx))).toContain("matches.1001");
+  });
+
+  it("rejects the same match id under two external ids", () => {
+    const dup = { ...aliases, matches: { "1001": j1, "1002": j1 } };
+    expect(paths(validateAliases(dup, aliasCtx))).toContain("matches.1002");
+  });
+
+  it("rejects an empty external id and a value that is not a MatchId", () => {
+    expect(
+      paths(validateAliases({ ...aliases, matches: { "": j1 } }, aliasCtx)),
+    ).not.toEqual([]);
+    expect(
+      paths(
+        validateAliases(
+          { ...aliases, matches: { "1001": "Not Slug" } },
+          aliasCtx,
+        ),
+      ),
+    ).toContain("matches.1001");
   });
 });

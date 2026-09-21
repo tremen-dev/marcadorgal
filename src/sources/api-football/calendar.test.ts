@@ -126,6 +126,17 @@ describe("CA-5 parse on real fixtures", () => {
     expect(imported.matches.some((m) => m.round > 2)).toBe(false);
   });
 
+  it("fills externalId with fixture.id as a string (SPEC-005 CA-3)", () => {
+    const raw = fixture(439);
+    const imported = apiFootballCalendar.parse(raw);
+    const ids = raw.response.map((f: { fixture: { id: number } }) =>
+      String(f.fixture.id),
+    );
+    expect(imported.matches.map((m) => m.externalId)).toEqual(ids);
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(typeof raw.response[0].fixture.id).toBe("number");
+  });
+
   it("marks PST/TBD as timeConfirmed=false", () => {
     const raw = fixture(439);
     raw.response[0].fixture.status.short = "PST";
