@@ -34,17 +34,14 @@ describe("CA-4 loadAliasFile", () => {
 
   it("throws with the zod issues when the file is invalid", () => {
     write("2031-32", "api-football", { source: "api-football", teams: "no" });
-    const error = (() => {
-      try {
-        loadAliasFile("2031-32", "api-football", root);
-      } catch (e) {
-        return e as Error & { issues?: unknown[] };
-      }
-    })();
-    expect(error?.issues).toBeInstanceOf(Array);
-    expect(
-      (error?.issues as { path: PropertyKey[] }[]).map((i) => i.path),
-    ).toContainEqual(["teams"]);
+    let issues: { path: PropertyKey[] }[] = [];
+    try {
+      loadAliasFile("2031-32", "api-football", root);
+      expect.unreachable("an invalid alias file must throw");
+    } catch (e) {
+      issues = (e as { issues?: { path: PropertyKey[] }[] }).issues ?? [];
+    }
+    expect(issues.map((i) => i.path)).toContainEqual(["teams"]);
   });
 
   it("names the source and the season when the file is missing", () => {
