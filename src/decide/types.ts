@@ -7,6 +7,7 @@ import type {
   Match,
   MatchId,
   MatchState,
+  MatchStatus,
   Observation,
   ObservationId,
   Qualifier,
@@ -16,6 +17,13 @@ import type {
 // current status is the Decision's (ADR-006 §3).
 export type EngineMatch = Pick<Match, "id" | "competitionId" | "kickoff">;
 
+// The last observation known of the match, of any age (N-9). The adapter
+// knows it beyond the window of observations; absent or null, the engine
+// falls back to the freshest of what it was handed. It never changes which
+// Decision is produced: it only fills in the details of silence and
+// forced_finish, which by definition happen with nothing inside the window.
+export type LastHeard = { observedAt: Instant; status: MatchStatus };
+
 // The whole world of the engine (N-2): no clock, no registry, no database.
 // Priorities arrive as a function, now as a value.
 export type EngineInput = {
@@ -23,6 +31,7 @@ export type EngineInput = {
   current: Decision | null;
   observations: Observation[];
   priority: (sourceId: string) => number | undefined;
+  lastHeard?: LastHeard | null;
   now: Instant;
 };
 

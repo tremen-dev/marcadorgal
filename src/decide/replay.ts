@@ -28,7 +28,9 @@ const chained = (version: number): DecisionId =>
 const ascending = (a: Instant, b: Instant) => instantDiff(b, a);
 
 // Folds decide() over the instants of the log: given the observations, it
-// reproduces the decisions.
+// reproduces the decisions. lastHeard is deliberately not passed (N-9): the
+// replay already holds the whole history, so the engine derives it from
+// observations and the replay stays self-contained and deterministic.
 export function replay({
   match,
   priority,

@@ -25,6 +25,7 @@ import type {
   DecisionDraft,
   EngineInput,
   EngineOutput,
+  LastHeard,
 } from "./types.ts";
 
 // One candidate: the freshest observation of a source, with its priority.
@@ -136,7 +137,7 @@ function disagreementSince(
 }
 
 export function decide(input: EngineInput): EngineOutput {
-  const { match, current, observations, priority, now } = input;
+  const { match, current, observations, priority, lastHeard, now } = input;
   const matchId = match.id;
   const open: AlertDraft[] = [];
   const resolve: AlertKind[] = [];
@@ -151,7 +152,14 @@ export function decide(input: EngineInput): EngineOutput {
   const heard = timeline.filter(
     (o) => age(o.observedAt, now) < minutes(SILENCE_MINUTES),
   );
-  const last = timeline.at(-1) ?? null;
+  // The last thing heard of this match, at any age (N-9): the adapter knows
+  // it beyond the window, and without it the freshest of what we were handed.
+  const newest = timeline.at(-1);
+  const last: LastHeard | null =
+    lastHeard ??
+    (newest === undefined
+      ? null
+      : { observedAt: newest.observedAt, status: newest.status });
 
   // One per source, the freshest, priority known (RN-01).
   const freshest = new Map<string, Observation>();

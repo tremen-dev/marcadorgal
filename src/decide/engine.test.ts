@@ -533,6 +533,25 @@ describe("CA-6 RN-05 silence", () => {
     ]);
   });
 
+  it("dates the silence with lastHeard when it is older than the window (N-9)", () => {
+    const { decision, open } = decide(
+      input({
+        current: VIGENTE,
+        observations: [],
+        lastHeard: { observedAt: at(-20), status: "live" },
+        now: at(20),
+      }),
+    );
+    expect(decision).toMatchObject({ qualifier: "sen_sinal", rule: "RN-05" });
+    expect(open).toEqual([
+      {
+        kind: "silence",
+        matchId: MATCH.id,
+        details: { lastObservedAt: at(-20) },
+      },
+    ]);
+  });
+
   it("says nothing between five and fifteen minutes of quiet", () => {
     const { decision, open } = decide(
       input({
@@ -600,6 +619,44 @@ describe("CA-6 RN-02 forced finish with a trace (H-3, H-5)", () => {
     ]);
     // The operator closes this one, never the engine (N-3).
     expect(resolve).toEqual([]);
+  });
+
+  it("traces it with lastHeard, however old (N-9)", () => {
+    const { open } = decide(
+      input({
+        current: VIGENTE,
+        observations: [],
+        lastHeard: { observedAt: at(81), status: "live" },
+        now: at(121),
+      }),
+    );
+    expect(open).toEqual([
+      {
+        kind: "forced_finish",
+        matchId: MATCH.id,
+        details: {
+          score: { home: 1, away: 0 },
+          minute: 90,
+          kickoff: KICKOFF,
+          lastObservedAt: at(81),
+          lastStatus: "live",
+        },
+      },
+    ]);
+  });
+
+  it("leaves the trace empty only when the match was never observed", () => {
+    const { open } = decide(
+      input({
+        current: VIGENTE,
+        observations: [],
+        lastHeard: null,
+        now: at(121),
+      }),
+    );
+    expect(open[0]).toMatchObject({
+      details: { lastObservedAt: null, lastStatus: null },
+    });
   });
 
   it("closes it even while live observations keep arriving (H-3)", () => {
