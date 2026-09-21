@@ -32,6 +32,14 @@ tipo: roadmap
   datos de dev tiene la jornada en curso cargada.
   **Cerrada el 2026-09-21** con sus cuatro specs hechas (SPEC-001..004).
 
+## Permanente (sin fecha, no compite por prioridad)
+
+- **EPIC-MANT — Mantenimiento.** Cubo para fallos silenciosos que aún no han
+  mordido, deuda con modo de fallo escrito y observaciones de verificación no
+  bloqueantes. Existe para que eso no muera en el ledger de una spec cerrada,
+  que nadie relee. Se vacía entre épicas o cuando algo de dentro se vuelve
+  urgente. Un fallo que ya hace daño no vive aquí: es EPIC-FIX y salta la cola.
+
 ## Más adelante (idea, sin compromiso)
 
 - Clasificaciones por competición.
