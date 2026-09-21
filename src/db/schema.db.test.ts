@@ -65,7 +65,7 @@ const decision = (
 afterAll(() => sql.end());
 
 describe("CA-9 schema", () => {
-  it("has the nine tables and no timestamp without time zone", async () => {
+  it("has the ten tables and no timestamp without time zone", async () => {
     const tables = await sql`select table_name from information_schema.tables
       where table_schema = 'public' and table_type = 'BASE TABLE' order by table_name`;
     expect(tables.map((t) => t.table_name)).toEqual([
@@ -76,6 +76,7 @@ describe("CA-9 schema", () => {
       "ingest_attempts",
       "matches",
       "observations",
+      "raw_purges",
       "team_aliases",
       "teams",
     ]);
@@ -249,6 +250,7 @@ describe("CA-11 board", () => {
       "home_score",
       "away_score",
       "minute",
+      "added_minute",
       "qualifier",
       "decision_id",
       "decision_version",
@@ -288,6 +290,7 @@ describe("CA-12 extensions and RLS", () => {
       ingest_attempts: 0,
       matches: 1,
       observations: 1,
+      raw_purges: 0,
       team_aliases: 0,
       teams: 1,
     });
@@ -317,5 +320,110 @@ describe("CA-12 extensions and RLS", () => {
       expect(await pgCode(observation(tx, m, { status: "scheduled" }))).toBe(
         "42501",
       );
+    }));
+});
+
+describe("SPEC-006 CA-1 added_minute, raw_purges and the raw bucket", () => {
+  it("accepts added_minute on live", () =>
+    rollback(async (tx) => {
+      const m = await seedMatch(tx);
+      const [row] = await observation(tx, m, {
+        status: "live",
+        home_score: 1,
+        away_score: 0,
+        minute: 45,
+        added_minute: 3,
+      });
+      expect(row.id).toBeDefined();
+    }));
+
+  it.each([
+    ["finished with added_minute", { status: "finished", added_minute: 3 }],
+    [
+      "live with added_minute 0",
+      { status: "live", minute: 45, added_minute: 0 },
+    ],
+    [
+      "live with added_minute 31",
+      { status: "live", minute: 45, added_minute: 31 },
+    ],
+  ])("rejects %s", (_name, state) =>
+    rollback(async (tx) => {
+      const m = await seedMatch(tx);
+      expect(
+        await pgCode(
+          observation(tx, m, { home_score: 1, away_score: 0, ...state }),
+        ),
+      ).toBe("23514");
+    }),
+  );
+
+  it("rejects an empty raw_ref", () =>
+    rollback(async (tx) => {
+      const m = await seedMatch(tx);
+      expect(
+        await pgCode(observation(tx, m, { status: "scheduled", raw_ref: "" })),
+      ).toBe("23514");
+    }));
+
+  it("rejects added_minute outside live on decisions too", () =>
+    rollback(async (tx) => {
+      const m = await seedMatch(tx);
+      const [{ id: oid }] = await observation(tx, m, { status: "scheduled" });
+      expect(
+        await pgCode(
+          decision(
+            tx,
+            m,
+            { status: "finished", minute: null, added_minute: 3 },
+            [oid],
+          ),
+        ),
+      ).toBe("23514");
+    }));
+
+  it("shows the added_minute of the current decision on board", () =>
+    rollback(async (tx) => {
+      const m = await seedMatch(tx);
+      const [{ id: oid }] = await observation(tx, m, {
+        status: "live",
+        home_score: 1,
+        away_score: 0,
+        minute: 45,
+        added_minute: 3,
+      });
+      await decision(tx, m, { minute: 45, added_minute: 3 }, [oid]);
+      const [row] = await tx`select * from board where match_id = ${m}`;
+      expect(row).toMatchObject({ minute: 45, added_minute: 3 });
+    }));
+
+  it("keeps a details column on ingest_attempts", () =>
+    rollback(async (tx) => {
+      const [row] = await tx`insert into ingest_attempts (source_id, details)
+        values ('test', ${tx.json({ season: "2026-27" })}) returning details`;
+      expect(row.details).toEqual({ season: "2026-27" });
+    }));
+
+  it("records a purge in raw_purges and rejects a negative count", () =>
+    rollback(async (tx) => {
+      const [row] = await tx`insert into raw_purges (ok, deleted)
+        values (true, 7) returning id, started_at, ok, deleted, finished_at, error`;
+      expect(row).toMatchObject({ ok: true, deleted: 7, error: null });
+      expect(
+        await pgCode(
+          tx.savepoint((s) => s`insert into raw_purges (deleted) values (-1)`),
+        ),
+      ).toBe("23514");
+    }));
+
+  it("has a private raw bucket that anon cannot list", () =>
+    rollback(async (tx) => {
+      const [bucket] =
+        await tx`select public from storage.buckets where id = 'raw'`;
+      expect(bucket.public).toBe(false);
+      await tx`set local role anon`;
+      const [{ count }] =
+        await tx`select count(*)::int as count from storage.objects where bucket_id = 'raw'`;
+      expect(count).toBe(0);
     }));
 });
