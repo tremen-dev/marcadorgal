@@ -16,7 +16,7 @@ type Violation = { file: string; specifier: string; reason: string };
 const within = (resolved: string, dir: string) =>
   resolved === dir || resolved.startsWith(`${dir}/`);
 
-export function checkDecideImports(file: string, source: string): Violation[] {
+function checkDecideImports(file: string, source: string): Violation[] {
   const posix = file.split(path.sep).join(path.posix.sep);
   const violations: Violation[] = [];
   for (const { fileName: specifier } of ts.preProcessFile(source, true, true)
