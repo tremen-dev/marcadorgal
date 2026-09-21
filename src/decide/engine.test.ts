@@ -489,3 +489,159 @@ describe("CA-5 RN-04 conflict between adjacent sources", () => {
     expect(open).toEqual([]);
   });
 });
+
+describe("CA-6 RN-05 silence", () => {
+  const VIGENTE = current(live(1, 0, 60));
+
+  it("goes to sen_sinal and opens the alert with no observation at all", () => {
+    const { decision, open, resolve } = decide(
+      input({ current: VIGENTE, observations: [], now: at(20) }),
+    );
+    expect(decision).toMatchObject({
+      status: "live",
+      score: { home: 1, away: 0 },
+      minute: 60,
+      qualifier: "sen_sinal",
+      rule: "RN-05",
+    });
+    expect(decision?.observationIds).toEqual(VIGENTE.observationIds);
+    expect(open).toEqual([
+      {
+        kind: "silence",
+        matchId: MATCH.id,
+        details: { lastObservedAt: null },
+      },
+    ]);
+    expect(resolve).toEqual([]);
+  });
+
+  it("writes no second row but keeps opening the alert (CA-9 dedupes)", () => {
+    const { decision, open } = decide(
+      input({
+        current: current(live(1, 0, 60), { qualifier: "sen_sinal" }),
+        observations: [],
+        now: at(20),
+      }),
+    );
+    expect(decision).toBeNull();
+    expect(open).toEqual([
+      {
+        kind: "silence",
+        matchId: MATCH.id,
+        details: { lastObservedAt: null },
+      },
+    ]);
+  });
+
+  it("says nothing between five and fifteen minutes of quiet", () => {
+    const { decision, open } = decide(
+      input({
+        current: VIGENTE,
+        observations: [obs("ten", 13, live(1, 0, 60))],
+        now: at(20),
+      }),
+    );
+    expect(decision).toBeNull();
+    expect(open).toEqual([]);
+  });
+
+  it("does not apply with no current decision, nor outside live", () => {
+    expect(
+      decide(input({ current: null, observations: [], now: at(20) })),
+    ).toEqual({ decision: null, open: [], resolve: [] });
+    expect(
+      decide(
+        input({ current: current(scheduled), observations: [], now: at(20) }),
+      ),
+    ).toEqual({ decision: null, open: [], resolve: [] });
+  });
+
+  it("resolves the silence when the signal comes back", () => {
+    const { decision, open, resolve } = decide(
+      input({
+        current: current(live(1, 0, 60), { qualifier: "sen_sinal" }),
+        observations: [obs("ten", 29, live(1, 0, 75))],
+        now: at(30),
+      }),
+    );
+    expect(decision).toMatchObject({ minute: 75, qualifier: "provisional" });
+    expect(open).toEqual([]);
+    expect(resolve).toEqual(["silence"]);
+  });
+});
+
+describe("CA-6 RN-02 forced finish with a trace (H-3, H-5)", () => {
+  const VIGENTE = current(live(1, 0, 90));
+
+  it("closes the match and always opens a forced_finish alert", () => {
+    const { decision, open, resolve } = decide(
+      input({ current: VIGENTE, observations: [], now: at(121) }),
+    );
+    expect(decision).toMatchObject({
+      status: "finished",
+      score: { home: 1, away: 0 },
+      minute: null,
+      qualifier: "provisional",
+      rule: "RN-02",
+    });
+    expect(decision?.observationIds).toEqual(VIGENTE.observationIds);
+    expect(open).toEqual([
+      {
+        kind: "forced_finish",
+        matchId: MATCH.id,
+        details: {
+          score: { home: 1, away: 0 },
+          minute: 90,
+          kickoff: KICKOFF,
+          lastObservedAt: null,
+          lastStatus: null,
+        },
+      },
+    ]);
+    // The operator closes this one, never the engine (N-3).
+    expect(resolve).toEqual([]);
+  });
+
+  it("closes it even while live observations keep arriving (H-3)", () => {
+    const { decision, open } = decide(
+      input({
+        current: VIGENTE,
+        observations: [obs("ten", 119, live(1, 0, 90))],
+        now: at(121),
+      }),
+    );
+    expect(decision).toMatchObject({ status: "finished", rule: "RN-02" });
+    expect(open[0]).toMatchObject({
+      kind: "forced_finish",
+      details: { lastObservedAt: at(119), lastStatus: "live" },
+    });
+  });
+
+  it("never fires when the provider closes the match in time", () => {
+    const { decision, open } = decide(
+      input({
+        current: VIGENTE,
+        observations: [obs("ten", 95, finished(2, 1))],
+        now: at(96),
+      }),
+    );
+    expect(decision).toMatchObject({
+      status: "finished",
+      score: { home: 2, away: 1 },
+      rule: "RN-01",
+    });
+    expect(open).toEqual([]);
+  });
+
+  it("does not fire once the match is already finished", () => {
+    expect(
+      decide(
+        input({
+          current: current(finished(2, 1)),
+          observations: [],
+          now: at(121),
+        }),
+      ),
+    ).toEqual({ decision: null, open: [], resolve: [] });
+  });
+});

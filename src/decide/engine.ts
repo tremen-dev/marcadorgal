@@ -15,8 +15,10 @@ import {
 } from "../model/index.ts";
 import {
   CONFLICT_GRACE_MINUTES,
+  FORCED_FINISH_MINUTES,
   KICKOFF_GRACE_MINUTES,
   OBSERVATION_WINDOW_MINUTES,
+  SILENCE_MINUTES,
 } from "./thresholds.ts";
 import type {
   AlertDraft,
@@ -144,6 +146,13 @@ export function decide(input: EngineInput): EngineOutput {
     .filter((o) => age(o.observedAt, now) >= 0)
     .sort(oldestFirst);
 
+  // Anything heard inside the silence window, and the very last thing heard:
+  // RN-05 reads the first, the alerts of RN-05 and RN-02 the second.
+  const heard = timeline.filter(
+    (o) => age(o.observedAt, now) < minutes(SILENCE_MINUTES),
+  );
+  const last = timeline.at(-1) ?? null;
+
   // One per source, the freshest, priority known (RN-01).
   const freshest = new Map<string, Observation>();
   for (const o of timeline) {
@@ -214,6 +223,10 @@ export function decide(input: EngineInput): EngineOutput {
         ]);
   };
 
+  // The signal is back: RN-05 closes its own alert, and only its own (N-3).
+  if (ranked.length > 0 && current?.qualifier === "sen_sinal")
+    resolve.push("silence");
+
   // 1. The operator publishes as is: no monotonía, no conflicto, no cierre
   //    forzoso (e).
   if (winner !== undefined && winner.priority >= OPERATOR_PRIORITY)
@@ -223,7 +236,60 @@ export function decide(input: EngineInput): EngineOutput {
       ]),
     );
 
-  if (winner === undefined) return publish(null);
+  // 2. RN-02 forced finish (H-3): above RN-05 and above whatever the sources
+  //    are still saying. It publishes a finished nobody confirmed, so it
+  //    always leaves a forced_finish Alert behind (H-5 (iii)).
+  if (
+    current !== null &&
+    current.status === "live" &&
+    instantDiff(match.kickoff, now) >= minutes(FORCED_FINISH_MINUTES)
+  ) {
+    open.push({
+      kind: "forced_finish",
+      matchId,
+      details: {
+        score: { home: current.score.home, away: current.score.away },
+        minute: current.minute,
+        kickoff: match.kickoff,
+        lastObservedAt: last?.observedAt ?? null,
+        lastStatus: last?.status ?? null,
+      },
+    });
+    return publish(
+      draft(
+        { status: "finished", score: current.score, minute: null },
+        "RN-02",
+        "provisional",
+        [...current.observationIds],
+      ),
+    );
+  }
+
+  // 3. RN-05 silencio: nobody has said anything for fifteen minutes, so the
+  //    match keeps its state and loses its qualifier.
+  if (winner === undefined) {
+    if (current !== null && current.status === "live" && heard.length === 0) {
+      open.push({
+        kind: "silence",
+        matchId,
+        details: { lastObservedAt: last?.observedAt ?? null },
+      });
+      return publish(
+        draft(
+          {
+            status: "live",
+            score: current.score,
+            minute: current.minute,
+            addedMinute: current.addedMinute,
+          },
+          "RN-05",
+          "sen_sinal",
+          [...current.observationIds],
+        ),
+      );
+    }
+    return publish(null);
+  }
 
   const proposed = stateOf(winner.observation);
 
@@ -240,7 +306,7 @@ export function decide(input: EngineInput): EngineOutput {
   )
     return publish(null);
 
-  // 2. RN-03 monotonía: a score never goes down but by the operator. The
+  // 4. RN-03 monotonía: a score never goes down but by the operator. The
   //    proposed status is published wearing the current score, and the
   //    retreat leaves an Alert for the operator (N-3).
   const held = current?.score ?? null;
@@ -262,7 +328,7 @@ export function decide(input: EngineInput): EngineOutput {
     return publish(settle(holdingScore(proposed, held), "RN-03", winner));
   }
 
-  // 3. RN-04 conflicto: a guard, never a publication, so RN-04 is not a
+  // 5. RN-04 conflicto: a guard, never a publication, so RN-04 is not a
   //    DecisionRule. The current Decision is held and the operator is told.
   const known = [
     ...new Set(
@@ -302,6 +368,6 @@ export function decide(input: EngineInput): EngineOutput {
     return publish(null);
   }
 
-  // 4. RN-01: the winner, as it comes.
+  // 6. RN-01: the winner, as it comes.
   return publish(settle(proposed, "RN-01", winner));
 }
