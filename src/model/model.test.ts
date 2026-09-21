@@ -128,8 +128,15 @@ describe("CA-5 match state with score", () => {
   it("accepts the five states with their score and minute shapes", () => {
     expect(ok({ status: "scheduled", score: null, minute: null })).toBe(true);
     expect(ok({ status: "postponed", score: null, minute: null })).toBe(true);
-    expect(ok({ status: "live", score, minute: 37 })).toBe(true);
-    expect(ok({ status: "live", score, minute: null })).toBe(true);
+    expect(ok({ status: "live", score, minute: 37, addedMinute: null })).toBe(
+      true,
+    );
+    expect(ok({ status: "live", score, minute: null, addedMinute: null })).toBe(
+      true,
+    );
+    expect(ok({ status: "live", score, minute: 45, addedMinute: 3 })).toBe(
+      true,
+    );
     expect(ok({ status: "finished", score, minute: null })).toBe(true);
     expect(ok({ status: "suspended", score, minute: null })).toBe(true);
   });
@@ -141,7 +148,28 @@ describe("CA-5 match state with score", () => {
   });
 
   it("rejects live without score", () => {
-    expect(ok({ status: "live", score: null, minute: 10 })).toBe(false);
+    expect(
+      ok({ status: "live", score: null, minute: 10, addedMinute: null }),
+    ).toBe(false);
+  });
+
+  it("rejects live without addedMinute and addedMinute outside live (N-8)", () => {
+    expect(ok({ status: "live", score, minute: 10 })).toBe(false);
+    expect(ok({ status: "live", score, minute: 45, addedMinute: 0 })).toBe(
+      false,
+    );
+    expect(ok({ status: "live", score, minute: 45, addedMinute: 31 })).toBe(
+      false,
+    );
+    expect(ok({ status: "live", score, minute: 45, addedMinute: 1.5 })).toBe(
+      false,
+    );
+    expect(
+      ok({ status: "finished", score, minute: null, addedMinute: 3 }),
+    ).toBe(false);
+    expect(
+      ok({ status: "scheduled", score: null, minute: null, addedMinute: 3 }),
+    ).toBe(false);
   });
 
   it("rejects scheduled with score", () => {
@@ -153,14 +181,15 @@ describe("CA-5 match state with score", () => {
   });
 
   it("bounds minute and score", () => {
-    expect(ok({ status: "live", score, minute: 131 })).toBe(false);
-    expect(ok({ status: "live", score, minute: -1 })).toBe(false);
-    expect(
-      ok({ status: "live", score: { home: -1, away: 0 }, minute: 1 }),
-    ).toBe(false);
-    expect(
-      ok({ status: "live", score: { home: 1.5, away: 0 }, minute: 1 }),
-    ).toBe(false);
+    const live = { status: "live", addedMinute: null };
+    expect(ok({ ...live, score, minute: 131 })).toBe(false);
+    expect(ok({ ...live, score, minute: -1 })).toBe(false);
+    expect(ok({ ...live, score: { home: -1, away: 0 }, minute: 1 })).toBe(
+      false,
+    );
+    expect(ok({ ...live, score: { home: 1.5, away: 0 }, minute: 1 })).toBe(
+      false,
+    );
   });
 });
 
@@ -189,6 +218,7 @@ const fixtures = {
     status: "live",
     score: { home: 1, away: 0 },
     minute: 37,
+    addedMinute: null,
     observedAt: "2026-09-20T16:37:00Z",
     receivedAt: "2026-09-20T16:37:05Z",
     rawRef: "raw/operator/2026-09-20T16:37:05Z.json",
@@ -200,6 +230,7 @@ const fixtures = {
     status: "live",
     score: { home: 1, away: 0 },
     minute: 37,
+    addedMinute: null,
     qualifier: "confirmado",
     rule: "operator",
     observationIds: [uuid(1)],

@@ -1,14 +1,17 @@
 import { z } from "zod";
 import {
+  AliasFile,
   Competition,
   Instant,
   Match,
-  Season,
-  SourceId,
   Team,
   TeamId,
 } from "../model/index.ts";
 import { matchId } from "./match-id.ts";
+
+// Alias schemas moved to src/model/alias.ts (SPEC-005 CA-3); reexported here
+// for SPEC-004 callers.
+export { AliasEntry, AliasFile } from "../model/index.ts";
 
 export type Issue = { path: string; message: string };
 
@@ -28,21 +31,6 @@ export const CalendarFile = z.strictObject({
   matches: z.array(CalendarMatch).min(1),
 });
 export type CalendarFile = z.infer<typeof CalendarFile>;
-
-// data/alias/<season>/<source_id>.json (N-7).
-export const AliasEntry = z.strictObject({
-  externalId: z.string().min(1),
-  externalName: z.string().min(1),
-  teamId: TeamId,
-});
-export type AliasEntry = z.infer<typeof AliasEntry>;
-
-export const AliasFile = z.strictObject({
-  source: SourceId,
-  season: Season,
-  teams: z.array(AliasEntry),
-});
-export type AliasFile = z.infer<typeof AliasFile>;
 
 // One issue per unknown key, so the path points at the offending key.
 const zodIssues = (error: z.ZodError): Issue[] =>
@@ -130,16 +118,20 @@ export type AliasContext = {
   season: string;
   sourceId: string;
   knownTeams: Iterable<string>;
+  // Ids derived from the season's calendars: every match alias must point at
+  // one of them, and at most once (SPEC-005 CA-3).
+  knownMatches: Iterable<string>;
 };
 
 export function validateAliases(file: unknown, ctx: AliasContext): Issue[] {
   const parsed = AliasFile.safeParse(file);
   if (!parsed.success) return zodIssues(parsed.error);
-  const { source, season, teams } = parsed.data;
+  const { source, season, teams, matches } = parsed.data;
   const issues: Issue[] = [];
   const issue = (path: string, message: string) =>
     issues.push({ path, message });
   const known = new Set(ctx.knownTeams);
+  const knownMatches = new Set(ctx.knownMatches);
 
   if (source !== ctx.sourceId) issue("source", `expected ${ctx.sourceId}`);
   if (season !== ctx.season) issue("season", `expected ${ctx.season}`);
@@ -156,5 +148,14 @@ export function validateAliases(file: unknown, ctx: AliasContext): Issue[] {
     if (!known.has(t.teamId))
       issue(`teams.${i}.teamId`, `unknown team ${t.teamId}`);
   });
+
+  const seenMatches = new Set<string>();
+  for (const [externalId, id] of Object.entries(matches ?? {})) {
+    if (!knownMatches.has(id))
+      issue(`matches.${externalId}`, `unknown match ${id}`);
+    if (seenMatches.has(id))
+      issue(`matches.${externalId}`, `duplicate match ${id}`);
+    seenMatches.add(id);
+  }
   return issues;
 }

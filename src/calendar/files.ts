@@ -1,5 +1,6 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
+import { matchId } from "./match-id.ts";
 import {
   type AliasFile,
   type CalendarFile,
@@ -36,8 +37,8 @@ const readJson = (file: string): unknown => {
 
 // Reads data/calendario/<season>/*.json and data/alias/<season>/*.json under
 // dataRoot (every season, or only the given one) and validates them (CA-1,
-// CA-3 with knownTeams = union of the season's calendars). Never throws on
-// bad data: every problem is an issue with its file.
+// CA-3 with knownTeams and knownMatches = union of the season's calendars).
+// Never throws on bad data: every problem is an issue with its file.
 export function readSeasons(dataRoot: string, season?: string): SeasonFiles[] {
   const calendarRoot = path.join(dataRoot, "calendario");
   const seasons = season
@@ -79,6 +80,17 @@ function readSeason(dataRoot: string, season: string): SeasonFiles {
     else result.calendars.push(data as CalendarFile);
   }
   const knownTeams = result.calendars.flatMap((c) => c.teams.map((t) => t.id));
+  const knownMatches = result.calendars.flatMap((c) =>
+    c.matches.map((m) =>
+      matchId({
+        competitionId: c.competition.id,
+        season,
+        round: m.round,
+        homeTeamId: m.home,
+        awayTeamId: m.away,
+      }),
+    ),
+  );
   for (const name of jsonFiles(aliasDir)) {
     const file = path.join(aliasDir, name);
     const data = readJson(file);
@@ -86,6 +98,7 @@ function readSeason(dataRoot: string, season: string): SeasonFiles {
       season,
       sourceId: name.slice(0, -5),
       knownTeams,
+      knownMatches,
     });
     if (issues.length)
       result.issues.push(...issues.map((i) => ({ ...i, file })));

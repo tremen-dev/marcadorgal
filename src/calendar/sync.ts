@@ -33,6 +33,8 @@ export type SyncDiff = {
     to: string;
     teamId: string;
   }[];
+  // A provider match id that now points at another derived match (rule g).
+  rematched: { externalId: string; from: MatchId; to: MatchId }[];
   unconfirmed: MatchId[];
   ignoredRounds: Record<string, number>;
 };
@@ -77,6 +79,7 @@ export function syncCalendar(input: SyncInput): SyncResult {
     rescheduled: [],
     missing: [],
     renamedAtProvider: [],
+    rematched: [],
     unconfirmed: [],
     ignoredRounds: { ...imported.ignoredRounds },
   };
@@ -144,6 +147,11 @@ export function syncCalendar(input: SyncInput): SyncResult {
   const matches = new Map<MatchId, CalendarMatch>(
     (current?.matches ?? []).map((m) => [idOf(m), { ...m }]),
   );
+  // Rule (g): provider match id -> derived id, for every imported match whose
+  // teams resolve; entries absent from the import are kept (SPEC-005 CA-3).
+  const matchAliases: Record<string, MatchId> = {
+    ...(input.aliases.matches ?? {}),
+  };
   const seen = new Set<MatchId>();
   for (const im of imported.matches) {
     const next: CalendarMatch = {
@@ -154,6 +162,14 @@ export function syncCalendar(input: SyncInput): SyncResult {
     };
     const id = idOf(next);
     seen.add(id);
+    const previous = matchAliases[im.externalId];
+    if (previous !== undefined && previous !== id)
+      diff.rematched.push({
+        externalId: im.externalId,
+        from: previous,
+        to: id,
+      });
+    matchAliases[im.externalId] = id;
     if (!im.timeConfirmed) diff.unconfirmed.push(id);
     const existing = matches.get(id);
     if (!existing) {
@@ -177,6 +193,13 @@ export function syncCalendar(input: SyncInput): SyncResult {
       ...input.aliases,
       source: SourceId.parse(sourceId),
       teams: aliasEntries,
+      // Numeric order: JS objects already list integer-like keys ascending,
+      // so this is the order JSON.stringify writes.
+      matches: Object.fromEntries(
+        Object.entries(matchAliases).sort(([a], [b]) =>
+          a.localeCompare(b, "en", { numeric: true }),
+        ),
+      ),
     },
     diff,
   };
@@ -186,7 +209,7 @@ export function syncCalendar(input: SyncInput): SyncResult {
 export function formatSyncDiff(competitionId: string, diff: SyncDiff): string {
   const lines = [
     `== ${competitionId}`,
-    `   newTeams: ${diff.newTeams.length}  added: ${diff.added.length}  rescheduled: ${diff.rescheduled.length}  missing: ${diff.missing.length}  renamedAtProvider: ${diff.renamedAtProvider.length}  unconfirmed: ${diff.unconfirmed.length}`,
+    `   newTeams: ${diff.newTeams.length}  added: ${diff.added.length}  rescheduled: ${diff.rescheduled.length}  missing: ${diff.missing.length}  renamedAtProvider: ${diff.renamedAtProvider.length}  rematched: ${diff.rematched.length}  unconfirmed: ${diff.unconfirmed.length}`,
   ];
   for (const t of diff.newTeams)
     lines.push(
@@ -200,6 +223,10 @@ export function formatSyncDiff(competitionId: string, diff: SyncDiff): string {
   for (const r of diff.renamedAtProvider)
     lines.push(
       `   ! el proveedor renombró ${r.teamId}: "${r.from}" -> "${r.to}" (externalId ${r.externalId})`,
+    );
+  for (const r of diff.rematched)
+    lines.push(
+      `   ! el id de partido ${r.externalId} del proveedor pasa de ${r.from} a ${r.to}`,
     );
   for (const id of diff.unconfirmed) lines.push(`   TBD/PST: ${id}`);
   for (const [round, n] of Object.entries(diff.ignoredRounds))

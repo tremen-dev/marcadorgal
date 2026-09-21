@@ -9,6 +9,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { COMPETITIONS, IMPORTERS } from "../src/calendar/importers.ts";
+import { matchId } from "../src/calendar/match-id.ts";
 import { validateAliases, validateCalendar } from "../src/calendar/schema.ts";
 import { formatSyncDiff, syncCalendar } from "../src/calendar/sync.ts";
 
@@ -54,13 +55,19 @@ const printIssues = (file, issues) => {
   for (const i of issues) console.error(`  ${i.path}: ${i.message}`);
 };
 
-// Team ids of every calendar of the season on disk, so the shared alias file
-// validates against the union (CA-3, CA-11).
+// Team and derived match ids of every calendar of the season on disk, so the
+// shared alias file validates against the union (CA-3, CA-11; SPEC-005 CA-3).
 const knownTeams = new Map();
+const knownMatches = new Map();
+const derivedIds = (competitionId, calendar) =>
+  (calendar?.matches ?? []).map((m) =>
+    matchId({ competitionId, season, round: m.round, homeTeamId: m.home, awayTeamId: m.away }),
+  );
 if (existsSync(calendarDir)) {
   for (const name of readdirSync(calendarDir).filter((f) => f.endsWith(".json"))) {
     const file = readJson(path.join(calendarDir, name));
     knownTeams.set(name.slice(0, -5), (file?.teams ?? []).map((t) => t.id));
+    knownMatches.set(name.slice(0, -5), derivedIds(name.slice(0, -5), file));
   }
 }
 
@@ -111,14 +118,16 @@ for (const competition of competitions) {
     continue;
   }
   knownTeams.set(competition.id, result.calendar.teams.map((t) => t.id));
+  knownMatches.set(competition.id, derivedIds(competition.id, result.calendar));
   aliasFiles.set(importer.id, result.aliases);
   if (!dryRun) writeJson(calendarFile, result.calendar);
 }
 
 const allTeams = [...knownTeams.values()].flat();
+const allMatches = [...knownMatches.values()].flat();
 for (const [sourceId, aliases] of aliasFiles) {
   const file = path.join(aliasDir, `${sourceId}.json`);
-  const issues = validateAliases(aliases, { season, sourceId, knownTeams: allTeams });
+  const issues = validateAliases(aliases, { season, sourceId, knownTeams: allTeams, knownMatches: allMatches });
   if (issues.length) {
     printIssues(file, issues);
     failed = true;

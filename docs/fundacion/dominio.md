@@ -27,4 +27,4 @@
 | **Cualificador** | Matiz de una Decision: `confirmado`, `provisional` (una sola fuente no oficial), `sen_sinal` (live sin datos en 15 min). | Siempre con etiqueta textual junto al color. |
 | **Frescura** | Tres relojes que no se mezclan: el **del dato** (`decided_at`), el **de la fuente** (`observed_at` más reciente) y el **del navegador** (última respuesta recibida). | D-9. Solo el de la fuente va en la fila. El del navegador va fuera de la tabla. |
 | **Calendario declarado** | Lista de partidos por competición y temporada, en JSON versionado en `data/calendario/`. Es la autoridad sobre qué partidos existen. | Se carga en Postgres; se corrige editando el JSON. |
-| **Alias** | Nombre con que una fuente llama a un equipo, mapeado a nuestro `Team`. Por fuente y temporada, en `data/alias/`. | Todo-o-nada: sin alias resuelto, la observación queda pendiente y alerta. |
+| **Alias** | Mapeo de identificadores externos de una fuente: nombres de equipos a nuestro `Team`, y opcionalmente id de partido de la fuente a nuestro `id` derivado. Por fuente y temporada, en `data/alias/`. | Todo-o-nada: sin alias resuelto, la observación queda pendiente y alerta. |

@@ -19,6 +19,7 @@ const imported: ImportedCalendar = {
   ],
   matches: [
     {
+      externalId: "1001",
       round: 1,
       kickoff: "2026-09-06T16:00:00Z",
       home: "1",
@@ -26,6 +27,7 @@ const imported: ImportedCalendar = {
       timeConfirmed: true,
     },
     {
+      externalId: "1002",
       round: 1,
       kickoff: "2026-09-06T17:00:00Z",
       home: "3",
@@ -33,6 +35,7 @@ const imported: ImportedCalendar = {
       timeConfirmed: true,
     },
     {
+      externalId: "1003",
       round: 2,
       kickoff: "2026-09-13T16:00:00Z",
       home: "2",
@@ -192,6 +195,7 @@ describe("CA-6 syncCalendar", () => {
         imported.matches[1],
         imported.matches[2],
         {
+          externalId: "1004",
           round: 3,
           kickoff: "2026-09-20T16:00:00Z",
           home: "4",
@@ -352,9 +356,74 @@ describe("CA-6 syncCalendar", () => {
       rescheduled: [],
       missing: [],
       renamedAtProvider: [],
+      rematched: [],
       unconfirmed: ["tercera-rfef-g1-2026-27-j2-arenteiro-arosa"],
       ignoredRounds: imported.ignoredRounds,
     });
+  });
+
+  it("(g) maps every imported match by its external id to the derived id, sorted by key (SPEC-005 CA-3)", () => {
+    const { aliases } = initial();
+    expect(aliases.matches).toEqual({
+      "1001": "tercera-rfef-g1-2026-27-j1-ourense-arenteiro",
+      "1002": "tercera-rfef-g1-2026-27-j1-arosa-compostela",
+      "1003": "tercera-rfef-g1-2026-27-j2-arenteiro-arosa",
+    });
+    expect(Object.keys(aliases.matches ?? {})).toEqual([
+      "1001",
+      "1002",
+      "1003",
+    ]);
+    expect(initial().diff.rematched).toEqual([]);
+  });
+
+  it("(g) keeps match aliases absent from the import and sorts new keys in", () => {
+    const first = initial();
+    const aliases = AliasFile.parse({
+      ...first.aliases,
+      matches: { ...first.aliases.matches, "999": "other-2026-27-j1-a-b" },
+    });
+    const { aliases: out } = syncCalendar({
+      current: first.calendar,
+      aliases,
+      imported,
+      competition,
+      sourceId,
+    });
+    expect(Object.keys(out.matches ?? {})).toEqual([
+      "999",
+      "1001",
+      "1002",
+      "1003",
+    ]);
+    expect(out.matches?.["999"]).toBe("other-2026-27-j1-a-b");
+  });
+
+  it("(g) overwrites a match alias that moved to another match and reports it as rematched", () => {
+    const first = initial();
+    const moved: ImportedCalendar = {
+      ...imported,
+      matches: imported.matches.map((m) =>
+        m.externalId === "1003" ? { ...m, home: "3", away: "2" } : m,
+      ),
+    };
+    const { aliases, diff } = syncCalendar({
+      current: first.calendar,
+      aliases: first.aliases,
+      imported: moved,
+      competition,
+      sourceId,
+    });
+    expect(diff.rematched).toEqual([
+      {
+        externalId: "1003",
+        from: "tercera-rfef-g1-2026-27-j2-arenteiro-arosa",
+        to: "tercera-rfef-g1-2026-27-j2-arosa-arenteiro",
+      },
+    ]);
+    expect(aliases.matches?.["1003"]).toBe(
+      "tercera-rfef-g1-2026-27-j2-arosa-arenteiro",
+    );
   });
 
   it("slugify strips diacritics, lowercases and hyphenates", () => {

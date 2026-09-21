@@ -2,7 +2,7 @@
 
 > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.
 > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.
-> Última actualización: 2026-09-21 (SPEC-004 hecho).
+> Última actualización: 2026-09-21 (SPEC-005 hecho).
 
 ## Qué es y en qué punto está
 
@@ -18,7 +18,9 @@ jornada completa, en una sola pantalla y en galego. Proyecto de tremen.dev.
 
 **SPEC-004 completa:** calendario declarado en `data/calendario/2026-27/` (cinco competiciones, 1.834 partidos, nombres federativos), alias del proveedor en `data/alias/2026-27/`, importador de API-Football (`npm run calendario:sync`, `npm run calendario:load`, `npm run calendario:xornada`).
 
-El siguiente paso es el cierre humano de EPIC-001 y el arranque de EPIC-002 (ingesta y motor) con sdd-producto.
+**SPEC-005 completa:** contrato `SourceAdapter` tipado, registro de fuentes validado con API-Football (prioridad 10, cadencia 30 s), adaptador de resultados con estados mapeados y minutos derivados, alias de partido (`fixture.id` → `id` derivado), fixtures reales de API-Football para tests sin red.
+
+EPIC-002 (ingesta y motor) en progreso: SPEC-005 hecho; tres specs más planeadas (raw store, motor, despliegue y medición). El siguiente paso es especificar y ejecutar la spec de raw store y tick.
 
 ### Herencia
 
