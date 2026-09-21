@@ -36,8 +36,13 @@ export async function loadSeason(
       values (${competition.id}, ${season}, ${competition.name}, ${competition.tier})
       on conflict (id, season) do update set name = excluded.name, tier = excluded.tier`;
 
-    await tx`insert into teams ${tx(teams, "id", "name")}
-      on conflict (id) do update set name = excluded.name`;
+    const teamRows = teams.map((t) => ({
+      id: t.id,
+      name: t.name,
+      short_name: t.shortName ?? null,
+    }));
+    await tx`insert into teams ${tx(teamRows)}
+      on conflict (id) do update set name = excluded.name, short_name = excluded.short_name`;
 
     const existing = new Map<string, number>(
       (

@@ -136,6 +136,30 @@ describe("CA-10 loadSeason", () => {
       expect(await countMatches(tx)).toBe(n);
     }));
 
+  it("a shortName added to a team reaches teams and board, and is nulled when removed", () =>
+    rollback(async (tx) => {
+      await load(tx);
+      const withShort = CalendarFile.parse({
+        ...calendar,
+        teams: calendar.teams.map((t) =>
+          t.id === "test-a" ? { ...t, shortName: "Short A" } : t,
+        ),
+      });
+      await load(tx, withShort);
+      const [team] = await tx`select short_name from teams where id = 'test-a'`;
+      expect(team.short_name).toBe("Short A");
+      const [row] =
+        await tx`select home_short_name, away_short_name from board where match_id = 'test-cal-2026-27-j1-test-a-test-b'`;
+      expect(row).toEqual({
+        home_short_name: "Short A",
+        away_short_name: null,
+      });
+      await load(tx);
+      const [again] =
+        await tx`select short_name from teams where id = 'test-a'`;
+      expect(again.short_name).toBeNull();
+    }));
+
   it("a match missing from the file is reported as orphaned and kept", () =>
     rollback(async (tx) => {
       await load(tx);
