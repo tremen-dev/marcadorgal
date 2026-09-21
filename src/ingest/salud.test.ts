@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { type Instant, MINUTE_MS, shiftInstant } from "@/model";
+import { SILENCE_MINUTES } from "../decide/index.ts";
+import { SALUD_RECENT_MINUTES } from "./constants.ts";
 import { type SaludInput, tickSalud } from "./salud.ts";
 
 const NOW = "2026-09-25T18:40:00.000Z" as Instant;
@@ -67,14 +69,21 @@ describe("SPEC-008 CA-7 tickSalud", () => {
   });
 
   it("ignores a failed run older than an hour", () => {
+    // The short window has to be clean AND alive: since N-6 an active job
+    // with nothing in the last ten minutes is red on its own, so the recent
+    // succeeded runs are part of what "clean" means now.
     const report = tickSalud(
       clean({
         runs: [
           { jobname: "ingest-tick", status: "failed", startTime: at(-90) },
+          { jobname: "ingest-tick", status: "succeeded", startTime: at(-2) },
+          { jobname: "ingest-tick", status: "succeeded", startTime: at(-1) },
         ],
       }),
     );
     expect(report.ok).toBe(true);
+    // Older than the hour: it is not even counted as a stale problem.
+    expect(report.text).not.toContain("problema(s) en la última hora");
   });
 
   // The two pegas found when running step 5 of the start-up (F-SPEC-008-13).
@@ -153,7 +162,9 @@ describe("SPEC-008 CA-7 tickSalud", () => {
     expect(report.text).toContain("no alias for api-football 2026-27");
   });
 
-  it("with no row anywhere it still prints the six blocks", () => {
+  // Case 7 of CA-7: the brand new database. This is the one case that (c)
+  // has to keep green, and the one a lazy implementation of (c) breaks.
+  it("with no row anywhere, and an empty cron.job, it is a new database and not a dead tick", () => {
     const report = tickSalud({
       now: NOW,
       secrets: [],
@@ -184,5 +195,67 @@ describe("SPEC-008 CA-7 tickSalud", () => {
     );
     expect(report.text).not.toContain(TOKEN);
     expect(report.text).toContain("[secreto]");
+  });
+
+  // Cases 5, 6 and 8 of CA-7 (N-6): a pg_cron that stopped firing used to look
+  // exactly like a healthy system. Silence is red now.
+  it("an active job with no run in the short window is red, and says why", () => {
+    const report = tickSalud(
+      clean({
+        jobs: [
+          { jobname: "ingest-tick", schedule: "30 seconds", active: true },
+        ],
+        runs: [],
+        attempts: [],
+      }),
+    );
+    // Not one failure anywhere, and still red.
+    expect(report.ok).toBe(false);
+    expect(report.text).toContain(
+      `sin ejecuciones en los últimos ${SALUD_RECENT_MINUTES} min`,
+    );
+    expect(report.text).toContain("job activo");
+  });
+
+  it("a job that stopped firing eleven minutes ago is red, with the hour still full", () => {
+    // How a pg_cron that dies mid-matchday really looks: the hour is full of
+    // succeeded runs and the short window is empty. A check on runs.length
+    // alone would call this healthy.
+    const runs = Array.from({ length: 20 }, (_, i) => ({
+      jobname: "ingest-tick",
+      status: "succeeded",
+      startTime: at(-11 - i),
+    }));
+    const report = tickSalud(clean({ runs, attempts: [] }));
+    expect(runs.length).toBeGreaterThan(0);
+    expect(report.ok).toBe(false);
+    expect(report.text).toContain(
+      `sin ejecuciones en los últimos ${SALUD_RECENT_MINUTES} min`,
+    );
+    // The context is still on screen: the hour was healthy until it was not.
+    expect(report.text).toContain("ejecuciones (última hora): 20");
+  });
+
+  it("a job switched off by hand is red too, not a new database", () => {
+    const report = tickSalud(
+      clean({
+        jobs: [
+          { jobname: "ingest-tick", schedule: "30 seconds", active: false },
+        ],
+        runs: [],
+        attempts: [],
+      }),
+    );
+    expect(report.ok).toBe(false);
+    expect(report.text).toContain("INACTIVO");
+  });
+});
+
+describe("SPEC-008 CA-7 the short window is shorter than the silence rule", () => {
+  it("stays under SILENCE_MINUTES, which is why ten was chosen", () => {
+    // Nobody may raise the window past RN-05 without this failing: the whole
+    // point of ten minutes is that the traffic light goes red before the
+    // engine starts opening silence alerts.
+    expect(SALUD_RECENT_MINUTES).toBeLessThan(SILENCE_MINUTES);
   });
 });

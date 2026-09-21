@@ -150,11 +150,27 @@ export function tickSalud(input: SaludInput): SaludReport {
     ...list(input.matches.map((m) => `  ${m.kickoff}  ${m.status}  ${m.id}`)),
   );
 
+  // The third reason to be red (CA-7 (c), N-6): a pg_cron that stopped firing
+  // is the gravest and likeliest failure, and without this it looked exactly
+  // like a healthy system — full report, OK, exit 0. Only an empty cron.job is
+  // innocent: that is a brand new database, where nothing is scheduled and so
+  // nothing is expected. A job that is there but switched off is red all the
+  // same, because a tick turned off by hand is not a new database.
+  const silent = input.jobs.length > 0 && recentRuns.length === 0;
+  const anyActive = input.jobs.some((j) => j.active);
+
   // The verdict is about now, not about the hour: what is already fixed does
   // not keep the light red, but it is still said out loud.
-  const ok = failedRecent.length === 0 && brokenRecent.length === 0;
+  const ok = failedRecent.length === 0 && brokenRecent.length === 0 && !silent;
   const stale = failed.length + (broken.length - brokenRecent.length);
   out.push("", ok ? "OK" : "REVISAR: el tick no está sano");
+  // A red light with no reason sends you digging.
+  if (silent)
+    out.push(
+      anyActive
+        ? `  sin ejecuciones en los últimos ${SALUD_RECENT_MINUTES} min habiendo un job activo`
+        : `  sin ejecuciones en los últimos ${SALUD_RECENT_MINUTES} min y ningún job activo: el tick está INACTIVO`,
+    );
   if (ok && stale > 0)
     out.push(
       `  (${stale} problema(s) en la última hora, ninguno en los últimos ${SALUD_RECENT_MINUTES} min)`,
