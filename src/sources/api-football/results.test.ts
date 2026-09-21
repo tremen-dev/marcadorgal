@@ -593,3 +593,97 @@ describe("CA-6 identity is all-or-nothing (RN-10)", () => {
     expect(ParseResult.safeParse(result).success).toBe(true);
   });
 });
+
+// ---------------------------------------------------------------------------
+// CA-7 real fixtures
+
+describe("CA-7 real fixtures parse", () => {
+  const liveAll = readJson(
+    "./fixtures/live-all-2026-09-21.json",
+  ) as ProviderBody;
+
+  it("(i) ids-2026-09-21.json: FT with score, NS without, the PST of Levante-Athletic", () => {
+    const result = adapter.parse(capture(idsFixture));
+    const by = Object.fromEntries(
+      result.observations.map((o) => [o.matchId, o]),
+    );
+    expect(by["segunda-division-2026-27-j6-albacete-cordoba"]).toEqual({
+      matchId: "segunda-division-2026-27-j6-albacete-cordoba",
+      status: "finished",
+      score: { home: 1, away: 2 },
+      minute: null,
+    });
+    expect(by["primera-division-2026-27-j7-espanyol-elche"]).toMatchObject({
+      status: "finished",
+      score: { home: 1, away: 3 },
+    });
+    expect(by["tercera-rfef-g1-2026-27-j3-silva-boiro"]).toMatchObject({
+      status: "finished",
+      score: { home: 0, away: 2 },
+    });
+    for (const id of [
+      "segunda-division-2026-27-j7-girona-albacete",
+      "primera-rfef-g1-2026-27-j5-extremadura-zamora",
+      "segunda-rfef-g1-2026-27-j4-amorebieta-ourense-cf",
+      "tercera-rfef-g1-2026-27-j4-atletico-arteixo-alondras",
+    ])
+      expect(by[id]).toEqual({
+        matchId: id,
+        status: "scheduled",
+        score: null,
+        minute: null,
+      });
+    expect(by["primera-division-2026-27-j6-levante-athletic-club"]).toEqual({
+      matchId: "primera-division-2026-27-j6-levante-athletic-club",
+      status: "postponed",
+      score: null,
+      minute: null,
+    });
+    const statuses = idsFixture.response.map((f) => f.fixture.status.short);
+    expect(statuses.filter((s) => s === "FT").length).toBeGreaterThanOrEqual(3);
+    expect(statuses.filter((s) => s === "NS").length).toBeGreaterThanOrEqual(3);
+    expect(statuses).toContain("PST");
+    expect(new Set(idsFixture.response.map((f) => f.league.id)).size).toBe(5);
+  });
+
+  it("(ii) live-all-2026-09-21.json: every fixture is unresolved unknown_competition, never an exception", () => {
+    const result = adapter.parse(capture(liveAll));
+    expect(ParseResult.safeParse(result).success).toBe(true);
+    expect(result.observations).toEqual([]);
+    expect(result.skipped).toEqual([]);
+    expect(result.unresolved).toHaveLength(liveAll.response.length);
+    for (const u of result.unresolved) {
+      expect(u.reason).toBe("unknown_competition");
+      expect(u.home.externalName).not.toBe("");
+    }
+    const statuses = liveAll.response.map((f) => f.fixture.status);
+    expect(
+      statuses.some(
+        (s) => (s.short === "1H" || s.short === "2H") && s.extra !== null,
+      ),
+    ).toBe(true);
+  });
+
+  it("(ii) a live=all fixture with extra, given our identity, yields live with addedMinute", () => {
+    // The live case resolved against our alias: a foreign live fixture with
+    // extra, re-identified as Albacete - Córdoba (F-SPEC-005: live-<fecha>.json
+    // of the five leagues is captured on 2026-09-25 or later).
+    const foreign = liveAll.response.find(
+      (f) =>
+        (f.fixture.status.short === "1H" || f.fixture.status.short === "2H") &&
+        f.fixture.status.extra !== null,
+    );
+    if (!foreign) throw new Error("live-all fixture has no 1H/2H with extra");
+    const ours = byId(BASE);
+    ours.fixture.status = clone(foreign.fixture.status);
+    ours.goals = clone(foreign.goals);
+    const [o] = parseOne(ours).observations;
+    expect(o).toEqual({
+      matchId: BASE_MATCH,
+      status: "live",
+      score: foreign.goals,
+      minute: foreign.fixture.status.elapsed,
+      addedMinute: foreign.fixture.status.extra,
+    });
+  });
+});
