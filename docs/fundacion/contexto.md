@@ -2,7 +2,7 @@
 
 > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.
 > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.
-> Última actualización: 2026-09-21 (SPEC-002 hecho).
+> Última actualización: 2026-09-21 (SPEC-003 hecho).
 
 ## Qué es y en qué punto está
 
@@ -12,7 +12,11 @@ jornada completa, en una sola pantalla y en galego. Proyecto de tremen.dev.
 
 **SPEC-001 completa:** esqueleto Next.js 16 con página de espera bilingüe (gl/es), CI con gates y e2e, tests unitarios con Vitest y e2e con Playwright.
 
-**SPEC-002 completa:** modelo zod en `src/model/`, migraciones base aplicadas en `dev` (ocho tablas, vista `board`, RLS, extensiones pg_cron y pg_net), test de arquitectura. El siguiente paso es la spec (c) de EPIC-001: tokens de diseño como código e i18n.
+**SPEC-002 completa:** modelo zod en `src/model/`, migraciones base aplicadas en `dev` (ocho tablas, vista `board`, RLS, extensiones pg_cron y pg_net), test de arquitectura.
+
+**SPEC-003 completa:** tokens de diseño tipados en `src/design/tokens.ts`, CSS generado (`npm run tokens:css`) con test de paridad contra `docs/diseno/_tokens.css`, i18n tipada en `src/i18n/` con diccionarios de galego y español con tipos de `dominio.md`, reglas sin hex sueltos en `src/` y sin shorthand `font:` en CSS de `src/` (para preservar `font-variant-numeric: tabular-nums` en números).
+
+El siguiente paso es la spec (d) de EPIC-001: calendario declarado y cargador.
 
 ### Herencia
 

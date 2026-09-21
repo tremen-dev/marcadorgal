@@ -6,7 +6,6 @@ type Props = { locale: Locale };
 const otherLocaleHref: Record<Locale, string> = { gl: "/es", es: "/" };
 
 export function WaitingPage({ locale }: Props) {
-  const dict = t(locale);
   return (
     <main className={styles.main}>
       <div className={styles.logo} data-testid="logo">
@@ -17,8 +16,8 @@ export function WaitingPage({ locale }: Props) {
         gal
       </div>
       <div>
-        <h1 className={styles.heading}>{dict.heading}</h1>
-        <p className={styles.waiting}>{dict.waiting}</p>
+        <h1 className={styles.heading}>{t(locale, "waiting.heading")}</h1>
+        <p className={styles.waiting}>{t(locale, "waiting.body")}</p>
       </div>
       <footer className={styles.footer}>
         <a
@@ -26,7 +25,7 @@ export function WaitingPage({ locale }: Props) {
           href={otherLocaleHref[locale]}
           hrefLang={locale === "gl" ? "es" : "gl"}
         >
-          {dict.switchLocale}
+          {t(locale, "common.switchLocale")}
         </a>
       </footer>
     </main>

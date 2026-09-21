@@ -1,3 +1,5 @@
+@import "../design/tokens.css";
+
 @font-face {
   font-family: "Geist";
   font-weight: 400;
@@ -41,18 +43,9 @@
   src: url(/fonts/GeistMono-SemiBold.woff2) format("woff2");
 }
 
-/* Transcribed from docs/diseno/_tokens.css; replaced by the tokens spec. */
-:root {
-  --bg: #111110;
-  --fg: #f5f1ea;
-  --fg-muted: #a7a5a0;
-  --marca: #56db8f;
-  --line: #2a2620;
-  --sans:
-    "Geist", ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", Arial,
-    sans-serif;
-  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+html {
   color-scheme: dark;
+  font-variant-numeric: tabular-nums;
 }
 
 *,

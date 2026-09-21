@@ -4,13 +4,16 @@
   flex-direction: column;
   justify-content: center;
   gap: 40px;
-  padding: 48px max(20px, 6vw);
+  padding: var(--space-48) max(20px, 6vw);
   max-width: 720px;
 }
 
 .logo {
-  font: 800 clamp(28px, 6vw, 46px) / 1 var(--sans);
-  letter-spacing: -0.045em;
+  font-weight: 800;
+  font-size: clamp(28px, 6vw, 46px);
+  line-height: 1;
+  font-family: var(--sans);
+  letter-spacing: var(--tracking-display);
   font-synthesis: none;
   color: var(--fg);
 }
@@ -21,14 +24,20 @@
 
 .heading {
   margin: 0;
-  font: 700 clamp(28px, 5vw, 40px) / 1.05 var(--sans);
+  font-weight: 800;
+  font-size: clamp(28px, 5vw, 40px);
+  line-height: 1.05;
+  font-family: var(--sans);
   letter-spacing: -0.035em;
   text-wrap: balance;
 }
 
 .waiting {
-  margin: 12px 0 0;
-  font: 400 clamp(16px, 2vw, 18px) / 1.55 var(--sans);
+  margin: var(--space-12) 0 0;
+  font-weight: 400;
+  font-size: clamp(16px, 2vw, 18px);
+  line-height: 1.55;
+  font-family: var(--sans);
   color: var(--fg-muted);
   text-wrap: pretty;
 }
@@ -36,15 +45,18 @@
 .footer {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding-top: 24px;
-  border-top: 1px solid var(--line);
+  gap: var(--space-16);
+  padding-top: var(--space-24);
+  border-top: var(--hairline) solid var(--line);
 }
 
 .switch {
   display: inline-flex;
   align-items: center;
-  min-height: 44px;
-  padding: 0 4px;
-  font: 500 15px / 1 var(--sans);
+  min-height: var(--touch-target);
+  padding: 0 var(--space-4);
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1;
+  font-family: var(--sans);
 }

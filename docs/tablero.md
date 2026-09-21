@@ -9,7 +9,7 @@ Actualizado: 2026-09-21
 |---|---|---|
 | SPEC-001 — esqueleto-ci-y-despliegue-con-pagina-de-espera | hecho | 2026-09-20 (sdd-verificador) |
 | SPEC-002 — modelo-zod-migraciones-base-y-test-de-arquitectura | hecho | 2026-09-21 (sdd-verificador) |
-| SPEC-003 — tokens-de-diseno-como-codigo-e-i18n | aprobada | 2026-09-21 (Alberto Fojo) |
+| SPEC-003 — tokens-de-diseno-como-codigo-e-i18n | hecho | 2026-09-21 (sdd-verificador) |
 
 ## ADRs
 
@@ -24,5 +24,4 @@ Actualizado: 2026-09-21
 
 ## Resumen
 
-- hecho: 2
-- aprobada: 1
+- hecho: 3
