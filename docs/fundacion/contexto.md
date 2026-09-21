@@ -2,7 +2,7 @@
 
 > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.
 > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.
-> Última actualización: 2026-09-21 (SPEC-005 hecho).
+> Última actualización: 2026-09-21 (SPEC-006 hecho).
 
 ## Qué es y en qué punto está
 
@@ -20,7 +20,9 @@ jornada completa, en una sola pantalla y en galego. Proyecto de tremen.dev.
 
 **SPEC-005 completa:** contrato `SourceAdapter` tipado, registro de fuentes validado con API-Football (prioridad 10, cadencia 30 s), adaptador de resultados con estados mapeados y minutos derivados, alias de partido (`fixture.id` → `id` derivado), fixtures reales de API-Football para tests sin red.
 
-EPIC-002 (ingesta y motor) en progreso: SPEC-005 hecho; tres specs más planeadas (raw store, motor, despliegue y medición). El siguiente paso es especificar y ejecutar la spec de raw store y tick.
+**SPEC-006 completa:** raw store en Supabase Storage con retención de 30 días, ventana por partido, tick autenticado registrando cada intento, alerta `unresolved_team`, manejo de cadencia con tolerancia de 5 s, enganche para el motor (`afterInsert`).
+
+EPIC-002 (ingesta y motor) en progreso: SPEC-005 y SPEC-006 hecho; dos specs más planeadas (motor, despliegue y medición).
 
 ### Herencia
 
@@ -71,6 +73,8 @@ de cada fuente la gestiona el titular fuera del repo (D-7).
 - ADR-004 Motor de decisiones por prioridad, monotonía, conflicto y silencio.
 - ADR-005 Sistema de diseño heredado, vinculante, con sus excepciones.
 - ADR-006 Esquema base y acceso a datos: ids, append-only por trigger, versión de Decision, board, RLS.
+- ADR-007 Raw store en Supabase Storage: bucket privado, gzip, retención de 30 días.
+- ADR-008 Núcleo de ingesta: tick autenticado, cadencia, concurrencia, enganche del motor.
 
 ## Riesgos y preguntas abiertas
 

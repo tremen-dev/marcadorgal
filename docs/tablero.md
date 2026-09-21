@@ -17,6 +17,7 @@ Actualizado: 2026-09-21
 | Spec | Estado | Último cambio |
 |---|---|---|
 | SPEC-005 — contrato-sourceadapter-registro-de-fuentes-y-adaptador-de-resultados-de-api-football | hecho | 2026-09-21 (sdd-verificador) |
+| SPEC-006 — raw-store-en-storage-ventanas-por-partido-y-tick-de-ingesta | hecho | 2026-09-21 (sdd-verificador) |
 
 ## ADRs
 
@@ -28,7 +29,9 @@ Actualizado: 2026-09-21
 | ADR-004 | aprobada | motor-de-decisiones-por-prioridad | 2026-09-20 (Alberto Fojo) |
 | ADR-005 | aprobada | sistema-de-diseno-heredado | 2026-09-20 (Alberto Fojo) |
 | ADR-006 | aprobada | esquema-base-y-acceso-a-datos-ids-append-only-version-de-decision-y-rls | 2026-09-20 (Alberto Fojo) |
+| ADR-007 | aprobada | raw-store-en-supabase-storage-bucket-claves-escritura-y-retencion | 2026-09-21 (Alberto Fojo) |
+| ADR-008 | aprobada | nucleo-de-ingesta-tick-autenticado-cadencia-concurrencia-y-puntos-de-enganche | 2026-09-21 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 5
+- hecho: 6
