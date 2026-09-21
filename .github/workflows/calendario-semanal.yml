@@ -40,6 +40,13 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Sincronizar contra el proveedor
+        # shell: bash da "bash --noprofile --norc -eo pipefail {0}". Sin él el
+        # shell por omisión es "bash -e {0}", sin pipefail, y el estado del
+        # paso sería el de tee (siempre 0) en vez del de calendario:sync, que
+        # sale 1 cuando el proveedor devuelve errors: el proveedor caería un
+        # martes, el paso pasaría, no habría diff, no se abriría PR y nadie se
+        # enteraría (O-2 de la verificación).
+        shell: bash
         env:
           API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
         run: npm run calendario:sync -- "$TEMPORADA" | tee sync-diff.txt
