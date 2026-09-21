@@ -7,8 +7,8 @@
 
 | Término | Definición | Notas |
 |---|---|---|
-| **Competition** | Una competición en una temporada y un grupo. Ej.: Tercera RFEF, 2026-27, grupo 1. | Id estable: `tercera-rfef-g1`. La temporada va aparte. |
-| **Team** | Un equipo con nombre canónico (el de la federación) y alias por fuente. | "UD Ourense" ≠ "Ourense CF". Los filiales se distinguen por su sufijo. |
+| **Competition** | Una competición en una temporada y un grupo. Ej.: Tercera RFEF, 2026-27, grupo 1. El `name` es la forma galega para mostrar en todas las lenguas. | Id estable: `tercera-rfef-g1`. La temporada va aparte. |
+| **Team** | Un equipo con nombre federativo en `name` (forma corta con siglas) y `shortName` opcional para filas compactas (decisión 2026-09-21). | "UD Ourense" ≠ "Ourense CF". Los filiales se distinguen por su sufijo. |
 | **Match** | Un partido: competición, jornada, kickoff, local, visitante. | Id derivado del calendario declarado: sobrevive a cambios de hora. |
 | **Xornada** | Jornada: el conjunto de partidos de una competición con el mismo número de ronda. | La pantalla principal se llama Xornada. Puede abarcar viernes a lunes. |
 | **Source** | Una fuente de datos registrada: id, tipo (`pull` o `push`), competiciones que cubre, prioridad por competición, cadencia permitida, base legal (anotada, no evaluada). | Vive en `src/sources/registry.ts`. D-4, D-7. |
