@@ -135,6 +135,15 @@ describe.each(aliasFiles.map((a) => [`${a.season}/${a.sourceId}`, a] as const))(
       ).toEqual([]);
     });
 
+    it("maps every match of the season exactly once and nothing else (SPEC-005 CA-4)", () => {
+      const values = Object.values(data.matches ?? {});
+      expect(new Set(values).size).toBe(values.length);
+      const aliased = new Set(values);
+      expect([...matchIds].filter((id) => !aliased.has(id))).toEqual([]);
+      expect([...aliased].filter((id) => !matchIds.has(id))).toEqual([]);
+      expect(values.length).toBe(matchIds.size);
+    });
+
     it("maps every team of the season exactly once and nothing else", () => {
       const aliased = new Set(data.teams.map((t) => t.teamId));
       expect(aliased.size).toBe(data.teams.length);
