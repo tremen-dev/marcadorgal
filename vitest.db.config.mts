@@ -10,6 +10,7 @@ try {
 export default defineConfig({
   resolve: {
     alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
       "server-only": fileURLToPath(
         new URL("./tools/empty-module.mjs", import.meta.url),
       ),
