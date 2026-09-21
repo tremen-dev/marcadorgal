@@ -2,7 +2,7 @@
 id: SPEC-008
 tipo: spec
 epica: EPIC-002
-estado: en-progreso
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-09-21, por: sdd-arquitecto}
@@ -10,6 +10,8 @@ historial:
   - {estado: en-progreso, fecha: 2026-09-21, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-09-21, por: sdd-implementador}
   - {estado: en-progreso, fecha: 2026-09-22, por: sdd-orquestador}
+  - {estado: en-revision, fecha: 2026-09-22, por: sdd-verificador}
+  - {estado: hecho, fecha: 2026-09-22, por: sdd-verificador}
 ---
 # SPEC-008 — Despliegue del tick: pg_cron, Vercel Cron, variables y sincronización del calendario
 
