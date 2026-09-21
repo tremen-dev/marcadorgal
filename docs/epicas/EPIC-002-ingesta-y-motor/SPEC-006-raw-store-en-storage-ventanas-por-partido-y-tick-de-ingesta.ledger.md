@@ -131,6 +131,9 @@ n-a: esta spec no toca interfaz.
   alguien levante el servidor de desarrollo. Se desactiva con
   `agentRules: false` en `next.config.ts`; no se ha hecho por estar fuera de
   los CA.
+  **Resuelta en esta rama:** Alberto Fojo decidió añadir `agentRules: false` a
+  `next.config.ts` (2026-09-21); comprobado que `next dev` ya no toca
+  `CLAUDE.md`.
 - **F-SPEC-006-6 (añadido fuera de los CA, mínimo).** `src/model/instant.ts`
   gana `shiftInstant`, `instantDiff` y `MINUTE_MS`/`HOUR_MS`/`DAY_MS`:
   aritmética pura de instantes, sin reloj. Era necesaria porque CA-8 pide
