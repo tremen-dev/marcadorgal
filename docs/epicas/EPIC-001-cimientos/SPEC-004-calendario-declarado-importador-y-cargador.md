@@ -9,6 +9,8 @@ historial:
   - {estado: aprobada, fecha: 2026-09-21, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-09-21, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-09-21, por: sdd-implementador}
+  - {estado: en-progreso, fecha: 2026-09-21, por: sdd-implementador}
+  - {estado: en-revision, fecha: 2026-09-21, por: sdd-implementador}
 ---
 # SPEC-004 — Calendario declarado, importador y cargador
 
