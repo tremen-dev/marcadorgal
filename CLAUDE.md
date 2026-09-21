@@ -29,6 +29,9 @@ i18n. Los términos de dominio de `docs/fundacion/dominio.md` no se traducen.
   `postponed`, `suspended`. El descanso es un momento dentro de `live`.
 - **Diseño.** `docs/diseno/` manda (D-8). Tokens en `src/design/tokens.ts`,
   nunca hex sueltos en componentes. Ningún estado se comunica solo con color.
+  Ningún CSS bajo `src/` usa el shorthand `font:`: siempre longhands
+  (`font-family`, `font-weight`, `font-size`, `line-height`), porque el
+  shorthand resetea `font-variant-numeric` y se pierden los dígitos tabulares.
 - **Stack.** Next.js 16 App Router, React 19, TypeScript estricto, zod 4,
   Supabase (Postgres, Realtime, Auth, Storage), `postgres.js` sin ORM,
   migraciones SQL con la CLI de Supabase, Vitest, Playwright, Biome, npm.
