@@ -14,6 +14,7 @@ import {
   type Score,
 } from "../model/index.ts";
 import {
+  CONFLICT_GRACE_MINUTES,
   KICKOFF_GRACE_MINUTES,
   OBSERVATION_WINDOW_MINUTES,
 } from "./thresholds.ts";
@@ -100,6 +101,37 @@ const sameScore = (a: MatchState, b: MatchState) =>
   b.score !== null &&
   a.score.home === b.score.home &&
   a.score.away === b.score.away;
+
+// H-4: two priorities are adjacent when no other source the engine can see
+// carries a priority strictly between them. Equal priority counts.
+const adjacent = (a: number, b: number, known: number[]) =>
+  !known.some((p) => p > Math.min(a, b) && p < Math.max(a, b));
+
+// RN-04: walking the two timelines and keeping the last score of each, the
+// instant of the first observation after the last moment they agreed (or one
+// of them had no score yet). null when they still agree.
+function disagreementSince(
+  timeline: Observation[],
+  a: string,
+  b: string,
+): Instant | null {
+  const line = timeline.filter((o) => o.sourceId === a || o.sourceId === b);
+  const last = new Map<string, Score | null>();
+  let met = -1;
+  line.forEach((o, i) => {
+    last.set(o.sourceId, stateOf(o).score);
+    const one = last.get(a);
+    const other = last.get(b);
+    const agreed =
+      one === undefined ||
+      other === undefined ||
+      one === null ||
+      other === null ||
+      (one.home === other.home && one.away === other.away);
+    if (agreed) met = i;
+  });
+  return line[met + 1]?.observedAt ?? null;
+}
 
 export function decide(input: EngineInput): EngineOutput {
   const { match, current, observations, priority, now } = input;
@@ -230,6 +262,46 @@ export function decide(input: EngineInput): EngineOutput {
     return publish(settle(holdingScore(proposed, held), "RN-03", winner));
   }
 
-  // 3. RN-01: the winner, as it comes.
+  // 3. RN-04 conflicto: a guard, never a publication, so RN-04 is not a
+  //    DecisionRule. The current Decision is held and the operator is told.
+  const known = [
+    ...new Set(
+      timeline
+        .map((o) => priority(o.sourceId))
+        .filter((p): p is number => p !== undefined),
+    ),
+  ];
+  for (const rival of ranked) {
+    if (rival.observation.sourceId === winner.observation.sourceId) continue;
+    if (!adjacent(winner.priority, rival.priority, known)) continue;
+    const rivalState = stateOf(rival.observation);
+    if (proposed.score === null || rivalState.score === null) continue;
+    if (sameScore(proposed, rivalState)) continue;
+    const since = disagreementSince(
+      timeline,
+      winner.observation.sourceId,
+      rival.observation.sourceId,
+    );
+    if (since === null) continue;
+    if (instantDiff(since, now) <= minutes(CONFLICT_GRACE_MINUTES)) continue;
+    open.push({
+      kind: "conflict",
+      matchId,
+      details: {
+        winner: {
+          sourceId: winner.observation.sourceId,
+          score: { home: proposed.score.home, away: proposed.score.away },
+        },
+        rival: {
+          sourceId: rival.observation.sourceId,
+          score: { home: rivalState.score.home, away: rivalState.score.away },
+        },
+        since,
+      },
+    });
+    return publish(null);
+  }
+
+  // 4. RN-01: the winner, as it comes.
   return publish(settle(proposed, "RN-01", winner));
 }

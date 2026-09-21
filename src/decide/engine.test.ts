@@ -306,14 +306,20 @@ describe("CA-4 RN-03 monotony and the regression alert", () => {
 
   it("never mixes sides: 1-2 against 2-1 holds 2-1, not 2-2", () => {
     const { decision } = decide(
-      input({ current: vigente, observations: [obs("ten", 49, live(1, 2, 75))] }),
+      input({
+        current: vigente,
+        observations: [obs("ten", 49, live(1, 2, 75))],
+      }),
     );
     expect(decision).toMatchObject({ score: { home: 2, away: 1 } });
   });
 
   it("does not fire when both sides grow", () => {
     const { decision, open } = decide(
-      input({ current: vigente, observations: [obs("ten", 49, live(3, 1, 75))] }),
+      input({
+        current: vigente,
+        observations: [obs("ten", 49, live(3, 1, 75))],
+      }),
     );
     expect(decision).toMatchObject({
       score: { home: 3, away: 1 },
@@ -352,6 +358,134 @@ describe("CA-4 RN-03 monotony and the regression alert", () => {
       input({ current: vigente, observations: [obs("fifty", 49, postponed)] }),
     );
     expect(decision).toMatchObject({ status: "postponed", rule: "RN-01" });
+    expect(open).toEqual([]);
+  });
+});
+
+describe("CA-5 RN-04 conflict between adjacent sources", () => {
+  const TWO_TENS = priorities({ ten: 10, "other-ten": 10 });
+  const VIGENTE = current(live(0, 0, 45));
+
+  it("holds the current decision and opens an alert past the grace", () => {
+    const { decision, open } = decide(
+      input({
+        current: VIGENTE,
+        observations: [
+          obs("ten", 44, live(0, 0, 45)),
+          obs("other-ten", 44, live(0, 0, 45)),
+          obs("ten", 46, live(1, 0, 47)),
+          obs("other-ten", 48, live(0, 0, 49)),
+          obs("ten", 49, live(1, 0, 50)),
+        ],
+        priority: TWO_TENS,
+      }),
+    );
+    expect(decision).toBeNull();
+    expect(open).toEqual([
+      {
+        kind: "conflict",
+        matchId: MATCH.id,
+        details: {
+          winner: { sourceId: "ten", score: { home: 1, away: 0 } },
+          rival: { sourceId: "other-ten", score: { home: 0, away: 0 } },
+          since: at(46),
+        },
+      },
+    ]);
+  });
+
+  it("publishes inside the grace", () => {
+    const { decision, open } = decide(
+      input({
+        current: VIGENTE,
+        observations: [
+          obs("ten", 44, live(0, 0, 45)),
+          obs("other-ten", 44, live(0, 0, 45)),
+          obs("other-ten", 47, live(0, 0, 48)),
+          obs("ten", 48, live(1, 0, 49)),
+          obs("ten", 49, live(1, 0, 50)),
+        ],
+        priority: TWO_TENS,
+      }),
+    );
+    expect(decision).toMatchObject({ score: { home: 1, away: 0 } });
+    expect(open).toEqual([]);
+  });
+
+  it("forgets the disagreement once the two meet again", () => {
+    const { decision, open } = decide(
+      input({
+        current: VIGENTE,
+        observations: [
+          obs("ten", 44, live(0, 0, 45)),
+          obs("other-ten", 44, live(0, 0, 45)),
+          obs("ten", 46, live(1, 0, 47)),
+          obs("other-ten", 49, live(1, 0, 50)),
+        ],
+        priority: TWO_TENS,
+      }),
+    );
+    expect(decision).toMatchObject({ score: { home: 1, away: 0 } });
+    expect(open).toEqual([]);
+  });
+
+  it("dates a new disagreement from the last time they met, not the first", () => {
+    const { decision, open } = decide(
+      input({
+        current: VIGENTE,
+        observations: [
+          obs("ten", 44, live(0, 0, 45)),
+          obs("other-ten", 44, live(0, 0, 45)),
+          obs("ten", 46, live(1, 0, 47)),
+          obs("other-ten", 48, live(1, 0, 49)),
+          obs("ten", 49.5, live(2, 0, 50)),
+        ],
+        priority: TWO_TENS,
+      }),
+    );
+    expect(decision).toMatchObject({ score: { home: 2, away: 0 } });
+    expect(open).toEqual([]);
+  });
+
+  it("fires between 10 and 20 with nothing in between (H-4)", () => {
+    const { decision, open } = decide(
+      input({
+        current: VIGENTE,
+        observations: [
+          obs("ten", 44, live(0, 0, 45)),
+          obs("twenty", 44, live(0, 0, 45)),
+          obs("twenty", 46, live(1, 0, 47)),
+          obs("ten", 49, live(0, 0, 50)),
+        ],
+        priority: priorities({ ten: 10, twenty: 20 }),
+      }),
+    );
+    expect(decision).toBeNull();
+    expect(open[0]).toMatchObject({
+      kind: "conflict",
+      details: {
+        winner: { sourceId: "twenty" },
+        rival: { sourceId: "ten" },
+        since: at(46),
+      },
+    });
+  });
+
+  it("does not fire between 10 and 50 with a 20 in the map (H-4)", () => {
+    const { decision, open } = decide(
+      input({
+        current: VIGENTE,
+        observations: [
+          obs("twenty", 42, live(0, 0, 43)),
+          obs("ten", 44, live(0, 0, 45)),
+          obs("fifty", 44, live(0, 0, 45)),
+          obs("fifty", 46, live(1, 0, 47)),
+          obs("ten", 49, live(0, 0, 50)),
+        ],
+        priority: priorities({ ten: 10, twenty: 20, fifty: 50 }),
+      }),
+    );
+    expect(decision).toMatchObject({ score: { home: 1, away: 0 } });
     expect(open).toEqual([]);
   });
 });
