@@ -18,6 +18,7 @@ Actualizado: 2026-09-21
 |---|---|---|
 | SPEC-005 — contrato-sourceadapter-registro-de-fuentes-y-adaptador-de-resultados-de-api-football | hecho | 2026-09-21 (sdd-verificador) |
 | SPEC-006 — raw-store-en-storage-ventanas-por-partido-y-tick-de-ingesta | hecho | 2026-09-21 (sdd-verificador) |
+| SPEC-007 — motor-de-decisiones-cualificador-y-alertas | hecho | 2026-09-21 (sdd-verificador) |
 
 ## ADRs
 
@@ -34,4 +35,4 @@ Actualizado: 2026-09-21
 
 ## Resumen
 
-- hecho: 6
+- hecho: 7

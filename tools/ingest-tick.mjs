@@ -10,6 +10,7 @@ import { nowInstant } from "../src/clock.ts";
 import { createSql } from "../src/db/connect.ts";
 import { adapterFor } from "../src/ingest/adapters.ts";
 import { createIngestDb } from "../src/ingest/db.ts";
+import { createEngineHook, createEngineSweep } from "../src/ingest/engine.ts";
 import { runTick } from "../src/ingest/tick.ts";
 import { rawStoreEnv } from "../src/raw/env.ts";
 import { createStorageRawStore } from "../src/raw/store.ts";
@@ -108,6 +109,8 @@ try {
       adapterFor: (config, season) => adapterFor(config, season, process.env),
       fetch,
       now,
+      afterInsert: createEngineHook(SOURCES, now),
+      sweep: createEngineSweep(db, SOURCES, now),
     });
     console.log(JSON.stringify(summary, null, 2));
   }

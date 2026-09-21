@@ -2,7 +2,7 @@
 
 > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.
 > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.
-> Última actualización: 2026-09-21 (SPEC-006 hecho).
+> Última actualización: 2026-09-21 (SPEC-007 hecho).
 
 ## Qué es y en qué punto está
 
@@ -22,7 +22,9 @@ jornada completa, en una sola pantalla y en galego. Proyecto de tremen.dev.
 
 **SPEC-006 completa:** raw store en Supabase Storage con retención de 30 días, ventana por partido, tick autenticado registrando cada intento, alerta `unresolved_team`, manejo de cadencia con tolerancia de 5 s, enganche para el motor (`afterInsert`).
 
-EPIC-002 (ingesta y motor) en progreso: SPEC-005 y SPEC-006 hecho; dos specs más planeadas (motor, despliegue y medición).
+**SPEC-007 completa:** motor de decisiones puro en `src/decide/`, criterios de aceptación del decisor (RN-01..RN-06, monotonía, conflicto, silencio, cierre forzoso), adaptador `src/ingest/engine.ts` con las cuatro consultas, migración del quinto `AlertKind` (`forced_finish`), `lastHeard` para trazar el cierre sin confirmación, replay determinista, barrido por ausencia de observaciones.
+
+EPIC-002 (ingesta y motor) en progreso: SPEC-005, SPEC-006 y SPEC-007 hecho; una spec más planeada (despliegue y medición).
 
 ### Herencia
 

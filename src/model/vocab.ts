@@ -22,10 +22,13 @@ export const DecisionRule = z.enum([
 ]);
 export type DecisionRule = z.infer<typeof DecisionRule>;
 
+// forced_finish (SPEC-007 H-5): RN-02 closes a match nobody confirmed, and
+// never in silence. The operator resolves it (EPIC-004); the engine never does.
 export const AlertKind = z.enum([
   "conflict",
   "regression",
   "silence",
+  "forced_finish",
   "unresolved_team",
 ]);
 export type AlertKind = z.infer<typeof AlertKind>;

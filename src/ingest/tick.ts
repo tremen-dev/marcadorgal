@@ -8,6 +8,7 @@ import {
 import { storeCapture } from "../raw/capture.ts";
 import type { RawStore } from "../raw/store.ts";
 import type { IngestDb, IngestTx, WindowRow } from "./db.ts";
+import type { EngineCounts } from "./engine.ts";
 import { errorMessage, type PurgeOutcome, purgeRaw } from "./purge.ts";
 
 export type AttemptSummary = {
@@ -31,6 +32,8 @@ export type TickSummary = {
   inWindow: number;
   purge: PurgeOutcome;
   attempts: AttemptSummary[];
+  engine?: EngineCounts;
+  engineError?: string;
 };
 
 // Where the engine plugs in (ADR-008 §6, N-11): inside the same transaction
@@ -40,6 +43,11 @@ export type AfterInsert = (
   observations: Observation[],
 ) => Promise<void>;
 
+// The second hook of the engine (H-2): once per tick, over every match in
+// window and in its own transaction, because RN-05 and the forced finish of
+// RN-02 are born of the absence of observations, not of their arrival.
+export type EngineSweep = (matches: WindowRow[]) => Promise<EngineCounts>;
+
 export type TickInput = {
   db: IngestDb;
   store: RawStore;
@@ -48,6 +56,7 @@ export type TickInput = {
   fetch: typeof globalThis.fetch;
   now: Instant;
   afterInsert?: AfterInsert;
+  sweep?: EngineSweep;
 };
 
 const toWindowMatch = ({
@@ -86,7 +95,7 @@ const emptySummary = (
 // Nothing is asked of a provider outside the window (RN-08) and the clock is
 // never read here: now arrives from the route or the CLI (ADR-008 §7).
 export async function runTick(input: TickInput): Promise<TickSummary> {
-  const { db, store, sources, now } = input;
+  const { db, store, sources, now, sweep } = input;
   const purge = await purgeRaw({ db, store, now });
   const matches = await db.windowMatches(now);
   const summary: TickSummary = {
@@ -122,6 +131,17 @@ export async function runTick(input: TickInput): Promise<TickSummary> {
           error: errorMessage(e),
         });
       }
+    }
+  }
+
+  // After every attempt and outside their transaction: what the sweep writes
+  // is born of the absence of observations (H-2). A failure of its own never
+  // brings the tick down.
+  if (sweep !== undefined) {
+    try {
+      summary.engine = await sweep(matches);
+    } catch (e) {
+      summary.engineError = errorMessage(e);
     }
   }
   return summary;

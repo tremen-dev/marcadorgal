@@ -54,11 +54,12 @@ describe("CA-2 closed vocabularies", () => {
     expect(DecisionRule.safeParse("RN-06").success).toBe(false);
   });
 
-  it("AlertKind has the four kinds", () => {
+  it("AlertKind has the five kinds", () => {
     expect(AlertKind.options).toEqual([
       "conflict",
       "regression",
       "silence",
+      "forced_finish",
       "unresolved_team",
     ]);
   });
