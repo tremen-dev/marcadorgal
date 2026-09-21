@@ -12,6 +12,11 @@ Actualizado: 2026-09-21
 | SPEC-003 — tokens-de-diseno-como-codigo-e-i18n | hecho | 2026-09-21 (sdd-verificador) |
 | SPEC-004 — calendario-declarado-importador-y-cargador | hecho | 2026-09-21 (sdd-verificador) |
 
+## EPIC-002 — ingesta-y-motor (aprobada)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
+
 ## ADRs
 
 | ADR | Estado | Título | Último cambio |
