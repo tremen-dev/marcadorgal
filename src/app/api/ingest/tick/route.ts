@@ -14,8 +14,11 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-// Only POST (N-7): Vercel Cron calls by GET, and the deploy spec decides
-// whether to export it here or delegate from another route.
+// The same handler for both methods (H-2, closes SPEC-006 N-7): Vercel Cron
+// invokes by GET with Authorization: Bearer $CRON_SECRET, and authorizeTick
+// is what guards it either way. A second route would need its own entry in
+// outputFileTracingIncludes, which is indexed by path, and would deploy
+// without the alias (ADR-008 §8).
 export const POST = createTickHandler({
   authorize: (header) => authorizeTick(header, process.env),
   run: (now) => {
@@ -33,3 +36,5 @@ export const POST = createTickHandler({
     });
   },
 });
+
+export const GET = POST;
