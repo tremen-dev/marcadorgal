@@ -1,5 +1,6 @@
 import type { Sql, TransactionSql } from "postgres";
 import type {
+  Details,
   Instant,
   MatchStatus,
   Observation,
@@ -15,15 +16,9 @@ import { isInWindow, windowKickoffRange } from "./window.ts";
 
 export type WindowRow = WindowMatch & { status: MatchStatus };
 
-// What fits in a jsonb column: details of an attempt (N-9) and of an alert.
-export type Json =
-  | null
-  | string
-  | number
-  | boolean
-  | readonly Json[]
-  | { readonly [key: string]: Json | undefined };
-export type Details = { readonly [key: string]: Json | undefined };
+// Moved to the model (SPEC-007 CA-2) and re-exported here: every importer of
+// the port keeps working.
+export type { Details, Json } from "../model/index.ts";
 
 export type OpenedAttempt =
   | { id: string }
