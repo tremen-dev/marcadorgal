@@ -560,3 +560,89 @@ describe("CA-8 a failed purge never stops the tick", () => {
     expect(summary.purge).toBe("ran");
   });
 });
+
+describe("CA-10 the engine sweep (H-2)", () => {
+  const counts = { matches: 2, decisions: 1, alerts: 1, resolved: 0 };
+
+  it("is not called when nothing is in window", async () => {
+    const { db, store } = harness();
+    const sweep = vi.fn(async () => counts);
+    const summary = await runTick({
+      db,
+      store,
+      sources: [PRIMERA],
+      adapterFor: () => stubAdapter(),
+      fetch: forbiddenFetch,
+      now: NOW,
+      sweep,
+    });
+    expect(sweep).not.toHaveBeenCalled();
+    expect(summary.engine).toBeUndefined();
+    expect(summary.engineError).toBeUndefined();
+  });
+
+  it("receives every match in window and reports its counters", async () => {
+    const { db, store } = harness();
+    db.matches = [
+      match("m1", "primera-division"),
+      match("m2", "segunda-division"),
+    ];
+    const sweep = vi.fn(async (_matches: WindowRow[]) => counts);
+    const summary = await runTick({
+      db,
+      store,
+      sources: [PRIMERA],
+      adapterFor: () => stubAdapter(),
+      fetch: forbiddenFetch,
+      now: NOW,
+      sweep,
+    });
+    expect(sweep).toHaveBeenCalledTimes(1);
+    expect(sweep.mock.calls[0][0]).toEqual(db.matches);
+    expect(summary.engine).toEqual(counts);
+    expect(summary.engineError).toBeUndefined();
+  });
+
+  it("never brings the tick down when it fails", async () => {
+    const { db, store } = harness();
+    db.matches = [match("m1", "primera-division")];
+    const summary = await runTick({
+      db,
+      store,
+      sources: [PRIMERA],
+      adapterFor: () => stubAdapter(),
+      fetch: forbiddenFetch,
+      now: NOW,
+      sweep: async () => {
+        throw new Error("deadlock detected");
+      },
+    });
+    expect(summary.engineError).toBe("deadlock detected");
+    expect(summary.engine).toBeUndefined();
+    expect(summary.attempts).toHaveLength(1);
+    expect(summary.attempts[0]).toMatchObject({ ok: true });
+  });
+
+  it("runs after the attempts and outside their transaction", async () => {
+    const log: string[] = [];
+    const { db, store } = harness({ log });
+    db.matches = [match("m1", "primera-division")];
+    await runTick({
+      db,
+      store,
+      sources: [PRIMERA],
+      adapterFor: () => stubAdapter({ log }),
+      fetch: forbiddenFetch,
+      now: NOW,
+      sweep: async () => {
+        log.push("sweep");
+        return counts;
+      },
+    });
+    expect(log.lastIndexOf("commit")).toBeLessThan(log.indexOf("sweep"));
+    expect(log.lastIndexOf("closeAttempt:true")).toBeLessThan(
+      log.indexOf("sweep"),
+    );
+    expect(log.indexOf("sweep")).toBe(log.length - 1);
+  });
+});
