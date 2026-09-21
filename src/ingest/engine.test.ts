@@ -2,8 +2,13 @@ import type { TransactionSql } from "postgres";
 import { describe, expect, it } from "vitest";
 import { type Instant, MINUTE_MS, shiftInstant } from "@/model";
 import { SOURCES } from "../sources/registry.ts";
-import type { IngestTx } from "./db.ts";
-import { createEngineHook, decideMatches, priorityLookup } from "./engine.ts";
+import type { IngestDb, IngestTx, WindowRow } from "./db.ts";
+import {
+  createEngineHook,
+  createEngineSweep,
+  decideMatches,
+  priorityLookup,
+} from "./engine.ts";
 
 const NOW = "2026-09-25T19:30:00.000Z" as Instant;
 const at = (minutes: number) => shiftInstant(NOW, minutes * MINUTE_MS);
@@ -311,5 +316,103 @@ describe("CA-9 createEngineHook", () => {
       typeof hook
     >[1]);
     expect(find(calls, "from matches")?.values[0]).toEqual([MATCH]);
+  });
+});
+
+// SPEC-008 CA-9 (closes O-1 of SPEC-007): the sweep opens its own single
+// transaction over every match in window. The verifier of SPEC-007 could
+// only probe this by hand.
+const OTHER = "segunda-division-2026-27-j6-racing-lugo";
+
+const windowRow = (id: string): WindowRow =>
+  ({
+    id,
+    competitionId: id.startsWith("primera")
+      ? "primera-division"
+      : "segunda-division",
+    season: "2026-27",
+    kickoff: at(30),
+    homeTeamId: "celta",
+    awayTeamId: "deportivo",
+    status: "scheduled",
+  }) as WindowRow;
+
+function fakeDb(rows: (text: string) => unknown[]) {
+  const { tx, calls } = fakeTx(rows);
+  const transactions: number[] = [];
+  const db = {
+    transaction: <T>(fn: (t: IngestTx) => Promise<T>): Promise<T> => {
+      transactions.push(calls.length);
+      return fn(tx);
+    },
+  } as unknown as IngestDb;
+  return { db, calls, transactions };
+}
+
+describe("SPEC-008 CA-9 createEngineSweep", () => {
+  const rows = answering({
+    matches: [
+      { ...matchRow, id: MATCH, kickoff: timestamptz(at(30)) },
+      {
+        ...matchRow,
+        id: OTHER,
+        competition_id: "segunda-division",
+        kickoff: timestamptz(at(30)),
+      },
+    ],
+  });
+
+  it("opens exactly one transaction for every match in window", async () => {
+    const { db, transactions } = fakeDb(rows);
+    await createEngineSweep(
+      db,
+      SOURCES,
+      NOW,
+    )([windowRow(MATCH), windowRow(OTHER)]);
+    expect(transactions).toEqual([0]);
+  });
+
+  it("emits the four queries once, each with the two match ids", async () => {
+    const { db, calls } = fakeDb(rows);
+    await createEngineSweep(
+      db,
+      SOURCES,
+      NOW,
+    )([windowRow(MATCH), windowRow(OTHER)]);
+    const ids = [MATCH, OTHER].sort();
+    expect(calls).toHaveLength(4);
+    expect(find(calls, "from matches")?.values[0]).toEqual(ids);
+    expect(find(calls, "from decisions")?.values[0]).toEqual(ids);
+    expect(find(calls, LAST_HEARD)?.values[0]).toEqual(ids);
+    const observations = calls.find(
+      (c) =>
+        c.text.includes("from observations") && !c.text.includes(LAST_HEARD),
+    );
+    expect(observations?.values).toEqual([ids, at(-15)]);
+  });
+
+  it("counts the two matches", async () => {
+    const { db } = fakeDb(rows);
+    const counts = await createEngineSweep(
+      db,
+      SOURCES,
+      NOW,
+    )([windowRow(MATCH), windowRow(OTHER)]);
+    expect(counts.matches).toBe(2);
+  });
+
+  it("asks nothing with no match in window", async () => {
+    // The sweep still opens its transaction: what ADR-009 §1 guards ("only
+    // if there is any match in window") lives in runTick, not here.
+    const { db, calls, transactions } = fakeDb(rows);
+    const counts = await createEngineSweep(db, SOURCES, NOW)([]);
+    expect(counts).toEqual({
+      matches: 0,
+      decisions: 0,
+      alerts: 0,
+      resolved: 0,
+    });
+    expect(calls).toEqual([]);
+    expect(transactions).toHaveLength(1);
   });
 });
