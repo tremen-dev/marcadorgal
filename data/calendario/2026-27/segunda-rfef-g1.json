@@ -2,61 +2,74 @@
   "competition": {
     "id": "segunda-rfef-g1",
     "season": "2026-27",
-    "name": "Segunda RFEF Grupo 1",
+    "name": "Segunda Federación · Grupo 1",
     "tier": 4
   },
   "teams": [
     {
       "id": "amorebieta",
-      "name": "Amorebieta"
+      "name": "SD Amorebieta",
+      "shortName": "Amorebieta"
     },
     {
       "id": "arosa",
-      "name": "Arosa"
+      "name": "Arosa SC",
+      "shortName": "Arosa"
     },
     {
-      "id": "atletico-astorga",
-      "name": "Atlético Astorga"
+      "id": "astorga",
+      "name": "Atlético Astorga FC",
+      "shortName": "Astorga"
     },
     {
       "id": "basconia",
-      "name": "Basconia"
+      "name": "CD Basconia",
+      "shortName": "Basconia"
     },
     {
       "id": "bergantinos",
-      "name": "Bergantiños"
+      "name": "Bergantiños FC",
+      "shortName": "Bergantiños"
     },
     {
       "id": "compostela",
-      "name": "Compostela"
+      "name": "SD Compostela",
+      "shortName": "Compostela"
     },
     {
       "id": "coruxo",
-      "name": "Coruxo"
+      "name": "Coruxo FC",
+      "shortName": "Coruxo"
     },
     {
-      "id": "deportivo-alaves-ii",
-      "name": "Deportivo Alavés II"
+      "id": "alaves-b",
+      "name": "Deportivo Alavés B",
+      "shortName": "Alavés B"
     },
     {
-      "id": "eibar-ii",
-      "name": "Eibar II"
+      "id": "eibar-b",
+      "name": "SD Eibar B",
+      "shortName": "Eibar B"
     },
     {
       "id": "gernika",
-      "name": "Gernika"
+      "name": "SD Gernika Club",
+      "shortName": "Gernika"
     },
     {
-      "id": "gimnastica-torrelavega",
-      "name": "Gimnástica Torrelavega"
+      "id": "gimnastica",
+      "name": "RS Gimnástica de Torrelavega",
+      "shortName": "Gimnástica"
     },
     {
       "id": "llanera",
-      "name": "Llanera"
+      "name": "UD Llanera",
+      "shortName": "Llanera"
     },
     {
-      "id": "marino-de-luanco",
-      "name": "Marino de Luanco"
+      "id": "marino",
+      "name": "Marino de Luanco",
+      "shortName": "Marino"
     },
     {
       "id": "ourense-cf",
@@ -64,44 +77,47 @@
     },
     {
       "id": "portugalete",
-      "name": "Portugalete"
+      "name": "Club Portugalete",
+      "shortName": "Portugalete"
     },
     {
-      "id": "racing-santander-ii",
-      "name": "Racing Santander II"
+      "id": "rayo-cantabria",
+      "name": "Rayo Cantabria"
     },
     {
-      "id": "real-oviedo-ii",
-      "name": "Real Oviedo II"
+      "id": "oviedo-vetusta",
+      "name": "Real Oviedo Vetusta",
+      "shortName": "Vetusta"
     },
     {
       "id": "sestao-river",
-      "name": "Sestao River"
+      "name": "Sestao River Club",
+      "shortName": "Sestao River"
     }
   ],
   "matches": [
     {
       "round": 1,
       "kickoff": "2026-09-05T15:00:00Z",
-      "home": "deportivo-alaves-ii",
+      "home": "alaves-b",
       "away": "coruxo"
     },
     {
       "round": 1,
       "kickoff": "2026-09-05T15:00:00Z",
-      "home": "real-oviedo-ii",
-      "away": "eibar-ii"
+      "home": "oviedo-vetusta",
+      "away": "eibar-b"
     },
     {
       "round": 1,
       "kickoff": "2026-09-05T16:00:00Z",
-      "home": "atletico-astorga",
+      "home": "astorga",
       "away": "portugalete"
     },
     {
       "round": 1,
       "kickoff": "2026-09-05T17:00:00Z",
-      "home": "gimnastica-torrelavega",
+      "home": "gimnastica",
       "away": "llanera"
     },
     {
@@ -114,7 +130,7 @@
       "round": 1,
       "kickoff": "2026-09-06T10:00:00Z",
       "home": "compostela",
-      "away": "marino-de-luanco"
+      "away": "marino"
     },
     {
       "round": 1,
@@ -125,7 +141,7 @@
     {
       "round": 1,
       "kickoff": "2026-09-06T10:00:00Z",
-      "home": "racing-santander-ii",
+      "home": "rayo-cantabria",
       "away": "sestao-river"
     },
     {
@@ -137,8 +153,8 @@
     {
       "round": 2,
       "kickoff": "2026-09-12T14:00:00Z",
-      "home": "eibar-ii",
-      "away": "gimnastica-torrelavega"
+      "home": "eibar-b",
+      "away": "gimnastica"
     },
     {
       "round": 2,
@@ -150,13 +166,13 @@
       "round": 2,
       "kickoff": "2026-09-13T10:00:00Z",
       "home": "llanera",
-      "away": "deportivo-alaves-ii"
+      "away": "alaves-b"
     },
     {
       "round": 2,
       "kickoff": "2026-09-13T10:30:00Z",
       "home": "basconia",
-      "away": "atletico-astorga"
+      "away": "astorga"
     },
     {
       "round": 2,
@@ -174,19 +190,19 @@
       "round": 2,
       "kickoff": "2026-09-13T15:00:00Z",
       "home": "coruxo",
-      "away": "racing-santander-ii"
+      "away": "rayo-cantabria"
     },
     {
       "round": 2,
       "kickoff": "2026-09-13T15:00:00Z",
-      "home": "marino-de-luanco",
+      "home": "marino",
       "away": "ourense-cf"
     },
     {
       "round": 2,
       "kickoff": "2026-09-13T17:00:00Z",
       "home": "sestao-river",
-      "away": "real-oviedo-ii"
+      "away": "oviedo-vetusta"
     },
     {
       "round": 3,
@@ -197,14 +213,14 @@
     {
       "round": 3,
       "kickoff": "2026-09-19T15:00:00Z",
-      "home": "atletico-astorga",
-      "away": "marino-de-luanco"
+      "home": "astorga",
+      "away": "marino"
     },
     {
       "round": 3,
       "kickoff": "2026-09-19T17:00:00Z",
       "home": "ourense-cf",
-      "away": "eibar-ii"
+      "away": "eibar-b"
     },
     {
       "round": 3,
@@ -215,19 +231,19 @@
     {
       "round": 3,
       "kickoff": "2026-09-20T10:00:00Z",
-      "home": "deportivo-alaves-ii",
-      "away": "real-oviedo-ii"
+      "home": "alaves-b",
+      "away": "oviedo-vetusta"
     },
     {
       "round": 3,
       "kickoff": "2026-09-20T10:00:00Z",
-      "home": "gimnastica-torrelavega",
+      "home": "gimnastica",
       "away": "bergantinos"
     },
     {
       "round": 3,
       "kickoff": "2026-09-20T14:45:00Z",
-      "home": "racing-santander-ii",
+      "home": "rayo-cantabria",
       "away": "amorebieta"
     },
     {
@@ -252,31 +268,31 @@
       "round": 4,
       "kickoff": "2026-09-26T16:30:00Z",
       "home": "sestao-river",
-      "away": "atletico-astorga"
+      "away": "astorga"
     },
     {
       "round": 4,
       "kickoff": "2026-09-27T10:00:00Z",
-      "home": "real-oviedo-ii",
-      "away": "gimnastica-torrelavega"
+      "home": "oviedo-vetusta",
+      "away": "gimnastica"
     },
     {
       "round": 4,
       "kickoff": "2026-09-27T10:30:00Z",
       "home": "llanera",
-      "away": "racing-santander-ii"
+      "away": "rayo-cantabria"
     },
     {
       "round": 4,
       "kickoff": "2026-09-27T13:30:00Z",
-      "home": "eibar-ii",
+      "home": "eibar-b",
       "away": "compostela"
     },
     {
       "round": 4,
       "kickoff": "2026-09-27T15:00:00Z",
       "home": "arosa",
-      "away": "deportivo-alaves-ii"
+      "away": "alaves-b"
     },
     {
       "round": 4,
@@ -293,19 +309,19 @@
     {
       "round": 4,
       "kickoff": "2026-09-27T15:00:00Z",
-      "home": "marino-de-luanco",
+      "home": "marino",
       "away": "basconia"
     },
     {
       "round": 5,
       "kickoff": "2026-10-03T14:30:00Z",
-      "home": "racing-santander-ii",
-      "away": "eibar-ii"
+      "home": "rayo-cantabria",
+      "away": "eibar-b"
     },
     {
       "round": 5,
       "kickoff": "2026-10-03T15:00:00Z",
-      "home": "atletico-astorga",
+      "home": "astorga",
       "away": "amorebieta"
     },
     {
@@ -317,14 +333,14 @@
     {
       "round": 5,
       "kickoff": "2026-10-03T15:00:00Z",
-      "home": "gimnastica-torrelavega",
-      "away": "marino-de-luanco"
+      "home": "gimnastica",
+      "away": "marino"
     },
     {
       "round": 5,
       "kickoff": "2026-10-03T16:00:00Z",
       "home": "portugalete",
-      "away": "deportivo-alaves-ii"
+      "away": "alaves-b"
     },
     {
       "round": 5,
@@ -336,7 +352,7 @@
       "round": 5,
       "kickoff": "2026-10-04T15:00:00Z",
       "home": "compostela",
-      "away": "real-oviedo-ii"
+      "away": "oviedo-vetusta"
     },
     {
       "round": 5,
@@ -353,7 +369,7 @@
     {
       "round": 6,
       "kickoff": "2026-10-10T10:30:00Z",
-      "home": "eibar-ii",
+      "home": "eibar-b",
       "away": "basconia"
     },
     {
@@ -371,7 +387,7 @@
     {
       "round": 6,
       "kickoff": "2026-10-11T15:00:00Z",
-      "home": "atletico-astorga",
+      "home": "astorga",
       "away": "ourense-cf"
     },
     {
@@ -383,26 +399,26 @@
     {
       "round": 6,
       "kickoff": "2026-10-11T15:00:00Z",
-      "home": "deportivo-alaves-ii",
+      "home": "alaves-b",
       "away": "gernika"
     },
     {
       "round": 6,
       "kickoff": "2026-10-11T15:00:00Z",
       "home": "llanera",
-      "away": "marino-de-luanco"
+      "away": "marino"
     },
     {
       "round": 6,
       "kickoff": "2026-10-11T15:00:00Z",
-      "home": "real-oviedo-ii",
-      "away": "racing-santander-ii"
+      "home": "oviedo-vetusta",
+      "away": "rayo-cantabria"
     },
     {
       "round": 6,
       "kickoff": "2026-10-11T15:00:00Z",
       "home": "sestao-river",
-      "away": "gimnastica-torrelavega"
+      "away": "gimnastica"
     },
     {
       "round": 7,
@@ -414,13 +430,13 @@
       "round": 7,
       "kickoff": "2026-10-18T15:00:00Z",
       "home": "bergantinos",
-      "away": "real-oviedo-ii"
+      "away": "oviedo-vetusta"
     },
     {
       "round": 7,
       "kickoff": "2026-10-18T15:00:00Z",
       "home": "compostela",
-      "away": "atletico-astorga"
+      "away": "astorga"
     },
     {
       "round": 7,
@@ -431,13 +447,13 @@
     {
       "round": 7,
       "kickoff": "2026-10-18T15:00:00Z",
-      "home": "gimnastica-torrelavega",
-      "away": "deportivo-alaves-ii"
+      "home": "gimnastica",
+      "away": "alaves-b"
     },
     {
       "round": 7,
       "kickoff": "2026-10-18T15:00:00Z",
-      "home": "marino-de-luanco",
+      "home": "marino",
       "away": "sestao-river"
     },
     {
@@ -450,12 +466,12 @@
       "round": 7,
       "kickoff": "2026-10-18T15:00:00Z",
       "home": "portugalete",
-      "away": "eibar-ii"
+      "away": "eibar-b"
     },
     {
       "round": 7,
       "kickoff": "2026-10-18T15:00:00Z",
-      "home": "racing-santander-ii",
+      "home": "rayo-cantabria",
       "away": "basconia"
     },
     {
@@ -467,7 +483,7 @@
     {
       "round": 8,
       "kickoff": "2026-10-25T16:00:00Z",
-      "home": "atletico-astorga",
+      "home": "astorga",
       "away": "gernika"
     },
     {
@@ -479,13 +495,13 @@
     {
       "round": 8,
       "kickoff": "2026-10-25T16:00:00Z",
-      "home": "deportivo-alaves-ii",
-      "away": "racing-santander-ii"
+      "home": "alaves-b",
+      "away": "rayo-cantabria"
     },
     {
       "round": 8,
       "kickoff": "2026-10-25T16:00:00Z",
-      "home": "eibar-ii",
+      "home": "eibar-b",
       "away": "bergantinos"
     },
     {
@@ -497,14 +513,14 @@
     {
       "round": 8,
       "kickoff": "2026-10-25T16:00:00Z",
-      "home": "marino-de-luanco",
-      "away": "real-oviedo-ii"
+      "home": "marino",
+      "away": "oviedo-vetusta"
     },
     {
       "round": 8,
       "kickoff": "2026-10-25T16:00:00Z",
       "home": "ourense-cf",
-      "away": "gimnastica-torrelavega"
+      "away": "gimnastica"
     },
     {
       "round": 8,
@@ -516,7 +532,7 @@
       "round": 9,
       "kickoff": "2026-11-01T16:00:00Z",
       "home": "amorebieta",
-      "away": "gimnastica-torrelavega"
+      "away": "gimnastica"
     },
     {
       "round": 9,
@@ -539,14 +555,14 @@
     {
       "round": 9,
       "kickoff": "2026-11-01T16:00:00Z",
-      "home": "deportivo-alaves-ii",
-      "away": "eibar-ii"
+      "home": "alaves-b",
+      "away": "eibar-b"
     },
     {
       "round": 9,
       "kickoff": "2026-11-01T16:00:00Z",
       "home": "gernika",
-      "away": "marino-de-luanco"
+      "away": "marino"
     },
     {
       "round": 9,
@@ -557,13 +573,13 @@
     {
       "round": 9,
       "kickoff": "2026-11-01T16:00:00Z",
-      "home": "racing-santander-ii",
-      "away": "atletico-astorga"
+      "home": "rayo-cantabria",
+      "away": "astorga"
     },
     {
       "round": 9,
       "kickoff": "2026-11-01T16:00:00Z",
-      "home": "real-oviedo-ii",
+      "home": "oviedo-vetusta",
       "away": "llanera"
     },
     {
@@ -581,13 +597,13 @@
     {
       "round": 10,
       "kickoff": "2026-11-08T16:00:00Z",
-      "home": "eibar-ii",
-      "away": "atletico-astorga"
+      "home": "eibar-b",
+      "away": "astorga"
     },
     {
       "round": 10,
       "kickoff": "2026-11-08T16:00:00Z",
-      "home": "gimnastica-torrelavega",
+      "home": "gimnastica",
       "away": "gernika"
     },
     {
@@ -599,8 +615,8 @@
     {
       "round": 10,
       "kickoff": "2026-11-08T16:00:00Z",
-      "home": "marino-de-luanco",
-      "away": "racing-santander-ii"
+      "home": "marino",
+      "away": "rayo-cantabria"
     },
     {
       "round": 10,
@@ -611,32 +627,32 @@
     {
       "round": 10,
       "kickoff": "2026-11-08T16:00:00Z",
-      "home": "real-oviedo-ii",
+      "home": "oviedo-vetusta",
       "away": "coruxo"
     },
     {
       "round": 10,
       "kickoff": "2026-11-08T16:00:00Z",
       "home": "sestao-river",
-      "away": "deportivo-alaves-ii"
+      "away": "alaves-b"
     },
     {
       "round": 11,
       "kickoff": "2026-11-15T16:00:00Z",
       "home": "amorebieta",
-      "away": "eibar-ii"
+      "away": "eibar-b"
     },
     {
       "round": 11,
       "kickoff": "2026-11-15T16:00:00Z",
-      "home": "atletico-astorga",
+      "home": "astorga",
       "away": "arosa"
     },
     {
       "round": 11,
       "kickoff": "2026-11-15T16:00:00Z",
       "home": "basconia",
-      "away": "deportivo-alaves-ii"
+      "away": "alaves-b"
     },
     {
       "round": 11,
@@ -660,25 +676,25 @@
       "round": 11,
       "kickoff": "2026-11-15T16:00:00Z",
       "home": "gernika",
-      "away": "real-oviedo-ii"
+      "away": "oviedo-vetusta"
     },
     {
       "round": 11,
       "kickoff": "2026-11-15T16:00:00Z",
       "home": "portugalete",
-      "away": "marino-de-luanco"
+      "away": "marino"
     },
     {
       "round": 11,
       "kickoff": "2026-11-15T16:00:00Z",
-      "home": "racing-santander-ii",
-      "away": "gimnastica-torrelavega"
+      "home": "rayo-cantabria",
+      "away": "gimnastica"
     },
     {
       "round": 12,
       "kickoff": "2026-11-22T16:00:00Z",
       "home": "arosa",
-      "away": "eibar-ii"
+      "away": "eibar-b"
     },
     {
       "round": 12,
@@ -689,19 +705,19 @@
     {
       "round": 12,
       "kickoff": "2026-11-22T16:00:00Z",
-      "home": "deportivo-alaves-ii",
+      "home": "alaves-b",
       "away": "compostela"
     },
     {
       "round": 12,
       "kickoff": "2026-11-22T16:00:00Z",
       "home": "gernika",
-      "away": "racing-santander-ii"
+      "away": "rayo-cantabria"
     },
     {
       "round": 12,
       "kickoff": "2026-11-22T16:00:00Z",
-      "home": "gimnastica-torrelavega",
+      "home": "gimnastica",
       "away": "portugalete"
     },
     {
@@ -713,14 +729,14 @@
     {
       "round": 12,
       "kickoff": "2026-11-22T16:00:00Z",
-      "home": "marino-de-luanco",
+      "home": "marino",
       "away": "coruxo"
     },
     {
       "round": 12,
       "kickoff": "2026-11-22T16:00:00Z",
-      "home": "real-oviedo-ii",
-      "away": "atletico-astorga"
+      "home": "oviedo-vetusta",
+      "away": "astorga"
     },
     {
       "round": 12,
@@ -738,13 +754,13 @@
       "round": 13,
       "kickoff": "2026-11-29T16:00:00Z",
       "home": "arosa",
-      "away": "real-oviedo-ii"
+      "away": "oviedo-vetusta"
     },
     {
       "round": 13,
       "kickoff": "2026-11-29T16:00:00Z",
-      "home": "atletico-astorga",
-      "away": "deportivo-alaves-ii"
+      "home": "astorga",
+      "away": "alaves-b"
     },
     {
       "round": 13,
@@ -762,13 +778,13 @@
       "round": 13,
       "kickoff": "2026-11-29T16:00:00Z",
       "home": "coruxo",
-      "away": "gimnastica-torrelavega"
+      "away": "gimnastica"
     },
     {
       "round": 13,
       "kickoff": "2026-11-29T16:00:00Z",
-      "home": "eibar-ii",
-      "away": "marino-de-luanco"
+      "home": "eibar-b",
+      "away": "marino"
     },
     {
       "round": 13,
@@ -780,18 +796,18 @@
       "round": 13,
       "kickoff": "2026-11-29T16:00:00Z",
       "home": "portugalete",
-      "away": "racing-santander-ii"
+      "away": "rayo-cantabria"
     },
     {
       "round": 14,
       "kickoff": "2026-12-06T16:00:00Z",
       "home": "coruxo",
-      "away": "eibar-ii"
+      "away": "eibar-b"
     },
     {
       "round": 14,
       "kickoff": "2026-12-06T16:00:00Z",
-      "home": "deportivo-alaves-ii",
+      "home": "alaves-b",
       "away": "bergantinos"
     },
     {
@@ -803,31 +819,31 @@
     {
       "round": 14,
       "kickoff": "2026-12-06T16:00:00Z",
-      "home": "gimnastica-torrelavega",
+      "home": "gimnastica",
       "away": "compostela"
     },
     {
       "round": 14,
       "kickoff": "2026-12-06T16:00:00Z",
       "home": "llanera",
-      "away": "atletico-astorga"
+      "away": "astorga"
     },
     {
       "round": 14,
       "kickoff": "2026-12-06T16:00:00Z",
-      "home": "marino-de-luanco",
+      "home": "marino",
       "away": "amorebieta"
     },
     {
       "round": 14,
       "kickoff": "2026-12-06T16:00:00Z",
-      "home": "racing-santander-ii",
+      "home": "rayo-cantabria",
       "away": "arosa"
     },
     {
       "round": 14,
       "kickoff": "2026-12-06T16:00:00Z",
-      "home": "real-oviedo-ii",
+      "home": "oviedo-vetusta",
       "away": "basconia"
     },
     {
@@ -840,18 +856,18 @@
       "round": 15,
       "kickoff": "2026-12-13T16:00:00Z",
       "home": "amorebieta",
-      "away": "real-oviedo-ii"
+      "away": "oviedo-vetusta"
     },
     {
       "round": 15,
       "kickoff": "2026-12-13T16:00:00Z",
       "home": "arosa",
-      "away": "gimnastica-torrelavega"
+      "away": "gimnastica"
     },
     {
       "round": 15,
       "kickoff": "2026-12-13T16:00:00Z",
-      "home": "atletico-astorga",
+      "home": "astorga",
       "away": "coruxo"
     },
     {
@@ -864,25 +880,25 @@
       "round": 15,
       "kickoff": "2026-12-13T16:00:00Z",
       "home": "bergantinos",
-      "away": "marino-de-luanco"
+      "away": "marino"
     },
     {
       "round": 15,
       "kickoff": "2026-12-13T16:00:00Z",
       "home": "compostela",
-      "away": "racing-santander-ii"
+      "away": "rayo-cantabria"
     },
     {
       "round": 15,
       "kickoff": "2026-12-13T16:00:00Z",
-      "home": "eibar-ii",
+      "home": "eibar-b",
       "away": "sestao-river"
     },
     {
       "round": 15,
       "kickoff": "2026-12-13T16:00:00Z",
       "home": "ourense-cf",
-      "away": "deportivo-alaves-ii"
+      "away": "alaves-b"
     },
     {
       "round": 15,
@@ -893,8 +909,8 @@
     {
       "round": 16,
       "kickoff": "2026-12-20T16:00:00Z",
-      "home": "atletico-astorga",
-      "away": "gimnastica-torrelavega"
+      "home": "astorga",
+      "away": "gimnastica"
     },
     {
       "round": 16,
@@ -905,7 +921,7 @@
     {
       "round": 16,
       "kickoff": "2026-12-20T16:00:00Z",
-      "home": "deportivo-alaves-ii",
+      "home": "alaves-b",
       "away": "amorebieta"
     },
     {
@@ -918,24 +934,24 @@
       "round": 16,
       "kickoff": "2026-12-20T16:00:00Z",
       "home": "llanera",
-      "away": "eibar-ii"
+      "away": "eibar-b"
     },
     {
       "round": 16,
       "kickoff": "2026-12-20T16:00:00Z",
-      "home": "marino-de-luanco",
+      "home": "marino",
       "away": "arosa"
     },
     {
       "round": 16,
       "kickoff": "2026-12-20T16:00:00Z",
-      "home": "racing-santander-ii",
+      "home": "rayo-cantabria",
       "away": "bergantinos"
     },
     {
       "round": 16,
       "kickoff": "2026-12-20T16:00:00Z",
-      "home": "real-oviedo-ii",
+      "home": "oviedo-vetusta",
       "away": "ourense-cf"
     },
     {
@@ -960,37 +976,37 @@
       "round": 17,
       "kickoff": "2027-01-10T16:00:00Z",
       "home": "bergantinos",
-      "away": "atletico-astorga"
+      "away": "astorga"
     },
     {
       "round": 17,
       "kickoff": "2027-01-10T16:00:00Z",
-      "home": "deportivo-alaves-ii",
-      "away": "marino-de-luanco"
+      "home": "alaves-b",
+      "away": "marino"
     },
     {
       "round": 17,
       "kickoff": "2027-01-10T16:00:00Z",
-      "home": "eibar-ii",
+      "home": "eibar-b",
       "away": "gernika"
     },
     {
       "round": 17,
       "kickoff": "2027-01-10T16:00:00Z",
-      "home": "gimnastica-torrelavega",
+      "home": "gimnastica",
       "away": "basconia"
     },
     {
       "round": 17,
       "kickoff": "2027-01-10T16:00:00Z",
       "home": "ourense-cf",
-      "away": "racing-santander-ii"
+      "away": "rayo-cantabria"
     },
     {
       "round": 17,
       "kickoff": "2027-01-10T16:00:00Z",
       "home": "portugalete",
-      "away": "real-oviedo-ii"
+      "away": "oviedo-vetusta"
     },
     {
       "round": 17,
@@ -1002,13 +1018,13 @@
       "round": 18,
       "kickoff": "2027-01-17T16:00:00Z",
       "home": "basconia",
-      "away": "racing-santander-ii"
+      "away": "rayo-cantabria"
     },
     {
       "round": 18,
       "kickoff": "2027-01-17T16:00:00Z",
       "home": "bergantinos",
-      "away": "eibar-ii"
+      "away": "eibar-b"
     },
     {
       "round": 18,
@@ -1026,30 +1042,30 @@
       "round": 18,
       "kickoff": "2027-01-17T16:00:00Z",
       "home": "gernika",
-      "away": "deportivo-alaves-ii"
+      "away": "alaves-b"
     },
     {
       "round": 18,
       "kickoff": "2027-01-17T16:00:00Z",
-      "home": "gimnastica-torrelavega",
+      "home": "gimnastica",
       "away": "amorebieta"
     },
     {
       "round": 18,
       "kickoff": "2027-01-17T16:00:00Z",
-      "home": "marino-de-luanco",
+      "home": "marino",
       "away": "llanera"
     },
     {
       "round": 18,
       "kickoff": "2027-01-17T16:00:00Z",
       "home": "ourense-cf",
-      "away": "atletico-astorga"
+      "away": "astorga"
     },
     {
       "round": 18,
       "kickoff": "2027-01-17T16:00:00Z",
-      "home": "real-oviedo-ii",
+      "home": "oviedo-vetusta",
       "away": "sestao-river"
     },
     {
@@ -1061,7 +1077,7 @@
     {
       "round": 19,
       "kickoff": "2027-01-24T16:00:00Z",
-      "home": "atletico-astorga",
+      "home": "astorga",
       "away": "basconia"
     },
     {
@@ -1073,13 +1089,13 @@
     {
       "round": 19,
       "kickoff": "2027-01-24T16:00:00Z",
-      "home": "deportivo-alaves-ii",
-      "away": "gimnastica-torrelavega"
+      "home": "alaves-b",
+      "away": "gimnastica"
     },
     {
       "round": 19,
       "kickoff": "2027-01-24T16:00:00Z",
-      "home": "eibar-ii",
+      "home": "eibar-b",
       "away": "amorebieta"
     },
     {
@@ -1097,20 +1113,20 @@
     {
       "round": 19,
       "kickoff": "2027-01-24T16:00:00Z",
-      "home": "racing-santander-ii",
-      "away": "marino-de-luanco"
+      "home": "rayo-cantabria",
+      "away": "marino"
     },
     {
       "round": 19,
       "kickoff": "2027-01-24T16:00:00Z",
-      "home": "real-oviedo-ii",
+      "home": "oviedo-vetusta",
       "away": "compostela"
     },
     {
       "round": 20,
       "kickoff": "2027-01-31T16:00:00Z",
       "home": "amorebieta",
-      "away": "racing-santander-ii"
+      "away": "rayo-cantabria"
     },
     {
       "round": 20,
@@ -1133,14 +1149,14 @@
     {
       "round": 20,
       "kickoff": "2027-01-31T16:00:00Z",
-      "home": "eibar-ii",
-      "away": "deportivo-alaves-ii"
+      "home": "eibar-b",
+      "away": "alaves-b"
     },
     {
       "round": 20,
       "kickoff": "2027-01-31T16:00:00Z",
-      "home": "gimnastica-torrelavega",
-      "away": "real-oviedo-ii"
+      "home": "gimnastica",
+      "away": "oviedo-vetusta"
     },
     {
       "round": 20,
@@ -1151,8 +1167,8 @@
     {
       "round": 20,
       "kickoff": "2027-01-31T16:00:00Z",
-      "home": "marino-de-luanco",
-      "away": "atletico-astorga"
+      "home": "marino",
+      "away": "astorga"
     },
     {
       "round": 20,
@@ -1163,7 +1179,7 @@
     {
       "round": 21,
       "kickoff": "2027-02-06T16:00:00Z",
-      "home": "atletico-astorga",
+      "home": "astorga",
       "away": "sestao-river"
     },
     {
@@ -1175,7 +1191,7 @@
     {
       "round": 21,
       "kickoff": "2027-02-06T16:00:00Z",
-      "home": "deportivo-alaves-ii",
+      "home": "alaves-b",
       "away": "basconia"
     },
     {
@@ -1187,8 +1203,8 @@
     {
       "round": 21,
       "kickoff": "2027-02-06T16:00:00Z",
-      "home": "marino-de-luanco",
-      "away": "eibar-ii"
+      "home": "marino",
+      "away": "eibar-b"
     },
     {
       "round": 21,
@@ -1200,25 +1216,25 @@
       "round": 21,
       "kickoff": "2027-02-06T16:00:00Z",
       "home": "portugalete",
-      "away": "gimnastica-torrelavega"
+      "away": "gimnastica"
     },
     {
       "round": 21,
       "kickoff": "2027-02-06T16:00:00Z",
-      "home": "racing-santander-ii",
+      "home": "rayo-cantabria",
       "away": "llanera"
     },
     {
       "round": 21,
       "kickoff": "2027-02-06T16:00:00Z",
-      "home": "real-oviedo-ii",
+      "home": "oviedo-vetusta",
       "away": "bergantinos"
     },
     {
       "round": 22,
       "kickoff": "2027-02-14T16:00:00Z",
       "home": "amorebieta",
-      "away": "atletico-astorga"
+      "away": "astorga"
     },
     {
       "round": 22,
@@ -1230,7 +1246,7 @@
       "round": 22,
       "kickoff": "2027-02-14T16:00:00Z",
       "home": "basconia",
-      "away": "marino-de-luanco"
+      "away": "marino"
     },
     {
       "round": 22,
@@ -1247,20 +1263,20 @@
     {
       "round": 22,
       "kickoff": "2027-02-14T16:00:00Z",
-      "home": "gimnastica-torrelavega",
-      "away": "eibar-ii"
+      "home": "gimnastica",
+      "away": "eibar-b"
     },
     {
       "round": 22,
       "kickoff": "2027-02-14T16:00:00Z",
       "home": "llanera",
-      "away": "real-oviedo-ii"
+      "away": "oviedo-vetusta"
     },
     {
       "round": 22,
       "kickoff": "2027-02-14T16:00:00Z",
-      "home": "racing-santander-ii",
-      "away": "deportivo-alaves-ii"
+      "home": "rayo-cantabria",
+      "away": "alaves-b"
     },
     {
       "round": 22,
@@ -1271,14 +1287,14 @@
     {
       "round": 23,
       "kickoff": "2027-02-21T16:00:00Z",
-      "home": "atletico-astorga",
-      "away": "racing-santander-ii"
+      "home": "astorga",
+      "away": "rayo-cantabria"
     },
     {
       "round": 23,
       "kickoff": "2027-02-21T16:00:00Z",
       "home": "compostela",
-      "away": "gimnastica-torrelavega"
+      "away": "gimnastica"
     },
     {
       "round": 23,
@@ -1289,19 +1305,19 @@
     {
       "round": 23,
       "kickoff": "2027-02-21T16:00:00Z",
-      "home": "deportivo-alaves-ii",
+      "home": "alaves-b",
       "away": "sestao-river"
     },
     {
       "round": 23,
       "kickoff": "2027-02-21T16:00:00Z",
-      "home": "eibar-ii",
+      "home": "eibar-b",
       "away": "arosa"
     },
     {
       "round": 23,
       "kickoff": "2027-02-21T16:00:00Z",
-      "home": "marino-de-luanco",
+      "home": "marino",
       "away": "gernika"
     },
     {
@@ -1319,14 +1335,14 @@
     {
       "round": 23,
       "kickoff": "2027-02-21T16:00:00Z",
-      "home": "real-oviedo-ii",
+      "home": "oviedo-vetusta",
       "away": "amorebieta"
     },
     {
       "round": 24,
       "kickoff": "2027-02-28T16:00:00Z",
       "home": "amorebieta",
-      "away": "deportivo-alaves-ii"
+      "away": "alaves-b"
     },
     {
       "round": 24,
@@ -1338,7 +1354,7 @@
       "round": 24,
       "kickoff": "2027-02-28T16:00:00Z",
       "home": "basconia",
-      "away": "eibar-ii"
+      "away": "eibar-b"
     },
     {
       "round": 24,
@@ -1355,8 +1371,8 @@
     {
       "round": 24,
       "kickoff": "2027-02-28T16:00:00Z",
-      "home": "gimnastica-torrelavega",
-      "away": "atletico-astorga"
+      "home": "gimnastica",
+      "away": "astorga"
     },
     {
       "round": 24,
@@ -1367,14 +1383,14 @@
     {
       "round": 24,
       "kickoff": "2027-02-28T16:00:00Z",
-      "home": "racing-santander-ii",
-      "away": "real-oviedo-ii"
+      "home": "rayo-cantabria",
+      "away": "oviedo-vetusta"
     },
     {
       "round": 24,
       "kickoff": "2027-02-28T16:00:00Z",
       "home": "sestao-river",
-      "away": "marino-de-luanco"
+      "away": "marino"
     },
     {
       "round": 25,
@@ -1385,14 +1401,14 @@
     {
       "round": 25,
       "kickoff": "2027-03-07T16:00:00Z",
-      "home": "atletico-astorga",
+      "home": "astorga",
       "away": "compostela"
     },
     {
       "round": 25,
       "kickoff": "2027-03-07T16:00:00Z",
-      "home": "eibar-ii",
-      "away": "racing-santander-ii"
+      "home": "eibar-b",
+      "away": "rayo-cantabria"
     },
     {
       "round": 25,
@@ -1409,8 +1425,8 @@
     {
       "round": 25,
       "kickoff": "2027-03-07T16:00:00Z",
-      "home": "marino-de-luanco",
-      "away": "gimnastica-torrelavega"
+      "home": "marino",
+      "away": "gimnastica"
     },
     {
       "round": 25,
@@ -1427,20 +1443,20 @@
     {
       "round": 25,
       "kickoff": "2027-03-07T16:00:00Z",
-      "home": "real-oviedo-ii",
-      "away": "deportivo-alaves-ii"
+      "home": "oviedo-vetusta",
+      "away": "alaves-b"
     },
     {
       "round": 26,
       "kickoff": "2027-03-14T16:00:00Z",
       "home": "arosa",
-      "away": "racing-santander-ii"
+      "away": "rayo-cantabria"
     },
     {
       "round": 26,
       "kickoff": "2027-03-14T16:00:00Z",
       "home": "basconia",
-      "away": "real-oviedo-ii"
+      "away": "oviedo-vetusta"
     },
     {
       "round": 26,
@@ -1452,24 +1468,24 @@
       "round": 26,
       "kickoff": "2027-03-14T16:00:00Z",
       "home": "coruxo",
-      "away": "marino-de-luanco"
+      "away": "marino"
     },
     {
       "round": 26,
       "kickoff": "2027-03-14T16:00:00Z",
-      "home": "deportivo-alaves-ii",
-      "away": "atletico-astorga"
+      "home": "alaves-b",
+      "away": "astorga"
     },
     {
       "round": 26,
       "kickoff": "2027-03-14T16:00:00Z",
-      "home": "eibar-ii",
+      "home": "eibar-b",
       "away": "llanera"
     },
     {
       "round": 26,
       "kickoff": "2027-03-14T16:00:00Z",
-      "home": "gimnastica-torrelavega",
+      "home": "gimnastica",
       "away": "ourense-cf"
     },
     {
@@ -1487,14 +1503,14 @@
     {
       "round": 27,
       "kickoff": "2027-03-21T16:00:00Z",
-      "home": "atletico-astorga",
-      "away": "real-oviedo-ii"
+      "home": "astorga",
+      "away": "oviedo-vetusta"
     },
     {
       "round": 27,
       "kickoff": "2027-03-21T16:00:00Z",
       "home": "bergantinos",
-      "away": "deportivo-alaves-ii"
+      "away": "alaves-b"
     },
     {
       "round": 27,
@@ -1512,12 +1528,12 @@
       "round": 27,
       "kickoff": "2027-03-21T16:00:00Z",
       "home": "llanera",
-      "away": "gimnastica-torrelavega"
+      "away": "gimnastica"
     },
     {
       "round": 27,
       "kickoff": "2027-03-21T16:00:00Z",
-      "home": "marino-de-luanco",
+      "home": "marino",
       "away": "portugalete"
     },
     {
@@ -1529,14 +1545,14 @@
     {
       "round": 27,
       "kickoff": "2027-03-21T16:00:00Z",
-      "home": "racing-santander-ii",
+      "home": "rayo-cantabria",
       "away": "compostela"
     },
     {
       "round": 27,
       "kickoff": "2027-03-21T16:00:00Z",
       "home": "sestao-river",
-      "away": "eibar-ii"
+      "away": "eibar-b"
     },
     {
       "round": 28,
@@ -1548,13 +1564,13 @@
       "round": 28,
       "kickoff": "2027-03-28T15:00:00Z",
       "home": "arosa",
-      "away": "atletico-astorga"
+      "away": "astorga"
     },
     {
       "round": 28,
       "kickoff": "2027-03-28T15:00:00Z",
       "home": "basconia",
-      "away": "gimnastica-torrelavega"
+      "away": "gimnastica"
     },
     {
       "round": 28,
@@ -1565,38 +1581,38 @@
     {
       "round": 28,
       "kickoff": "2027-03-28T15:00:00Z",
-      "home": "deportivo-alaves-ii",
+      "home": "alaves-b",
       "away": "ourense-cf"
     },
     {
       "round": 28,
       "kickoff": "2027-03-28T15:00:00Z",
-      "home": "eibar-ii",
+      "home": "eibar-b",
       "away": "portugalete"
     },
     {
       "round": 28,
       "kickoff": "2027-03-28T15:00:00Z",
-      "home": "marino-de-luanco",
+      "home": "marino",
       "away": "bergantinos"
     },
     {
       "round": 28,
       "kickoff": "2027-03-28T15:00:00Z",
-      "home": "racing-santander-ii",
+      "home": "rayo-cantabria",
       "away": "coruxo"
     },
     {
       "round": 28,
       "kickoff": "2027-03-28T15:00:00Z",
-      "home": "real-oviedo-ii",
+      "home": "oviedo-vetusta",
       "away": "gernika"
     },
     {
       "round": 29,
       "kickoff": "2027-04-04T15:00:00Z",
       "home": "arosa",
-      "away": "marino-de-luanco"
+      "away": "marino"
     },
     {
       "round": 29,
@@ -1608,31 +1624,31 @@
       "round": 29,
       "kickoff": "2027-04-04T15:00:00Z",
       "home": "compostela",
-      "away": "deportivo-alaves-ii"
+      "away": "alaves-b"
     },
     {
       "round": 29,
       "kickoff": "2027-04-04T15:00:00Z",
       "home": "coruxo",
-      "away": "atletico-astorga"
+      "away": "astorga"
     },
     {
       "round": 29,
       "kickoff": "2027-04-04T15:00:00Z",
       "home": "gernika",
-      "away": "eibar-ii"
+      "away": "eibar-b"
     },
     {
       "round": 29,
       "kickoff": "2027-04-04T15:00:00Z",
-      "home": "gimnastica-torrelavega",
-      "away": "racing-santander-ii"
+      "home": "gimnastica",
+      "away": "rayo-cantabria"
     },
     {
       "round": 29,
       "kickoff": "2027-04-04T15:00:00Z",
       "home": "ourense-cf",
-      "away": "real-oviedo-ii"
+      "away": "oviedo-vetusta"
     },
     {
       "round": 29,
@@ -1655,7 +1671,7 @@
     {
       "round": 30,
       "kickoff": "2027-04-11T15:00:00Z",
-      "home": "atletico-astorga",
+      "home": "astorga",
       "away": "bergantinos"
     },
     {
@@ -1667,19 +1683,19 @@
     {
       "round": 30,
       "kickoff": "2027-04-11T15:00:00Z",
-      "home": "deportivo-alaves-ii",
+      "home": "alaves-b",
       "away": "portugalete"
     },
     {
       "round": 30,
       "kickoff": "2027-04-11T15:00:00Z",
-      "home": "eibar-ii",
+      "home": "eibar-b",
       "away": "coruxo"
     },
     {
       "round": 30,
       "kickoff": "2027-04-11T15:00:00Z",
-      "home": "gimnastica-torrelavega",
+      "home": "gimnastica",
       "away": "arosa"
     },
     {
@@ -1691,14 +1707,14 @@
     {
       "round": 30,
       "kickoff": "2027-04-11T15:00:00Z",
-      "home": "racing-santander-ii",
+      "home": "rayo-cantabria",
       "away": "ourense-cf"
     },
     {
       "round": 30,
       "kickoff": "2027-04-11T15:00:00Z",
-      "home": "real-oviedo-ii",
-      "away": "marino-de-luanco"
+      "home": "oviedo-vetusta",
+      "away": "marino"
     },
     {
       "round": 31,
@@ -1710,25 +1726,25 @@
       "round": 31,
       "kickoff": "2027-04-18T15:00:00Z",
       "home": "bergantinos",
-      "away": "racing-santander-ii"
+      "away": "rayo-cantabria"
     },
     {
       "round": 31,
       "kickoff": "2027-04-18T15:00:00Z",
       "home": "coruxo",
-      "away": "real-oviedo-ii"
+      "away": "oviedo-vetusta"
     },
     {
       "round": 31,
       "kickoff": "2027-04-18T15:00:00Z",
-      "home": "eibar-ii",
+      "home": "eibar-b",
       "away": "ourense-cf"
     },
     {
       "round": 31,
       "kickoff": "2027-04-18T15:00:00Z",
       "home": "gernika",
-      "away": "gimnastica-torrelavega"
+      "away": "gimnastica"
     },
     {
       "round": 31,
@@ -1739,14 +1755,14 @@
     {
       "round": 31,
       "kickoff": "2027-04-18T15:00:00Z",
-      "home": "marino-de-luanco",
-      "away": "deportivo-alaves-ii"
+      "home": "marino",
+      "away": "alaves-b"
     },
     {
       "round": 31,
       "kickoff": "2027-04-18T15:00:00Z",
       "home": "portugalete",
-      "away": "atletico-astorga"
+      "away": "astorga"
     },
     {
       "round": 31,
@@ -1758,12 +1774,12 @@
       "round": 32,
       "kickoff": "2027-04-25T15:00:00Z",
       "home": "amorebieta",
-      "away": "marino-de-luanco"
+      "away": "marino"
     },
     {
       "round": 32,
       "kickoff": "2027-04-25T15:00:00Z",
-      "home": "atletico-astorga",
+      "home": "astorga",
       "away": "llanera"
     },
     {
@@ -1776,18 +1792,18 @@
       "round": 32,
       "kickoff": "2027-04-25T15:00:00Z",
       "home": "compostela",
-      "away": "eibar-ii"
+      "away": "eibar-b"
     },
     {
       "round": 32,
       "kickoff": "2027-04-25T15:00:00Z",
-      "home": "deportivo-alaves-ii",
+      "home": "alaves-b",
       "away": "arosa"
     },
     {
       "round": 32,
       "kickoff": "2027-04-25T15:00:00Z",
-      "home": "gimnastica-torrelavega",
+      "home": "gimnastica",
       "away": "coruxo"
     },
     {
@@ -1799,13 +1815,13 @@
     {
       "round": 32,
       "kickoff": "2027-04-25T15:00:00Z",
-      "home": "racing-santander-ii",
+      "home": "rayo-cantabria",
       "away": "gernika"
     },
     {
       "round": 32,
       "kickoff": "2027-04-25T15:00:00Z",
-      "home": "real-oviedo-ii",
+      "home": "oviedo-vetusta",
       "away": "portugalete"
     },
     {
@@ -1818,25 +1834,25 @@
       "round": 33,
       "kickoff": "2027-05-02T15:00:00Z",
       "home": "bergantinos",
-      "away": "gimnastica-torrelavega"
+      "away": "gimnastica"
     },
     {
       "round": 33,
       "kickoff": "2027-05-02T15:00:00Z",
       "home": "coruxo",
-      "away": "deportivo-alaves-ii"
+      "away": "alaves-b"
     },
     {
       "round": 33,
       "kickoff": "2027-05-02T15:00:00Z",
-      "home": "eibar-ii",
-      "away": "real-oviedo-ii"
+      "home": "eibar-b",
+      "away": "oviedo-vetusta"
     },
     {
       "round": 33,
       "kickoff": "2027-05-02T15:00:00Z",
       "home": "gernika",
-      "away": "atletico-astorga"
+      "away": "astorga"
     },
     {
       "round": 33,
@@ -1847,7 +1863,7 @@
     {
       "round": 33,
       "kickoff": "2027-05-02T15:00:00Z",
-      "home": "marino-de-luanco",
+      "home": "marino",
       "away": "compostela"
     },
     {
@@ -1860,7 +1876,7 @@
       "round": 33,
       "kickoff": "2027-05-02T15:00:00Z",
       "home": "sestao-river",
-      "away": "racing-santander-ii"
+      "away": "rayo-cantabria"
     },
     {
       "round": 34,
@@ -1871,8 +1887,8 @@
     {
       "round": 34,
       "kickoff": "2027-05-09T15:00:00Z",
-      "home": "atletico-astorga",
-      "away": "eibar-ii"
+      "home": "astorga",
+      "away": "eibar-b"
     },
     {
       "round": 34,
@@ -1889,31 +1905,31 @@
     {
       "round": 34,
       "kickoff": "2027-05-09T15:00:00Z",
-      "home": "deportivo-alaves-ii",
+      "home": "alaves-b",
       "away": "llanera"
     },
     {
       "round": 34,
       "kickoff": "2027-05-09T15:00:00Z",
-      "home": "gimnastica-torrelavega",
+      "home": "gimnastica",
       "away": "sestao-river"
     },
     {
       "round": 34,
       "kickoff": "2027-05-09T15:00:00Z",
       "home": "ourense-cf",
-      "away": "marino-de-luanco"
+      "away": "marino"
     },
     {
       "round": 34,
       "kickoff": "2027-05-09T15:00:00Z",
-      "home": "racing-santander-ii",
+      "home": "rayo-cantabria",
       "away": "portugalete"
     },
     {
       "round": 34,
       "kickoff": "2027-05-09T15:00:00Z",
-      "home": "real-oviedo-ii",
+      "home": "oviedo-vetusta",
       "away": "arosa"
     }
   ]

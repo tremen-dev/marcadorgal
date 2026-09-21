@@ -2,81 +2,99 @@
   "competition": {
     "id": "tercera-rfef-g1",
     "season": "2026-27",
-    "name": "Tercera RFEF Grupo 1",
+    "name": "Terceira Federación · Grupo 1",
     "tier": 5
   },
   "teams": [
     {
       "id": "alondras",
-      "name": "Alondras"
+      "name": "Alondras CF",
+      "shortName": "Alondras"
     },
     {
       "id": "antela",
-      "name": "Antela"
+      "name": "CD Antela",
+      "shortName": "Antela"
     },
     {
       "id": "arenteiro",
-      "name": "Arenteiro"
+      "name": "CD Arenteiro",
+      "shortName": "Arenteiro"
     },
     {
       "id": "atletico-arteixo",
-      "name": "Atlético Arteixo"
+      "name": "Atlético Arteixo",
+      "shortName": "Arteixo"
     },
     {
       "id": "barco",
-      "name": "Barco"
+      "name": "CD Barco",
+      "shortName": "Barco"
     },
     {
       "id": "boiro",
-      "name": "Boiro"
+      "name": "CD Boiro",
+      "shortName": "Boiro"
     },
     {
-      "id": "celta-de-vigo-iii",
-      "name": "Celta de Vigo III"
+      "id": "celta-c",
+      "name": "RC Celta C",
+      "shortName": "Celta C"
     },
     {
       "id": "celtiga",
-      "name": "Celtiga"
+      "name": "Céltiga FC",
+      "shortName": "Céltiga"
     },
     {
-      "id": "coruna",
-      "name": "Coruña"
+      "id": "montaneros",
+      "name": "Atlético Coruña Montañeros",
+      "shortName": "Montañeros"
     },
     {
       "id": "estradense",
-      "name": "Estradense"
+      "name": "CD Estradense",
+      "shortName": "Estradense"
     },
     {
       "id": "lalin",
-      "name": "Lalin"
+      "name": "CD Lalín",
+      "shortName": "Lalín"
     },
     {
-      "id": "pontevedra-ii",
-      "name": "Pontevedra II"
+      "id": "pontevedra-b",
+      "name": "Pontevedra CF B",
+      "shortName": "Pontevedra B"
     },
     {
-      "id": "portonovo-sd",
-      "name": "Portonovo SD"
+      "id": "portonovo",
+      "name": "Portonovo SD",
+      "shortName": "Portonovo"
     },
     {
       "id": "sarriana",
-      "name": "Sarriana"
+      "name": "SD Sarriana",
+      "shortName": "Sarriana"
     },
     {
       "id": "silva",
-      "name": "Silva"
+      "name": "Silva SD",
+      "shortName": "Silva"
     },
     {
       "id": "somozas",
-      "name": "Somozas"
+      "name": "UD Somozas",
+      "shortName": "Somozas"
     },
     {
       "id": "villalbes",
-      "name": "Villalbés"
+      "name": "Racing Villalbés",
+      "shortName": "Villalbés"
     },
     {
       "id": "viveiro",
-      "name": "Viveiro"
+      "name": "Viveiro CF",
+      "shortName": "Viveiro"
     }
   ],
   "matches": [
@@ -84,7 +102,7 @@
       "round": 1,
       "kickoff": "2026-09-05T16:00:00Z",
       "home": "alondras",
-      "away": "pontevedra-ii"
+      "away": "pontevedra-b"
     },
     {
       "round": 1,
@@ -108,19 +126,19 @@
       "round": 1,
       "kickoff": "2026-09-06T16:00:00Z",
       "home": "boiro",
-      "away": "coruna"
+      "away": "montaneros"
     },
     {
       "round": 1,
       "kickoff": "2026-09-06T16:00:00Z",
-      "home": "celta-de-vigo-iii",
+      "home": "celta-c",
       "away": "lalin"
     },
     {
       "round": 1,
       "kickoff": "2026-09-06T16:00:00Z",
       "home": "somozas",
-      "away": "portonovo-sd"
+      "away": "portonovo"
     },
     {
       "round": 1,
@@ -155,13 +173,13 @@
     {
       "round": 2,
       "kickoff": "2026-09-13T10:00:00Z",
-      "home": "pontevedra-ii",
-      "away": "celta-de-vigo-iii"
+      "home": "pontevedra-b",
+      "away": "celta-c"
     },
     {
       "round": 2,
       "kickoff": "2026-09-13T10:30:00Z",
-      "home": "coruna",
+      "home": "montaneros",
       "away": "villalbes"
     },
     {
@@ -179,7 +197,7 @@
     {
       "round": 2,
       "kickoff": "2026-09-13T16:00:00Z",
-      "home": "portonovo-sd",
+      "home": "portonovo",
       "away": "arenteiro"
     },
     {
@@ -216,19 +234,19 @@
       "round": 3,
       "kickoff": "2026-09-20T16:00:00Z",
       "home": "barco",
-      "away": "portonovo-sd"
+      "away": "portonovo"
     },
     {
       "round": 3,
       "kickoff": "2026-09-20T16:00:00Z",
-      "home": "celta-de-vigo-iii",
+      "home": "celta-c",
       "away": "antela"
     },
     {
       "round": 3,
       "kickoff": "2026-09-20T16:00:00Z",
       "home": "somozas",
-      "away": "pontevedra-ii"
+      "away": "pontevedra-b"
     },
     {
       "round": 3,
@@ -240,7 +258,7 @@
       "round": 3,
       "kickoff": "2026-09-20T17:00:00Z",
       "home": "estradense",
-      "away": "coruna"
+      "away": "montaneros"
     },
     {
       "round": 4,
@@ -251,7 +269,7 @@
     {
       "round": 4,
       "kickoff": "2026-09-27T14:00:00Z",
-      "home": "pontevedra-ii",
+      "home": "pontevedra-b",
       "away": "arenteiro"
     },
     {
@@ -275,7 +293,7 @@
     {
       "round": 4,
       "kickoff": "2026-09-27T16:00:00Z",
-      "home": "coruna",
+      "home": "montaneros",
       "away": "viveiro"
     },
     {
@@ -287,20 +305,20 @@
     {
       "round": 4,
       "kickoff": "2026-09-27T16:00:00Z",
-      "home": "portonovo-sd",
+      "home": "portonovo",
       "away": "silva"
     },
     {
       "round": 4,
       "kickoff": "2026-09-27T16:00:00Z",
       "home": "sarriana",
-      "away": "celta-de-vigo-iii"
+      "away": "celta-c"
     },
     {
       "round": 5,
       "kickoff": "2026-10-04T16:00:00Z",
       "home": "alondras",
-      "away": "coruna"
+      "away": "montaneros"
     },
     {
       "round": 5,
@@ -312,12 +330,12 @@
       "round": 5,
       "kickoff": "2026-10-04T16:00:00Z",
       "home": "barco",
-      "away": "pontevedra-ii"
+      "away": "pontevedra-b"
     },
     {
       "round": 5,
       "kickoff": "2026-10-04T16:00:00Z",
-      "home": "celta-de-vigo-iii",
+      "home": "celta-c",
       "away": "atletico-arteixo"
     },
     {
@@ -329,7 +347,7 @@
     {
       "round": 5,
       "kickoff": "2026-10-04T16:00:00Z",
-      "home": "portonovo-sd",
+      "home": "portonovo",
       "away": "lalin"
     },
     {
@@ -353,8 +371,8 @@
     {
       "round": 6,
       "kickoff": "2026-10-11T14:00:00Z",
-      "home": "pontevedra-ii",
-      "away": "portonovo-sd"
+      "home": "pontevedra-b",
+      "away": "portonovo"
     },
     {
       "round": 6,
@@ -383,8 +401,8 @@
     {
       "round": 6,
       "kickoff": "2026-10-11T16:00:00Z",
-      "home": "coruna",
-      "away": "celta-de-vigo-iii"
+      "home": "montaneros",
+      "away": "celta-c"
     },
     {
       "round": 6,
@@ -425,19 +443,19 @@
     {
       "round": 7,
       "kickoff": "2026-10-18T16:00:00Z",
-      "home": "celta-de-vigo-iii",
+      "home": "celta-c",
       "away": "celtiga"
     },
     {
       "round": 7,
       "kickoff": "2026-10-18T16:00:00Z",
       "home": "lalin",
-      "away": "pontevedra-ii"
+      "away": "pontevedra-b"
     },
     {
       "round": 7,
       "kickoff": "2026-10-18T16:00:00Z",
-      "home": "portonovo-sd",
+      "home": "portonovo",
       "away": "antela"
     },
     {
@@ -450,7 +468,7 @@
       "round": 7,
       "kickoff": "2026-10-18T16:00:00Z",
       "home": "somozas",
-      "away": "coruna"
+      "away": "montaneros"
     },
     {
       "round": 7,
@@ -461,7 +479,7 @@
     {
       "round": 8,
       "kickoff": "2026-10-25T15:00:00Z",
-      "home": "pontevedra-ii",
+      "home": "pontevedra-b",
       "away": "silva"
     },
     {
@@ -480,7 +498,7 @@
       "round": 8,
       "kickoff": "2026-10-25T17:00:00Z",
       "home": "boiro",
-      "away": "celta-de-vigo-iii"
+      "away": "celta-c"
     },
     {
       "round": 8,
@@ -491,7 +509,7 @@
     {
       "round": 8,
       "kickoff": "2026-10-25T17:00:00Z",
-      "home": "coruna",
+      "home": "montaneros",
       "away": "arenteiro"
     },
     {
@@ -504,7 +522,7 @@
       "round": 8,
       "kickoff": "2026-10-25T17:00:00Z",
       "home": "sarriana",
-      "away": "portonovo-sd"
+      "away": "portonovo"
     },
     {
       "round": 8,
@@ -515,7 +533,7 @@
     {
       "round": 9,
       "kickoff": "2026-11-01T15:00:00Z",
-      "home": "pontevedra-ii",
+      "home": "pontevedra-b",
       "away": "antela"
     },
     {
@@ -534,12 +552,12 @@
       "round": 9,
       "kickoff": "2026-11-01T17:00:00Z",
       "home": "barco",
-      "away": "coruna"
+      "away": "montaneros"
     },
     {
       "round": 9,
       "kickoff": "2026-11-01T17:00:00Z",
-      "home": "celta-de-vigo-iii",
+      "home": "celta-c",
       "away": "villalbes"
     },
     {
@@ -551,7 +569,7 @@
     {
       "round": 9,
       "kickoff": "2026-11-01T17:00:00Z",
-      "home": "portonovo-sd",
+      "home": "portonovo",
       "away": "atletico-arteixo"
     },
     {
@@ -593,20 +611,20 @@
     {
       "round": 10,
       "kickoff": "2026-11-08T17:00:00Z",
-      "home": "coruna",
-      "away": "portonovo-sd"
+      "home": "montaneros",
+      "away": "portonovo"
     },
     {
       "round": 10,
       "kickoff": "2026-11-08T17:00:00Z",
       "home": "estradense",
-      "away": "celta-de-vigo-iii"
+      "away": "celta-c"
     },
     {
       "round": 10,
       "kickoff": "2026-11-08T17:00:00Z",
       "home": "sarriana",
-      "away": "pontevedra-ii"
+      "away": "pontevedra-b"
     },
     {
       "round": 10,
@@ -623,7 +641,7 @@
     {
       "round": 11,
       "kickoff": "2026-11-15T15:00:00Z",
-      "home": "pontevedra-ii",
+      "home": "pontevedra-b",
       "away": "atletico-arteixo"
     },
     {
@@ -647,19 +665,19 @@
     {
       "round": 11,
       "kickoff": "2026-11-15T17:00:00Z",
-      "home": "celta-de-vigo-iii",
+      "home": "celta-c",
       "away": "viveiro"
     },
     {
       "round": 11,
       "kickoff": "2026-11-15T17:00:00Z",
       "home": "lalin",
-      "away": "coruna"
+      "away": "montaneros"
     },
     {
       "round": 11,
       "kickoff": "2026-11-15T17:00:00Z",
-      "home": "portonovo-sd",
+      "home": "portonovo",
       "away": "celtiga"
     },
     {
@@ -678,7 +696,7 @@
       "round": 12,
       "kickoff": "2026-11-22T17:00:00Z",
       "home": "alondras",
-      "away": "celta-de-vigo-iii"
+      "away": "celta-c"
     },
     {
       "round": 12,
@@ -690,7 +708,7 @@
       "round": 12,
       "kickoff": "2026-11-22T17:00:00Z",
       "home": "boiro",
-      "away": "portonovo-sd"
+      "away": "portonovo"
     },
     {
       "round": 12,
@@ -701,8 +719,8 @@
     {
       "round": 12,
       "kickoff": "2026-11-22T17:00:00Z",
-      "home": "coruna",
-      "away": "pontevedra-ii"
+      "home": "montaneros",
+      "away": "pontevedra-b"
     },
     {
       "round": 12,
@@ -731,14 +749,14 @@
     {
       "round": 13,
       "kickoff": "2026-11-29T15:00:00Z",
-      "home": "pontevedra-ii",
+      "home": "pontevedra-b",
       "away": "celtiga"
     },
     {
       "round": 13,
       "kickoff": "2026-11-29T17:00:00Z",
       "home": "antela",
-      "away": "coruna"
+      "away": "montaneros"
     },
     {
       "round": 13,
@@ -761,7 +779,7 @@
     {
       "round": 13,
       "kickoff": "2026-11-29T17:00:00Z",
-      "home": "portonovo-sd",
+      "home": "portonovo",
       "away": "villalbes"
     },
     {
@@ -774,7 +792,7 @@
       "round": 13,
       "kickoff": "2026-11-29T17:00:00Z",
       "home": "silva",
-      "away": "celta-de-vigo-iii"
+      "away": "celta-c"
     },
     {
       "round": 13,
@@ -798,12 +816,12 @@
       "round": 14,
       "kickoff": "2026-12-06T17:00:00Z",
       "home": "boiro",
-      "away": "pontevedra-ii"
+      "away": "pontevedra-b"
     },
     {
       "round": 14,
       "kickoff": "2026-12-06T17:00:00Z",
-      "home": "celta-de-vigo-iii",
+      "home": "celta-c",
       "away": "somozas"
     },
     {
@@ -815,14 +833,14 @@
     {
       "round": 14,
       "kickoff": "2026-12-06T17:00:00Z",
-      "home": "coruna",
+      "home": "montaneros",
       "away": "sarriana"
     },
     {
       "round": 14,
       "kickoff": "2026-12-06T17:00:00Z",
       "home": "estradense",
-      "away": "portonovo-sd"
+      "away": "portonovo"
     },
     {
       "round": 14,
@@ -839,7 +857,7 @@
     {
       "round": 15,
       "kickoff": "2026-12-13T15:00:00Z",
-      "home": "pontevedra-ii",
+      "home": "pontevedra-b",
       "away": "villalbes"
     },
     {
@@ -852,13 +870,13 @@
       "round": 15,
       "kickoff": "2026-12-13T17:00:00Z",
       "home": "arenteiro",
-      "away": "celta-de-vigo-iii"
+      "away": "celta-c"
     },
     {
       "round": 15,
       "kickoff": "2026-12-13T17:00:00Z",
       "home": "atletico-arteixo",
-      "away": "coruna"
+      "away": "montaneros"
     },
     {
       "round": 15,
@@ -875,7 +893,7 @@
     {
       "round": 15,
       "kickoff": "2026-12-13T17:00:00Z",
-      "home": "portonovo-sd",
+      "home": "portonovo",
       "away": "viveiro"
     },
     {
@@ -894,7 +912,7 @@
       "round": 16,
       "kickoff": "2026-12-20T17:00:00Z",
       "home": "alondras",
-      "away": "portonovo-sd"
+      "away": "portonovo"
     },
     {
       "round": 16,
@@ -905,7 +923,7 @@
     {
       "round": 16,
       "kickoff": "2026-12-20T17:00:00Z",
-      "home": "celta-de-vigo-iii",
+      "home": "celta-c",
       "away": "barco"
     },
     {
@@ -918,13 +936,13 @@
       "round": 16,
       "kickoff": "2026-12-20T17:00:00Z",
       "home": "estradense",
-      "away": "pontevedra-ii"
+      "away": "pontevedra-b"
     },
     {
       "round": 16,
       "kickoff": "2026-12-20T17:00:00Z",
       "home": "silva",
-      "away": "coruna"
+      "away": "montaneros"
     },
     {
       "round": 16,
@@ -947,7 +965,7 @@
     {
       "round": 17,
       "kickoff": "2027-01-10T15:00:00Z",
-      "home": "pontevedra-ii",
+      "home": "pontevedra-b",
       "away": "viveiro"
     },
     {
@@ -977,7 +995,7 @@
     {
       "round": 17,
       "kickoff": "2027-01-10T17:00:00Z",
-      "home": "coruna",
+      "home": "montaneros",
       "away": "celtiga"
     },
     {
@@ -989,8 +1007,8 @@
     {
       "round": 17,
       "kickoff": "2027-01-10T17:00:00Z",
-      "home": "portonovo-sd",
-      "away": "celta-de-vigo-iii"
+      "home": "portonovo",
+      "away": "celta-c"
     },
     {
       "round": 17,
@@ -1001,7 +1019,7 @@
     {
       "round": 18,
       "kickoff": "2027-01-17T15:00:00Z",
-      "home": "pontevedra-ii",
+      "home": "pontevedra-b",
       "away": "alondras"
     },
     {
@@ -1031,19 +1049,19 @@
     {
       "round": 18,
       "kickoff": "2027-01-17T17:00:00Z",
-      "home": "coruna",
+      "home": "montaneros",
       "away": "boiro"
     },
     {
       "round": 18,
       "kickoff": "2027-01-17T17:00:00Z",
       "home": "lalin",
-      "away": "celta-de-vigo-iii"
+      "away": "celta-c"
     },
     {
       "round": 18,
       "kickoff": "2027-01-17T17:00:00Z",
-      "home": "portonovo-sd",
+      "home": "portonovo",
       "away": "somozas"
     },
     {
@@ -1062,7 +1080,7 @@
       "round": 19,
       "kickoff": "2027-01-24T17:00:00Z",
       "home": "arenteiro",
-      "away": "portonovo-sd"
+      "away": "portonovo"
     },
     {
       "round": 19,
@@ -1073,8 +1091,8 @@
     {
       "round": 19,
       "kickoff": "2027-01-24T17:00:00Z",
-      "home": "celta-de-vigo-iii",
-      "away": "pontevedra-ii"
+      "home": "celta-c",
+      "away": "pontevedra-b"
     },
     {
       "round": 19,
@@ -1098,7 +1116,7 @@
       "round": 19,
       "kickoff": "2027-01-24T17:00:00Z",
       "home": "villalbes",
-      "away": "coruna"
+      "away": "montaneros"
     },
     {
       "round": 19,
@@ -1109,14 +1127,14 @@
     {
       "round": 20,
       "kickoff": "2027-01-31T15:00:00Z",
-      "home": "pontevedra-ii",
+      "home": "pontevedra-b",
       "away": "somozas"
     },
     {
       "round": 20,
       "kickoff": "2027-01-31T17:00:00Z",
       "home": "antela",
-      "away": "celta-de-vigo-iii"
+      "away": "celta-c"
     },
     {
       "round": 20,
@@ -1139,7 +1157,7 @@
     {
       "round": 20,
       "kickoff": "2027-01-31T17:00:00Z",
-      "home": "coruna",
+      "home": "montaneros",
       "away": "estradense"
     },
     {
@@ -1151,7 +1169,7 @@
     {
       "round": 20,
       "kickoff": "2027-01-31T17:00:00Z",
-      "home": "portonovo-sd",
+      "home": "portonovo",
       "away": "barco"
     },
     {
@@ -1170,7 +1188,7 @@
       "round": 21,
       "kickoff": "2027-02-07T17:00:00Z",
       "home": "arenteiro",
-      "away": "pontevedra-ii"
+      "away": "pontevedra-b"
     },
     {
       "round": 21,
@@ -1181,7 +1199,7 @@
     {
       "round": 21,
       "kickoff": "2027-02-07T17:00:00Z",
-      "home": "celta-de-vigo-iii",
+      "home": "celta-c",
       "away": "sarriana"
     },
     {
@@ -1194,7 +1212,7 @@
       "round": 21,
       "kickoff": "2027-02-07T17:00:00Z",
       "home": "silva",
-      "away": "portonovo-sd"
+      "away": "portonovo"
     },
     {
       "round": 21,
@@ -1212,12 +1230,12 @@
       "round": 21,
       "kickoff": "2027-02-07T17:00:00Z",
       "home": "viveiro",
-      "away": "coruna"
+      "away": "montaneros"
     },
     {
       "round": 22,
       "kickoff": "2027-02-14T15:00:00Z",
-      "home": "pontevedra-ii",
+      "home": "pontevedra-b",
       "away": "barco"
     },
     {
@@ -1230,7 +1248,7 @@
       "round": 22,
       "kickoff": "2027-02-14T17:00:00Z",
       "home": "atletico-arteixo",
-      "away": "celta-de-vigo-iii"
+      "away": "celta-c"
     },
     {
       "round": 22,
@@ -1247,14 +1265,14 @@
     {
       "round": 22,
       "kickoff": "2027-02-14T17:00:00Z",
-      "home": "coruna",
+      "home": "montaneros",
       "away": "alondras"
     },
     {
       "round": 22,
       "kickoff": "2027-02-14T17:00:00Z",
       "home": "lalin",
-      "away": "portonovo-sd"
+      "away": "portonovo"
     },
     {
       "round": 22,
@@ -1289,8 +1307,8 @@
     {
       "round": 23,
       "kickoff": "2027-02-21T17:00:00Z",
-      "home": "celta-de-vigo-iii",
-      "away": "coruna"
+      "home": "celta-c",
+      "away": "montaneros"
     },
     {
       "round": 23,
@@ -1301,8 +1319,8 @@
     {
       "round": 23,
       "kickoff": "2027-02-21T17:00:00Z",
-      "home": "portonovo-sd",
-      "away": "pontevedra-ii"
+      "home": "portonovo",
+      "away": "pontevedra-b"
     },
     {
       "round": 23,
@@ -1325,14 +1343,14 @@
     {
       "round": 24,
       "kickoff": "2027-02-28T15:00:00Z",
-      "home": "pontevedra-ii",
+      "home": "pontevedra-b",
       "away": "lalin"
     },
     {
       "round": 24,
       "kickoff": "2027-02-28T17:00:00Z",
       "home": "antela",
-      "away": "portonovo-sd"
+      "away": "portonovo"
     },
     {
       "round": 24,
@@ -1350,12 +1368,12 @@
       "round": 24,
       "kickoff": "2027-02-28T17:00:00Z",
       "home": "celtiga",
-      "away": "celta-de-vigo-iii"
+      "away": "celta-c"
     },
     {
       "round": 24,
       "kickoff": "2027-02-28T17:00:00Z",
-      "home": "coruna",
+      "home": "montaneros",
       "away": "somozas"
     },
     {
@@ -1386,7 +1404,7 @@
       "round": 25,
       "kickoff": "2027-03-07T17:00:00Z",
       "home": "arenteiro",
-      "away": "coruna"
+      "away": "montaneros"
     },
     {
       "round": 25,
@@ -1397,7 +1415,7 @@
     {
       "round": 25,
       "kickoff": "2027-03-07T17:00:00Z",
-      "home": "celta-de-vigo-iii",
+      "home": "celta-c",
       "away": "boiro"
     },
     {
@@ -1409,14 +1427,14 @@
     {
       "round": 25,
       "kickoff": "2027-03-07T17:00:00Z",
-      "home": "portonovo-sd",
+      "home": "portonovo",
       "away": "sarriana"
     },
     {
       "round": 25,
       "kickoff": "2027-03-07T17:00:00Z",
       "home": "silva",
-      "away": "pontevedra-ii"
+      "away": "pontevedra-b"
     },
     {
       "round": 25,
@@ -1434,13 +1452,13 @@
       "round": 26,
       "kickoff": "2027-03-14T17:00:00Z",
       "home": "antela",
-      "away": "pontevedra-ii"
+      "away": "pontevedra-b"
     },
     {
       "round": 26,
       "kickoff": "2027-03-14T17:00:00Z",
       "home": "atletico-arteixo",
-      "away": "portonovo-sd"
+      "away": "portonovo"
     },
     {
       "round": 26,
@@ -1457,7 +1475,7 @@
     {
       "round": 26,
       "kickoff": "2027-03-14T17:00:00Z",
-      "home": "coruna",
+      "home": "montaneros",
       "away": "barco"
     },
     {
@@ -1476,7 +1494,7 @@
       "round": 26,
       "kickoff": "2027-03-14T17:00:00Z",
       "home": "villalbes",
-      "away": "celta-de-vigo-iii"
+      "away": "celta-c"
     },
     {
       "round": 26,
@@ -1487,7 +1505,7 @@
     {
       "round": 27,
       "kickoff": "2027-03-21T15:00:00Z",
-      "home": "pontevedra-ii",
+      "home": "pontevedra-b",
       "away": "sarriana"
     },
     {
@@ -1511,7 +1529,7 @@
     {
       "round": 27,
       "kickoff": "2027-03-21T17:00:00Z",
-      "home": "celta-de-vigo-iii",
+      "home": "celta-c",
       "away": "estradense"
     },
     {
@@ -1523,8 +1541,8 @@
     {
       "round": 27,
       "kickoff": "2027-03-21T17:00:00Z",
-      "home": "portonovo-sd",
-      "away": "coruna"
+      "home": "portonovo",
+      "away": "montaneros"
     },
     {
       "round": 27,
@@ -1548,7 +1566,7 @@
       "round": 28,
       "kickoff": "2027-03-28T16:00:00Z",
       "home": "atletico-arteixo",
-      "away": "pontevedra-ii"
+      "away": "pontevedra-b"
     },
     {
       "round": 28,
@@ -1560,12 +1578,12 @@
       "round": 28,
       "kickoff": "2027-03-28T16:00:00Z",
       "home": "celtiga",
-      "away": "portonovo-sd"
+      "away": "portonovo"
     },
     {
       "round": 28,
       "kickoff": "2027-03-28T16:00:00Z",
-      "home": "coruna",
+      "home": "montaneros",
       "away": "lalin"
     },
     {
@@ -1590,13 +1608,13 @@
       "round": 28,
       "kickoff": "2027-03-28T16:00:00Z",
       "home": "viveiro",
-      "away": "celta-de-vigo-iii"
+      "away": "celta-c"
     },
     {
       "round": 29,
       "kickoff": "2027-04-04T14:00:00Z",
-      "home": "pontevedra-ii",
-      "away": "coruna"
+      "home": "pontevedra-b",
+      "away": "montaneros"
     },
     {
       "round": 29,
@@ -1619,7 +1637,7 @@
     {
       "round": 29,
       "kickoff": "2027-04-04T16:00:00Z",
-      "home": "celta-de-vigo-iii",
+      "home": "celta-c",
       "away": "alondras"
     },
     {
@@ -1631,7 +1649,7 @@
     {
       "round": 29,
       "kickoff": "2027-04-04T16:00:00Z",
-      "home": "portonovo-sd",
+      "home": "portonovo",
       "away": "boiro"
     },
     {
@@ -1667,19 +1685,19 @@
     {
       "round": 30,
       "kickoff": "2027-04-11T16:00:00Z",
-      "home": "celta-de-vigo-iii",
+      "home": "celta-c",
       "away": "silva"
     },
     {
       "round": 30,
       "kickoff": "2027-04-11T16:00:00Z",
       "home": "celtiga",
-      "away": "pontevedra-ii"
+      "away": "pontevedra-b"
     },
     {
       "round": 30,
       "kickoff": "2027-04-11T16:00:00Z",
-      "home": "coruna",
+      "home": "montaneros",
       "away": "antela"
     },
     {
@@ -1692,7 +1710,7 @@
       "round": 30,
       "kickoff": "2027-04-11T16:00:00Z",
       "home": "villalbes",
-      "away": "portonovo-sd"
+      "away": "portonovo"
     },
     {
       "round": 30,
@@ -1703,7 +1721,7 @@
     {
       "round": 31,
       "kickoff": "2027-04-18T14:00:00Z",
-      "home": "pontevedra-ii",
+      "home": "pontevedra-b",
       "away": "boiro"
     },
     {
@@ -1733,14 +1751,14 @@
     {
       "round": 31,
       "kickoff": "2027-04-18T16:00:00Z",
-      "home": "portonovo-sd",
+      "home": "portonovo",
       "away": "estradense"
     },
     {
       "round": 31,
       "kickoff": "2027-04-18T16:00:00Z",
       "home": "sarriana",
-      "away": "coruna"
+      "away": "montaneros"
     },
     {
       "round": 31,
@@ -1752,7 +1770,7 @@
       "round": 31,
       "kickoff": "2027-04-18T16:00:00Z",
       "home": "somozas",
-      "away": "celta-de-vigo-iii"
+      "away": "celta-c"
     },
     {
       "round": 32,
@@ -1769,7 +1787,7 @@
     {
       "round": 32,
       "kickoff": "2027-04-25T16:00:00Z",
-      "home": "celta-de-vigo-iii",
+      "home": "celta-c",
       "away": "arenteiro"
     },
     {
@@ -1781,7 +1799,7 @@
     {
       "round": 32,
       "kickoff": "2027-04-25T16:00:00Z",
-      "home": "coruna",
+      "home": "montaneros",
       "away": "atletico-arteixo"
     },
     {
@@ -1800,18 +1818,18 @@
       "round": 32,
       "kickoff": "2027-04-25T16:00:00Z",
       "home": "villalbes",
-      "away": "pontevedra-ii"
+      "away": "pontevedra-b"
     },
     {
       "round": 32,
       "kickoff": "2027-04-25T16:00:00Z",
       "home": "viveiro",
-      "away": "portonovo-sd"
+      "away": "portonovo"
     },
     {
       "round": 33,
       "kickoff": "2027-05-02T14:00:00Z",
-      "home": "pontevedra-ii",
+      "home": "pontevedra-b",
       "away": "estradense"
     },
     {
@@ -1836,12 +1854,12 @@
       "round": 33,
       "kickoff": "2027-05-02T16:00:00Z",
       "home": "barco",
-      "away": "celta-de-vigo-iii"
+      "away": "celta-c"
     },
     {
       "round": 33,
       "kickoff": "2027-05-02T16:00:00Z",
-      "home": "coruna",
+      "home": "montaneros",
       "away": "silva"
     },
     {
@@ -1853,7 +1871,7 @@
     {
       "round": 33,
       "kickoff": "2027-05-02T16:00:00Z",
-      "home": "portonovo-sd",
+      "home": "portonovo",
       "away": "alondras"
     },
     {
@@ -1877,14 +1895,14 @@
     {
       "round": 34,
       "kickoff": "2027-05-09T16:00:00Z",
-      "home": "celta-de-vigo-iii",
-      "away": "portonovo-sd"
+      "home": "celta-c",
+      "away": "portonovo"
     },
     {
       "round": 34,
       "kickoff": "2027-05-09T16:00:00Z",
       "home": "celtiga",
-      "away": "coruna"
+      "away": "montaneros"
     },
     {
       "round": 34,
@@ -1914,7 +1932,7 @@
       "round": 34,
       "kickoff": "2027-05-09T16:00:00Z",
       "home": "viveiro",
-      "away": "pontevedra-ii"
+      "away": "pontevedra-b"
     }
   ]
 }

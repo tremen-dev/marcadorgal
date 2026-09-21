@@ -2,69 +2,84 @@
   "competition": {
     "id": "primera-division",
     "season": "2026-27",
-    "name": "Primera División",
+    "name": "Primeira División",
     "tier": 1
   },
   "teams": [
     {
       "id": "alaves",
-      "name": "Alaves"
+      "name": "Deportivo Alavés",
+      "shortName": "Alavés"
     },
     {
       "id": "athletic-club",
-      "name": "Athletic Club"
+      "name": "Athletic Club",
+      "shortName": "Athletic"
     },
     {
       "id": "atletico-madrid",
-      "name": "Atletico Madrid"
+      "name": "Atlético de Madrid",
+      "shortName": "Atlético"
     },
     {
       "id": "barcelona",
-      "name": "Barcelona"
+      "name": "FC Barcelona",
+      "shortName": "Barcelona"
     },
     {
-      "id": "celta-vigo",
-      "name": "Celta Vigo"
+      "id": "celta",
+      "name": "RC Celta",
+      "shortName": "Celta"
     },
     {
-      "id": "deportivo-la-coruna",
-      "name": "Deportivo La Coruna"
+      "id": "deportivo",
+      "name": "RC Deportivo",
+      "shortName": "Deportivo"
     },
     {
       "id": "elche",
-      "name": "Elche"
+      "name": "Elche CF",
+      "shortName": "Elche"
     },
     {
       "id": "espanyol",
-      "name": "Espanyol"
+      "name": "RCD Espanyol",
+      "shortName": "Espanyol"
     },
     {
       "id": "getafe",
-      "name": "Getafe"
+      "name": "Getafe CF",
+      "shortName": "Getafe"
     },
     {
       "id": "levante",
-      "name": "Levante"
+      "name": "Levante UD",
+      "shortName": "Levante"
     },
     {
       "id": "malaga",
-      "name": "Malaga"
+      "name": "Málaga CF",
+      "shortName": "Málaga"
     },
     {
       "id": "osasuna",
-      "name": "Osasuna"
+      "name": "CA Osasuna",
+      "shortName": "Osasuna"
     },
     {
       "id": "racing-santander",
-      "name": "Racing Santander"
+      "name": "Real Racing Club",
+      "shortName": "Racing"
     },
     {
       "id": "rayo-vallecano",
-      "name": "Rayo Vallecano"
+      "name": "Rayo Vallecano",
+      "shortName": "Rayo"
     },
     {
       "id": "real-betis",
-      "name": "Real Betis"
+      "name": "Real Betis",
+      "shortName": "Betis"
     },
     {
       "id": "real-madrid",
@@ -76,15 +91,18 @@
     },
     {
       "id": "sevilla",
-      "name": "Sevilla"
+      "name": "Sevilla FC",
+      "shortName": "Sevilla"
     },
     {
       "id": "valencia",
-      "name": "Valencia"
+      "name": "Valencia CF",
+      "shortName": "Valencia"
     },
     {
       "id": "villarreal",
-      "name": "Villarreal"
+      "name": "Villarreal CF",
+      "shortName": "Villarreal"
     }
   ],
   "matches": [
@@ -115,7 +133,7 @@
     {
       "round": 1,
       "kickoff": "2026-08-17T19:00:00Z",
-      "home": "deportivo-la-coruna",
+      "home": "deportivo",
       "away": "elche"
     },
     {
@@ -139,7 +157,7 @@
     {
       "round": 1,
       "kickoff": "2026-08-27T18:30:00Z",
-      "home": "celta-vigo",
+      "home": "celta",
       "away": "osasuna"
     },
     {
@@ -170,7 +188,7 @@
       "round": 2,
       "kickoff": "2026-08-22T17:30:00Z",
       "home": "valencia",
-      "away": "celta-vigo"
+      "away": "celta"
     },
     {
       "round": 2,
@@ -206,7 +224,7 @@
       "round": 2,
       "kickoff": "2026-08-24T19:30:00Z",
       "home": "malaga",
-      "away": "deportivo-la-coruna"
+      "away": "deportivo"
     },
     {
       "round": 3,
@@ -247,13 +265,13 @@
     {
       "round": 3,
       "kickoff": "2026-08-30T17:30:00Z",
-      "home": "deportivo-la-coruna",
+      "home": "deportivo",
       "away": "valencia"
     },
     {
       "round": 3,
       "kickoff": "2026-08-30T19:30:00Z",
-      "home": "celta-vigo",
+      "home": "celta",
       "away": "athletic-club"
     },
     {
@@ -290,7 +308,7 @@
       "round": 4,
       "kickoff": "2026-09-05T19:00:00Z",
       "home": "villarreal",
-      "away": "deportivo-la-coruna"
+      "away": "deportivo"
     },
     {
       "round": 4,
@@ -320,7 +338,7 @@
       "round": 4,
       "kickoff": "2026-09-07T17:00:00Z",
       "home": "getafe",
-      "away": "celta-vigo"
+      "away": "celta"
     },
     {
       "round": 4,
@@ -361,7 +379,7 @@
     {
       "round": 5,
       "kickoff": "2026-09-13T12:00:00Z",
-      "home": "celta-vigo",
+      "home": "celta",
       "away": "malaga"
     },
     {
@@ -374,7 +392,7 @@
       "round": 5,
       "kickoff": "2026-09-13T16:30:00Z",
       "home": "getafe",
-      "away": "deportivo-la-coruna"
+      "away": "deportivo"
     },
     {
       "round": 5,
@@ -392,7 +410,7 @@
       "round": 6,
       "kickoff": "2026-09-03T19:00:00Z",
       "home": "real-sociedad",
-      "away": "celta-vigo"
+      "away": "celta"
     },
     {
       "round": 6,
@@ -421,7 +439,7 @@
     {
       "round": 6,
       "kickoff": "2026-09-16T17:00:00Z",
-      "home": "deportivo-la-coruna",
+      "home": "deportivo",
       "away": "sevilla"
     },
     {
@@ -469,7 +487,7 @@
     {
       "round": 7,
       "kickoff": "2026-09-19T16:30:00Z",
-      "home": "celta-vigo",
+      "home": "celta",
       "away": "racing-santander"
     },
     {
@@ -493,7 +511,7 @@
     {
       "round": 7,
       "kickoff": "2026-09-20T16:30:00Z",
-      "home": "deportivo-la-coruna",
+      "home": "deportivo",
       "away": "real-betis"
     },
     {
@@ -542,13 +560,13 @@
       "round": 8,
       "kickoff": "2026-10-11T12:00:00Z",
       "home": "elche",
-      "away": "celta-vigo"
+      "away": "celta"
     },
     {
       "round": 8,
       "kickoff": "2026-10-11T14:15:00Z",
       "home": "real-sociedad",
-      "away": "deportivo-la-coruna"
+      "away": "deportivo"
     },
     {
       "round": 8,
@@ -571,7 +589,7 @@
     {
       "round": 9,
       "kickoff": "2026-10-16T19:00:00Z",
-      "home": "deportivo-la-coruna",
+      "home": "deportivo",
       "away": "levante"
     },
     {
@@ -607,7 +625,7 @@
     {
       "round": 9,
       "kickoff": "2026-10-18T14:15:00Z",
-      "home": "celta-vigo",
+      "home": "celta",
       "away": "alaves"
     },
     {
@@ -644,12 +662,12 @@
       "round": 10,
       "kickoff": "2026-10-25T16:00:00Z",
       "home": "atletico-madrid",
-      "away": "deportivo-la-coruna"
+      "away": "deportivo"
     },
     {
       "round": 10,
       "kickoff": "2026-10-25T16:00:00Z",
-      "home": "celta-vigo",
+      "home": "celta",
       "away": "real-betis"
     },
     {
@@ -703,7 +721,7 @@
     {
       "round": 11,
       "kickoff": "2026-11-01T16:00:00Z",
-      "home": "deportivo-la-coruna",
+      "home": "deportivo",
       "away": "osasuna"
     },
     {
@@ -734,7 +752,7 @@
       "round": 11,
       "kickoff": "2026-11-01T16:00:00Z",
       "home": "rayo-vallecano",
-      "away": "celta-vigo"
+      "away": "celta"
     },
     {
       "round": 11,
@@ -757,7 +775,7 @@
     {
       "round": 12,
       "kickoff": "2026-11-08T16:00:00Z",
-      "home": "celta-vigo",
+      "home": "celta",
       "away": "levante"
     },
     {
@@ -770,7 +788,7 @@
       "round": 12,
       "kickoff": "2026-11-08T16:00:00Z",
       "home": "espanyol",
-      "away": "deportivo-la-coruna"
+      "away": "deportivo"
     },
     {
       "round": 12,
@@ -812,7 +830,7 @@
       "round": 13,
       "kickoff": "2026-11-22T16:00:00Z",
       "home": "alaves",
-      "away": "deportivo-la-coruna"
+      "away": "deportivo"
     },
     {
       "round": 13,
@@ -860,7 +878,7 @@
       "round": 13,
       "kickoff": "2026-11-22T16:00:00Z",
       "home": "real-madrid",
-      "away": "celta-vigo"
+      "away": "celta"
     },
     {
       "round": 13,
@@ -871,13 +889,13 @@
     {
       "round": 14,
       "kickoff": "2026-11-29T16:00:00Z",
-      "home": "celta-vigo",
+      "home": "celta",
       "away": "villarreal"
     },
     {
       "round": 14,
       "kickoff": "2026-11-29T16:00:00Z",
-      "home": "deportivo-la-coruna",
+      "home": "deportivo",
       "away": "barcelona"
     },
     {
@@ -950,7 +968,7 @@
       "round": 15,
       "kickoff": "2026-12-06T16:00:00Z",
       "home": "barcelona",
-      "away": "celta-vigo"
+      "away": "celta"
     },
     {
       "round": 15,
@@ -968,7 +986,7 @@
       "round": 15,
       "kickoff": "2026-12-06T16:00:00Z",
       "home": "racing-santander",
-      "away": "deportivo-la-coruna"
+      "away": "deportivo"
     },
     {
       "round": 15,
@@ -997,7 +1015,7 @@
     {
       "round": 16,
       "kickoff": "2026-12-13T16:00:00Z",
-      "home": "deportivo-la-coruna",
+      "home": "deportivo",
       "away": "athletic-club"
     },
     {
@@ -1010,7 +1028,7 @@
       "round": 16,
       "kickoff": "2026-12-13T16:00:00Z",
       "home": "espanyol",
-      "away": "celta-vigo"
+      "away": "celta"
     },
     {
       "round": 16,
@@ -1069,13 +1087,13 @@
     {
       "round": 17,
       "kickoff": "2026-12-20T16:00:00Z",
-      "home": "celta-vigo",
+      "home": "celta",
       "away": "atletico-madrid"
     },
     {
       "round": 17,
       "kickoff": "2026-12-20T16:00:00Z",
-      "home": "deportivo-la-coruna",
+      "home": "deportivo",
       "away": "real-madrid"
     },
     {
@@ -1111,8 +1129,8 @@
     {
       "round": 18,
       "kickoff": "2027-01-03T16:00:00Z",
-      "home": "celta-vigo",
-      "away": "deportivo-la-coruna"
+      "home": "celta",
+      "away": "deportivo"
     },
     {
       "round": 18,
@@ -1189,7 +1207,7 @@
     {
       "round": 19,
       "kickoff": "2027-01-10T16:00:00Z",
-      "home": "deportivo-la-coruna",
+      "home": "deportivo",
       "away": "rayo-vallecano"
     },
     {
@@ -1220,7 +1238,7 @@
       "round": 19,
       "kickoff": "2027-01-10T16:00:00Z",
       "home": "sevilla",
-      "away": "celta-vigo"
+      "away": "celta"
     },
     {
       "round": 19,
@@ -1243,7 +1261,7 @@
     {
       "round": 20,
       "kickoff": "2027-01-17T16:00:00Z",
-      "home": "celta-vigo",
+      "home": "celta",
       "away": "valencia"
     },
     {
@@ -1280,7 +1298,7 @@
       "round": 20,
       "kickoff": "2027-01-17T16:00:00Z",
       "home": "real-betis",
-      "away": "deportivo-la-coruna"
+      "away": "deportivo"
     },
     {
       "round": 20,
@@ -1303,7 +1321,7 @@
     {
       "round": 21,
       "kickoff": "2027-01-24T16:00:00Z",
-      "home": "deportivo-la-coruna",
+      "home": "deportivo",
       "away": "atletico-madrid"
     },
     {
@@ -1328,7 +1346,7 @@
       "round": 21,
       "kickoff": "2027-01-24T16:00:00Z",
       "home": "racing-santander",
-      "away": "celta-vigo"
+      "away": "celta"
     },
     {
       "round": 21,
@@ -1363,7 +1381,7 @@
     {
       "round": 22,
       "kickoff": "2027-01-31T16:00:00Z",
-      "home": "celta-vigo",
+      "home": "celta",
       "away": "getafe"
     },
     {
@@ -1382,7 +1400,7 @@
       "round": 22,
       "kickoff": "2027-01-31T16:00:00Z",
       "home": "osasuna",
-      "away": "deportivo-la-coruna"
+      "away": "deportivo"
     },
     {
       "round": 22,
@@ -1412,7 +1430,7 @@
       "round": 23,
       "kickoff": "2027-02-07T16:00:00Z",
       "home": "alaves",
-      "away": "celta-vigo"
+      "away": "celta"
     },
     {
       "round": 23,
@@ -1429,7 +1447,7 @@
     {
       "round": 23,
       "kickoff": "2027-02-07T16:00:00Z",
-      "home": "deportivo-la-coruna",
+      "home": "deportivo",
       "away": "malaga"
     },
     {
@@ -1471,14 +1489,14 @@
     {
       "round": 24,
       "kickoff": "2027-02-14T16:00:00Z",
-      "home": "celta-vigo",
+      "home": "celta",
       "away": "rayo-vallecano"
     },
     {
       "round": 24,
       "kickoff": "2027-02-14T16:00:00Z",
       "home": "elche",
-      "away": "deportivo-la-coruna"
+      "away": "deportivo"
     },
     {
       "round": 24,
@@ -1538,7 +1556,7 @@
       "round": 25,
       "kickoff": "2027-02-21T16:00:00Z",
       "home": "athletic-club",
-      "away": "celta-vigo"
+      "away": "celta"
     },
     {
       "round": 25,
@@ -1555,7 +1573,7 @@
     {
       "round": 25,
       "kickoff": "2027-02-21T16:00:00Z",
-      "home": "deportivo-la-coruna",
+      "home": "deportivo",
       "away": "real-sociedad"
     },
     {
@@ -1597,7 +1615,7 @@
     {
       "round": 26,
       "kickoff": "2027-02-28T16:00:00Z",
-      "home": "celta-vigo",
+      "home": "celta",
       "away": "espanyol"
     },
     {
@@ -1610,7 +1628,7 @@
       "round": 26,
       "kickoff": "2027-02-28T16:00:00Z",
       "home": "levante",
-      "away": "deportivo-la-coruna"
+      "away": "deportivo"
     },
     {
       "round": 26,
@@ -1658,7 +1676,7 @@
       "round": 27,
       "kickoff": "2027-03-07T16:00:00Z",
       "home": "atletico-madrid",
-      "away": "celta-vigo"
+      "away": "celta"
     },
     {
       "round": 27,
@@ -1669,7 +1687,7 @@
     {
       "round": 27,
       "kickoff": "2027-03-07T16:00:00Z",
-      "home": "deportivo-la-coruna",
+      "home": "deportivo",
       "away": "getafe"
     },
     {
@@ -1724,7 +1742,7 @@
       "round": 28,
       "kickoff": "2027-03-14T16:00:00Z",
       "home": "barcelona",
-      "away": "deportivo-la-coruna"
+      "away": "deportivo"
     },
     {
       "round": 28,
@@ -1748,7 +1766,7 @@
       "round": 28,
       "kickoff": "2027-03-14T16:00:00Z",
       "home": "osasuna",
-      "away": "celta-vigo"
+      "away": "celta"
     },
     {
       "round": 28,
@@ -1777,7 +1795,7 @@
     {
       "round": 29,
       "kickoff": "2027-03-21T16:00:00Z",
-      "home": "celta-vigo",
+      "home": "celta",
       "away": "real-madrid"
     },
     {
@@ -1820,7 +1838,7 @@
       "round": 29,
       "kickoff": "2027-03-21T16:00:00Z",
       "home": "valencia",
-      "away": "deportivo-la-coruna"
+      "away": "deportivo"
     },
     {
       "round": 29,
@@ -1843,7 +1861,7 @@
     {
       "round": 30,
       "kickoff": "2027-04-04T15:00:00Z",
-      "home": "deportivo-la-coruna",
+      "home": "deportivo",
       "away": "villarreal"
     },
     {
@@ -1874,7 +1892,7 @@
       "round": 30,
       "kickoff": "2027-04-04T15:00:00Z",
       "home": "real-betis",
-      "away": "celta-vigo"
+      "away": "celta"
     },
     {
       "round": 30,
@@ -1903,7 +1921,7 @@
     {
       "round": 31,
       "kickoff": "2027-04-11T15:00:00Z",
-      "home": "celta-vigo",
+      "home": "celta",
       "away": "elche"
     },
     {
@@ -1934,7 +1952,7 @@
       "round": 31,
       "kickoff": "2027-04-11T15:00:00Z",
       "home": "sevilla",
-      "away": "deportivo-la-coruna"
+      "away": "deportivo"
     },
     {
       "round": 31,
@@ -1969,8 +1987,8 @@
     {
       "round": 32,
       "kickoff": "2027-04-18T15:00:00Z",
-      "home": "deportivo-la-coruna",
-      "away": "celta-vigo"
+      "home": "deportivo",
+      "away": "celta"
     },
     {
       "round": 32,
@@ -2012,12 +2030,12 @@
       "round": 33,
       "kickoff": "2027-04-21T15:00:00Z",
       "home": "athletic-club",
-      "away": "deportivo-la-coruna"
+      "away": "deportivo"
     },
     {
       "round": 33,
       "kickoff": "2027-04-21T15:00:00Z",
-      "home": "celta-vigo",
+      "home": "celta",
       "away": "barcelona"
     },
     {
@@ -2083,13 +2101,13 @@
     {
       "round": 34,
       "kickoff": "2027-05-02T15:00:00Z",
-      "home": "celta-vigo",
+      "home": "celta",
       "away": "sevilla"
     },
     {
       "round": 34,
       "kickoff": "2027-05-02T15:00:00Z",
-      "home": "deportivo-la-coruna",
+      "home": "deportivo",
       "away": "racing-santander"
     },
     {
@@ -2162,7 +2180,7 @@
       "round": 35,
       "kickoff": "2027-05-09T15:00:00Z",
       "home": "rayo-vallecano",
-      "away": "deportivo-la-coruna"
+      "away": "deportivo"
     },
     {
       "round": 35,
@@ -2186,7 +2204,7 @@
       "round": 35,
       "kickoff": "2027-05-09T15:00:00Z",
       "home": "villarreal",
-      "away": "celta-vigo"
+      "away": "celta"
     },
     {
       "round": 36,
@@ -2197,7 +2215,7 @@
     {
       "round": 36,
       "kickoff": "2027-05-16T15:00:00Z",
-      "home": "deportivo-la-coruna",
+      "home": "deportivo",
       "away": "alaves"
     },
     {
@@ -2222,7 +2240,7 @@
       "round": 36,
       "kickoff": "2027-05-16T15:00:00Z",
       "home": "malaga",
-      "away": "celta-vigo"
+      "away": "celta"
     },
     {
       "round": 36,
@@ -2269,13 +2287,13 @@
     {
       "round": 37,
       "kickoff": "2027-05-23T15:00:00Z",
-      "home": "celta-vigo",
+      "home": "celta",
       "away": "real-sociedad"
     },
     {
       "round": 37,
       "kickoff": "2027-05-23T15:00:00Z",
-      "home": "deportivo-la-coruna",
+      "home": "deportivo",
       "away": "espanyol"
     },
     {
@@ -2336,7 +2354,7 @@
       "round": 38,
       "kickoff": "2027-05-30T15:00:00Z",
       "home": "levante",
-      "away": "celta-vigo"
+      "away": "celta"
     },
     {
       "round": 38,
@@ -2360,7 +2378,7 @@
       "round": 38,
       "kickoff": "2027-05-30T15:00:00Z",
       "home": "real-madrid",
-      "away": "deportivo-la-coruna"
+      "away": "deportivo"
     },
     {
       "round": 38,

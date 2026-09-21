@@ -45,7 +45,7 @@
     {
       "externalId": "538",
       "externalName": "Celta Vigo",
-      "teamId": "celta-vigo"
+      "teamId": "celta"
     },
     {
       "externalId": "539",
@@ -75,7 +75,7 @@
     {
       "externalId": "544",
       "externalName": "Deportivo La Coruna",
-      "teamId": "deportivo-la-coruna"
+      "teamId": "deportivo"
     },
     {
       "externalId": "546",
@@ -105,7 +105,7 @@
     {
       "externalId": "10139",
       "externalName": "AD Ceuta FC",
-      "teamId": "ad-ceuta-fc"
+      "teamId": "ceuta"
     },
     {
       "externalId": "5254",
@@ -140,7 +140,7 @@
     {
       "externalId": "715",
       "externalName": "Granada CF",
-      "teamId": "granada-cf"
+      "teamId": "granada"
     },
     {
       "externalId": "718",
@@ -175,7 +175,7 @@
     {
       "externalId": "731",
       "externalName": "Sporting Gijon",
-      "teamId": "sporting-gijon"
+      "teamId": "sporting"
     },
     {
       "externalId": "798",
@@ -185,12 +185,12 @@
     {
       "externalId": "8157",
       "externalName": "FC Andorra",
-      "teamId": "fc-andorra"
+      "teamId": "andorra"
     },
     {
       "externalId": "9571",
       "externalName": "Celta de Vigo II",
-      "teamId": "celta-de-vigo-ii"
+      "teamId": "celta-fortuna"
     },
     {
       "externalId": "9580",
@@ -200,7 +200,7 @@
     {
       "externalId": "9585",
       "externalName": "Real Sociedad II",
-      "teamId": "real-sociedad-ii"
+      "teamId": "real-sociedad-b"
     },
     {
       "externalId": "9593",
@@ -215,12 +215,12 @@
     {
       "externalId": "10140",
       "externalName": "Mérida AD",
-      "teamId": "merida-ad"
+      "teamId": "merida"
     },
     {
       "externalId": "24612",
       "externalName": "Extremadura 1924",
-      "teamId": "extremadura-1924"
+      "teamId": "extremadura"
     },
     {
       "externalId": "4907",
@@ -235,12 +235,12 @@
     {
       "externalId": "5280",
       "externalName": "UD Logroñés",
-      "teamId": "ud-logrones"
+      "teamId": "logrones"
     },
     {
       "externalId": "5281",
       "externalName": "Unionistas de Salamanca",
-      "teamId": "unionistas-de-salamanca"
+      "teamId": "unionistas"
     },
     {
       "externalId": "716",
@@ -280,12 +280,12 @@
     {
       "externalId": "9578",
       "externalName": "Arenas Getxo",
-      "teamId": "arenas-getxo"
+      "teamId": "arenas"
     },
     {
       "externalId": "9579",
       "externalName": "Athletic Club II",
-      "teamId": "athletic-club-ii"
+      "teamId": "bilbao-athletic"
     },
     {
       "externalId": "9586",
@@ -295,7 +295,7 @@
     {
       "externalId": "9610",
       "externalName": "Deportivo La Coruña II",
-      "teamId": "deportivo-la-coruna-ii"
+      "teamId": "deportivo-fabril"
     },
     {
       "externalId": "9617",
@@ -305,17 +305,17 @@
     {
       "externalId": "9632",
       "externalName": "Real Avilés",
-      "teamId": "real-aviles"
+      "teamId": "aviles"
     },
     {
       "externalId": "9827",
       "externalName": "CD Coria",
-      "teamId": "cd-coria"
+      "teamId": "coria"
     },
     {
       "externalId": "24572",
       "externalName": "Eibar II",
-      "teamId": "eibar-ii"
+      "teamId": "eibar-b"
     },
     {
       "externalId": "5256",
@@ -330,7 +330,7 @@
     {
       "externalId": "5264",
       "externalName": "Gimnástica Torrelavega",
-      "teamId": "gimnastica-torrelavega"
+      "teamId": "gimnastica"
     },
     {
       "externalId": "9380",
@@ -350,7 +350,7 @@
     {
       "externalId": "9401",
       "externalName": "Marino de Luanco",
-      "teamId": "marino-de-luanco"
+      "teamId": "marino"
     },
     {
       "externalId": "9408",
@@ -365,12 +365,12 @@
     {
       "externalId": "9576",
       "externalName": "Real Oviedo II",
-      "teamId": "real-oviedo-ii"
+      "teamId": "oviedo-vetusta"
     },
     {
       "externalId": "9582",
       "externalName": "Deportivo Alavés II",
-      "teamId": "deportivo-alaves-ii"
+      "teamId": "alaves-b"
     },
     {
       "externalId": "9605",
@@ -390,7 +390,7 @@
     {
       "externalId": "9643",
       "externalName": "Racing Santander II",
-      "teamId": "racing-santander-ii"
+      "teamId": "rayo-cantabria"
     },
     {
       "externalId": "9656",
@@ -400,7 +400,7 @@
     {
       "externalId": "9723",
       "externalName": "Atlético Astorga",
-      "teamId": "atletico-astorga"
+      "teamId": "astorga"
     },
     {
       "externalId": "15307",
@@ -415,12 +415,12 @@
     {
       "externalId": "20255",
       "externalName": "Celta de Vigo III",
-      "teamId": "celta-de-vigo-iii"
+      "teamId": "celta-c"
     },
     {
       "externalId": "22129",
       "externalName": "Pontevedra II",
-      "teamId": "pontevedra-ii"
+      "teamId": "pontevedra-b"
     },
     {
       "externalId": "22130",
@@ -440,7 +440,7 @@
     {
       "externalId": "26534",
       "externalName": "Coruña",
-      "teamId": "coruna"
+      "teamId": "montaneros"
     },
     {
       "externalId": "28094",
@@ -455,7 +455,7 @@
     {
       "externalId": "28096",
       "externalName": "Portonovo SD",
-      "teamId": "portonovo-sd"
+      "teamId": "portonovo"
     },
     {
       "externalId": "9603",
