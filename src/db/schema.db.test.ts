@@ -427,3 +427,46 @@ describe("SPEC-006 CA-1 added_minute, raw_purges and the raw bucket", () => {
       expect(count).toBe(0);
     }));
 });
+
+describe("SPEC-007 CA-1 the forced_finish alert kind", () => {
+  it("accepts forced_finish with a real match", () =>
+    rollback(async (tx) => {
+      const m = await seedMatch(tx);
+      const [row] = await tx`insert into alerts (kind, match_id, details)
+        values ('forced_finish', ${m}, '{"score": {"home": 1, "away": 0}}')
+        returning id, kind, resolved_at`;
+      expect(row).toMatchObject({ kind: "forced_finish", resolved_at: null });
+    }));
+
+  it("rejects forced_finish without a match (alerts_check)", () =>
+    rollback(async (tx) => {
+      expect(
+        await pgCode(
+          tx.savepoint(
+            (s) =>
+              s`insert into alerts (kind, match_id, details) values ('forced_finish', null, '{}')`,
+          ),
+        ),
+      ).toBe("23514");
+    }));
+
+  it("rejects an unknown kind (alerts_kind_check)", () =>
+    rollback(async (tx) => {
+      const m = await seedMatch(tx);
+      expect(
+        await pgCode(
+          tx.savepoint(
+            (s) =>
+              s`insert into alerts (kind, match_id, details) values ('whatever', ${m}, '{}')`,
+          ),
+        ),
+      ).toBe("23514");
+    }));
+
+  it("still accepts unresolved_team without a match", () =>
+    rollback(async (tx) => {
+      const [row] = await tx`insert into alerts (kind, match_id, details)
+        values ('unresolved_team', null, '{}') returning id`;
+      expect(row.id).toBeDefined();
+    }));
+});
