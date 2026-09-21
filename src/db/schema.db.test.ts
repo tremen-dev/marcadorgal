@@ -1,6 +1,9 @@
 import type { TransactionSql } from "postgres";
 import { afterAll, describe, expect, it } from "vitest";
-import { sql } from "./client";
+import { getSql } from "./client.ts";
+
+// The pool is lazy now (SPEC-008 CA-1): one call, reused by every case.
+const sql = getSql();
 
 type Tx = TransactionSql;
 const ROLLBACK = Symbol("rollback");
