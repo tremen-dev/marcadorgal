@@ -32,10 +32,13 @@ convierte eso en Observations y Decisions de una jornada de verdad.
    su captura.
 4. El motor (ADR-004, RN-01..RN-06) es una función pura, replayable, que
    escribe Decisions y Alerts en la misma transacción que las Observations.
-5. **Una jornada real completa** de las cinco competiciones queda registrada
+5. **Una jornada real completa** —todos los partidos de la ronda en las
+   competiciones que disputen jornada ese fin de semana— queda registrada
    sin intervención manual: todos los partidos con Decision `finished` y
    marcador correcto contrastado con el proveedor, y las Alerts abiertas son
-   explicables (silencio, retroceso, equipo sin resolver).
+   explicables (silencio, retroceso, equipo sin resolver). El informe dice
+   cuántas competiciones se midieron; que las cinco producen Decisions se
+   comprueba antes de cerrar EPIC-003.
 6. Métricas de esa jornada medidas y anotadas en el ledger: latencia gol →
    Decision (mediana y p95), peticiones al proveedor, partidos sin señal,
    alertas. Objetivo de `vision.md`: mediana < 45 s, p95 < 90 s.
