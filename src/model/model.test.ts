@@ -20,7 +20,7 @@ import {
   SourceId,
   Team,
   TeamId,
-} from "./index";
+} from "./index.ts";
 
 describe("CA-2 closed vocabularies", () => {
   it("MatchStatus has the five states in order", () => {
@@ -93,11 +93,15 @@ describe("CA-4 branded ids", () => {
     expect(SourceId.safeParse("").success).toBe(false);
   });
 
-  it("MatchId is any non-empty string", () => {
+  it("MatchId is a slug", () => {
     expect(
-      MatchId.safeParse("2026-27:tercera-rfef-g1:r1:ud-ourense-cd-ourense")
+      MatchId.safeParse("tercera-rfef-g1-2026-27-j1-ud-ourense-cd-arenteiro")
         .success,
     ).toBe(true);
+    expect(
+      MatchId.safeParse("2026-27:tercera-rfef-g1:r1:ud-ourense:cd-arenteiro")
+        .success,
+    ).toBe(false);
     expect(MatchId.safeParse("").success).toBe(false);
   });
 
@@ -170,7 +174,7 @@ const fixtures = {
   },
   team: { id: "ud-ourense", name: "UD Ourense" },
   match: {
-    id: "2026-27:tercera-rfef-g1:r1:ud-ourense:cd-arenteiro",
+    id: "tercera-rfef-g1-2026-27-j1-ud-ourense-cd-arenteiro",
     competitionId: "tercera-rfef-g1",
     season: "2026-27",
     round: 1,
@@ -180,7 +184,7 @@ const fixtures = {
   },
   observation: {
     id: uuid(1),
-    matchId: "2026-27:tercera-rfef-g1:r1:ud-ourense:cd-arenteiro",
+    matchId: "tercera-rfef-g1-2026-27-j1-ud-ourense-cd-arenteiro",
     sourceId: "operator",
     status: "live",
     score: { home: 1, away: 0 },
@@ -191,7 +195,7 @@ const fixtures = {
   },
   decision: {
     id: uuid(2),
-    matchId: "2026-27:tercera-rfef-g1:r1:ud-ourense:cd-arenteiro",
+    matchId: "tercera-rfef-g1-2026-27-j1-ud-ourense-cd-arenteiro",
     version: 1,
     status: "live",
     score: { home: 1, away: 0 },

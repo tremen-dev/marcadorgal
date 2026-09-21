@@ -7,10 +7,10 @@ import {
   ObservationId,
   SourceId,
   TeamId,
-} from "./ids";
-import { Instant } from "./instant";
-import { MatchState } from "./state";
-import { AlertKind, DecisionRule, Qualifier, Season } from "./vocab";
+} from "./ids.ts";
+import { Instant } from "./instant.ts";
+import { MatchState } from "./state.ts";
+import { AlertKind, DecisionRule, Qualifier, Season } from "./vocab.ts";
 
 export const Competition = z.object({
   id: CompetitionId,
