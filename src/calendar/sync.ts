@@ -181,3 +181,28 @@ export function syncCalendar(input: SyncInput): SyncResult {
     diff,
   };
 }
+
+// Human-readable diff for calendario:sync (CA-7); new teams are marked REVISAR.
+export function formatSyncDiff(competitionId: string, diff: SyncDiff): string {
+  const lines = [
+    `== ${competitionId}`,
+    `   newTeams: ${diff.newTeams.length}  added: ${diff.added.length}  rescheduled: ${diff.rescheduled.length}  missing: ${diff.missing.length}  renamedAtProvider: ${diff.renamedAtProvider.length}  unconfirmed: ${diff.unconfirmed.length}`,
+  ];
+  for (const t of diff.newTeams)
+    lines.push(
+      `   REVISAR nuevo equipo: ${t.teamId} <- "${t.externalName}" (externalId ${t.externalId})`,
+    );
+  for (const id of diff.added) lines.push(`   + ${id}`);
+  for (const r of diff.rescheduled)
+    lines.push(`   ~ ${r.id}: ${r.from} -> ${r.to}`);
+  for (const id of diff.missing)
+    lines.push(`   ? ausente en el proveedor: ${id}`);
+  for (const r of diff.renamedAtProvider)
+    lines.push(
+      `   ! el proveedor renombró ${r.teamId}: "${r.from}" -> "${r.to}" (externalId ${r.externalId})`,
+    );
+  for (const id of diff.unconfirmed) lines.push(`   TBD/PST: ${id}`);
+  for (const [round, n] of Object.entries(diff.ignoredRounds))
+    lines.push(`   ronda ignorada: ${round} (${n})`);
+  return lines.join("\n");
+}
