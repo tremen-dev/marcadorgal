@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import {
   type CompetitionId,
-  type Decision,
+  Decision,
   type DecisionId,
   type Instant,
   type MatchId,
@@ -643,5 +643,98 @@ describe("CA-6 RN-02 forced finish with a trace (H-3, H-5)", () => {
         }),
       ),
     ).toEqual({ decision: null, open: [], resolve: [] });
+  });
+});
+
+describe("CA-7 the derived qualifier (ADR-004)", () => {
+  it("is provisional with a single provider source", () => {
+    const { decision } = decide(
+      input({ observations: [obs("ten", 49, live(1, 0, 50))] }),
+    );
+    expect(decision).toMatchObject({ qualifier: "provisional" });
+    expect(decision?.observationIds).toHaveLength(1);
+  });
+
+  it("is confirmado when two sources agree, citing both (RN-06)", () => {
+    const winner = obs("twenty", 49, live(1, 0, 50));
+    const second = obs("ten", 48, live(1, 0, 49));
+    const { decision } = decide(input({ observations: [winner, second] }));
+    expect(decision).toMatchObject({ qualifier: "confirmado" });
+    expect(decision?.observationIds).toEqual([winner.id, second.id]);
+  });
+
+  it("is provisional when they agree on the score but not on the state", () => {
+    const winner = obs("twenty", 49, finished(1, 0));
+    const { decision } = decide(
+      input({ observations: [winner, obs("ten", 48, live(1, 0, 90))] }),
+    );
+    expect(decision).toMatchObject({
+      status: "finished",
+      qualifier: "provisional",
+    });
+    expect(decision?.observationIds).toEqual([winner.id]);
+  });
+
+  it("is confirmado with a federation source alone", () => {
+    const { decision } = decide(
+      input({ observations: [obs("fifty", 49, live(1, 0, 50))] }),
+    );
+    expect(decision).toMatchObject({ qualifier: "confirmado" });
+    expect(decision?.observationIds).toHaveLength(1);
+  });
+
+  it("is confirmado for the operator", () => {
+    const { decision } = decide(
+      input({ observations: [obs("operator", 49, live(1, 0, 50))] }),
+    );
+    expect(decision).toMatchObject({ qualifier: "confirmado" });
+  });
+
+  it("never produces sen_sinal outside live, and the drafts are Decisions", () => {
+    const silent = decide(
+      input({
+        current: current(live(1, 0, 60)),
+        observations: [],
+        now: at(20),
+      }),
+    ).decision;
+    expect(silent).toMatchObject({ status: "live", qualifier: "sen_sinal" });
+    expect(() =>
+      Decision.parse({
+        ...silent,
+        id: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+        version: 2,
+      }),
+    ).not.toThrow();
+    // The forced finish leaves live for finished, and provisional with it.
+    expect(
+      decide(
+        input({
+          current: current(live(1, 0, 90)),
+          observations: [],
+          now: at(121),
+        }),
+      ).decision,
+    ).toMatchObject({ status: "finished", qualifier: "provisional" });
+  });
+});
+
+describe("CA-12 decide is pure and total", () => {
+  it("returns the same output for the same input", () => {
+    const observations = [
+      obs("ten", 48, live(1, 0, 49)),
+      obs("twenty", 49, live(1, 0, 50)),
+    ];
+    const built = () =>
+      input({ current: current(live(0, 0, 45)), observations });
+    expect(decide(built())).toEqual(decide(built()));
+  });
+
+  it("answers with no observations, no decision and no match state", () => {
+    expect(decide(input({}))).toEqual({
+      decision: null,
+      open: [],
+      resolve: [],
+    });
   });
 });
