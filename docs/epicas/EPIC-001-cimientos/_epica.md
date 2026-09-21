@@ -1,10 +1,13 @@
 ---
 id: EPIC-001
 tipo: epica
-estado: aprobada
+estado: hecho
 historial:
   - {estado: borrador, fecha: 2026-09-20, por: sdd-producto}
   - {estado: aprobada, fecha: 2026-09-20, por: Alberto Fojo}
+  - {estado: en-progreso, fecha: 2026-09-21, por: sdd-orquestador}
+  - {estado: en-revision, fecha: 2026-09-21, por: sdd-orquestador}
+  - {estado: hecho, fecha: 2026-09-21, por: Alberto Fojo}
 aprobada-por: Alberto Fojo
 ---
 # EPIC-001 — Cimientos

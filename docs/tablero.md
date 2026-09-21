@@ -3,7 +3,7 @@
 
 Actualizado: 2026-09-21
 
-## EPIC-001 — cimientos (aprobada)
+## EPIC-001 — cimientos (hecho)
 
 | Spec | Estado | Último cambio |
 |---|---|---|
