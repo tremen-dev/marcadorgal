@@ -19,7 +19,8 @@
     "test:db": "npm run db:push && vitest run --config vitest.db.config.mts",
     "calendario:sync": "node tools/calendario-sync.mjs",
     "calendario:load": "node tools/calendario-load.mjs",
-    "calendario:xornada": "node tools/calendario-xornada.mjs"
+    "calendario:xornada": "node tools/calendario-xornada.mjs",
+    "ingest:tick": "node tools/ingest-tick.mjs"
   },
   "dependencies": {
     "next": "16.3.5",
