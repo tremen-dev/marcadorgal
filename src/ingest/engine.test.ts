@@ -31,10 +31,16 @@ function fakeTx(rows: (text: string) => unknown[] = () => []) {
   return { tx, calls };
 }
 
+// postgres.js hands a Date back for a timestamptz, and the adapter is only
+// ever allowed to call toISOString on it (no Date leaves src/ingest, CA-12),
+// so the double is exactly that much of a Date and no more.
+const timestamptz = (value: Instant) =>
+  ({ toISOString: () => value }) as unknown as Date;
+
 const matchRow = {
   id: MATCH,
   competition_id: "primera-division",
-  kickoff: new Date(NOW),
+  kickoff: timestamptz(NOW),
 };
 
 const observationRow = (over: Record<string, unknown> = {}) => ({
@@ -46,8 +52,8 @@ const observationRow = (over: Record<string, unknown> = {}) => ({
   away_score: 0,
   minute: 20,
   added_minute: null,
-  observed_at: new Date(at(-1)),
-  received_at: new Date(at(-1)),
+  observed_at: timestamptz(at(-1)),
+  received_at: timestamptz(at(-1)),
   raw_ref: "raw/x.json.gz",
   ...over,
 });
@@ -64,7 +70,7 @@ const decisionRow = (over: Record<string, unknown> = {}) => ({
   qualifier: "provisional",
   rule: "RN-01",
   observation_ids: ["33333333-3333-4333-8333-333333333333"],
-  decided_at: new Date(at(-1)),
+  decided_at: timestamptz(at(-1)),
   ...over,
 });
 
@@ -186,7 +192,7 @@ describe("CA-9 opening and resolving alerts", () => {
   it("dedupes forced_finish the same way", async () => {
     const forced = answering({
       decisions: [decisionRow({ minute: 90 })],
-      matches: [{ ...matchRow, kickoff: new Date(at(-121)) }],
+      matches: [{ ...matchRow, kickoff: timestamptz(at(-121)) }],
       alerts: [],
     });
     const { tx, calls } = fakeTx(forced);
