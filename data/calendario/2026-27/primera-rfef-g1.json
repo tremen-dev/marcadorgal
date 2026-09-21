@@ -1,0 +1,2372 @@
+{
+  "competition": {
+    "id": "primera-rfef-g1",
+    "season": "2026-27",
+    "name": "Primera RFEF Grupo 1",
+    "tier": 3
+  },
+  "teams": [
+    {
+      "id": "arenas-getxo",
+      "name": "Arenas Getxo"
+    },
+    {
+      "id": "athletic-club-ii",
+      "name": "Athletic Club II"
+    },
+    {
+      "id": "barakaldo",
+      "name": "Barakaldo"
+    },
+    {
+      "id": "cacereno",
+      "name": "Cacereño"
+    },
+    {
+      "id": "cd-coria",
+      "name": "CD Coria"
+    },
+    {
+      "id": "cultural-leonesa",
+      "name": "Cultural Leonesa"
+    },
+    {
+      "id": "deportivo-la-coruna-ii",
+      "name": "Deportivo La Coruña II"
+    },
+    {
+      "id": "extremadura-1924",
+      "name": "Extremadura 1924"
+    },
+    {
+      "id": "lugo",
+      "name": "Lugo"
+    },
+    {
+      "id": "merida-ad",
+      "name": "Mérida AD"
+    },
+    {
+      "id": "mirandes",
+      "name": "Mirandes"
+    },
+    {
+      "id": "ponferradina",
+      "name": "Ponferradina"
+    },
+    {
+      "id": "pontevedra",
+      "name": "Pontevedra"
+    },
+    {
+      "id": "racing-ferrol",
+      "name": "Racing Ferrol"
+    },
+    {
+      "id": "real-aviles",
+      "name": "Real Avilés"
+    },
+    {
+      "id": "real-union",
+      "name": "Real Unión"
+    },
+    {
+      "id": "ud-logrones",
+      "name": "UD Logroñés"
+    },
+    {
+      "id": "ud-ourense",
+      "name": "UD Ourense"
+    },
+    {
+      "id": "unionistas-de-salamanca",
+      "name": "Unionistas de Salamanca"
+    },
+    {
+      "id": "zamora",
+      "name": "Zamora"
+    }
+  ],
+  "matches": [
+    {
+      "round": 1,
+      "kickoff": "2026-08-28T17:00:00Z",
+      "home": "real-aviles",
+      "away": "pontevedra"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-28T19:15:00Z",
+      "home": "cacereno",
+      "away": "mirandes"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-29T15:00:00Z",
+      "home": "ud-ourense",
+      "away": "ponferradina"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-29T16:30:00Z",
+      "home": "arenas-getxo",
+      "away": "racing-ferrol"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-29T17:15:00Z",
+      "home": "merida-ad",
+      "away": "deportivo-la-coruna-ii"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-29T17:15:00Z",
+      "home": "zamora",
+      "away": "athletic-club-ii"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-30T15:00:00Z",
+      "home": "barakaldo",
+      "away": "cultural-leonesa"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-30T16:30:00Z",
+      "home": "real-union",
+      "away": "cd-coria"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-30T17:15:00Z",
+      "home": "unionistas-de-salamanca",
+      "away": "lugo"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-31T17:00:00Z",
+      "home": "ud-logrones",
+      "away": "extremadura-1924"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-09-04T19:15:00Z",
+      "home": "ponferradina",
+      "away": "lugo"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-09-05T14:30:00Z",
+      "home": "mirandes",
+      "away": "ud-ourense"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-09-05T16:45:00Z",
+      "home": "cd-coria",
+      "away": "barakaldo"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-09-05T16:45:00Z",
+      "home": "pontevedra",
+      "away": "arenas-getxo"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-09-05T16:45:00Z",
+      "home": "unionistas-de-salamanca",
+      "away": "real-union"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-09-06T10:00:00Z",
+      "home": "deportivo-la-coruna-ii",
+      "away": "cacereno"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-09-06T14:00:00Z",
+      "home": "cultural-leonesa",
+      "away": "merida-ad"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-09-06T16:15:00Z",
+      "home": "athletic-club-ii",
+      "away": "real-aviles"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-09-06T16:15:00Z",
+      "home": "extremadura-1924",
+      "away": "racing-ferrol"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-09-06T18:30:00Z",
+      "home": "zamora",
+      "away": "ud-logrones"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-09-11T17:00:00Z",
+      "home": "barakaldo",
+      "away": "extremadura-1924"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-09-12T14:30:00Z",
+      "home": "pontevedra",
+      "away": "athletic-club-ii"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-09-12T16:45:00Z",
+      "home": "real-aviles",
+      "away": "unionistas-de-salamanca"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-09-12T16:45:00Z",
+      "home": "ud-ourense",
+      "away": "ud-logrones"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-09-12T19:00:00Z",
+      "home": "merida-ad",
+      "away": "mirandes"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-09-13T10:00:00Z",
+      "home": "arenas-getxo",
+      "away": "zamora"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-09-13T10:00:00Z",
+      "home": "racing-ferrol",
+      "away": "real-union"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-09-13T14:00:00Z",
+      "home": "deportivo-la-coruna-ii",
+      "away": "ponferradina"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-09-13T16:15:00Z",
+      "home": "cacereno",
+      "away": "cultural-leonesa"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-09-13T16:15:00Z",
+      "home": "lugo",
+      "away": "cd-coria"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-18T19:00:00Z",
+      "home": "ud-logrones",
+      "away": "pontevedra"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-19T11:00:00Z",
+      "home": "unionistas-de-salamanca",
+      "away": "ud-ourense"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-19T14:30:00Z",
+      "home": "racing-ferrol",
+      "away": "barakaldo"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-19T16:45:00Z",
+      "home": "cd-coria",
+      "away": "real-aviles"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-19T16:45:00Z",
+      "home": "ponferradina",
+      "away": "merida-ad"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-19T16:45:00Z",
+      "home": "real-union",
+      "away": "mirandes"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-20T10:00:00Z",
+      "home": "athletic-club-ii",
+      "away": "deportivo-la-coruna-ii"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-20T16:15:00Z",
+      "home": "zamora",
+      "away": "lugo"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-20T16:45:00Z",
+      "home": "cacereno",
+      "away": "arenas-getxo"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-20T18:00:00Z",
+      "home": "extremadura-1924",
+      "away": "cultural-leonesa"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-26T11:00:00Z",
+      "home": "extremadura-1924",
+      "away": "zamora"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-26T14:30:00Z",
+      "home": "cultural-leonesa",
+      "away": "cd-coria"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-26T14:30:00Z",
+      "home": "lugo",
+      "away": "racing-ferrol"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-26T16:45:00Z",
+      "home": "arenas-getxo",
+      "away": "athletic-club-ii"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-26T16:45:00Z",
+      "home": "deportivo-la-coruna-ii",
+      "away": "real-union"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-27T10:00:00Z",
+      "home": "barakaldo",
+      "away": "real-aviles"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-27T10:00:00Z",
+      "home": "ud-ourense",
+      "away": "cacereno"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-27T14:00:00Z",
+      "home": "mirandes",
+      "away": "unionistas-de-salamanca"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-27T16:15:00Z",
+      "home": "merida-ad",
+      "away": "ud-logrones"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-27T16:15:00Z",
+      "home": "pontevedra",
+      "away": "ponferradina"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-10-02T17:00:00Z",
+      "home": "real-aviles",
+      "away": "lugo"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-10-03T14:30:00Z",
+      "home": "barakaldo",
+      "away": "arenas-getxo"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-10-03T14:30:00Z",
+      "home": "racing-ferrol",
+      "away": "pontevedra"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-10-03T14:30:00Z",
+      "home": "real-union",
+      "away": "ud-ourense"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-10-03T16:45:00Z",
+      "home": "unionistas-de-salamanca",
+      "away": "cultural-leonesa"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-10-04T10:00:00Z",
+      "home": "athletic-club-ii",
+      "away": "extremadura-1924"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-10-04T10:00:00Z",
+      "home": "ud-logrones",
+      "away": "deportivo-la-coruna-ii"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-10-04T14:30:00Z",
+      "home": "ponferradina",
+      "away": "mirandes"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-10-04T14:30:00Z",
+      "home": "zamora",
+      "away": "cd-coria"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-10-04T16:45:00Z",
+      "home": "merida-ad",
+      "away": "cacereno"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-10-10T14:30:00Z",
+      "home": "deportivo-la-coruna-ii",
+      "away": "racing-ferrol"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-10-10T16:45:00Z",
+      "home": "cacereno",
+      "away": "unionistas-de-salamanca"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-10-10T16:45:00Z",
+      "home": "cd-coria",
+      "away": "extremadura-1924"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-10-10T16:45:00Z",
+      "home": "ud-ourense",
+      "away": "barakaldo"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-10-10T19:00:00Z",
+      "home": "mirandes",
+      "away": "zamora"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-10-11T10:00:00Z",
+      "home": "athletic-club-ii",
+      "away": "real-union"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-10-11T14:30:00Z",
+      "home": "ponferradina",
+      "away": "real-aviles"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-10-11T14:30:00Z",
+      "home": "pontevedra",
+      "away": "merida-ad"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-10-12T14:00:00Z",
+      "home": "cultural-leonesa",
+      "away": "arenas-getxo"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-10-12T18:30:00Z",
+      "home": "lugo",
+      "away": "ud-logrones"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-17T11:00:00Z",
+      "home": "racing-ferrol",
+      "away": "unionistas-de-salamanca"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-17T14:30:00Z",
+      "home": "barakaldo",
+      "away": "mirandes"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-17T14:30:00Z",
+      "home": "lugo",
+      "away": "deportivo-la-coruna-ii"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-17T16:45:00Z",
+      "home": "extremadura-1924",
+      "away": "real-union"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-17T16:45:00Z",
+      "home": "zamora",
+      "away": "ponferradina"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-18T10:00:00Z",
+      "home": "arenas-getxo",
+      "away": "merida-ad"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-18T14:00:00Z",
+      "home": "pontevedra",
+      "away": "cacereno"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-18T16:15:00Z",
+      "home": "cd-coria",
+      "away": "athletic-club-ii"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-18T16:15:00Z",
+      "home": "real-aviles",
+      "away": "ud-ourense"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-18T18:30:00Z",
+      "home": "ud-logrones",
+      "away": "cultural-leonesa"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "arenas-getxo",
+      "away": "ud-ourense"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "cacereno",
+      "away": "zamora"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "cultural-leonesa",
+      "away": "pontevedra"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "deportivo-la-coruna-ii",
+      "away": "extremadura-1924"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "merida-ad",
+      "away": "cd-coria"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "mirandes",
+      "away": "racing-ferrol"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "ponferradina",
+      "away": "barakaldo"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "real-aviles",
+      "away": "ud-logrones"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "real-union",
+      "away": "lugo"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "unionistas-de-salamanca",
+      "away": "athletic-club-ii"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "athletic-club-ii",
+      "away": "cacereno"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "barakaldo",
+      "away": "pontevedra"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "cd-coria",
+      "away": "arenas-getxo"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "extremadura-1924",
+      "away": "unionistas-de-salamanca"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "lugo",
+      "away": "merida-ad"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "racing-ferrol",
+      "away": "ponferradina"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "real-union",
+      "away": "real-aviles"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "ud-logrones",
+      "away": "mirandes"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "ud-ourense",
+      "away": "cultural-leonesa"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "zamora",
+      "away": "deportivo-la-coruna-ii"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "arenas-getxo",
+      "away": "deportivo-la-coruna-ii"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "barakaldo",
+      "away": "real-union"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "cacereno",
+      "away": "lugo"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "cultural-leonesa",
+      "away": "ponferradina"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "merida-ad",
+      "away": "athletic-club-ii"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "mirandes",
+      "away": "cd-coria"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "pontevedra",
+      "away": "ud-ourense"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "racing-ferrol",
+      "away": "ud-logrones"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "real-aviles",
+      "away": "extremadura-1924"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "unionistas-de-salamanca",
+      "away": "zamora"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "athletic-club-ii",
+      "away": "racing-ferrol"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "cd-coria",
+      "away": "unionistas-de-salamanca"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "deportivo-la-coruna-ii",
+      "away": "barakaldo"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "extremadura-1924",
+      "away": "pontevedra"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "lugo",
+      "away": "mirandes"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "ponferradina",
+      "away": "cacereno"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "real-union",
+      "away": "cultural-leonesa"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "ud-logrones",
+      "away": "arenas-getxo"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "ud-ourense",
+      "away": "merida-ad"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "zamora",
+      "away": "real-aviles"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "arenas-getxo",
+      "away": "real-aviles"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "barakaldo",
+      "away": "unionistas-de-salamanca"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "cacereno",
+      "away": "ud-logrones"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "cultural-leonesa",
+      "away": "zamora"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "deportivo-la-coruna-ii",
+      "away": "cd-coria"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "merida-ad",
+      "away": "real-union"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "mirandes",
+      "away": "athletic-club-ii"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "ponferradina",
+      "away": "extremadura-1924"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "pontevedra",
+      "away": "lugo"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "ud-ourense",
+      "away": "racing-ferrol"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "athletic-club-ii",
+      "away": "cultural-leonesa"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "cd-coria",
+      "away": "ponferradina"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "extremadura-1924",
+      "away": "cacereno"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "lugo",
+      "away": "ud-ourense"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "racing-ferrol",
+      "away": "merida-ad"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "real-aviles",
+      "away": "mirandes"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "real-union",
+      "away": "arenas-getxo"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "ud-logrones",
+      "away": "barakaldo"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "unionistas-de-salamanca",
+      "away": "deportivo-la-coruna-ii"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "zamora",
+      "away": "pontevedra"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "arenas-getxo",
+      "away": "lugo"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "barakaldo",
+      "away": "athletic-club-ii"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "cacereno",
+      "away": "real-union"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "cultural-leonesa",
+      "away": "racing-ferrol"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "deportivo-la-coruna-ii",
+      "away": "real-aviles"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "merida-ad",
+      "away": "zamora"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "mirandes",
+      "away": "extremadura-1924"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "ponferradina",
+      "away": "ud-logrones"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "pontevedra",
+      "away": "unionistas-de-salamanca"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "ud-ourense",
+      "away": "cd-coria"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "athletic-club-ii",
+      "away": "ud-ourense"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "cd-coria",
+      "away": "ud-logrones"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "extremadura-1924",
+      "away": "arenas-getxo"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "lugo",
+      "away": "cultural-leonesa"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "mirandes",
+      "away": "deportivo-la-coruna-ii"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "racing-ferrol",
+      "away": "cacereno"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "real-aviles",
+      "away": "merida-ad"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "real-union",
+      "away": "pontevedra"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "unionistas-de-salamanca",
+      "away": "ponferradina"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "zamora",
+      "away": "barakaldo"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "arenas-getxo",
+      "away": "unionistas-de-salamanca"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "cacereno",
+      "away": "cd-coria"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "cultural-leonesa",
+      "away": "real-aviles"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "lugo",
+      "away": "barakaldo"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "merida-ad",
+      "away": "extremadura-1924"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "ponferradina",
+      "away": "athletic-club-ii"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "pontevedra",
+      "away": "mirandes"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "racing-ferrol",
+      "away": "zamora"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "ud-logrones",
+      "away": "real-union"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "ud-ourense",
+      "away": "deportivo-la-coruna-ii"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "athletic-club-ii",
+      "away": "lugo"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "barakaldo",
+      "away": "merida-ad"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "cd-coria",
+      "away": "racing-ferrol"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "deportivo-la-coruna-ii",
+      "away": "pontevedra"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "extremadura-1924",
+      "away": "ud-ourense"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "mirandes",
+      "away": "cultural-leonesa"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "ponferradina",
+      "away": "arenas-getxo"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "real-aviles",
+      "away": "cacereno"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "unionistas-de-salamanca",
+      "away": "ud-logrones"
+    },
+    {
+      "round": 18,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "zamora",
+      "away": "real-union"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "arenas-getxo",
+      "away": "mirandes"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "cacereno",
+      "away": "barakaldo"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "cultural-leonesa",
+      "away": "deportivo-la-coruna-ii"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "lugo",
+      "away": "extremadura-1924"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "merida-ad",
+      "away": "unionistas-de-salamanca"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "pontevedra",
+      "away": "cd-coria"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "racing-ferrol",
+      "away": "real-aviles"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "real-union",
+      "away": "ponferradina"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "ud-logrones",
+      "away": "athletic-club-ii"
+    },
+    {
+      "round": 19,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "ud-ourense",
+      "away": "zamora"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "athletic-club-ii",
+      "away": "arenas-getxo"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "barakaldo",
+      "away": "racing-ferrol"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "cd-coria",
+      "away": "lugo"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "deportivo-la-coruna-ii",
+      "away": "merida-ad"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "extremadura-1924",
+      "away": "ud-logrones"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "ponferradina",
+      "away": "ud-ourense"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "pontevedra",
+      "away": "cultural-leonesa"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "real-aviles",
+      "away": "real-union"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "unionistas-de-salamanca",
+      "away": "mirandes"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "zamora",
+      "away": "cacereno"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "arenas-getxo",
+      "away": "cd-coria"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "cacereno",
+      "away": "athletic-club-ii"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "cultural-leonesa",
+      "away": "barakaldo"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "lugo",
+      "away": "real-aviles"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "merida-ad",
+      "away": "pontevedra"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "mirandes",
+      "away": "ponferradina"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "racing-ferrol",
+      "away": "deportivo-la-coruna-ii"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "real-union",
+      "away": "extremadura-1924"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "ud-logrones",
+      "away": "zamora"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "ud-ourense",
+      "away": "unionistas-de-salamanca"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "athletic-club-ii",
+      "away": "merida-ad"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "cd-coria",
+      "away": "cultural-leonesa"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "deportivo-la-coruna-ii",
+      "away": "arenas-getxo"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "extremadura-1924",
+      "away": "real-aviles"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "ponferradina",
+      "away": "racing-ferrol"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "pontevedra",
+      "away": "barakaldo"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "ud-logrones",
+      "away": "lugo"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "ud-ourense",
+      "away": "real-union"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "unionistas-de-salamanca",
+      "away": "cacereno"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "zamora",
+      "away": "mirandes"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-06T16:00:00Z",
+      "home": "athletic-club-ii",
+      "away": "cd-coria"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-06T16:00:00Z",
+      "home": "barakaldo",
+      "away": "deportivo-la-coruna-ii"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-06T16:00:00Z",
+      "home": "cacereno",
+      "away": "pontevedra"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-06T16:00:00Z",
+      "home": "cultural-leonesa",
+      "away": "extremadura-1924"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-06T16:00:00Z",
+      "home": "lugo",
+      "away": "zamora"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-06T16:00:00Z",
+      "home": "merida-ad",
+      "away": "ponferradina"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-06T16:00:00Z",
+      "home": "mirandes",
+      "away": "ud-logrones"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-06T16:00:00Z",
+      "home": "racing-ferrol",
+      "away": "ud-ourense"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-06T16:00:00Z",
+      "home": "real-aviles",
+      "away": "arenas-getxo"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-02-06T16:00:00Z",
+      "home": "real-union",
+      "away": "unionistas-de-salamanca"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "arenas-getxo",
+      "away": "cultural-leonesa"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "cd-coria",
+      "away": "real-union"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "deportivo-la-coruna-ii",
+      "away": "athletic-club-ii"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "extremadura-1924",
+      "away": "barakaldo"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "mirandes",
+      "away": "cacereno"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "ponferradina",
+      "away": "zamora"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "pontevedra",
+      "away": "racing-ferrol"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "ud-logrones",
+      "away": "merida-ad"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "ud-ourense",
+      "away": "lugo"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "unionistas-de-salamanca",
+      "away": "real-aviles"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "athletic-club-ii",
+      "away": "mirandes"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "barakaldo",
+      "away": "ud-logrones"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "cacereno",
+      "away": "ponferradina"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "cultural-leonesa",
+      "away": "unionistas-de-salamanca"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "lugo",
+      "away": "pontevedra"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "merida-ad",
+      "away": "ud-ourense"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "racing-ferrol",
+      "away": "arenas-getxo"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "real-aviles",
+      "away": "cd-coria"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "real-union",
+      "away": "deportivo-la-coruna-ii"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "zamora",
+      "away": "extremadura-1924"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "arenas-getxo",
+      "away": "real-union"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "cacereno",
+      "away": "racing-ferrol"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "deportivo-la-coruna-ii",
+      "away": "lugo"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "extremadura-1924",
+      "away": "cd-coria"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "mirandes",
+      "away": "merida-ad"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "ponferradina",
+      "away": "pontevedra"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "ud-logrones",
+      "away": "real-aviles"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "ud-ourense",
+      "away": "athletic-club-ii"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "unionistas-de-salamanca",
+      "away": "barakaldo"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "zamora",
+      "away": "cultural-leonesa"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "athletic-club-ii",
+      "away": "ponferradina"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "barakaldo",
+      "away": "ud-ourense"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "cd-coria",
+      "away": "deportivo-la-coruna-ii"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "cultural-leonesa",
+      "away": "ud-logrones"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "lugo",
+      "away": "unionistas-de-salamanca"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "merida-ad",
+      "away": "arenas-getxo"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "pontevedra",
+      "away": "extremadura-1924"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "racing-ferrol",
+      "away": "mirandes"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "real-aviles",
+      "away": "zamora"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "real-union",
+      "away": "cacereno"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "arenas-getxo",
+      "away": "barakaldo"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "cd-coria",
+      "away": "cacereno"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "cultural-leonesa",
+      "away": "lugo"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "deportivo-la-coruna-ii",
+      "away": "unionistas-de-salamanca"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "extremadura-1924",
+      "away": "ponferradina"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "mirandes",
+      "away": "pontevedra"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "real-union",
+      "away": "athletic-club-ii"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "ud-logrones",
+      "away": "racing-ferrol"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "ud-ourense",
+      "away": "real-aviles"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "zamora",
+      "away": "merida-ad"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "arenas-getxo",
+      "away": "extremadura-1924"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "barakaldo",
+      "away": "zamora"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "cacereno",
+      "away": "ud-ourense"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "merida-ad",
+      "away": "lugo"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "mirandes",
+      "away": "real-union"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "ponferradina",
+      "away": "cultural-leonesa"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "pontevedra",
+      "away": "ud-logrones"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "racing-ferrol",
+      "away": "athletic-club-ii"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "real-aviles",
+      "away": "deportivo-la-coruna-ii"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "unionistas-de-salamanca",
+      "away": "cd-coria"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "athletic-club-ii",
+      "away": "pontevedra"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "cd-coria",
+      "away": "zamora"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "deportivo-la-coruna-ii",
+      "away": "cultural-leonesa"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "extremadura-1924",
+      "away": "merida-ad"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "lugo",
+      "away": "ponferradina"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "real-aviles",
+      "away": "barakaldo"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "real-union",
+      "away": "racing-ferrol"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "ud-logrones",
+      "away": "cacereno"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "ud-ourense",
+      "away": "mirandes"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "unionistas-de-salamanca",
+      "away": "arenas-getxo"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "athletic-club-ii",
+      "away": "ud-logrones"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "barakaldo",
+      "away": "cd-coria"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "cacereno",
+      "away": "extremadura-1924"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "cultural-leonesa",
+      "away": "ud-ourense"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "merida-ad",
+      "away": "real-aviles"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "mirandes",
+      "away": "arenas-getxo"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "ponferradina",
+      "away": "real-union"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "pontevedra",
+      "away": "deportivo-la-coruna-ii"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "racing-ferrol",
+      "away": "lugo"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "zamora",
+      "away": "unionistas-de-salamanca"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "arenas-getxo",
+      "away": "cacereno"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "cd-coria",
+      "away": "merida-ad"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "deportivo-la-coruna-ii",
+      "away": "zamora"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "extremadura-1924",
+      "away": "mirandes"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "lugo",
+      "away": "athletic-club-ii"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "real-aviles",
+      "away": "cultural-leonesa"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "real-union",
+      "away": "barakaldo"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "ud-logrones",
+      "away": "ponferradina"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "ud-ourense",
+      "away": "pontevedra"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "unionistas-de-salamanca",
+      "away": "racing-ferrol"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "athletic-club-ii",
+      "away": "barakaldo"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "cacereno",
+      "away": "merida-ad"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "cultural-leonesa",
+      "away": "real-union"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "extremadura-1924",
+      "away": "deportivo-la-coruna-ii"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "mirandes",
+      "away": "lugo"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "ponferradina",
+      "away": "unionistas-de-salamanca"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "pontevedra",
+      "away": "real-aviles"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "racing-ferrol",
+      "away": "cd-coria"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "ud-logrones",
+      "away": "ud-ourense"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "zamora",
+      "away": "arenas-getxo"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "arenas-getxo",
+      "away": "ud-logrones"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "barakaldo",
+      "away": "ponferradina"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "cd-coria",
+      "away": "pontevedra"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "cultural-leonesa",
+      "away": "mirandes"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "deportivo-la-coruna-ii",
+      "away": "ud-ourense"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "lugo",
+      "away": "cacereno"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "merida-ad",
+      "away": "racing-ferrol"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "real-aviles",
+      "away": "athletic-club-ii"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "real-union",
+      "away": "zamora"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "unionistas-de-salamanca",
+      "away": "extremadura-1924"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "athletic-club-ii",
+      "away": "unionistas-de-salamanca"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "cacereno",
+      "away": "real-aviles"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "lugo",
+      "away": "real-union"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "merida-ad",
+      "away": "cultural-leonesa"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "mirandes",
+      "away": "barakaldo"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "ponferradina",
+      "away": "deportivo-la-coruna-ii"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "pontevedra",
+      "away": "zamora"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "racing-ferrol",
+      "away": "extremadura-1924"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "ud-logrones",
+      "away": "cd-coria"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "ud-ourense",
+      "away": "arenas-getxo"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "arenas-getxo",
+      "away": "ponferradina"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "barakaldo",
+      "away": "lugo"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "cd-coria",
+      "away": "mirandes"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "cultural-leonesa",
+      "away": "cacereno"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "deportivo-la-coruna-ii",
+      "away": "ud-logrones"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "extremadura-1924",
+      "away": "athletic-club-ii"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "real-aviles",
+      "away": "racing-ferrol"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "real-union",
+      "away": "merida-ad"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "unionistas-de-salamanca",
+      "away": "pontevedra"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "zamora",
+      "away": "ud-ourense"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "athletic-club-ii",
+      "away": "zamora"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "cacereno",
+      "away": "deportivo-la-coruna-ii"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "lugo",
+      "away": "arenas-getxo"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "merida-ad",
+      "away": "barakaldo"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "mirandes",
+      "away": "real-aviles"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "ponferradina",
+      "away": "cd-coria"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "pontevedra",
+      "away": "real-union"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "racing-ferrol",
+      "away": "cultural-leonesa"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "ud-logrones",
+      "away": "unionistas-de-salamanca"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "ud-ourense",
+      "away": "extremadura-1924"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "arenas-getxo",
+      "away": "pontevedra"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "barakaldo",
+      "away": "cacereno"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "cd-coria",
+      "away": "ud-ourense"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "cultural-leonesa",
+      "away": "athletic-club-ii"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "deportivo-la-coruna-ii",
+      "away": "mirandes"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "extremadura-1924",
+      "away": "lugo"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "real-aviles",
+      "away": "ponferradina"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "real-union",
+      "away": "ud-logrones"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "unionistas-de-salamanca",
+      "away": "merida-ad"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "zamora",
+      "away": "racing-ferrol"
+    }
+  ]
+}

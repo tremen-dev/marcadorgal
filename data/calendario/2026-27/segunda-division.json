@@ -1,0 +1,2872 @@
+{
+  "competition": {
+    "id": "segunda-division",
+    "season": "2026-27",
+    "name": "Segunda División",
+    "tier": 2
+  },
+  "teams": [
+    {
+      "id": "ad-ceuta-fc",
+      "name": "AD Ceuta FC"
+    },
+    {
+      "id": "albacete",
+      "name": "Albacete"
+    },
+    {
+      "id": "almeria",
+      "name": "Almeria"
+    },
+    {
+      "id": "burgos",
+      "name": "Burgos"
+    },
+    {
+      "id": "cadiz",
+      "name": "Cadiz"
+    },
+    {
+      "id": "castellon",
+      "name": "Castellón"
+    },
+    {
+      "id": "celta-de-vigo-ii",
+      "name": "Celta de Vigo II"
+    },
+    {
+      "id": "cordoba",
+      "name": "Cordoba"
+    },
+    {
+      "id": "eibar",
+      "name": "Eibar"
+    },
+    {
+      "id": "eldense",
+      "name": "Eldense"
+    },
+    {
+      "id": "fc-andorra",
+      "name": "FC Andorra"
+    },
+    {
+      "id": "girona",
+      "name": "Girona"
+    },
+    {
+      "id": "granada-cf",
+      "name": "Granada CF"
+    },
+    {
+      "id": "las-palmas",
+      "name": "Las Palmas"
+    },
+    {
+      "id": "leganes",
+      "name": "Leganes"
+    },
+    {
+      "id": "mallorca",
+      "name": "Mallorca"
+    },
+    {
+      "id": "oviedo",
+      "name": "Oviedo"
+    },
+    {
+      "id": "real-sociedad-ii",
+      "name": "Real Sociedad II"
+    },
+    {
+      "id": "sabadell",
+      "name": "Sabadell"
+    },
+    {
+      "id": "sporting-gijon",
+      "name": "Sporting Gijon"
+    },
+    {
+      "id": "tenerife",
+      "name": "Tenerife"
+    },
+    {
+      "id": "valladolid",
+      "name": "Valladolid"
+    }
+  ],
+  "matches": [
+    {
+      "round": 1,
+      "kickoff": "2026-08-14T18:30:00Z",
+      "home": "real-sociedad-ii",
+      "away": "castellon"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-15T15:00:00Z",
+      "home": "fc-andorra",
+      "away": "ad-ceuta-fc"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-15T17:00:00Z",
+      "home": "cadiz",
+      "away": "celta-de-vigo-ii"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-15T17:00:00Z",
+      "home": "oviedo",
+      "away": "granada-cf"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-15T19:30:00Z",
+      "home": "mallorca",
+      "away": "valladolid"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-16T15:00:00Z",
+      "home": "eibar",
+      "away": "tenerife"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-16T17:00:00Z",
+      "home": "burgos",
+      "away": "cordoba"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-16T17:00:00Z",
+      "home": "girona",
+      "away": "leganes"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-16T19:30:00Z",
+      "home": "las-palmas",
+      "away": "albacete"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-17T17:00:00Z",
+      "home": "sporting-gijon",
+      "away": "sabadell"
+    },
+    {
+      "round": 1,
+      "kickoff": "2026-08-17T19:30:00Z",
+      "home": "almeria",
+      "away": "eldense"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-21T19:00:00Z",
+      "home": "cordoba",
+      "away": "girona"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-22T15:00:00Z",
+      "home": "oviedo",
+      "away": "leganes"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-22T17:00:00Z",
+      "home": "ad-ceuta-fc",
+      "away": "las-palmas"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-22T17:00:00Z",
+      "home": "albacete",
+      "away": "real-sociedad-ii"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-22T19:30:00Z",
+      "home": "eldense",
+      "away": "cadiz"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-23T15:00:00Z",
+      "home": "eibar",
+      "away": "valladolid"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-23T17:00:00Z",
+      "home": "castellon",
+      "away": "sabadell"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-23T17:00:00Z",
+      "home": "sporting-gijon",
+      "away": "burgos"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-23T19:30:00Z",
+      "home": "tenerife",
+      "away": "almeria"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-24T17:00:00Z",
+      "home": "celta-de-vigo-ii",
+      "away": "fc-andorra"
+    },
+    {
+      "round": 2,
+      "kickoff": "2026-08-24T19:30:00Z",
+      "home": "granada-cf",
+      "away": "mallorca"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-28T19:00:00Z",
+      "home": "tenerife",
+      "away": "sporting-gijon"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-29T15:00:00Z",
+      "home": "sabadell",
+      "away": "almeria"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-29T17:00:00Z",
+      "home": "albacete",
+      "away": "oviedo"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-29T17:00:00Z",
+      "home": "leganes",
+      "away": "eldense"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-29T19:30:00Z",
+      "home": "girona",
+      "away": "las-palmas"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-30T15:00:00Z",
+      "home": "fc-andorra",
+      "away": "eibar"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-30T17:00:00Z",
+      "home": "cadiz",
+      "away": "valladolid"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-30T17:00:00Z",
+      "home": "mallorca",
+      "away": "ad-ceuta-fc"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-30T19:30:00Z",
+      "home": "cordoba",
+      "away": "granada-cf"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-31T17:00:00Z",
+      "home": "burgos",
+      "away": "real-sociedad-ii"
+    },
+    {
+      "round": 3,
+      "kickoff": "2026-08-31T19:30:00Z",
+      "home": "celta-de-vigo-ii",
+      "away": "castellon"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-04T18:30:00Z",
+      "home": "las-palmas",
+      "away": "leganes"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-05T12:00:00Z",
+      "home": "real-sociedad-ii",
+      "away": "tenerife"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-05T14:15:00Z",
+      "home": "sporting-gijon",
+      "away": "girona"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-05T16:30:00Z",
+      "home": "ad-ceuta-fc",
+      "away": "celta-de-vigo-ii"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-05T16:30:00Z",
+      "home": "valladolid",
+      "away": "fc-andorra"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-05T19:00:00Z",
+      "home": "eldense",
+      "away": "mallorca"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-06T12:00:00Z",
+      "home": "eibar",
+      "away": "granada-cf"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-06T14:15:00Z",
+      "home": "oviedo",
+      "away": "burgos"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-06T16:30:00Z",
+      "home": "castellon",
+      "away": "albacete"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-06T19:00:00Z",
+      "home": "almeria",
+      "away": "cadiz"
+    },
+    {
+      "round": 4,
+      "kickoff": "2026-09-07T18:30:00Z",
+      "home": "sabadell",
+      "away": "cordoba"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-11T18:30:00Z",
+      "home": "burgos",
+      "away": "ad-ceuta-fc"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-12T12:00:00Z",
+      "home": "fc-andorra",
+      "away": "real-sociedad-ii"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-12T14:15:00Z",
+      "home": "cadiz",
+      "away": "las-palmas"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-12T16:30:00Z",
+      "home": "girona",
+      "away": "castellon"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-12T16:30:00Z",
+      "home": "granada-cf",
+      "away": "albacete"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-12T19:00:00Z",
+      "home": "cordoba",
+      "away": "almeria"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-13T12:00:00Z",
+      "home": "sporting-gijon",
+      "away": "eldense"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-13T14:15:00Z",
+      "home": "valladolid",
+      "away": "oviedo"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-13T16:30:00Z",
+      "home": "mallorca",
+      "away": "sabadell"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-13T19:00:00Z",
+      "home": "tenerife",
+      "away": "leganes"
+    },
+    {
+      "round": 5,
+      "kickoff": "2026-09-14T18:30:00Z",
+      "home": "celta-de-vigo-ii",
+      "away": "eibar"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-18T18:30:00Z",
+      "home": "albacete",
+      "away": "cordoba"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-19T12:00:00Z",
+      "home": "real-sociedad-ii",
+      "away": "mallorca"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-19T14:15:00Z",
+      "home": "fc-andorra",
+      "away": "sporting-gijon"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-19T16:30:00Z",
+      "home": "castellon",
+      "away": "tenerife"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-19T16:30:00Z",
+      "home": "eldense",
+      "away": "eibar"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-19T19:00:00Z",
+      "home": "cadiz",
+      "away": "girona"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-20T12:00:00Z",
+      "home": "sabadell",
+      "away": "oviedo"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-20T14:15:00Z",
+      "home": "ad-ceuta-fc",
+      "away": "valladolid"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-20T16:30:00Z",
+      "home": "almeria",
+      "away": "celta-de-vigo-ii"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-20T16:30:00Z",
+      "home": "las-palmas",
+      "away": "burgos"
+    },
+    {
+      "round": 6,
+      "kickoff": "2026-09-20T19:00:00Z",
+      "home": "leganes",
+      "away": "granada-cf"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-25T18:30:00Z",
+      "home": "girona",
+      "away": "albacete"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-26T12:00:00Z",
+      "home": "ad-ceuta-fc",
+      "away": "real-sociedad-ii"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-26T14:15:00Z",
+      "home": "granada-cf",
+      "away": "fc-andorra"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-26T16:30:00Z",
+      "home": "celta-de-vigo-ii",
+      "away": "sabadell"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-26T16:30:00Z",
+      "home": "tenerife",
+      "away": "cadiz"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-27T12:00:00Z",
+      "home": "valladolid",
+      "away": "cordoba"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-27T14:15:00Z",
+      "home": "mallorca",
+      "away": "almeria"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-27T16:30:00Z",
+      "home": "burgos",
+      "away": "eldense"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-27T16:30:00Z",
+      "home": "eibar",
+      "away": "las-palmas"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-27T19:00:00Z",
+      "home": "oviedo",
+      "away": "sporting-gijon"
+    },
+    {
+      "round": 7,
+      "kickoff": "2026-09-28T18:30:00Z",
+      "home": "leganes",
+      "away": "castellon"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "albacete",
+      "away": "eibar"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "almeria",
+      "away": "burgos"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "cadiz",
+      "away": "leganes"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "castellon",
+      "away": "ad-ceuta-fc"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "cordoba",
+      "away": "tenerife"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "eldense",
+      "away": "oviedo"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "girona",
+      "away": "mallorca"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "las-palmas",
+      "away": "valladolid"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "real-sociedad-ii",
+      "away": "granada-cf"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "sabadell",
+      "away": "fc-andorra"
+    },
+    {
+      "round": 8,
+      "kickoff": "2026-10-04T15:00:00Z",
+      "home": "sporting-gijon",
+      "away": "celta-de-vigo-ii"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "ad-ceuta-fc",
+      "away": "sabadell"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "almeria",
+      "away": "leganes"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "burgos",
+      "away": "granada-cf"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "cadiz",
+      "away": "sporting-gijon"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "celta-de-vigo-ii",
+      "away": "real-sociedad-ii"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "eldense",
+      "away": "cordoba"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "fc-andorra",
+      "away": "castellon"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "mallorca",
+      "away": "las-palmas"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "oviedo",
+      "away": "eibar"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "tenerife",
+      "away": "girona"
+    },
+    {
+      "round": 9,
+      "kickoff": "2026-10-11T15:00:00Z",
+      "home": "valladolid",
+      "away": "albacete"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "ad-ceuta-fc",
+      "away": "oviedo"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "burgos",
+      "away": "sabadell"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "celta-de-vigo-ii",
+      "away": "tenerife"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "eibar",
+      "away": "mallorca"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "girona",
+      "away": "fc-andorra"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "granada-cf",
+      "away": "cadiz"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "las-palmas",
+      "away": "castellon"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "leganes",
+      "away": "cordoba"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "real-sociedad-ii",
+      "away": "almeria"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "sporting-gijon",
+      "away": "albacete"
+    },
+    {
+      "round": 10,
+      "kickoff": "2026-10-18T15:00:00Z",
+      "home": "valladolid",
+      "away": "eldense"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "albacete",
+      "away": "eldense"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "almeria",
+      "away": "oviedo"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "cadiz",
+      "away": "ad-ceuta-fc"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "castellon",
+      "away": "sporting-gijon"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "cordoba",
+      "away": "eibar"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "fc-andorra",
+      "away": "burgos"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "girona",
+      "away": "celta-de-vigo-ii"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "granada-cf",
+      "away": "valladolid"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "las-palmas",
+      "away": "real-sociedad-ii"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "leganes",
+      "away": "mallorca"
+    },
+    {
+      "round": 11,
+      "kickoff": "2026-10-25T16:00:00Z",
+      "home": "sabadell",
+      "away": "tenerife"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "ad-ceuta-fc",
+      "away": "sporting-gijon"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "albacete",
+      "away": "sabadell"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "burgos",
+      "away": "castellon"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "celta-de-vigo-ii",
+      "away": "cordoba"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "eibar",
+      "away": "almeria"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "eldense",
+      "away": "granada-cf"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "mallorca",
+      "away": "cadiz"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "oviedo",
+      "away": "las-palmas"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "real-sociedad-ii",
+      "away": "girona"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "tenerife",
+      "away": "fc-andorra"
+    },
+    {
+      "round": 12,
+      "kickoff": "2026-11-01T16:00:00Z",
+      "home": "valladolid",
+      "away": "leganes"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "burgos",
+      "away": "celta-de-vigo-ii"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "cadiz",
+      "away": "oviedo"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "castellon",
+      "away": "eibar"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "cordoba",
+      "away": "ad-ceuta-fc"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "fc-andorra",
+      "away": "mallorca"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "girona",
+      "away": "almeria"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "granada-cf",
+      "away": "tenerife"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "las-palmas",
+      "away": "eldense"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "leganes",
+      "away": "albacete"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "sabadell",
+      "away": "real-sociedad-ii"
+    },
+    {
+      "round": 13,
+      "kickoff": "2026-11-08T16:00:00Z",
+      "home": "sporting-gijon",
+      "away": "valladolid"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "albacete",
+      "away": "celta-de-vigo-ii"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "almeria",
+      "away": "fc-andorra"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "eibar",
+      "away": "cadiz"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "eldense",
+      "away": "sabadell"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "granada-cf",
+      "away": "las-palmas"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "leganes",
+      "away": "burgos"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "mallorca",
+      "away": "cordoba"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "oviedo",
+      "away": "girona"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "real-sociedad-ii",
+      "away": "sporting-gijon"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "tenerife",
+      "away": "ad-ceuta-fc"
+    },
+    {
+      "round": 14,
+      "kickoff": "2026-11-15T16:00:00Z",
+      "home": "valladolid",
+      "away": "castellon"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "ad-ceuta-fc",
+      "away": "almeria"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "burgos",
+      "away": "albacete"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "castellon",
+      "away": "eldense"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "celta-de-vigo-ii",
+      "away": "valladolid"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "cordoba",
+      "away": "oviedo"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "fc-andorra",
+      "away": "leganes"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "girona",
+      "away": "eibar"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "real-sociedad-ii",
+      "away": "cadiz"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "sabadell",
+      "away": "granada-cf"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "sporting-gijon",
+      "away": "las-palmas"
+    },
+    {
+      "round": 15,
+      "kickoff": "2026-11-22T16:00:00Z",
+      "home": "tenerife",
+      "away": "mallorca"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "albacete",
+      "away": "tenerife"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "almeria",
+      "away": "sporting-gijon"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "cadiz",
+      "away": "cordoba"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "eibar",
+      "away": "burgos"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "eldense",
+      "away": "girona"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "granada-cf",
+      "away": "ad-ceuta-fc"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "las-palmas",
+      "away": "fc-andorra"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "leganes",
+      "away": "sabadell"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "mallorca",
+      "away": "castellon"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "oviedo",
+      "away": "celta-de-vigo-ii"
+    },
+    {
+      "round": 16,
+      "kickoff": "2026-11-29T16:00:00Z",
+      "home": "valladolid",
+      "away": "real-sociedad-ii"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "ad-ceuta-fc",
+      "away": "albacete"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "burgos",
+      "away": "cadiz"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "castellon",
+      "away": "almeria"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "celta-de-vigo-ii",
+      "away": "mallorca"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "cordoba",
+      "away": "las-palmas"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "fc-andorra",
+      "away": "oviedo"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "girona",
+      "away": "valladolid"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "real-sociedad-ii",
+      "away": "leganes"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "sabadell",
+      "away": "eibar"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "sporting-gijon",
+      "away": "granada-cf"
+    },
+    {
+      "round": 17,
+      "kickoff": "2026-12-06T16:00:00Z",
+      "home": "tenerife",
+      "away": "eldense"
+    },
+    {
+      "round": 18,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "almeria",
+      "away": "albacete"
+    },
+    {
+      "round": 18,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "cadiz",
+      "away": "sabadell"
+    },
+    {
+      "round": 18,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "cordoba",
+      "away": "castellon"
+    },
+    {
+      "round": 18,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "eibar",
+      "away": "sporting-gijon"
+    },
+    {
+      "round": 18,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "eldense",
+      "away": "fc-andorra"
+    },
+    {
+      "round": 18,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "granada-cf",
+      "away": "girona"
+    },
+    {
+      "round": 18,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "las-palmas",
+      "away": "celta-de-vigo-ii"
+    },
+    {
+      "round": 18,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "leganes",
+      "away": "ad-ceuta-fc"
+    },
+    {
+      "round": 18,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "mallorca",
+      "away": "burgos"
+    },
+    {
+      "round": 18,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "oviedo",
+      "away": "real-sociedad-ii"
+    },
+    {
+      "round": 18,
+      "kickoff": "2026-12-13T16:00:00Z",
+      "home": "valladolid",
+      "away": "tenerife"
+    },
+    {
+      "round": 19,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "ad-ceuta-fc",
+      "away": "eibar"
+    },
+    {
+      "round": 19,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "albacete",
+      "away": "mallorca"
+    },
+    {
+      "round": 19,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "almeria",
+      "away": "valladolid"
+    },
+    {
+      "round": 19,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "burgos",
+      "away": "girona"
+    },
+    {
+      "round": 19,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "castellon",
+      "away": "granada-cf"
+    },
+    {
+      "round": 19,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "celta-de-vigo-ii",
+      "away": "eldense"
+    },
+    {
+      "round": 19,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "fc-andorra",
+      "away": "cadiz"
+    },
+    {
+      "round": 19,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "real-sociedad-ii",
+      "away": "cordoba"
+    },
+    {
+      "round": 19,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "sabadell",
+      "away": "las-palmas"
+    },
+    {
+      "round": 19,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "sporting-gijon",
+      "away": "leganes"
+    },
+    {
+      "round": 19,
+      "kickoff": "2026-12-20T16:00:00Z",
+      "home": "tenerife",
+      "away": "oviedo"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "cadiz",
+      "away": "albacete"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "cordoba",
+      "away": "fc-andorra"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "eibar",
+      "away": "real-sociedad-ii"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "eldense",
+      "away": "ad-ceuta-fc"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "girona",
+      "away": "sabadell"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "granada-cf",
+      "away": "almeria"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "las-palmas",
+      "away": "tenerife"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "leganes",
+      "away": "celta-de-vigo-ii"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "mallorca",
+      "away": "sporting-gijon"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "oviedo",
+      "away": "castellon"
+    },
+    {
+      "round": 20,
+      "kickoff": "2027-01-03T16:00:00Z",
+      "home": "valladolid",
+      "away": "burgos"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "ad-ceuta-fc",
+      "away": "girona"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "albacete",
+      "away": "fc-andorra"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "almeria",
+      "away": "las-palmas"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "castellon",
+      "away": "cadiz"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "celta-de-vigo-ii",
+      "away": "granada-cf"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "leganes",
+      "away": "eibar"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "mallorca",
+      "away": "oviedo"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "real-sociedad-ii",
+      "away": "eldense"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "sabadell",
+      "away": "valladolid"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "sporting-gijon",
+      "away": "cordoba"
+    },
+    {
+      "round": 21,
+      "kickoff": "2027-01-10T16:00:00Z",
+      "home": "tenerife",
+      "away": "burgos"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "burgos",
+      "away": "sporting-gijon"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "cadiz",
+      "away": "mallorca"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "castellon",
+      "away": "leganes"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "cordoba",
+      "away": "sabadell"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "eibar",
+      "away": "celta-de-vigo-ii"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "eldense",
+      "away": "albacete"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "fc-andorra",
+      "away": "tenerife"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "granada-cf",
+      "away": "real-sociedad-ii"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "las-palmas",
+      "away": "girona"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "oviedo",
+      "away": "almeria"
+    },
+    {
+      "round": 22,
+      "kickoff": "2027-01-17T16:00:00Z",
+      "home": "valladolid",
+      "away": "ad-ceuta-fc"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "albacete",
+      "away": "granada-cf"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "almeria",
+      "away": "cordoba"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "cadiz",
+      "away": "eldense"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "celta-de-vigo-ii",
+      "away": "burgos"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "girona",
+      "away": "oviedo"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "leganes",
+      "away": "valladolid"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "mallorca",
+      "away": "fc-andorra"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "real-sociedad-ii",
+      "away": "las-palmas"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "sabadell",
+      "away": "ad-ceuta-fc"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "sporting-gijon",
+      "away": "castellon"
+    },
+    {
+      "round": 23,
+      "kickoff": "2027-01-24T16:00:00Z",
+      "home": "tenerife",
+      "away": "eibar"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "ad-ceuta-fc",
+      "away": "tenerife"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "burgos",
+      "away": "leganes"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "cordoba",
+      "away": "mallorca"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "eibar",
+      "away": "albacete"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "eldense",
+      "away": "castellon"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "fc-andorra",
+      "away": "almeria"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "girona",
+      "away": "real-sociedad-ii"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "granada-cf",
+      "away": "sabadell"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "las-palmas",
+      "away": "sporting-gijon"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "oviedo",
+      "away": "cadiz"
+    },
+    {
+      "round": 24,
+      "kickoff": "2027-01-31T16:00:00Z",
+      "home": "valladolid",
+      "away": "celta-de-vigo-ii"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "albacete",
+      "away": "valladolid"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "almeria",
+      "away": "eibar"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "castellon",
+      "away": "las-palmas"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "celta-de-vigo-ii",
+      "away": "girona"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "cordoba",
+      "away": "cadiz"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "leganes",
+      "away": "oviedo"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "mallorca",
+      "away": "eldense"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "real-sociedad-ii",
+      "away": "fc-andorra"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "sabadell",
+      "away": "burgos"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "sporting-gijon",
+      "away": "ad-ceuta-fc"
+    },
+    {
+      "round": 25,
+      "kickoff": "2027-02-07T16:00:00Z",
+      "home": "tenerife",
+      "away": "granada-cf"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "ad-ceuta-fc",
+      "away": "mallorca"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "albacete",
+      "away": "castellon"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "burgos",
+      "away": "almeria"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "cadiz",
+      "away": "real-sociedad-ii"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "eldense",
+      "away": "tenerife"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "fc-andorra",
+      "away": "celta-de-vigo-ii"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "girona",
+      "away": "cordoba"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "granada-cf",
+      "away": "leganes"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "las-palmas",
+      "away": "eibar"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "oviedo",
+      "away": "sabadell"
+    },
+    {
+      "round": 26,
+      "kickoff": "2027-02-14T16:00:00Z",
+      "home": "valladolid",
+      "away": "sporting-gijon"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "almeria",
+      "away": "ad-ceuta-fc"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "castellon",
+      "away": "girona"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "celta-de-vigo-ii",
+      "away": "las-palmas"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "cordoba",
+      "away": "burgos"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "eibar",
+      "away": "oviedo"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "leganes",
+      "away": "cadiz"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "mallorca",
+      "away": "granada-cf"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "real-sociedad-ii",
+      "away": "valladolid"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "sabadell",
+      "away": "eldense"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "sporting-gijon",
+      "away": "fc-andorra"
+    },
+    {
+      "round": 27,
+      "kickoff": "2027-02-21T16:00:00Z",
+      "home": "tenerife",
+      "away": "albacete"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "ad-ceuta-fc",
+      "away": "leganes"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "albacete",
+      "away": "burgos"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "cadiz",
+      "away": "almeria"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "castellon",
+      "away": "fc-andorra"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "eldense",
+      "away": "celta-de-vigo-ii"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "girona",
+      "away": "sporting-gijon"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "granada-cf",
+      "away": "cordoba"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "las-palmas",
+      "away": "sabadell"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "mallorca",
+      "away": "real-sociedad-ii"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "oviedo",
+      "away": "tenerife"
+    },
+    {
+      "round": 28,
+      "kickoff": "2027-02-28T16:00:00Z",
+      "home": "valladolid",
+      "away": "eibar"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "almeria",
+      "away": "castellon"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "burgos",
+      "away": "mallorca"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "celta-de-vigo-ii",
+      "away": "oviedo"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "cordoba",
+      "away": "valladolid"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "eibar",
+      "away": "eldense"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "fc-andorra",
+      "away": "girona"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "las-palmas",
+      "away": "granada-cf"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "leganes",
+      "away": "tenerife"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "real-sociedad-ii",
+      "away": "ad-ceuta-fc"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "sabadell",
+      "away": "albacete"
+    },
+    {
+      "round": 29,
+      "kickoff": "2027-03-07T16:00:00Z",
+      "home": "sporting-gijon",
+      "away": "cadiz"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "ad-ceuta-fc",
+      "away": "fc-andorra"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "albacete",
+      "away": "las-palmas"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "cadiz",
+      "away": "granada-cf"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "castellon",
+      "away": "celta-de-vigo-ii"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "eldense",
+      "away": "sporting-gijon"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "girona",
+      "away": "burgos"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "mallorca",
+      "away": "leganes"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "oviedo",
+      "away": "cordoba"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "real-sociedad-ii",
+      "away": "eibar"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "tenerife",
+      "away": "sabadell"
+    },
+    {
+      "round": 30,
+      "kickoff": "2027-03-14T16:00:00Z",
+      "home": "valladolid",
+      "away": "almeria"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "almeria",
+      "away": "real-sociedad-ii"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "burgos",
+      "away": "tenerife"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "cordoba",
+      "away": "eldense"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "eibar",
+      "away": "ad-ceuta-fc"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "fc-andorra",
+      "away": "albacete"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "granada-cf",
+      "away": "castellon"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "las-palmas",
+      "away": "oviedo"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "leganes",
+      "away": "girona"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "sabadell",
+      "away": "celta-de-vigo-ii"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "sporting-gijon",
+      "away": "mallorca"
+    },
+    {
+      "round": 31,
+      "kickoff": "2027-03-21T16:00:00Z",
+      "home": "valladolid",
+      "away": "cadiz"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "ad-ceuta-fc",
+      "away": "granada-cf"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "albacete",
+      "away": "almeria"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "castellon",
+      "away": "cordoba"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "celta-de-vigo-ii",
+      "away": "sporting-gijon"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "eibar",
+      "away": "fc-andorra"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "eldense",
+      "away": "leganes"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "girona",
+      "away": "cadiz"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "oviedo",
+      "away": "valladolid"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "real-sociedad-ii",
+      "away": "burgos"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "sabadell",
+      "away": "mallorca"
+    },
+    {
+      "round": 32,
+      "kickoff": "2027-03-28T15:00:00Z",
+      "home": "tenerife",
+      "away": "las-palmas"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "burgos",
+      "away": "oviedo"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "cadiz",
+      "away": "castellon"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "cordoba",
+      "away": "celta-de-vigo-ii"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "fc-andorra",
+      "away": "eldense"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "granada-cf",
+      "away": "eibar"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "las-palmas",
+      "away": "ad-ceuta-fc"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "leganes",
+      "away": "almeria"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "mallorca",
+      "away": "girona"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "real-sociedad-ii",
+      "away": "albacete"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "sporting-gijon",
+      "away": "tenerife"
+    },
+    {
+      "round": 33,
+      "kickoff": "2027-04-04T15:00:00Z",
+      "home": "valladolid",
+      "away": "sabadell"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "albacete",
+      "away": "ad-ceuta-fc"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "almeria",
+      "away": "tenerife"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "castellon",
+      "away": "burgos"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "celta-de-vigo-ii",
+      "away": "cadiz"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "eibar",
+      "away": "cordoba"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "fc-andorra",
+      "away": "valladolid"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "girona",
+      "away": "granada-cf"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "las-palmas",
+      "away": "mallorca"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "oviedo",
+      "away": "eldense"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "sabadell",
+      "away": "leganes"
+    },
+    {
+      "round": 34,
+      "kickoff": "2027-04-11T15:00:00Z",
+      "home": "sporting-gijon",
+      "away": "real-sociedad-ii"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "ad-ceuta-fc",
+      "away": "castellon"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "cadiz",
+      "away": "fc-andorra"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "celta-de-vigo-ii",
+      "away": "almeria"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "cordoba",
+      "away": "albacete"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "eldense",
+      "away": "burgos"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "granada-cf",
+      "away": "oviedo"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "leganes",
+      "away": "las-palmas"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "mallorca",
+      "away": "eibar"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "sabadell",
+      "away": "sporting-gijon"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "tenerife",
+      "away": "real-sociedad-ii"
+    },
+    {
+      "round": 35,
+      "kickoff": "2027-04-18T15:00:00Z",
+      "home": "valladolid",
+      "away": "girona"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "ad-ceuta-fc",
+      "away": "eldense"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "albacete",
+      "away": "leganes"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "almeria",
+      "away": "granada-cf"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "burgos",
+      "away": "valladolid"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "castellon",
+      "away": "mallorca"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "eibar",
+      "away": "sabadell"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "fc-andorra",
+      "away": "cordoba"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "girona",
+      "away": "tenerife"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "las-palmas",
+      "away": "cadiz"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "real-sociedad-ii",
+      "away": "celta-de-vigo-ii"
+    },
+    {
+      "round": 36,
+      "kickoff": "2027-04-25T15:00:00Z",
+      "home": "sporting-gijon",
+      "away": "oviedo"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "cadiz",
+      "away": "eibar"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "celta-de-vigo-ii",
+      "away": "ad-ceuta-fc"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "cordoba",
+      "away": "real-sociedad-ii"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "eldense",
+      "away": "almeria"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "fc-andorra",
+      "away": "las-palmas"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "granada-cf",
+      "away": "burgos"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "leganes",
+      "away": "sporting-gijon"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "oviedo",
+      "away": "albacete"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "sabadell",
+      "away": "girona"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "tenerife",
+      "away": "castellon"
+    },
+    {
+      "round": 37,
+      "kickoff": "2027-05-02T15:00:00Z",
+      "home": "valladolid",
+      "away": "mallorca"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "ad-ceuta-fc",
+      "away": "cadiz"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "albacete",
+      "away": "girona"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "almeria",
+      "away": "sabadell"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "burgos",
+      "away": "fc-andorra"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "castellon",
+      "away": "valladolid"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "eibar",
+      "away": "leganes"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "eldense",
+      "away": "las-palmas"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "granada-cf",
+      "away": "sporting-gijon"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "mallorca",
+      "away": "celta-de-vigo-ii"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "real-sociedad-ii",
+      "away": "oviedo"
+    },
+    {
+      "round": 38,
+      "kickoff": "2027-05-09T15:00:00Z",
+      "home": "tenerife",
+      "away": "cordoba"
+    },
+    {
+      "round": 39,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "cadiz",
+      "away": "burgos"
+    },
+    {
+      "round": 39,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "castellon",
+      "away": "real-sociedad-ii"
+    },
+    {
+      "round": 39,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "celta-de-vigo-ii",
+      "away": "albacete"
+    },
+    {
+      "round": 39,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "cordoba",
+      "away": "leganes"
+    },
+    {
+      "round": 39,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "fc-andorra",
+      "away": "sabadell"
+    },
+    {
+      "round": 39,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "girona",
+      "away": "eldense"
+    },
+    {
+      "round": 39,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "las-palmas",
+      "away": "almeria"
+    },
+    {
+      "round": 39,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "mallorca",
+      "away": "tenerife"
+    },
+    {
+      "round": 39,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "oviedo",
+      "away": "ad-ceuta-fc"
+    },
+    {
+      "round": 39,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "sporting-gijon",
+      "away": "eibar"
+    },
+    {
+      "round": 39,
+      "kickoff": "2027-05-16T15:00:00Z",
+      "home": "valladolid",
+      "away": "granada-cf"
+    },
+    {
+      "round": 40,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "ad-ceuta-fc",
+      "away": "cordoba"
+    },
+    {
+      "round": 40,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "albacete",
+      "away": "sporting-gijon"
+    },
+    {
+      "round": 40,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "almeria",
+      "away": "girona"
+    },
+    {
+      "round": 40,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "burgos",
+      "away": "las-palmas"
+    },
+    {
+      "round": 40,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "eibar",
+      "away": "castellon"
+    },
+    {
+      "round": 40,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "eldense",
+      "away": "real-sociedad-ii"
+    },
+    {
+      "round": 40,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "granada-cf",
+      "away": "celta-de-vigo-ii"
+    },
+    {
+      "round": 40,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "leganes",
+      "away": "fc-andorra"
+    },
+    {
+      "round": 40,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "oviedo",
+      "away": "mallorca"
+    },
+    {
+      "round": 40,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "sabadell",
+      "away": "cadiz"
+    },
+    {
+      "round": 40,
+      "kickoff": "2027-05-23T15:00:00Z",
+      "home": "tenerife",
+      "away": "valladolid"
+    },
+    {
+      "round": 41,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "burgos",
+      "away": "eibar"
+    },
+    {
+      "round": 41,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "cadiz",
+      "away": "tenerife"
+    },
+    {
+      "round": 41,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "castellon",
+      "away": "oviedo"
+    },
+    {
+      "round": 41,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "celta-de-vigo-ii",
+      "away": "leganes"
+    },
+    {
+      "round": 41,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "eldense",
+      "away": "valladolid"
+    },
+    {
+      "round": 41,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "fc-andorra",
+      "away": "granada-cf"
+    },
+    {
+      "round": 41,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "girona",
+      "away": "ad-ceuta-fc"
+    },
+    {
+      "round": 41,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "las-palmas",
+      "away": "cordoba"
+    },
+    {
+      "round": 41,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "mallorca",
+      "away": "albacete"
+    },
+    {
+      "round": 41,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "real-sociedad-ii",
+      "away": "sabadell"
+    },
+    {
+      "round": 41,
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "sporting-gijon",
+      "away": "almeria"
+    },
+    {
+      "round": 42,
+      "kickoff": "2027-06-06T15:00:00Z",
+      "home": "ad-ceuta-fc",
+      "away": "burgos"
+    },
+    {
+      "round": 42,
+      "kickoff": "2027-06-06T15:00:00Z",
+      "home": "albacete",
+      "away": "cadiz"
+    },
+    {
+      "round": 42,
+      "kickoff": "2027-06-06T15:00:00Z",
+      "home": "almeria",
+      "away": "mallorca"
+    },
+    {
+      "round": 42,
+      "kickoff": "2027-06-06T15:00:00Z",
+      "home": "cordoba",
+      "away": "sporting-gijon"
+    },
+    {
+      "round": 42,
+      "kickoff": "2027-06-06T15:00:00Z",
+      "home": "eibar",
+      "away": "girona"
+    },
+    {
+      "round": 42,
+      "kickoff": "2027-06-06T15:00:00Z",
+      "home": "granada-cf",
+      "away": "eldense"
+    },
+    {
+      "round": 42,
+      "kickoff": "2027-06-06T15:00:00Z",
+      "home": "leganes",
+      "away": "real-sociedad-ii"
+    },
+    {
+      "round": 42,
+      "kickoff": "2027-06-06T15:00:00Z",
+      "home": "oviedo",
+      "away": "fc-andorra"
+    },
+    {
+      "round": 42,
+      "kickoff": "2027-06-06T15:00:00Z",
+      "home": "sabadell",
+      "away": "castellon"
+    },
+    {
+      "round": 42,
+      "kickoff": "2027-06-06T15:00:00Z",
+      "home": "tenerife",
+      "away": "celta-de-vigo-ii"
+    },
+    {
+      "round": 42,
+      "kickoff": "2027-06-06T15:00:00Z",
+      "home": "valladolid",
+      "away": "las-palmas"
+    }
+  ]
+}

@@ -99,7 +99,7 @@ for (const competition of competitions) {
     current: readJson(calendarFile),
     aliases: aliasesFor(importer.id),
     imported: importer.parse(raw),
-    competition: { ...competition, season },
+    competition: { id: competition.id, season, name: competition.name, tier: competition.tier },
     sourceId: importer.id,
   });
   console.log(formatSyncDiff(competition.id, result.diff));

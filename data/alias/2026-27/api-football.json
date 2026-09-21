@@ -1,0 +1,496 @@
+{
+  "source": "api-football",
+  "season": "2026-27",
+  "teams": [
+    {
+      "externalId": "4665",
+      "externalName": "Racing Santander",
+      "teamId": "racing-santander"
+    },
+    {
+      "externalId": "529",
+      "externalName": "Barcelona",
+      "teamId": "barcelona"
+    },
+    {
+      "externalId": "530",
+      "externalName": "Atletico Madrid",
+      "teamId": "atletico-madrid"
+    },
+    {
+      "externalId": "531",
+      "externalName": "Athletic Club",
+      "teamId": "athletic-club"
+    },
+    {
+      "externalId": "532",
+      "externalName": "Valencia",
+      "teamId": "valencia"
+    },
+    {
+      "externalId": "533",
+      "externalName": "Villarreal",
+      "teamId": "villarreal"
+    },
+    {
+      "externalId": "535",
+      "externalName": "Malaga",
+      "teamId": "malaga"
+    },
+    {
+      "externalId": "536",
+      "externalName": "Sevilla",
+      "teamId": "sevilla"
+    },
+    {
+      "externalId": "538",
+      "externalName": "Celta Vigo",
+      "teamId": "celta-vigo"
+    },
+    {
+      "externalId": "539",
+      "externalName": "Levante",
+      "teamId": "levante"
+    },
+    {
+      "externalId": "540",
+      "externalName": "Espanyol",
+      "teamId": "espanyol"
+    },
+    {
+      "externalId": "541",
+      "externalName": "Real Madrid",
+      "teamId": "real-madrid"
+    },
+    {
+      "externalId": "542",
+      "externalName": "Alaves",
+      "teamId": "alaves"
+    },
+    {
+      "externalId": "543",
+      "externalName": "Real Betis",
+      "teamId": "real-betis"
+    },
+    {
+      "externalId": "544",
+      "externalName": "Deportivo La Coruna",
+      "teamId": "deportivo-la-coruna"
+    },
+    {
+      "externalId": "546",
+      "externalName": "Getafe",
+      "teamId": "getafe"
+    },
+    {
+      "externalId": "548",
+      "externalName": "Real Sociedad",
+      "teamId": "real-sociedad"
+    },
+    {
+      "externalId": "727",
+      "externalName": "Osasuna",
+      "teamId": "osasuna"
+    },
+    {
+      "externalId": "728",
+      "externalName": "Rayo Vallecano",
+      "teamId": "rayo-vallecano"
+    },
+    {
+      "externalId": "797",
+      "externalName": "Elche",
+      "teamId": "elche"
+    },
+    {
+      "externalId": "10139",
+      "externalName": "AD Ceuta FC",
+      "teamId": "ad-ceuta-fc"
+    },
+    {
+      "externalId": "5254",
+      "externalName": "Castellón",
+      "teamId": "castellon"
+    },
+    {
+      "externalId": "534",
+      "externalName": "Las Palmas",
+      "teamId": "las-palmas"
+    },
+    {
+      "externalId": "537",
+      "externalName": "Leganes",
+      "teamId": "leganes"
+    },
+    {
+      "externalId": "545",
+      "externalName": "Eibar",
+      "teamId": "eibar"
+    },
+    {
+      "externalId": "547",
+      "externalName": "Girona",
+      "teamId": "girona"
+    },
+    {
+      "externalId": "713",
+      "externalName": "Cordoba",
+      "teamId": "cordoba"
+    },
+    {
+      "externalId": "715",
+      "externalName": "Granada CF",
+      "teamId": "granada-cf"
+    },
+    {
+      "externalId": "718",
+      "externalName": "Oviedo",
+      "teamId": "oviedo"
+    },
+    {
+      "externalId": "719",
+      "externalName": "Tenerife",
+      "teamId": "tenerife"
+    },
+    {
+      "externalId": "720",
+      "externalName": "Valladolid",
+      "teamId": "valladolid"
+    },
+    {
+      "externalId": "722",
+      "externalName": "Albacete",
+      "teamId": "albacete"
+    },
+    {
+      "externalId": "723",
+      "externalName": "Almeria",
+      "teamId": "almeria"
+    },
+    {
+      "externalId": "724",
+      "externalName": "Cadiz",
+      "teamId": "cadiz"
+    },
+    {
+      "externalId": "731",
+      "externalName": "Sporting Gijon",
+      "teamId": "sporting-gijon"
+    },
+    {
+      "externalId": "798",
+      "externalName": "Mallorca",
+      "teamId": "mallorca"
+    },
+    {
+      "externalId": "8157",
+      "externalName": "FC Andorra",
+      "teamId": "fc-andorra"
+    },
+    {
+      "externalId": "9571",
+      "externalName": "Celta de Vigo II",
+      "teamId": "celta-de-vigo-ii"
+    },
+    {
+      "externalId": "9580",
+      "externalName": "Burgos",
+      "teamId": "burgos"
+    },
+    {
+      "externalId": "9585",
+      "externalName": "Real Sociedad II",
+      "teamId": "real-sociedad-ii"
+    },
+    {
+      "externalId": "9593",
+      "externalName": "Sabadell",
+      "teamId": "sabadell"
+    },
+    {
+      "externalId": "9692",
+      "externalName": "Eldense",
+      "teamId": "eldense"
+    },
+    {
+      "externalId": "10140",
+      "externalName": "Mérida AD",
+      "teamId": "merida-ad"
+    },
+    {
+      "externalId": "24612",
+      "externalName": "Extremadura 1924",
+      "teamId": "extremadura-1924"
+    },
+    {
+      "externalId": "4907",
+      "externalName": "Ponferradina",
+      "teamId": "ponferradina"
+    },
+    {
+      "externalId": "5251",
+      "externalName": "Barakaldo",
+      "teamId": "barakaldo"
+    },
+    {
+      "externalId": "5280",
+      "externalName": "UD Logroñés",
+      "teamId": "ud-logrones"
+    },
+    {
+      "externalId": "5281",
+      "externalName": "Unionistas de Salamanca",
+      "teamId": "unionistas-de-salamanca"
+    },
+    {
+      "externalId": "716",
+      "externalName": "Lugo",
+      "teamId": "lugo"
+    },
+    {
+      "externalId": "725",
+      "externalName": "Cultural Leonesa",
+      "teamId": "cultural-leonesa"
+    },
+    {
+      "externalId": "799",
+      "externalName": "Mirandes",
+      "teamId": "mirandes"
+    },
+    {
+      "externalId": "9384",
+      "externalName": "Cacereño",
+      "teamId": "cacereno"
+    },
+    {
+      "externalId": "9407",
+      "externalName": "Pontevedra",
+      "teamId": "pontevedra"
+    },
+    {
+      "externalId": "9409",
+      "externalName": "Racing Ferrol",
+      "teamId": "racing-ferrol"
+    },
+    {
+      "externalId": "9418",
+      "externalName": "Zamora",
+      "teamId": "zamora"
+    },
+    {
+      "externalId": "9578",
+      "externalName": "Arenas Getxo",
+      "teamId": "arenas-getxo"
+    },
+    {
+      "externalId": "9579",
+      "externalName": "Athletic Club II",
+      "teamId": "athletic-club-ii"
+    },
+    {
+      "externalId": "9586",
+      "externalName": "Real Unión",
+      "teamId": "real-union"
+    },
+    {
+      "externalId": "9610",
+      "externalName": "Deportivo La Coruña II",
+      "teamId": "deportivo-la-coruna-ii"
+    },
+    {
+      "externalId": "9617",
+      "externalName": "UD Ourense",
+      "teamId": "ud-ourense"
+    },
+    {
+      "externalId": "9632",
+      "externalName": "Real Avilés",
+      "teamId": "real-aviles"
+    },
+    {
+      "externalId": "9827",
+      "externalName": "CD Coria",
+      "teamId": "cd-coria"
+    },
+    {
+      "externalId": "24572",
+      "externalName": "Eibar II",
+      "teamId": "eibar-ii"
+    },
+    {
+      "externalId": "5256",
+      "externalName": "Compostela",
+      "teamId": "compostela"
+    },
+    {
+      "externalId": "5263",
+      "externalName": "Gernika",
+      "teamId": "gernika"
+    },
+    {
+      "externalId": "5264",
+      "externalName": "Gimnástica Torrelavega",
+      "teamId": "gimnastica-torrelavega"
+    },
+    {
+      "externalId": "9380",
+      "externalName": "Amorebieta",
+      "teamId": "amorebieta"
+    },
+    {
+      "externalId": "9383",
+      "externalName": "Bergantiños",
+      "teamId": "bergantinos"
+    },
+    {
+      "externalId": "9385",
+      "externalName": "Coruxo",
+      "teamId": "coruxo"
+    },
+    {
+      "externalId": "9401",
+      "externalName": "Marino de Luanco",
+      "teamId": "marino-de-luanco"
+    },
+    {
+      "externalId": "9408",
+      "externalName": "Portugalete",
+      "teamId": "portugalete"
+    },
+    {
+      "externalId": "9413",
+      "externalName": "Sestao River",
+      "teamId": "sestao-river"
+    },
+    {
+      "externalId": "9576",
+      "externalName": "Real Oviedo II",
+      "teamId": "real-oviedo-ii"
+    },
+    {
+      "externalId": "9582",
+      "externalName": "Deportivo Alavés II",
+      "teamId": "deportivo-alaves-ii"
+    },
+    {
+      "externalId": "9605",
+      "externalName": "Arosa",
+      "teamId": "arosa"
+    },
+    {
+      "externalId": "9612",
+      "externalName": "Ourense CF",
+      "teamId": "ourense-cf"
+    },
+    {
+      "externalId": "9627",
+      "externalName": "Llanera",
+      "teamId": "llanera"
+    },
+    {
+      "externalId": "9643",
+      "externalName": "Racing Santander II",
+      "teamId": "racing-santander-ii"
+    },
+    {
+      "externalId": "9656",
+      "externalName": "Basconia",
+      "teamId": "basconia"
+    },
+    {
+      "externalId": "9723",
+      "externalName": "Atlético Astorga",
+      "teamId": "atletico-astorga"
+    },
+    {
+      "externalId": "15307",
+      "externalName": "Viveiro",
+      "teamId": "viveiro"
+    },
+    {
+      "externalId": "19650",
+      "externalName": "Atlético Arteixo",
+      "teamId": "atletico-arteixo"
+    },
+    {
+      "externalId": "20255",
+      "externalName": "Celta de Vigo III",
+      "teamId": "celta-de-vigo-iii"
+    },
+    {
+      "externalId": "22129",
+      "externalName": "Pontevedra II",
+      "teamId": "pontevedra-ii"
+    },
+    {
+      "externalId": "22130",
+      "externalName": "Sarriana",
+      "teamId": "sarriana"
+    },
+    {
+      "externalId": "22566",
+      "externalName": "Boiro",
+      "teamId": "boiro"
+    },
+    {
+      "externalId": "26533",
+      "externalName": "Celtiga",
+      "teamId": "celtiga"
+    },
+    {
+      "externalId": "26534",
+      "externalName": "Coruña",
+      "teamId": "coruna"
+    },
+    {
+      "externalId": "28094",
+      "externalName": "Antela",
+      "teamId": "antela"
+    },
+    {
+      "externalId": "28095",
+      "externalName": "Lalin",
+      "teamId": "lalin"
+    },
+    {
+      "externalId": "28096",
+      "externalName": "Portonovo SD",
+      "teamId": "portonovo-sd"
+    },
+    {
+      "externalId": "9603",
+      "externalName": "Alondras",
+      "teamId": "alondras"
+    },
+    {
+      "externalId": "9604",
+      "externalName": "Arenteiro",
+      "teamId": "arenteiro"
+    },
+    {
+      "externalId": "9608",
+      "externalName": "Barco",
+      "teamId": "barco"
+    },
+    {
+      "externalId": "9611",
+      "externalName": "Estradense",
+      "teamId": "estradense"
+    },
+    {
+      "externalId": "9615",
+      "externalName": "Silva",
+      "teamId": "silva"
+    },
+    {
+      "externalId": "9616",
+      "externalName": "Somozas",
+      "teamId": "somozas"
+    },
+    {
+      "externalId": "9618",
+      "externalName": "Villalbés",
+      "teamId": "villalbes"
+    }
+  ]
+}
