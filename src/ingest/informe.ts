@@ -99,6 +99,11 @@ export type NoCasada = { fila: string; motivo: string };
 export type ContrasteFila = {
   matchId: string;
   proveedor: { status: MatchStatus; score: Score | null } | null;
+  // Why the provider did not answer for this match, when it did not (V-6): the
+  // adapter's own reason (`skipped`, `unresolved`) or the plain absence of the
+  // fixture from the response. Silence is not a discrepancy, but a silence
+  // nobody can explain is worse than one that says why.
+  motivo?: string;
 };
 
 // The three facts of CA-9 that no query can answer: a person declares them.
@@ -201,6 +206,13 @@ export type Informe = {
       matchId: string;
       status: string;
       marcador: string;
+      rawRef: string | null;
+    }[];
+    // Matches the provider did not answer for (V-6): its silence, with the
+    // reason the adapter gave. Not discrepancies, and never branch (c2).
+    sinRespuesta: readonly {
+      matchId: string;
+      motivo: string;
       rawRef: string | null;
     }[];
     discrepancias: readonly {
@@ -585,6 +597,7 @@ type VeredictoInput = {
   competicionesMudas: readonly string[];
   discrepancias: number;
   acordadosNoFinished: number;
+  sinRespuesta: number;
   observaciones: number;
   alertasInesperadas: number;
   declaraciones: Declaraciones;
@@ -652,6 +665,14 @@ export function veredictoDe(v: VeredictoInput): Veredicto {
   if (v.acordadosNoFinished > 0)
     reservas.push(
       `${v.acordadosNoFinished} partido(s) en un estado no-finished que el proveedor confirma (CA-7), con su alerta explicada`,
+    );
+  // V-6, y por la misma razón que el anterior: CA-5 compara el status y el
+  // score del proveedor, no su silencio. Un partido del que no contestó no
+  // prueba que el motor se equivocara —que es lo que dice la rama (c2)—, pero
+  // tampoco es un partido contrastado, así que es una reserva con su nombre.
+  if (v.sinRespuesta > 0)
+    reservas.push(
+      `${v.sinRespuesta} partido(s) sin respuesta del proveedor, con su motivo y su explicación`,
     );
   reservas.push(
     ...(d.intervencionSobreLaPlataforma ?? []).map(
@@ -1057,15 +1078,29 @@ export function informeJornada(input: InformeInput): {
     const discrepancias: NonNullable<
       Informe["contraste"]
     >["discrepancias"][number][] = [];
+    const sinRespuesta: NonNullable<
+      Informe["contraste"]
+    >["sinRespuesta"][number][] = [];
     for (const fila of input.contraste) {
+      // The provider's silence is its own bucket (V-6): comparing our
+      // `finished` against a "sin respuesta" that nobody ever said is not a
+      // comparison, and it used to print as a discrepancy and fire (c2).
+      if (fila.proveedor === null) {
+        sinRespuesta.push({
+          matchId: fila.matchId,
+          motivo: fila.motivo ?? "sin motivo anotado",
+          rawRef: ultimoRawRef.get(fila.matchId)?.rawRef ?? null,
+        });
+        continue;
+      }
       const m = board.get(fila.matchId);
       const nuestro = {
         status: m?.status ?? "sin partido",
         marcador: marcadorDe(m?.score ?? null),
       };
       const suyo = {
-        status: fila.proveedor?.status ?? "sin respuesta",
-        marcador: marcadorDe(fila.proveedor?.score ?? null),
+        status: fila.proveedor.status,
+        marcador: marcadorDe(fila.proveedor.score),
       };
       const acuerdo =
         nuestro.status === suyo.status && nuestro.marcador === suyo.marcador;
@@ -1094,6 +1129,7 @@ export function informeJornada(input: InformeInput): {
       total: input.contraste.length,
       coinciden: coinciden.length,
       acordadosNoFinished: acordados,
+      sinRespuesta,
       discrepancias,
     };
     push(
@@ -1109,6 +1145,18 @@ export function informeJornada(input: InformeInput): {
         acordados,
         (a) => [
           `  ${a.matchId}  ${a.status} ${a.marcador}  ·  raw_ref: ${a.rawRef ?? "ninguno"}`,
+          "    explicación:",
+        ],
+        "(ninguno)",
+      ),
+      `partidos sin respuesta del proveedor: ${sinRespuesta.length}`,
+      "  No es discrepancia: CA-5 compara el status y el score del proveedor, no su",
+      "  silencio. No es la rama (c2), pero su explicación es obligatoria y el",
+      "  veredicto baja a válida con reservas.",
+      ...primerasFilas(
+        sinRespuesta,
+        (s) => [
+          `  ${s.matchId}  motivo: ${s.motivo}  ·  raw_ref: ${s.rawRef ?? "ninguno"}`,
           "    explicación:",
         ],
         "(ninguno)",
@@ -1137,6 +1185,7 @@ export function informeJornada(input: InformeInput): {
     competicionesMudas,
     discrepancias: contraste?.discrepancias.length ?? 0,
     acordadosNoFinished: contraste?.acordadosNoFinished.length ?? 0,
+    sinRespuesta: contraste?.sinRespuesta.length ?? 0,
     observaciones: input.observations.length,
     alertasInesperadas: inesperadas,
     declaraciones: input.declaraciones ?? {},

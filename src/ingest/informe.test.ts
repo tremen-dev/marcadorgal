@@ -51,6 +51,7 @@ type InformeMatchLike = InformeInput["matches"][number];
 type ObsLike = InformeInput["observations"][number];
 type DecLike = InformeInput["decisions"][number];
 type InformeAttemptLike = InformeInput["attempts"][number];
+type ContrasteLike = NonNullable<InformeInput["contraste"]>[number];
 
 const vacio = (over: Partial<InformeInput> = {}): InformeInput => ({
   desde: DESDE,
@@ -1487,5 +1488,107 @@ describe("CA-1 ningún valor del entorno se escapa", () => {
     expect(texto).toContain("[secreto]");
     // El idioma no es un secreto y el informe sigue siendo legible.
     expect(texto).toContain("connect [secreto] falló con key=[secreto]");
+  });
+});
+
+// V-6. Hermano de V-3, y sobrevivió a su arreglo: un partido del que el
+// proveedor **no contesta** volvía con `proveedor: null`, el bloque 8 lo metía
+// en discrepancias porque `"finished" !== "sin respuesta"`, y una jornada sana
+// con un solo silencio salía como `no válida (c2) — motor equivocado`. CA-5
+// pide comparar el `status` y el `score` del proveedor, no su silencio.
+describe("CA-5 el silencio del proveedor no es discrepancia", () => {
+  // Jornada sana: dos partidos finished, cobertura 120 de 120, uno coincidente.
+  const conSilencio = (
+    proveedor: ContrasteLike["proveedor"],
+    motivo?: string,
+  ) =>
+    informeJornada(
+      vacio({
+        hasta: at(60),
+        matches: [
+          partido({ kickoff: at(10), decidedAt: at(50) }),
+          partido({
+            id: "mudo",
+            kickoff: at(10),
+            status: "finished",
+            score: { home: 1, away: 0 },
+            decidedAt: at(50),
+          }),
+        ],
+        observations: [
+          obs({ id: "o1", observedAt: seg(0) }),
+          obs({
+            id: "o2",
+            matchId: "mudo",
+            observedAt: seg(30),
+            rawRef: "raw/mudo.gz",
+          }),
+        ],
+        attempts: Array.from({ length: 120 }, (_, i) => ({
+          startedAt: seg(i * 30),
+          sourceId: "api-football",
+          ok: true,
+          error: null,
+          requests: 1,
+        })),
+        contraste: [
+          {
+            matchId: MATCH,
+            proveedor: { status: "finished", score: { home: 1, away: 0 } },
+          },
+          { matchId: "mudo", proveedor, motivo },
+        ],
+      }),
+    );
+
+  const SIN_RESPUESTA =
+    "el proveedor no devolvió el fixture 9002 en su respuesta";
+
+  it("lo cuenta en su propia línea, con su motivo, su raw_ref y su explicación", () => {
+    const { texto, informe } = conSilencio(null, SIN_RESPUESTA);
+    expect(informe.cobertura.porcentaje).toBe(1);
+    expect(informe.contraste?.discrepancias).toEqual([]);
+    expect(informe.contraste?.sinRespuesta).toEqual([
+      { matchId: "mudo", motivo: SIN_RESPUESTA, rawRef: "raw/mudo.gz" },
+    ]);
+    expect(texto).toContain("partidos sin respuesta del proveedor: 1");
+    expect(texto).toContain(`mudo  motivo: ${SIN_RESPUESTA}`);
+    expect(texto).toContain("raw_ref: raw/mudo.gz");
+    expect(texto).toContain("discrepancias: 0");
+  });
+
+  it("no dispara la rama (c2): baja a válida con reservas y dice por qué", () => {
+    const { texto, informe } = conSilencio(null, SIN_RESPUESTA);
+    expect(informe.veredicto).toMatchObject({
+      valor: "válida con reservas",
+      rama: null,
+    });
+    expect(informe.veredicto.razones.join(" ")).toContain("sin respuesta");
+    expect(texto).not.toContain("no válida");
+  });
+
+  it("la cuenta de CA-5 se sigue imprimiendo tal cual", () => {
+    const { texto } = conSilencio(null, SIN_RESPUESTA);
+    expect(texto).toContain(
+      "1 de 2 partidos con `finished` y marcador coincidente.",
+    );
+  });
+
+  it("sin motivo lo dice, en vez de callarse por qué", () => {
+    const { texto, informe } = conSilencio(null);
+    expect(informe.contraste?.sinRespuesta).toEqual([
+      { matchId: "mudo", motivo: "sin motivo anotado", rawRef: "raw/mudo.gz" },
+    ]);
+    expect(texto).toContain("motivo: sin motivo anotado");
+  });
+
+  it("si el proveedor sí contesta y dice otra cosa sigue siendo (c2)", () => {
+    const { informe } = conSilencio({
+      status: "finished",
+      score: { home: 2, away: 2 },
+    });
+    expect(informe.contraste?.sinRespuesta).toEqual([]);
+    expect(informe.contraste?.discrepancias).toHaveLength(1);
+    expect(informe.veredicto).toMatchObject({ valor: "no válida", rama: "c2" });
   });
 });
