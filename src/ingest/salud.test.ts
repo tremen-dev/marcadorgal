@@ -236,6 +236,100 @@ describe("SPEC-008 CA-7 tickSalud", () => {
     expect(report.text).toContain("ejecuciones (última hora): 20");
   });
 
+  // SPEC-010 CA-4 (i): the false REVISAR of M-6. A job firing every 30 s is
+  // caught mid-run all the time, and a run in flight used to land in the
+  // failure list, in the denominator and in the verdict.
+  it("does not count a run in flight as a failure: twenty succeeded and one running stay at 100%", () => {
+    const runs = [
+      ...Array.from({ length: 20 }, (_, i) => ({
+        jobname: "ingest-tick",
+        status: "succeeded",
+        startTime: at(-0.5 * (i + 1)),
+      })),
+      { jobname: "ingest-tick", status: "running", startTime: NOW },
+    ];
+    const report = tickSalud(clean({ runs }));
+    expect(report.ok).toBe(true);
+    expect(report.text).not.toContain("FALLO");
+    // The percentage is over the terminal runs, and the line says how many
+    // they are: twenty over twenty-one would be 95% with everything healthy.
+    expect(report.text).toContain("terminales: 20");
+    expect(report.text).toContain("100%");
+    // The one in flight is named, not silently dropped.
+    expect(report.text).toContain("en vuelo: 1");
+    // And it is still listed in the block of statuses of the hour.
+    expect(report.text).toContain("running: 1");
+  });
+
+  // SPEC-010 CA-4 (ii) / CA-3: filtering the non terminal rows away at the top
+  // of tickSalud would turn this into "no runs at all" and give back the same
+  // false REVISAR through the other door.
+  it("a run in flight is still a sign of life: a lone running with an active job is green", () => {
+    const report = tickSalud(
+      clean({
+        runs: [
+          { jobname: "ingest-tick", status: "running", startTime: at(-1) },
+        ],
+      }),
+    );
+    expect(report.ok).toBe(true);
+    expect(report.text).not.toContain("FALLO");
+    expect(report.text).not.toContain("sin ejecuciones");
+    // Nothing terminal to compute a percentage on: n/a, not 0%.
+    expect(report.text).toContain("terminales: 0");
+    expect(report.text).toContain("n/a");
+    expect(report.text).not.toContain("succeeded: 0%");
+  });
+
+  // SPEC-010 CA-1, H-2: the four non terminal statuses of pg_cron. A tick sent
+  // through pg_net goes through sending and connecting, and one of those
+  // counted as a failure is the same false REVISAR under another name.
+  it("treats the four non terminal pg_cron statuses as in flight, not as failures", () => {
+    for (const status of ["starting", "running", "sending", "connecting"]) {
+      const report = tickSalud(
+        clean({
+          runs: [{ jobname: "ingest-tick", status, startTime: at(-1) }],
+        }),
+      );
+      expect(report.ok, status).toBe(true);
+      expect(report.text, status).not.toContain("FALLO");
+    }
+  });
+
+  // SPEC-010 CA-4 (iii): the fix must not become a blanket amnesty.
+  it("does not hide a real failure sharing the short window with a run in flight", () => {
+    const report = tickSalud(
+      clean({
+        runs: [
+          { jobname: "ingest-tick", status: "failed", startTime: at(-3) },
+          { jobname: "ingest-tick", status: "running", startTime: at(-1) },
+        ],
+      }),
+    );
+    expect(report.ok).toBe(false);
+    const lines = report.text
+      .split("\n")
+      .filter((line) => line.includes("FALLO"));
+    expect(lines).toHaveLength(1);
+    expect(lines[0]).toContain("failed");
+    expect(lines[0]).not.toContain("running");
+  });
+
+  // SPEC-010 CA-4 (iv): the rule is written as a list of in flight statuses,
+  // not as a list of failure ones, so a status pg_cron adds tomorrow and we do
+  // not know about still comes out red. That is the conservative direction.
+  it("an unknown status is not in flight, so it stays red", () => {
+    const report = tickSalud(
+      clean({
+        runs: [
+          { jobname: "ingest-tick", status: "exploded", startTime: at(-1) },
+        ],
+      }),
+    );
+    expect(report.ok).toBe(false);
+    expect(report.text).toContain("exploded");
+  });
+
   it("a job switched off by hand is red too, not a new database", () => {
     const report = tickSalud(
       clean({

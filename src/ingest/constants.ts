@@ -21,6 +21,22 @@ export const CADENCE_JITTER_SECONDS = 5;
 export const SALUD_RECENT_MINUTES = 10;
 export const SALUD_FAILURES_SHOWN = 5;
 
+// A run pg_cron has not finished yet is neither a success nor a failure: it
+// is still going (SPEC-010 CA-1). These are the four non terminal statuses of
+// pg_cron, and a tick sent through pg_net passes through sending and
+// connecting before it can succeed; with the job firing every 30 s, catching
+// one in flight is the normal case and not an edge one, so counting it as a
+// failure turned the traffic light red for no reason. The rule is written as
+// the list of statuses in flight and not as the list of failing ones on
+// purpose: a status pg_cron adds tomorrow that we do not know about has to
+// keep coming out red, which is the conservative direction.
+export const SALUD_IN_FLIGHT_STATUSES: readonly string[] = [
+  "starting",
+  "running",
+  "sending",
+  "connecting",
+];
+
 // Raw retention (D-6, ADR-007 §5): thirty days, purged by the tick itself at
 // most once a day, retried an hour after a failure, a thousand keys per call.
 export const RAW_RETENTION_DAYS = 30;

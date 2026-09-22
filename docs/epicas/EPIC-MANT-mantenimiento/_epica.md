@@ -77,6 +77,14 @@ Pendientes de especificar, con su procedencia:
   justo en el instante en que pg_cron está ejecutando un job dispara un falso
   REVISAR. Arreglo: excluir el estado `running` del conteo de intentos, como
   solo cuenta lo terminal (`succeeded`/`failed`). Procedencia: SPEC-008 O-3, 2026-09-22.
+  **→ especificado en SPEC-010 (2026-09-22): ya no está pendiente.**
+- **M-8 — `.github/workflows/medir-directo.yml` sigue programado.** Su cabecera
+  pide borrarlo cuando la medición esté hecha (lo estuvo el 2026-09-21) y su
+  `schedule` no tiene fecha: `cron: '50 14 * * 0'` vuelve a sondear el directo
+  del proveedor el domingo 2026-09-27 a las 14:50Z (~67 peticiones) dentro de la
+  ventana de medición de SPEC-009. Modo de fallo: gasto de presupuesto del
+  proveedor que no aparece en el informe de la jornada. Procedencia: hallazgo del
+  arquitecto al escribir SPEC-010, 2026-09-22. **→ especificado en SPEC-010.**
 
 ## Riesgos
 
