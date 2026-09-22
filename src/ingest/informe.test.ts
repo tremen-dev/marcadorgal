@@ -1,3 +1,8 @@
+import { spawnSync } from "node:child_process";
+import { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { type Instant, MINUTE_MS, shiftInstant } from "@/model";
 import { INFORME_P95_MIN_SAMPLES } from "./constants.ts";
@@ -173,6 +178,29 @@ describe("CA-1 el informe entero", () => {
       expect(pos, `falta el bloque ${bloque}`).toBeGreaterThan(last);
       last = pos;
     }
+  });
+
+  it("sin cadencia ni latencia interna el techo propio no se etiqueta, se declara ausente", () => {
+    const { texto, informe } = informeJornada(vacio());
+    expect(informe.techoPropio).toBeNull();
+    expect(texto).toContain(
+      "techo propio: n/a (hace falta cadencia y latencia interna para sumarlo)",
+    );
+    expect(texto).not.toContain("peor caso (n=0)");
+  });
+
+  it("recorta la lista de partidos sin señal con su desglose por competición", () => {
+    const muchos = Array.from({ length: 12 }, (_, i) =>
+      partido({
+        id: `m${i}`,
+        competitionId: i < 7 ? "tercera-rfef-g1" : "segunda-rfef-g1",
+        competitionName: i < 7 ? "Tercera" : "Segunda RFEF",
+      }),
+    );
+    const { texto } = informeJornada(vacio({ matches: muchos }));
+    expect(texto).toContain("sin ninguna observación: 12");
+    expect(texto).toContain("por competición: Segunda RFEF 5, Tercera 7");
+    expect(texto).toContain("… y 2 más");
   });
 
   it("sin ninguna fila se genera entero, sin lanzar, y cada bloque vacío dice por qué", () => {
@@ -767,6 +795,9 @@ describe("CA-10 el informe cabe en dos páginas", () => {
     // Treinta huecos largos, diez impresos y la cuenta del resto.
     expect(texto).toContain("huecos > 90 s: 30");
     expect(texto).toContain("… y 20 más");
+    // Los treinta partidos sin señal se recortan, pero el desglose por
+    // competición sobrevive al recorte: la forma del problema no se pierde.
+    expect(texto).toContain("sin ninguna observación: 0");
     // Las treinta discrepancias se imprimen todas: son lo que hay que trabajar.
     expect(texto).toContain("discrepancias: 30");
     expect(
@@ -881,5 +912,67 @@ describe("CA-9 veredicto", () => {
     const { texto, informe } = conCobertura(120);
     expect(informe.veredicto.pendientes.length).toBeGreaterThan(0);
     expect(texto).toContain("declaraciones pendientes");
+  });
+});
+
+// CA-1, la firma del comando: la cáscara se prueba como la de ingest:tick
+// (cli.test.ts), en un cwd sin .env para que ningún secreto real entre en el
+// hijo y sin que se abra una sola conexión.
+describe("CA-1 npm run informe:jornada", () => {
+  const root = fileURLToPath(new URL("../..", import.meta.url));
+  const cleanCwd = mkdtempSync(path.join(tmpdir(), "marcadorgal-informe-"));
+  const cleanEnv = { ...process.env };
+  for (const key of [
+    "DATABASE_URL",
+    "API_FOOTBALL_KEY",
+    "NEXT_PUBLIC_SUPABASE_URL",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "INGEST_TICK_TOKEN",
+  ])
+    delete cleanEnv[key];
+
+  const run = (...args: string[]) =>
+    spawnSync(
+      process.execPath,
+      [path.join(root, "tools", "informe-jornada.mjs"), ...args],
+      { cwd: cleanCwd, env: cleanEnv, encoding: "utf8" },
+    );
+
+  it("sin desde y hasta imprime el uso y sale 1", () => {
+    const r = run();
+    expect(r.status).toBe(1);
+    expect(r.stderr).toContain("faltan <desde> y <hasta>");
+    expect(r.stderr).toContain(
+      "<desde> <hasta> [--referencias <fichero>] [--contrastar]",
+    );
+    expect(r.stdout).toBe("");
+  });
+
+  it("rechaza un instante que no es ISO-8601", () => {
+    const r = run("ayer", "hoy");
+    expect(r.status).toBe(1);
+    expect(r.stderr).toContain("'ayer' no es un instante ISO-8601");
+  });
+
+  it("rechaza una ventana del revés", () => {
+    const r = run("2026-09-28T21:00Z", "2026-09-25T18:20Z");
+    expect(r.status).toBe(1);
+    expect(r.stderr).toContain("<desde> tiene que ser anterior a <hasta>");
+  });
+
+  it("rechaza una opción desconocida y --referencias sin fichero", () => {
+    expect(
+      run("2026-09-25T18:20Z", "2026-09-28T21:00Z", "--todo").stderr,
+    ).toContain("opción desconocida: --todo");
+    expect(
+      run("2026-09-25T18:20Z", "2026-09-28T21:00Z", "--referencias").stderr,
+    ).toContain("--referencias necesita un fichero");
+  });
+
+  it("con la ventana bien formada pero sin DATABASE_URL sale 1 sin abrir conexión", () => {
+    const r = run("2026-09-25T18:20Z", "2026-09-28T21:00Z");
+    expect(r.status).toBe(1);
+    expect(r.stderr).toContain("DATABASE_URL is not set");
+    expect(r.stdout).toBe("");
   });
 });

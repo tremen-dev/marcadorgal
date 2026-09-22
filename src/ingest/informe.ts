@@ -735,7 +735,9 @@ export function informeJornada(input: InformeInput): {
       `${conN("mediana", interna.mediana, interna.n)} · ${conN(etiquetaP95(interna.n), interna.p95, interna.n)} · ${conN("máximo", interna.maximo, interna.n)}`,
     );
   push(
-    `techo propio (${etiquetaP95(cad.stats.n)} cadencia + ${etiquetaP95(interna.n)} latencia interna): ${techoPropio === null ? "n/a" : segundos(techoPropio)}`,
+    techoPropio === null
+      ? "techo propio: n/a (hace falta cadencia y latencia interna para sumarlo)"
+      : `techo propio (${etiquetaP95(cad.stats.n)} cadencia + ${etiquetaP95(interna.n)} latencia interna): ${segundos(techoPropio)}`,
     "  el peor caso de «el proveedor ya lo tenía → nosotros lo publicamos».",
   );
 
@@ -827,12 +829,14 @@ export function informeJornada(input: InformeInput): {
   else
     push(
       `sin ninguna observación: ${sinObservaciones.length}`,
-      ...lista(
+      ...porCompeticion_(sinObservaciones),
+      ...primeras(
         sinObservaciones.map((m) => `  ${m.matchId} · ${m.competicion}`),
         "(ninguno)",
       ),
       `con al menos un hueco > ${SILENCE_MINUTES} min: ${conHuecoLargo.length}`,
-      ...lista(
+      ...porCompeticion_(conHuecoLargo),
+      ...primeras(
         conHuecoLargo.map(
           (m) =>
             `  ${m.matchId} · ${m.competicion} · hueco mayor: ${segundos(m.ms)}`,
@@ -1030,6 +1034,17 @@ export function informeJornada(input: InformeInput): {
     veredicto,
   };
   return { texto: redact(out.join("\n"), input.secrets), informe };
+}
+
+// One line with the per-competition breakdown, so capping the list below never
+// loses the shape of the problem. Nothing when the list fits anyway.
+function porCompeticion_(items: readonly { competicion: string }[]): string[] {
+  if (items.length <= INFORME_FILAS_MOSTRADAS) return [];
+  return [
+    `  por competición: ${contar(items, (m) => m.competicion)
+      .map(({ k, count }) => `${k} ${count}`)
+      .join(", ")}`,
+  ];
 }
 
 // Sum of requests grouped by a key of the attempt, ordered by key.
