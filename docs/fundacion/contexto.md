@@ -2,7 +2,7 @@
 
 > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.
 > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.
-> Última actualización: 2026-09-21 (SPEC-007 hecho).
+> Última actualización: 2026-09-22 (SPEC-008 hecho).
 
 ## Qué es y en qué punto está
 
@@ -24,7 +24,11 @@ jornada completa, en una sola pantalla y en galego. Proyecto de tremen.dev.
 
 **SPEC-007 completa:** motor de decisiones puro en `src/decide/`, criterios de aceptación del decisor (RN-01..RN-06, monotonía, conflicto, silencio, cierre forzoso), adaptador `src/ingest/engine.ts` con las cuatro consultas, migración del quinto `AlertKind` (`forced_finish`), `lastHeard` para trazar el cierre sin confirmación, replay determinista, barrido por ausencia de observaciones.
 
-EPIC-002 (ingesta y motor) en progreso: SPEC-005, SPEC-006 y SPEC-007 hecho; una spec más planeada (despliegue y medición).
+**SPEC-008 completa:** despliegue del tick en producción con pg_cron cada 30 s (extensión 1.6.4) y Vercel Cron cada minuto como respaldo, secretos en Supabase Vault (`npm run cron:setup`), sincronización semanal del calendario por GitHub Actions (los martes y con PR solo si hay diff), `npm run tick:salud` como semáforo de vitalidad.
+
+**SPEC-009 — Jornada de medición e informe:** aprobada el 2026-09-21, pendiente de ejecución (2026-09-25 al 2026-09-28). Mide el desempeño del tick en la primera jornada real con partidos.
+
+EPIC-002 (ingesta y motor) en cierre: SPEC-005, SPEC-006, SPEC-007 y SPEC-008 hecho; última spec SPEC-009 aprobada y pendiente de medición en jornada real.
 
 ### Herencia
 

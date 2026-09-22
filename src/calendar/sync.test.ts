@@ -72,18 +72,20 @@ describe("CA-6 syncCalendar", () => {
       { id: "compostela", name: "Compostela" },
       { id: "ourense", name: "Ourense" },
     ]);
+    // Ordered by round, home and away — never by kickoff (O-6), so the 17:00
+    // match comes first inside round 1 because "arosa" < "ourense".
     expect(calendar.matches).toEqual([
-      {
-        round: 1,
-        kickoff: "2026-09-06T16:00:00Z",
-        home: "ourense",
-        away: "arenteiro",
-      },
       {
         round: 1,
         kickoff: "2026-09-06T17:00:00Z",
         home: "arosa",
         away: "compostela",
+      },
+      {
+        round: 1,
+        kickoff: "2026-09-06T16:00:00Z",
+        home: "ourense",
+        away: "arenteiro",
       },
       {
         round: 2,
@@ -178,7 +180,11 @@ describe("CA-6 syncCalendar", () => {
       "arosa-2",
       "compostela",
     ]);
-    expect(calendar.matches[0]).toEqual({
+    // Looked up and not indexed: what this case is about is the alias, not
+    // the position.
+    expect(
+      calendar.matches.find((m) => m.home === "ud-ourense" && m.round === 1),
+    ).toEqual({
       round: 1,
       kickoff: "2026-09-06T16:00:00Z",
       home: "ud-ourense",
@@ -226,6 +232,48 @@ describe("CA-6 syncCalendar", () => {
         ?.kickoff,
     ).toBe("2026-09-07T18:30:00Z");
     expect(calendar.matches).toHaveLength(4);
+  });
+
+  // O-6: CA-8 exists so a human sees the postponements (D-3), and that only
+  // works if the postponement is the whole diff.
+  it("(O-6) a reschedule rewrites the kickoff in place and moves nothing", () => {
+    const { calendar: current, aliases } = initial();
+    const before = syncCalendar({
+      current,
+      aliases,
+      imported,
+      competition,
+      sourceId,
+    }).calendar;
+
+    // The very postponement of the real dispatch: a match pushed five weeks
+    // later, which under an order by kickoff jumped to the end of its round.
+    const moved: ImportedCalendar = {
+      ...imported,
+      matches: [
+        { ...imported.matches[0], kickoff: "2026-10-21T18:00:00Z" },
+        imported.matches[1],
+        imported.matches[2],
+      ],
+    };
+    const after = syncCalendar({
+      current,
+      aliases,
+      imported: moved,
+      competition,
+      sourceId,
+    }).calendar;
+
+    // Same matches, same positions: only one field of one match differs.
+    expect(after.matches.map((m) => [m.round, m.home, m.away])).toEqual(
+      before.matches.map((m) => [m.round, m.home, m.away]),
+    );
+    const changed = after.matches.filter(
+      (m, i) => m.kickoff !== before.matches[i].kickoff,
+    );
+    expect(changed).toHaveLength(1);
+    expect(changed[0].kickoff).toBe("2026-10-21T18:00:00Z");
+    expect(after.teams).toEqual(before.teams);
   });
 
   it("(c) keeps matches missing from the provider and reports them", () => {

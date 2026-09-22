@@ -34,6 +34,11 @@ jobs:
       TEMPORADA: ${{ inputs.temporada || '2026-27' }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Clon completo: el paso del PR necesita conocer la rama remota
+          # chore/calendario-<fecha> cuando ya existe, y un clon superficial
+          # no trae ni su referencia de seguimiento ni sus objetos.
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
@@ -61,6 +66,7 @@ jobs:
           fi
       - name: Abrir o actualizar el PR
         if: steps.diff.outputs.cambios == 'si'
+        shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -77,20 +83,45 @@ jobs:
             echo '```'
             echo
             echo "Fusiona solo si los aplazamientos y los cambios de horario son correctos (D-3)."
-          } > cuerpo.md
+          } > "$RUNNER_TEMP/cuerpo.md"
           rm -f sync-diff.txt
+
+          # El resultado del sync, a salvo del checkout que viene ahora.
+          cp -R data/calendario data/alias "$RUNNER_TEMP/"
+
+          # La rama ya existe a partir del segundo martes, porque este mismo
+          # paso contempla que el PR esté abierto. Se construye ENCIMA de ella
+          # en vez de reescribirla: así el push es un avance rápido, no hace
+          # falta --force ni --force-with-lease, y nada de lo que haya en esa
+          # rama se pierde. Si alguien hubiera empujado algo entre el fetch y
+          # el push, el push se rechaza y el job falla, que es lo que tiene
+          # que pasar.
+          if git ls-remote --exit-code --heads origin "$rama" >/dev/null 2>&1; then
+            git fetch origin "+refs/heads/$rama:refs/remotes/origin/$rama"
+            git checkout -f -B "$rama" "refs/remotes/origin/$rama"
+          else
+            git checkout -f -B "$rama"
+          fi
+
+          rm -rf data/calendario data/alias
+          cp -R "$RUNNER_TEMP/calendario" "$RUNNER_TEMP/alias" data/
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -B "$rama"
           git add data/calendario data/alias
-          git commit -m "chore(calendario): sincronización semanal $fecha"
-          git push --force-with-lease origin "$rama"
+          if git diff --cached --quiet; then
+            echo "La rama $rama ya trae este calendario: no se añade commit."
+          else
+            git commit -m "chore(calendario): sincronización semanal $fecha"
+            git push origin "HEAD:refs/heads/$rama"
+          fi
+
           if gh pr view "$rama" --json number >/dev/null 2>&1; then
-            gh pr edit "$rama" --body-file cuerpo.md
+            gh pr edit "$rama" --body-file "$RUNNER_TEMP/cuerpo.md"
           else
             gh pr create --base main --head "$rama" \
               --title "chore(calendario): sincronización semanal $fecha" \
-              --body-file cuerpo.md
+              --body-file "$RUNNER_TEMP/cuerpo.md"
           fi
 
   load:

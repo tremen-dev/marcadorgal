@@ -263,6 +263,36 @@ describe("SPEC-008 CA-8 calendario-semanal.yml", () => {
     expect(str(obj(load?.env).DATABASE_URL)).toContain("secrets.DATABASE_URL");
   });
 
+  it("pushes without force, on top of the remote branch (F-SPEC-008-16)", () => {
+    // The branch chore/calendario-<fecha> already exists from the second
+    // Tuesday on — this very step contemplates the PR being open — and
+    // --force-with-lease aborted with "stale info" because a shallow clone
+    // has no tracking ref for it. The fix is not to force harder: the step
+    // builds on top of the remote branch, so the push is a fast forward and
+    // nothing that lives on that branch is ever rewritten.
+    const pr = stepNamed("sync", "Abrir o actualizar el PR");
+    const run = str(pr?.run);
+    // Comments out: the step explains in prose why it does not force.
+    const commands = run
+      .split("\n")
+      .filter((line) => !line.trim().startsWith("#"))
+      .join("\n");
+    expect(commands).not.toContain("--force");
+    expect(commands).toContain("git push");
+    expect(run).toContain('git fetch origin "+refs/heads/$rama:');
+    expect(run).toContain('git push origin "HEAD:refs/heads/$rama"');
+    // Both halves: the branch may or may not be there.
+    expect(run).toContain("git ls-remote --exit-code --heads origin");
+    expect(run).toContain('git checkout -f -B "$rama"');
+  });
+
+  it("checks out the whole history in the job that pushes", () => {
+    const checkout = steps("sync").find(
+      (step) => typeof step.uses === "string" && step.uses.includes("checkout"),
+    );
+    expect(str(obj(checkout?.with)["fetch-depth"])).toBe("0");
+  });
+
   it("splits the two jobs by event", () => {
     expect(str(obj(jobs.sync).if)).toContain("github.event_name != 'push'");
     expect(str(obj(jobs.load).if)).toContain("github.event_name == 'push'");

@@ -41,15 +41,35 @@ export function cronSecrets(env: Env): CronSecret[] {
 
 type SecretRow = { id: string; name: string };
 
+// The id of every secret already in the vault, by name.
+//
+// The list goes in as a plain JS array and NOT as sql.array(names). sql.array
+// resolves the array type through options.shared.typeArrayMap, and postgres.js
+// only fills that map when a connection finishes opening (connection.js,
+// fetchArrayTypes, driven by needsTypes). The parameter is built while the
+// template is assembled, so on the FIRST statement of a fresh pool — which is
+// exactly what npm run cron:setup is — the map is still empty, the value binds
+// as text instead of text[] and Postgres answers "op ANY/ALL (array) requires
+// array on right side". A plain array is serialized without that map and works
+// cold. Proven both ways in src/ingest/cron.db.test.ts.
+export async function findSecretIds(
+  sql: Sql,
+  names: readonly string[],
+): Promise<Map<string, string>> {
+  const rows = await sql<SecretRow[]>`
+    select id, name from vault.decrypted_secrets
+    where name = any(${names as string[]})`;
+  return new Map(rows.map((row) => [row.name, row.id]));
+}
+
 // Idempotent: create what is missing, update what is there, and report only
 // names. Every value is read once and never leaves this function.
 export async function setupCronSecrets(sql: Sql, env: Env): Promise<string[]> {
   const secrets = cronSecrets(env);
-  const names = secrets.map((s) => s.name);
-  const existing = await sql<SecretRow[]>`
-    select id, name from vault.decrypted_secrets
-    where name = any(${sql.array(names)})`;
-  const idOf = new Map(existing.map((row) => [row.name, row.id]));
+  const idOf = await findSecretIds(
+    sql,
+    secrets.map((s) => s.name),
+  );
 
   const report: string[] = [];
   for (const secret of secrets) {

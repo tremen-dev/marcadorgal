@@ -55,13 +55,25 @@ export function slugify(name: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-const byId = <T extends { id: string }>(a: T, b: T) => a.id.localeCompare(b.id);
+// Plain code point order, not localeCompare: the default locale of whatever
+// machine happens to run the sync must not decide what the repo looks like.
+// calendario:sync runs on a GitHub runner and the review happens on a laptop,
+// and localeCompare without an explicit locale is free to differ between them.
+const byText = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
+
+const byId = <T extends { id: string }>(a: T, b: T) => byText(a.id, b.id);
 const byExternalId = <T extends { externalId: string }>(a: T, b: T) =>
-  a.externalId.localeCompare(b.externalId);
-const byRoundKickoffHome = (a: CalendarMatch, b: CalendarMatch) =>
-  a.round - b.round ||
-  Date.parse(a.kickoff) - Date.parse(b.kickoff) ||
-  a.home.localeCompare(b.home);
+  byText(a.externalId, b.externalId);
+
+// Matches are ordered by what identifies them and never by kickoff (O-6).
+// A postponement is precisely the event CA-8 exists to put in front of a
+// human (D-3), and ordering by kickoff turns that one line change into a
+// block that moves across the file, burying it in hundreds of lines of
+// reordering. round + home + away is the derived id of the match
+// (match-id.ts), so the order is total and it never churns: a reschedule
+// rewrites one kickoff in place.
+const byRoundHomeAway = (a: CalendarMatch, b: CalendarMatch) =>
+  a.round - b.round || byText(a.home, b.home) || byText(a.away, b.away);
 
 export function syncCalendar(input: SyncInput): SyncResult {
   const { current, imported, sourceId } = input;
@@ -187,7 +199,7 @@ export function syncCalendar(input: SyncInput): SyncResult {
     calendar: {
       competition,
       teams: [...teams.values()].sort(byId),
-      matches: [...matches.values()].sort(byRoundKickoffHome),
+      matches: [...matches.values()].sort(byRoundHomeAway),
     },
     aliases: {
       ...input.aliases,
