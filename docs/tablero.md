@@ -22,11 +22,11 @@ Actualizado: 2026-09-23
 | SPEC-008 — despliegue-del-tick-pg-cron-vercel-cron-variables-y-sincronizacion-del-calendario | hecho | 2026-09-22 (sdd-verificador) |
 | SPEC-009 — jornada-de-medicion-e-informe | aprobada | 2026-09-21 (Alberto Fojo) |
 
-## EPIC-FIX (borrador)
+## EPIC-FIX (aprobada)
 
 | Spec | Estado | Último cambio |
 |---|---|---|
-| SPEC-011 — peticion-live-con-una-sola-competicion-y-errores-por-peticion-que-no-tiran-el-intento | borrador | 2026-09-23 (sdd-arquitecto) |
+| SPEC-011 — peticion-live-con-una-sola-competicion-y-errores-por-peticion-que-no-tiran-el-intento | hecho | 2026-09-23 (sdd-verificador) |
 
 ## EPIC-MANT — mantenimiento (borrador)
 
@@ -50,6 +50,5 @@ Actualizado: 2026-09-23
 
 ## Resumen
 
-- hecho: 9
+- hecho: 10
 - aprobada: 1
-- borrador: 1

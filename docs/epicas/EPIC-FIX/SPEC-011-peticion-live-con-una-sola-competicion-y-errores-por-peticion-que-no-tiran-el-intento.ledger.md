@@ -16,18 +16,115 @@ epica: EPIC-FIX
 <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
-| CA-1 `live=` nunca con menos de dos ids | `src/sources/api-football/results.ts` (`liveQuery` nueva, exportada; `fetch` solo emite `live=` cuando devuelve cadena) | `src/sources/api-football/results.test.ts` → `SPEC-011 CA-1 liveQuery` (4 casos) + reescritura de «omits window matches without a match alias…» y de «sends the key and the user agent on every request…» | | 🚧 |
-| CA-2 `parse` total: `requestErrors` | `src/model/source.ts` (`RequestError` + cuarto canal obligatorio en `ParseResult`), `src/sources/api-football/results.ts` (`parse` con `try/catch` por petición y `messageOf` local) | `src/model/source.test.ts` → «ParseResult requires requestErrors, accepts [] and rejects an entry without url»; `src/sources/api-football/results.test.ts` → «records a body with non-empty errors…», «records a body that is not JSON or not a fixtures response…», «keeps the observations of the good requests when one request is broken», «with every request unreadable gives three empty channels and one requestError each» | | 🚧 |
-| CA-3 invariante sobre los 31 subconjuntos | (test; el arreglo que fija es el de CA-1) | `src/sources/api-football/results.test.ts` → `SPEC-011 CA-3 no capture ever carries a live= with a single id` (1 caso de cobertura + 31 generados con `it.each` + «(iii) the full subset still asks the five league ids»); reescrituras de CA-3 (ii) en `results.test.ts:191` y en `src/arch/source-contract.test.ts:209` | | 🚧 |
-| CA-4 fixture del error real y regresión | `src/sources/api-football/fixtures/errors-live-2026-09-22.json` (nuevo) + su fila en `fixtures/README.md` | `src/sources/api-football/results.test.ts` → `SPEC-011 CA-4 the failed attempt of 2026-09-22` («the fixture is the body of a 200 that carries errors and no fixture», «parse keeps the observations of the ids= request and records the live= one») | | ⚠️ |
-| CA-5 intento parcial: se guarda y `ok = false` | `src/ingest/tick.ts` (`AttemptSummary.requestErrors`, `oneLine`, cierre del intento con `ok` calculado, `error` de una línea y `details.requestErrors`) | `src/ingest/tick.test.ts` → `SPEC-011 CA-5 a partial attempt` (4 casos: parcial, `afterInsert`+alertas en la misma transacción, todas las peticiones rotas, captura limpia); `src/ingest/salud.test.ts` → «a partial attempt is printed FALLO with its details and the verdict is REVISAR» | | 🚧 |
-| CA-6 presupuesto, frontera y gates | ningún fichero de producción propio: es la comprobación del conjunto (ver «Presupuesto y cierre de CA-6») | el recuento de peticiones por subconjunto lo cuenta el test de CA-3 (i) (`expect(urls).toHaveLength((subset.length === 1 ? 0 : 1) + idsRequests)`); (b), (c) y (d) son comandos, con su salida abajo | | ⚠️ |
+| CA-1 `live=` nunca con menos de dos ids | `src/sources/api-football/results.ts` (`liveQuery` nueva, exportada; `fetch` solo emite `live=` cuando devuelve cadena) | `src/sources/api-football/results.test.ts` → `SPEC-011 CA-1 liveQuery` (4 casos) + reescritura de «omits window matches without a match alias…» y de «sends the key and the user agent on every request…» | `npx vitest run src/sources/api-football/results.test.ts` → 89/89. Rojo reproducido por el verificador en copia del árbol (`git archive HEAD` + `git show 59aa8ff:…/results.ts`, rama intacta): caen los 3 casos de CA-1 con `?live=141` real. `liveQuery` exportada con la firma de la spec; `tick.ts:178` sin un carácter de cambio. Mutaciones M2 (sin `sort`) y M3 (sin `new Set`) hacen caer el caso ascendente | ✅ |
+| CA-2 `parse` total: `requestErrors` | `src/model/source.ts` (`RequestError` + cuarto canal obligatorio en `ParseResult`), `src/sources/api-football/results.ts` (`parse` con `try/catch` por petición y `messageOf` local) | `src/model/source.test.ts` → «ParseResult requires requestErrors, accepts [] and rejects an entry without url»; `src/sources/api-football/results.test.ts` → «records a body with non-empty errors…», «records a body that is not JSON or not a fixtures response…», «keeps the observations of the good requests when one request is broken», «with every request unreadable gives three empty channels and one requestError each» | Rojo reproducido: con `src/model/source.ts` de `origin/main` caen los 2 casos del esquema; con `results.ts` de `59aa8ff` caen los 5 de `parse`. Mutación M6 (`catch` que no anota) → caen 5 casos, CA-4 incluido. `requestErrors` es `z.url()` + `z.string().min(1)` en `z.strictObject`, obligatorio; `parse` sigue pura (el caso del `globalThis.fetch` que lanza sigue verde) | ✅ |
+| CA-3 invariante sobre los 31 subconjuntos | (test; el arreglo que fija es el de CA-1) | `src/sources/api-football/results.test.ts` → `SPEC-011 CA-3 no capture ever carries a live= with a single id` (1 caso de cobertura + 31 generados con `it.each` + «(iii) the full subset still asks the five league ids»); reescrituras de CA-3 (ii) en `results.test.ts:191` y en `src/arch/source-contract.test.ts:209` | Rojo medido por el verificador contra `git show 59aa8ff:…/results.ts`: **caen exactamente los 5 subconjuntos de una sola competición y pasan los otros 26** más los 2 casos extra (5 failed · 28 passed · 56 skipped). Listado nominal comprobado uno a uno. (iii) verde antes y después del arreglo: es guarda, no rojo. Los tres tests reescritos conservan su propósito (ver «Juicio del verificador») | ✅ |
+| CA-4 fixture del error real y regresión | `src/sources/api-football/fixtures/errors-live-2026-09-22.json` (nuevo) + su fila en `fixtures/README.md` | `src/sources/api-football/results.test.ts` → `SPEC-011 CA-4 the failed attempt of 2026-09-22` («the fixture is the body of a 200 that carries errors and no fixture», «parse keeps the observations of the ids= request and records the live= one») | **F-SPEC-011-1 cerrada por el verificador**: bajado el objeto real del bucket del primer intento fallido y el cuerpo de la petición `live=439` es **idéntico al fixture, claves, orden de claves y valores incluidos** (solo difiere el sangrado, que es el del resto de fixtures del repo). Además `parse` corrido sobre la captura real: 1 observación + 1 `requestError`. Sin cabeceras, sin clave de proveedor, sin clave de bucket | ✅ |
+| CA-5 intento parcial: se guarda y `ok = false` | `src/ingest/tick.ts` (`AttemptSummary.requestErrors`, `oneLine`, cierre del intento con `ok` calculado, `error` de una línea y `details.requestErrors`) | `src/ingest/tick.test.ts` → `SPEC-011 CA-5 a partial attempt` (4 casos: parcial, `afterInsert`+alertas en la misma transacción, todas las peticiones rotas, captura limpia); `src/ingest/salud.test.ts` → «a partial attempt is printed FALLO with its details and the verdict is REVISAR» | Rojo reproducido con `src/ingest/tick.ts` de `origin/main`: caen los 4 casos. Mutación M5 (quitar `requestErrors` de `details`) → caen 2. Orden del intento intacto en el código: crudo antes de `parse`, transacción con `afterInsert` dentro. `salud.test.ts` **verde también con el `tick.ts` de `origin/main`** (19/19): el caso es prueba, no arreglo | ✅ |
+| CA-6 presupuesto, frontera y gates | ningún fichero de producción propio: es la comprobación del conjunto (ver «Presupuesto y cierre de CA-6») | el recuento de peticiones por subconjunto lo cuenta el test de CA-3 (i) (`expect(urls).toHaveLength((subset.length === 1 ? 0 : 1) + idsRequests)`); (b), (c) y (d) son comandos, con su salida abajo | (a) presupuesto **medido por el verificador**, no leído: 1 competición → 1 petición, 2..5 → 2, sábado de 25 partidos → 3 = la cota `1 + ⌈n/20⌉`. (b), (c) verificados. (d) `npm ci && npm run gates` con las cinco variables vaciadas **y sin `.env` en el árbol** → exit 0, 596 tests; `git grep -qF "$API_FOOTBALL_KEY"` corrido con la clave real → sin coincidencias. **Salvedad**: `src/ingest/adapters.test.ts` queda fuera de la lista exacta de (c) (F-SPEC-011-4, una línea, aceptada) | ⚠️ |
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
+**GREEN — 2026-09-23, sdd-verificador.** Los seis CA verificados sobre
+artefactos, sin leer el informe del implementador. `npm run gates` en exit 0 por
+mi mano (596 tests, 44 ficheros, biome limpio, build limpio), y otra vez con
+`npm ci` previo, las cinco variables vaciadas **y sin `.env` en el árbol**.
+Rojo de cada CA reproducido en copias del árbol (`git archive` al scratchpad,
+rama sin tocar): CA-1 y CA-2 con los ficheros de producción de `origin/main` /
+`59aa8ff`, CA-3 con **exactamente los cinco subconjuntos de una sola
+competición en rojo y los otros 26 en verde**, CA-5 con el `tick.ts` de
+`origin/main`. Cuatro mutaciones (sin `sort`, sin dedupe, `catch` que no anota,
+`details` sin `requestErrors`) confirman que los casos nuevos muerden.
+
+Lo que cierra el expediente de campo: bajado el objeto del bucket del **primer
+intento fallido del 2026-09-22** y el cuerpo de su petición `live=439` es
+**idéntico al fixture de CA-4**, claves y orden de claves incluidos, así que
+**F-SPEC-011-1 queda cerrada**; y `parse` con el arreglo, corrido sobre esa
+captura real, devuelve **1 observación y 1 `requestError`** donde el tick
+desplegado guardó cero. La base confirma la frontera medida: último `ok` a las
+22:07:06.253Z con 1 observación y `requests: 1`, y **23 filas `not ok`
+seguidas** de 22:07:38.499Z a 22:18:39.107Z, todas con `requests: 2` y el error
+literal del campo `live`.
+
+Presupuesto medido por mí y no leído de la tabla: 1 competición → **1**
+petición, de 2 a 5 → **2**, sábado de 25 partidos → **3**, que es la cota
+`1 + ⌈n/20⌉` de N-4 sin subir en ninguna franja; la forma `live=` de 2
+competiciones en adelante es idéntica a la de `origin/main` (el caso (iii) pasa
+con el código viejo y con el nuevo). Frontera dura limpia: `git diff origin/main
+--stat -- src/decide src/ingest/engine.ts` vacío, `src/model/vocab.ts` sin
+cambios, `package.json`, `supabase/`, `data/` y `docs/diseno/` sin tocar,
+ningún fichero de producción fuera de los tres de la spec.
+
+Una sola salvedad, ⚠️ en CA-6 y aceptada: `src/ingest/adapters.test.ts`
+(F-SPEC-011-4) queda fuera de la lista exacta de CA-6 (c) por una línea
+mecánica. No bloquea nada. Adjudicación de F-SPEC-011-3: **errata del texto de
+la spec**, no defecto del código (ver «Juicio del verificador»).
+
+**Respuesta a la pregunta del plazo: sí, esto se puede mergear en `main` antes
+del viernes 2026-09-25 18:20Z.** Las franjas de una sola competición dejan de
+dar cero: con el arreglo no se emite la petición que el proveedor rechaza y,
+aun si el proveedor fallara en una petición cualquiera, las observaciones de
+las demás se guardan.
+
+## Juicio del verificador
+
+### Los tres tests que afirmaban la URL rota: reescritos, ninguno rebajado
+1. `results.test.ts` «omits window matches without a match alias» — el mismo
+   bloque `it`, renombrado, **no borrado**. Su propósito original (un partido en
+   ventana sin alias no entra en `ids=`) sigue afirmado con la misma igualdad
+   sobre `calls.map(query)`; pierde solo la aserción del defecto (`"?live=439"`)
+   y **gana** `not.toContain("live=")` sobre cada llamada. Mide más que antes.
+2. `src/arch/source-contract.test.ts:209` — no estaba en la spec y era la
+   segunda aparición del mismo defecto afirmado como verdad. El escenario
+   conduce **una sola** competición (`segunda-division`, liga 141: comprobado en
+   el `windowMatch` y en el `drive` del propio fichero), así que con CA-1 la
+   aserción vieja es insatisfacible y el giro es forzado. Lo que el caso probaba
+   de verdad —que el adaptador sale a por datos a través del contrato— lo sigue
+   probando la línea siguiente, `some(u => u.includes("ids=1569926")) === true`,
+   que ya estaba y no se ha tocado. Sin pérdida de cobertura. Residuo cosmético:
+   la rama `url.includes("live=")` del stub de ese fichero queda muerta.
+3. `results.test.ts` «sends the key and the user agent on every request…» — **no
+   rebajado**: pasa de dos partidos de una competición a un partido de dos
+   competiciones, de modo que la captura sigue teniendo dos peticiones,
+   `expect(calls).toHaveLength(2)` sigue en pie sin cambios y el bucle sigue
+   comprobando clave, `User-Agent` y prefijo de URL **también en la petición
+   `live=`**. Mide exactamente lo que medía. Lo he leído línea a línea, no me he
+   fiado del recuento.
+
+### La errata de CA-3 (iii): es del texto de la spec, no del código
+CA-1 es la regla normativa («ids únicos **ascendentes**») y los cinco ids de
+liga son 140, 141, 435, 439 (Tercera RFEF) y 875 (Segunda RFEF), así que la
+forma ascendente es `?live=140-141-435-439-875`, que es lo que el código emite
+—y lo que ya emitía **antes** de este arreglo—. Prueba de que la errata es
+heredada y no se ha introducido aquí: el literal `140-141-435-875-439` aparece
+en el texto de **SPEC-005** (spec y ledger), en **SPEC-009** y en dos filas
+preexistentes de `fixtures/README.md`; SPEC-011 no añade ninguna aparición
+nueva. Al proveedor le da igual el orden (documenta la lista unida por guiones).
+Hizo bien en honrar CA-1 y reportar la errata en vez de reordenar la salida.
+**Qué hay que corregir, y puede esperar al martes:** el literal de CA-3 (iii),
+el de la fila `live-<fecha>.json` del README y el del comando de captura, y de
+paso el de SPEC-005 y SPEC-009. Es texto; no toca código ni tests.
+
+### F-SPEC-011-4: alcance justificado, no colado
+- `src/arch/source-contract.test.ts`: **dentro** de CA-6 (c), que lo contempla
+  por nombre. Dos declaraciones del canal nuevo y el giro de la aserción de
+  `live=141`, que es consecuencia directa de CA-1.
+- `src/ingest/adapters.test.ts`: **fuera** de la lista, y es exactamente una
+  propiedad (`requestErrors: []`) en un literal de test, obligada por el canal
+  obligatorio que pide CA-2. Cero contenido de comportamiento. Alcance
+  justificado; lo marco ⚠️ en CA-6 porque la lista de (c) dice «exactamente» y
+  esto es una desviación literal, y lo acepto.
+- **Ningún fichero de producción fuera de los tres de la spec**: el
+  `git diff origin/main --stat` solo trae `src/model/source.ts`,
+  `src/sources/api-football/results.ts` y `src/ingest/tick.ts` como código no
+  de test.
 
 ## Evidencia visual
 <!-- Tabla CA → captura en _qa/SPEC-011/. Informe HTML opcional: _qa/SPEC-011/informe.html -->
+**n-a.** El arreglo es de ingesta: no hay interfaz que capturar y no se ha
+tocado nada bajo `src/app/` ni `docs/diseno/`. La evidencia equivalente es la
+salida de los comandos de este ledger y la captura real del bucket de más
+abajo.
 
 ## Rojos de TDD (escribe sdd-implementador)
 <!-- Salida real de cada test en rojo antes de su arreglo, copiada tal cual. -->
@@ -528,6 +625,163 @@ reales del repo (`ids-2026-09-21.json`, `live-all-2026-09-21.json`). Es lo que
 objeto descargado del bucket**; si el titular quiere el cuerpo exacto, basta
 sustituir el fichero por el objeto y el test sigue valiendo sin tocarlo (ver
 F-SPEC-011-1).
+
+## Evidencia del verificador: base y bucket (2026-09-23)
+<!-- La escribe SOLO sdd-verificador. No toca el bloque «Evidencia de campo» de sdd-implementador. -->
+
+Consultas **de solo lectura** (`select` y un `GET` de Storage; ni una escritura)
+con las credenciales del titular, desde el worktree del arreglo.
+
+### Las filas de `ingest_attempts` de la frontera
+
+```
+select id, source_id, started_at, ok, error, raw_ref, observations, details
+from public.ingest_attempts
+where started_at >= '2026-09-22T22:07:00Z' and started_at <= '2026-09-22T22:20:00Z'
+order by started_at asc;
+```
+
+24 filas: **1 `ok` y 23 `not ok` seguidas**, exactamente la serie descrita.
+
+| Hito | Instante | ok | obs | `details` |
+|---|---|---|---|---|
+| último `ok` | 2026-09-22T22:07:06.253Z | true | 1 | `{"alerts":0,"season":"2026-27","matches":1,"skipped":0,"requests":1,"unresolved":0}` |
+| primer fallo | 2026-09-22T22:07:38.499Z | false | **0** | `{"season":"2026-27","matches":1,"requests":2}` |
+| último de la serie | 2026-09-22T22:18:39.107Z | false | **0** | `{"season":"2026-27","matches":1,"requests":2}` |
+
+Los 23 con el mismo `error`:
+`api-football returned errors: {"live":"The Live field does not match the regular expression: [id-id-id...] or string: all."}`.
+El `ok` previo tiene `requests: 1` —ninguna `live=` antes del kickoff (N-10)— y
+el primer fallo `requests: 2`: la frontera está en el kickoff, como decía la spec.
+
+Identificadores de las tres filas citadas: `4a4dc42d-a831-483e-a43e-259b5b2892cd`
+(el `ok`), `976710f5-132d-4914-8ea2-aeeb46429903` (primer fallo),
+`213f46ab-3d90-4fb4-8fb7-a7f54953ff5c` (último de la serie).
+
+### La clave del objeto del bucket (N-5: aquí, nunca en el fixture)
+
+```
+raw/api-football/2026-09-22/2026-09-22T22-07-38.499Z-976710f5-132d-4914-8ea2-aeeb46429903.json.gz
+```
+
+`GET /storage/v1/object/<clave>` → 200. Descomprimido con `gunzipSync`, la
+captura trae `sourceId`, `capturedAt` y `requests`, y **solo** `url`, `status`,
+`contentType` y `body` por petición (ninguna cabecera guardada):
+
+```
+[0] https://v3.football.api-sports.io/fixtures?live=439      status=200  209 bytes de cuerpo
+[1] https://v3.football.api-sports.io/fixtures?ids=1612732   status=200  1155 bytes de cuerpo
+```
+
+### El fixture contra el objeto real: idénticos
+
+Cuerpo de la petición `live=439`, tal cual sale del bucket:
+
+```
+{"get":"fixtures","parameters":{"live":"439"},"errors":{"live":"The Live field does not match the regular expression: [id-id-id...] or string: all."},"results":0,"paging":{"current":1,"total":1},"response":[]}
+```
+
+Comparación canónica contra `src/sources/api-football/fixtures/errors-live-2026-09-22.json`:
+
+```
+real minified  == fixture minified : true   (incluido el orden de claves)
+diff del real re-sangrado a 2 espacios contra el fixture : sin diferencias
+```
+
+La única diferencia entre los ficheros es el sangrado (209 bytes crudos frente a
+268 formateados), que es el mismo criterio de los otros cuatro fixtures del
+directorio, todos formateados por biome. **El sobre no estaba «reconstruido con
+la forma del endpoint»: coincide byte a byte con el real una vez formateado.**
+Por tanto la diferencia **no importa para lo que `parse` mira** —y no importa
+para nada más: no hay diferencia. **F-SPEC-011-1 queda cerrada.**
+
+### El arreglo, corrido sobre la captura real del bucket
+
+`parse` de la rama sobre el objeto descargado (test desechable en copia del
+árbol, fuera del repo):
+
+```
+requestErrors: [ { "url": ".../fixtures?live=439",
+                   "error": "api-football returned errors: {\"live\":\"The Live field does not match ...\"}" } ]
+observations:  [ { "matchId": "tercera-rfef-g1-2026-27-j4-atletico-arteixo-alondras",
+                   "status": "scheduled", "score": null, "minute": null } ]
+unresolved: 0   skipped: 0
+```
+
+Donde el tick desplegado guardó **0 observaciones**, el arreglo guarda **1** y
+deja el incidente anotado. Es la prueba directa del defecto grave y de su cura.
+
+### Presupuesto medido por el verificador
+
+Medido sobre el alias real de `data/alias/2026-27/api-football.json`, contando
+las URLs que el `fetch` del adaptador emite (stub, nunca red):
+
+| Competiciones en ventana | n | Peticiones | `live=` | Cota N-4 `1+⌈n/20⌉` |
+|---|---|---|---|---|
+| 1 | 2 | **1** | 0 | 2 |
+| 2 | 4 | 2 | 1 (`live=140-141`) | 2 |
+| 3 | 6 | 2 | 1 | 2 |
+| 4 | 8 | 2 | 1 | 2 |
+| 5 | 10 | 2 | 1 (`live=140-141-435-439-875`) | 2 |
+| 1 competición, 11 partidos | 11 | **1** | 0 | 2 |
+| sábado de 5 competiciones | 25 | 3 | 1 | **3** |
+
+El arreglo solo puede **quitar** el término `1`: `liveQuery` devuelve `null`
+únicamente con menos de dos ids únicos, y en el resto de los casos emite la
+misma cadena que `origin/main` (prueba: el caso «(iii) the full subset still
+asks the five league ids» pasa con el `results.ts` viejo y con el nuevo). La
+cota no sube en ninguna franja y el sábado sigue clavada en 3 por tick → 6/min
+con los dos disparadores. El ahorro de ≈ 1.200 peticiones en la jornada
+(600 min × 2 ticks/min × 1) y la captura idéntica en los otros 3.880 minutos
+quedan confirmados.
+
+### Secretos y gates, corridos por el verificador
+
+```
+$ git grep -qF "$API_FOOTBALL_KEY"                 # con la clave real en el entorno
+exit 1  → sin coincidencias en todo el repo, fixture nuevo incluido
+
+$ grep -rlF "$API_FOOTBALL_KEY" --exclude-dir=node_modules --exclude-dir=.git --exclude=.env .
+(sin salida)
+
+# y ninguno de los otros siete secretos del entorno aparece en el fixture nuevo
+DATABASE_URL clean · SUPABASE_SERVICE_ROLE_KEY clean · NEXT_PUBLIC_SUPABASE_URL clean
+INGEST_TICK_TOKEN clean · NEXT_PUBLIC_SUPABASE_ANON_KEY clean · CRON_SECRET clean
+DATABASE_PASSWORD clean
+
+$ npm run gates                                    # en el worktree del arreglo
+exit 0
+
+# y en copia del árbol SIN .env de ningún tipo, con las cinco variables vaciadas:
+$ env -u DATABASE_URL -u API_FOOTBALL_KEY -u NEXT_PUBLIC_SUPABASE_URL \
+      -u SUPABASE_SERVICE_ROLE_KEY -u INGEST_TICK_TOKEN npm ci && npm run gates
+added 70 packages · biome: Checked 135 files, no fixes applied
+Test Files 44 passed (44) · Tests 596 passed (596) · next build ✓ Compiled successfully
+exit 0
+```
+
+### `tick:salud` sigue funcionando
+
+`npm run tick:salud` contra la base real (solo lectura) imprime los 23 intentos
+de la noche del 22 como `FALLO` con su `details` y cierra en `OK` porque están
+fuera de la ventana de recencia de SPEC-010 CA-3 — es decir, el semáforo no ha
+cambiado de forma. Y `src/ingest/salud.test.ts` pasa **19/19 también con el
+`src/ingest/tick.ts` de `origin/main`**: el caso del intento parcial es prueba de
+que `tick:salud` no necesitaba arreglo, no un arreglo. El veredicto sí baja a
+`REVISAR` con una fila parcial reciente, porque `salud.ts` mira
+`a.ok === false && a.startedAt >= since`.
+
+### Mutaciones (que los casos nuevos muerden)
+
+| Mutación | Qué cae |
+|---|---|
+| `liveQuery` sin `.sort()` | «joins unique league ids ascending», CA-3 (iii) y el caso de CA-5 de SPEC-005 |
+| `liveQuery` sin `new Set` | «joins unique league ids ascending» |
+| `catch` de `parse` sin `requestErrors.push` | 5 casos: los 4 de CA-2 y el de CA-4 |
+| `details` sin `requestErrors` | 2 de los 4 casos de CA-5 |
+
+Árbol de la rama intacto en todo momento (`git status --short` vacío antes y
+después; las copias vivieron en el scratchpad de la sesión).
 
 ## Salvedades / follow-ups
 
