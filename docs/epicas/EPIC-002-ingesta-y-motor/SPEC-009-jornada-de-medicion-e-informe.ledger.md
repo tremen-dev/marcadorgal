@@ -469,7 +469,7 @@ Comandos y salida real (2026-09-22, rama `ft/SPEC-009-jornada-de-medicion-e-info
   alerta, para que la persona la complete en el fichero. Modo de fallo: si el
   informe se regenera después de escribirlas, se pierden. Mitigación operativa:
   generar con `--salida` una sola vez y escribir las explicaciones después.
-- **F-SPEC-009-3 — las listas largas del informe se recortan a diez filas.** Con
+- **F-SPEC-009-3 — las listas largas del informe se recortan a cinco filas.** Con
   su cuenta y su desglose por competición; las discrepancias del contraste y las
   referencias no casadas **nunca** se recortan. Es la única forma de cumplir a la
   vez «cada uno con su competición y su hueco mayor» (CA-4 (b)) y «cabe en dos
@@ -709,6 +709,46 @@ informe de CA-10 el lunes 28. Al generar el informe del lunes, una cosa nueva qu
 mirar: el bloque 8 tiene ahora **tres** líneas de cuenta —coincidentes, estados
 no-`finished` acordados y partidos sin respuesta—, y la explicación a mano de las
 dos últimas es obligatoria igual que la de las alertas.
+
+
+### Decisión humana (2026-09-22): congelar código hasta el martes
+
+Alberto Fojo decidió congelar la iteración de implementación aquí. El ciclo de 
+verificación se agotó con tres rondas (siete findings arreglados: V-1..V-7) y la 
+tercera devolvió dos findings abiertos, ambos clasificados para martes 2026-09-29:
+
+| Finding | Qué queda | Regeneración |
+|---|---|---|
+| **V-8** | El tope de 145 líneas se pasa con listas todas acotadas (150-153) | martes, después de generar el informe de la jornada |
+| **V-9** | Documentación: F-SPEC-009-3 y F-SPEC-009-4 requieren revisión | martes, después de generar el informe de la jornada |
+
+El informe se recalcula entero desde filas append-only (30 días de retención) y su 
+camino es de **solo lectura**: la medición de campo puede correr tal cual está.
+
+**Hito por hito hasta el lunes 28:**
+
+- **miércoles 23**: ensayo de CA-6, guion byte a byte idéntico al de la 1ª ronda.
+- **viernes 25 18:20Z → lunes 28 21:00Z**: ventana de CA-7, sin intervención sobre el dato (H-2 (i)).
+- **sábado 26**: fixture `live-2026-09-26.json` de CA-8.
+- **domingo 27, 14:00Z-17:00Z**: filas de `referencias.csv` a mano (H-3).
+- **lunes 28**: informe de CA-10 en `_qa/SPEC-009/informe-jornada-2026-09-28.md`; veredicto de CA-9 con sus tres declaraciones (F-SPEC-009-1); paso de la spec a `en-revision`.
+- **martes 29**: V-8 y V-9 regenerados.
+
+### Avisos operativos para el lunes
+
+**Alerta 1: explicaciones de alertas en el bloque 7.**
+El bloque 7 del informe ofrece **dos** huecos de `explicación:` bajo las alertas 
+(con dos alertas mostradas de `INFORME_FILAS_MOSTRADAS = 5` dividido entre 2 líneas por alerta). 
+Cuando se escriba el informe el lunes con 39 alertas plausibles, las explicaciones 
+faltantes se declaran **por `kind`** (la cuenta agrupada que el bloque imprime), no una por una. 
+Esto es F-SPEC-009-4 y está documentado, pero quien escriba el informe debe saberlo antes 
+de sentarse.
+
+**Alerta 2: merge de PR #14 (SPEC-010) antes del lunes.**
+Cuando se mergee `ft/EPIC-MANT-salud-running-y-medir-directo` (PR #14), ambas ramas 
+tocan `src/ingest/constants.ts` de forma aditiva. Traer `main` a esta rama el miércoles 
+23 resuelve mejor el solape que hacerlo el lunes a las 22:00 con la jornada ya capturada.
+
 
 ### Guion del ensayo de CA-6 — miércoles 2026-09-23
 
