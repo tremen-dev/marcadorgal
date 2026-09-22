@@ -105,8 +105,9 @@ de fallo escrito:
   líneas) y `grep -rn "cron:" .github/workflows` (solo la del calendario
   semanal). Nada más de `tools/` se toca.
 - **CA-6 Gates, y la frontera que esta rama no cruza.** `npm run gates` → salida
-  0. `git diff main --stat -- src/decide src/ingest/engine.ts` **vacío** (ver la
-  restricción de «Fuera de alcance»: es requisito de una spec ajena, no gusto).
+  0. `git diff origin/main --stat -- src/decide src/ingest/engine.ts` **vacío**
+  (ver la restricción de «Fuera de alcance»: es requisito de una spec ajena, no
+  gusto; y se compara contra `origin/main` por lo que dice N-3).
   Bajo `src/`, el diff toca **solo** `src/ingest/salud.ts`,
   `src/ingest/salud.test.ts` y `src/ingest/constants.ts`
   (`git diff main --name-only -- src`). Ninguna migración, ninguna dependencia
@@ -184,6 +185,15 @@ toca. Ningún ADR cambia: el semáforo no está en ninguno.
 - **N-2 Antes del viernes 25.** El valor de esta spec caduca el 2026-09-25 a las
   18:20Z (inicio de la ventana de SPEC-009): implementada después, el semáforo ya
   habrá dado sus rojos falsos y el workflow del domingo 27 ya estará en marcha.
+- **N-3 Cuidado: `main` local puede estar viejo, y entonces el comando de CA-10
+  de SPEC-009 miente.** Medido hoy en el worktree de esta rama: `main` apunta a
+  `13e05fc`, tres merges por detrás de `origin/main` (`2d6c3f2`), así que
+  `git diff main --stat -- src/decide src/ingest/engine.ts` imprime **12 líneas
+  en `src/ingest/engine.ts` sin que nadie las haya tocado** —vienen de commits ya
+  fusionados—, mientras que contra `origin/main` sale vacío. Por eso CA-6 nombra
+  `origin/main`. **Aviso para quien verifique SPEC-009**, cuyo CA-10 usa la forma
+  con `main`: conviene un `git fetch` antes, o se lleva un RED falso que no tiene
+  nada que ver con esa rama ni con esta.
 
 ## Residuales
 - **R-SPEC-010-1 — la letra de CA-7 de SPEC-008 queda con dos arrugas
