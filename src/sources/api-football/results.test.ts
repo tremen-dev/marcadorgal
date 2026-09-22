@@ -272,7 +272,10 @@ describe("SPEC-011 CA-1 liveQuery", () => {
     const ids = matches
       .map((m) => Number(fixtureIdOf.get(m.id)))
       .sort((a, b) => a - b);
-    expect(calls.map(query)).toEqual(["?live=141-439", `?ids=${ids.join("-")}`]);
+    expect(calls.map(query)).toEqual([
+      "?live=141-439",
+      `?ids=${ids.join("-")}`,
+    ]);
   });
 });
 
@@ -693,6 +696,73 @@ describe("CA-6 identity is all-or-nothing (RN-10)", () => {
 });
 
 // ---------------------------------------------------------------------------
+// SPEC-011 CA-4 the night of 2026-09-22, reproduced from the repo and never
+// from the network: the two requests of one failed attempt, the live= one that
+// the provider answered 200-with-errors and the ids= one that brought the
+// match. Before the fix the second was thrown away with the first.
+
+describe("SPEC-011 CA-4 the failed attempt of 2026-09-22", () => {
+  const errorsFixture = readJson(
+    "./fixtures/errors-live-2026-09-22.json",
+  ) as ProviderBody & { parameters: { live: string } };
+  const LIVE_ERROR = "The Live field does not match the regular expression";
+  const LIVE_URL = "https://v3.football.api-sports.io/fixtures?live=439";
+  const IDS_URL = `https://v3.football.api-sports.io/fixtures?ids=${
+    (idsFixture as unknown as { parameters: { ids: string } }).parameters.ids
+  }`;
+  const night: RawCapture = {
+    sourceId: "api-football" as RawCapture["sourceId"],
+    capturedAt: "2026-09-22T22:07:38Z" as Instant,
+    requests: [
+      {
+        url: LIVE_URL,
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(errorsFixture),
+      },
+      {
+        url: IDS_URL,
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(idsFixture),
+      },
+    ],
+  };
+
+  it("the fixture is the body of a 200 that carries errors and no fixture", () => {
+    expect(errorsFixture.parameters.live).toBe("439");
+    expect(errorsFixture.response).toEqual([]);
+    expect(errorsFixture.results).toBe(0);
+    expect(JSON.stringify(errorsFixture.errors)).toContain(LIVE_ERROR);
+    // N-5: the body, never a key. Neither the provider's nor the bucket's.
+    expect(JSON.stringify(errorsFixture)).not.toMatch(/apisports|raw\//);
+  });
+
+  it("parse keeps the observations of the ids= request and records the live= one", () => {
+    const result = adapter.parse(night);
+    expect(ParseResult.safeParse(result).success).toBe(true);
+
+    expect(result.requestErrors).toHaveLength(1);
+    expect(result.requestErrors[0].url).toBe(LIVE_URL);
+    expect(result.requestErrors[0].error).toContain(LIVE_ERROR);
+
+    expect(result.observations.length).toBeGreaterThanOrEqual(1);
+    expect(result.observations).toHaveLength(idsFixture.response.length);
+    expect(result.observations).toContainEqual({
+      matchId: "segunda-division-2026-27-j6-albacete-cordoba",
+      status: "finished",
+      score: { home: 1, away: 2 },
+      minute: null,
+    });
+    expect(
+      result.observations.filter(
+        (o) => o.status === "finished" && o.score !== null,
+      ).length,
+    ).toBeGreaterThanOrEqual(3);
+  });
+});
+
+// ---------------------------------------------------------------------------
 // SPEC-011 CA-3 the invariant that stops this from coming back. Generated over
 // the 31 non-empty subsets of the five competitions of D-3, not written by
 // hand: the shape with a bare league id cannot be forgotten again because
@@ -735,18 +805,14 @@ describe("SPEC-011 CA-3 no capture ever carries a live= with a single id", () =>
 
       // With a single competition there is no live= request at all; from two
       // on there is exactly one.
-      const withLive = urls.filter((u) =>
-        new URL(u).searchParams.has("live"),
-      );
+      const withLive = urls.filter((u) => new URL(u).searchParams.has("live"));
       expect(withLive).toHaveLength(subset.length === 1 ? 0 : 1);
 
       // (a) of CA-6: the request count per tick, subset by subset. It is
       // 1 + ceil(n/20) at most and never more than before the fix.
       const pending = matches.filter((m) => fixtureIdOf.has(m.id));
       const idsRequests = Math.ceil(pending.length / 20);
-      expect(urls).toHaveLength(
-        (subset.length === 1 ? 0 : 1) + idsRequests,
-      );
+      expect(urls).toHaveLength((subset.length === 1 ? 0 : 1) + idsRequests);
       expect(urls.length).toBeLessThanOrEqual(1 + idsRequests);
     },
   );

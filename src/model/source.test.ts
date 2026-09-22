@@ -119,9 +119,9 @@ describe("CA-1 SourceAdapter contract types", () => {
   it("ParseResult requires requestErrors, accepts [] and rejects an entry without url", () => {
     const { requestErrors: _omitted, ...without } = result;
     expect(ParseResult.safeParse(without).success).toBe(false);
-    expect(ParseResult.safeParse({ ...result, requestErrors: [] }).success).toBe(
-      true,
-    );
+    expect(
+      ParseResult.safeParse({ ...result, requestErrors: [] }).success,
+    ).toBe(true);
     expect(
       ParseResult.safeParse({ ...result, requestErrors: [{ error: "boom" }] })
         .success,

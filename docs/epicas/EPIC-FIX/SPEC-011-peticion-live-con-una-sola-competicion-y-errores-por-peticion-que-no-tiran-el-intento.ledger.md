@@ -19,7 +19,7 @@ epica: EPIC-FIX
 | CA-1 `live=` nunca con menos de dos ids | `src/sources/api-football/results.ts` (`liveQuery` nueva, exportada; `fetch` solo emite `live=` cuando devuelve cadena) | `src/sources/api-football/results.test.ts` → `SPEC-011 CA-1 liveQuery` (4 casos) + reescritura de «omits window matches without a match alias…» y de «sends the key and the user agent on every request…» | | 🚧 |
 | CA-2 `parse` total: `requestErrors` | `src/model/source.ts` (`RequestError` + cuarto canal obligatorio en `ParseResult`), `src/sources/api-football/results.ts` (`parse` con `try/catch` por petición y `messageOf` local) | `src/model/source.test.ts` → «ParseResult requires requestErrors, accepts [] and rejects an entry without url»; `src/sources/api-football/results.test.ts` → «records a body with non-empty errors…», «records a body that is not JSON or not a fixtures response…», «keeps the observations of the good requests when one request is broken», «with every request unreadable gives three empty channels and one requestError each» | | 🚧 |
 | CA-3 invariante sobre los 31 subconjuntos | (test; el arreglo que fija es el de CA-1) | `src/sources/api-football/results.test.ts` → `SPEC-011 CA-3 no capture ever carries a live= with a single id` (1 caso de cobertura + 31 generados con `it.each` + «(iii) the full subset still asks the five league ids»); reescrituras de CA-3 (ii) en `results.test.ts:191` y en `src/arch/source-contract.test.ts:209` | | 🚧 |
-| CA-4 fixture del error real y regresión | | | | ❌ |
+| CA-4 fixture del error real y regresión | `src/sources/api-football/fixtures/errors-live-2026-09-22.json` (nuevo) + su fila en `fixtures/README.md` | `src/sources/api-football/results.test.ts` → `SPEC-011 CA-4 the failed attempt of 2026-09-22` («the fixture is the body of a 200 that carries errors and no fixture», «parse keeps the observations of the ids= request and records the live= one») | | ⚠️ |
 | CA-5 intento parcial: se guarda y `ok = false` | | | | ❌ |
 | CA-6 presupuesto, frontera y gates | | | | ❌ |
 
@@ -255,11 +255,110 @@ AssertionError: expected 'https://v3.football.api-sports.io/fix…' not to match
 
 Con el arreglo dentro, `results.test.ts` entero: **87 passed (87)**.
 
+### CA-4 — `npx vitest run src/sources/api-football/results.test.ts`
+
+Rojo con el test escrito y el fixture todavía sin crear:
+
+```
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/sources/api-football/results.test.ts [ src/sources/api-football/results.test.ts ]
+Error: ENOENT: no such file or directory, open '/Users/albertofojo/src/marcadorgal-fix/src/sources/api-football/fixtures/errors-live-2026-09-22.json'
+ ❯ readJson src/sources/api-football/results.test.ts:16:14
+     16|   JSON.parse(readFileSync(new URL(rel, import.meta.url), "utf8"));
+       |              ^
+ ❯ src/sources/api-football/results.test.ts:702:25
+
+ Test Files  1 failed (1)
+      Tests  no tests
+```
+
+Con el fixture dentro: **89 passed (89)** en ese fichero.
+
 ## Evidencia de campo del fallo (2026-09-22, ensayo de CA-6 de SPEC-009)
-<!-- Rellenar con la clave del objeto del bucket del intento fallido del que sale el fixture de CA-4 (N-5: la clave va aquí, nunca en el fixture), y con los identificadores de las filas de ingest_attempts de la frontera 22:07:06Z ok / 22:07:38Z primer fallo / 23 fallos seguidos. -->
+<!-- N-5: la clave del objeto del bucket va aquí, nunca en el fixture. -->
+
+**Frontera medida** (contra `dev` y el tick desplegado, 22:02Z-22:20Z), tal y
+como llegó en el encargo del orquestador:
+
+| Hito | Instante (UTC) |
+|---|---|
+| último intento `ok` | 2026-09-22T22:07:06Z |
+| kickoff del partido en ventana | 2026-09-22T22:07:21Z |
+| primer intento fallido | 2026-09-22T22:07:38Z |
+| último de la serie | 2026-09-22T22:18:39Z (**23 fallos seguidos**) |
+
+Error literal del proveedor en los 23, en la petición `live=439`:
+
+```
+api-football returned errors: {"live":"The Live field does not match the regular expression: [id-id-id...] or string: all."}
+```
+
+Las dos peticiones del crudo de un intento fallido:
+
+```
+https://v3.football.api-sports.io/fixtures?live=439      → 200 con "errors":{"live":"..."}
+https://v3.football.api-sports.io/fixtures?ids=1612732   → 200 con el partido dentro, correcta
+```
+
+**Clave del objeto del bucket: PENDIENTE — no la he podido sacar.** Este
+worktree no tiene `.env.local` (un worktree de git no arrastra ficheros no
+versionados) y el entorno del implementador no trae `DATABASE_URL`,
+`SUPABASE_SERVICE_ROLE_KEY` ni `API_FOOTBALL_KEY`, así que no he podido
+consultar `ingest_attempts` por las filas `not ok` del 2026-09-22 entre
+22:07:38Z y 22:18:39Z ni bajar el objeto del bucket. El checkout principal, que
+sí tiene el `.env.local`, está excluido por el encargo. Queda para el humano o
+para el verificador: anotar aquí la clave del objeto y los identificadores de
+esas filas. **Consecuencia sobre el fixture de CA-4**, dicha sin adornos: el
+valor de `errors` es el error literal de campo (el de arriba, byte a byte), y el
+sobre del cuerpo (`get`, `parameters`, `results`, `paging`, `response`) está
+reconstruido con la forma que tiene este mismo endpoint en los dos fixtures
+reales del repo (`ids-2026-09-21.json`, `live-all-2026-09-21.json`). Es lo que
+`parse` necesita ver y el test reproduce la noche del 22, pero **no es el
+objeto descargado del bucket**; si el titular quiere el cuerpo exacto, basta
+sustituir el fichero por el objeto y el test sigue valiendo sin tocarlo (ver
+F-SPEC-011-1).
 
 ## Salvedades / follow-ups
-<!-- IDs F-SPEC-011-1, F-SPEC-011-2… con destino (spec futura o EPIC-MEJORA). -->
+
+- **F-SPEC-011-1 — el fixture de CA-4 no viene del bucket, sino del error
+  literal de campo dentro del sobre reconstruido del endpoint.** Sin
+  credenciales no he podido bajar el objeto (ver «Evidencia de campo»). *Modo de
+  fallo si no se atiende:* si el cuerpo real trae algún campo que no esperamos
+  —otra forma de `errors`, un `paging` distinto— el fixture no lo refleja y
+  `parse` no está probado contra él; el riesgo es bajo porque `hasErrors` solo
+  mira `errors` y la rama que importa es «`errors` no vacío», que sí está fijada
+  byte a byte. *Destino:* sustituir el fichero por el objeto del bucket (y
+  anotar su clave aquí) antes o después de la jornada, sin tocar el test.
+- **F-SPEC-011-2 — ADR corto del cuarto canal de `ParseResult`, después de la
+  jornada.** Residual acordado en la decisión 3 del titular: `requestErrors` es
+  el segundo refinamiento del tipo de retorno de ADR-003 (el primero fue
+  `unresolved`/`skipped` en N-2 de SPEC-005) y EPIC-004 lo hereda para el
+  webhook. *Modo de fallo si no se atiende:* el contrato de ADR-003 queda
+  descrito solo en specs y la próxima fuente (o el `ingest` del push) puede
+  volver a lanzar excepciones por captura, que es el defecto que esta spec
+  arregla. *Destino:* ADR corto tras la jornada de SPEC-009, como ADR-009. **No
+  he escrito ningún ADR** (decisión 3).
+- **F-SPEC-011-3 — la spec escribe los cinco ids de liga en orden de
+  competición, no ascendente.** CA-3 (iii) pide literalmente
+  `?live=140-141-435-875-439`, y CA-1 pide «ids únicos **ascendentes**»; 875
+  (Segunda RFEF) es mayor que 439 (Tercera RFEF), así que la forma ascendente,
+  que es la que el código ya emitía antes de este arreglo y que no he cambiado,
+  es `?live=140-141-435-439-875`. El test de CA-3 (iii) afirma esta última. Es
+  una errata del texto de la spec (y la misma que arrastra el comando de
+  captura de `fixtures/README.md`), no un cambio de comportamiento. *Modo de
+  fallo si no se atiende:* ninguno en ejecución; solo confunde a quien compare
+  la spec con el test. *Destino:* que la arquitecta corrija el literal de la
+  spec y del README cuando pase por aquí.
+- **F-SPEC-011-4 — dos ficheros de test fuera de la lista de CA-6 (c).** El
+  canal obligatorio obliga a declararlo en todo sitio que construya un
+  `ParseResult` a mano: además de los previstos, `src/ingest/adapters.test.ts`
+  (una línea, `requestErrors: []`) y `src/arch/source-contract.test.ts` (el
+  adaptador en memoria, el huérfano y la aserción de `live=141`, que era el
+  tercer test que afirmaba la URL rota). CA-6 (c) contempla
+  `source-contract.test.ts`; `adapters.test.ts` no estaba previsto. Ningún
+  fichero de producción fuera de los tres de la spec. *Destino:* nada que hacer,
+  queda dicho para que el verificador no lo lea como alcance colado.
 
 ## Cómo retomar (handoff)
 <!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->
