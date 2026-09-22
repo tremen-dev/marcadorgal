@@ -26,6 +26,7 @@ Actualizado: 2026-09-22
 
 | Spec | Estado | Último cambio |
 |---|---|---|
+| SPEC-010 — salud-del-tick-sin-falsos-fallos-y-retirada-de-medir-directo | borrador | 2026-09-22 (sdd-arquitecto) |
 
 ## ADRs
 
@@ -45,3 +46,4 @@ Actualizado: 2026-09-22
 
 - hecho: 8
 - aprobada: 1
+- borrador: 1
