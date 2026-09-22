@@ -17,6 +17,14 @@ epica: EPIC-002
   (150-153) con listas todas acotadas. Ninguno de los dos findings es «antes del
   lunes»: se arreglan el martes y el informe se regenera. El ciclo de código se
   agota aquí; el gate humano decide.
+- Ensayo de CA-6 (2026-09-22 22:02Z-22:20Z, adelantado con autorización del
+  titular): **las cinco comprobaciones (i)-(v) en verde** y **R-SPEC-006-1
+  cerrado**; kickoff restaurado y contrastado contra el calendario declarado (0
+  discrepancias en 1834 partidos). Y el ensayo hizo su trabajo: destapó
+  **F-SPEC-009-8** y **F-SPEC-009-9**, que dejan a CA-7 sin observaciones en 600
+  de los 4480 min de su ventana —viernes y lunes completos— y **piden arreglo
+  antes del viernes 18:20Z**. Detalle y salidas en «Evidencia visual → ensayo de
+  CA-6».
 - Rama: `ft/SPEC-009-jornada-de-medicion-e-informe`
 
 ## Matriz de criterios de aceptación
@@ -30,7 +38,7 @@ epica: EPIC-002
 | CA-3 | `src/ingest/informe.ts` (`parseReferencias`, `latenciaExternaDe`) · `docs/epicas/EPIC-002-ingesta-y-motor/_qa/SPEC-009/referencias.csv` (cabecera, sin filas) | `informe.db.test.ts` «de tres filas casa una y las otras dos quedan listadas con su motivo» · `informe.test.ts` «CA-3 referencias externas» (fichero vacío, fila mal formada, `peor caso (n=1)`, rango, objetivo de `vision.md` en segundos) | Frontera n=20 ejercitada a mano: con n=12 imprime `peor caso (n=12)` y «el p95 de vision.md no se contrasta con n=12»; con n=20 imprime `p95` y `p95 < 90 s → cumple`. Contraste en segundos contra los 45 s, con caso recíproco a 100 s; la aserción `"mediana < 45 s → cumple"` no casa dentro de `"→ NO cumple"`. `referencias.csv` con solo cabecera: informe generado exit 0. Filas no casadas listadas con su motivo y **nunca** recortadas. **2ª ronda**: sin regresión (gates 613 tests en verde; una fila mal formada o un `matchId` mal escrito el domingo se arregla editando el CSV y regenerando, nada se pierde). **3ª ronda**: la línea del tamaño esperable sigue entera («tamaño esperable: los 39 partidos de la ventana dan del orden de 98 goles» + «H-3: domingo 27, 14:00Z-17:00Z»), igual que `peor caso (n=12)`, el `rango: [...]` y el contraste con los 45 s de `vision.md`. Sin regresión (633 tests en verde). | ✅ |
 | CA-4 | `src/ingest/informe.ts` (bloques 5, 6 y 7; el hueco de un partido incluye su silencio final, V-2; el bloque 7 acotado con `primerasFilas`, V-4) · `src/ingest/informe-db.ts` (`details->>'requests'`, `alerts`) | `informe.db.test.ts` «un partido sin observaciones y dos alertas de distinto kind» y «las peticiones salen de details->>'requests'» · `informe.test.ts` «CA-4» (total/día/pico, presupuesto EXCEDE, `unresolved_team` y `conflict` en cero) · **V-2** «el partido aparece en la lista de partidos sin señal de CA-4 (b)» | `grep -rn _http_response src tools`: ninguna consulta del informe lo toca; las peticiones salen de `details->>'requests'` (verificado en `test:db`). Bloque 7 lista cada alerta con `details` y `explicación:` vacía. **2ª ronda: V-2 cerrado.** El bloque 6 (b) ya ve el silencio final: en la jornada del tick muerto imprime `con al menos un hueco > 15 min: 39` y lista los 39 con su hueco mayor, donde antes imprimía 0. Un partido sin ninguna observación sigue saliendo solo por `sin ninguna observación`, que es lo correcto (no se le inventa un hueco). **3ª ronda: la letra de (b) y de (c) no se cumple con cinco filas — y no se cumplía con diez.** Medido con 27 partidos con hueco largo y 39 alertas: (b) imprime `con al menos un hueco > 15 min: 27`, su desglose por competición y **5** filas con su hueco mayor + `… y 22 más`; las otras 22 no llevan hueco ninguno. (c) imprime **2** alertas con sus `details` y su `explicación:` + `… y 37 más, explicadas por kind`. Es F-SPEC-009-3/-4 y no un defecto nuevo (a diez eran 10 de 27 y 5 de 39), pero es una **salvedad**, y una salvedad no es ✅: además CA-9 (a) lee «cada alerta abierta tiene explicación» y con dos huecos eso se declara por `kind`. F-SPEC-009-3 sigue diciendo «a diez filas» cuando ya son cinco. | ⚠️ |
 | CA-5 | `src/sources/api-football/results.ts` (`apiFootballByIds`, **sin tocar en la 3ª vuelta**) · `src/ingest/contraste.ts` (devuelve el `motivo` del silencio: `skipped` con su `reason`, `unresolved` con la suya, el fixture que no vino, el partido sin alias, V-6) · `src/ingest/informe.ts` (bloque 8: coincidentes, **estados no-`finished` que el proveedor confirma** con su raw_ref y su hueco de explicación, V-3; **partidos sin respuesta del proveedor** en su propia línea con su motivo, su raw_ref y su explicación, V-6; y discrepancias) | `informe.db.test.ts` «dos partidos en board, uno coincidente y uno no» con `fetch` doble (una sola petición `ids=101-102`) · `informe.test.ts` «CA-5» (peticiones del contraste aparte, bloque vacío sin `--contrastar`) · **V-3** «un estado no-finished acordado no es discrepancia» (4 casos) · **V-6** `contraste.test.ts` «el silencio del proveedor vuelve con su motivo» (6 casos sobre el adaptador **de verdad**: `unsupported_status`, `missing_score`, `unknown_team`, fixture ausente de la respuesta, partido sin alias, y el recíproco de que un partido contestado no lleva motivo) + «ABD, AWD y WO no son estados sin mapear» · `informe.test.ts` «CA-5 el silencio del proveedor no es discrepancia» (5 casos: su propia línea con motivo y raw_ref, no dispara (c2) y baja a reservas, la cuenta «N de N» intacta, un silencio sin motivo lo dice, y el recíproco de que dos lados diciendo cosas distintas sigue siendo (c2)) | Maquinaria verificada en `test:db` con `fetch` doble (una sola petición `ids=101-102`, ≤ 20 por petición); la url base y la cabecera `x-apisports-key` se quedan dentro de `src/sources/api-football/`. `--contrastar` sobre ventana vacía: bloque «0 de 0» sin ninguna petición. **No se ha llamado al proveedor de verdad** a propósito (RN-08). **2ª ronda: V-3 cerrado**, comprobado en las dos direcciones por el verificador: 39 aplazados que board y proveedor dicen igual → `acordadosNoFinished: 39`, `discrepancias: 0`, veredicto `válida con reservas` y **no** (c2); los dos diciendo cosas distintas → `discrepancias: 39` → `no válida (c2)`. **Finding V-6 (nuevo)**: un partido del que el proveedor **no contesta** se imprime como discrepancia y dispara (c2) — detalle abajo. **3ª ronda: V-6 cerrado, y contra el adaptador de verdad.** Las **cuatro rutas reales** llegan al informe con su motivo —`missing_score`, `unresolved`, fixture ausente de la respuesta y partido sin alias— más `unsupported_status` con un código **nuevo**; los 9 casos **fallan contra el código anterior** (`expected undefined to be 'el adaptador lo descartó: …'` ×5 en `contraste.test.ts`; `expected [ { matchId: 'mudo', …(3) } ] to deeply equal []` y `- "rama": "c2" / + null` en `informe.test.ts`). Jornada **sana** con un silencio: `sinRespuesta 1`, `discrepancias 0`, cobertura `5550/5550 = 100 %`, veredicto **`válida con reservas`** y **no** (c2); la cuenta de CA-5 intacta («38 de 39 partidos con `finished` y marcador coincidente»). Recíproco: el proveedor contesta otra cosa → `no válida (c2)`. **El ejemplo de V-6 queda adjudicado a favor del implementador** (abajo). | ⚠️ |
-| CA-6 | — trabajo de campo, **miércoles 2026-09-23** con el tick desplegado. Guion ejecutable en «Cómo retomar». | — | No se juzga en esta ronda: campo, **miércoles 2026-09-23**. El guion de «Cómo retomar» es **byte a byte idéntico** al de la 1ª ronda (`diff` contra `0b2ddf0`) y no depende de ninguno de los siete commits de esta vuelta. **3ª ronda**: el guion de «Cómo retomar» sigue **byte a byte** el de la 1ª ronda — mismo sha (`c863a897`, 148 líneas) que en `0b2ddf0` y en `d3cbf81`. | ❌ |
+| CA-6 | **Ensayo ejecutado el 2026-09-22 de 22:02Z a 22:20Z** sobre `dev` con el tick desplegado, siguiendo el guion de «Cómo retomar» **sin cambiarlo** (autorización de Alberto Fojo de esa noche para adelantarlo y para el único `update matches set kickoff`). Sin código nuevo: lo que se prueba es el camino desplegado (pg_cron → Vercel → `src/ingest/tick.ts` → `src/raw/store.ts` → `src/sources/api-football/results.ts`). Partido **`tercera-rfef-g1-2026-27-j4-atletico-arteixo-alondras`** (Terceira Federación · Grupo 1, J4), kickoff real **`2026-09-26T15:00:00Z`**, movido a `now() + 5 min` (`2026-09-22T22:07:21.200Z`) y restaurado con `npm run calendario:load -- 2026-27`. Script del paso 2 del guion (`ca6-ensayo.mjs`, temporal, borrado; `git status` limpio). | Las cinco comprobaciones **(i) a (v) del CA, las cinco en verde**, con comando y salida real en «Evidencia visual → ensayo de CA-6». Anotado lo que quedó (RN-07, N-5): **10 `observations`** `scheduled` sin marcador, **1 `decision`** (v1, `scheduled`, `provisional`, RN-01, 1 observación citada), **0 `alerts`**; 33 `ingest_attempts` y 56 peticiones al proveedor. El ensayo además **destapó dos defectos del camino desplegado que no son de las cinco comprobaciones y que dejan a CA-7 sin observaciones en 600 de los 4480 min de su ventana**: **F-SPEC-009-8** y **F-SPEC-009-9**. | No se juzga en esta ronda: campo, **miércoles 2026-09-23**. El guion de «Cómo retomar» es **byte a byte idéntico** al de la 1ª ronda (`diff` contra `0b2ddf0`) y no depende de ninguno de los siete commits de esta vuelta. **3ª ronda**: el guion de «Cómo retomar» sigue **byte a byte** el de la 1ª ronda — mismo sha (`c863a897`, 148 líneas) que en `0b2ddf0` y en `d3cbf81`. | ❌ |
 | CA-7 | — trabajo de campo, **viernes 2026-09-25 18:20Z → lunes 2026-09-28 21:00Z**. El informe ya calcula sus números (cobertura, horas sin ejecuciones, intentos fuera de ventana, intentos fallidos). | — | No se juzga en esta ronda: campo, **viernes 25 18:20Z → lunes 28 21:00Z**. De su maquinaria sí: el **criterio 2 no se ha relajado** — una sola fila de `ingest_attempts` fuera de la ventana de ADR-002 §2 de todo partido sigue saliendo (`intentos fuera de la ventana de todo partido: 1   ← criterio 2`), y las dos ventanas están separadas a propósito (ver abajo). | ❌ |
 | CA-8 | — trabajo de campo, el fixture `live-<fecha>.json` se captura **durante la jornada** (sábado 2026-09-26). | — | No se juzga en esta ronda: campo, **sábado 2026-09-26**. | ❌ |
 | CA-9 | `src/ingest/informe.ts` (`veredictoDe`, umbrales en `src/ingest/constants.ts`; `ventanaEfectiva` + `union` + `dentroDe`: numerador y denominador de la cobertura sobre el mismo span, V-1; el acuerdo no-`finished` como reserva nombrada, V-3) — el veredicto **real** se escribe con los números de la jornada, **lunes 2026-09-28**. | `informe.test.ts` «CA-9 veredicto»: válida, válida con reservas, c1 por cobertura, c1 por competición muda, c2 por marcadores, intervención sobre el dato vs sobre la plataforma, declaraciones pendientes · **V-1** «cobertura sobre la ventana efectiva de cada partido» (3 casos: muestreo perfecto → 100 % y `válida`, la línea que dice sobre qué ventana se calcula, y un partido que nunca cerró cuenta su ventana entera sin pasar del 100 %) | Solo la **maquinaria**, nunca el resultado de campo. **V-1 cerrado y el invariante de las dos direcciones comprobado por el verificador** sobre los 39 partidos de la jornada: muestreo perfecto → `5550 / 5550 = 100 %` y veredicto `válida`, igual con cierre en +100 (`5540/5540`), +105 y +120 (`5580/5580`); tick caído 4 h → 91,4 % `válida con reservas`; 8 h → 82,7 %; 12 h → 74,1 % `no válida (c1)`. Los tests nuevos **fallan contra el código anterior** (`expected 900 to be 690`; y con muestreo perfecto el informe imprimía `veredicto: no válida (c1) · cobertura de ticks 77 %`). Umbrales 0,95 / 0,80 en `constants.ts`, los que fija CA-9. **Divergencia de V-1 adjudicada a favor del implementador** (abajo). El veredicto real se escribe el **lunes 2026-09-28**. **3ª ronda**: el silencio del proveedor entra como **reserva nombrada** («N partido(s) sin respuesta del proveedor, con su motivo y su explicación») y nunca como rama (c2) — medido por mí, no leído. El veredicto real se escribe el **lunes 2026-09-28**. | ❌ |
@@ -452,6 +460,37 @@ Comandos y salida real (2026-09-22, rama `ft/SPEC-009-jornada-de-medicion-e-info
 | pg_cron vivo, y criterio 2 de paso | `select status, count(*) … from cron.job_run_details where start_time >= now() - interval '25 minutes' group by status` y el mismo rango sobre `ingest_attempts` | `succeeded 50` en 25 min (uno cada 30 s) y **cero** filas de `ingest_attempts`: el tick corre y no pide nada fuera de ventana |
 | el comando corre de verdad | `npm run informe:jornada -- 2026-09-25T18:20Z 2026-09-28T21:00Z --referencias docs/…/referencias.csv` | 113 líneas; primera línea **«Se midieron cuatro de las cinco competiciones de D-3: Primeira Federación · Grupo 1 (10 partidos), Segunda División (11), Segunda Federación · Grupo 1 (9), Terceira Federación · Grupo 1 (9)»** y «Sin partidos en la ventana: primera-division», los 39 partidos, todo lo demás vacío y `veredicto: no válida (c1)` — la jornada aún no ha ocurrido, que es exactamente lo que debe decir hoy |
 
+### Ensayo de CA-6 — ejecutado el 2026-09-22 22:02Z-22:20Z (sdd-implementador)
+
+Partido movido: **`tercera-rfef-g1-2026-27-j4-atletico-arteixo-alondras`**, Terceira
+Federación · Grupo 1, J4, kickoff real **`2026-09-26T15:00:00Z`** → `2026-09-22T22:07:21.200Z`.
+Estado de partida medido antes de tocar nada: `tick:salud` **OK**, pg_cron cada 30 s con 200,
+y `observations`/`decisions`/`alerts`/`ingest_attempts` **a cero**, `matches` 1834: toda fila
+que aparece es del ensayo.
+
+| Comprobación | Comando | Salida |
+|---|---|---|
+| en ventana antes de esperar | `npm run ingest:tick -- --dry-run` | `partidos en ventana: 1` · `2026-09-22T22:07:21.200Z tercera-rfef-g1 …atletico-arteixo-alondras [scheduled]` · `peticiones que haría: …/fixtures?ids=1612732` |
+| **(i)** intento `ok` con `raw_ref` | script del paso 2 del guion, tal cual | `(i)  OK   2026-09-22T22:03:38.318Z raw/api-football/2026-09-22/2026-09-22T22-03-38.318Z-d610aef4-….json.gz {"alerts":0,"season":"2026-27","matches":1,"skipped":0,"requests":1,"unresolved":0}` |
+| **(ii)** el objeto está en el bucket y `gunzipSync` lo parsea | idem | `(ii) OK   2026-09-22T22:03:38.318Z 1 petición(es) https://v3.football.api-sports.io/fixtures?ids=1612732` |
+| **(iii)** observación con ese `raw_ref` — **el alias viajó** | idem | `(iii) OK  1 observación(es) tercera-rfef-g1-2026-27-j4-atletico-arteixo-alondras` · `skipped: 0` y `unresolved: 0` en el intento: **no fue `missing_score`**, un `scheduled` sin marcador produce observación como dice N-5 |
+| **(iv)** 2ª invocación antes de 25 s → `cadence` | dos POST seguidos a `INGEST_TICK_URL`, la 1ª apuntada al final de la ventana de cadencia | 1ª `22:18:05.589Z` → `[{"sourceId":"api-football","ok":false,"requests":2}]` (**sin `skipped`**: la cadencia la dejó correr) · 2ª `22:18:07.969Z` → `[{"sourceId":"api-football","skipped":"cadence","ok":false,"requests":0}]` |
+| **(v)** dos ticks con `started_at` ≥ 25 s | `lag(started_at)` sobre `ingest_attempts` de los últimos 30 min | 31 huecos · **0 por debajo de 25 s** · mínimo **00:00:26.788** · máximo 00:00:32.927 |
+| pg_cron, de paso | `select status, count(*) … from cron.job_run_details where start_time >= now() - interval '30 minutes' group by status` | `succeeded 60` entre 21:48:37Z y 22:18:09Z, uno cada 30 s |
+| kickoff restaurado | `npm run calendario:load -- 2026-27` | `tercera-rfef-g1: {"inserted":0,"updated":1,"unchanged":305}`, las otras cuatro competiciones `updated: 0`: se tocó **una** fila, la del ensayo |
+| y restaurado **al valor declarado** | lectura del partido + `data/calendario/2026-27/tercera-rfef-g1.json` | db `2026-09-26T15:00:00.000Z` = fichero `2026-09-26T15:00:00Z` · contraste de **los 1834 partidos** de 2026-27 db↔ficheros: **0 kickoffs discrepantes, 0 filas sobrantes, 0 declaraciones sin fila** |
+| el tick vuelve a estar quieto | `max(started_at)` de `ingest_attempts` tras restaurar | último intento `22:18:39.107Z` y nada después: fuera de ventana no se pide nada |
+| filas que quedaron (RN-07, **no se borran**) | conteos por `match_id` | `observations 10` (todas `scheduled`, `home_score`/`away_score`/`minute` nulos, `source_id` api-football, de 22:02:38Z a 22:07:06Z) · `decisions 1` (v1, `scheduled`, `qualifier provisional`, `rule RN-01`, 1 observación citada) · `alerts 0` |
+| coste del ensayo | `sum((details->>'requests')::int)` | 33 intentos (**10 `ok`**, 23 fallidos por F-SPEC-009-8) y **56 peticiones** al proveedor |
+| **el defecto que destapó el ensayo** | `error` y `details` de los intentos, y el crudo del bucket de uno fallido | frontera exacta en el kickoff: último `ok` **22:07:06Z** (`requests: 1`, `ids=1612732`), primer fallo **22:07:38Z** (`requests: 2`) con `api-football returned errors: {"live":"The Live field does not match the regular expression: [id-id-id...] or string: all."}`; el crudo enseña las dos peticiones: `…/fixtures?live=439` con `errors` y **`…/fixtures?ids=1612732` con el partido dentro, correcta y descartada** |
+| exposición de CA-7 al defecto | ventana de ADR-002 §2 (kickoff −10/+150) sobre los 39 partidos de la jornada, minuto a minuto | **600 de los 4480 min** de la ventana de CA-7 tienen **una sola competición** en ventana con algo ya empezado → todo tick falla: viernes 25 18:30Z-21:00Z (150 min, Segunda), sábado 26 11:00Z-11:50Z y 13:30Z-14:20Z y 19:00Z-19:15Z, domingo 27 13:00Z-13:20Z y **18:45Z-21:30Z (165 min)**, **lunes 28 18:30Z-21:00Z (150 min, Segunda)** |
+
+Con (i) a (v) en verde, **R-SPEC-006-1 queda cerrado**: el camino completo
+—pg_cron, pg_net, Vercel, el trazado del alias (`outputFileTracingIncludes`,
+ADR-008 §8), el raw store y el motor— ha corrido de verdad y ha dejado filas
+verdaderas. Lo que el ensayo añade, y era justo su razón de ser, es que ese
+camino **solo está probado antes del kickoff**: F-SPEC-009-8 y F-SPEC-009-9.
+
 ## Salvedades / follow-ups
 - **F-SPEC-009-1 — las tres declaraciones de CA-9 no tienen entrada por CLI.** Las
   dos intervenciones de H-2 y el «cada alerta tiene explicación» de CA-4 (c) no
@@ -513,6 +552,47 @@ Comandos y salida real (2026-09-22, rama `ft/SPEC-009-jornada-de-medicion-e-info
   contarse como tal: el recorte de verdad son las cinco filas por lista y la
   prosa que se repetía. Queda escrito para que el tope de 145 no se lea como más
   holgado de lo que es. Decidido por el implementador, no por la spec.
+- **F-SPEC-009-8 — `live=` con UNA sola liga lo rechaza el proveedor, y tumba el
+  tick entero.** Destapado por el ensayo de CA-6 (evidencia arriba).
+  `src/sources/api-football/results.ts:232` pide
+  `` get(`live=${leagues.join("-")}`) `` en cuanto algún partido de la ventana ha
+  pasado su kickoff. Con una sola competición en ventana eso es `live=439`, y
+  API-Football responde **200** con
+  `errors: {live: "The Live field does not match the regular expression: [id-id-id...] or string: all."}`;
+  el campo exige ids unidos por guiones o la cadena `all`, y un id suelto no le
+  vale. Medido: con el partido del ensayo, **cero** intentos `ok` desde el kickoff
+  (último `ok` 22:07:06Z, kickoff 22:07:21Z) y **cero** observaciones nuevas, 23
+  intentos fallidos seguidos. Impacto en CA-7, calculado sobre la ventana de
+  ADR-002 §2 y los 39 partidos: **600 de 4480 min** con una sola competición y
+  algo ya empezado, y ahí entran **el partido del viernes y el del lunes
+  completos** (Segunda, 150 min cada uno) y el bloque del domingo por la noche
+  (165 min). Sin arreglo, esos partidos no tienen ni una observación después del
+  kickoff y CA-7 no puede salir. **Bloquea la jornada del viernes 18:20Z.**
+  Destino: **sdd-arquitecto** — el mapa de ligas y la forma de la petición son
+  SPEC-005, y arreglarlo toca `src/sources/api-football/results.ts`, que esta spec
+  tiene fuera de alcance y el verificador comprueba intacto. No lo he tocado.
+- **F-SPEC-009-9 — un `errors` en cualquiera de las peticiones tira toda la
+  captura, incluida la parte buena.** `parse` en
+  `src/sources/api-football/results.ts` recorre `raw.requests` y lanza en la
+  primera que traiga `errors`, así que el `…/fixtures?ids=1612732` que **sí** vino
+  con el partido dentro —está en el crudo del bucket, se ve en la evidencia— se
+  descarta junto con el `live=` roto. Es lo que convierte F-SPEC-009-8 de «una
+  petición desperdiciada» en «ninguna observación». Modo de fallo más allá del
+  ensayo: cualquier error del proveedor en la llamada `live=` (cuota, un
+  parámetro nuevo, un 200 con `errors` transitorio) ciega el tick entero en vez de
+  degradar a lo que `ids=` ya trajo. Destino: **sdd-arquitecto**, con
+  F-SPEC-009-8; la decisión de si una petición con `errors` es fatal o se anota y
+  se sigue es de SPEC-005 y su ADR, no mía.
+- **Nota operativa del ensayo (no es defecto).** `npm run tick:salud` dice
+  **`REVISAR: el tick no está sano`** mientras los 23 intentos fallidos del ensayo
+  siguen dentro de su ventana de 10 min (`SALUD_RECENT_MINUTES`); se despeja solo
+  al envejecer, medido: vuelve a **`OK`** a las **22:28:44Z** (último fallo
+  22:18:39Z) y lo dice en claro, «10 problema(s) en la última hora, ninguno en los
+  últimos 10 min». Y el paso 3 del guion («si la primera ya sale `cadence`, esperar
+  30 s y repetir») funciona pero por sorteo: con pg_cron cada 30 s y una guarda de
+  25 s solo hay ~5 s de cada 30 en los que una invocación a mano no sale
+  `cadence`, así que conviene apuntarla a ~26 s del último `started_at` en vez de
+  repetir a ciegas. El guion **no se ha cambiado**.
 - **Inconsistencia documental (no mía de arreglar).** CA-1 de esta spec y CA-3 de
   SPEC-008 citan `src/ingest/cli.ts` como el patrón a seguir, y ese fichero **no
   existe** ni ha existido. El patrón real es un módulo puro (`src/ingest/cron.ts`,
@@ -867,6 +947,25 @@ union all select 'alerts', count(*)::int from alerts where match_id = '<ID>';
 ```
 
 Con (i) a (v) en verde, **R-SPEC-006-1 queda cerrado**.
+
+### El ensayo, ya corrido (2026-09-22 22:02Z-22:20Z)
+
+El guion de arriba se ejecutó tal cual, **sin cambiarlo ni una línea**, adelantado
+al martes por la noche con autorización del titular (una escritura: el
+`update matches set kickoff` de un partido, restaurado después). Salidas en
+«Evidencia visual → ensayo de CA-6»; filas que quedaron: 10 `observations`, 1
+`decision`, 0 `alerts`. Los pasos 0 a 6 salieron como estaban escritos; lo único
+que hubo que afinar fue apuntar la invocación del paso 3 al final de la ventana de
+cadencia (nota operativa en «Salvedades»). No hay psql en la máquina: las consultas
+SQL del guion se corrieron con un `postgres.js` de una línea sobre
+`src/db/connect.ts`, que es lo que ya usa el propio guion en su paso 2.
+
+**Lo que queda por delante y no estaba previsto:** F-SPEC-009-8 y F-SPEC-009-9
+bloquean CA-7 tal como está desplegado. Hay miércoles y jueves; el arreglo toca
+`src/sources/api-football/results.ts`, o sea SPEC-005, y no es de esta spec: la
+decisión es del gate humano y del arquitecto. Si no se arregla, la ventana del
+viernes arranca sabiendo que el partido del viernes y el del lunes no van a
+producir ni una observación después del kickoff.
 
 ### Después del ensayo
 
