@@ -19,6 +19,7 @@ import {
   informeJornada,
   parseReferencias,
   percentil,
+  secretosDelEntorno,
 } from "./informe.ts";
 
 // SPEC-009 CA-1: the arithmetic of the report, over fixed rows. No database,
@@ -1399,5 +1400,81 @@ describe("CA-10 el informe cabe en dos páginas, medido en líneas", () => {
     );
     // Dos páginas de texto monoespaciado, no «casi dos páginas».
     expect(INFORME_MAX_LINEAS).toBeLessThanOrEqual(150);
+  });
+});
+
+// V-5. CA-1 pide que ningún valor de `.env` aparezca en la salida, y el informe
+// imprime `ingest_attempts.error` y `alerts.details` tal cual. Una lista de
+// nombres escrita a mano se queda corta en cuanto `.env` crece: se redactan los
+// valores del entorno, todos.
+describe("CA-1 ningún valor del entorno se escapa", () => {
+  const ENV = {
+    API_FOOTBALL_KEY: "0123456789abcdef0123456789abcdef",
+    DATABASE_PASSWORD: "contrasena-larguisima",
+    DATABASE_URL: "postgres://postgres:contrasena-larguisima@db.example:5432/x",
+    SUPABASE_ACCESS_TOKEN: "sbp_0123456789abcdef",
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+    // Ni un idioma ni un booleano son un secreto, y redactarlos destrozaría el
+    // informe: por debajo de ocho caracteres no se toca nada.
+    LANG: "es_ES",
+    CI: "true",
+    VACIA: "",
+    AUSENTE: undefined,
+  };
+
+  it("recoge todos los valores del entorno que puedan ser un secreto", () => {
+    const secretos = secretosDelEntorno(ENV);
+    for (const nombre of [
+      "API_FOOTBALL_KEY",
+      "DATABASE_PASSWORD",
+      "DATABASE_URL",
+      "SUPABASE_ACCESS_TOKEN",
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+    ])
+      expect(secretos, nombre).toContain(ENV[nombre as keyof typeof ENV]);
+    expect(secretos).not.toContain("es_ES");
+    expect(secretos).not.toContain("true");
+    expect(secretos).not.toContain("");
+  });
+
+  it("los redacta en el error de un intento y en los details de una alerta", () => {
+    const { texto } = informeJornada(
+      vacio({
+        secrets: secretosDelEntorno(ENV),
+        matches: [partido()],
+        attempts: [
+          {
+            startedAt: DESDE,
+            sourceId: "api-football",
+            ok: false,
+            error: `connect ${ENV.DATABASE_URL} falló con key=${ENV.API_FOOTBALL_KEY}`,
+            requests: 1,
+          },
+        ],
+        alerts: [
+          {
+            kind: "conflict",
+            matchId: MATCH,
+            openedAt: DESDE,
+            resolvedAt: null,
+            details: {
+              token: ENV.SUPABASE_ACCESS_TOKEN,
+              anon: ENV.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+            },
+          },
+        ],
+      }),
+    );
+    for (const nombre of [
+      "API_FOOTBALL_KEY",
+      "DATABASE_PASSWORD",
+      "DATABASE_URL",
+      "SUPABASE_ACCESS_TOKEN",
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+    ])
+      expect(texto, nombre).not.toContain(ENV[nombre as keyof typeof ENV]);
+    expect(texto).toContain("[secreto]");
+    // El idioma no es un secreto y el informe sigue siendo legible.
+    expect(texto).toContain("connect [secreto] falló con key=[secreto]");
   });
 });

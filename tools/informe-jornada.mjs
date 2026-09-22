@@ -18,7 +18,11 @@ import { nowInstant } from "../src/clock.ts";
 import { createSql } from "../src/db/connect.ts";
 import { loadAliasFile } from "../src/ingest/aliases.ts";
 import { contrastarMarcadores } from "../src/ingest/contraste.ts";
-import { informeJornada, parseReferencias } from "../src/ingest/informe.ts";
+import {
+  informeJornada,
+  parseReferencias,
+  secretosDelEntorno,
+} from "../src/ingest/informe.ts";
 import { informeFilas } from "../src/ingest/informe-db.ts";
 import {
   apiFootballByIds,
@@ -77,14 +81,11 @@ if (!process.env.DATABASE_URL) {
   process.exit(1);
 }
 
-// Every value that must never appear in the report, whatever row carried it.
-const secrets = [
-  process.env.API_FOOTBALL_KEY,
-  process.env.DATABASE_URL,
-  process.env.INGEST_TICK_TOKEN,
-  process.env.CRON_SECRET,
-  process.env.SUPABASE_SERVICE_ROLE_KEY,
-].filter((v) => typeof v === "string" && v.length > 0);
+// Every value that must never appear in the report, whatever row carried it:
+// the whole environment and not a list of names, because `.env` has more
+// variables than anybody remembers and the report prints ingest_attempts.error
+// and alerts.details as they come (CA-1).
+const secrets = secretosDelEntorno(process.env);
 
 // The five competitions of D-3, taken from the registry and not written here
 // again: the report counts how many of them a matchday actually measured.

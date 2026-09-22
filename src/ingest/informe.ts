@@ -21,6 +21,7 @@ import {
   INFORME_P95_TARGET_SECONDS,
   INFORME_REQUESTS_PER_DAY,
   INFORME_REQUESTS_PER_MINUTE,
+  INFORME_SECRET_MIN_LENGTH,
   INFORME_TICK_SECONDS,
   WINDOW_AFTER_MINUTES,
   WINDOW_BEFORE_MINUTES,
@@ -245,9 +246,30 @@ export function etiquetaP95(n: number): string {
 
 export const REDACTED = "[secreto]";
 
+// Every value of the environment that could be a secret, and not a hand-written
+// list of five names: `.env` grows and the list does not (V-5). The shell passes
+// its whole env through here, so a variable added tomorrow is redacted today.
+// Nothing shorter than INFORME_SECRET_MIN_LENGTH: a short value is not worth a
+// leak and would maul the report by matching text that means something else.
+export function secretosDelEntorno(
+  env: Readonly<Record<string, string | undefined>>,
+): string[] {
+  return [
+    ...new Set(
+      Object.values(env).filter(
+        (v): v is string =>
+          typeof v === "string" && v.length >= INFORME_SECRET_MIN_LENGTH,
+      ),
+    ),
+  ];
+}
+
+// Longest first: a password is a substring of the connection url that carries
+// it, and redacting the short one first would break the long one's match and
+// leak the rest of the url.
 function redact(text: string, secrets: readonly string[]): string {
   let out = text;
-  for (const secret of secrets) {
+  for (const secret of secrets.toSorted((a, b) => b.length - a.length)) {
     if (secret.length === 0) continue;
     out = out.split(secret).join(REDACTED);
   }

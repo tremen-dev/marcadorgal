@@ -76,3 +76,10 @@ export const INFORME_FILAS_MOSTRADAS = 10;
 // casadas siguen sin recortarse: un informe lleno de discrepancias ya no es el
 // informe que CA-10 dimensiona, es una lista de trabajo.
 export const INFORME_MAX_LINEAS = 145;
+
+// Ningún valor de `.env` puede aparecer en el informe (CA-1), que imprime
+// `ingest_attempts.error` y `alerts.details` tal cual. Se redactan los valores
+// del entorno en bloque, pero solo desde esta longitud: por debajo no hay
+// secretos que perder y sí informe que destrozar, porque un valor corto
+// ("true", "es_ES", un número) aparece por casualidad en cualquier texto.
+export const INFORME_SECRET_MIN_LENGTH = 8;
