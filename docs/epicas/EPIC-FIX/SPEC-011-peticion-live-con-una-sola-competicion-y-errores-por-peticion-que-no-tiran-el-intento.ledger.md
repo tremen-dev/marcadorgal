@@ -6,7 +6,7 @@ epica: EPIC-FIX
 # Ledger — SPEC-011 Petición live= con una sola competición y errores por petición que no tiran el intento
 
 ## Resumen
-- Fase: en-progreso (implementación de sdd-implementador el 2026-09-23; spec aprobada por Alberto Fojo el 2026-09-23)
+- Fase: hecho (verificado por sdd-verificador el 2026-09-23 con veredicto GREEN)
 - Rama: `ft/EPIC-FIX-live-una-sola-competicion` (ya creada desde `origin/main` en `e0a88dc`; la spec se escribió sobre ella y no sobre `ft/SPEC-011-…`)
 - Plazo: **mergeada en `main` antes del viernes 2026-09-25 18:20Z** (H-1)
 
