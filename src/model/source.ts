@@ -96,10 +96,23 @@ export const Skipped = z.strictObject({
 });
 export type Skipped = z.infer<typeof Skipped>;
 
+// A request of the capture that could not be interpreted (SPEC-011 CA-2):
+// output, never an exception, for the same reason as Unresolved. An exception
+// threw away the whole capture, so one bad request among several good ones
+// turned a wasted request into zero observations. Its home is the
+// ingest_attempts row (ADR-003), not an Alert: a transport or request-shape
+// failure is not a match state (D-9).
+export const RequestError = z.strictObject({
+  url: z.url(),
+  error: z.string().min(1),
+});
+export type RequestError = z.infer<typeof RequestError>;
+
 export const ParseResult = z.strictObject({
   observations: z.array(ParsedObservation),
   unresolved: z.array(Unresolved),
   skipped: z.array(Skipped),
+  requestErrors: z.array(RequestError),
 });
 export type ParseResult = z.infer<typeof ParseResult>;
 

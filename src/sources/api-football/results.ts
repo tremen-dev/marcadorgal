@@ -9,6 +9,7 @@ import {
   type ParseResult,
   type RawCapture,
   type RawRequest,
+  type RequestError,
   type Skipped,
   type SourceAdapter,
   SourceId,
@@ -97,6 +98,13 @@ export type ApiFootballResultsOptions = {
 };
 
 const ascending = (a: string, b: string) => Number(a) - Number(b);
+
+// RequestError.error is min(1): a failure with no message still has to say
+// something. Nothing is imported from the core here (D-4 boundary).
+const messageOf = (e: unknown): string => {
+  const message = e instanceof Error ? e.message : String(e);
+  return message.length > 0 ? message : "unreadable body";
+};
 
 // The live= query of a set of league ids, or null when there is no legal one
 // (SPEC-011 CA-1). The provider documents two forms for the field, ids joined
@@ -218,19 +226,28 @@ export function createApiFootballResults({
     parse(raw: RawCapture): ParseResult {
       // A fixture present in several requests counts once: the last wins.
       const fixtures = new Map<string, ProviderFixture>();
+      const requestErrors: RequestError[] = [];
       for (const request of raw.requests) {
-        const body = ProviderBody.parse(JSON.parse(request.body));
-        if (hasErrors(body.errors))
-          throw new Error(
-            `api-football returned errors: ${JSON.stringify(body.errors)}`,
-          );
-        for (const f of body.response) fixtures.set(String(f.fixture.id), f);
+        // Per request, not per capture (CA-2): a body with errors, a body that
+        // is not JSON or one that is not a fixtures response is recorded and
+        // the next request is still read. What the good ones brought is kept.
+        try {
+          const body = ProviderBody.parse(JSON.parse(request.body));
+          if (hasErrors(body.errors))
+            throw new Error(
+              `api-football returned errors: ${JSON.stringify(body.errors)}`,
+            );
+          for (const f of body.response) fixtures.set(String(f.fixture.id), f);
+        } catch (e) {
+          requestErrors.push({ url: request.url, error: messageOf(e) });
+        }
       }
 
       const result: ParseResult = {
         observations: [],
         unresolved: [],
         skipped: [],
+        requestErrors,
       };
       for (const [externalMatchId, f] of fixtures) {
         const short = f.fixture.status.short;

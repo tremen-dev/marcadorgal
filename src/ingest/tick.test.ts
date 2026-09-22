@@ -65,6 +65,7 @@ const emptyParse: ParseResult = {
   observations: [],
   unresolved: [],
   skipped: [],
+  requestErrors: [],
 };
 
 type StubOptions = {
@@ -191,7 +192,7 @@ describe("CA-7 what the adapter receives", () => {
 });
 
 describe("CA-7 a successful attempt", () => {
-  const result: ParseResult = {
+  const result: ParseResult = ParseResult.parse({
     observations: [
       {
         matchId: "m1",
@@ -214,7 +215,8 @@ describe("CA-7 a successful attempt", () => {
     skipped: [
       { externalMatchId: "998", status: "WO", reason: "unsupported_status" },
     ],
-  } as ParseResult;
+    requestErrors: [],
+  });
 
   it("writes the observation with the core keys and opens the alert", async () => {
     const { db, store } = harness();
@@ -267,12 +269,12 @@ describe("CA-7 a successful attempt", () => {
   it("keeps the observedAt the adapter gives when it gives one", async () => {
     const { db, store } = harness();
     db.matches = [match("m1", "primera-division")];
-    const dated: ParseResult = {
+    const dated: ParseResult = ParseResult.parse({
       ...result,
       observations: [
         { ...result.observations[0], observedAt: "2026-09-25T18:29:00.000Z" },
       ],
-    } as ParseResult;
+    });
     await runTick({
       db,
       store,
@@ -432,6 +434,7 @@ describe("CA-7 afterInsert", () => {
       ],
       unresolved: [],
       skipped: [],
+      requestErrors: [],
     });
     let received: unknown[] = [];
     await runTick({

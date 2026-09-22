@@ -79,10 +79,16 @@ const skipped = {
   status: "XX",
   reason: "unsupported_status",
 };
+const requestError = {
+  url: "https://v3.football.api-sports.io/fixtures?live=439",
+  error:
+    'api-football returned errors: {"live":"The Live field does not match the regular expression: [id-id-id...] or string: all."}',
+};
 const result = {
   observations: [observation],
   unresolved: [unresolved],
   skipped: [skipped],
+  requestErrors: [requestError],
 };
 
 describe("CA-1 SourceAdapter contract types", () => {
@@ -99,9 +105,39 @@ describe("CA-1 SourceAdapter contract types", () => {
   it("ParseResult accepts a valid result", () => {
     expect(ParseResult.safeParse(result).success).toBe(true);
     expect(
-      ParseResult.safeParse({ observations: [], unresolved: [], skipped: [] })
-        .success,
+      ParseResult.safeParse({
+        observations: [],
+        unresolved: [],
+        skipped: [],
+        requestErrors: [],
+      }).success,
     ).toBe(true);
+  });
+
+  // SPEC-011 CA-2: the fourth channel, mandatory, so no adapter can return a
+  // result that silently has no place to put a request it could not read.
+  it("ParseResult requires requestErrors, accepts [] and rejects an entry without url", () => {
+    const { requestErrors: _omitted, ...without } = result;
+    expect(ParseResult.safeParse(without).success).toBe(false);
+    expect(ParseResult.safeParse({ ...result, requestErrors: [] }).success).toBe(
+      true,
+    );
+    expect(
+      ParseResult.safeParse({ ...result, requestErrors: [{ error: "boom" }] })
+        .success,
+    ).toBe(false);
+    expect(
+      ParseResult.safeParse({
+        ...result,
+        requestErrors: [{ url: "not a url", error: "boom" }],
+      }).success,
+    ).toBe(false);
+    expect(
+      ParseResult.safeParse({
+        ...result,
+        requestErrors: [{ ...requestError, error: "" }],
+      }).success,
+    ).toBe(false);
   });
 
   it("ParseResult rejects a scheduled observation with a score", () => {

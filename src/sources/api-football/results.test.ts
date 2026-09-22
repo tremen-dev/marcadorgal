@@ -367,27 +367,74 @@ describe("CA-6 parse is pure", () => {
     expect(ParseResult.safeParse(result).success).toBe(true);
     expect(result.unresolved).toEqual([]);
     expect(result.skipped).toEqual([]);
+    expect(result.requestErrors).toEqual([]);
     expect(result.observations).toHaveLength(idsFixture.response.length);
     for (const o of result.observations)
       expect(o).not.toHaveProperty("observedAt");
   });
 
-  it("throws on a body with non-empty errors (provider rate limit)", () => {
+  // SPEC-011 CA-2: the three cases below used to expect an exception. An
+  // exception threw away the whole capture, the good requests with the bad
+  // one, which is what turned one wasted request into zero observations.
+  it("records a body with non-empty errors as a requestError instead of throwing", () => {
     const limited = {
       ...body(byId(BASE)),
       errors: { rateLimit: "Too many requests" },
     };
-    expect(() => adapter.parse(capture(limited))).toThrow(/rateLimit/);
-    expect(() =>
-      adapter.parse(capture({ ...body(), errors: ["something"] })),
-    ).toThrow();
+    const result = adapter.parse(capture(limited));
+    expect(result.observations).toEqual([]);
+    expect(result.requestErrors).toHaveLength(1);
+    expect(result.requestErrors[0].url).toBe(
+      "https://v3.football.api-sports.io/fixtures?ids=0",
+    );
+    expect(result.requestErrors[0].error).toMatch(/rateLimit/);
+    const asArray = adapter.parse(
+      capture({ ...body(), errors: ["something"] }),
+    );
+    expect(asArray.requestErrors).toHaveLength(1);
+    expect(asArray.requestErrors[0].error).toMatch(/something/);
   });
 
-  it("throws on a body that is not JSON or not a fixtures response", () => {
+  it("records a body that is not JSON or not a fixtures response as a requestError", () => {
     const raw = capture(body());
     raw.requests[0].body = "<html>";
-    expect(() => adapter.parse(raw)).toThrow();
-    expect(() => adapter.parse(capture({ nope: true }))).toThrow();
+    const notJson = adapter.parse(raw);
+    expect(notJson.observations).toEqual([]);
+    expect(notJson.requestErrors).toHaveLength(1);
+    expect(notJson.requestErrors[0].error.length).toBeGreaterThan(0);
+    const notFixtures = adapter.parse(capture({ nope: true }));
+    expect(notFixtures.requestErrors).toHaveLength(1);
+    expect(notFixtures.requestErrors[0].url).toBe(
+      "https://v3.football.api-sports.io/fixtures?ids=0",
+    );
+  });
+
+  it("keeps the observations of the good requests when one request is broken", () => {
+    const result = adapter.parse(
+      capture({ ...body(), errors: { live: "nope" } }, body(byId(BASE))),
+    );
+    expect(result.observations).toHaveLength(1);
+    expect(result.observations[0]).toMatchObject({ matchId: BASE_MATCH });
+    expect(result.requestErrors).toHaveLength(1);
+    expect(result.requestErrors[0].url).toBe(
+      "https://v3.football.api-sports.io/fixtures?ids=0",
+    );
+    expect(ParseResult.safeParse(result).success).toBe(true);
+  });
+
+  it("with every request unreadable gives three empty channels and one requestError each", () => {
+    const raw = capture(body(), body());
+    raw.requests[0].body = "<html>";
+    raw.requests[1].body = "{";
+    const result = adapter.parse(raw);
+    expect(result.observations).toEqual([]);
+    expect(result.unresolved).toEqual([]);
+    expect(result.skipped).toEqual([]);
+    expect(result.requestErrors).toHaveLength(2);
+    expect(result.requestErrors.map((r) => r.url)).toEqual(
+      raw.requests.map((r) => r.url),
+    );
+    expect(ParseResult.safeParse(result).success).toBe(true);
   });
 
   it("counts a fixture present in several requests once, keeping the last", () => {

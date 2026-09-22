@@ -17,7 +17,7 @@ epica: EPIC-FIX
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
 | CA-1 `live=` nunca con menos de dos ids | `src/sources/api-football/results.ts` (`liveQuery` nueva, exportada; `fetch` solo emite `live=` cuando devuelve cadena) | `src/sources/api-football/results.test.ts` → `SPEC-011 CA-1 liveQuery` (4 casos) + reescritura de «omits window matches without a match alias…» y de «sends the key and the user agent on every request…» | | 🚧 |
-| CA-2 `parse` total: `requestErrors` | | | | ❌ |
+| CA-2 `parse` total: `requestErrors` | `src/model/source.ts` (`RequestError` + cuarto canal obligatorio en `ParseResult`), `src/sources/api-football/results.ts` (`parse` con `try/catch` por petición y `messageOf` local) | `src/model/source.test.ts` → «ParseResult requires requestErrors, accepts [] and rejects an entry without url»; `src/sources/api-football/results.test.ts` → «records a body with non-empty errors…», «records a body that is not JSON or not a fixtures response…», «keeps the observations of the good requests when one request is broken», «with every request unreadable gives three empty channels and one requestError each» | | 🚧 |
 | CA-3 invariante sobre los 31 subconjuntos | | | | ❌ |
 | CA-4 fixture del error real y regresión | | | | ❌ |
 | CA-5 intento parcial: se guarda y `ok = false` | | | | ❌ |
@@ -119,6 +119,92 @@ Reescritura de los dos (CA-3 (ii)):
   de una sola, para que la captura siga teniendo una petición `live=` y el caso
   siga comprobando que la clave y el `User-Agent` viajan también en ésa. Con
   una sola competición ya no hay `live=` que comprobar.
+
+### CA-2 — `npx vitest run src/model/source.test.ts src/sources/api-football/results.test.ts`
+
+Rojo con los tests de CA-2 escritos y `ParseResult` / `parse` todavía sin
+tocar. Los tres fallos del final son los tres casos que **hoy esperaban
+excepción** y que la esperaban porque `parse` era todo-o-nada por captura.
+
+```
+ FAIL  src/model/source.test.ts > CA-1 SourceAdapter contract types > ParseResult accepts a valid result
+AssertionError: expected false to be true // Object.is equality
+ ❯ src/model/source.test.ts:106:51
+    106|     expect(ParseResult.safeParse(result).success).toBe(true);
+       |                                                   ^
+
+ FAIL  src/model/source.test.ts > CA-1 SourceAdapter contract types > ParseResult requires requestErrors, accepts [] and rejects an entry without url
+AssertionError: expected true to be false // Object.is equality
+ ❯ src/model/source.test.ts:121:52
+    121|     expect(ParseResult.safeParse(without).success).toBe(false);
+       |                                                    ^
+
+ FAIL  src/sources/api-football/results.test.ts > CA-6 parse is pure > yields a valid ParseResult over the real ids fixture
+AssertionError: expected undefined to deeply equal []
+
+- Expected:
+[]
+
++ Received:
+undefined
+
+ ❯ src/sources/api-football/results.test.ts:370:34
+    370|     expect(result.requestErrors).toEqual([]);
+       |                                  ^
+
+ FAIL  src/sources/api-football/results.test.ts > CA-6 parse is pure > records a body with non-empty errors as a requestError instead of throwing
+Error: api-football returned errors: {"rateLimit":"Too many requests"}
+ ❯ Object.parse src/sources/api-football/results.ts:224:17
+    224|           throw new Error(
+       |                 ^
+
+ FAIL  src/sources/api-football/results.test.ts > CA-6 parse is pure > records a body that is not JSON or not a fixtures response as a requestError
+SyntaxError: Unexpected token '<', "<html>" is not valid JSON
+ ❯ Object.parse src/sources/api-football/results.ts:222:46
+    222|         const body = ProviderBody.parse(JSON.parse(request.body));
+       |                                              ^
+
+ FAIL  src/sources/api-football/results.test.ts > CA-6 parse is pure > keeps the observations of the good requests when one request is broken
+Error: api-football returned errors: {"live":"nope"}
+ ❯ Object.parse src/sources/api-football/results.ts:224:17
+    224|           throw new Error(
+       |                 ^
+
+ FAIL  src/sources/api-football/results.test.ts > CA-6 parse is pure > with every request unreadable gives three empty channels and one requestError each
+SyntaxError: Unexpected token '<', "<html>" is not valid JSON
+ ❯ Object.parse src/sources/api-football/results.ts:222:46
+
+ Test Files  2 failed (2)
+      Tests  7 failed | 61 passed (68)
+```
+
+Con el canal obligatorio, `npm run typecheck` señaló los sitios que construyen
+un `ParseResult` a mano y que no lo declaran (rojo de compilación, también real):
+
+```
+src/arch/source-contract.test.ts(79,3): error TS2322: … Property 'requestErrors' is missing …
+src/arch/source-contract.test.ts(120,16): error TS2741: Property 'requestErrors' is missing …
+src/ingest/adapters.test.ts(9,7): error TS2741: Property 'requestErrors' is missing …
+src/ingest/tick.test.ts(64,7): error TS2741: Property 'requestErrors' is missing …
+```
+
+**Un tercer test afirmaba la URL rota, y no está en la spec.**
+`src/arch/source-contract.test.ts:209` exigía
+`expect(calls.some((u) => u.includes("live=141"))).toBe(true)`: el driver del
+contrato conduce una sola competición en ventana, así que afirmaba el mismo id
+suelto que la línea 191 de `results.test.ts`. Rojo real:
+
+```
+ FAIL  src/arch/source-contract.test.ts > CA-8 two sources behind SourceAdapter > drives api-football and memory to a valid ParseResult with the same match, and never calls the unregistered one
+AssertionError: expected false to be true // Object.is equality
+ ❯ src/arch/source-contract.test.ts:209:55
+    209|     expect(calls.some((u) => u.includes("live=141"))).toBe(true);
+       |                                                       ^
+```
+
+Reescrito a `expect(calls.some((u) => u.includes("live="))).toBe(false)` con su
+comentario. Es la segunda aparición del mismo defecto afirmado como verdad: la
+forma rota estaba fijada en dos tests, no en uno.
 
 ## Evidencia de campo del fallo (2026-09-22, ensayo de CA-6 de SPEC-009)
 <!-- Rellenar con la clave del objeto del bucket del intento fallido del que sale el fixture de CA-4 (N-5: la clave va aquí, nunca en el fixture), y con los identificadores de las filas de ingest_attempts de la frontera 22:07:06Z ok / 22:07:38Z primer fallo / 23 fallos seguidos. -->
