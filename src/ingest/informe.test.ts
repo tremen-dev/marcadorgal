@@ -44,6 +44,7 @@ const MATCH = "segunda-division-2026-27-j7-racing-ferrol-deportivo";
 type InformeMatchLike = InformeInput["matches"][number];
 type ObsLike = InformeInput["observations"][number];
 type DecLike = InformeInput["decisions"][number];
+type InformeAttemptLike = InformeInput["attempts"][number];
 
 const vacio = (over: Partial<InformeInput> = {}): InformeInput => ({
   desde: DESDE,
@@ -974,5 +975,113 @@ describe("CA-1 npm run informe:jornada", () => {
     expect(r.status).toBe(1);
     expect(r.stderr).toContain("DATABASE_URL is not set");
     expect(r.stdout).toBe("");
+  });
+});
+
+// V-1. La cobertura de CA-9 se mide sobre la ventana que el tick muestrea de
+// verdad: un partido sale de la ventana en cuanto tiene Decision vigente
+// `finished` (isInWindow, window.ts), y el motor fuerza ese cierre en
+// kickoff + FORCED_FINISH_MINUTES (120). Contar hasta kickoff + 150 mete en el
+// denominador media hora por partido que no se puede muestrear nunca, y hace
+// estructuralmente imposible el veredicto `válida`.
+describe("CA-9 cobertura sobre la ventana efectiva de cada partido", () => {
+  const KICKOFFS = [10, 150, 300];
+  // Minutos tras el kickoff en que cierra cada partido: un cierre normal,
+  // antes del forzoso de los 120.
+  const CIERRE = 105;
+
+  const cada30 = (from: Instant, to: Instant): Instant[] => {
+    const out: Instant[] = [];
+    for (let ms = Date.parse(from); ms < Date.parse(to); ms += 30 * SEC)
+      out.push(new Date(ms).toISOString() as Instant);
+    return out;
+  };
+
+  // Muestreo perfecto: un tick cada 30 s desde kickoff − 10 min hasta el
+  // cierre de cada partido, y una observación por tick.
+  const jornadaPerfecta = (over: Partial<InformeInput> = {}) => {
+    const matches = KICKOFFS.map((k, i) =>
+      partido({
+        id: `m${i}`,
+        kickoff: at(k),
+        status: "finished",
+        decidedAt: at(k + CIERRE),
+      }),
+    );
+    const attempts: InformeAttemptLike[] = [];
+    const observations: ObsLike[] = [];
+    for (const [i, k] of KICKOFFS.entries())
+      for (const [j, instante] of cada30(
+        at(k - 10),
+        at(k + CIERRE),
+      ).entries()) {
+        attempts.push({
+          startedAt: instante,
+          sourceId: "api-football",
+          ok: true,
+          error: null,
+          requests: 1,
+        });
+        observations.push(
+          obs({ id: `o${i}-${j}`, matchId: `m${i}`, observedAt: instante }),
+        );
+      }
+    return informeJornada(
+      vacio({
+        matches,
+        observations,
+        attempts,
+        contraste: matches.map((m) => ({
+          matchId: m.id,
+          proveedor: {
+            status: "finished" as const,
+            score: { home: 1, away: 0 },
+          },
+        })),
+        ...over,
+      }),
+    );
+  };
+
+  it("con un muestreo perfecto la cobertura es del 100 % y el veredicto puede ser válida", () => {
+    const { texto, informe } = jornadaPerfecta();
+    // Tres ventanas de 115 min (kickoff − 10 → cierre) a 30 s por tick.
+    expect(informe.cobertura.ticksEsperados).toBe(3 * 115 * 2);
+    expect(informe.cobertura.ticksReales).toBe(3 * 115 * 2);
+    expect(informe.cobertura.porcentaje).toBe(1);
+    expect(informe.veredicto.valor).toBe("válida");
+    expect(texto).toContain("ticks: 690 de 690 esperados (100 %)");
+  });
+
+  it("dice sobre qué ventana se calcula la cobertura, con el número del motor", () => {
+    const { texto } = jornadaPerfecta();
+    expect(texto).toContain(
+      "cobertura sobre la ventana efectiva de cada partido: de kickoff − 10 min al",
+    );
+    expect(texto).toContain("kickoff + 120 min");
+  });
+
+  it("un partido que nunca cerró cuenta su ventana entera, y la cobertura no pasa del 100 %", () => {
+    // postponed no sale de la ventana por estado y el cierre forzoso solo
+    // dispara desde `live` (RN-02), así que el tick lo muestrea hasta el final
+    // de la ventana de ADR-002 §2: 160 min desde kickoff − 10.
+    const attempts = cada30(at(0), at(160)).map((startedAt) => ({
+      startedAt,
+      sourceId: "api-football",
+      ok: true as boolean | null,
+      error: null,
+      requests: 1,
+    }));
+    const { informe } = informeJornada(
+      vacio({
+        matches: [
+          partido({ kickoff: at(10), status: "postponed", decidedAt: at(9) }),
+        ],
+        observations: [obs({ id: "o1", observedAt: at(0) })],
+        attempts,
+      }),
+    );
+    expect(informe.cobertura.ticksEsperados).toBe(160 * 2);
+    expect(informe.cobertura.porcentaje).toBe(1);
   });
 });

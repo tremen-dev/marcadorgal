@@ -1,4 +1,7 @@
-import { SILENCE_MINUTES } from "../decide/thresholds.ts";
+import {
+  FORCED_FINISH_MINUTES,
+  SILENCE_MINUTES,
+} from "../decide/thresholds.ts";
 import {
   HOUR_MS,
   type Instant,
@@ -453,30 +456,52 @@ function latenciaExternaDe(input: InformeInput) {
   return { stats: estadisticos(latencies), noCasadas };
 }
 
-// The expected ticks of CA-9: the union of the per-match windows (ADR-002 §2)
-// clipped to [desde, hasta], divided by the cadence the triggers aim at. A
-// derived number: nothing is expected of the tick when nothing is playing.
-function ticksEsperados(input: InformeInput): number {
-  const desde = Date.parse(input.desde);
-  const hasta = Date.parse(input.hasta);
-  const spans = input.matches
-    .map((m) => {
-      const k = Date.parse(m.kickoff);
-      return {
-        from: Math.max(desde, k - WINDOW_BEFORE_MINUTES * MINUTE_MS),
-        to: Math.min(hasta, k + WINDOW_AFTER_MINUTES * MINUTE_MS),
-      };
-    })
+// The window the tick really samples for one match, which is what the coverage
+// of CA-9 is measured over: ADR-002 §2 opens it ten minutes before kickoff and
+// it closes when the match has a vigent `finished` Decision, because isInWindow
+// leaves the window on `finished` and on nothing else (src/ingest/window.ts).
+// The engine forces that close at kickoff + FORCED_FINISH_MINUTES, so the last
+// WINDOW_AFTER_MINUTES − FORCED_FINISH_MINUTES minutes of a healthy match can
+// never be sampled: counting them as expected made the verdict `válida`
+// structurally unreachable. A match that never closed is a different story: the
+// forced finish only fires from `live` (RN-02), so a postponed or suspended one
+// really is sampled to the end of its window, and that is the fallback —
+// shrinking it to the forced finish would let the coverage pass 100 %.
+type Span = { from: number; to: number };
+
+function ventanaEfectiva(m: InformeMatch): Span {
+  const k = Date.parse(m.kickoff);
+  const finDeVentana = k + WINDOW_AFTER_MINUTES * MINUTE_MS;
+  const cierre =
+    m.status === "finished" && m.decidedAt !== null
+      ? Date.parse(m.decidedAt)
+      : finDeVentana;
+  return {
+    from: k - WINDOW_BEFORE_MINUTES * MINUTE_MS,
+    to: Math.min(cierre, finDeVentana),
+  };
+}
+
+// Merged and ordered: one tick serves every match in window at that instant,
+// so what is expected of it is the union of the spans and never their sum.
+function union(spans: readonly Span[]): Span[] {
+  const out: Span[] = [];
+  for (const span of spans
     .filter((s) => s.to > s.from)
-    .toSorted((a, b) => a.from - b.from);
-  let total = 0;
-  let cursor = -Infinity;
-  for (const span of spans) {
-    const from = Math.max(span.from, cursor);
-    if (span.to > from) total += span.to - from;
-    cursor = Math.max(cursor, span.to);
+    .toSorted((a, b) => a.from - b.from)) {
+    const last = out.at(-1);
+    if (last !== undefined && span.from <= last.to)
+      last.to = Math.max(last.to, span.to);
+    else out.push({ ...span });
   }
-  return Math.round(total / (INFORME_TICK_SECONDS * 1000));
+  return out;
+}
+
+// Half-open, the same as isInWindow: the instant a match leaves the window is
+// no longer inside it.
+function dentroDe(spans: readonly Span[], instant: Instant): boolean {
+  const ms = Date.parse(instant);
+  return spans.some((s) => ms >= s.from && ms < s.to);
 }
 
 // ------------------------------------------------------------------ verdict
@@ -610,8 +635,23 @@ export function informeJornada(input: InformeInput): {
     (c) => !porCompeticion.has(c),
   );
 
-  const esperados = ticksEsperados(input);
-  const ticksReales = new Set(input.attempts.map((a) => a.startedAt)).size;
+  // Numerator and denominator over the same span (V-1): the effective windows
+  // of the matches, clipped to the measured window.
+  const medidas = union(input.matches.map(ventanaEfectiva))
+    .map((s) => ({
+      from: Math.max(s.from, Date.parse(input.desde)),
+      to: Math.min(s.to, Date.parse(input.hasta)),
+    }))
+    .filter((s) => s.to > s.from);
+  const esperados = Math.round(
+    medidas.reduce((total, s) => total + (s.to - s.from), 0) /
+      (INFORME_TICK_SECONDS * 1000),
+  );
+  const ticksReales = new Set(
+    input.attempts
+      .filter((a) => dentroDe(medidas, a.startedAt))
+      .map((a) => a.startedAt),
+  ).size;
   const cobertura = esperados === 0 ? null : ticksReales / esperados;
 
   // An attempt is inside the window of a match when some match was in its own
@@ -629,6 +669,12 @@ export function informeJornada(input: InformeInput): {
   const fueraDeVentana = input.attempts.filter(
     (a) => !enVentanaDePartido(a.startedAt),
   );
+  // Inside the window of ADR-002 §2 but after every match had closed: they are
+  // legitimate (the tick had not learnt the close yet) and they do not count as
+  // coverage, so they are said out loud instead of inflating the ratio.
+  const trasElCierre = input.attempts.filter(
+    (a) => enVentanaDePartido(a.startedAt) && !dentroDe(medidas, a.startedAt),
+  );
   const fallidos = input.attempts.filter((a) => a.ok === false);
 
   const horasConIntento = new Set(input.attempts.map((a) => hora(a.startedAt)));
@@ -640,7 +686,7 @@ export function informeJornada(input: InformeInput): {
   ) {
     const h = new Date(ms).toISOString() as Instant;
     if (
-      enVentanaDePartido(h) &&
+      dentroDe(medidas, h) &&
       Date.parse(h) >= Date.parse(input.desde) &&
       !horasConIntento.has(h)
     )
@@ -670,6 +716,12 @@ export function informeJornada(input: InformeInput): {
     );
   push(
     `ticks: ${ticksReales} de ${esperados} esperados (${cobertura === null ? "n/a" : porcentaje(cobertura)})   ← cobertura de CA-9`,
+    `  cobertura sobre la ventana efectiva de cada partido: de kickoff − ${WINDOW_BEFORE_MINUTES} min al`,
+    `  cierre de su Decision finished, que el motor fuerza como muy tarde en`,
+    `  kickoff + ${FORCED_FINISH_MINUTES} min (RN-02); no hasta kickoff + ${WINDOW_AFTER_MINUTES} min, porque el tick deja de`,
+    "  muestrear un partido en cuanto está finished (isInWindow). Son dos ventanas",
+    "  distintas y el numerador y el denominador leen la misma.",
+    `intentos dentro de la ventana de ADR-002 §2 pero tras el cierre de todo partido: ${trasElCierre.length}`,
     `horas de ventana sin ejecuciones: ${horasSinEjecuciones.length}`,
     ...primeras(
       horasSinEjecuciones.map((h) => `  ${h}`),
