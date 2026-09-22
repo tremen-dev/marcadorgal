@@ -703,6 +703,34 @@ describe("CA-5 contraste de marcadores", () => {
     expect(texto).toContain("raw/ultimo.gz");
   });
 
+  it("las peticiones del contraste se anotan aparte de las del tick", () => {
+    const { texto } = informeJornada(
+      vacio({
+        matches: [partido()],
+        attempts: [
+          {
+            startedAt: seg(0),
+            sourceId: "api-football",
+            ok: true,
+            error: null,
+            requests: 2,
+          },
+        ],
+        contraste: [
+          {
+            matchId: MATCH,
+            proveedor: { status: "finished", score: { home: 1, away: 0 } },
+          },
+        ],
+        contrastePeticiones: 3,
+      }),
+    );
+    expect(texto).toContain("total: 2 peticiones");
+    expect(texto).toContain(
+      "peticiones del contraste: 3 (aparte de las del tick)",
+    );
+  });
+
   it("sin --contrastar el bloque se imprime vacío y dice por qué", () => {
     const { texto } = informeJornada(vacio({ matches: [partido()] }));
     const bloque = texto.slice(

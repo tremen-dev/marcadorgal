@@ -119,6 +119,8 @@ export type InformeInput = {
   referencias: readonly Referencia[];
   referenciasNoCasadas: readonly NoCasada[];
   contraste: readonly ContrasteFila[] | null;
+  // Requests the contrast made, noted apart from the tick's (CA-5, RN-08).
+  contrastePeticiones?: number;
   declaraciones?: Declaraciones;
 };
 
@@ -933,6 +935,7 @@ export function informeJornada(input: InformeInput): {
     };
     push(
       `${coinciden.length} de ${input.contraste.length} partidos con \`finished\` y marcador coincidente.`,
+      `peticiones del contraste: ${input.contrastePeticiones ?? 0} (aparte de las del tick)`,
       "coinciden:",
       ...primeras(coinciden, "(ninguno)"),
       `discrepancias: ${discrepancias.length}`,

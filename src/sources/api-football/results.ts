@@ -4,6 +4,7 @@ import {
   type AliasFile,
   type CompetitionId,
   type FetchContext,
+  type Instant,
   type MatchState,
   type MatchStatus,
   type ParseResult,
@@ -91,12 +92,54 @@ function liveMinutes(status: ProviderFixture["fixture"]["status"]) {
   return { minute, addedMinute };
 }
 
+const ascending = (a: string, b: string) => Number(a) - Number(b);
+
+export type ByIdsOptions = {
+  fixtureIds: readonly string[];
+  apiKey: string;
+  userAgent: string;
+  now: Instant;
+  fetch: typeof globalThis.fetch;
+};
+
+// One capture of `ids=` and nothing else, for the score contrast of SPEC-009
+// CA-5: a single round of requests when the matchday is over, outside every
+// window (RN-08). It lives here and not in src/ingest/ so the base url, the
+// key header and the twenty ids per request stay inside the adapter folder.
+export async function apiFootballByIds({
+  fixtureIds,
+  apiKey,
+  userAgent,
+  now,
+  fetch,
+}: ByIdsOptions): Promise<RawCapture> {
+  const capture: RawCapture = {
+    sourceId: SourceId.parse("api-football"),
+    capturedAt: now,
+    requests: [],
+  };
+  const ids = [...new Set(fixtureIds)].toSorted(ascending);
+  for (let i = 0; i < ids.length; i += IDS_PER_REQUEST) {
+    const url = `${BASE_URL}/fixtures?ids=${ids.slice(i, i + IDS_PER_REQUEST).join("-")}`;
+    const res = await fetch(url, {
+      method: "GET",
+      headers: { "x-apisports-key": apiKey, "User-Agent": userAgent },
+    });
+    if (!res.ok) throw new Error(`api-football responded ${res.status}`);
+    capture.requests.push({
+      url,
+      status: res.status,
+      contentType: res.headers.get("content-type"),
+      body: await res.text(),
+    });
+  }
+  return capture;
+}
+
 export type ApiFootballResultsOptions = {
   aliases: AliasFile;
   apiKey: string;
 };
-
-const ascending = (a: string, b: string) => Number(a) - Number(b);
 
 // Only the fixture ids of a live= body, to know what to ask ids= for (N-9).
 // States are not interpreted here: that is parse, over the full capture.
