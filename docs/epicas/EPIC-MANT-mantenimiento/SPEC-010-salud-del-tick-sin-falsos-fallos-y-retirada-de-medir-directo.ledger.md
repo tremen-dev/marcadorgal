@@ -6,7 +6,7 @@ epica: EPIC-MANT
 # Ledger — SPEC-010 Salud del tick sin falsos fallos y retirada de medir-directo
 
 ## Resumen
-- Fase: borrador (spec sin aprobar; nada implementado)
+- Fase: en-progreso (aprobada por Alberto Fojo el 2026-09-22; implementación en curso)
 - Rama: `ft/EPIC-MANT-salud-running-y-medir-directo` (la spec se escribió sobre esta rama, ya creada desde `origin/main` en el commit `2d6c3f2`, en vez de sobre `ft/SPEC-010-…`)
 
 ## Matriz de criterios de aceptación
