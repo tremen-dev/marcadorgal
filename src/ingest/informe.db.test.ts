@@ -130,22 +130,33 @@ describe("CA-2 cadencia y latencia interna contra la base de datos", () => {
         expect(filas.decisions).toHaveLength(2);
 
         const { texto, informe } = genera(filas);
-        // Huecos de 30, 30 y 120 s: mediana 30, máximo 120.
+        // Huecos de 30, 30 y 120 s entre observaciones, más el silencio final:
+        // el partido se queda en `live`, así que su ventana efectiva llega a
+        // kickoff + 150 min y desde seg(180) no vuelve a observarse (V-2).
+        const FINAL = 150 * MINUTE_MS - 180_000;
         expect(informe.cadencia).toMatchObject({
-          n: 3,
+          n: 4,
           mediana: 30_000,
-          maximo: 120_000,
+          maximo: FINAL,
         });
         const [{ name }] = await tx<{ name: string }[]>`select name from
           competitions where id = 'tercera-rfef-g1' and season = '2026-27'`;
         expect(informe.cadencia.huecosLargos).toEqual([
           { matchId, competicion: name, desde: seg(60), ms: 120_000 },
+          {
+            matchId,
+            competicion: name,
+            desde: seg(180),
+            ms: FINAL,
+            final: true,
+          },
         ]);
-        expect(texto).toContain("huecos > 90 s: 1");
+        expect(texto).toContain("huecos > 90 s: 2");
+        expect(texto).toContain("hasta el cierre de su ventana");
 
         // La Decision que sube el marcador: 64 s − 60 s de su observación.
         expect(informe.latenciaInterna).toMatchObject({ n: 2, maximo: 4_000 });
-        expect(informe.techoPropio).toBe(120_000 + 4_000);
+        expect(informe.techoPropio).toBe(FINAL + 4_000);
         expect(texto).toContain("captura → publicación");
       }),
     20_000,
