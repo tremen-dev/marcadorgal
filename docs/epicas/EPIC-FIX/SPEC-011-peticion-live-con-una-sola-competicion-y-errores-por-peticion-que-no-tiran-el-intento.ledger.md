@@ -20,7 +20,7 @@ epica: EPIC-FIX
 | CA-2 `parse` total: `requestErrors` | `src/model/source.ts` (`RequestError` + cuarto canal obligatorio en `ParseResult`), `src/sources/api-football/results.ts` (`parse` con `try/catch` por petición y `messageOf` local) | `src/model/source.test.ts` → «ParseResult requires requestErrors, accepts [] and rejects an entry without url»; `src/sources/api-football/results.test.ts` → «records a body with non-empty errors…», «records a body that is not JSON or not a fixtures response…», «keeps the observations of the good requests when one request is broken», «with every request unreadable gives three empty channels and one requestError each» | | 🚧 |
 | CA-3 invariante sobre los 31 subconjuntos | (test; el arreglo que fija es el de CA-1) | `src/sources/api-football/results.test.ts` → `SPEC-011 CA-3 no capture ever carries a live= with a single id` (1 caso de cobertura + 31 generados con `it.each` + «(iii) the full subset still asks the five league ids»); reescrituras de CA-3 (ii) en `results.test.ts:191` y en `src/arch/source-contract.test.ts:209` | | 🚧 |
 | CA-4 fixture del error real y regresión | `src/sources/api-football/fixtures/errors-live-2026-09-22.json` (nuevo) + su fila en `fixtures/README.md` | `src/sources/api-football/results.test.ts` → `SPEC-011 CA-4 the failed attempt of 2026-09-22` («the fixture is the body of a 200 that carries errors and no fixture», «parse keeps the observations of the ids= request and records the live= one») | | ⚠️ |
-| CA-5 intento parcial: se guarda y `ok = false` | | | | ❌ |
+| CA-5 intento parcial: se guarda y `ok = false` | `src/ingest/tick.ts` (`AttemptSummary.requestErrors`, `oneLine`, cierre del intento con `ok` calculado, `error` de una línea y `details.requestErrors`) | `src/ingest/tick.test.ts` → `SPEC-011 CA-5 a partial attempt` (4 casos: parcial, `afterInsert`+alertas en la misma transacción, todas las peticiones rotas, captura limpia); `src/ingest/salud.test.ts` → «a partial attempt is printed FALLO with its details and the verdict is REVISAR» | | 🚧 |
 | CA-6 presupuesto, frontera y gates | | | | ❌ |
 
 ## Veredicto del verificador
@@ -274,6 +274,86 @@ Error: ENOENT: no such file or directory, open '/Users/albertofojo/src/marcadorg
 ```
 
 Con el fixture dentro: **89 passed (89)** en ese fichero.
+
+### CA-5 — `npx vitest run src/ingest/tick.test.ts src/ingest/salud.test.ts`
+
+Rojo con los cuatro casos escritos y `tick.ts` sin tocar. Lo que dice el
+diff es exactamente el silencio que N-2 quería evitar: hoy un intento con una
+petición rota del proveedor se cierra **`ok: true`** y no hay dónde contar el
+incidente.
+
+```
+ ❯ src/ingest/tick.test.ts (24 tests | 4 failed) 16ms
+   ❯ SPEC-011 CA-5 a partial attempt
+     × saves the observations of the good request, closes ok false and counts the incident 5ms
+     × runs afterInsert and opens the alerts of a partial attempt, in the same transaction 1ms
+     × with every request broken closes ok false with no observation and the full count 0ms
+     × a clean capture is still ok true, with the count at zero 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/ingest/tick.test.ts > SPEC-011 CA-5 a partial attempt > saves the observations of the good request, closes ok false and counts the incident
+AssertionError: expected { sourceId: 'primera-source', …(10) } to match object { ok: false, requests: 2, …(2) }
+(8 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "observations": 1,
+-   "ok": false,
+-   "requestErrors": 1,
++   "ok": true,
+    "requests": 2,
+  }
+
+ ❯ src/ingest/tick.test.ts:695:21
+
+ FAIL  src/ingest/tick.test.ts > SPEC-011 CA-5 a partial attempt > runs afterInsert and opens the alerts of a partial attempt, in the same transaction
+AssertionError: expected { sourceId: 'primera-source', …(10) } to match object { ok: false, alerts: 1, …(1) }
+
+- Expected
++ Received
+
+  {
+    "alerts": 1,
+-   "ok": false,
+-   "requestErrors": 1,
++   "ok": true,
+  }
+
+ ❯ src/ingest/tick.test.ts:756:33
+
+ FAIL  src/ingest/tick.test.ts > SPEC-011 CA-5 a partial attempt > with every request broken closes ok false with no observation and the full count
+AssertionError: expected { sourceId: 'primera-source', …(10) } to match object { ok: false, observations: +0, …(1) }
+
+- Expected
++ Received
+
+  {
+    "observations": 0,
+-   "ok": false,
+-   "requestErrors": 2,
++   "ok": true,
+  }
+
+ ❯ src/ingest/tick.test.ts:788:33
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  4 failed | 39 passed (43)
+```
+
+Nótese que **`salud.test.ts` pasó en verde desde el primer momento**, con el
+caso nuevo del intento parcial incluido: `tick:salud` no necesitaba cambio,
+como decía N-2 (ya pinta `FALLO` con `details` y baja el veredicto a `REVISAR`
+en cuanto `ok === false`). El caso nuevo es la prueba de que sigue siendo así
+con la fila nueva, no un arreglo.
+
+La línea de `error` que se guarda, tal cual la afirma el test:
+
+```
+primera-source: 1 de 2 peticiones con error del proveedor: api-football returned errors: {"live":"The Live field does not match the regular expression: [id-id-id...] or string: all."}
+```
 
 ## Evidencia de campo del fallo (2026-09-22, ensayo de CA-6 de SPEC-009)
 <!-- N-5: la clave del objeto del bucket va aquí, nunca en el fixture. -->
