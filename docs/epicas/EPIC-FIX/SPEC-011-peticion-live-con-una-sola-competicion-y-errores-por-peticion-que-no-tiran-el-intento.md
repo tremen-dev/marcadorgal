@@ -2,10 +2,12 @@
 id: SPEC-011
 tipo: spec
 epica: EPIC-FIX
-estado: borrador
-aprobada-por:
+estado: en-progreso
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-09-23, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-09-23, por: Alberto Fojo}
+  - {estado: en-progreso, fecha: 2026-09-23, por: sdd-implementador}
 ---
 # SPEC-011 — Petición live= con una sola competición y errores por petición que no tiran el intento
 

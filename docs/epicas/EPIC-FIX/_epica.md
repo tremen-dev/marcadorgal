@@ -1,9 +1,11 @@
 ---
 id: EPIC-FIX
 tipo: epica
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-09-23, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-09-23, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # EPIC-FIX — Fallos activos
 

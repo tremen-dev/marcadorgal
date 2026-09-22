@@ -98,6 +98,17 @@ export type ApiFootballResultsOptions = {
 
 const ascending = (a: string, b: string) => Number(a) - Number(b);
 
+// The live= query of a set of league ids, or null when there is no legal one
+// (SPEC-011 CA-1). The provider documents two forms for the field, ids joined
+// by hyphens and the string "all"; a single id is neither, and it answers 200
+// with errors. So with fewer than two leagues there is no live= request at
+// all: ids= covers the window, the same path N-10 already takes before any
+// kickoff.
+export function liveQuery(leagues: readonly number[]): string | null {
+  const ids = [...new Set(leagues)].sort((a, b) => a - b);
+  return ids.length < 2 ? null : `live=${ids.join("-")}`;
+}
+
 // Only the fixture ids of a live= body, to know what to ask ids= for (N-9).
 // States are not interpreted here: that is parse, over the full capture.
 function fixtureIdsIn(body: string): Set<string> {
@@ -179,16 +190,18 @@ export function createApiFootballResults({
       const now = Date.parse(ctx.now);
       const seen = new Set<string>();
       if (ctx.matches.some((m) => Date.parse(m.kickoff) <= now)) {
-        const leagues = [
-          ...new Set(
-            ctx.competitions
-              .map((c) => LEAGUES[c])
-              .filter((l): l is number => l !== undefined),
-          ),
-        ].sort((a, b) => a - b);
-        const live = await get(`live=${leagues.join("-")}`);
-        capture.requests.push(live);
-        for (const id of fixtureIdsIn(live.body)) seen.add(id);
+        const query = liveQuery(
+          ctx.competitions
+            .map((c) => LEAGUES[c])
+            .filter((l): l is number => l !== undefined),
+        );
+        // null: fewer than two leagues in window, so there is no live= the
+        // provider would accept (CA-1). ids= covers them all.
+        if (query !== null) {
+          const live = await get(query);
+          capture.requests.push(live);
+          for (const id of fixtureIdsIn(live.body)) seen.add(id);
+        }
       } // else N-10: nothing has kicked off, ids= covers NS
 
       const pending = ctx.matches

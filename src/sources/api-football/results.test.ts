@@ -10,7 +10,7 @@ import {
   type RawCapture,
   type WindowMatch,
 } from "../../model/index.ts";
-import { createApiFootballResults } from "./results.ts";
+import { createApiFootballResults, liveQuery } from "./results.ts";
 
 const readJson = (rel: string): unknown =>
   JSON.parse(readFileSync(new URL(rel, import.meta.url), "utf8"));
@@ -175,7 +175,11 @@ describe("CA-5 createApiFootballResults", () => {
     expect(query(calls[0])).toMatch(/^\?ids=\d+-\d+-\d+$/);
   });
 
-  it("omits window matches without a match alias", async () => {
+  // SPEC-011 CA-3 (ii): this case used to assert "?live=439" — the bare league
+  // id the provider answers 200-with-errors to. A test stating the defect is
+  // why it survived months, so the shape it fixes is now the right one: a
+  // single competition in window asks no live= at all.
+  it("omits window matches without a match alias, and with its single competition asks no live=", async () => {
     const past = "2026-09-26T15:00:00Z";
     const known = windowMatch(
       "tercera-rfef-g1-2026-27-j4-atletico-arteixo-alondras",
@@ -187,18 +191,19 @@ describe("CA-5 createApiFootballResults", () => {
     };
     const { fetch, calls } = stubFetch(() => ({ body: { response: [] } }));
     await adapter.fetch?.(ctxWith([known, unknown], fetch));
-    expect(calls.map(query)).toEqual([
-      "?live=439",
-      `?ids=${fixtureIdOf.get(known.id)}`,
-    ]);
+    expect(calls.map(query)).toEqual([`?ids=${fixtureIdOf.get(known.id)}`]);
+    for (const c of calls) expect(c.url).not.toContain("live=");
   });
 
   it("sends the key and the user agent on every request and keeps the key out of the capture", async () => {
     const past = "2026-09-26T15:00:00Z";
-    const matches = byCompetition("segunda-rfef-g1", 2).map((m) => ({
-      ...m,
-      kickoff: past,
-    }));
+    // Two competitions on purpose, so the capture still holds a live= request
+    // and this case keeps checking that the key travels on that one too
+    // (SPEC-011 CA-1: with one competition there is no live= any more).
+    const matches = [
+      ...byCompetition("segunda-rfef-g1", 1),
+      ...byCompetition("primera-rfef-g1", 1),
+    ].map((m) => ({ ...m, kickoff: past }));
     const { fetch, calls } = stubFetch(() => ({ body: { response: [] } }));
     const raw = await adapter.fetch?.(ctxWith(matches, fetch));
     expect(calls).toHaveLength(2);
@@ -222,6 +227,52 @@ describe("CA-5 createApiFootballResults", () => {
     await expect(adapter.fetch?.(ctxWith(matches, fetch))).rejects.toThrow(
       "api-football responded 429",
     );
+  });
+});
+
+// ---------------------------------------------------------------------------
+// SPEC-011 CA-1 live= is never emitted with fewer than two league ids
+
+describe("SPEC-011 CA-1 liveQuery", () => {
+  it("is null with no league and with a single one: neither is a form the provider accepts", () => {
+    expect(liveQuery([])).toBeNull();
+    expect(liveQuery([439])).toBeNull();
+  });
+
+  it("joins unique league ids ascending from two on", () => {
+    expect(liveQuery([439, 141, 439])).toBe("live=141-439");
+    expect(liveQuery([875, 140, 141, 435, 439])).toBe(
+      "live=140-141-435-439-875",
+    );
+  });
+
+  it("asks no live= with a single competition in window and a kickoff already past: ids= covers it", async () => {
+    const past = "2026-09-26T15:00:00Z";
+    const matches = byCompetition("segunda-division", 2).map((m) => ({
+      ...m,
+      kickoff: past,
+    }));
+    const { fetch, calls } = stubFetch(() => ({ body: { response: [] } }));
+    const raw = await adapter.fetch?.(ctxWith(matches, fetch));
+    const ids = matches
+      .map((m) => Number(fixtureIdOf.get(m.id)))
+      .sort((a, b) => a - b);
+    expect(calls.map(query)).toEqual([`?ids=${ids.join("-")}`]);
+    expect(raw?.requests).toHaveLength(1);
+  });
+
+  it("still asks live= exactly as today with two competitions in window", async () => {
+    const past = "2026-09-26T15:00:00Z";
+    const matches = [
+      ...byCompetition("segunda-division", 1),
+      ...byCompetition("tercera-rfef-g1", 1),
+    ].map((m) => ({ ...m, kickoff: past }));
+    const { fetch, calls } = stubFetch(() => ({ body: { response: [] } }));
+    await adapter.fetch?.(ctxWith(matches, fetch));
+    const ids = matches
+      .map((m) => Number(fixtureIdOf.get(m.id)))
+      .sort((a, b) => a - b);
+    expect(calls.map(query)).toEqual(["?live=141-439", `?ids=${ids.join("-")}`]);
   });
 });
 
