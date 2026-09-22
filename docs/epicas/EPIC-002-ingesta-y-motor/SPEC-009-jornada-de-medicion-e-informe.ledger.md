@@ -10,6 +10,8 @@ epica: EPIC-002
   campo con fecha y no se pueden cerrar antes del lunes 2026-09-28.
 - Segunda vuelta (2026-09-22): los cinco findings de la ronda RED arreglados, cada
   uno con su test en rojo antes del arreglo. Detalle y salidas en «Cómo retomar».
+- Tercera vuelta (2026-09-22): V-6 y V-7 arreglados, cada uno con su test en rojo
+  medido antes del arreglo, más la corrección de evidencia de V-4 (D-10).
 - Rama: `ft/SPEC-009-jornada-de-medicion-e-informe`
 
 ## Matriz de criterios de aceptación
@@ -22,12 +24,12 @@ epica: EPIC-002
 | CA-2 | `src/ingest/informe.ts` (`cadenciaDe` —huecos entre observaciones **más el silencio final de cada partido**, V-2—, `ventanaEfectiva`, `latenciaInternaDe`, techo propio; el bloque 3 dice que el 0-0 del estreno cuenta) · `src/ingest/informe-db.ts` (`informeFilas`) | `src/ingest/informe.db.test.ts` «tres observaciones a 30, 30 y 120 s y dos Decisions» (con el hueco final, `final: true`) · `informe.test.ts` «CA-2 (a)» y «CA-2 (b)» (huecos que no cruzan de partido, Decision que no cambia marcador, techo propio, el 0-0 del estreno) · **V-2** «el silencio final cuenta» (4 casos: cadencia, hueco largo marcado, lista de sin señal, y un partido muestreado hasta su cierre que no inventa ningún hueco) | `npm run test:db` exit 0 (8 ficheros, 71 tests) y **cero filas residuales en `dev`** contadas por el verificador antes y después (julio 2027, ids `test-*`, teams/competitions de prueba: 0; `matches` 1834 → 1834). La salida real dice «captura → publicación» con esas palabras. **2ª ronda: V-2 cerrado, y por el camino de las consultas reales**: el caso de `informe.db.test.ts` **falla contra el código anterior** (árbol HEAD con `informe.ts` de `f8e8037^` → `expected { n: 3, mediana: 30000, … } to match object { n: 4, … }`). Sobre 39 partidos con el tick muerto a los 30 min: **39 huecos finales** y **39 de 39** partidos en la lista de sin señal; recíproco comprobado (muestreo completo hasta el cierre → `maximo: 30 s`, cero huecos largos): el arreglo no inventa huecos. **Observación**: la primera Decision con marcador (0-0 al empezar) cuenta como «cambia el marcador» y el bloque 3 lo dice. | ✅ |
 | CA-3 | `src/ingest/informe.ts` (`parseReferencias`, `latenciaExternaDe`) · `docs/epicas/EPIC-002-ingesta-y-motor/_qa/SPEC-009/referencias.csv` (cabecera, sin filas) | `informe.db.test.ts` «de tres filas casa una y las otras dos quedan listadas con su motivo» · `informe.test.ts` «CA-3 referencias externas» (fichero vacío, fila mal formada, `peor caso (n=1)`, rango, objetivo de `vision.md` en segundos) | Frontera n=20 ejercitada a mano: con n=12 imprime `peor caso (n=12)` y «el p95 de vision.md no se contrasta con n=12»; con n=20 imprime `p95` y `p95 < 90 s → cumple`. Contraste en segundos contra los 45 s, con caso recíproco a 100 s; la aserción `"mediana < 45 s → cumple"` no casa dentro de `"→ NO cumple"`. `referencias.csv` con solo cabecera: informe generado exit 0. Filas no casadas listadas con su motivo y **nunca** recortadas. **2ª ronda**: sin regresión (gates 613 tests en verde; una fila mal formada o un `matchId` mal escrito el domingo se arregla editando el CSV y regenerando, nada se pierde). | ✅ |
 | CA-4 | `src/ingest/informe.ts` (bloques 5, 6 y 7; el hueco de un partido incluye su silencio final, V-2; el bloque 7 acotado con `primerasFilas`, V-4) · `src/ingest/informe-db.ts` (`details->>'requests'`, `alerts`) | `informe.db.test.ts` «un partido sin observaciones y dos alertas de distinto kind» y «las peticiones salen de details->>'requests'» · `informe.test.ts` «CA-4» (total/día/pico, presupuesto EXCEDE, `unresolved_team` y `conflict` en cero) · **V-2** «el partido aparece en la lista de partidos sin señal de CA-4 (b)» | `grep -rn _http_response src tools`: ninguna consulta del informe lo toca; las peticiones salen de `details->>'requests'` (verificado en `test:db`). Bloque 7 lista cada alerta con `details` y `explicación:` vacía. **2ª ronda: V-2 cerrado.** El bloque 6 (b) ya ve el silencio final: en la jornada del tick muerto imprime `con al menos un hueco > 15 min: 39` y lista los 39 con su hueco mayor, donde antes imprimía 0. Un partido sin ninguna observación sigue saliendo solo por `sin ninguna observación`, que es lo correcto (no se le inventa un hueco). | ✅ |
-| CA-5 | `src/sources/api-football/results.ts` (`apiFootballByIds`) · `src/ingest/contraste.ts` · `src/ingest/informe.ts` (bloque 8: coincidentes, **estados no-`finished` que el proveedor confirma** con su raw_ref y su hueco de explicación, y discrepancias, V-3) | `informe.db.test.ts` «dos partidos en board, uno coincidente y uno no» con `fetch` doble (una sola petición `ids=101-102`) · `informe.test.ts` «CA-5» (peticiones del contraste aparte, bloque vacío sin `--contrastar`) · **V-3** «un estado no-finished acordado no es discrepancia» (4 casos: contado aparte con raw_ref, no dispara (c2) y baja a reservas, la cuenta «N de N» intacta, y los dos diciendo cosas distintas sigue siendo (c2)) | Maquinaria verificada en `test:db` con `fetch` doble (una sola petición `ids=101-102`, ≤ 20 por petición); la url base y la cabecera `x-apisports-key` se quedan dentro de `src/sources/api-football/`. `--contrastar` sobre ventana vacía: bloque «0 de 0» sin ninguna petición. **No se ha llamado al proveedor de verdad** a propósito (RN-08). **2ª ronda: V-3 cerrado**, comprobado en las dos direcciones por el verificador: 39 aplazados que board y proveedor dicen igual → `acordadosNoFinished: 39`, `discrepancias: 0`, veredicto `válida con reservas` y **no** (c2); los dos diciendo cosas distintas → `discrepancias: 39` → `no válida (c2)`. **Finding V-6 (nuevo)**: un partido del que el proveedor **no contesta** se imprime como discrepancia y dispara (c2) — detalle abajo. | ⚠️ |
+| CA-5 | `src/sources/api-football/results.ts` (`apiFootballByIds`, **sin tocar en la 3ª vuelta**) · `src/ingest/contraste.ts` (devuelve el `motivo` del silencio: `skipped` con su `reason`, `unresolved` con la suya, el fixture que no vino, el partido sin alias, V-6) · `src/ingest/informe.ts` (bloque 8: coincidentes, **estados no-`finished` que el proveedor confirma** con su raw_ref y su hueco de explicación, V-3; **partidos sin respuesta del proveedor** en su propia línea con su motivo, su raw_ref y su explicación, V-6; y discrepancias) | `informe.db.test.ts` «dos partidos en board, uno coincidente y uno no» con `fetch` doble (una sola petición `ids=101-102`) · `informe.test.ts` «CA-5» (peticiones del contraste aparte, bloque vacío sin `--contrastar`) · **V-3** «un estado no-finished acordado no es discrepancia» (4 casos) · **V-6** `contraste.test.ts` «el silencio del proveedor vuelve con su motivo» (6 casos sobre el adaptador **de verdad**: `unsupported_status`, `missing_score`, `unknown_team`, fixture ausente de la respuesta, partido sin alias, y el recíproco de que un partido contestado no lleva motivo) + «ABD, AWD y WO no son estados sin mapear» · `informe.test.ts` «CA-5 el silencio del proveedor no es discrepancia» (5 casos: su propia línea con motivo y raw_ref, no dispara (c2) y baja a reservas, la cuenta «N de N» intacta, un silencio sin motivo lo dice, y el recíproco de que dos lados diciendo cosas distintas sigue siendo (c2)) | Maquinaria verificada en `test:db` con `fetch` doble (una sola petición `ids=101-102`, ≤ 20 por petición); la url base y la cabecera `x-apisports-key` se quedan dentro de `src/sources/api-football/`. `--contrastar` sobre ventana vacía: bloque «0 de 0» sin ninguna petición. **No se ha llamado al proveedor de verdad** a propósito (RN-08). **2ª ronda: V-3 cerrado**, comprobado en las dos direcciones por el verificador: 39 aplazados que board y proveedor dicen igual → `acordadosNoFinished: 39`, `discrepancias: 0`, veredicto `válida con reservas` y **no** (c2); los dos diciendo cosas distintas → `discrepancias: 39` → `no válida (c2)`. **Finding V-6 (nuevo)**: un partido del que el proveedor **no contesta** se imprime como discrepancia y dispara (c2) — detalle abajo. | ⚠️ |
 | CA-6 | — trabajo de campo, **miércoles 2026-09-23** con el tick desplegado. Guion ejecutable en «Cómo retomar». | — | No se juzga en esta ronda: campo, **miércoles 2026-09-23**. El guion de «Cómo retomar» es **byte a byte idéntico** al de la 1ª ronda (`diff` contra `0b2ddf0`) y no depende de ninguno de los siete commits de esta vuelta. | ❌ |
 | CA-7 | — trabajo de campo, **viernes 2026-09-25 18:20Z → lunes 2026-09-28 21:00Z**. El informe ya calcula sus números (cobertura, horas sin ejecuciones, intentos fuera de ventana, intentos fallidos). | — | No se juzga en esta ronda: campo, **viernes 25 18:20Z → lunes 28 21:00Z**. De su maquinaria sí: el **criterio 2 no se ha relajado** — una sola fila de `ingest_attempts` fuera de la ventana de ADR-002 §2 de todo partido sigue saliendo (`intentos fuera de la ventana de todo partido: 1   ← criterio 2`), y las dos ventanas están separadas a propósito (ver abajo). | ❌ |
 | CA-8 | — trabajo de campo, el fixture `live-<fecha>.json` se captura **durante la jornada** (sábado 2026-09-26). | — | No se juzga en esta ronda: campo, **sábado 2026-09-26**. | ❌ |
 | CA-9 | `src/ingest/informe.ts` (`veredictoDe`, umbrales en `src/ingest/constants.ts`; `ventanaEfectiva` + `union` + `dentroDe`: numerador y denominador de la cobertura sobre el mismo span, V-1; el acuerdo no-`finished` como reserva nombrada, V-3) — el veredicto **real** se escribe con los números de la jornada, **lunes 2026-09-28**. | `informe.test.ts` «CA-9 veredicto»: válida, válida con reservas, c1 por cobertura, c1 por competición muda, c2 por marcadores, intervención sobre el dato vs sobre la plataforma, declaraciones pendientes · **V-1** «cobertura sobre la ventana efectiva de cada partido» (3 casos: muestreo perfecto → 100 % y `válida`, la línea que dice sobre qué ventana se calcula, y un partido que nunca cerró cuenta su ventana entera sin pasar del 100 %) | Solo la **maquinaria**, nunca el resultado de campo. **V-1 cerrado y el invariante de las dos direcciones comprobado por el verificador** sobre los 39 partidos de la jornada: muestreo perfecto → `5550 / 5550 = 100 %` y veredicto `válida`, igual con cierre en +100 (`5540/5540`), +105 y +120 (`5580/5580`); tick caído 4 h → 91,4 % `válida con reservas`; 8 h → 82,7 %; 12 h → 74,1 % `no válida (c1)`. Los tests nuevos **fallan contra el código anterior** (`expected 900 to be 690`; y con muestreo perfecto el informe imprimía `veredicto: no válida (c1) · cobertura de ticks 77 %`). Umbrales 0,95 / 0,80 en `constants.ts`, los que fija CA-9. **Divergencia de V-1 adjudicada a favor del implementador** (abajo). El veredicto real se escribe el **lunes 2026-09-28**. | ❌ |
-| CA-10 | `package.json` (solo el script `informe:jornada`, sin dependencias nuevas, sin migraciones) · `src/ingest/informe.ts` (`primerasFilas`: una lista gasta como mucho las diez líneas de `INFORME_FILAS_MOSTRADAS`, así que el bloque 7 imprime cinco alertas y cuenta el resto) · `src/ingest/constants.ts` (`INFORME_MAX_LINEAS` = 145, dos páginas de 72 líneas) — el informe `_qa/SPEC-009/informe-jornada-2026-09-28.md` se genera **el lunes 2026-09-28**. | Gates y `test:db` en verde (evidencia abajo); `informe.test.ts` «CA-10 el informe cabe en dos páginas» (recorte de listas) y **V-4** «cabe en dos páginas, medido en líneas» (jornada realista de 39 partidos con 8 y con 39 alertas, e informe vacío: 133/133/124 líneas contra el tope de 145) | Corrido por el verificador el 2026-09-22: `npm run gates` exit **0** (biome 139 ficheros, 45 test files / **613 tests**); `env -u DATABASE_URL -u API_FOOTBALL_KEY -u NEXT_PUBLIC_SUPABASE_URL -u SUPABASE_SERVICE_ROLE_KEY -u INGEST_TICK_TOKEN npm run gates` exit **0**; `npm run test:db` exit **0** y **0 filas residuales en `dev`**. `git diff main --stat -- src/decide src/ingest/engine.ts` **vacío**; `… -- src/ingest/tick.ts src/ingest/db.ts src/ingest/window.ts src/raw src/app/api supabase` **vacío**; 0 migraciones; 0 cambios en `package-lock.json`; `constants.ts` **56 adiciones y 0 borrados**; `package.json` solo `informe:jornada`; `git grep -qF` sin coincidencias ni para `$API_FOOTBALL_KEY` ni para `$INGEST_TICK_TOKEN`; `apiFootballByIds` solo lo usan la cáscara y su test, nunca el tick. **V-4 medio cerrado**: ya existe test que **mide líneas**, pero el tope no se cumple — **finding V-7**: **190 líneas** con todas las listas acotadas saturadas y **cero** filas de las que no se recortan. Parte de campo (el fichero del informe) abierta hasta el lunes. | ⚠️ |
+| CA-10 | `package.json` (solo el script `informe:jornada`, sin dependencias nuevas, sin migraciones) · `src/ingest/informe.ts` (`primerasFilas` y `primerasContadas`: una lista gasta como mucho las **cinco** líneas de `INFORME_FILAS_MOSTRADAS`, y una cuenta que ya dice 0 no gasta además un «(ninguno)»; el desglose por competición del bloque 1 se quitó porque ya está en la primera línea del informe; ninguna línea en blanco bajo los títulos, V-7) · `src/ingest/constants.ts` (`INFORME_FILAS_MOSTRADAS` de 10 a **5**; `INFORME_MAX_LINEAS` sigue en 145, dos páginas de 72 líneas, ahora con el techo medido) — el informe `_qa/SPEC-009/informe-jornada-2026-09-28.md` se genera **el lunes 2026-09-28**. | Gates y `test:db` en verde (evidencia abajo); `informe.test.ts` «CA-10 el informe cabe en dos páginas» (recorte de listas), **V-4** «cabe en dos páginas, medido en líneas» y **V-7** «el tope se cumple por construcción, no por fixture»: **los cinco escenarios de la tabla del verificador medidos uno a uno** (137 / 100 / 126 / 104 / 95 líneas contra 145), más **el techo** —cinco competiciones, las ocho listas acotadas saturadas a la vez, tick muerto, alerta por partido y silencios del proveedor: **137**— y **el máximo de lo no acotado** —49 discrepancias en cinco competiciones: **126**—, más el recíproco de que el informe saturado sigue diciendo cada cuenta y su desglose | Corrido por el verificador el 2026-09-22: `npm run gates` exit **0** (biome 139 ficheros, 45 test files / **613 tests**); `env -u DATABASE_URL -u API_FOOTBALL_KEY -u NEXT_PUBLIC_SUPABASE_URL -u SUPABASE_SERVICE_ROLE_KEY -u INGEST_TICK_TOKEN npm run gates` exit **0**; `npm run test:db` exit **0** y **0 filas residuales en `dev`**. `git diff main --stat -- src/decide src/ingest/engine.ts` **vacío**; `… -- src/ingest/tick.ts src/ingest/db.ts src/ingest/window.ts src/raw src/app/api supabase` **vacío**; 0 migraciones; 0 cambios en `package-lock.json`; `constants.ts` **56 adiciones y 0 borrados**; `package.json` solo `informe:jornada`; `git grep -qF` sin coincidencias ni para `$API_FOOTBALL_KEY` ni para `$INGEST_TICK_TOKEN`; `apiFootballByIds` solo lo usan la cáscara y su test, nunca el tick. **V-4 medio cerrado**: ya existe test que **mide líneas**, pero el tope no se cumple — **finding V-7**: **190 líneas** con todas las listas acotadas saturadas y **cero** filas de las que no se recortan. Parte de campo (el fichero del informe) abierta hasta el lunes. | ⚠️ |
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
@@ -325,14 +327,16 @@ Comandos y salida real (2026-09-22, rama `ft/SPEC-009-jornada-de-medicion-e-info
   páginas» (CA-10): una jornada en la que nada corriera lista 39 partidos sin
   señal. Modo de fallo: quien necesite la lista completa tiene que volver a la
   base de datos. Decidido por el implementador, no por la spec.
-- **F-SPEC-009-4 — el bloque 7 imprime cinco alertas y cuenta el resto.** Lo que
-  se acota es el gasto en líneas (las diez de `INFORME_FILAS_MOSTRADAS`) y una
-  alerta cuesta dos: su fila y el hueco de su explicación. Modo de fallo: con más
-  de cinco alertas, la explicación a mano de las no listadas hay que escribirla
-  **por `kind`** (la cuenta agrupada que el bloque imprime arriba), no una por
-  una. Para 39 `forced_finish` eso es lo que se iba a hacer igual; para cinco
-  `kind` distintos con una alerta cada uno no hay recorte. Alternativa
-  descartada: imprimirlas todas y salirse de las dos páginas de CA-10.
+- **F-SPEC-009-4 — el bloque 7 imprime DOS alertas y cuenta el resto** (eran
+  cinco; V-7 bajó `INFORME_FILAS_MOSTRADAS` de diez a cinco y una alerta cuesta
+  dos líneas: su fila y el hueco de su explicación). Lo que se acota es el gasto
+  en líneas, no el número de filas. Modo de fallo: con más de dos alertas, la
+  explicación a mano de las no listadas hay que escribirla **por `kind`** (la
+  cuenta agrupada que el bloque imprime arriba), no una por una. Para 39
+  `forced_finish` eso es lo que se iba a hacer igual. Alternativa descartada:
+  imprimirlas todas y salirse de las dos páginas de CA-10. Lo mismo vale para
+  los dos cubos nuevos del bloque 8 (estados no-`finished` acordados y partidos
+  sin respuesta), que también cuestan dos líneas por fila.
 - **F-SPEC-009-5 — el hueco del principio de un partido no se mide.** V-2 cierra
   el silencio **final** (de la última observación al cierre de la ventana). El
   simétrico —de la apertura de la ventana a la primera observación— no se mide
@@ -342,6 +346,24 @@ Comandos y salida real (2026-09-22, rama `ft/SPEC-009-jornada-de-medicion-e-info
   para no estirar más la letra de CA-2 (a) («huecos entre `observed_at`
   consecutivos»), que ya se estira con el final porque CA-2 (a) exige delatar un
   job caído. Destino: sdd-arquitecto, si la jornada lo hace visible.
+- **F-SPEC-009-6 — un `status.short` que el proveedor estrene sale como «sin
+  respuesta», no como estado nuevo.** Los 19 códigos que API-Football documenta
+  están los 19 en el mapa de `src/sources/api-football/results.ts` (`ABD`, `AWD`
+  y `WO` incluidos, contra lo que decía el finding V-6), así que hoy la ruta de
+  `unsupported_status` solo la abre un código que el proveedor añada. Cuando eso
+  pase, el partido aparece en el bloque 8 bajo «partidos sin respuesta del
+  proveedor» con `motivo: el adaptador lo descartó: unsupported_status
+  (status.short XX)`, lo cual es exacto pero no es un mapeo. Modo de fallo: si
+  nadie lee el motivo, un código nuevo se confunde con un silencio de red.
+  Destino: **sdd-arquitecto** — mapear un estado nuevo es SPEC-005 y su ADR, no
+  esta spec, que solo tenía que dejar de tratar el silencio como discrepancia.
+- **F-SPEC-009-7 — nueve de las líneas que V-7 recortó son maquetación.** El
+  informe ya no imprime una línea en blanco **debajo** de cada título (sí encima,
+  así que los bloques siguen separados). En Markdown se renderiza igual y en el
+  recuento de líneas valen nueve, pero no son contenido recortado y no deben
+  contarse como tal: el recorte de verdad son las cinco filas por lista y la
+  prosa que se repetía. Queda escrito para que el tope de 145 no se lea como más
+  holgado de lo que es. Decidido por el implementador, no por la spec.
 - **Inconsistencia documental (no mía de arreglar).** CA-1 de esta spec y CA-3 de
   SPEC-008 citan `src/ingest/cli.ts` como el patrón a seguir, y ese fichero **no
   existe** ni ha existido. El patrón real es un módulo puro (`src/ingest/cron.ts`,
@@ -370,7 +392,7 @@ commits nuevos sobre `a9e329a`, ninguno fuera de `src/ingest/` y
 | V-1 cobertura | `31ffa89` | `informe.test.ts` «CA-9 cobertura sobre la ventana efectiva de cada partido» | `AssertionError: expected 900 to be 690`, y con muestreo **perfecto** el informe imprimía `veredicto: no válida (c1)` · `- cobertura de ticks 77 % por debajo del 80 %` |
 | V-2 silencio final | `f8e8037` | `informe.test.ts` «CA-2 (a)/CA-4 (b) el silencio final cuenta» | `cadencia: expected { n: 3, maximo: 30000 } to match { n: 4, maximo: 9510000 }`; `huecosLargos: expected [] to deeply equal [ {…} ]`; `sinSenal.conHuecoLargo: expected [] to deeply equal [ {…} ]` |
 | V-3 no-`finished` acordado | `040bf26` | `informe.test.ts` «CA-5/CA-7 un estado no-finished acordado no es discrepancia» | `veredicto: expected { rama: "c2", valor: "no válida" } to match { rama: null, valor: "válida con reservas" }`; `discrepancias: expected [ { matchId: "aplazado", … } ] to deeply equal []` |
-| V-4 dos páginas | `77f8323` | `informe.test.ts` «CA-10 el informe cabe en dos páginas, medido en líneas» | `AssertionError: expected 204 to be less than or equal to 145` (jornada realista con 39 alertas) |
+| V-4 dos páginas | `77f8323` | `informe.test.ts` «CA-10 el informe cabe en dos páginas, medido en líneas» | **Corregido (D-10, 3ª vuelta).** La salida que se apuntó aquí (`expected 204 to be less than or equal to 145`) **no es la que ese test produce**: el `toContain("… y 34 más, explicadas por kind")` falla antes y la aserción del conteo no llega a ejecutarse. La salida real es `AssertionError: expected '# Informe de la jornada · 2026-09-25 …' to contain '… y 34 más, explicadas por kind'`. El RED era real (el informe medía 204 líneas y así se midió a mano); su evidencia escrita, no. |
 | V-5 secretos | `75feeca` | `informe.test.ts` «CA-1 ningún valor del entorno se escapa» | `TypeError: secretosDelEntorno is not a function` (la función no existía; la lista de cinco nombres vivía en la cáscara) |
 | observación del 0-0 | `092bee2` | `informe.test.ts` «dice que el 0-0 del estreno cuenta como cambio de marcador» | el informe no decía nada del estreno: `expected … to contain "La primera Decision con marcador de cada partido…"` |
 | fixture de `test:db` | `a644b20` | `informe.db.test.ts` (mismo caso, con `final: true`) | `expected { n: 4, maximo: 8820000 } to match { n: 3, maximo: 120000 }`: el hueco final también sale por el camino de las consultas reales |
@@ -435,6 +457,109 @@ Al generar el informe del lunes, dos cosas nuevas que mirar: el bloque 1 dice
 sobre qué ventana calcula la cobertura (si alguien discute el número, está ahí) y
 el bloque 8 tiene una línea propia para los estados no-`finished` acordados, cuya
 explicación es obligatoria igual que la de las alertas.
+
+### Tercera vuelta: V-6, V-7 y la evidencia de V-4 (2026-09-22)
+
+Dos commits sobre `d3cbf81`, ninguno fuera de `src/ingest/`. `src/sources/` no se
+ha tocado en esta vuelta (`git diff d3cbf81 -- src/sources` vacío). Sin PR y sin
+merge.
+
+| Finding | Commit | Test que lo fija | Salida en rojo antes del arreglo, corrida y copiada |
+|---|---|---|---|
+| V-6 silencio del proveedor | `d6ecbcc` | `contraste.test.ts` «el silencio del proveedor vuelve con su motivo» (5 de 7 en rojo) y `informe.test.ts` «CA-5 el silencio del proveedor no es discrepancia» (4 de 5 en rojo) | `contraste.test.ts`: `AssertionError: expected undefined to be 'el adaptador lo descartó: unsupported_status (status.short NUEVO)'` (y lo mismo para `missing_score`, `unknown_team`, el fixture ausente y el partido sin alias). `informe.test.ts`: `AssertionError: expected [ { matchId: 'mudo', …(3) } ] to deeply equal []` —la discrepancia inventada, con `proveedor: { status: "sin respuesta", marcador: "sin marcador" }`— y `AssertionError: expected { Object (valor, rama, ...) } to match object { valor: 'válida con reservas', …(1) }` con `- "rama": null / + "rama": "c2"` |
+| V-7 tope de dos páginas | `d22c146` | `informe.test.ts` «CA-10 el tope se cumple por construcción, no por fixture» (4 de 8 en rojo) | `AssertionError: expected 208 to be less than or equal to 145` (listas saturadas), `expected 210 to be less than or equal to 145` (el techo con cinco competiciones), `expected 162 …` (39 discrepancias) y `expected 153 …` (solo el tick muerto) |
+| V-4, evidencia (D-10) | — | — | La línea de la 2ª vuelta queda corregida en su sitio: el rojo real es `to contain '… y 34 más, explicadas por kind'`, no `expected 204 to be less than or equal to 145`. Comprobado leyendo el orden de las aserciones del test. |
+
+**V-6, y dónde el finding se equivoca.** El bug es real y está arreglado: un
+partido del que el proveedor no contesta tiene ahora su propia línea en el bloque
+8, con su motivo, su `raw_ref` y su hueco de explicación, y baja el veredicto a
+`válida con reservas` sin tocar la rama (c2). Pero el ejemplo del finding no se
+sostiene: **`ABD`, `AWD` y `WO` están en el mapa de estados** de
+`src/sources/api-football/results.ts` (`ABD` → `suspended`, `AWD` y `WO` →
+`finished`) y devuelven observación, no `skipped('unsupported_status')`. Medido
+sobre el adaptador de verdad:
+
+```
+ABD    obs: {"status":"suspended","score":{"home":1,"away":0}} | skipped: []
+AWD    obs: {"status":"finished", "score":{"home":1,"away":0}} | skipped: []
+WO     obs: {"status":"finished", "score":{"home":1,"away":0}} | skipped: []
+XX     obs: null | skipped: [{"status":"XX","reason":"unsupported_status"}]
+FT sin goles  obs: null | skipped: [{"status":"FT","reason":"missing_score"}]
+respuesta vacía  obs: 0  skipped: 0  unresolved: 0
+```
+
+Los 19 códigos que documenta API-Football están los 19 en el mapa, así que la
+ruta de `unsupported_status` solo la abre un código **nuevo** del proveedor. Las
+rutas que sí pasan hoy son cuatro, y las cuatro vuelven con su motivo:
+`missing_score` (un partido cerrado sin goles), `unresolved` (un equipo o un
+alias que no resuelve), el fixture que **no viene** en la respuesta, y el partido
+sin alias de fixture al que no se preguntó. `contrastarMarcadores` ya no descarta
+`parsed.skipped` ni `parsed.unresolved`. **Mapear estados nuevos sigue siendo
+SPEC-005 y su ADR, no esta spec**, y el informe tampoco lo necesita: le basta
+decir por qué un partido no vino.
+
+**V-7, y el número honesto de «dos páginas».** El finding acierta: 145 estaba
+calibrado contra un fixture con casi todas las listas vacías. Medido antes del
+arreglo, con la línea de V-6 ya dentro:
+
+| escenario | antes | después |
+|---|---|---|
+| las ocho listas acotadas saturadas, cero discrepancias | 208 | **137** |
+| el techo: cinco competiciones y todo lo acotado saturado a la vez | 210 | **137** |
+| 39 discrepancias | 162 | **126** |
+| 49 discrepancias en cinco competiciones (máximo de lo no acotado) | — | **126** |
+| solo el tick muerto | 153 | **104** |
+| 39 aplazamientos acordados, resto camino feliz | 138 | **100** |
+| camino feliz con 39 alertas | 141 | **95** |
+| informe vacío | 102 | **75** |
+
+Tres recortes, y conviene que se lean por separado porque no valen lo mismo:
+
+1. **`INFORME_FILAS_MOSTRADAS` de diez a cinco.** Las cuentas de cabecera y el
+   desglose por competición siguen intactos; lo que se recorta es la muestra. Es
+   una de las dos opciones que el finding ofrecía.
+2. **La prosa que se repetía.** El desglose por competición del bloque 1 ya
+   estaba, con sus partidos, en la primera línea del informe (CA-1); el
+   «(ninguno)» debajo de una cuenta que ya dice 0; la explicación de un cubo del
+   bloque 8 cuando ese cubo está vacío; el «por día» en una línea en vez de
+   cinco; y unas cuantas frases dichas dos veces. Ninguna afirmación que la spec
+   pida con esas palabras se ha perdido: siguen ahí «captura → publicación», «No
+   es latencia extremo a extremo», «observed_at = capturedAt», el 0-0 del
+   estreno, la línea del tamaño esperable y la ventana sobre la que se calcula
+   la cobertura, y sus tests lo siguen exigiendo.
+3. **La línea en blanco bajo cada título.** Nueve líneas. En Markdown se
+   renderiza igual, pero **es maquetación y no contenido**, y queda dicho aquí
+   para que nadie cuente esas nueve como si fueran recorte de verdad.
+
+**Respuesta a la pregunta que el finding deja abierta: dos páginas SÍ es un tope
+honesto, y no hacen falta tres.** El informe no cabía porque se repetía, no
+porque midiera demasiado. Con el techo en 137 sobre un tope de 145 quedan ocho
+líneas de holgura, y el techo está **medido** (un escenario que satura a la vez
+las ocho listas acotadas, las cinco competiciones, el tick muerto, una alerta por
+partido y los silencios del proveedor), no supuesto: nada de lo que el informe
+imprime crece sin tope salvo las discrepancias y las referencias no casadas, que
+F-SPEC-009-3 deja crecer a propósito y cuyo máximo real —49 discrepancias— también
+está medido. `INFORME_MAX_LINEAS` no se ha movido de 145.
+
+**Cierre de esta vuelta (2026-09-22, rama `ft/SPEC-009-jornada-de-medicion-e-informe`):**
+
+| Comprobación | Salida |
+|---|---|
+| `npm run gates` | exit **0** · biome 140 ficheros · **46 test files, 633 tests** |
+| `env -u DATABASE_URL -u API_FOOTBALL_KEY -u NEXT_PUBLIC_SUPABASE_URL -u SUPABASE_SERVICE_ROLE_KEY -u INGEST_TICK_TOKEN npm run gates` | exit **0** · 46 test files, 633 tests |
+| `npm run test:db` | exit **0** · `{"upToDate":true,…,"migrations":[]}` · **8 test files, 71 tests** |
+| `git diff main --stat -- src/decide src/ingest/engine.ts` | **vacío** |
+| `git diff main --stat -- src/ingest/tick.ts src/ingest/db.ts src/ingest/window.ts src/raw src/app/api supabase` | **vacío** (camino de captura intacto) |
+| `git diff d3cbf81 --stat -- src/sources` | **vacío** (`results.ts` no se ha tocado en esta vuelta) |
+| `git grep -qF "$API_FOOTBALL_KEY"` y `"$INGEST_TICK_TOKEN"` (con `.env` cargado) | sin coincidencias |
+| `npm run informe:jornada -- 2026-09-25T18:20Z 2026-09-28T21:00Z --referencias …/referencias.csv` | exit 0 · **91 líneas** (eran 126) · `ticks: 0 de 3050 esperados (0 %)` y `veredicto: no válida (c1)`, que es lo que debe decir hoy · de los valores del entorno de ≥ 8 caracteres, **0 aparecen** en la salida y **0 redacciones** espurias |
+
+Lo que queda sigue siendo lo mismo, y el guion de CA-6 de abajo **no se ha
+tocado**: CA-6 mañana miércoles 23, CA-7 y CA-8 durante la jornada, CA-9 y el
+informe de CA-10 el lunes 28. Al generar el informe del lunes, una cosa nueva que
+mirar: el bloque 8 tiene ahora **tres** líneas de cuenta —coincidentes, estados
+no-`finished` acordados y partidos sin respuesta—, y la explicación a mano de las
+dos últimas es obligatoria igual que la de las alertas.
 
 ### Guion del ensayo de CA-6 — miércoles 2026-09-23
 
