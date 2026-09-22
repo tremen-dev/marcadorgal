@@ -4,7 +4,11 @@ import {
   MINUTE_MS,
   shiftInstant,
 } from "../model/index.ts";
-import { SALUD_FAILURES_SHOWN, SALUD_RECENT_MINUTES } from "./constants.ts";
+import {
+  SALUD_FAILURES_SHOWN,
+  SALUD_IN_FLIGHT_STATUSES,
+  SALUD_RECENT_MINUTES,
+} from "./constants.ts";
 
 // The tool of the Friday (N-5): it says whether the tick is alive before
 // there is any match to observe, which is when it can still be fixed. Pure:
@@ -61,6 +65,17 @@ const list = (lines: string[]): string[] =>
 const percent = (part: number, total: number): string =>
   total === 0 ? "n/a" : `${Math.round((part / total) * 100)}%`;
 
+// A run that has not finished yet is neither a success nor a failure: it is
+// still going (SPEC-010 CA-1).
+const inFlight = (run: SaludRun): boolean =>
+  SALUD_IN_FLIGHT_STATUSES.includes(run.status);
+
+// The window lines say how many runs are terminal, because the percentage is
+// over those, and name the ones in flight when there are any: without it,
+// twenty succeeded plus one running would read 100% of twenty-one (CA-2).
+const inFlightNote = (all: number, terminals: number): string =>
+  all === terminals ? "" : `  ·  en vuelo: ${all - terminals}`;
+
 const detailsOf = (details: unknown): string =>
   details === null || details === undefined
     ? ""
@@ -75,12 +90,20 @@ export function tickSalud(input: SaludInput): SaludReport {
   );
 
   const runs = input.runs.filter((r) => r.startTime >= since);
+  // A run in flight leaves the failure list and the percentage, but it stays
+  // in the block of statuses: the row is seen, it just stops being counted.
+  const terminal = runs.filter((r) => !inFlight(r));
   // Newest first, so the five that get printed are the five that matter.
-  const failed = runs
+  const failed = terminal
     .filter((r) => r.status !== "succeeded")
     .toSorted((a, b) => (a.startTime < b.startTime ? 1 : -1));
+  // Silence is measured over every recent row, terminal or not: pg_cron fired,
+  // which is what the third reason to be red watches. Filtering the runs in
+  // flight out here would turn a lone running into "no runs at all" and give
+  // the same false REVISAR back through the other door (CA-3).
   const recentRuns = runs.filter((r) => r.startTime >= recentSince);
-  const failedRecent = recentRuns.filter((r) => r.status !== "succeeded");
+  const recentTerminal = recentRuns.filter((r) => !inFlight(r));
+  const failedRecent = recentTerminal.filter((r) => r.status !== "succeeded");
 
   const broken = input.attempts.filter(
     (a) => a.ok === false && a.startedAt >= since,
@@ -102,12 +125,16 @@ export function tickSalud(input: SaludInput): SaludReport {
   out.push(
     "",
     `ejecuciones (últimos ${SALUD_RECENT_MINUTES} min): ${recentRuns.length}` +
-      `  ·  succeeded: ${percent(recentRuns.length - failedRecent.length, recentRuns.length)}` +
+      `  ·  terminales: ${recentTerminal.length}` +
+      `  ·  succeeded: ${percent(recentTerminal.length - failedRecent.length, recentTerminal.length)}` +
+      inFlightNote(recentRuns.length, recentTerminal.length) +
       "   ← decide el semáforo",
   );
   out.push(
     `ejecuciones (última hora): ${runs.length}` +
-      `  ·  succeeded: ${percent(runs.length - failed.length, runs.length)}`,
+      `  ·  terminales: ${terminal.length}` +
+      `  ·  succeeded: ${percent(terminal.length - failed.length, terminal.length)}` +
+      inFlightNote(runs.length, terminal.length),
   );
   const byStatus = new Map<string, number>();
   for (const run of runs)

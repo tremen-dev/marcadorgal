@@ -267,7 +267,9 @@ describe("SPEC-008 CA-7 tickSalud", () => {
   it("a run in flight is still a sign of life: a lone running with an active job is green", () => {
     const report = tickSalud(
       clean({
-        runs: [{ jobname: "ingest-tick", status: "running", startTime: at(-1) }],
+        runs: [
+          { jobname: "ingest-tick", status: "running", startTime: at(-1) },
+        ],
       }),
     );
     expect(report.ok).toBe(true);
@@ -285,7 +287,9 @@ describe("SPEC-008 CA-7 tickSalud", () => {
   it("treats the four non terminal pg_cron statuses as in flight, not as failures", () => {
     for (const status of ["starting", "running", "sending", "connecting"]) {
       const report = tickSalud(
-        clean({ runs: [{ jobname: "ingest-tick", status, startTime: at(-1) }] }),
+        clean({
+          runs: [{ jobname: "ingest-tick", status, startTime: at(-1) }],
+        }),
       );
       expect(report.ok, status).toBe(true);
       expect(report.text, status).not.toContain("FALLO");
