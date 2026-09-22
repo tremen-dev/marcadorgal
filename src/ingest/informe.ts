@@ -194,6 +194,14 @@ export type Informe = {
   contraste: {
     total: number;
     coinciden: number;
+    // Matches in a non-`finished` state that board and the provider say the
+    // same way (CA-7): not discrepancies, and never branch (c2).
+    acordadosNoFinished: readonly {
+      matchId: string;
+      status: string;
+      marcador: string;
+      rawRef: string | null;
+    }[];
     discrepancias: readonly {
       matchId: string;
       board: { status: string; marcador: string };
@@ -533,6 +541,7 @@ type VeredictoInput = {
   cobertura: number | null;
   competicionesMudas: readonly string[];
   discrepancias: number;
+  acordadosNoFinished: number;
   observaciones: number;
   alertasInesperadas: number;
   declaraciones: Declaraciones;
@@ -592,6 +601,14 @@ export function veredictoDe(v: VeredictoInput): Veredicto {
   )
     reservas.push(
       `cobertura de ticks ${porcentaje(v.cobertura)}, entre el ${porcentaje(INFORME_COVERAGE_RESERVED)} y el ${porcentaje(INFORME_COVERAGE_VALID)}`,
+    );
+  // CA-9 (a) asks for every match `finished`; CA-7 admits the state the
+  // provider confirms, with its alert explained. Both at once: it is not a
+  // discrepancy and never branch (c2), but it is a reserva with its name on it,
+  // because a match that did not finish is not what (a) describes.
+  if (v.acordadosNoFinished > 0)
+    reservas.push(
+      `${v.acordadosNoFinished} partido(s) en un estado no-finished que el proveedor confirma (CA-7), con su alerta explicada`,
     );
   reservas.push(
     ...(d.intervencionSobreLaPlataforma ?? []).map(
@@ -982,6 +999,9 @@ export function informeJornada(input: InformeInput): {
     push(sinDatos("se generó el informe sin --contrastar"));
   else {
     const coinciden: string[] = [];
+    const acordados: NonNullable<
+      Informe["contraste"]
+    >["acordadosNoFinished"][number][] = [];
     const discrepancias: NonNullable<
       Informe["contraste"]
     >["discrepancias"][number][] = [];
@@ -995,14 +1015,21 @@ export function informeJornada(input: InformeInput): {
         status: fila.proveedor?.status ?? "sin respuesta",
         marcador: marcadorDe(fila.proveedor?.score ?? null),
       };
-      if (
-        nuestro.status === suyo.status &&
-        nuestro.marcador === suyo.marcador &&
-        nuestro.status === "finished"
-      )
+      const acuerdo =
+        nuestro.status === suyo.status && nuestro.marcador === suyo.marcador;
+      // A discrepancy is the two sides saying different things. The state the
+      // provider confirms is the other case of CA-7, and it has its own line.
+      if (acuerdo && nuestro.status === "finished")
         coinciden.push(
           `  ${fila.matchId}  ${nuestro.status} ${nuestro.marcador}`,
         );
+      else if (acuerdo)
+        acordados.push({
+          matchId: fila.matchId,
+          status: nuestro.status,
+          marcador: nuestro.marcador,
+          rawRef: ultimoRawRef.get(fila.matchId)?.rawRef ?? null,
+        });
       else
         discrepancias.push({
           matchId: fila.matchId,
@@ -1014,6 +1041,7 @@ export function informeJornada(input: InformeInput): {
     contraste = {
       total: input.contraste.length,
       coinciden: coinciden.length,
+      acordadosNoFinished: acordados,
       discrepancias,
     };
     push(
@@ -1021,6 +1049,17 @@ export function informeJornada(input: InformeInput): {
       `peticiones del contraste: ${input.contrastePeticiones ?? 0} (aparte de las del tick)`,
       "coinciden:",
       ...primeras(coinciden, "(ninguno)"),
+      `estados no-finished que el proveedor confirma: ${acordados.length}`,
+      "  CA-7 los contempla («o el estado que el proveedor confirme, con su alerta",
+      "  explicada»): no son discrepancias y no son la rama (c2), pero su",
+      "  explicación es obligatoria y el veredicto baja a válida con reservas.",
+      ...primeras(
+        acordados.flatMap((a) => [
+          `  ${a.matchId}  ${a.status} ${a.marcador}  ·  raw_ref: ${a.rawRef ?? "ninguno"}`,
+          "    explicación:",
+        ]),
+        "(ninguno)",
+      ),
       `discrepancias: ${discrepancias.length}`,
       ...lista(
         discrepancias.map(
@@ -1044,6 +1083,7 @@ export function informeJornada(input: InformeInput): {
     cobertura,
     competicionesMudas,
     discrepancias: contraste?.discrepancias.length ?? 0,
+    acordadosNoFinished: contraste?.acordadosNoFinished.length ?? 0,
     observaciones: input.observations.length,
     alertasInesperadas: inesperadas,
     declaraciones: input.declaraciones ?? {},

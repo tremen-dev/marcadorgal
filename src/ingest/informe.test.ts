@@ -4,7 +4,12 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { type Instant, MINUTE_MS, shiftInstant } from "@/model";
+import {
+  type Instant,
+  type MatchStatus,
+  MINUTE_MS,
+  shiftInstant,
+} from "@/model";
 import { INFORME_P95_MIN_SAMPLES } from "./constants.ts";
 import {
   BLOQUES,
@@ -1169,5 +1174,108 @@ describe("CA-2 (a)/CA-4 (b) el silencio final cuenta", () => {
     expect(informe.cadencia.maximo).toBe(30 * SEC);
     expect(informe.cadencia.huecosLargos).toEqual([]);
     expect(informe.sinSenal.conHuecoLargo).toEqual([]);
+  });
+});
+
+// V-3. CA-7 contempla «o el estado que el proveedor confirme, con su alerta
+// explicada»: un estado no-`finished` en el que board y el proveedor dicen lo
+// mismo no es una discrepancia. Discrepancia es que los dos digan cosas
+// distintas, y es lo único que puede disparar la rama (c2) «motor equivocado».
+describe("CA-5/CA-7 un estado no-finished acordado no es discrepancia", () => {
+  // Cobertura sana (120 de 120) con dos partidos: uno finished coincidente y
+  // uno postponed que board y proveedor dicen igual.
+  const conAcordado = (proveedor: {
+    status: MatchStatus;
+    score: { home: number; away: number } | null;
+  }) =>
+    informeJornada(
+      vacio({
+        hasta: at(60),
+        matches: [
+          partido({ kickoff: at(10), decidedAt: at(50) }),
+          partido({
+            id: "aplazado",
+            kickoff: at(10),
+            status: "postponed",
+            score: null,
+            decidedAt: at(20),
+          }),
+        ],
+        observations: [
+          obs({ id: "o1", observedAt: seg(0) }),
+          obs({
+            id: "o2",
+            matchId: "aplazado",
+            observedAt: seg(30),
+            rawRef: "raw/a.gz",
+          }),
+        ],
+        attempts: Array.from({ length: 120 }, (_, i) => ({
+          startedAt: seg(i * 30),
+          sourceId: "api-football",
+          ok: true,
+          error: null,
+          requests: 1,
+        })),
+        contraste: [
+          {
+            matchId: MATCH,
+            proveedor: { status: "finished", score: { home: 1, away: 0 } },
+          },
+          { matchId: "aplazado", proveedor },
+        ],
+      }),
+    );
+
+  it("lo cuenta aparte, con su raw_ref y su explicación, y no como discrepancia", () => {
+    const { texto, informe } = conAcordado({
+      status: "postponed",
+      score: null,
+    });
+    expect(informe.cobertura.porcentaje).toBe(1);
+    expect(informe.contraste?.discrepancias).toEqual([]);
+    expect(informe.contraste?.acordadosNoFinished).toEqual([
+      {
+        matchId: "aplazado",
+        status: "postponed",
+        marcador: "sin marcador",
+        rawRef: "raw/a.gz",
+      },
+    ]);
+    expect(texto).toContain("estados no-finished que el proveedor confirma: 1");
+    expect(texto).toContain(
+      "aplazado  postponed sin marcador  ·  raw_ref: raw/a.gz",
+    );
+    expect(texto).toContain("discrepancias: 0");
+  });
+
+  it("no dispara la rama (c2): baja a válida con reservas y dice por qué", () => {
+    const { texto, informe } = conAcordado({
+      status: "postponed",
+      score: null,
+    });
+    expect(informe.veredicto).toMatchObject({
+      valor: "válida con reservas",
+      rama: null,
+    });
+    expect(informe.veredicto.razones.join(" ")).toContain("no-finished");
+    expect(texto).not.toContain("no válida");
+  });
+
+  it("la cuenta de CA-5 se sigue imprimiendo tal cual", () => {
+    const { texto } = conAcordado({ status: "postponed", score: null });
+    expect(texto).toContain(
+      "1 de 2 partidos con `finished` y marcador coincidente.",
+    );
+  });
+
+  it("si los dos dicen cosas distintas sigue siendo discrepancia y rama (c2)", () => {
+    const { informe } = conAcordado({
+      status: "finished",
+      score: { home: 2, away: 2 },
+    });
+    expect(informe.contraste?.acordadosNoFinished).toEqual([]);
+    expect(informe.contraste?.discrepancias).toHaveLength(1);
+    expect(informe.veredicto).toMatchObject({ valor: "no válida", rama: "c2" });
   });
 });
