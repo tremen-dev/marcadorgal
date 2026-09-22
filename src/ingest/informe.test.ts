@@ -388,6 +388,17 @@ describe("CA-2 (b) latencia interna", () => {
     expect(texto).toContain("observed_at = capturedAt");
   });
 
+  it("dice que el 0-0 del estreno cuenta como cambio de marcador", () => {
+    // Observación del verificador: `previo` arranca en null, así que la v1 con
+    // marcador entra en la muestra. Es defendible —también es captura →
+    // publicación— pero la mediana lleva ~39 estrenos además de los goles.
+    const { texto } = conDecisions();
+    expect(texto).toContain(
+      "La primera Decision con marcador de cada partido —el 0-0 del estreno— cuenta",
+    );
+    expect(texto).toContain("un estreno por partido además de los");
+  });
+
   it("el techo propio es p95(cadencia) + p95(latencia interna)", () => {
     const { texto, informe } = informeJornada(
       vacio({

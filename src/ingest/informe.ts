@@ -858,6 +858,9 @@ export function informeJornada(input: InformeInput): {
     "para cada Decision que cambia el marcador publicado. Como observed_at = capturedAt",
     "(SPEC-006 CA-7), esto mide captura → publicación: raw store, parse, inserción y",
     "motor. No es latencia extremo a extremo, y nadie debe leerlo como tal.",
+    "La primera Decision con marcador de cada partido —el 0-0 del estreno— cuenta",
+    "como cambio, así que la muestra lleva un estreno por partido además de los",
+    "goles: quien lea la mediana tiene que saberlo.",
   );
   if (interna.n === 0)
     push(
