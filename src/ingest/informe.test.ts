@@ -221,7 +221,9 @@ describe("CA-1 el informe entero", () => {
   it("cada estadístico lleva su n al lado", () => {
     const { texto } = informeJornada(
       vacio({
-        matches: [partido()],
+        // Cierra en su última observación: aquí se miden los huecos entre
+        // observaciones y el silencio final tiene su propio caso (V-2).
+        matches: [partido({ kickoff: seg(0), decidedAt: seg(60) })],
         observations: [
           obs({ id: "o1", observedAt: seg(0) }),
           obs({ id: "o2", observedAt: seg(30) }),
@@ -286,7 +288,7 @@ describe("CA-2 (a) cadencia efectiva", () => {
   const conHuecos = () =>
     informeJornada(
       vacio({
-        matches: [partido()],
+        matches: [partido({ kickoff: seg(0), decidedAt: seg(180) })],
         observations: [
           obs({ id: "o1", observedAt: seg(0) }),
           obs({ id: "o2", observedAt: seg(30) }),
@@ -322,7 +324,10 @@ describe("CA-2 (a) cadencia efectiva", () => {
   it("los huecos no cruzan de un partido a otro", () => {
     const { informe } = informeJornada(
       vacio({
-        matches: [partido(), partido({ id: "otro" })],
+        matches: [
+          partido({ kickoff: seg(0), decidedAt: seg(0) }),
+          partido({ id: "otro", kickoff: seg(3_600), decidedAt: seg(3_600) }),
+        ],
         observations: [
           obs({ id: "o1", observedAt: seg(0) }),
           obs({ id: "o2", matchId: "otro", observedAt: seg(3_600) }),
@@ -380,7 +385,7 @@ describe("CA-2 (b) latencia interna", () => {
   it("el techo propio es p95(cadencia) + p95(latencia interna)", () => {
     const { texto, informe } = informeJornada(
       vacio({
-        matches: [partido()],
+        matches: [partido({ kickoff: seg(0), decidedAt: seg(34) })],
         observations: [
           obs({ id: "o1", observedAt: seg(0), score: { home: 0, away: 0 } }),
           obs({ id: "o2", observedAt: seg(30), score: { home: 1, away: 0 } }),
@@ -605,7 +610,7 @@ describe("CA-4 peticiones, partidos sin señal y alertas", () => {
     const { texto, informe } = informeJornada(
       vacio({
         matches: [
-          partido(),
+          partido({ kickoff: seg(0), decidedAt: seg(30 * 60) }),
           partido({ id: "mudo", competitionName: "Tercera RFEF G1" }),
         ],
         observations: [
@@ -775,7 +780,11 @@ describe("CA-5 contraste de marcadores", () => {
 describe("CA-10 el informe cabe en dos páginas", () => {
   it("las listas largas se recortan con su cuenta, las accionables nunca", () => {
     const muchos = Array.from({ length: 30 }, (_, i) =>
-      partido({ id: `m${i}`, kickoff: at(i * 30) }),
+      partido({
+        id: `m${i}`,
+        kickoff: at(i * 30),
+        decidedAt: seg(i * 1800 + 300),
+      }),
     );
     const { texto } = informeJornada(
       vacio({
@@ -1083,5 +1092,82 @@ describe("CA-9 cobertura sobre la ventana efectiva de cada partido", () => {
     );
     expect(informe.cobertura.ticksEsperados).toBe(160 * 2);
     expect(informe.cobertura.porcentaje).toBe(1);
+  });
+});
+
+// V-2. El hueco que va de la última observación de un partido al cierre de su
+// ventana efectiva es un hueco como los demás: sin él, un tick que muere a
+// mitad de jornada imprime una cadencia perfecta y no aparece en la lista de
+// partidos sin señal.
+describe("CA-2 (a)/CA-4 (b) el silencio final cuenta", () => {
+  // El caso del verificador: observaciones a 0/30/60/90 s y después mudo hasta
+  // el final de la ventana, porque el partido nunca llegó a cerrarse.
+  const muerto = () =>
+    informeJornada(
+      vacio({
+        matches: [
+          partido({ kickoff: at(10), status: "live", decidedAt: at(1) }),
+        ],
+        observations: [
+          obs({ id: "o1", observedAt: seg(0) }),
+          obs({ id: "o2", observedAt: seg(30) }),
+          obs({ id: "o3", observedAt: seg(60) }),
+          obs({ id: "o4", observedAt: seg(90) }),
+        ],
+      }),
+    );
+
+  it("mide el hueco entre la última observación y el cierre de la ventana", () => {
+    const { informe } = muerto();
+    // Tres huecos de 30 s y el silencio final: de seg(90) a kickoff + 150 min.
+    expect(informe.cadencia).toMatchObject({
+      n: 4,
+      maximo: (160 * 60 - 90) * SEC,
+      minimo: 30 * SEC,
+    });
+  });
+
+  it("el silencio final sale en los huecos largos de CA-2 (a), dicho como lo que es", () => {
+    const { texto, informe } = muerto();
+    expect(informe.cadencia.huecosLargos).toEqual([
+      {
+        matchId: MATCH,
+        competicion: "Segunda División",
+        desde: seg(90),
+        ms: (160 * 60 - 90) * SEC,
+        final: true,
+      },
+    ]);
+    expect(texto).toContain("huecos > 90 s: 1");
+    expect(texto).toContain("hasta el cierre de su ventana");
+  });
+
+  it("el partido aparece en la lista de partidos sin señal de CA-4 (b)", () => {
+    const { texto, informe } = muerto();
+    expect(informe.sinSenal.conHuecoLargo).toEqual([
+      {
+        matchId: MATCH,
+        competicion: "Segunda División",
+        ms: (160 * 60 - 90) * SEC,
+      },
+    ]);
+    expect(texto).toContain("con al menos un hueco > 15 min: 1");
+  });
+
+  it("un partido muestreado hasta su cierre no inventa ningún hueco", () => {
+    const observations: ObsLike[] = [];
+    for (let s = 0; s < 115 * 60; s += 30)
+      observations.push(obs({ id: `o${s}`, observedAt: seg(s) }));
+    const { informe } = informeJornada(
+      vacio({
+        matches: [
+          partido({ kickoff: at(10), status: "finished", decidedAt: at(115) }),
+        ],
+        observations,
+      }),
+    );
+    expect(informe.cadencia.maximo).toBe(30 * SEC);
+    expect(informe.cadencia.huecosLargos).toEqual([]);
+    expect(informe.sinSenal.conHuecoLargo).toEqual([]);
   });
 });

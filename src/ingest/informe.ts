@@ -142,6 +142,9 @@ export type HuecoLargo = {
   competicion: string;
   desde: Instant;
   ms: number;
+  // The gap from the last observation to the close of the match's window: a
+  // tick that died mid-match leaves no gap between observations, only this one.
+  final?: true;
 };
 
 export type Veredicto = {
@@ -350,10 +353,23 @@ function contar<T>(items: readonly T[], key: (t: T) => string) {
 
 // ---------------------------------------------------------- the measurements
 
-// CA-2 (a): gaps between consecutive observed_at of the same match. Never
-// across matches: two matches are two independent samplings.
+// CA-2 (a): gaps between consecutive observed_at of the same match, plus the
+// one from its last observation to the close of its effective window (V-2).
+// Without that last one a tick that dies mid-match leaves a perfect cadence
+// behind — there is no gap *between* observations when there are no more
+// observations — and CA-2 (a) is exactly what has to give away a fallen job.
+// Never across matches: two matches are two independent samplings.
 function cadenciaDe(input: InformeInput) {
   const nombre = new Map(input.matches.map((m) => [m.id, m.competitionName]));
+  // The close is clipped to hasta: nobody is accountable for the silence after
+  // the measured window ends.
+  const hasta = Date.parse(input.hasta);
+  const cierre = new Map(
+    input.matches.map((m) => [
+      m.id,
+      Math.min(ventanaEfectiva(m).to, hasta) as number,
+    ]),
+  );
   const porPartido = new Map<string, Instant[]>();
   for (const o of input.observations) {
     const list = porPartido.get(o.matchId);
@@ -363,23 +379,30 @@ function cadenciaDe(input: InformeInput) {
   const huecos: number[] = [];
   const largos: HuecoLargo[] = [];
   const mayorPorPartido = new Map<string, number>();
+  const anota = (matchId: string, desde: Instant, ms: number, final?: true) => {
+    huecos.push(ms);
+    mayorPorPartido.set(
+      matchId,
+      Math.max(mayorPorPartido.get(matchId) ?? 0, ms),
+    );
+    if (ms > INFORME_GAP_SECONDS * 1000)
+      largos.push({
+        matchId,
+        competicion: nombre.get(matchId) ?? matchId,
+        desde,
+        ms,
+        ...(final === undefined ? {} : { final }),
+      });
+  };
   for (const [matchId, instants] of porPartido) {
     const sorted = instants.toSorted((a, b) => Date.parse(a) - Date.parse(b));
-    for (let i = 1; i < sorted.length; i += 1) {
-      const ms = instantDiff(sorted[i - 1], sorted[i]);
-      huecos.push(ms);
-      mayorPorPartido.set(
-        matchId,
-        Math.max(mayorPorPartido.get(matchId) ?? 0, ms),
-      );
-      if (ms > INFORME_GAP_SECONDS * 1000)
-        largos.push({
-          matchId,
-          competicion: nombre.get(matchId) ?? matchId,
-          desde: sorted[i - 1],
-          ms,
-        });
-    }
+    for (let i = 1; i < sorted.length; i += 1)
+      anota(matchId, sorted[i - 1], instantDiff(sorted[i - 1], sorted[i]));
+    const ultima = sorted.at(-1);
+    const fin = cierre.get(matchId);
+    if (ultima === undefined || fin === undefined) continue;
+    const ms = fin - Date.parse(ultima);
+    if (ms > 0) anota(matchId, ultima, ms, true);
   }
   largos.sort((a, b) => Date.parse(a.desde) - Date.parse(b.desde));
   return { stats: estadisticos(huecos), largos, mayorPorPartido };
@@ -743,8 +766,10 @@ export function informeJornada(input: InformeInput): {
     "",
     BLOQUES[1],
     "",
-    "Huecos entre observed_at consecutivos de cada partido: el coste de muestrear",
-    "a 30 s y lo que delata un job caído.",
+    "Huecos entre observed_at consecutivos de cada partido, más el que va de su",
+    "última observación al cierre de su ventana efectiva: el coste de muestrear a",
+    "30 s y lo que delata un job caído, que no deja huecos entre observaciones",
+    "porque deja de haberlas.",
   );
   if (cad.stats.n === 0)
     push(sinDatos("ningún partido tiene dos observaciones consecutivas"));
@@ -755,7 +780,7 @@ export function informeJornada(input: InformeInput): {
       ...primeras(
         cad.largos.map(
           (h) =>
-            `  ${h.desde}  ${segundos(h.ms)}  ${h.matchId}  ${h.competicion}`,
+            `  ${h.desde}  ${segundos(h.ms)}  ${h.matchId}  ${h.competicion}${h.final === true ? "  (hasta el cierre de su ventana)" : ""}`,
         ),
         "(ninguno)",
       ),
@@ -874,7 +899,9 @@ export function informeJornada(input: InformeInput): {
     BLOQUES[5],
     "",
     "RN-05 y RN-02: un partido sin señal es el motor haciendo su trabajo, no un",
-    "defecto. Se listan para poder explicarlos uno a uno.",
+    "defecto. Se listan para poder explicarlos uno a uno. El hueco de un partido",
+    "incluye el que va de su última observación al cierre de su ventana: así se ve",
+    "un tick que murió a mitad de partido y no solo uno que se saltó turnos.",
   );
   if (input.matches.length === 0)
     push(sinDatos("ningún partido en la ventana"));
