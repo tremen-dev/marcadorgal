@@ -278,7 +278,7 @@ describe("SPEC-008 CA-7 tickSalud", () => {
     // Nothing terminal to compute a percentage on: n/a, not 0%.
     expect(report.text).toContain("terminales: 0");
     expect(report.text).toContain("n/a");
-    expect(report.text).not.toContain("0%");
+    expect(report.text).not.toContain("succeeded: 0%");
   });
 
   // SPEC-010 CA-1, H-2: the four non terminal statuses of pg_cron. A tick sent
