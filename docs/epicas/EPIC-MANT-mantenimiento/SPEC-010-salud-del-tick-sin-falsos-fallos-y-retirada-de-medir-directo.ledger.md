@@ -96,10 +96,10 @@ $ git diff origin/main --stat -- package.json tools supabase       # vacío
 ## Cómo retomar (handoff)
 <!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->
 - **Hecho: los seis CA.** Rama `ft/EPIC-MANT-salud-running-y-medir-directo` en el
-  worktree `/Users/albertofojo/src/marcadorgal-mant`, cuatro commits sobre
-  `origin/main` (`2d6c3f2`): `edad9af` estado, `320cd89` los tests **en rojo a
-  propósito**, `c11cf16` el arreglo, `9e561f9` el borrado del workflow. Sin push,
-  sin PR, sin merge.
+  worktree `/Users/albertofojo/src/marcadorgal-mant`, sobre `origin/main`
+  (`2d6c3f2`): `edad9af` estado, `320cd89` los tests **en rojo a propósito**,
+  `c11cf16` el arreglo, `9e561f9` el borrado del workflow, `96e4e3e` este ledger
+  y `d1ff2e9` una aserción de test afinada. Sin push, sin PR, sin merge.
 - **Para reproducir el rojo de CA-4:** `git stash` no vale (el arreglo está
   commiteado); `git checkout 320cd89 -- src/ingest/salud.ts src/ingest/constants.ts`
   y `npx vitest run src/ingest/salud.test.ts` devuelve las 4 caídas, con
