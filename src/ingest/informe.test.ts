@@ -10,7 +10,7 @@ import {
   MINUTE_MS,
   shiftInstant,
 } from "@/model";
-import { INFORME_P95_MIN_SAMPLES } from "./constants.ts";
+import { INFORME_MAX_LINEAS, INFORME_P95_MIN_SAMPLES } from "./constants.ts";
 import {
   BLOQUES,
   estadisticos,
@@ -1277,5 +1277,127 @@ describe("CA-5/CA-7 un estado no-finished acordado no es discrepancia", () => {
     expect(informe.contraste?.acordadosNoFinished).toEqual([]);
     expect(informe.contraste?.discrepancias).toHaveLength(1);
     expect(informe.veredicto).toMatchObject({ valor: "no válida", rama: "c2" });
+  });
+});
+
+// V-4. CA-10 pide que el informe quepa en dos páginas, y eso es un número: sin
+// medirlo, el bloque 7 imprimía dos líneas por alerta sin tope y un
+// forced_finish por partido (39, un escenario plausible) lo llevaba a 204
+// líneas. La jornada realista es la del 2026-09-25/28: 39 partidos en cuatro
+// competiciones, muestreo completo a 30 s, 12 referencias y su contraste.
+describe("CA-10 el informe cabe en dos páginas, medido en líneas", () => {
+  const COMPS: readonly [string, string, number][] = [
+    ["segunda-division", "Segunda División", 11],
+    ["primera-rfef-g1", "Primeira Federación · Grupo 1", 10],
+    ["segunda-rfef-g1", "Segunda Federación · Grupo 1", 9],
+    ["tercera-rfef-g1", "Terceira Federación · Grupo 1", 9],
+  ];
+
+  const realista = (alertas: number) => {
+    const matches: InformeMatchLike[] = [];
+    let i = 0;
+    for (const [competitionId, competitionName, n] of COMPS)
+      for (let k = 0; k < n; k += 1) {
+        matches.push(
+          partido({
+            id: `m${i}`,
+            competitionId,
+            competitionName,
+            round: 4,
+            kickoff: at(10 + i * 70),
+            decidedAt: at(10 + i * 70 + 105),
+          }),
+        );
+        i += 1;
+      }
+    const observations: ObsLike[] = [];
+    const attempts: InformeAttemptLike[] = [];
+    for (const [j, m] of matches.entries())
+      for (
+        let ms = Date.parse(m.kickoff) - 10 * MINUTE_MS;
+        ms < Date.parse(m.decidedAt ?? m.kickoff);
+        ms += 30 * SEC
+      ) {
+        const instante = new Date(ms).toISOString() as Instant;
+        observations.push(
+          obs({ id: `o${j}-${ms}`, matchId: m.id, observedAt: instante }),
+        );
+        attempts.push({
+          startedAt: instante,
+          sourceId: "api-football",
+          ok: true,
+          error: null,
+          requests: 1,
+        });
+      }
+    return informeJornada(
+      vacio({
+        matches,
+        observations,
+        attempts,
+        decisions: matches.map((m, j) =>
+          dec({
+            id: `d${j}`,
+            matchId: m.id,
+            status: "finished",
+            score: { home: 1, away: 0 },
+            decidedAt: m.decidedAt ?? m.kickoff,
+            observationIds: [],
+          }),
+        ),
+        referencias: Array.from({ length: 12 }, (_, k) => ({
+          matchId: `m${k}`,
+          marcador: "1-0",
+          instante: at(10 + k * 70 + 50),
+          fuente: "radio",
+        })),
+        alerts: Array.from({ length: alertas }, (_, k) => ({
+          kind: k % 2 === 0 ? "forced_finish" : "silence",
+          matchId: `m${k % 39}`,
+          openedAt: at(10 + (k % 39) * 70 + 100),
+          resolvedAt: null,
+          details: {
+            score: { home: 1, away: 0 },
+            minute: 90,
+            kickoff: at(10 + (k % 39) * 70),
+            lastObservedAt: at(10 + (k % 39) * 70 + 90),
+            lastStatus: "live",
+          },
+        })),
+        contraste: matches.map((m) => ({
+          matchId: m.id,
+          proveedor: {
+            status: "finished" as const,
+            score: { home: 1, away: 0 },
+          },
+        })),
+        contrastePeticiones: 2,
+      }),
+    );
+  };
+
+  const lineas = (texto: string) => texto.split("\n").length;
+
+  it("la jornada realista con ocho alertas no pasa del tope", () => {
+    const { texto, informe } = realista(8);
+    expect(informe.cobertura.porcentaje).toBe(1);
+    expect(lineas(texto)).toBeLessThanOrEqual(INFORME_MAX_LINEAS);
+  });
+
+  it("un forced_finish por partido tampoco: el bloque 7 se recorta como las demás listas", () => {
+    const { texto, informe } = realista(39);
+    expect(informe.alertas.filas).toHaveLength(39);
+    expect(texto).toContain("abiertas en la ventana: 39");
+    // Cada lista gasta como mucho diez líneas, y una alerta cuesta dos.
+    expect(texto).toContain("… y 34 más, explicadas por kind");
+    expect(lineas(texto)).toBeLessThanOrEqual(INFORME_MAX_LINEAS);
+  });
+
+  it("sin ninguna fila también cabe, y el tope son dos páginas de verdad", () => {
+    expect(lineas(informeJornada(vacio()).texto)).toBeLessThanOrEqual(
+      INFORME_MAX_LINEAS,
+    );
+    // Dos páginas de texto monoespaciado, no «casi dos páginas».
+    expect(INFORME_MAX_LINEAS).toBeLessThanOrEqual(150);
   });
 });

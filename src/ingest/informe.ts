@@ -331,6 +331,27 @@ const palabra = (n: number): string => PALABRAS[n] ?? String(n);
 const lista = (lines: readonly string[], vacio: string): string[] =>
   lines.length === 0 ? [`  ${vacio}`] : [...lines];
 
+// The same for a list whose row costs more than one line (an alert plus the
+// blank left for its hand-written explanation): what is capped is the ten lines
+// INFORME_FILAS_MOSTRADAS buys, not the number of rows, so no list can eat the
+// two pages of CA-10 by making its rows taller.
+function primerasFilas<T>(
+  rows: readonly T[],
+  render: (row: T) => string[],
+  vacio: string,
+  cola = "más",
+): string[] {
+  const primera = rows[0];
+  if (primera === undefined) return [`  ${vacio}`];
+  const tope = Math.max(
+    1,
+    Math.floor(INFORME_FILAS_MOSTRADAS / render(primera).length),
+  );
+  const mostradas = rows.slice(0, tope).flatMap((row) => render(row));
+  if (rows.length <= tope) return mostradas;
+  return [...mostradas, `  … y ${rows.length - tope} ${cola}`];
+}
+
 // The same, capped: the headline count already carries the fact, so the rest
 // collapses into one line instead of eating the two pages of CA-10.
 function primeras(lines: readonly string[], vacio: string): string[] {
@@ -757,10 +778,8 @@ export function informeJornada(input: InformeInput): {
   push(
     `ticks: ${ticksReales} de ${esperados} esperados (${cobertura === null ? "n/a" : porcentaje(cobertura)})   ← cobertura de CA-9`,
     `  cobertura sobre la ventana efectiva de cada partido: de kickoff − ${WINDOW_BEFORE_MINUTES} min al`,
-    `  cierre de su Decision finished, que el motor fuerza como muy tarde en`,
-    `  kickoff + ${FORCED_FINISH_MINUTES} min (RN-02); no hasta kickoff + ${WINDOW_AFTER_MINUTES} min, porque el tick deja de`,
-    "  muestrear un partido en cuanto está finished (isInWindow). Son dos ventanas",
-    "  distintas y el numerador y el denominador leen la misma.",
+    `  cierre de su Decision finished (el motor lo fuerza en kickoff + ${FORCED_FINISH_MINUTES} min, RN-02), y no`,
+    `  hasta kickoff + ${WINDOW_AFTER_MINUTES} min: el tick deja de muestrear un partido en cuanto cierra.`,
     `intentos dentro de la ventana de ADR-002 §2 pero tras el cierre de todo partido: ${trasElCierre.length}`,
     `horas de ventana sin ejecuciones: ${horasSinEjecuciones.length}`,
     ...primeras(
@@ -785,8 +804,7 @@ export function informeJornada(input: InformeInput): {
     "",
     "Huecos entre observed_at consecutivos de cada partido, más el que va de su",
     "última observación al cierre de su ventana efectiva: el coste de muestrear a",
-    "30 s y lo que delata un job caído, que no deja huecos entre observaciones",
-    "porque deja de haberlas.",
+    "30 s y lo que delata un job caído, que deja de dejar observaciones.",
   );
   if (cad.stats.n === 0)
     push(sinDatos("ningún partido tiene dos observaciones consecutivas"));
@@ -815,10 +833,9 @@ export function informeJornada(input: InformeInput): {
     BLOQUES[2],
     "",
     "decided_at − observed_at de la observación citada que trae el marcador nuevo,",
-    "para cada Decision que cambia el marcador publicado.",
-    "Como observed_at = capturedAt (el proveedor no data sus respuestas, SPEC-006",
-    "CA-7), esto mide captura → publicación: raw store, parse, inserción y motor.",
-    "No es latencia extremo a extremo, y nadie debe leerlo como tal.",
+    "para cada Decision que cambia el marcador publicado. Como observed_at = capturedAt",
+    "(SPEC-006 CA-7), esto mide captura → publicación: raw store, parse, inserción y",
+    "motor. No es latencia extremo a extremo, y nadie debe leerlo como tal.",
   );
   if (interna.n === 0)
     push(
@@ -860,9 +877,9 @@ export function informeJornada(input: InformeInput): {
   }
   push(
     `tamaño esperable: los ${input.matches.length} partidos de la ventana dan del orden de ${goles} goles,`,
-    "pero la muestra referenciada la limita lo que una persona puede seguir a la vez",
-    "(H-3: domingo 27, 14:00Z-17:00Z), así que esto siempre pesará menos que la",
-    "cadencia y la latencia interna, que se calculan sobre miles de capturas.",
+    "pero la muestra la limita lo que una persona puede seguir a la vez (H-3:",
+    "domingo 27, 14:00Z-17:00Z), así que pesa menos que la cadencia y la latencia",
+    "interna, que se calculan sobre miles de capturas.",
     `referencias no casadas: ${externa.noCasadas.length}`,
     ...lista(
       externa.noCasadas.map((r) => `  ${r.fila}  →  ${r.motivo}`),
@@ -916,9 +933,9 @@ export function informeJornada(input: InformeInput): {
     BLOQUES[5],
     "",
     "RN-05 y RN-02: un partido sin señal es el motor haciendo su trabajo, no un",
-    "defecto. Se listan para poder explicarlos uno a uno. El hueco de un partido",
-    "incluye el que va de su última observación al cierre de su ventana: así se ve",
-    "un tick que murió a mitad de partido y no solo uno que se saltó turnos.",
+    "defecto. Se listan para explicarlos uno a uno. El hueco de un partido incluye",
+    "el que va de su última observación al cierre de su ventana: así se ve un tick",
+    "que murió a mitad de partido y no solo uno que se saltó turnos.",
   );
   if (input.matches.length === 0)
     push(sinDatos("ningún partido en la ventana"));
@@ -966,13 +983,23 @@ export function informeJornada(input: InformeInput): {
       "(ninguna)",
     ),
   );
-  for (const a of abiertas.toSorted(
-    (x, y) => Date.parse(x.openedAt) - Date.parse(y.openedAt),
-  ))
-    push(
-      `  ${a.openedAt}  ${a.kind}  ${a.matchId ?? "sin partido"}  ${JSON.stringify(a.details)}`,
-      "    explicación:",
-    );
+  // Capped like every other list (CA-10): two lines per alert with no ceiling
+  // is what took the report past two pages, and a forced_finish per match is a
+  // plausible matchday. The ones beyond the cap are in the count by kind above,
+  // which is the level at which thirty-nine forced_finish get explained anyway.
+  push(
+    ...primerasFilas(
+      abiertas.toSorted(
+        (x, y) => Date.parse(x.openedAt) - Date.parse(y.openedAt),
+      ),
+      (a) => [
+        `  ${a.openedAt}  ${a.kind}  ${a.matchId ?? "sin partido"}  ${JSON.stringify(a.details)}`,
+        "    explicación:",
+      ],
+      "(ninguna)",
+      "más, explicadas por kind",
+    ).filter(() => abiertas.length > 0),
+  );
   push(
     inesperadas === 0
       ? `unresolved_team y conflict se esperaban en cero: unresolved_team 0, conflict 0.`
@@ -1051,13 +1078,14 @@ export function informeJornada(input: InformeInput): {
       ...primeras(coinciden, "(ninguno)"),
       `estados no-finished que el proveedor confirma: ${acordados.length}`,
       "  CA-7 los contempla («o el estado que el proveedor confirme, con su alerta",
-      "  explicada»): no son discrepancias y no son la rama (c2), pero su",
-      "  explicación es obligatoria y el veredicto baja a válida con reservas.",
-      ...primeras(
-        acordados.flatMap((a) => [
+      "  explicada»): no son discrepancias ni la rama (c2), pero su explicación es",
+      "  obligatoria y el veredicto baja a válida con reservas.",
+      ...primerasFilas(
+        acordados,
+        (a) => [
           `  ${a.matchId}  ${a.status} ${a.marcador}  ·  raw_ref: ${a.rawRef ?? "ninguno"}`,
           "    explicación:",
-        ]),
+        ],
         "(ninguno)",
       ),
       `discrepancias: ${discrepancias.length}`,

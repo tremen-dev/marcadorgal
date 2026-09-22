@@ -67,3 +67,12 @@ export const INFORME_GOALS_PER_MATCH = 2.5;
 // plus a sample. Discrepancies and unmatched references are never collapsed —
 // those are the rows somebody has to work through one by one.
 export const INFORME_FILAS_MOSTRADAS = 10;
+
+// «Cabe en dos páginas» (CA-10) es un número o no es nada: dos páginas de texto
+// monoespaciado impreso a 9-10 pt con márgenes normales son unas 72 líneas por
+// página. El informe de una jornada realista —39 partidos, un forced_finish por
+// partido— tiene que caber aquí, y por eso el bloque de alertas se recorta como
+// las demás listas. Las discrepancias del contraste y las referencias no
+// casadas siguen sin recortarse: un informe lleno de discrepancias ya no es el
+// informe que CA-10 dimensiona, es una lista de trabajo.
+export const INFORME_MAX_LINEAS = 145;
