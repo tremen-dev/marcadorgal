@@ -164,6 +164,9 @@ hay nada que capturar con Playwright.
   `borrador`.** Es generado y no lo edita el implementador. Modo de fallo: quien
   mire el tablero esta semana cree que la spec no está aprobada. Destino:
   `/sdd-tablero` (sdd-documentalista) al cerrar.
+  **→ resuelto por sdd-documentalista:** tablero regenerado con el script del
+  núcleo, SPEC-010 ahora muestra estado `hecho` con fecha 2026-09-22 del
+  verificador.
 - **F-SPEC-010-2 — `_epica.md` lista M-8 (el workflow) como pendiente.** Esta
   spec lo resuelve, pero el texto de la épica no lo dice y la épica es de
   producto/arquitecto, no mía. Modo de fallo: M-8 se vuelve a especificar. Destino:
