@@ -1,0 +1,436 @@
+<title>Anatomía de una jornada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;800&family=Geist+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --bg:#111110; --bg-subtle:#131211; --bg-elev:#1A1815; --bg-step:#221F1A; --bg-live:#1E1A16;
+    --line:#2A2620; --line-strong:#3D362C; --line-row:#1D1A16;
+    --fg:#F5F1EA; --fg-muted:#A7A5A0; --fg-dim:#716F6C;
+    --marca:#56DB8F; --marca-deep:#35C177; --marca-ink:#04160C;
+    --directo:#FF6B00; --amber:#F0B135; --alerta:#FF655A;
+    --sans:'Geist',ui-sans-serif,system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+    --mono:'Geist Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{
+    background:var(--bg); color:var(--fg);
+    font-family:var(--sans); font-weight:400; font-size:16px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:860px; margin:0 auto; padding-inline:20px; padding-block:56px 80px}
+  .eyebrow{
+    font-family:var(--mono); font-weight:600; font-size:11px; line-height:1;
+    letter-spacing:.15em; text-transform:uppercase; color:var(--fg-dim);
+  }
+  h1{
+    font-family:var(--sans); font-weight:800; font-size:clamp(34px,7vw,44px); line-height:1;
+    letter-spacing:-.045em; margin:14px 0 0; text-wrap:balance;
+  }
+  h2{
+    font-family:var(--sans); font-weight:800; font-size:23px; line-height:1.15;
+    letter-spacing:-.03em; margin:0; text-wrap:balance;
+  }
+  h3{
+    font-family:var(--sans); font-weight:600; font-size:16px; line-height:1.3;
+    letter-spacing:-.01em; margin:0 0 6px; color:var(--fg);
+  }
+  p{margin:0; max-width:64ch; color:var(--fg-muted)}
+  p strong,li strong{color:var(--fg); font-weight:600}
+  a{color:var(--marca); text-decoration-color:color-mix(in srgb,var(--marca) 40%,transparent); text-underline-offset:3px}
+  code{
+    font-family:var(--mono); font-weight:500; font-size:.87em;
+    background:var(--bg-step); border:1px solid var(--line); border-radius:5px;
+    padding:1px 5px; color:var(--fg);
+  }
+  .lede{font-size:18px; line-height:1.55; color:var(--fg-muted); max-width:60ch; margin-top:18px}
+  .lede strong{color:var(--fg)}
+
+  header{border-bottom:1px solid var(--line); padding-bottom:30px}
+  .logo{font-weight:800; font-size:15px; letter-spacing:-.03em; font-synthesis:none}
+  .logo i{color:var(--marca); font-style:normal}
+
+  .pulse{
+    display:flex; align-items:center; gap:9px; margin-top:24px;
+    font-family:var(--mono); font-weight:500; font-size:12.5px; color:var(--fg-muted);
+    background:var(--bg-live); border:1px solid var(--line-strong); border-left:2px solid var(--directo);
+    border-radius:8px; padding:9px 13px; width:fit-content; max-width:100%;
+  }
+  .dot{width:6px; height:6px; border-radius:999px; background:var(--directo); box-shadow:0 0 8px var(--directo); flex:none}
+  @media (prefers-reduced-motion:no-preference){
+    .dot{animation:b 2.4s ease-in-out infinite}
+    @keyframes b{0%,100%{opacity:1}50%{opacity:.35}}
+  }
+
+  section{margin-top:56px; display:flex; flex-direction:column; gap:18px}
+  .sechead{display:flex; flex-direction:column; gap:8px}
+  .rule{height:1px; background:var(--line); border:0; margin:0}
+
+  figure{margin:0; display:flex; flex-direction:column; gap:10px}
+  .canvas{
+    background:var(--bg-subtle); border:1px solid var(--line); border-radius:14px;
+    padding:20px 16px; overflow-x:auto;
+  }
+  .canvas svg{display:block; min-width:520px; width:100%; height:auto}
+  figcaption{font-size:13.5px; line-height:1.5; color:var(--fg-dim); max-width:64ch}
+  figcaption b{color:var(--fg-muted); font-weight:500}
+
+  .cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(224px,1fr)); gap:12px}
+  .card{
+    background:var(--bg-elev); border:1px solid var(--line); border-radius:10px;
+    padding:15px 16px; display:flex; flex-direction:column; gap:5px;
+  }
+  .card p{font-size:14px; line-height:1.5}
+  .card .eyebrow{margin-bottom:3px}
+
+  table{width:100%; border-collapse:collapse; font-size:14.5px}
+  .tscroll{overflow-x:auto; border:1px solid var(--line); border-radius:10px}
+  th{
+    font-family:var(--mono); font-weight:600; font-size:11px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--fg-dim); text-align:left;
+    padding:11px 14px; background:var(--bg-step); border-bottom:1px solid var(--line);
+    white-space:nowrap;
+  }
+  td{padding:12px 14px; border-bottom:1px solid var(--line-row); color:var(--fg-muted); vertical-align:top}
+  tr:last-child td{border-bottom:0}
+  td:first-child{color:var(--fg); white-space:nowrap}
+  .num{font-family:var(--mono); font-variant-numeric:tabular-nums; font-weight:500}
+
+  .chip{
+    display:inline-flex; align-items:center; gap:6px; white-space:nowrap;
+    font-family:var(--mono); font-weight:600; font-size:11.5px; line-height:1;
+    padding:5px 9px 5px 7px; border-radius:999px;
+    border:1px solid var(--line-strong); background:var(--bg-step); color:var(--fg-muted);
+  }
+  .chip::before{content:""; width:6px; height:6px; flex:none; background:currentColor}
+  .chip.sched{color:var(--fg-muted)}
+  .chip.sched::before{border-radius:999px; background:none; border:1.5px solid currentColor}
+  .chip.live{color:var(--directo); border-color:color-mix(in srgb,var(--directo) 45%,var(--line-strong)); background:var(--bg-live)}
+  .chip.live::before{border-radius:999px; box-shadow:0 0 8px currentColor}
+  .chip.done{color:var(--marca); border-color:color-mix(in srgb,var(--marca) 40%,var(--line-strong))}
+  .chip.done::before{clip-path:polygon(14% 52%,0 66%,40% 100%,100% 22%,86% 10%,38% 70%)}
+  .chip.wait{color:var(--amber); border-color:color-mix(in srgb,var(--amber) 42%,var(--line-strong))}
+  .chip.wait::before{clip-path:polygon(50% 0,100% 100%,0 100%)}
+  .chip.susp{color:var(--amber); border-color:color-mix(in srgb,var(--amber) 42%,var(--line-strong))}
+  .chip.susp::before{clip-path:polygon(0 0,38% 0,38% 100%,0 100%,0 0);box-shadow:5px 0 0 currentColor}
+  .chip.bad{color:var(--alerta); border-color:color-mix(in srgb,var(--alerta) 45%,var(--line-strong))}
+  .chip.bad::before{clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+
+  .states{display:flex; flex-wrap:wrap; gap:9px}
+
+  .scar{
+    background:var(--bg-elev); border:1px solid var(--line); border-left:2px solid var(--alerta);
+    border-radius:10px; padding:15px 17px; display:flex; flex-direction:column; gap:7px;
+  }
+  .scar .eyebrow{color:var(--alerta)}
+  .scar p{font-size:14.5px}
+
+  .note{
+    background:var(--bg-step); border:1px solid var(--line-strong); border-radius:10px;
+    padding:15px 17px; display:flex; flex-direction:column; gap:7px;
+  }
+  .note .eyebrow{color:var(--marca)}
+  .note p{font-size:14.5px}
+
+  ol.rules{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:10px; counter-reset:r}
+  ol.rules li{
+    display:grid; grid-template-columns:auto 1fr; gap:13px; align-items:baseline;
+    font-size:14.5px; line-height:1.5; color:var(--fg-muted);
+    border-bottom:1px solid var(--line-row); padding-bottom:10px;
+  }
+  ol.rules li:last-child{border-bottom:0; padding-bottom:0}
+  ol.rules li::before{
+    content:"RN-0" counter(r); counter-increment:r;
+    font-family:var(--mono); font-weight:600; font-size:11px; letter-spacing:.08em;
+    color:var(--marca); background:color-mix(in srgb,var(--marca) 10%,transparent);
+    border:1px solid color-mix(in srgb,var(--marca) 28%,transparent);
+    border-radius:5px; padding:4px 6px; line-height:1;
+  }
+
+  footer{margin-top:64px; padding-top:26px; border-top:1px solid var(--line); display:flex; flex-direction:column; gap:8px}
+  footer p{font-size:13.5px; color:var(--fg-dim)}
+
+  @media (max-width:560px){
+    .wrap{padding-block:40px 60px}
+    section{margin-top:44px}
+    .canvas{padding:16px 12px}
+  }
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="logo">marcador<i>▮</i>gal</div>
+  <div class="eyebrow" style="margin-top:20px">Cómo funciona · septiembre 2026</div>
+  <h1>Anatomía de una jornada</h1>
+  <p class="lede">Del calendario declarado al marcador publicado, sin nadie delante. Esta página explica <strong>por qué</strong> el sistema tiene la forma que tiene: el <em>qué</em> está en el código y se puede leer.</p>
+  <div class="pulse"><span class="dot"></span> El tick corre solo desde 2026-09-21T22:27Z</div>
+</header>
+
+<section>
+  <div class="sechead">
+    <div class="eyebrow">El recorrido</div>
+    <h2>Una vuelta completa, cada 30 segundos</h2>
+  </div>
+  <p>Dos relojes independientes despiertan el mismo endpoint. La ventana decide si hay algo que hacer. Si lo hay, la respuesta cruda se guarda <strong>antes</strong> de interpretarla, y solo entonces entra el motor.</p>
+
+  <figure>
+    <div class="canvas">
+      <svg viewBox="0 0 600 560" role="img" aria-label="Diagrama del recorrido de una jornada: dos relojes disparan el tick, la ventana decide, se guarda el crudo, se parsea a observaciones, el motor decide y escribe decisions y alerts, que alimentan el board.">
+        <defs>
+          <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#3D362C"/>
+          </marker>
+          <marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#35C177"/>
+          </marker>
+        </defs>
+        <g font-family="Geist,sans-serif" font-size="12.5" fill="#F5F1EA">
+
+          <rect x="46" y="10" width="200" height="40" rx="9" fill="#1A1815" stroke="#2A2620"/>
+          <text x="146" y="28" text-anchor="middle" font-weight="600">pg_cron</text>
+          <text x="146" y="42" text-anchor="middle" font-size="11" fill="#A7A5A0" font-family="Geist Mono,monospace">cada 30 s</text>
+
+          <rect x="354" y="10" width="200" height="40" rx="9" fill="#1A1815" stroke="#2A2620"/>
+          <text x="454" y="28" text-anchor="middle" font-weight="600">Vercel Cron</text>
+          <text x="454" y="42" text-anchor="middle" font-size="11" fill="#A7A5A0" font-family="Geist Mono,monospace">cada minuto · respaldo</text>
+
+          <path d="M146,50 L146,74 L288,74" stroke="#3D362C" fill="none" marker-end="url(#a)"/>
+          <path d="M454,50 L454,74 L312,74" stroke="#3D362C" fill="none" marker-end="url(#a)"/>
+
+          <rect x="220" y="84" width="160" height="38" rx="9" fill="#221F1A" stroke="#3D362C"/>
+          <text x="300" y="101" text-anchor="middle" font-weight="600">tick</text>
+          <text x="300" y="115" text-anchor="middle" font-size="10.5" fill="#716F6C" font-family="Geist Mono,monospace">POST /api/ingest/tick</text>
+
+          <path d="M300,122 L300,146" stroke="#3D362C" fill="none" marker-end="url(#a)"/>
+
+          <path d="M300,150 L392,176 L300,202 L208,176 z" fill="#1A1815" stroke="#3D362C"/>
+          <text x="300" y="180" text-anchor="middle" font-size="12">¿en ventana?</text>
+
+          <path d="M392,176 L500,176 L500,206" stroke="#3D362C" fill="none" marker-end="url(#a)"/>
+          <text x="446" y="169" text-anchor="middle" font-size="10.5" fill="#716F6C" font-family="Geist Mono,monospace">no</text>
+          <rect x="412" y="210" width="176" height="36" rx="9" fill="#131211" stroke="#2A2620" stroke-dasharray="3 3"/>
+          <text x="500" y="226" text-anchor="middle" font-size="11.5" fill="#A7A5A0">termina sin peticiones</text>
+          <text x="500" y="239" text-anchor="middle" font-size="10" fill="#716F6C" font-family="Geist Mono,monospace">ni fila, ni cuota</text>
+
+          <path d="M300,202 L300,224" stroke="#3D362C" fill="none" marker-end="url(#a)"/>
+          <text x="311" y="217" font-size="10.5" fill="#716F6C" font-family="Geist Mono,monospace">sí</text>
+
+          <rect x="150" y="228" width="300" height="38" rx="9" fill="#1A1815" stroke="#2A2620"/>
+          <text x="300" y="245" text-anchor="middle" font-weight="600">guarda de cadencia</text>
+          <text x="300" y="259" text-anchor="middle" font-size="10.5" fill="#716F6C" font-family="Geist Mono,monospace">advisory lock · una petición por partido</text>
+
+          <path d="M300,266 L300,288" stroke="#3D362C" fill="none" marker-end="url(#a)"/>
+
+          <path d="M180,296 a120,11 0 0 1 240,0 l0,30 a120,11 0 0 1 -240,0 z" fill="#1E1A16" stroke="#3D362C"/>
+          <path d="M180,296 a120,11 0 0 0 240,0" fill="none" stroke="#3D362C"/>
+          <text x="300" y="322" text-anchor="middle" font-weight="600">crudo en Storage</text>
+          <text x="300" y="336" text-anchor="middle" font-size="10.5" fill="#716F6C" font-family="Geist Mono,monospace">antes de parsear · 30 días</text>
+
+          <path d="M300,348 L300,370" stroke="#3D362C" fill="none" marker-end="url(#a)"/>
+
+          <path d="M180,378 a120,11 0 0 1 240,0 l0,26 a120,11 0 0 1 -240,0 z" fill="#1A1815" stroke="#2A2620"/>
+          <path d="M180,378 a120,11 0 0 0 240,0" fill="none" stroke="#2A2620"/>
+          <text x="300" y="402" text-anchor="middle" font-weight="600">observations</text>
+          <text x="300" y="415" text-anchor="middle" font-size="10.5" fill="#716F6C" font-family="Geist Mono,monospace">inmutables</text>
+
+          <path d="M300,426 L300,448" stroke="#35C177" fill="none" marker-end="url(#ag)"/>
+          <text x="312" y="441" font-size="10" fill="#35C177" font-family="Geist Mono,monospace">afterInsert</text>
+
+          <path d="M150,466 L100,466 L100,296 L172,296" stroke="#35C177" fill="none" stroke-dasharray="4 3" marker-end="url(#ag)" opacity="0"/>
+          <path d="M150,478 L74,478 L74,176 L208,176" stroke="#35C177" fill="none" stroke-dasharray="4 3" marker-end="url(#ag)"/>
+          <text x="80" y="330" font-size="10" fill="#35C177" font-family="Geist Mono,monospace" transform="rotate(-90 80 330)">barrido · todos los de la ventana</text>
+
+          <rect x="150" y="452" width="300" height="42" rx="9" fill="#1A1815" stroke="#35C177"/>
+          <text x="300" y="470" text-anchor="middle" font-weight="600" fill="#56DB8F">motor</text>
+          <text x="300" y="485" text-anchor="middle" font-size="10.5" fill="#A7A5A0" font-family="Geist Mono,monospace">puro · src/decide/ · RN-01…RN-06</text>
+
+          <path d="M230,494 L230,512 L176,512" stroke="#3D362C" fill="none" marker-end="url(#a)"/>
+          <path d="M370,494 L370,512 L424,512" stroke="#3D362C" fill="none" marker-end="url(#a)"/>
+
+          <rect x="30" y="516" width="144" height="34" rx="9" fill="#1A1815" stroke="#2A2620"/>
+          <text x="102" y="537" text-anchor="middle" font-weight="600">decisions</text>
+
+          <rect x="426" y="516" width="144" height="34" rx="9" fill="#1A1815" stroke="#2A2620"/>
+          <text x="498" y="537" text-anchor="middle" font-weight="600">alerts</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption><b>El lazo de la izquierda no es un error del dibujo.</b> El barrido vuelve sobre la ventana al final de cada tick porque `afterInsert` solo corre si alguna observación entró — y lo que hay que detectar es justo el caso contrario.</figcaption>
+  </figure>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="sechead">
+    <div class="eyebrow">La ventana</div>
+    <h2>Diez minutos antes, 150 después</h2>
+  </div>
+  <p>Un partido está <strong>en ventana</strong> desde <code>kickoff − 10 min</code> hasta <code>kickoff + 150 min</code>, y sale antes si su Decision vigente ya dice <code>finished</code>. Fuera de ventana no hay ni petición ni fila: el tick de las tres de la mañana no deja rastro en base, y su vitalidad se mira en <code>cron.job_run_details</code>.</p>
+
+  <figure>
+    <div class="canvas">
+      <svg viewBox="0 0 600 150" role="img" aria-label="Línea de tiempo de la ventana de un partido: se abre en kickoff menos 10 minutos, el saque es el minuto cero, el cierre forzoso ocurre en el minuto 120 y la ventana se cierra en el 150.">
+        <g font-family="Geist Mono,monospace" font-size="11" fill="#A7A5A0">
+          <rect x="40" y="56" width="520" height="22" rx="6" fill="#131211" stroke="#2A2620"/>
+          <rect x="40" y="56" width="32" height="22" rx="6" fill="#221F1A"/>
+          <rect x="72" y="56" width="416" height="22" fill="#1E1A16"/>
+          <rect x="488" y="56" width="72" height="22" fill="#221F1A"/>
+          <rect x="40" y="56" width="520" height="22" rx="6" fill="none" stroke="#2A2620"/>
+
+          <line x1="72" y1="46" x2="72" y2="88" stroke="#56DB8F" stroke-width="1.5"/>
+          <line x1="488" y1="46" x2="488" y2="88" stroke="#F0B135" stroke-width="1.5"/>
+          <line x1="560" y1="46" x2="560" y2="88" stroke="#3D362C" stroke-width="1.5"/>
+          <line x1="40" y1="46" x2="40" y2="88" stroke="#3D362C" stroke-width="1.5"/>
+
+          <text x="40" y="40" text-anchor="middle" fill="#716F6C">−10</text>
+          <text x="72" y="40" text-anchor="middle" fill="#56DB8F" font-weight="600">0</text>
+          <text x="488" y="40" text-anchor="middle" fill="#F0B135" font-weight="600">+120</text>
+          <text x="560" y="40" text-anchor="middle" fill="#716F6C">+150</text>
+
+          <text x="40" y="104" text-anchor="start" font-size="10.5" fill="#716F6C">abre</text>
+          <text x="72" y="104" text-anchor="start" font-size="10.5" fill="#A7A5A0">saque</text>
+          <text x="488" y="104" text-anchor="middle" font-size="10.5" fill="#F0B135">cierre forzoso</text>
+          <text x="560" y="104" text-anchor="end" font-size="10.5" fill="#716F6C">cierra</text>
+
+          <path d="M488,120 L560,120" stroke="#F0B135" stroke-width="1" stroke-dasharray="3 3"/>
+          <line x1="488" y1="115" x2="488" y2="125" stroke="#F0B135"/>
+          <line x1="560" y1="115" x2="560" y2="125" stroke="#F0B135"/>
+          <text x="478" y="124" text-anchor="end" font-size="10.5" fill="#F0B135">30 min de margen</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption><b>Los 30 minutos finales son lo que mantiene viva la regla RN-02.</b> El barrido solo recorre partidos en ventana, así que el cierre forzoso del minuto 120 únicamente puede dispararse porque la ventana llega a 150.</figcaption>
+  </figure>
+
+  <div class="scar">
+    <div class="eyebrow">Trampa conocida</div>
+    <p>Las dos constantes viven en ficheros distintos —<code>WINDOW_AFTER_MINUTES</code> en <code>src/ingest/</code>, <code>FORCED_FINISH_MINUTES</code> en <code>src/decide/</code>— y <strong>ningún test las ata</strong>. Bajar la ventana por debajo de 120 para ahorrar peticiones desactivaría RN-02 en silencio: los partidos que la fuente abandona se quedarían en <code>live</code> para siempre, sin alerta. Anotado como <strong>M-7</strong>.</p>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="sechead">
+    <div class="eyebrow">El motor</div>
+    <h2>Seis reglas, ninguna con reloj propio</h2>
+  </div>
+  <p><code>src/decide/</code> es una función <strong>pura</strong>: sin reloj, sin red, sin base de datos. El «ahora» entra como parámetro y un test de arquitectura lo vigila — y alcanza también a los <code>*.test.ts</code>, que no es celo sino lo que hace el replay reproducible.</p>
+
+  <ol class="rules">
+    <li>Gana la fuente de mayor prioridad entre las observaciones recientes; a igual prioridad, la más nueva.</li>
+    <li>Qué transiciones de estado son legales. Desde <code>finished</code> no se vuelve atrás, salvo el operador.</li>
+    <li>El marcador no baja. Si la fuente propone uno menor, se publica el resto del estado con el marcador vigente intacto y se abre alerta.</li>
+    <li>Dos fuentes de prioridad adyacente discrepando más de 3 minutos: no se publica nada y se abre alerta.</li>
+    <li>Un <code>live</code> sin noticias durante 15 minutos pasa a <code>sen sinal</code>. Es la única alerta que se cierra sola.</li>
+    <li>El orden en que se evalúa todo lo anterior.</li>
+  </ol>
+
+  <div class="note">
+    <div class="eyebrow">Por qué el cierre forzoso deja rastro</div>
+    <p>A <code>kickoff + 120 min</code> se publica <code>finished</code> aunque ninguna fuente lo haya confirmado. Publicar un resultado falso <strong>en silencio</strong> se rechazó expresamente: el operador tiene que poder verlo. De ahí nació el quinto tipo de alerta, <code>forced_finish</code>, que nunca se resuelve sola.</p>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="eyebrow">Enganche por dato</div>
+      <h3>afterInsert</h3>
+      <p>Corre dentro de la misma transacción que inserta las observaciones. Lo que nace de un dato.</p>
+    </div>
+    <div class="card">
+      <div class="eyebrow">Enganche por ausencia</div>
+      <h3>El barrido</h3>
+      <p>Al final del tick, sobre todos los partidos en ventana. Sin él, el silencio y el cierre forzoso no dispararían nunca.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="sechead">
+    <div class="eyebrow">Vocabulario</div>
+    <h2>Cinco estados y cinco alertas</h2>
+  </div>
+  <p>Los estados son cinco y solo cinco; el descanso es un momento dentro de <code>live</code>, no un estado. Y ninguno se comunica solo con color: cada uno lleva forma y etiqueta.</p>
+
+  <div class="states">
+    <span class="chip sched">Programado</span>
+    <span class="chip live">En xogo</span>
+    <span class="chip done">Rematado</span>
+    <span class="chip wait">Aprazado</span>
+    <span class="chip susp">Suspendido</span>
+    <span class="chip bad">Sen sinal</span>
+  </div>
+
+  <div class="tscroll">
+    <table>
+      <thead><tr><th>Alerta</th><th>Quién la abre</th><th>Qué significa</th></tr></thead>
+      <tbody>
+        <tr><td><code>regression</code></td><td>motor</td><td>La fuente propuso un marcador menor que el publicado. Se mantuvo el vigente.</td></tr>
+        <tr><td><code>conflict</code></td><td>motor</td><td>Dos fuentes adyacentes llevan más de 3 min discrepando. No se publicó nada.</td></tr>
+        <tr><td><code>silence</code></td><td>motor</td><td>Un <code>live</code> lleva 15 min sin que nadie diga nada. Se cierra sola al volver la señal.</td></tr>
+        <tr><td><code>forced_finish</code></td><td>motor</td><td>Se publicó un <code>finished</code> que nadie confirmó, a kickoff + 120 min.</td></tr>
+        <tr><td><code>unresolved_team</code></td><td><strong>la ingesta</strong></td><td>Llegó una observación cuyos equipos no resuelven a un único partido del calendario.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Las cuatro primeras dicen «algo va mal con <strong>este</strong> partido». La quinta dice «no sé de qué partido me están hablando», y por eso es la única sin <code>match_id</code>, la única que no abre el motor —el sistema de tipos se lo impide— y la única que se deduplica por fuente e identificador externo.</p>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="sechead">
+    <div class="eyebrow">Operación</div>
+    <h2>Cómo se mira si está vivo</h2>
+  </div>
+  <p><code>npm run tick:salud</code> es el semáforo. Decide sobre una ventana de <strong>10 minutos</strong> y enseña la última hora como contexto.</p>
+
+  <div class="cards">
+    <div class="card"><div class="eyebrow">Rojo 1</div><p>Alguna ejecución fallida en los últimos 10 minutos.</p></div>
+    <div class="card"><div class="eyebrow">Rojo 2</div><p>Algún intento de ingesta con error en esa misma ventana.</p></div>
+    <div class="card"><div class="eyebrow">Rojo 3</div><p>Cero ejecuciones habiendo un job programado. Un cron muerto no es un sistema sano.</p></div>
+  </div>
+
+  <div class="note">
+    <div class="eyebrow">Por qué 10 y no 15</div>
+    <p>Porque tiene que ser <strong>menor</strong> que los 15 minutos del silencio de RN-05: así el semáforo se pone rojo <strong>antes</strong> de que el motor empiece a abrir alertas. Quince habría sido un empate. Un test afirma ese invariante para que nadie lo pierda al afinar la constante.</p>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="sechead">
+    <div class="eyebrow">Pendiente</div>
+    <h2>Los números de la jornada</h2>
+  </div>
+  <p>La primera jornada medida va del <span class="num">25</span> al <span class="num">28</span> de septiembre de 2026. Estas casillas se llenan entonces, y no antes.</p>
+
+  <div class="tscroll">
+    <table>
+      <thead><tr><th>Métrica</th><th>Objetivo</th><th>Medido</th></tr></thead>
+      <tbody>
+        <tr><td>Latencia gol → Decision (mediana)</td><td class="num">&lt; 45 s</td><td class="num">—</td></tr>
+        <tr><td>Latencia gol → Decision (p95)</td><td class="num">&lt; 90 s</td><td class="num">—</td></tr>
+        <tr><td>Peticiones al proveedor</td><td>—</td><td class="num">—</td></tr>
+        <tr><td>Partidos sin señal</td><td class="num">0</td><td class="num">—</td></tr>
+        <tr><td>Competiciones medidas</td><td class="num">4 de 5</td><td class="num">39 partidos</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Cuatro de cinco, no es un recorte: <strong>Primera División no juega ese fin de semana</strong>. Que las cinco producen Decisions se comprueba del 9 al 12 de octubre, antes de cerrar la pantalla pública.</p>
+</section>
+
+<footer>
+  <p>La fuente de verdad es <code>docs/fundacion/como-funciona.md</code> en el repositorio, que envejece con el código. Esta página es su retrato.</p>
+  <p>marcador.gal · EPIC-002, ingesta y motor · 2026-09-22</p>
+</footer>
+
+</div>

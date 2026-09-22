@@ -1,0 +1,265 @@
+<title>Todo o fútbol galego</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;800&family=Geist+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --bg:#111110; --bg-subtle:#131211; --bg-elev:#1A1815; --bg-step:#221F1A; --bg-live:#1E1A16;
+    --line:#2A2620; --line-strong:#3D362C; --line-row:#1D1A16;
+    --fg:#F5F1EA; --fg-muted:#A7A5A0; --fg-dim:#716F6C;
+    --marca:#56DB8F; --marca-deep:#35C177; --marca-ink:#04160C;
+    --directo:#FF6B00; --amber:#F0B135; --alerta:#FF655A;
+    --sans:'Geist',ui-sans-serif,system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+    --mono:'Geist Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{
+    background:var(--bg); color:var(--fg);
+    font-family:var(--sans); font-size:16px; line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:880px; margin:0 auto; padding-inline:20px; padding-block:52px 80px}
+  .eyebrow{
+    font-family:var(--mono); font-weight:600; font-size:11px; line-height:1;
+    letter-spacing:.15em; text-transform:uppercase; color:var(--fg-dim);
+  }
+  h1{
+    font-weight:800; font-size:clamp(36px,8.4vw,60px); line-height:.97;
+    letter-spacing:-.05em; margin:16px 0 0; text-wrap:balance; font-synthesis:none;
+  }
+  h1 em{font-style:normal; color:var(--marca)}
+  h2{font-weight:800; font-size:clamp(24px,4.4vw,30px); line-height:1.1; letter-spacing:-.035em; margin:0; text-wrap:balance}
+  h3{font-weight:600; font-size:15.5px; line-height:1.3; letter-spacing:-.01em; margin:0; color:var(--fg)}
+  p{margin:0; max-width:62ch; color:var(--fg-muted)}
+  p strong{color:var(--fg); font-weight:600}
+  .lede{font-size:clamp(17px,2.4vw,20px); line-height:1.5; color:var(--fg-muted); max-width:52ch; margin-top:22px}
+  .lede strong{color:var(--fg); font-weight:500}
+
+  header{padding-bottom:34px; border-bottom:1px solid var(--line)}
+  .logo{font-weight:800; font-size:15px; letter-spacing:-.03em; font-synthesis:none}
+  .logo i{color:var(--marca); font-style:normal}
+
+  .status{
+    display:flex; align-items:flex-start; gap:10px; margin-top:26px;
+    background:var(--bg-step); border:1px solid var(--line-strong); border-left:2px solid var(--amber);
+    border-radius:10px; padding:13px 15px; max-width:56ch;
+  }
+  .status .tri{width:0; height:0; flex:none; margin-top:5px;
+    border-left:5px solid transparent; border-right:5px solid transparent; border-bottom:9px solid var(--amber)}
+  .status p{font-size:14.5px; line-height:1.5; color:var(--fg-muted)}
+  .status b{color:var(--amber); font-weight:600}
+
+  section{margin-top:58px; display:flex; flex-direction:column; gap:20px}
+  .sechead{display:flex; flex-direction:column; gap:9px}
+  hr.rule{height:1px; background:var(--line); border:0; margin:0}
+
+  .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:12px; overflow:hidden}
+  .stat{background:var(--bg-elev); padding:18px 18px 16px; display:flex; flex-direction:column; gap:4px}
+  .stat b{font-family:var(--mono); font-variant-numeric:tabular-nums; font-weight:600; font-size:30px; line-height:1; letter-spacing:-.03em; color:var(--marca)}
+  .stat span{font-size:13px; color:var(--fg-muted); line-height:1.35}
+
+  .comps{display:flex; flex-direction:column; border:1px solid var(--line); border-radius:12px; overflow:hidden}
+  .comp{display:grid; grid-template-columns:minmax(0,1fr) auto auto; gap:14px; align-items:center;
+    padding:13px 16px; background:var(--bg-elev); border-bottom:1px solid var(--line-row); font-size:14.5px}
+  .comp:last-child{border-bottom:0}
+  .comp.hl{background:var(--bg-live); box-shadow:inset 2px 0 0 var(--marca)}
+  .comp .nm{color:var(--fg); font-weight:500; min-width:0}
+  .comp .mt{font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:12.5px; color:var(--fg-dim); white-space:nowrap}
+  .comp .tag{font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--marca);
+    border:1px solid color-mix(in srgb,var(--marca) 32%,transparent); border-radius:999px; padding:3px 7px; white-space:nowrap}
+
+  .board{background:var(--bg-subtle); border:1px solid var(--line); border-radius:14px; padding:6px; max-width:420px}
+  .brow{display:grid; grid-template-columns:54px minmax(0,1fr) 46px; gap:10px; align-items:center;
+    padding:11px 12px; border-bottom:1px solid var(--line-row)}
+  .brow:last-child{border-bottom:0}
+  .brow.live{background:var(--bg-live); box-shadow:inset 2px 0 0 var(--directo); border-radius:7px}
+  .bt{font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:12px; font-weight:600; color:var(--fg-dim); display:flex; align-items:center; gap:5px}
+  .brow.live .bt{color:var(--directo)}
+  .bt .d{width:6px; height:6px; border-radius:999px; background:var(--directo); box-shadow:0 0 8px var(--directo); flex:none}
+  .bn{font-size:14px; line-height:1.35; color:var(--fg); min-width:0}
+  .bn small{display:block; color:var(--fg-muted); font-size:13.5px}
+  .bs{font-family:var(--mono); font-variant-numeric:tabular-nums; font-weight:600; font-size:18px; color:var(--fg); text-align:right; line-height:1.3}
+  .bs.dim{color:var(--fg-dim); font-size:13px; font-weight:500}
+
+  .cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px}
+  .card{background:var(--bg-elev); border:1px solid var(--line); border-radius:11px; padding:16px 17px; display:flex; flex-direction:column; gap:7px}
+  .card p{font-size:14px; line-height:1.52}
+  .card .n{font-family:var(--mono); font-weight:600; font-size:11px; letter-spacing:.12em; color:var(--marca)}
+
+  .no{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px}
+  .no div{border:1px solid var(--line); border-radius:10px; padding:13px 15px; font-size:14px; color:var(--fg-muted); display:flex; gap:9px; align-items:baseline}
+  .no b{color:var(--alerta); font-family:var(--mono); font-weight:600; font-size:13px; flex:none}
+
+  figure{margin:0; display:flex; flex-direction:column; gap:11px}
+  figcaption{font-size:13px; line-height:1.5; color:var(--fg-dim); max-width:60ch}
+
+  blockquote{margin:0; padding:0 0 0 18px; border-left:2px solid var(--marca);
+    font-size:clamp(18px,2.8vw,21px); line-height:1.42; letter-spacing:-.02em; color:var(--fg); max-width:48ch; font-weight:500}
+
+  footer{margin-top:66px; padding-top:26px; border-top:1px solid var(--line); display:flex; flex-direction:column; gap:7px}
+  footer p{font-size:13px; color:var(--fg-dim)}
+  footer a{color:var(--marca)}
+
+  @media (max-width:560px){
+    .wrap{padding-block:38px 60px}
+    section{margin-top:46px}
+    .comp{grid-template-columns:minmax(0,1fr) auto; row-gap:6px}
+    .comp .tag{grid-column:2}
+    .comp .mt{grid-column:1 / -1}
+  }
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="logo">marcador<i>▮</i>gal</div>
+  <div class="eyebrow" style="margin-top:22px">Qué hay por debajo · septiembre 2026</div>
+  <h1>Todo o fútbol galego <em>nunha pantalla</em></h1>
+  <p class="lede">Los resultados en directo de las cinco divisiones donde juegan equipos gallegos. <strong>En galego, sin ruido, en el móvil.</strong></p>
+
+  <div class="status">
+    <span class="tri"></span>
+    <p><b>En construcción, con la maquinaria ya funcionando.</b> El sistema que recoge y publica los resultados lleva corriendo solo desde el 21 de septiembre de 2026. La pantalla pública todavía no está abierta: se estrena en las próximas semanas. Esta página cuenta qué hay hecho, sin adornos.</p>
+  </div>
+</header>
+
+<section>
+  <div class="sechead">
+    <div class="eyebrow">El hueco</div>
+    <h2>Nadie pone al Arenteiro al lado del Celta</h2>
+  </div>
+  <p>Durante años, <strong>marcadorgalego.gal</strong> fue el tablero del fútbol galego. Cerró, y nadie ocupó su sitio.</p>
+  <p>Las aplicaciones grandes cubren Primera y Segunda, sí — entre otros quinientos partidos de media Europa. Ninguna pone en una sola pantalla al Celta, al Depor, al Lugo, al Racing, al Arousa y al Bergantiños con el resto de su grupo, en galego, un sábado por la tarde.</p>
+  <blockquote>Terceira e Segunda Federación al mismo nivel visual que Primeira. Ese es el nicho, y no es un añadido: es el motivo.</blockquote>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="sechead">
+    <div class="eyebrow">La temporada 2026-27, ya cargada</div>
+    <h2>Lo que el sistema sigue hoy</h2>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b>5</b><span>competiciones</span></div>
+    <div class="stat"><b>98</b><span>equipos</span></div>
+    <div class="stat"><b>1.834</b><span>partidos en el calendario</span></div>
+    <div class="stat"><b>30 s</b><span>entre comprobación y comprobación</span></div>
+  </div>
+
+  <div class="comps">
+    <div class="comp"><span class="nm">Primeira División</span><span class="tag" style="visibility:hidden">·</span><span class="mt">20 equipos · 380 partidos</span></div>
+    <div class="comp"><span class="nm">Segunda División</span><span class="tag" style="visibility:hidden">·</span><span class="mt">22 equipos · 462 partidos</span></div>
+    <div class="comp"><span class="nm">Primeira Federación · Grupo 1</span><span class="tag" style="visibility:hidden">·</span><span class="mt">20 equipos · 380 partidos</span></div>
+    <div class="comp hl"><span class="nm">Segunda Federación · Grupo 1</span><span class="tag">el nicho</span><span class="mt">18 equipos · 306 partidos</span></div>
+    <div class="comp hl"><span class="nm">Terceira Federación · Grupo 1</span><span class="tag">el nicho</span><span class="mt">18 equipos · 306 partidos</span></div>
+  </div>
+
+  <p>Arenteiro, Bergantiños, Coruxo, Céltiga, Arosa, Alondras, Boiro, Compostela. Los equipos que un sábado por la tarde no salen en ningún sitio.</p>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="sechead">
+    <div class="eyebrow">Cómo se verá</div>
+    <h2>Densidad, no tarjetas</h2>
+  </div>
+
+  <figure>
+    <div class="board" aria-label="Ejemplo de cómo se verá la pantalla de una jornada">
+      <div class="brow live"><span class="bt"><span class="d"></span>67'</span><span class="bn">Arenteiro<small>Bergantiños</small></span><span class="bs">2<br>1</span></div>
+      <div class="brow"><span class="bt">FIN</span><span class="bn">Coruxo<small>Céltiga</small></span><span class="bs">0<br>0</span></div>
+      <div class="brow live"><span class="bt"><span class="d"></span>34'</span><span class="bn">Arosa<small>Compostela</small></span><span class="bs">1<br>1</span></div>
+      <div class="brow"><span class="bt">18:30</span><span class="bn">Alondras<small>Boiro</small></span><span class="bs dim">—</span></div>
+    </div>
+    <figcaption>Recreación del diseño, no una captura: la pantalla pública todavía no está abierta. Equipos y competiciones son reales, los marcadores son de ejemplo.</figcaption>
+  </figure>
+
+  <p>Un partido por línea, la jornada entera de un vistazo en un móvil. Nada de estados comunicados solo con color: quien no distinga el naranja del verde sigue leyendo <strong>67'</strong> y <strong>FIN</strong>.</p>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="sechead">
+    <div class="eyebrow">Por debajo</div>
+    <h2>Qué hace cuando nadie mira</h2>
+  </div>
+
+  <div class="cards">
+    <div class="card"><div class="n">01</div><h3>Pregunta cada 30 segundos</h3><p>Solo por los partidos que se están jugando. Fuera de horario no gasta ni una consulta.</p></div>
+    <div class="card"><div class="n">02</div><h3>Guarda lo que le dicen</h3><p>La respuesta original se archiva antes de interpretarla, y se conserva 30 días.</p></div>
+    <div class="card"><div class="n">03</div><h3>Decide con reglas fijas</h3><p>Seis reglas escritas de antemano deciden qué se publica. No hay criterio variable ni intervención.</p></div>
+    <div class="card"><div class="n">04</div><h3>Avisa cuando duda</h3><p>Si algo no cuadra, abre un aviso para una persona en vez de inventarse el resultado.</p></div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="sechead">
+    <div class="eyebrow">Fiabilidad</div>
+    <h2>Tres cosas que se decidieron a propósito</h2>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <h3>Cada marcador sabe de dónde viene</h3>
+      <p>Todo resultado publicado se puede rastrear hasta la respuesta original que lo produjo, con su hora exacta. Si alguna vez hay que explicar un marcador, se explica con pruebas.</p>
+    </div>
+    <div class="card">
+      <h3>Prefiere callar a equivocarse</h3>
+      <p>Un marcador que baja, dos fuentes que se contradicen, un partido que deja de dar señal: en cada caso el sistema mantiene lo último fiable y avisa, en vez de publicar una cifra dudosa.</p>
+    </div>
+    <div class="card">
+      <h3>No depende de un proveedor</h3>
+      <p>Las fuentes de datos son intercambiables por diseño. Si una falla o cambia de condiciones, se sustituye sin rehacer el producto.</p>
+    </div>
+  </div>
+
+  <p>El objetivo de velocidad está fijado por escrito desde el principio: <strong>un gol en pantalla en menos de 45 segundos</strong> la mitad de las veces, y menos de 90 en el 95 % de los casos. Esos números se miden en la jornada del 25 al 28 de septiembre; hasta entonces son un objetivo, no un resultado.</p>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="sechead">
+    <div class="eyebrow">Para quién</div>
+    <h2>Quién lo va a usar</h2>
+  </div>
+  <div class="cards">
+    <div class="card"><h3>El aficionado gallego</h3><p>Quiere ver cómo van los partidos en juego, qué pasó en los de la tarde y a qué hora juega el suyo. De un vistazo.</p></div>
+    <div class="card"><h3>Periodistas y radios comarcales</h3><p>Necesitan Segunda Federación y Terceira cada fin de semana, y hoy no tienen dónde mirarlas juntas.</p></div>
+    <div class="card"><h3>Los clubes</h3><p>Para enlazar su resultado sin depender de que una aplicación grande se acuerde de ellos.</p></div>
+  </div>
+  <div class="status" style="border-left-color:var(--fg-dim); max-width:62ch">
+    <span class="tri" style="border-bottom-color:var(--fg-dim)"></span>
+    <p style="color:var(--fg-muted)"><b style="color:var(--fg)">No hay cifras de audiencia, y no las va a haber hasta que abra.</b> Cualquier número de visitas que alguien ponga hoy en esta página sería inventado. Lo que sí es verificable es lo de arriba: las competiciones, los equipos y los partidos que el sistema ya sigue.</p>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="sechead">
+    <div class="eyebrow">Límites</div>
+    <h2>Qué no es, y no va a ser</h2>
+  </div>
+  <div class="no">
+    <div><b>NO</b> una casa de apuestas ni un sitio con publicidad de apuestas</div>
+    <div><b>NO</b> un medio de comunicación</div>
+    <div><b>NO</b> una red social</div>
+    <div><b>NO</b> un Flashscore galego</div>
+  </div>
+  <p>Está escrito en los documentos fundacionales del proyecto desde antes de la primera línea de código, y define qué compañía puede tener al lado.</p>
+</section>
+
+<footer>
+  <p>Proyecto de <strong>tremen.dev</strong>. El detalle técnico de todo lo anterior está documentado aparte y es público para quien lo pida.</p>
+  <p>marcador.gal · datos de la temporada 2026-27 · página informativa, septiembre de 2026</p>
+</footer>
+
+</div>

@@ -83,3 +83,16 @@ Pendientes de especificar, con su procedencia:
 - El cubo se llena y no se vacía nunca. Mitigación: cada entrada nace con su
   modo de fallo escrito, así que se puede priorizar por daño y no por
   antigüedad; lo que no tenga modo de fallo concreto no entra.
+- **M-7 — la ventana de 150 min y el cierre forzoso de 120 están acoplados y
+  nada lo ata.** `WINDOW_AFTER_MINUTES = 150` vive en `src/ingest/constants.ts`
+  y `FORCED_FINISH_MINUTES = 120` en `src/decide/thresholds.ts`. El barrido solo
+  recorre partidos **en ventana**, así que el `forced_finish` de RN-02 únicamente
+  puede dispararse porque la ventana llega más allá de los 120. Modo de fallo:
+  bajar `WINDOW_AFTER_MINUTES` por debajo de 120 —para ahorrar peticiones, por
+  ejemplo— **desactiva RN-02 en silencio** y no rompe ningún test; los partidos
+  que la fuente abandona se quedarían en `live` para siempre, sin alerta.
+  Arreglo: un test de invariante `FORCED_FINISH_MINUTES < WINDOW_AFTER_MINUTES`,
+  como el que ya existe para `SALUD_RECENT_MINUTES < SILENCE_MINUTES`, y una
+  línea en el comentario de cada constante. Procedencia: hallazgo del arquitecto
+  al escribir `docs/fundacion/como-funciona.md`, 2026-09-22; derivado del código,
+  no registrado en ningún ADR.
