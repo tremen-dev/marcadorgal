@@ -21,7 +21,7 @@ epica: EPIC-FIX
 | CA-3 invariante sobre los 31 subconjuntos | (test; el arreglo que fija es el de CA-1) | `src/sources/api-football/results.test.ts` → `SPEC-011 CA-3 no capture ever carries a live= with a single id` (1 caso de cobertura + 31 generados con `it.each` + «(iii) the full subset still asks the five league ids»); reescrituras de CA-3 (ii) en `results.test.ts:191` y en `src/arch/source-contract.test.ts:209` | | 🚧 |
 | CA-4 fixture del error real y regresión | `src/sources/api-football/fixtures/errors-live-2026-09-22.json` (nuevo) + su fila en `fixtures/README.md` | `src/sources/api-football/results.test.ts` → `SPEC-011 CA-4 the failed attempt of 2026-09-22` («the fixture is the body of a 200 that carries errors and no fixture», «parse keeps the observations of the ids= request and records the live= one») | | ⚠️ |
 | CA-5 intento parcial: se guarda y `ok = false` | `src/ingest/tick.ts` (`AttemptSummary.requestErrors`, `oneLine`, cierre del intento con `ok` calculado, `error` de una línea y `details.requestErrors`) | `src/ingest/tick.test.ts` → `SPEC-011 CA-5 a partial attempt` (4 casos: parcial, `afterInsert`+alertas en la misma transacción, todas las peticiones rotas, captura limpia); `src/ingest/salud.test.ts` → «a partial attempt is printed FALLO with its details and the verdict is REVISAR» | | 🚧 |
-| CA-6 presupuesto, frontera y gates | | | | ❌ |
+| CA-6 presupuesto, frontera y gates | ningún fichero de producción propio: es la comprobación del conjunto (ver «Presupuesto y cierre de CA-6») | el recuento de peticiones por subconjunto lo cuenta el test de CA-3 (i) (`expect(urls).toHaveLength((subset.length === 1 ? 0 : 1) + idsRequests)`); (b), (c) y (d) son comandos, con su salida abajo | | ⚠️ |
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
@@ -355,6 +355,136 @@ La línea de `error` que se guarda, tal cual la afirma el test:
 primera-source: 1 de 2 peticiones con error del proveedor: api-football returned errors: {"live":"The Live field does not match the regular expression: [id-id-id...] or string: all."}
 ```
 
+## Presupuesto y cierre de CA-6 (escribe sdd-implementador)
+
+### (a) Presupuesto de peticiones, medido sobre los 31 subconjuntos
+
+Recuento real, sacado del propio test de CA-3 (i) con dos partidos por
+competición (`process.stdout.write` temporal, retirado después; el test afirma
+el mismo número con `toHaveLength`):
+
+| Competiciones en ventana | Subconjuntos | Partidos | Peticiones por tick | Forma |
+|---|---|---|---|---|
+| 1 | 5 | 2 | **1** | `?ids=…` |
+| 2 | 10 | 4 | 2 | `?live=140-141` + `?ids=…` |
+| 3 | 10 | 6 | 2 | `?live=…` + `?ids=…` |
+| 4 | 5 | 8 | 2 | `?live=…` + `?ids=…` |
+| 5 | 1 | 10 | 2 | `?live=140-141-435-439-875` + `?ids=…` |
+
+Contraste con **N-4 de SPEC-005** (cota `1 + ⌈n/20⌉` por tick, ≤ 6/min y
+≈ 3.000/día de jornada, con 300/min y 7.500/día del plan Pro):
+
+- La cota **no sube en ninguna franja**. El arreglo solo puede **quitar** el
+  término `1` del `live=` (cuando hay menos de dos ligas); nunca lo añade, y no
+  toca el término `⌈n/20⌉`. Con los ~25 partidos del sábado sigue siendo
+  `1 + 2 = 3` por tick → 6/min con los dos disparadores de ADR-002 §1.
+- En las franjas de una sola competición el tick pasa de **2 peticiones (una de
+  ellas fatal, 0 observaciones)** a **1 petición útil**. Con cadencia de 30 s
+  son 2 ticks/min: de 4 a 2 peticiones/min en esas franjas.
+- Ahorro en la jornada de medición: 600 min × 2 ticks/min × 1 petición ≈
+  **1.200 peticiones menos**, y ninguna más en ningún sitio. En los otros 3.880
+  minutos la captura sale idéntica.
+- `requestErrors` **no añade ninguna petición**: no hay reintento dentro del
+  mismo tick (fuera de alcance; el siguiente tick repite a los 30 s, SPEC-005
+  N-9).
+
+### (b) Frontera dura: `src/decide/` y `src/ingest/engine.ts` intactos
+
+```
+$ git diff origin/main --stat -- src/decide src/ingest/engine.ts
+$ (sin salida)
+```
+
+### (c) Sin migraciones, sin dependencias, sin scripts, sin datos, sin diseño
+
+```
+$ git diff origin/main --stat -- package.json package-lock.json supabase data docs/diseno tools
+$ (sin salida)
+
+$ git diff origin/main -- src/model/vocab.ts
+$ (sin salida)   ← AlertKind no cambia
+```
+
+Ficheros tocados por la implementación (`docs/` aparte; `docs/tablero.md` y el
+`.md` de la spec vienen del commit de la arquitecta `59aa8ff`, no de aquí):
+
+| Fichero | Previsto en CA-6 (c) |
+|---|---|
+| `src/model/source.ts` | sí |
+| `src/sources/api-football/results.ts` | sí |
+| `src/ingest/tick.ts` | sí |
+| `src/model/source.test.ts` | sí («sus tests») |
+| `src/sources/api-football/results.test.ts` | sí |
+| `src/ingest/tick.test.ts` | sí |
+| `src/ingest/salud.test.ts` | sí |
+| `src/sources/api-football/fixtures/errors-live-2026-09-22.json` | sí |
+| `src/sources/api-football/fixtures/README.md` | sí |
+| `src/arch/source-contract.test.ts` | sí (contemplado: «si el adaptador en memoria necesita el canal nuevo») |
+| `src/ingest/adapters.test.ts` | **no** — una línea, `requestErrors: []`, obligada por el canal nuevo (F-SPEC-011-4) |
+
+### (d) Gates y secretos
+
+```
+$ env -u DATABASE_URL -u API_FOOTBALL_KEY -u NEXT_PUBLIC_SUPABASE_URL \
+      -u SUPABASE_SERVICE_ROLE_KEY -u INGEST_TICK_TOKEN npm run gates
+…
+> biome check .
+Checked 135 files in 39ms. No fixes applied.
+
+> vitest run
+ Test Files  44 passed (44)
+      Tests  596 passed (596)
+
+> next build
+▲ Next.js 16.3.5 (Turbopack)
+✓ Compiled successfully in 990ms
+  Running TypeScript ...
+  Finished TypeScript in 1251ms ...
+✓ Generating static pages using 6 workers (4/4) in 176ms
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/ingest/tick
+└ ○ /es
+
+GATES EXIT=0
+```
+
+`git grep -qF "$API_FOOTBALL_KEY"` **no lo he podido correr**: el worktree no
+tiene `.env.local` y la clave no está en mi entorno (misma causa que en
+«Evidencia de campo»). Queda para el verificador o el humano, que sí la tienen.
+En su lugar, comprobaciones equivalentes sobre el fixture nuevo, todas sin
+coincidencias:
+
+```
+$ git grep -n "apisports-key" -- src/sources/api-football/fixtures/
+src/sources/api-football/fixtures/README.md:4:…`x-apisports-key` (nunca en el repo)…
+src/sources/api-football/fixtures/README.md:39,41,43: curl -s -H "x-apisports-key: $API_FOOTBALL_KEY" …
+  ← solo prosa y el comando con la variable, ya estaban; nada en los .json
+
+$ git grep -nE "[0-9a-f]{32}" -- src/sources/api-football/fixtures/errors-live-2026-09-22.json
+$ (sin salida)
+
+$ git grep -nE "raw/" -- src/sources/api-football/fixtures/errors-live-2026-09-22.json
+$ (sin salida)   ← la clave del objeto del bucket no entra en el fixture (N-5)
+```
+
+El fichero entero cabe aquí, así que se puede revisar de un vistazo:
+
+```json
+{
+  "get": "fixtures",
+  "parameters": { "live": "439" },
+  "errors": {
+    "live": "The Live field does not match the regular expression: [id-id-id...] or string: all."
+  },
+  "results": 0,
+  "paging": { "current": 1, "total": 1 },
+  "response": []
+}
+```
+
 ## Evidencia de campo del fallo (2026-09-22, ensayo de CA-6 de SPEC-009)
 <!-- N-5: la clave del objeto del bucket va aquí, nunca en el fixture. -->
 
@@ -441,4 +571,44 @@ F-SPEC-011-1).
   queda dicho para que el verificador no lo lea como alcance colado.
 
 ## Cómo retomar (handoff)
-<!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->
+
+**Estado:** los seis CA implementados con su test, en la rama
+`ft/EPIC-FIX-live-una-sola-competicion` del worktree
+`/Users/albertofojo/src/marcadorgal-fix`, seis commits por delante de
+`origin/main` (`e0a88dc`), **sin push, sin PR y sin merge** (no es mío). Spec en
+`en-revision`. `npm run gates` en verde con el entorno vaciado (exit 0, 596
+tests). `npm ci` hace falta si se retoma en un worktree limpio.
+
+**Commits, uno por CA:**
+
+| Commit | Qué entra |
+|---|---|
+| `3969a03` | CA-1 `liveQuery` + reescritura de los dos tests que afirmaban la URL rota, más el cambio de estado de EPIC-FIX y SPEC-011 que llegó sin commitear |
+| `5aa6c78` | CA-2 `requestErrors` en `ParseResult` y `parse` por petición; tercer test que afirmaba `live=141` reescrito |
+| `7647da6` | CA-3 invariante generado sobre los 31 subconjuntos |
+| `6a6065d` | CA-4 fixture del error del proveedor y regresión de las dos peticiones |
+| `dbd1267` | CA-5 intento parcial en `tick.ts` y su caso en `salud.test.ts` |
+| (este) | CA-6 y cierre del ledger |
+
+**Lo que falta, y es del verificador o del humano:**
+
+1. **La clave del objeto del bucket del intento fallido del 2026-09-22 y los
+   identificadores de las filas de `ingest_attempts`** de la frontera
+   22:07:06Z / 22:07:38Z / 23 fallos. Sin credenciales no los he podido sacar
+   (ver «Evidencia de campo» y F-SPEC-011-1). Con ellos, el fixture de CA-4 se
+   puede sustituir por el cuerpo descargado sin tocar el test.
+2. **`git grep -qF "$API_FOOTBALL_KEY"`** con la clave real en el entorno, que
+   es la comprobación literal de CA-6 (d).
+3. Las columnas **Verif.** y **Estado** de la matriz, el **veredicto** y la
+   **evidencia visual** (aquí no hay UI que capturar: el arreglo es de ingesta).
+
+**Dónde mirar primero si algo huele raro:** `src/sources/api-football/results.ts`
+(`liveQuery` y el `try/catch` por petición de `parse`) y el bloque de cierre de
+`runAttempt` en `src/ingest/tick.ts`. La restricción dura se comprueba con
+`git diff origin/main --stat -- src/decide src/ingest/engine.ts`, que tiene que
+seguir vacía cuando esta rama entre en `main`: CA-10 de SPEC-009 se verifica
+después.
+
+**Plazo:** la ventana de SPEC-009 abre el viernes 2026-09-25 18:20Z y esto tiene
+que estar mergeado antes (H-1). Al cerrar esto es miércoles 23: hay sitio para
+una ronda de verificación con findings.
