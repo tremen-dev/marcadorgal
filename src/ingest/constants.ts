@@ -27,3 +27,43 @@ export const RAW_RETENTION_DAYS = 30;
 export const PURGE_EVERY_HOURS = 24;
 export const PURGE_RETRY_HOURS = 1;
 export const PURGE_BATCH = 1000;
+
+// Informe de la jornada (SPEC-009). Every threshold is fixed here, before
+// measuring, so reading the numbers cannot move them (CA-9).
+
+// A gap between two consecutive observations of a match above this is not
+// jitter: it is three times the declared 30 s cadence, so the tick missed at
+// least two turns. It is what gives away a job that fell (CA-2 (a)).
+export const INFORME_GAP_SECONDS = 90;
+
+// Below this many samples a "p95" is the maximum wearing a statistician's
+// hat: it is printed as `peor caso (n=<n>)` instead (CA-3).
+export const INFORME_P95_MIN_SAMPLES = 20;
+
+// The cadence the two triggers aim at (ADR-008 §3): the divisor of the
+// expected ticks, and therefore of the coverage the verdict reads (CA-9).
+export const INFORME_TICK_SECONDS = 30;
+
+// Budget of SPEC-005 N-4 for the Pro plan.
+export const INFORME_REQUESTS_PER_MINUTE = 6;
+export const INFORME_REQUESTS_PER_DAY = 3000;
+
+// vision.md: what is contrasted, never what is assumed.
+export const INFORME_MEDIAN_TARGET_SECONDS = 45;
+export const INFORME_P95_TARGET_SECONDS = 90;
+
+// CA-9 thresholds: at or above the first the matchday is `válida`, between
+// the two `válida con reservas`, below the second `no válida` branch (c1).
+export const INFORME_COVERAGE_VALID = 0.95;
+export const INFORME_COVERAGE_RESERVED = 0.8;
+
+// Goals per match used only to say the expectable size of the external
+// sample (CA-3): 39 matches -> ~98 goals, the "90-100" of the spec.
+export const INFORME_GOALS_PER_MATCH = 2.5;
+
+// How many rows of a list the report prints before collapsing the rest into a
+// count. The informe has to fit in two pages (CA-10) and a jornada of 39
+// matches produces hundreds of gaps: what is actionable is the headline count
+// plus a sample. Discrepancies and unmatched references are never collapsed —
+// those are the rows somebody has to work through one by one.
+export const INFORME_FILAS_MOSTRADAS = 10;
