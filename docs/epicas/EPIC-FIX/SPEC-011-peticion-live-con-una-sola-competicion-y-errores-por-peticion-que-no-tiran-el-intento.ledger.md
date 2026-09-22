@@ -18,7 +18,7 @@ epica: EPIC-FIX
 |---|---|---|---|---|
 | CA-1 `live=` nunca con menos de dos ids | `src/sources/api-football/results.ts` (`liveQuery` nueva, exportada; `fetch` solo emite `live=` cuando devuelve cadena) | `src/sources/api-football/results.test.ts` → `SPEC-011 CA-1 liveQuery` (4 casos) + reescritura de «omits window matches without a match alias…» y de «sends the key and the user agent on every request…» | | 🚧 |
 | CA-2 `parse` total: `requestErrors` | `src/model/source.ts` (`RequestError` + cuarto canal obligatorio en `ParseResult`), `src/sources/api-football/results.ts` (`parse` con `try/catch` por petición y `messageOf` local) | `src/model/source.test.ts` → «ParseResult requires requestErrors, accepts [] and rejects an entry without url»; `src/sources/api-football/results.test.ts` → «records a body with non-empty errors…», «records a body that is not JSON or not a fixtures response…», «keeps the observations of the good requests when one request is broken», «with every request unreadable gives three empty channels and one requestError each» | | 🚧 |
-| CA-3 invariante sobre los 31 subconjuntos | | | | ❌ |
+| CA-3 invariante sobre los 31 subconjuntos | (test; el arreglo que fija es el de CA-1) | `src/sources/api-football/results.test.ts` → `SPEC-011 CA-3 no capture ever carries a live= with a single id` (1 caso de cobertura + 31 generados con `it.each` + «(iii) the full subset still asks the five league ids»); reescrituras de CA-3 (ii) en `results.test.ts:191` y en `src/arch/source-contract.test.ts:209` | | 🚧 |
 | CA-4 fixture del error real y regresión | | | | ❌ |
 | CA-5 intento parcial: se guarda y `ok = false` | | | | ❌ |
 | CA-6 presupuesto, frontera y gates | | | | ❌ |
@@ -205,6 +205,55 @@ AssertionError: expected false to be true // Object.is equality
 Reescrito a `expect(calls.some((u) => u.includes("live="))).toBe(false)` con su
 comentario. Es la segunda aparición del mismo defecto afirmado como verdad: la
 forma rota estaba fijada en dos tests, no en uno.
+
+### CA-3 — `npx vitest run src/sources/api-football/results.test.ts -t "CA-3"`
+
+El arreglo de CA-1 ya estaba dentro, así que para ver el rojo de verdad se
+restauró el `results.ts` de antes del arreglo
+(`git show 59aa8ff:src/sources/api-football/results.ts`), se corrió el
+invariante contra él y se volvió a poner el arreglado (`git diff --stat` de ese
+fichero, vacío después). Caen **exactamente los cinco subconjuntos de una sola
+competición** y pasan los otros 26: el invariante distingue el defecto, no
+cualquier cambio.
+
+```
+ ❯ src/sources/api-football/results.test.ts (87 tests | 5 failed | 54 skipped) 22ms
+   ❯ SPEC-011 CA-3 no capture ever carries a live= with a single id
+     × primera-division 12ms
+     × segunda-division 1ms
+     × primera-rfef-g1 0ms
+     × segunda-rfef-g1 0ms
+     × tercera-rfef-g1 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/sources/api-football/results.test.ts > SPEC-011 CA-3 no capture ever carries a live= with a single id > primera-division
+AssertionError: expected 'https://v3.football.api-sports.io/fix…' not to match /[?&]live=\d+$/
+
+- Expected:
+/[?&]live=\d+$/
+
++ Received:
+"https://v3.football.api-sports.io/fixtures?live=140"
+
+ ❯ src/sources/api-football/results.test.ts:731:25
+    731|         expect(url).not.toMatch(BARE_LIVE);
+       |                         ^
+
+ FAIL  src/sources/api-football/results.test.ts > SPEC-011 CA-3 no capture ever carries a live= with a single id > segunda-division
+AssertionError: expected 'https://v3.football.api-sports.io/fix…' not to match /[?&]live=\d+$/
+
+- Expected:
+/[?&]live=\d+$/
+
++ Received:
+"https://v3.football.api-sports.io/fixtures?live=141"
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 28 passed | 54 skipped (87)
+```
+
+Con el arreglo dentro, `results.test.ts` entero: **87 passed (87)**.
 
 ## Evidencia de campo del fallo (2026-09-22, ensayo de CA-6 de SPEC-009)
 <!-- Rellenar con la clave del objeto del bucket del intento fallido del que sale el fixture de CA-4 (N-5: la clave va aquí, nunca en el fixture), y con los identificadores de las filas de ingest_attempts de la frontera 22:07:06Z ok / 22:07:38Z primer fallo / 23 fallos seguidos. -->

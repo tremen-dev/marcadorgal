@@ -693,6 +693,78 @@ describe("CA-6 identity is all-or-nothing (RN-10)", () => {
 });
 
 // ---------------------------------------------------------------------------
+// SPEC-011 CA-3 the invariant that stops this from coming back. Generated over
+// the 31 non-empty subsets of the five competitions of D-3, not written by
+// hand: the shape with a bare league id cannot be forgotten again because
+// there is no case for anybody to forget to write.
+
+describe("SPEC-011 CA-3 no capture ever carries a live= with a single id", () => {
+  const BARE_LIVE = /[?&]live=\d+$/;
+  const PAST = "2026-09-26T15:00:00Z" as Instant;
+  const subsets: CompetitionId[][] = Array.from(
+    { length: 2 ** COMPETITIONS.length - 1 },
+    (_, i) => COMPETITIONS.filter((_c, bit) => ((i + 1) >> bit) & 1),
+  );
+
+  it("covers the 31 non-empty subsets, each one once", () => {
+    expect(subsets).toHaveLength(31);
+    expect(new Set(subsets.map((s) => s.join(","))).size).toBe(31);
+    expect(subsets.filter((s) => s.length === 1)).toHaveLength(5);
+    expect(subsets.filter((s) => s.length === 5)).toHaveLength(1);
+  });
+
+  it.each(subsets.map((s) => [s.join("+"), s] as const))(
+    "%s",
+    async (_name, subset) => {
+      const matches = subset.flatMap((c) =>
+        byCompetition(c, 2).map((m) => ({ ...m, kickoff: PAST })),
+      );
+      expect(matches.length).toBe(subset.length * 2);
+      const { fetch, calls } = stubFetch(() => ({ body: { response: [] } }));
+      const raw = await adapter.fetch?.(ctxWith(matches, fetch, PAST));
+      const urls = raw?.requests.map((r) => r.url) ?? [];
+      expect(urls).toEqual(calls.map((c) => c.url));
+
+      // (i) the forbidden shape, in both readings: as the tail of the query
+      // and as the value of the field, whatever else the query carries.
+      for (const url of urls) {
+        expect(url).not.toMatch(BARE_LIVE);
+        const live = new URL(url).searchParams.get("live");
+        if (live !== null) expect(live).not.toMatch(/^\d+$/);
+      }
+
+      // With a single competition there is no live= request at all; from two
+      // on there is exactly one.
+      const withLive = urls.filter((u) =>
+        new URL(u).searchParams.has("live"),
+      );
+      expect(withLive).toHaveLength(subset.length === 1 ? 0 : 1);
+
+      // (a) of CA-6: the request count per tick, subset by subset. It is
+      // 1 + ceil(n/20) at most and never more than before the fix.
+      const pending = matches.filter((m) => fixtureIdOf.has(m.id));
+      const idsRequests = Math.ceil(pending.length / 20);
+      expect(urls).toHaveLength(
+        (subset.length === 1 ? 0 : 1) + idsRequests,
+      );
+      expect(urls.length).toBeLessThanOrEqual(1 + idsRequests);
+    },
+  );
+
+  // (iii) the fix must not degenerate into "never ask live=".
+  it("(iii) the full subset still asks the five league ids", async () => {
+    const matches = COMPETITIONS.flatMap((c) =>
+      byCompetition(c, 2).map((m) => ({ ...m, kickoff: PAST })),
+    );
+    const { fetch, calls } = stubFetch(() => ({ body: { response: [] } }));
+    await adapter.fetch?.(ctxWith(matches, fetch, PAST));
+    // Ascending, as CA-1 requires: 875 is Segunda RFEF and sorts after 439.
+    expect(query(calls[0])).toBe("?live=140-141-435-439-875");
+    expect(calls).toHaveLength(2);
+  });
+});
+
+// ---------------------------------------------------------------------------
 // CA-7 real fixtures
 
 describe("CA-7 real fixtures parse", () => {
