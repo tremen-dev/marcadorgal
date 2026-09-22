@@ -66,15 +66,30 @@ export const INFORME_GOALS_PER_MATCH = 2.5;
 // matches produces hundreds of gaps: what is actionable is the headline count
 // plus a sample. Discrepancies and unmatched references are never collapsed —
 // those are the rows somebody has to work through one by one.
-export const INFORME_FILAS_MOSTRADAS = 10;
+//
+// Ten was calibrated against a fixture whose lists were almost all empty, and
+// it did not hold (V-7): the report has eight capped lists, so ten rows each
+// is eighty lines of lists over some seventy-five of prose, and the worst case
+// —every capped list saturated— measured 208 lines against a 145 tope. Five is
+// what the arithmetic allows, and the ceiling is now measured, not assumed.
+export const INFORME_FILAS_MOSTRADAS = 5;
 
 // «Cabe en dos páginas» (CA-10) es un número o no es nada: dos páginas de texto
 // monoespaciado impreso a 9-10 pt con márgenes normales son unas 72 líneas por
-// página. El informe de una jornada realista —39 partidos, un forced_finish por
-// partido— tiene que caber aquí, y por eso el bloque de alertas se recorta como
-// las demás listas. Las discrepancias del contraste y las referencias no
-// casadas siguen sin recortarse: un informe lleno de discrepancias ya no es el
-// informe que CA-10 dimensiona, es una lista de trabajo.
+// página. Las discrepancias del contraste y las referencias no casadas siguen
+// sin recortarse: un informe lleno de discrepancias ya no es el informe que
+// CA-10 dimensiona, es una lista de trabajo.
+//
+// El tope se cumple ahora **por construcción** y no por suerte del fixture
+// (V-7): nada de lo que el informe imprime crece sin tope salvo esas dos
+// listas, y el caso que satura a la vez todo lo demás —cinco competiciones,
+// las ocho listas acotadas llenas, el tick muerto, una alerta por partido—
+// está medido en `informe.test.ts` («el techo de todo lo que puede crecer a la
+// vez»): **137 líneas**, ocho por debajo del tope. Para llegar ahí hicieron
+// falta tres recortes de verdad, no uno: `INFORME_FILAS_MOSTRADAS` de diez a
+// cinco, la prosa que se repetía (el desglose por competición del bloque 1 ya
+// estaba en la primera línea del informe; el «(ninguno)» debajo de una cuenta
+// que ya dice 0) y la línea en blanco bajo cada título, que es maquetación.
 export const INFORME_MAX_LINEAS = 145;
 
 // Ningún valor de `.env` puede aparecer en el informe (CA-1), que imprime

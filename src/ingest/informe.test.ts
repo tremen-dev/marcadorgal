@@ -208,7 +208,9 @@ describe("CA-1 el informe entero", () => {
     const { texto } = informeJornada(vacio({ matches: muchos }));
     expect(texto).toContain("sin ninguna observación: 12");
     expect(texto).toContain("por competición: Segunda RFEF 5, Tercera 7");
-    expect(texto).toContain("… y 2 más");
+    // Cinco filas y la cuenta del resto: INFORME_FILAS_MOSTRADAS bajó de diez
+    // a cinco para que el tope de CA-10 se cumpla por construcción (V-7).
+    expect(texto).toContain("… y 7 más");
   });
 
   it("sin ninguna fila se genera entero, sin lanzar, y cada bloque vacío dice por qué", () => {
@@ -820,9 +822,9 @@ describe("CA-10 el informe cabe en dos páginas", () => {
         })),
       }),
     );
-    // Treinta huecos largos, diez impresos y la cuenta del resto.
+    // Treinta huecos largos, cinco impresos y la cuenta del resto (V-7).
     expect(texto).toContain("huecos > 90 s: 30");
-    expect(texto).toContain("… y 20 más");
+    expect(texto).toContain("… y 25 más");
     // Los treinta partidos sin señal se recortan, pero el desglose por
     // competición sobrevive al recorte: la forma del problema no se pierde.
     expect(texto).toContain("sin ninguna observación: 0");
@@ -1401,8 +1403,9 @@ describe("CA-10 el informe cabe en dos páginas, medido en líneas", () => {
     const { texto, informe } = realista(39);
     expect(informe.alertas.filas).toHaveLength(39);
     expect(texto).toContain("abiertas en la ventana: 39");
-    // Cada lista gasta como mucho diez líneas, y una alerta cuesta dos.
-    expect(texto).toContain("… y 34 más, explicadas por kind");
+    // Cada lista gasta como mucho INFORME_FILAS_MOSTRADAS líneas, y una alerta
+    // cuesta dos: dos alertas impresas y la cuenta del resto.
+    expect(texto).toContain("… y 37 más, explicadas por kind");
     expect(lineas(texto)).toBeLessThanOrEqual(INFORME_MAX_LINEAS);
   });
 
@@ -1590,5 +1593,255 @@ describe("CA-5 el silencio del proveedor no es discrepancia", () => {
     expect(informe.contraste?.sinRespuesta).toEqual([]);
     expect(informe.contraste?.discrepancias).toHaveLength(1);
     expect(informe.veredicto).toMatchObject({ valor: "no válida", rama: "c2" });
+  });
+});
+
+// V-7. El tope de CA-10 se calibró contra un fixture con casi todas las listas
+// vacías, así que se cumplía por suerte y no por construcción: con todas las
+// listas acotadas saturadas el informe se iba a 208 líneas, y ese informe es
+// justo el que lleva `no válida (c1)` —el que decide si se repite una semana—.
+// Aquí se miden los cinco escenarios que el verificador tabuló, más un techo
+// que satura a la vez todo lo que puede crecer: si el techo cabe, cabe
+// cualquier jornada, porque no hay ninguna lista sin acotar salvo las dos que
+// F-SPEC-009-3 deja crecer a propósito.
+describe("CA-10 el tope se cumple por construcción, no por fixture", () => {
+  const COMPETICIONES: readonly [string, string, number][] = [
+    ["segunda-division", "Segunda División", 11],
+    ["primera-rfef-g1", "Primeira Federación · Grupo 1", 10],
+    ["segunda-rfef-g1", "Segunda Federación · Grupo 1", 9],
+    ["tercera-rfef-g1", "Terceira Federación · Grupo 1", 9],
+  ];
+
+  type Escenario = {
+    status?: MatchStatus;
+    proveedorStatus?: MatchStatus;
+    alertas?: number;
+    mudos?: number;
+    fallidos?: number;
+    contrastar?: boolean;
+    discrepantes?: number;
+    silenciosos?: number;
+    // Minutos tras el kickoff en los que el tick deja de dejar observaciones.
+    muereEn?: number | null;
+    noCasadas?: number;
+    // Las cinco competiciones de D-3 en la ventana, no cuatro: el techo.
+    quinta?: boolean;
+  };
+
+  const jornada = ({
+    status = "finished",
+    proveedorStatus = "finished",
+    alertas = 0,
+    mudos = 0,
+    fallidos = 0,
+    contrastar = true,
+    discrepantes = 0,
+    silenciosos = 0,
+    muereEn = null,
+    noCasadas = 0,
+    quinta = false,
+  }: Escenario) => {
+    const comps = quinta
+      ? [
+          ...COMPETICIONES,
+          ["primera-division", "Primeira División", 10] as [
+            string,
+            string,
+            number,
+          ],
+        ]
+      : COMPETICIONES;
+    const matches: InformeMatchLike[] = [];
+    let i = 0;
+    for (const [competitionId, competitionName, n] of comps)
+      for (let k = 0; k < n; k += 1) {
+        matches.push(
+          partido({
+            id: `m${i}`,
+            competitionId,
+            competitionName,
+            round: 4,
+            kickoff: at(10 + i * 70),
+            status,
+            score: status === "finished" ? { home: 1, away: 0 } : null,
+            decidedAt: status === "finished" ? at(10 + i * 70 + 105) : null,
+          }),
+        );
+        i += 1;
+      }
+    const observations: ObsLike[] = [];
+    const attempts: InformeAttemptLike[] = [];
+    for (const [j, m] of matches.entries()) {
+      if (j < mudos) continue;
+      const fin =
+        muereEn === null
+          ? Date.parse(m.decidedAt ?? at(10 + j * 70 + 150))
+          : Date.parse(m.kickoff) + muereEn * MINUTE_MS;
+      for (
+        let ms = Date.parse(m.kickoff) - 10 * MINUTE_MS;
+        ms < fin;
+        ms += 30 * SEC
+      ) {
+        const instante = new Date(ms).toISOString() as Instant;
+        observations.push(
+          obs({ id: `o${j}-${ms}`, matchId: m.id, observedAt: instante }),
+        );
+        attempts.push({
+          startedAt: instante,
+          sourceId: "api-football",
+          ok: true,
+          error: null,
+          requests: 1,
+        });
+      }
+    }
+    for (let k = 0; k < fallidos; k += 1)
+      attempts.push({
+        startedAt: at(10 + k),
+        sourceId: "api-football",
+        ok: false,
+        error: `fetch failed: getaddrinfo ENOTFOUND v3.football.api-sports.io (${k})`,
+        requests: 0,
+      });
+    return informeJornada(
+      vacio({
+        matches,
+        observations,
+        attempts,
+        decisions: matches.map((m, j) => ({
+          id: `d${j}`,
+          matchId: m.id,
+          version: 1,
+          status: m.status,
+          score: m.score,
+          rule: "RN-01",
+          decidedAt: m.decidedAt ?? at(10 + j * 70),
+          observationIds: [],
+        })),
+        referencias: Array.from({ length: 12 }, (_, k) => ({
+          matchId: `m${k}`,
+          marcador: "1-0",
+          instante: at(10 + k * 70 + 50),
+          fuente: "radio",
+        })),
+        referenciasNoCasadas: Array.from({ length: noCasadas }, (_, k) => ({
+          fila: `m${k},1-0,2026-09-27T16:00:00Z,radio`,
+          motivo: "el marcador 1-0 nunca se publicó en ese partido",
+        })),
+        alerts: Array.from({ length: alertas }, (_, k) => ({
+          kind: k % 2 === 0 ? "forced_finish" : "silence",
+          matchId: `m${k % matches.length}`,
+          openedAt: at(10 + (k % matches.length) * 70 + 100),
+          resolvedAt: null,
+          details: {
+            score: { home: 1, away: 0 },
+            minute: 90,
+            kickoff: at(10 + (k % matches.length) * 70),
+            lastObservedAt: at(10 + (k % matches.length) * 70 + 90),
+            lastStatus: "live",
+          },
+        })),
+        contraste: contrastar
+          ? matches.map((m, j) =>
+              j < silenciosos
+                ? {
+                    matchId: m.id,
+                    proveedor: null,
+                    motivo: `el proveedor no devolvió el fixture 90${j} en su respuesta`,
+                  }
+                : {
+                    matchId: m.id,
+                    proveedor:
+                      j < silenciosos + discrepantes
+                        ? {
+                            status: "finished" as MatchStatus,
+                            score: { home: 9, away: 9 },
+                          }
+                        : {
+                            status: proveedorStatus,
+                            score:
+                              proveedorStatus === "finished"
+                                ? { home: 1, away: 0 }
+                                : null,
+                          },
+                  },
+            )
+          : null,
+        contrastePeticiones: 2,
+      }),
+    );
+  };
+
+  const lineas = (texto: string) => texto.split("\n").length;
+
+  // Los cinco escenarios de la tabla del verificador, medidos uno a uno.
+  const TABLA: readonly [string, Escenario][] = [
+    [
+      "todas las listas acotadas saturadas, cero discrepancias",
+      { alertas: 39, mudos: 12, fallidos: 15, muereEn: 30, silenciosos: 6 },
+    ],
+    [
+      "39 aplazamientos acordados, resto camino feliz",
+      { status: "postponed", proveedorStatus: "postponed" },
+    ],
+    ["39 discrepancias", { discrepantes: 39 }],
+    ["solo el tick muerto, sin alertas ni discrepancias", { muereEn: 30 }],
+    ["camino feliz con 39 alertas", { alertas: 39 }],
+  ];
+
+  for (const [nombre, escenario] of TABLA)
+    it(`cabe en dos páginas: ${nombre}`, () => {
+      expect(lineas(jornada(escenario).texto)).toBeLessThanOrEqual(
+        INFORME_MAX_LINEAS,
+      );
+    });
+
+  // El techo: cinco competiciones, todas las listas acotadas saturadas a la
+  // vez, el tick muerto, alertas por partido, silencios del proveedor y
+  // referencias no casadas. Nada que el informe imprima puede crecer más que
+  // esto salvo las discrepancias, que F-SPEC-009-3 deja crecer.
+  it("y el techo de todo lo que puede crecer a la vez también cabe", () => {
+    const { texto, informe } = jornada({
+      quinta: true,
+      alertas: 49,
+      mudos: 20,
+      fallidos: 30,
+      muereEn: 30,
+      silenciosos: 10,
+      noCasadas: 0,
+    });
+    expect(informe.cobertura.competiciones).toHaveLength(5);
+    expect(informe.alertas.filas).toHaveLength(49);
+    expect(informe.contraste?.sinRespuesta).toHaveLength(10);
+    expect(lineas(texto)).toBeLessThanOrEqual(INFORME_MAX_LINEAS);
+  });
+
+  // Las dos listas que F-SPEC-009-3 deja crecer a propósito, en su máximo real:
+  // las 49 partidos de una jornada de cinco competiciones, todos discrepantes.
+  // Es el techo de lo no acotado, y es el informe que lleva la rama (c2).
+  it("y las listas que no se recortan, en su máximo real, también caben", () => {
+    const { texto, informe } = jornada({ quinta: true, discrepantes: 49 });
+    expect(informe.contraste?.discrepancias).toHaveLength(49);
+    expect(informe.veredicto).toMatchObject({ valor: "no válida", rama: "c2" });
+    expect(lineas(texto)).toBeLessThanOrEqual(INFORME_MAX_LINEAS);
+  });
+
+  // Y el recíproco, para que el recorte no se convierta en una excusa: el
+  // informe que decide si se repite la jornada sigue diciendo las cuentas de
+  // cabecera de cada lista, que es lo que no se puede perder.
+  it("el informe saturado sigue diciendo cada cuenta y su desglose", () => {
+    const { texto } = jornada({
+      alertas: 39,
+      mudos: 12,
+      fallidos: 15,
+      muereEn: 30,
+      silenciosos: 6,
+    });
+    expect(texto).toContain("abiertas en la ventana: 39");
+    expect(texto).toContain("sin ninguna observación: 12");
+    expect(texto).toContain("intentos fallidos: 15");
+    expect(texto).toContain("partidos sin respuesta del proveedor: 6");
+    expect(texto).toContain("con al menos un hueco > 15 min: 27");
+    expect(texto).toMatch(/por competición: /);
   });
 });

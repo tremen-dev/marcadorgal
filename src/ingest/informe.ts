@@ -365,6 +365,10 @@ const palabra = (n: number): string => PALABRAS[n] ?? String(n);
 const lista = (lines: readonly string[], vacio: string): string[] =>
   lines.length === 0 ? [`  ${vacio}`] : [...lines];
 
+// La misma lista cuando su cuenta de cabecera ya ha impreso el cero: entonces
+// el «(ninguno)» no añade nada y cuesta una línea de las dos páginas (V-7).
+const listaContada = (lines: readonly string[]): string[] => [...lines];
+
 // The same for a list whose row costs more than one line (an alert plus the
 // blank left for its hand-written explanation): what is capped is the ten lines
 // INFORME_FILAS_MOSTRADAS buys, not the number of rows, so no list can eat the
@@ -394,6 +398,11 @@ function primeras(lines: readonly string[], vacio: string): string[] {
     ...lines.slice(0, INFORME_FILAS_MOSTRADAS),
     `  … y ${lines.length - INFORME_FILAS_MOSTRADAS} más`,
   ];
+}
+
+// La misma, para una lista cuya cuenta ya se ha impreso arriba (V-7).
+function primerasContadas(lines: readonly string[]): string[] {
+  return primeras(lines, "").filter((l) => l !== "  ");
 }
 
 // Comparison against a target in seconds, over a measurement in milliseconds:
@@ -699,6 +708,9 @@ const porcentaje = (ratio: number): string => `${Math.round(ratio * 100)} %`;
 
 // ------------------------------------------------------------------- blocks
 
+// El informe deja una línea en blanco **antes** de cada título y ninguna
+// debajo: en Markdown se renderiza igual y son nueve líneas menos de las dos
+// páginas que CA-10 pide (V-7). Es maquetación, no contenido.
 export const BLOQUES = [
   "## 1. Ventana y cobertura",
   "## 2. Cadencia efectiva",
@@ -808,21 +820,18 @@ export function informeJornada(input: InformeInput): {
     `Sin partidos en la ventana: ${sinPartidos.length === 0 ? "ninguna" : sinPartidos.join(", ")}.`,
     "",
     BLOQUES[0],
-    "",
     `ventana: ${input.desde} → ${input.hasta} (${(instantDiff(input.desde, input.hasta) / HOUR_MS || 0).toFixed(1)} h)`,
     `partidos en la ventana: ${input.matches.length}`,
   );
+  // La primera línea del informe ya dice cuántas competiciones y cuáles, con
+  // sus partidos (CA-1): repetirlo aquí gastaba una línea por competición sin
+  // añadir un solo dato (V-7).
   if (input.matches.length === 0)
     push(`  ${sinDatos("ningún partido en la ventana")}`);
-  else
-    push(
-      ...competiciones.map((c) => `  ${c.nombre} · ${c.partidos} partido(s)`),
-    );
   push(
     `ticks: ${ticksReales} de ${esperados} esperados (${cobertura === null ? "n/a" : porcentaje(cobertura)})   ← cobertura de CA-9`,
     `  cobertura sobre la ventana efectiva de cada partido: de kickoff − ${WINDOW_BEFORE_MINUTES} min al`,
-    `  cierre de su Decision finished (el motor lo fuerza en kickoff + ${FORCED_FINISH_MINUTES} min, RN-02), y no`,
-    `  hasta kickoff + ${WINDOW_AFTER_MINUTES} min: el tick deja de muestrear un partido en cuanto cierra.`,
+    `  cierre de su Decision finished (forzado en kickoff + ${FORCED_FINISH_MINUTES} min, RN-02), no a kickoff + ${WINDOW_AFTER_MINUTES} min.`,
     `intentos dentro de la ventana de ADR-002 §2 pero tras el cierre de todo partido: ${trasElCierre.length}`,
     `horas de ventana sin ejecuciones: ${horasSinEjecuciones.length}`,
     ...primeras(
@@ -844,10 +853,9 @@ export function informeJornada(input: InformeInput): {
   push(
     "",
     BLOQUES[1],
-    "",
-    "Huecos entre observed_at consecutivos de cada partido, más el que va de su",
-    "última observación al cierre de su ventana efectiva: el coste de muestrear a",
-    "30 s y lo que delata un job caído, que deja de dejar observaciones.",
+    "Huecos entre observed_at consecutivos de cada partido, más el que va de su última",
+    "observación al cierre de su ventana: el coste de muestrear a 30 s, y lo que delata",
+    "un job caído, que deja de dejar observaciones.",
   );
   if (cad.stats.n === 0)
     push(sinDatos("ningún partido tiene dos observaciones consecutivas"));
@@ -855,12 +863,11 @@ export function informeJornada(input: InformeInput): {
     push(
       `${conN("mediana", cad.stats.mediana, cad.stats.n)} · ${conN(etiquetaP95(cad.stats.n), cad.stats.p95, cad.stats.n)} · ${conN("máximo", cad.stats.maximo, cad.stats.n)}`,
       `huecos > ${INFORME_GAP_SECONDS} s: ${cad.largos.length}`,
-      ...primeras(
+      ...primerasContadas(
         cad.largos.map(
           (h) =>
             `  ${h.desde}  ${segundos(h.ms)}  ${h.matchId}  ${h.competicion}${h.final === true ? "  (hasta el cierre de su ventana)" : ""}`,
         ),
-        "(ninguno)",
       ),
     );
   }
@@ -874,14 +881,11 @@ export function informeJornada(input: InformeInput): {
   push(
     "",
     BLOQUES[2],
-    "",
-    "decided_at − observed_at de la observación citada que trae el marcador nuevo,",
-    "para cada Decision que cambia el marcador publicado. Como observed_at = capturedAt",
-    "(SPEC-006 CA-7), esto mide captura → publicación: raw store, parse, inserción y",
-    "motor. No es latencia extremo a extremo, y nadie debe leerlo como tal.",
+    "decided_at − observed_at de la observación citada que trae el marcador nuevo. Como",
+    "observed_at = capturedAt (SPEC-006 CA-7), esto mide captura → publicación: raw store,",
+    "parse, inserción y motor. No es latencia extremo a extremo y nadie debe leerlo así.",
     "La primera Decision con marcador de cada partido —el 0-0 del estreno— cuenta",
-    "como cambio, así que la muestra lleva un estreno por partido además de los",
-    "goles: quien lea la mediana tiene que saberlo.",
+    "como cambio: la muestra lleva un estreno por partido además de los goles.",
   );
   if (interna.n === 0)
     push(
@@ -894,8 +898,7 @@ export function informeJornada(input: InformeInput): {
   push(
     techoPropio === null
       ? "techo propio: n/a (hace falta cadencia y latencia interna para sumarlo)"
-      : `techo propio (${etiquetaP95(cad.stats.n)} cadencia + ${etiquetaP95(interna.n)} latencia interna): ${segundos(techoPropio)}`,
-    "  el peor caso de «el proveedor ya lo tenía → nosotros lo publicamos».",
+      : `techo propio (${etiquetaP95(cad.stats.n)} cadencia + ${etiquetaP95(interna.n)} latencia interna): ${segundos(techoPropio)} — el peor caso de «el proveedor ya lo tenía → nosotros lo publicamos»`,
   );
 
   // ---- 4. Latencia extremo a extremo -----------------------------------
@@ -904,7 +907,6 @@ export function informeJornada(input: InformeInput): {
   push(
     "",
     BLOQUES[3],
-    "",
     "decided_at − instante de la referencia externa, una fila por gol referenciado",
     "a mano en referencias.csv (H-6 (ii)).",
   );
@@ -922,14 +924,12 @@ export function informeJornada(input: InformeInput): {
     );
   }
   push(
-    `tamaño esperable: los ${input.matches.length} partidos de la ventana dan del orden de ${goles} goles,`,
-    "pero la muestra la limita lo que una persona puede seguir a la vez (H-3:",
-    "domingo 27, 14:00Z-17:00Z), así que pesa menos que la cadencia y la latencia",
-    "interna, que se calculan sobre miles de capturas.",
+    `tamaño esperable: los ${input.matches.length} partidos de la ventana dan del orden de ${goles} goles, pero la muestra`,
+    "la limita lo que una persona puede seguir a la vez (H-3: domingo 27, 14:00Z-17:00Z),",
+    "así que pesa menos que la cadencia y la latencia interna, de miles de capturas.",
     `referencias no casadas: ${externa.noCasadas.length}`,
-    ...lista(
+    ...listaContada(
       externa.noCasadas.map((r) => `  ${r.fila}  →  ${r.motivo}`),
-      "(ninguna)",
     ),
   );
 
@@ -941,7 +941,6 @@ export function informeJornada(input: InformeInput): {
   push(
     "",
     BLOQUES[4],
-    "",
     "De ingest_attempts.details->>'requests' y no de net._http_response, que pg_net",
     "poda a las pocas horas y no sobrevive a una medición de cuatro días (N-2).",
   );
@@ -950,8 +949,7 @@ export function informeJornada(input: InformeInput): {
   else {
     push(
       `total: ${totalPeticiones} peticiones en ${input.attempts.length} intento(s)`,
-      "por día:",
-      ...porDia.map((d) => `  ${d.dia}: ${d.total}`),
+      `por día: ${porDia.map((d) => `${d.dia} ${d.total}`).join(" · ")}`,
       `pico por minuto: ${pico === null ? "n/a" : `${pico.total} (${pico.dia})`}`,
       `presupuesto SPEC-005 N-4 (≤ ${INFORME_REQUESTS_PER_MINUTE}/min, ~${INFORME_REQUESTS_PER_DAY}/día): ${
         (pico?.total ?? 0) > INFORME_REQUESTS_PER_MINUTE ||
@@ -977,11 +975,9 @@ export function informeJornada(input: InformeInput): {
   push(
     "",
     BLOQUES[5],
-    "",
-    "RN-05 y RN-02: un partido sin señal es el motor haciendo su trabajo, no un",
-    "defecto. Se listan para explicarlos uno a uno. El hueco de un partido incluye",
-    "el que va de su última observación al cierre de su ventana: así se ve un tick",
-    "que murió a mitad de partido y no solo uno que se saltó turnos.",
+    "RN-05 y RN-02: un partido sin señal es el motor haciendo su trabajo, no un defecto.",
+    "El hueco de cada uno incluye el que va de su última observación al cierre de su",
+    "ventana: así se ve un tick que murió a mitad de partido, no solo uno que saltó turnos.",
   );
   if (input.matches.length === 0)
     push(sinDatos("ningún partido en la ventana"));
@@ -989,18 +985,16 @@ export function informeJornada(input: InformeInput): {
     push(
       `sin ninguna observación: ${sinObservaciones.length}`,
       ...porCompeticion_(sinObservaciones),
-      ...primeras(
+      ...primerasContadas(
         sinObservaciones.map((m) => `  ${m.matchId} · ${m.competicion}`),
-        "(ninguno)",
       ),
       `con al menos un hueco > ${SILENCE_MINUTES} min: ${conHuecoLargo.length}`,
       ...porCompeticion_(conHuecoLargo),
-      ...primeras(
+      ...primerasContadas(
         conHuecoLargo.map(
           (m) =>
             `  ${m.matchId} · ${m.competicion} · hueco mayor: ${segundos(m.ms)}`,
         ),
-        "(ninguno)",
       ),
     );
 
@@ -1020,14 +1014,10 @@ export function informeJornada(input: InformeInput): {
   push(
     "",
     BLOQUES[6],
-    "",
     "Ninguna se resuelve aquí: eso es EPIC-004. Cada una lleva su explicación",
     "escrita a mano debajo.",
     `abiertas en la ventana: ${abiertas.length}`,
-    ...lista(
-      porKind.map((k) => `  ${k.kind}: ${k.count}`),
-      "(ninguna)",
-    ),
+    ...listaContada(porKind.map((k) => `  ${k.kind}: ${k.count}`)),
   );
   // Capped like every other list (CA-10): two lines per alert with no ceiling
   // is what took the report past two pages, and a forced_finish per match is a
@@ -1064,7 +1054,6 @@ export function informeJornada(input: InformeInput): {
   push(
     "",
     BLOQUES[7],
-    "",
     "Una sola tanda de peticiones por ids=, al terminar la jornada y fuera de",
     "ventana (RN-08), anotadas aparte de las del tick.",
   );
@@ -1138,36 +1127,41 @@ export function informeJornada(input: InformeInput): {
       "coinciden:",
       ...primeras(coinciden, "(ninguno)"),
       `estados no-finished que el proveedor confirma: ${acordados.length}`,
-      "  CA-7 los contempla («o el estado que el proveedor confirme, con su alerta",
-      "  explicada»): no son discrepancias ni la rama (c2), pero su explicación es",
-      "  obligatoria y el veredicto baja a válida con reservas.",
-      ...primerasFilas(
-        acordados,
-        (a) => [
-          `  ${a.matchId}  ${a.status} ${a.marcador}  ·  raw_ref: ${a.rawRef ?? "ninguno"}`,
-          "    explicación:",
-        ],
-        "(ninguno)",
-      ),
+      ...(acordados.length === 0
+        ? []
+        : [
+            "  CA-7 los contempla («o el estado que el proveedor confirme, con su alerta explicada»):",
+            "  no son discrepancias ni la rama (c2), pero su explicación es obligatoria y bajan a reservas.",
+            ...primerasFilas(
+              acordados,
+              (a) => [
+                `  ${a.matchId}  ${a.status} ${a.marcador}  ·  raw_ref: ${a.rawRef ?? "ninguno"}`,
+                "    explicación:",
+              ],
+              "(ninguno)",
+            ),
+          ]),
       `partidos sin respuesta del proveedor: ${sinRespuesta.length}`,
-      "  No es discrepancia: CA-5 compara el status y el score del proveedor, no su",
-      "  silencio. No es la rama (c2), pero su explicación es obligatoria y el",
-      "  veredicto baja a válida con reservas.",
-      ...primerasFilas(
-        sinRespuesta,
-        (s) => [
-          `  ${s.matchId}  motivo: ${s.motivo}  ·  raw_ref: ${s.rawRef ?? "ninguno"}`,
-          "    explicación:",
-        ],
-        "(ninguno)",
-      ),
+      ...(sinRespuesta.length === 0
+        ? []
+        : [
+            "  No es discrepancia: CA-5 compara el status y el score del proveedor, no su silencio.",
+            "  No es la rama (c2), pero su explicación es obligatoria y bajan a reservas.",
+            ...primerasFilas(
+              sinRespuesta,
+              (x) => [
+                `  ${x.matchId}  motivo: ${x.motivo}  ·  raw_ref: ${x.rawRef ?? "ninguno"}`,
+                "    explicación:",
+              ],
+              "(ninguno)",
+            ),
+          ]),
       `discrepancias: ${discrepancias.length}`,
-      ...lista(
+      ...listaContada(
         discrepancias.map(
           (d) =>
             `  ${d.matchId}  board: ${d.board.status} ${d.board.marcador}  ·  proveedor: ${d.proveedor.status} ${d.proveedor.marcador}  ·  raw_ref: ${d.rawRef ?? "ninguno"}`,
         ),
-        "(ninguna)",
       ),
     );
   }
@@ -1193,7 +1187,6 @@ export function informeJornada(input: InformeInput): {
   push(
     "",
     BLOQUES[8],
-    "",
     `veredicto: ${veredicto.valor}${veredicto.rama === null ? "" : ` (${veredicto.rama})`}`,
     ...lista(
       veredicto.razones.map((r) => `  - ${r}`),
@@ -1207,11 +1200,10 @@ export function informeJornada(input: InformeInput): {
     );
   if (veredicto.rama === "c2")
     push(
-      "  rama (c2) ingesta sana y motor equivocado: no se repite. El crudo vive 30",
-      "  días (ADR-007 §5) y src/decide/replay.ts es determinista, así que se",
-      "  corrige el motor, se recalcula el log de Decisions sobre las observaciones",
-      "  guardadas y el informe se rehace con los números del replay, anotando que",
-      "  la latencia interna se midió sobre la ejecución original.",
+      "  rama (c2) ingesta sana y motor equivocado: no se repite. El crudo vive 30 días",
+      "  (ADR-007 §5) y src/decide/replay.ts es determinista: se corrige el motor, se recalcula",
+      "  el log de Decisions sobre las observaciones guardadas y el informe se rehace con los",
+      "  números del replay, anotando que la latencia interna se midió sobre la original.",
     );
   push(
     `salvedad de H-1: criterio 5 cerrado sobre ${palabra(competiciones.length)} competiciones de ${palabra(input.competicionesDeclaradas.length)};` +
