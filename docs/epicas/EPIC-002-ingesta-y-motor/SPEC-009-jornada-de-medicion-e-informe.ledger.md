@@ -805,6 +805,16 @@ tercera devolvió dos findings abiertos, ambos clasificados para martes 2026-09-
 El informe se recalcula entero desde filas append-only (30 días de retención) y su 
 camino es de **solo lectura**: la medición de campo puede correr tal cual está.
 
+**Añadido el 2026-09-23 — la enmienda de CA-9 (a) tiene consecuencia de código.** Alberto
+Fojo enmendó hoy la letra de CA-9 (a) (spec, **N-8**): un `postponed` en el que `board` y
+el proveedor coinciden es cierre legítimo y **no** baja el veredicto. `veredictoDe` de
+`src/ingest/informe.ts` mete hoy todo estado no-`finished` acordado en un solo cubo
+(`acordadosNoFinished`), así que hay que **partirlo en dos** —`postponed` acordado, que no
+baja; `suspended`/`scheduled`/`live` acordados, que siguen bajando a `válida con reservas`—.
+Se suma a la cola del **martes 29** y va **antes** de regenerar el informe, porque cambia el
+veredicto y no solo su maquetación. La ventana de incoherencia del lunes está en N-8 de la
+spec: no es un RED.
+
 **Hito por hito hasta el lunes 28:**
 
 - **miércoles 23**: ensayo de CA-6, guion byte a byte idéntico al de la 1ª ronda.
@@ -812,7 +822,7 @@ camino es de **solo lectura**: la medición de campo puede correr tal cual está
 - **sábado 26**: fixture `live-2026-09-26.json` de CA-8.
 - **domingo 27, 14:00Z-17:00Z**: filas de `referencias.csv` a mano (H-3).
 - **lunes 28**: informe de CA-10 en `_qa/SPEC-009/informe-jornada-2026-09-28.md`; veredicto de CA-9 con sus tres declaraciones (F-SPEC-009-1); paso de la spec a `en-revision`.
-- **martes 29**: V-8 y V-9 regenerados.
+- **martes 29**: la consecuencia de código de la enmienda de CA-9 (a) (N-8) **primero**, luego V-8 y V-9, y el informe regenerado.
 
 ### Avisos operativos para el lunes
 
