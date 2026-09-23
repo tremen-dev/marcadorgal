@@ -2,7 +2,7 @@
 
 > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.
 > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.
-> Última actualización: 2026-09-22 (SPEC-008 hecho).
+> Última actualización: 2026-09-23 (SPEC-011 hecho).
 
 ## Qué es y en qué punto está
 
@@ -29,6 +29,8 @@ jornada completa, en una sola pantalla y en galego. Proyecto de tremen.dev.
 **SPEC-009 — Jornada de medición e informe:** aprobada el 2026-09-21, pendiente de ejecución (2026-09-25 al 2026-09-28). Mide el desempeño del tick en la primera jornada real con partidos.
 
 EPIC-002 (ingesta y motor) en cierre: SPEC-005, SPEC-006, SPEC-007 y SPEC-008 hecho; última spec SPEC-009 aprobada y pendiente de medición en jornada real.
+
+**EPIC-FIX (correcciones urgentes):** SPEC-011 hecho. Arregla dos defectos de la ingesta: sin peticiones `live=` con un solo id de liga, y `ParseResult` gana cuarto canal `requestErrors` para guardar observaciones buenas aun si una petición falla. Entrada prioritaria para fallos que dañan medición en vivo.
 
 ### Herencia
 

@@ -10,6 +10,7 @@ import {
   type ParseResult,
   type RawCapture,
   type RawRequest,
+  type RequestError,
   type Skipped,
   type SourceAdapter,
   SourceId,
@@ -141,6 +142,24 @@ export type ApiFootballResultsOptions = {
   apiKey: string;
 };
 
+// RequestError.error is min(1): a failure with no message still has to say
+// something. Nothing is imported from the core here (D-4 boundary).
+const messageOf = (e: unknown): string => {
+  const message = e instanceof Error ? e.message : String(e);
+  return message.length > 0 ? message : "unreadable body";
+};
+
+// The live= query of a set of league ids, or null when there is no legal one
+// (SPEC-011 CA-1). The provider documents two forms for the field, ids joined
+// by hyphens and the string "all"; a single id is neither, and it answers 200
+// with errors. So with fewer than two leagues there is no live= request at
+// all: ids= covers the window, the same path N-10 already takes before any
+// kickoff.
+export function liveQuery(leagues: readonly number[]): string | null {
+  const ids = [...new Set(leagues)].sort((a, b) => a - b);
+  return ids.length < 2 ? null : `live=${ids.join("-")}`;
+}
+
 // Only the fixture ids of a live= body, to know what to ask ids= for (N-9).
 // States are not interpreted here: that is parse, over the full capture.
 function fixtureIdsIn(body: string): Set<string> {
@@ -222,16 +241,18 @@ export function createApiFootballResults({
       const now = Date.parse(ctx.now);
       const seen = new Set<string>();
       if (ctx.matches.some((m) => Date.parse(m.kickoff) <= now)) {
-        const leagues = [
-          ...new Set(
-            ctx.competitions
-              .map((c) => LEAGUES[c])
-              .filter((l): l is number => l !== undefined),
-          ),
-        ].sort((a, b) => a - b);
-        const live = await get(`live=${leagues.join("-")}`);
-        capture.requests.push(live);
-        for (const id of fixtureIdsIn(live.body)) seen.add(id);
+        const query = liveQuery(
+          ctx.competitions
+            .map((c) => LEAGUES[c])
+            .filter((l): l is number => l !== undefined),
+        );
+        // null: fewer than two leagues in window, so there is no live= the
+        // provider would accept (CA-1). ids= covers them all.
+        if (query !== null) {
+          const live = await get(query);
+          capture.requests.push(live);
+          for (const id of fixtureIdsIn(live.body)) seen.add(id);
+        }
       } // else N-10: nothing has kicked off, ids= covers NS
 
       const pending = ctx.matches
@@ -248,19 +269,28 @@ export function createApiFootballResults({
     parse(raw: RawCapture): ParseResult {
       // A fixture present in several requests counts once: the last wins.
       const fixtures = new Map<string, ProviderFixture>();
+      const requestErrors: RequestError[] = [];
       for (const request of raw.requests) {
-        const body = ProviderBody.parse(JSON.parse(request.body));
-        if (hasErrors(body.errors))
-          throw new Error(
-            `api-football returned errors: ${JSON.stringify(body.errors)}`,
-          );
-        for (const f of body.response) fixtures.set(String(f.fixture.id), f);
+        // Per request, not per capture (CA-2): a body with errors, a body that
+        // is not JSON or one that is not a fixtures response is recorded and
+        // the next request is still read. What the good ones brought is kept.
+        try {
+          const body = ProviderBody.parse(JSON.parse(request.body));
+          if (hasErrors(body.errors))
+            throw new Error(
+              `api-football returned errors: ${JSON.stringify(body.errors)}`,
+            );
+          for (const f of body.response) fixtures.set(String(f.fixture.id), f);
+        } catch (e) {
+          requestErrors.push({ url: request.url, error: messageOf(e) });
+        }
       }
 
       const result: ParseResult = {
         observations: [],
         unresolved: [],
         skipped: [],
+        requestErrors,
       };
       for (const [externalMatchId, f] of fixtures) {
         const short = f.fixture.status.short;

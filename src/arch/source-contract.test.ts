@@ -93,7 +93,7 @@ const memory: SourceAdapter = {
         minute: null,
       }));
     });
-    return { observations, unresolved: [], skipped: [] };
+    return { observations, unresolved: [], skipped: [], requestErrors: [] };
   },
   resolveTeam: () => null,
 };
@@ -117,7 +117,12 @@ const orphan: SourceAdapter = {
     orphanFetches++;
     return { sourceId: this.id, capturedAt: ctx.now, requests: [] };
   },
-  parse: () => ({ observations: [], unresolved: [], skipped: [] }),
+  parse: () => ({
+    observations: [],
+    unresolved: [],
+    skipped: [],
+    requestErrors: [],
+  }),
   resolveTeam: () => null,
 };
 
@@ -201,7 +206,11 @@ describe("CA-8 two sources behind SourceAdapter", () => {
       },
     ]);
     expect(orphanFetches).toBe(0);
-    expect(calls.some((u) => u.includes("live=141"))).toBe(true);
+    // SPEC-011 CA-1: this line used to assert "live=141", the bare league id
+    // the provider rejects, for the same reason results.test.ts asserted
+    // "?live=439". Only one competition is in window here, so there is no
+    // live= request at all and ids= carries the whole window.
+    expect(calls.some((u) => u.includes("live="))).toBe(false);
     expect(calls.some((u) => u.includes("ids=1569926"))).toBe(true);
     expect(calls.filter((u) => u.startsWith(MEMORY_URL))).toHaveLength(1);
   });

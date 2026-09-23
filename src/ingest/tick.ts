@@ -25,6 +25,11 @@ export type AttemptSummary = {
   unresolved: number;
   skippedItems: number;
   alerts: number;
+  // Requests of the capture the adapter could not interpret (SPEC-011 CA-5).
+  // An attempt with any of these is ok = false and still saved what the other
+  // requests brought: the report of the matchday can then tell an attempt with
+  // an incident from a lost one.
+  requestErrors: number;
 };
 
 export type TickSummary = {
@@ -89,7 +94,12 @@ const emptySummary = (
   unresolved: 0,
   skippedItems: 0,
   alerts: 0,
+  requestErrors: 0,
 });
+
+// The error of an attempt is one line: tick:salud prints it inline and the
+// report of the matchday has to explain every not ok row (SPEC-009 CA-7).
+const oneLine = (text: string): string => text.replace(/\s+/g, " ").trim();
 
 // One tick: retention, window, and one attempt per pull source and season.
 // Nothing is asked of a provider outside the window (RN-08) and the clock is
@@ -211,20 +221,35 @@ async function runAttempt(
       return count;
     });
 
+    // A request the adapter could not interpret does not undo the attempt: the
+    // observations of the others are already in. It does keep it off green,
+    // because an ok = true with a provider error inside would turn
+    // ingest_attempts.ok into "the tick did not crash" (N-2). No new AlertKind
+    // and no migration: a transport or request-shape failure is not a match
+    // state (D-9), and its home is this row (ADR-003).
+    const broken = parsed.requestErrors;
+    const ok = broken.length === 0;
+    const error = ok
+      ? undefined
+      : `${config.id}: ${broken.length} de ${requests} peticiones con error del proveedor: ${oneLine(broken[0].error)}`;
+
     const result: AttemptSummary = {
       ...base,
       attemptId,
-      ok: true,
+      ok,
+      error,
       rawRef: ref,
       requests,
       observations: observations.length,
       unresolved: parsed.unresolved.length,
       skippedItems: parsed.skipped.length,
       alerts,
+      requestErrors: broken.length,
     };
     await db.closeAttempt(attemptId, {
       finishedAt: now,
-      ok: true,
+      ok,
+      error,
       rawRef: ref,
       observations: observations.length,
       details: {
@@ -234,6 +259,7 @@ async function runAttempt(
         unresolved: result.unresolved,
         skipped: result.skippedItems,
         alerts,
+        requestErrors: broken.length,
       },
     });
     return result;

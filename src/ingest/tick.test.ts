@@ -65,6 +65,7 @@ const emptyParse: ParseResult = {
   observations: [],
   unresolved: [],
   skipped: [],
+  requestErrors: [],
 };
 
 type StubOptions = {
@@ -191,7 +192,7 @@ describe("CA-7 what the adapter receives", () => {
 });
 
 describe("CA-7 a successful attempt", () => {
-  const result: ParseResult = {
+  const result: ParseResult = ParseResult.parse({
     observations: [
       {
         matchId: "m1",
@@ -214,7 +215,8 @@ describe("CA-7 a successful attempt", () => {
     skipped: [
       { externalMatchId: "998", status: "WO", reason: "unsupported_status" },
     ],
-  } as ParseResult;
+    requestErrors: [],
+  });
 
   it("writes the observation with the core keys and opens the alert", async () => {
     const { db, store } = harness();
@@ -267,12 +269,12 @@ describe("CA-7 a successful attempt", () => {
   it("keeps the observedAt the adapter gives when it gives one", async () => {
     const { db, store } = harness();
     db.matches = [match("m1", "primera-division")];
-    const dated: ParseResult = {
+    const dated: ParseResult = ParseResult.parse({
       ...result,
       observations: [
         { ...result.observations[0], observedAt: "2026-09-25T18:29:00.000Z" },
       ],
-    } as ParseResult;
+    });
     await runTick({
       db,
       store,
@@ -432,6 +434,7 @@ describe("CA-7 afterInsert", () => {
       ],
       unresolved: [],
       skipped: [],
+      requestErrors: [],
     });
     let received: unknown[] = [];
     await runTick({
@@ -644,5 +647,179 @@ describe("CA-10 the engine sweep (H-2)", () => {
       log.indexOf("sweep"),
     );
     expect(log.indexOf("sweep")).toBe(log.length - 1);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// SPEC-011 CA-5 an attempt whose capture had a broken request keeps what the
+// good ones brought, and is still ok = false.
+
+describe("SPEC-011 CA-5 a partial attempt", () => {
+  const LIVE_ERROR =
+    'api-football returned errors: {"live":"The Live field does not match the regular expression: [id-id-id...] or string: all."}';
+  const requestError = (i: number) => ({
+    url: `https://v3.football.api-sports.io/fixtures?live=43${i}`,
+    error: LIVE_ERROR,
+  });
+  const observation = {
+    matchId: "m1",
+    status: "live" as const,
+    score: { home: 1, away: 0 },
+    minute: 45,
+    addedMinute: 3,
+  };
+
+  it("saves the observations of the good request, closes ok false and counts the incident", async () => {
+    const { db, store } = harness();
+    db.matches = [match("m1", "primera-division")];
+    const result = ParseResult.parse({
+      observations: [observation],
+      unresolved: [],
+      skipped: [],
+      requestErrors: [requestError(9)],
+    });
+    const summary = await runTick({
+      db,
+      store,
+      sources: [PRIMERA],
+      adapterFor: () => stubAdapter({ result, capture: capture(2) }),
+      fetch: forbiddenFetch,
+      now: NOW,
+    });
+
+    // The observations are in: this is the whole point of the fix.
+    expect(db.observations).toHaveLength(1);
+    expect(db.observations[0]).toMatchObject({
+      matchId: "m1",
+      rawRef: expect.any(String),
+    });
+
+    const [attempt] = summary.attempts;
+    expect(attempt).toMatchObject({
+      ok: false,
+      requests: 2,
+      observations: 1,
+      requestErrors: 1,
+    });
+    expect(attempt.rawRef).toMatch(/^raw\//);
+    expect(attempt.error).toBe(
+      `primera-source: 1 de 2 peticiones con error del proveedor: ${LIVE_ERROR}`,
+    );
+
+    const close = db.attempts[0].close;
+    expect(close).toMatchObject({
+      ok: false,
+      observations: 1,
+      details: {
+        season: "2026-27",
+        matches: 1,
+        requests: 2,
+        unresolved: 0,
+        skipped: 0,
+        alerts: 0,
+        requestErrors: 1,
+      },
+    });
+    expect(close?.rawRef).toBe(attempt.rawRef);
+    expect(close?.error).toContain("1 de 2 peticiones con error del proveedor");
+    // One line, so tick:salud and the report of the matchday stay readable.
+    expect(close?.error).not.toContain("\n");
+  });
+
+  it("runs afterInsert and opens the alerts of a partial attempt, in the same transaction", async () => {
+    const log: string[] = [];
+    const { db, store } = harness({ log });
+    db.matches = [match("m1", "primera-division")];
+    const result = ParseResult.parse({
+      observations: [observation],
+      unresolved: [
+        {
+          reason: "unknown_team",
+          externalCompetition: "140",
+          externalMatchId: "999",
+          home: { externalId: "1", externalName: "Home FC" },
+          away: { externalId: "2", externalName: "Away FC" },
+          status: "NS",
+        },
+      ],
+      skipped: [],
+      requestErrors: [requestError(9)],
+    });
+    const summary = await runTick({
+      db,
+      store,
+      sources: [PRIMERA],
+      adapterFor: () => stubAdapter({ result, capture: capture(2), log }),
+      fetch: forbiddenFetch,
+      now: NOW,
+      afterInsert: async () => {
+        log.push("afterInsert");
+      },
+    });
+    expect(summary.attempts[0]).toMatchObject({
+      ok: false,
+      alerts: 1,
+      requestErrors: 1,
+    });
+    expect(db.alerts).toHaveLength(1);
+    expect(log.indexOf("begin")).toBeLessThan(log.indexOf("afterInsert"));
+    expect(log.indexOf("afterInsert")).toBeLessThan(log.indexOf("commit"));
+    // Raw before parse holds, exactly as before (RN-09).
+    expect(log.findIndex((l) => l.startsWith("put:"))).toBeLessThan(
+      log.indexOf("parse"),
+    );
+  });
+
+  it("with every request broken closes ok false with no observation and the full count", async () => {
+    const { db, store } = harness();
+    db.matches = [match("m1", "primera-division")];
+    const result = ParseResult.parse({
+      observations: [],
+      unresolved: [],
+      skipped: [],
+      requestErrors: [requestError(9), requestError(5)],
+    });
+    const summary = await runTick({
+      db,
+      store,
+      sources: [PRIMERA],
+      adapterFor: () => stubAdapter({ result, capture: capture(2) }),
+      fetch: forbiddenFetch,
+      now: NOW,
+    });
+    expect(db.observations).toEqual([]);
+    expect(summary.attempts[0]).toMatchObject({
+      ok: false,
+      observations: 0,
+      requestErrors: 2,
+    });
+    expect(summary.attempts[0].error).toBe(
+      `primera-source: 2 de 2 peticiones con error del proveedor: ${LIVE_ERROR}`,
+    );
+    expect(db.attempts[0].close).toMatchObject({
+      ok: false,
+      observations: 0,
+      details: { requests: 2, requestErrors: 2 },
+    });
+    // It still kept the raw: that is how this was diagnosed at all.
+    expect(db.attempts[0].close?.rawRef).toMatch(/^raw\//);
+  });
+
+  it("a clean capture is still ok true, with the count at zero", async () => {
+    const { db, store } = harness();
+    db.matches = [match("m1", "primera-division")];
+    const summary = await runTick({
+      db,
+      store,
+      sources: [PRIMERA],
+      adapterFor: () => stubAdapter(),
+      fetch: forbiddenFetch,
+      now: NOW,
+    });
+    expect(summary.attempts[0]).toMatchObject({ ok: true, requestErrors: 0 });
+    expect(summary.attempts[0].error).toBeUndefined();
+    const details = db.attempts[0].close?.details as { requestErrors?: number };
+    expect(details.requestErrors ?? 0).toBe(0);
+    expect(db.attempts[0].close?.ok).toBe(true);
   });
 });
