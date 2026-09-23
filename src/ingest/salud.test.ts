@@ -162,6 +162,38 @@ describe("SPEC-008 CA-7 tickSalud", () => {
     expect(report.text).toContain("no alias for api-football 2026-27");
   });
 
+  // SPEC-011 CA-5: the partial attempt. Its observations are saved, and it is
+  // still ok = false, so the traffic light goes red and details says why.
+  it("a partial attempt is printed FALLO with its details and the verdict is REVISAR", () => {
+    const report = tickSalud(
+      clean({
+        attempts: [
+          {
+            startedAt: at(-2),
+            sourceId: "api-football",
+            ok: false,
+            error:
+              'api-football: 1 de 2 peticiones con error del proveedor: api-football returned errors: {"live":"The Live field does not match the regular expression: [id-id-id...] or string: all."}',
+            details: {
+              season: "2026-27",
+              matches: 3,
+              requests: 2,
+              unresolved: 0,
+              skipped: 0,
+              alerts: 0,
+              requestErrors: 1,
+            },
+          },
+        ],
+      }),
+    );
+    expect(report.ok).toBe(false);
+    expect(report.text).toContain("REVISAR: el tick no está sano");
+    expect(report.text).toContain("FALLO");
+    expect(report.text).toContain("1 de 2 peticiones con error del proveedor");
+    expect(report.text).toContain('"requestErrors":1');
+  });
+
   // Case 7 of CA-7: the brand new database. This is the one case that (c)
   // has to keep green, and the one a lazy implementation of (c) breaks.
   it("with no row anywhere, and an empty cron.job, it is a new database and not a dead tick", () => {

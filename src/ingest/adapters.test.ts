@@ -6,7 +6,12 @@ import { type AdapterTable, adapterFor } from "./adapters.ts";
 
 const config = SOURCES[0];
 const env = { API_FOOTBALL_KEY: "not-a-real-key" };
-const empty: ParseResult = { observations: [], unresolved: [], skipped: [] };
+const empty: ParseResult = {
+  observations: [],
+  unresolved: [],
+  skipped: [],
+  requestErrors: [],
+};
 
 describe("CA-5 adapterFor", () => {
   it("builds the api-football adapter with the season alias", () => {

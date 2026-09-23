@@ -10,7 +10,7 @@ import {
   type RawCapture,
   type WindowMatch,
 } from "../../model/index.ts";
-import { createApiFootballResults } from "./results.ts";
+import { createApiFootballResults, liveQuery } from "./results.ts";
 
 const readJson = (rel: string): unknown =>
   JSON.parse(readFileSync(new URL(rel, import.meta.url), "utf8"));
@@ -175,7 +175,11 @@ describe("CA-5 createApiFootballResults", () => {
     expect(query(calls[0])).toMatch(/^\?ids=\d+-\d+-\d+$/);
   });
 
-  it("omits window matches without a match alias", async () => {
+  // SPEC-011 CA-3 (ii): this case used to assert "?live=439" — the bare league
+  // id the provider answers 200-with-errors to. A test stating the defect is
+  // why it survived months, so the shape it fixes is now the right one: a
+  // single competition in window asks no live= at all.
+  it("omits window matches without a match alias, and with its single competition asks no live=", async () => {
     const past = "2026-09-26T15:00:00Z";
     const known = windowMatch(
       "tercera-rfef-g1-2026-27-j4-atletico-arteixo-alondras",
@@ -187,18 +191,19 @@ describe("CA-5 createApiFootballResults", () => {
     };
     const { fetch, calls } = stubFetch(() => ({ body: { response: [] } }));
     await adapter.fetch?.(ctxWith([known, unknown], fetch));
-    expect(calls.map(query)).toEqual([
-      "?live=439",
-      `?ids=${fixtureIdOf.get(known.id)}`,
-    ]);
+    expect(calls.map(query)).toEqual([`?ids=${fixtureIdOf.get(known.id)}`]);
+    for (const c of calls) expect(c.url).not.toContain("live=");
   });
 
   it("sends the key and the user agent on every request and keeps the key out of the capture", async () => {
     const past = "2026-09-26T15:00:00Z";
-    const matches = byCompetition("segunda-rfef-g1", 2).map((m) => ({
-      ...m,
-      kickoff: past,
-    }));
+    // Two competitions on purpose, so the capture still holds a live= request
+    // and this case keeps checking that the key travels on that one too
+    // (SPEC-011 CA-1: with one competition there is no live= any more).
+    const matches = [
+      ...byCompetition("segunda-rfef-g1", 1),
+      ...byCompetition("primera-rfef-g1", 1),
+    ].map((m) => ({ ...m, kickoff: past }));
     const { fetch, calls } = stubFetch(() => ({ body: { response: [] } }));
     const raw = await adapter.fetch?.(ctxWith(matches, fetch));
     expect(calls).toHaveLength(2);
@@ -222,6 +227,55 @@ describe("CA-5 createApiFootballResults", () => {
     await expect(adapter.fetch?.(ctxWith(matches, fetch))).rejects.toThrow(
       "api-football responded 429",
     );
+  });
+});
+
+// ---------------------------------------------------------------------------
+// SPEC-011 CA-1 live= is never emitted with fewer than two league ids
+
+describe("SPEC-011 CA-1 liveQuery", () => {
+  it("is null with no league and with a single one: neither is a form the provider accepts", () => {
+    expect(liveQuery([])).toBeNull();
+    expect(liveQuery([439])).toBeNull();
+  });
+
+  it("joins unique league ids ascending from two on", () => {
+    expect(liveQuery([439, 141, 439])).toBe("live=141-439");
+    expect(liveQuery([875, 140, 141, 435, 439])).toBe(
+      "live=140-141-435-439-875",
+    );
+  });
+
+  it("asks no live= with a single competition in window and a kickoff already past: ids= covers it", async () => {
+    const past = "2026-09-26T15:00:00Z";
+    const matches = byCompetition("segunda-division", 2).map((m) => ({
+      ...m,
+      kickoff: past,
+    }));
+    const { fetch, calls } = stubFetch(() => ({ body: { response: [] } }));
+    const raw = await adapter.fetch?.(ctxWith(matches, fetch));
+    const ids = matches
+      .map((m) => Number(fixtureIdOf.get(m.id)))
+      .sort((a, b) => a - b);
+    expect(calls.map(query)).toEqual([`?ids=${ids.join("-")}`]);
+    expect(raw?.requests).toHaveLength(1);
+  });
+
+  it("still asks live= exactly as today with two competitions in window", async () => {
+    const past = "2026-09-26T15:00:00Z";
+    const matches = [
+      ...byCompetition("segunda-division", 1),
+      ...byCompetition("tercera-rfef-g1", 1),
+    ].map((m) => ({ ...m, kickoff: past }));
+    const { fetch, calls } = stubFetch(() => ({ body: { response: [] } }));
+    await adapter.fetch?.(ctxWith(matches, fetch));
+    const ids = matches
+      .map((m) => Number(fixtureIdOf.get(m.id)))
+      .sort((a, b) => a - b);
+    expect(calls.map(query)).toEqual([
+      "?live=141-439",
+      `?ids=${ids.join("-")}`,
+    ]);
   });
 });
 
@@ -316,27 +370,74 @@ describe("CA-6 parse is pure", () => {
     expect(ParseResult.safeParse(result).success).toBe(true);
     expect(result.unresolved).toEqual([]);
     expect(result.skipped).toEqual([]);
+    expect(result.requestErrors).toEqual([]);
     expect(result.observations).toHaveLength(idsFixture.response.length);
     for (const o of result.observations)
       expect(o).not.toHaveProperty("observedAt");
   });
 
-  it("throws on a body with non-empty errors (provider rate limit)", () => {
+  // SPEC-011 CA-2: the three cases below used to expect an exception. An
+  // exception threw away the whole capture, the good requests with the bad
+  // one, which is what turned one wasted request into zero observations.
+  it("records a body with non-empty errors as a requestError instead of throwing", () => {
     const limited = {
       ...body(byId(BASE)),
       errors: { rateLimit: "Too many requests" },
     };
-    expect(() => adapter.parse(capture(limited))).toThrow(/rateLimit/);
-    expect(() =>
-      adapter.parse(capture({ ...body(), errors: ["something"] })),
-    ).toThrow();
+    const result = adapter.parse(capture(limited));
+    expect(result.observations).toEqual([]);
+    expect(result.requestErrors).toHaveLength(1);
+    expect(result.requestErrors[0].url).toBe(
+      "https://v3.football.api-sports.io/fixtures?ids=0",
+    );
+    expect(result.requestErrors[0].error).toMatch(/rateLimit/);
+    const asArray = adapter.parse(
+      capture({ ...body(), errors: ["something"] }),
+    );
+    expect(asArray.requestErrors).toHaveLength(1);
+    expect(asArray.requestErrors[0].error).toMatch(/something/);
   });
 
-  it("throws on a body that is not JSON or not a fixtures response", () => {
+  it("records a body that is not JSON or not a fixtures response as a requestError", () => {
     const raw = capture(body());
     raw.requests[0].body = "<html>";
-    expect(() => adapter.parse(raw)).toThrow();
-    expect(() => adapter.parse(capture({ nope: true }))).toThrow();
+    const notJson = adapter.parse(raw);
+    expect(notJson.observations).toEqual([]);
+    expect(notJson.requestErrors).toHaveLength(1);
+    expect(notJson.requestErrors[0].error.length).toBeGreaterThan(0);
+    const notFixtures = adapter.parse(capture({ nope: true }));
+    expect(notFixtures.requestErrors).toHaveLength(1);
+    expect(notFixtures.requestErrors[0].url).toBe(
+      "https://v3.football.api-sports.io/fixtures?ids=0",
+    );
+  });
+
+  it("keeps the observations of the good requests when one request is broken", () => {
+    const result = adapter.parse(
+      capture({ ...body(), errors: { live: "nope" } }, body(byId(BASE))),
+    );
+    expect(result.observations).toHaveLength(1);
+    expect(result.observations[0]).toMatchObject({ matchId: BASE_MATCH });
+    expect(result.requestErrors).toHaveLength(1);
+    expect(result.requestErrors[0].url).toBe(
+      "https://v3.football.api-sports.io/fixtures?ids=0",
+    );
+    expect(ParseResult.safeParse(result).success).toBe(true);
+  });
+
+  it("with every request unreadable gives three empty channels and one requestError each", () => {
+    const raw = capture(body(), body());
+    raw.requests[0].body = "<html>";
+    raw.requests[1].body = "{";
+    const result = adapter.parse(raw);
+    expect(result.observations).toEqual([]);
+    expect(result.unresolved).toEqual([]);
+    expect(result.skipped).toEqual([]);
+    expect(result.requestErrors).toHaveLength(2);
+    expect(result.requestErrors.map((r) => r.url)).toEqual(
+      raw.requests.map((r) => r.url),
+    );
+    expect(ParseResult.safeParse(result).success).toBe(true);
   });
 
   it("counts a fixture present in several requests once, keeping the last", () => {
@@ -591,6 +692,141 @@ describe("CA-6 identity is all-or-nothing (RN-10)", () => {
     expect(result.unresolved).toHaveLength(1);
     expect(result.skipped).toHaveLength(1);
     expect(ParseResult.safeParse(result).success).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// SPEC-011 CA-4 the night of 2026-09-22, reproduced from the repo and never
+// from the network: the two requests of one failed attempt, the live= one that
+// the provider answered 200-with-errors and the ids= one that brought the
+// match. Before the fix the second was thrown away with the first.
+
+describe("SPEC-011 CA-4 the failed attempt of 2026-09-22", () => {
+  const errorsFixture = readJson(
+    "./fixtures/errors-live-2026-09-22.json",
+  ) as ProviderBody & { parameters: { live: string } };
+  const LIVE_ERROR = "The Live field does not match the regular expression";
+  const LIVE_URL = "https://v3.football.api-sports.io/fixtures?live=439";
+  const IDS_URL = `https://v3.football.api-sports.io/fixtures?ids=${
+    (idsFixture as unknown as { parameters: { ids: string } }).parameters.ids
+  }`;
+  const night: RawCapture = {
+    sourceId: "api-football" as RawCapture["sourceId"],
+    capturedAt: "2026-09-22T22:07:38Z" as Instant,
+    requests: [
+      {
+        url: LIVE_URL,
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(errorsFixture),
+      },
+      {
+        url: IDS_URL,
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(idsFixture),
+      },
+    ],
+  };
+
+  it("the fixture is the body of a 200 that carries errors and no fixture", () => {
+    expect(errorsFixture.parameters.live).toBe("439");
+    expect(errorsFixture.response).toEqual([]);
+    expect(errorsFixture.results).toBe(0);
+    expect(JSON.stringify(errorsFixture.errors)).toContain(LIVE_ERROR);
+    // N-5: the body, never a key. Neither the provider's nor the bucket's.
+    expect(JSON.stringify(errorsFixture)).not.toMatch(/apisports|raw\//);
+  });
+
+  it("parse keeps the observations of the ids= request and records the live= one", () => {
+    const result = adapter.parse(night);
+    expect(ParseResult.safeParse(result).success).toBe(true);
+
+    expect(result.requestErrors).toHaveLength(1);
+    expect(result.requestErrors[0].url).toBe(LIVE_URL);
+    expect(result.requestErrors[0].error).toContain(LIVE_ERROR);
+
+    expect(result.observations.length).toBeGreaterThanOrEqual(1);
+    expect(result.observations).toHaveLength(idsFixture.response.length);
+    expect(result.observations).toContainEqual({
+      matchId: "segunda-division-2026-27-j6-albacete-cordoba",
+      status: "finished",
+      score: { home: 1, away: 2 },
+      minute: null,
+    });
+    expect(
+      result.observations.filter(
+        (o) => o.status === "finished" && o.score !== null,
+      ).length,
+    ).toBeGreaterThanOrEqual(3);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// SPEC-011 CA-3 the invariant that stops this from coming back. Generated over
+// the 31 non-empty subsets of the five competitions of D-3, not written by
+// hand: the shape with a bare league id cannot be forgotten again because
+// there is no case for anybody to forget to write.
+
+describe("SPEC-011 CA-3 no capture ever carries a live= with a single id", () => {
+  const BARE_LIVE = /[?&]live=\d+$/;
+  const PAST = "2026-09-26T15:00:00Z" as Instant;
+  const subsets: CompetitionId[][] = Array.from(
+    { length: 2 ** COMPETITIONS.length - 1 },
+    (_, i) => COMPETITIONS.filter((_c, bit) => ((i + 1) >> bit) & 1),
+  );
+
+  it("covers the 31 non-empty subsets, each one once", () => {
+    expect(subsets).toHaveLength(31);
+    expect(new Set(subsets.map((s) => s.join(","))).size).toBe(31);
+    expect(subsets.filter((s) => s.length === 1)).toHaveLength(5);
+    expect(subsets.filter((s) => s.length === 5)).toHaveLength(1);
+  });
+
+  it.each(subsets.map((s) => [s.join("+"), s] as const))(
+    "%s",
+    async (_name, subset) => {
+      const matches = subset.flatMap((c) =>
+        byCompetition(c, 2).map((m) => ({ ...m, kickoff: PAST })),
+      );
+      expect(matches.length).toBe(subset.length * 2);
+      const { fetch, calls } = stubFetch(() => ({ body: { response: [] } }));
+      const raw = await adapter.fetch?.(ctxWith(matches, fetch, PAST));
+      const urls = raw?.requests.map((r) => r.url) ?? [];
+      expect(urls).toEqual(calls.map((c) => c.url));
+
+      // (i) the forbidden shape, in both readings: as the tail of the query
+      // and as the value of the field, whatever else the query carries.
+      for (const url of urls) {
+        expect(url).not.toMatch(BARE_LIVE);
+        const live = new URL(url).searchParams.get("live");
+        if (live !== null) expect(live).not.toMatch(/^\d+$/);
+      }
+
+      // With a single competition there is no live= request at all; from two
+      // on there is exactly one.
+      const withLive = urls.filter((u) => new URL(u).searchParams.has("live"));
+      expect(withLive).toHaveLength(subset.length === 1 ? 0 : 1);
+
+      // (a) of CA-6: the request count per tick, subset by subset. It is
+      // 1 + ceil(n/20) at most and never more than before the fix.
+      const pending = matches.filter((m) => fixtureIdOf.has(m.id));
+      const idsRequests = Math.ceil(pending.length / 20);
+      expect(urls).toHaveLength((subset.length === 1 ? 0 : 1) + idsRequests);
+      expect(urls.length).toBeLessThanOrEqual(1 + idsRequests);
+    },
+  );
+
+  // (iii) the fix must not degenerate into "never ask live=".
+  it("(iii) the full subset still asks the five league ids", async () => {
+    const matches = COMPETITIONS.flatMap((c) =>
+      byCompetition(c, 2).map((m) => ({ ...m, kickoff: PAST })),
+    );
+    const { fetch, calls } = stubFetch(() => ({ body: { response: [] } }));
+    await adapter.fetch?.(ctxWith(matches, fetch, PAST));
+    // Ascending, as CA-1 requires: 875 is Segunda RFEF and sorts after 439.
+    expect(query(calls[0])).toBe("?live=140-141-435-439-875");
+    expect(calls).toHaveLength(2);
   });
 });
 
