@@ -1,0 +1,185 @@
+# Captura del fixture `live=` de CA-8 (SPEC-009), sin depender del portátil.
+#
+# TEMPORAL: se borra al cerrar SPEC-009. Existe porque la captura tiene una
+# ventana de media hora el sábado 2026-09-26 y el titular está conduciendo.
+#
+# No se dispara por `schedule` a propósito: un workflow programado solo corre
+# desde la rama por omisión, y empujar a `main` durante la ventana de medición
+# redespliega producción en Vercel — que es justo la intervención sobre la
+# plataforma que H-2 (ii) castiga bajando el veredicto a `válida con reservas`.
+# Se dispara empujando una rama `captura-ca8`, que no toca `main` ni producción:
+#
+#   git push -f origin HEAD:captura-ca8
+#
+# El job espera hasta `DESDE`, pide cada `CADA_MIN` minutos hasta `HASTA`, acepta
+# en cuanto ve `LIGAS_OBJETIVO` de las cinco ligas en juego a la vez y se queda
+# con la mejor captura de la ventana. El resultado se sube como artefacto y se
+# commitea en la propia rama `captura-ca8`, nunca en la rama de la spec: así una
+# captura local del portátil y esta no pueden divergir.
+#
+# Límite duro de GitHub: 6 h por job. Empújalo el sábado DESPUÉS de las 09:50Z.
+name: captura-ca8
+
+on:
+  push:
+    branches: [captura-ca8]
+  workflow_dispatch:
+
+jobs:
+  capturar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    permissions:
+      contents: write
+    env:
+      DESDE: '2026-09-26T15:10:00Z'
+      HASTA: '2026-09-26T15:50:00Z'
+      CADA_MIN: '5'
+      LIGAS_OBJETIVO: '4'
+      DEST: src/sources/api-football/fixtures/live-2026-09-26.json
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Esperar la ventana y capturar
+        shell: bash
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        run: |
+          cat > "$RUNNER_TEMP/captura.mjs" <<'EOF'
+          import { appendFileSync, writeFileSync } from "node:fs";
+
+          const LIGAS = [140, 141, 435, 875, 439];
+          const URL = `https://v3.football.api-sports.io/fixtures?live=${LIGAS.join("-")}`;
+          const UA = "marcador.gal (ingesta; https://marcador.gal)";
+          const KEY = process.env.API_FOOTBALL_KEY;
+          const DEST = process.env.DEST;
+          const desde = new Date(process.env.DESDE);
+          const hasta = new Date(process.env.HASTA);
+          const cada = Number(process.env.CADA_MIN) * 60_000;
+          const objetivo = Number(process.env.LIGAS_OBJETIVO);
+
+          const iso = (d) => `${d.toISOString().slice(0, 19)}Z`;
+          const log = (...a) => console.log(`${iso(new Date())} ·`, ...a);
+          const dormir = (ms) => new Promise((r) => setTimeout(r, ms));
+          const resumen = (t) => {
+            if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${t}\n`);
+          };
+
+          if (!KEY) {
+            console.error("API_FOOTBALL_KEY no llegó al job");
+            process.exit(1);
+          }
+          // El job muere a las 6 h: más vale decirlo ahora que a las 5 h 59.
+          const espera = desde.getTime() - Date.now();
+          if (espera > 5.2 * 3600_000) {
+            console.error(`Faltan ${(espera / 3600_000).toFixed(1)} h para ${iso(desde)} y el job dura 6 h como mucho.`);
+            console.error("Vuelve a empujar la rama más cerca de la ventana (después de las 09:50Z).");
+            process.exit(1);
+          }
+          if (Date.now() > hasta.getTime()) {
+            console.error(`La ventana (${iso(desde)} → ${iso(hasta)}) ya pasó.`);
+            process.exit(1);
+          }
+
+          let peticiones = 0;
+          async function pedir() {
+            peticiones++;
+            const res = await fetch(URL, { headers: { "x-apisports-key": KEY, "User-Agent": UA } });
+            const texto = await res.text();
+            let cuerpo;
+            try {
+              cuerpo = JSON.parse(texto);
+            } catch {
+              return { http: res.status, texto, error: "el cuerpo no es JSON" };
+            }
+            const errs = cuerpo.errors;
+            const conErrores = Array.isArray(errs) ? errs.length > 0 : Object.keys(errs || {}).length > 0;
+            const partidos = Array.isArray(cuerpo.response) ? cuerpo.response : [];
+            const ligas = [...new Set(partidos.map((f) => f.league?.id).filter((id) => LIGAS.includes(id)))];
+            const estados = {};
+            for (const f of partidos) {
+              const s = f.fixture?.status?.short ?? "?";
+              estados[s] = (estados[s] || 0) + 1;
+            }
+            const results = cuerpo.results ?? partidos.length;
+            return { http: res.status, texto, error: conErrores ? `200 con errors: ${JSON.stringify(errs)}` : null, results, ligas, estados };
+          }
+
+          const linea = (c) =>
+            c.error
+              ? `HTTP ${c.http} · ${c.error}`
+              : `HTTP ${c.http} · results ${c.results} · ligas [${c.ligas.join(", ")}] · ${
+                  Object.entries(c.estados).map(([k, v]) => `${v}×${k}`).join(" ") || "sin partidos"
+                }`;
+
+          if (espera > 0) {
+            log(`esperando a ${iso(desde)} (${Math.round(espera / 60_000)} min)`);
+            await dormir(espera);
+          }
+
+          let mejor = null;
+          for (;;) {
+            const c = await pedir();
+            log(linea(c));
+            if (!c.error && c.results > 0) {
+              const mejora = !mejor || c.ligas.length > mejor.c.ligas.length || (c.ligas.length === mejor.c.ligas.length && c.results > mejor.c.results);
+              if (mejora) mejor = { c, cuando: iso(new Date()) };
+              if (c.ligas.length >= objetivo) {
+                log(`${c.ligas.length} ligas en juego: suficiente, se acepta`);
+                break;
+              }
+              log(`solo ${c.ligas.length} liga(s): se guarda como mejor y se reintenta`);
+            }
+            if (Date.now() + cada > hasta.getTime()) break;
+            await dormir(cada);
+          }
+
+          if (!mejor) {
+            resumen("## Captura de CA-8: **NADA**\n\nNinguna respuesta válida en la ventana. No se ha escrito ningún fixture.");
+            console.error("Ninguna captura válida en la ventana. Nada escrito.");
+            process.exit(1);
+          }
+
+          const { c, cuando } = mejor;
+          writeFileSync(DEST, c.texto);
+          const kb = (Buffer.byteLength(c.texto) / 1024).toFixed(0);
+          const estados = Object.entries(c.estados).map(([k, v]) => `${v} \`${k}\``).join(", ");
+          log(`ESCRITO ${DEST} (${kb} KB) de la captura de ${cuando}`);
+          resumen(`## Captura de CA-8: **hecha** · ${cuando}`);
+          resumen(`\n\`results: ${c.results}\` · ligas ${c.ligas.join(", ")} · ${estados} · ${kb} KB · ${peticiones} petición(es) manuales\n`);
+          resumen("Fila para `src/sources/api-football/fixtures/README.md`:\n");
+          resumen("```");
+          resumen(
+            `| \`live-2026-09-26.json\` | \`GET /fixtures?live=${LIGAS.join("-")}\` | ${cuando} | ninguno (\`results: ${c.results}\`) | ${c.results} partidos en juego de ${c.ligas.length} de las cinco ligas (${c.ligas.join(", ")}): ${estados} |`,
+          );
+          resumen("```");
+          resumen(`\nAnota en la bitácora: **${peticiones} petición(es) manuales** al proveedor, fuera del tick.`);
+          EOF
+          node "$RUNNER_TEMP/captura.mjs"
+
+      - name: Subir el fixture como artefacto
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-2026-09-26
+          path: ${{ env.DEST }}
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Commitear en la rama captura-ca8
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "$(git status --porcelain "$DEST")" ]; then
+            echo "Sin cambios en $DEST: nada que commitear."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST"
+          git commit -m "chore(SPEC-009): captura del fixture live-2026-09-26 (CA-8)"
+          git push origin "HEAD:refs/heads/captura-ca8"
