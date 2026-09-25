@@ -35,7 +35,8 @@ Instantes en UTC con `Z`. Lo que no esté aquí, el lunes no existió.
 
 | Instante | Petición | Motivo |
 |---|---|---|
-| 2026-09-25T19:07:09Z | `GET /fixtures?live=…` | prueba del script de captura de CA-8 (no se escribió fixture) |
+| 2026-09-25T19:07:09Z | `GET /fixtures?live=…` | prueba del script local de captura de CA-8 (no se escribió fixture) |
+| 2026-09-25T19:36:00Z | `GET /fixtures?live=…` | ensayo del workflow `captura-ca8` en GitHub Actions (run 36180127367; fixture de prueba, borrado) |
 
 ## Incidencias y rarezas
 
