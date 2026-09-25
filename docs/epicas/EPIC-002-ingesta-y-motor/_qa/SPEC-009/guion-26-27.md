@@ -63,17 +63,25 @@ en juego, que es lo que CA-8 pide del fixture:
 | `amorebieta-ourense-cf` | Segunda Fed. G1 | 15:00Z |
 | `atletico-arteixo-alondras` | Terceira Fed. G1 | 15:00Z |
 
-**Automatizado** (ver «Automatización» al final). Basta lanzarlo por la mañana
-y olvidarse:
+**Automatizado, y en la nube** (ver «Automatización» al final). Antes de salir
+de casa, en cualquier momento entre las 09:50Z y las 15:00Z:
+
+```sh
+git push -f origin HEAD:captura-ca8
+```
+
+Eso arranca el workflow `captura-ca8` en GitHub Actions, que espera a las
+15:10Z, pide cada 5 min hasta ver **≥ 4 de las cinco ligas en juego a la vez**,
+se queda con la mejor captura de la ventana, escribe el fixture, lo **commitea
+en la rama `captura-ca8`**, lo sube como artefacto y deja en el resumen del run
+—visible desde el móvil— la fila del README ya redactada y cuántas peticiones
+manuales anotar en la bitácora. No depende del portátil.
+
+Plan B local, si se prefiere el portátil despierto y en casa:
 
 ```sh
 caffeinate -i node $SCRIPT
 ```
-
-Espera a las 15:10Z, pide cada 5 min hasta que haya **≥ 4 de las cinco ligas en
-juego**, se queda con la mejor captura de la ventana, escribe el fixture,
-imprime la fila del README ya redactada y anota la petición manual en la
-bitácora. Si no hay ninguna captura válida no escribe nada y lo dice.
 
 A mano, si se prefiere, el `curl` sigue en el README de fixtures. En ese caso
 hay que comprobar a ojo que el fichero trae partidos (`results` > 0 y varios
@@ -235,6 +243,39 @@ Esa es exactamente la promesa que se está midiendo.
 ---
 
 ## Automatización
+
+### En la nube: `.github/workflows/captura-ca8.yml` (lo principal)
+
+Se dispara **empujando la rama** `captura-ca8`, no por `schedule`. La razón no
+es capricho: un workflow programado solo corre desde la rama por omisión, y
+empujar a `main` en mitad de la ventana redespliega producción en Vercel — que
+es exactamente la intervención sobre la plataforma que H-2 (ii) castiga bajando
+el veredicto a `válida con reservas`. Empujar `captura-ca8` no toca `main`, ni
+producción, ni el tick.
+
+```sh
+git push -f origin HEAD:captura-ca8      # entre las 09:50Z y las 15:00Z del sábado
+```
+
+- **Por qué a partir de las 09:50Z**: un job de GitHub dura **6 h** como mucho y
+  el job se pasa esperando a la ventana. Si se empuja antes, el script se niega
+  a arrancar y lo dice, en vez de morir a las 5 h 59.
+- Usa el secreto `API_FOOTBALL_KEY` **que ya existe** en el repo desde el
+  2026-09-19 (lo usa `calendario-semanal.yml`): la clave no sale a ningún sitio
+  nuevo.
+- El fixture se commitea en `captura-ca8`, **nunca** en la rama de la spec, para
+  que una captura local y esta no puedan divergir. El sábado por la noche se
+  trae con `git checkout captura-ca8 -- src/sources/api-football/fixtures/live-2026-09-26.json`.
+- Es **temporal**: se borra al cerrar SPEC-009, junto con la rama.
+
+**Ensayado el viernes 25 a las 19:36Z** con ventana y destino de prueba (run
+`36180127367`): esperó los 5 min, pidió en el instante exacto —`HTTP 200 ·
+results 1 · ligas [141] · 1×2H`, Girona-Albacete en la segunda parte—, escribió
+el fichero, subió el artefacto y el commit de vuelta entró en la rama. El
+secreto llegó al job y no apareció en ningún log. Rastro del ensayo borrado
+después: artefacto, rama y commit de prueba.
+
+### En local: el script del portátil (plan B)
 
 `$SCRIPT` = `/private/tmp/claude-501/-Users-albertofojo-src-marcadorgal/74978667-03b6-44e2-88d8-70eaee36f05f/scratchpad/captura-ca8.mjs`
 
