@@ -59,16 +59,37 @@ Medido en solo lectura el sábado 26 a las 10:20Z sobre `observations` y
 - **Lo que publicó el motor**: subió a 2-1 en la v61 (RN-01) y desde la v62
   **sostuvo 2-1 bajo RN-03** durante 37 minutos, cerrando el partido en
   **`finished 2-1`**. Abrió la alerta, que es lo que tiene que hacer.
-- **Consecuencia para el lunes**: `--contrastar` de CA-5 va a encontrar una
-  **discrepancia** en este partido (nosotros `2-1`, el proveedor `2-0`). Eso es
-  «los dos lados dicen cosas distintas», o sea candidato a la rama **(c2)** de
-  CA-9: ingesta sana y motor equivocado. Que es la rama **buena** de las dos:
-  no se repite la jornada, se corrige el motor y se recalcula el log sobre las
-  observaciones guardadas (ADR-004, SPEC-007 CA-8).
-- **Lo que falta para saber quién tenía razón**: el resultado real del partido.
-  Si acabó 2-0, RN-03 no sabe aceptar una corrección a la baja confirmada por 74
-  observaciones seguidas y hay defecto de motor. Si acabó 2-1, el proveedor se
-  equivocó y RN-03 nos salvó. **Se comprueba a mano**, con la misma fuente
-  externa del domingo, y se anota aquí.
+- **Referencia externa (Alberto Fojo, sábado 26): el partido acabó 2-0.** Fuente:
+  crónica de Marca del 2026-09-25. O sea que **el marcador publicado era falso**
+  y el `finished` con el que cerramos también.
+- **El tamaño del defecto, medido**: las 75 observaciones que van de 19:46:04Z a
+  20:23:06Z dicen **2-0 las 75, sin una sola discrepancia**; el motor sostuvo
+  2-1 durante **37,0 min** y emitió **39 de sus 100 decisiones bajo RN-03**,
+  incluida la última. El marcador fantasma (2-1) vivió **dos** observaciones,
+  60 s; su corrección se confirmó **75 veces**.
+- **Y no es un bug del motor: el motor cumple RN-03 al pie de la letra.**
+  `reglas.md`: «Un marcador no baja salvo **por el operador**. Si la fuente
+  ganadora propone un marcador menor que el vigente, se mantiene el vigente y se
+  abre una Alert.» El orden de ADR-004 pone RN-03 por encima de RN-02, así que
+  el cierre hereda el marcador retenido. Todo correcto según lo escrito.
+- **Lo que está mal es la regla**, y su único camino de vuelta —el operador— es
+  **EPIC-004**, dos épicas más allá. Hasta entonces, cada gol anulado por el VAR
+  deja un marcador falso publicado hasta el final del partido y un `finished`
+  falso para siempre. Con 39 partidos por delante esto **se va a repetir**.
+- **Decisión que fuerza, y de quién es**: RN-03 vive en `reglas.md` y su
+  prioridad en ADR-004, así que la letra es de **sdd-arquitecto** (vía
+  `/sdd-orquestador`), no un parche. La pregunta concreta que el dato deja
+  contestada de antemano: **¿cuántas confirmaciones seguidas de la fuente
+  ganadora bastan para aceptar una bajada?** Con dos o tres, este partido se
+  habría corregido en 90 s. Lo que RN-03 protege —una fuente que parpadea a la
+  baja— duró 60 s; lo que RN-03 rompe —una corrección de verdad— duró 37 min.
+- **Consecuencia para el lunes**: `--contrastar` de CA-5 dará **discrepancia**
+  aquí (nosotros `2-1`, el proveedor `2-0`), y cada partido con gol anulado dará
+  otra. Eso apunta a la rama **(c2)** de CA-9 —ingesta sana, decisiones
+  equivocadas—, que **no** obliga a repetir la jornada: se corrige y se recalcula
+  el log sobre las observaciones guardadas (ADR-004, SPEC-007 CA-8). La ingesta
+  de este partido salió perfecta, y eso es lo irrepetible (N-3).
 - **No se arregla nada ahora**: el código está congelado (decisión del
-  2026-09-22) y la rama (c2) se decide con el informe, no antes.
+  2026-09-22), la rama (c2) se decide con el informe, y tocar el dato invalidaría
+  el criterio 5. Esto es la medición **haciendo su trabajo**: ningún test contra
+  fixtures del repo podía encontrarlo.
