@@ -164,7 +164,22 @@ obligatoria.** El bloque de las **16:00Z (18:00): siete partidos de Terceira a
 la vez** es el que hace la muestra — es el nicho del producto y lo que ningún
 agregador cubre bien.
 
-Formato de cada fila: `matchId,marcador,instante,fuente`
+**Con ayuda**, para no teclear instantes ISO con siete partidos a la vez:
+
+```sh
+node $GOL --partidos                    # los 25 de hoy y su fragmento
+node $GOL lalin 1-0 --fuente radio-galega   # el primero: di la fuente
+node $GOL boiro 0-1                     # los siguientes la heredan
+node $GOL antela 2-1 --hace 25          # si has tardado 25 s en teclear
+node $GOL --ver                         # cuántos van y si llega el objetivo H-3
+node $GOL --deshacer                    # borra la última fila (errata)
+```
+
+El fragmento es cualquier trozo único del id **entre los 39 partidos de la
+ventana** (`lalin`, `boiro`, `arteixo`); si es ambiguo lo dice y lista los
+candidatos. El instante lo pone él, al segundo, en UTC.
+
+Formato de cada fila, si se escribe a mano: `matchId,marcador,instante,fuente`
 
 - `marcador` es **cómo queda el partido tras ese gol** (`1-0`, `1-1`, …).
 - `instante` es **cuándo la fuente externa dice el gol**, ISO-8601 UTC con `Z`,
@@ -275,9 +290,19 @@ el fichero, subió el artefacto y el commit de vuelta entró en la rama. El
 secreto llegó al job y no apareció en ningún log. Rastro del ensayo borrado
 después: artefacto, rama y commit de prueba.
 
-### En local: el script del portátil (plan B)
+### En local: los dos scripts del portátil
 
 `$SCRIPT` = `/private/tmp/claude-501/-Users-albertofojo-src-marcadorgal/74978667-03b6-44e2-88d8-70eaee36f05f/scratchpad/captura-ca8.mjs`
+`$GOL` = `/private/tmp/claude-501/-Users-albertofojo-src-marcadorgal/74978667-03b6-44e2-88d8-70eaee36f05f/scratchpad/gol.mjs`
+
+`$GOL` anota una fila de `referencias.csv` poniendo el instante él (T8). Lee el
+calendario declarado para resolver el fragmento, no toca la base de datos y sus
+filas las acepta el `parseReferencias` de verdad —probado: dos filas escritas por
+él, **2 casadas, 0 no casadas**, y deshechas después—. Salvaguardas: fragmento
+ambiguo o inexistente lo rechaza con los candidatos, marcador que no sea
+`<local>-<visitante>` lo rechaza, fila duplicada exacta lo rechaza, comas en la
+fuente las convierte en espacios (`parseReferencias` parte por comas y una coma
+de más dejaría la fila «no casada»), y `--deshacer` quita la última.
 
 Script temporal y **fuera del repo**, como el `ca6-ensayo.mjs` del ensayo de
 CA-6. No toca la base de datos: solo pide al proveedor y escribe ficheros.
