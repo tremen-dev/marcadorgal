@@ -46,6 +46,66 @@ Instantes en UTC con `Z`. Lo que no esté aquí, el lunes no existió.
 |---|---|---|
 | 2026-09-25T19:46:06Z | **Alerta `regression` en `girona-albacete`** (la única de la ventana hasta ahora): `current 2-1`, `proposed 2-0`. Ver el detalle escrito abajo. | Nada: no se toca el dato (H-2 (i)). Lleva explicación a mano el lunes (CA-4 (c)) |
 
+### 2026-09-27T18:40Z — LA FUENTE NO DA EN DIRECTO EL 44 % DE TERCEIRA
+
+Destapado al cruzar la muestra de H-3: nueve de las 24 referencias no casaban, y
+seis eran del mismo partido. Medido sobre los 37 partidos de la ventana que
+tienen observaciones, contando los que **nunca** tuvieron una observación `live`
+con marcador —o sea, los que la fuente pasó de `scheduled` directo a `finished`—:
+
+| Competición | Sin directo | Cuáles |
+|---|---|---|
+| Primeira Fed. G1 | **0 de 10** | — |
+| Segunda División | **0 de 9** | — |
+| Segunda Fed. G1 | **1 de 9** | arosa-alaves-b |
+| **Terceira Fed. G1** | **4 de 9 (44 %)** | boiro-villalbes, montaneros-viveiro, portonovo-silva, sarriana-celta-c |
+
+**Total: 5 de 37 (14 %).** Y el patrón es exactamente el que la épica declaró
+como riesgo, ahora con número: **la cobertura en directo se degrada con la
+categoría**, y en la categoría que es el nicho del producto falla casi la mitad.
+
+Ejemplo completo, `arosa-alaves-b`: **270 observaciones** con cadencia perfecta,
+todas `scheduled null-null`, y a las 17:04:58Z un salto a `finished 2-5`. La
+radio había cantado los siete goles entre las 15:06Z y las 16:27Z. Igual
+`boiro-villalbes` (314 observaciones → `finished 1-1` a las 18:27:02Z) y
+`portonovo-silva` (298 → `finished 4-2` a las 18:19:02Z).
+
+**No es un fallo nuestro**: el tick muestreó esos partidos cada 30 s durante dos
+horas y media sin un hueco. Es que **la respuesta del proveedor no los trae en
+juego**. Ninguno abrió alerta.
+
+**Y el informe no lo ve.** El bloque «partidos sin señal» de CA-4 (b) cuenta los
+partidos con **cero observaciones** o con un hueco > `SILENCE_MINUTES`; estos
+tienen 270-314 observaciones y ningún hueco, así que **no aparecen en ningún
+bloque**. Un partido que la fuente nunca mostró en juego es invisible para la
+letra de CA-4 (b). Eso es trabajo de arquitecto antes de cerrar la épica.
+
+**Efecto sobre la muestra de H-3**: de las 24 referencias, **9 no casan** —las 6
+de `arosa-alaves-b`, `boiro 1-0`, `portonovo 2-0` (fuente muda) y
+`mirandes 1-0` (RN-03)—. Ninguna es errata de quien anotó.
+
+### 2026-09-27T18:40Z — la latencia contra la radio, con n = 15
+
+Cruce de las 24 referencias contra las Decisions publicadas:
+
+- **n = 15 casadas · mediana +53 s · rango [−95 s, +2278 s]**, 11 positivas y 4
+  negativas.
+- Quitando el atípico de `arosa-alaves-b 2-5` (+2278 s, que **no es latencia**
+  sino la fuente publicando el resultado final 38 min después del último gol):
+  n = 14, **mediana ≈ +55 s**, rango [−95, +267].
+- **Contraste con `vision.md` (mediana < 45 s): NO se cumple.** El p95 no se
+  puede calcular: con n < 20 el informe imprime `peor caso (n=15)` (CA-3).
+- **La referencia es ruidosa y hay que decirlo**: el gol de `eibar-b-compostela`
+  se midió con las dos fuentes y salió **−1 s contra flashcore y −95 s contra la
+  radio**. La radio es carrusel: canta el gol cuando puede cortar. Así que +53 s
+  es «nuestra publicación frente a la narración de la radio», con un ruido propio
+  del orden de ±95 s, **no** un «gol → pantalla» limpio. Esa fila duplicada se
+  conserva a propósito: es el único punto de calibración entre las dos fuentes.
+- **Instantes al minuto, no al segundo**: las 21 referencias de la tarde se
+  tomaron en el móvil con precisión de minuto y se cargaron con `:00` segundos, lo
+  que **adelanta** la referencia y por tanto **agranda** la latencia. El sesgo es
+  conservador a propósito.
+
 ### El domingo a las 15:00Z: `regression` no fue un caso aislado, son SEIS
 
 Medido en solo lectura sobre `alerts` a las 2026-09-27T15:00Z, con 22 partidos
