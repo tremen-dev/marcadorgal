@@ -46,6 +46,40 @@ Instantes en UTC con `Z`. Lo que no esté aquí, el lunes no existió.
 |---|---|---|
 | 2026-09-25T19:46:06Z | **Alerta `regression` en `girona-albacete`** (la única de la ventana hasta ahora): `current 2-1`, `proposed 2-0`. Ver el detalle escrito abajo. | Nada: no se toca el dato (H-2 (i)). Lleva explicación a mano el lunes (CA-4 (c)) |
 
+### El domingo a las 15:00Z: `regression` no fue un caso aislado, son SEIS
+
+Medido en solo lectura sobre `alerts` a las 2026-09-27T15:00Z, con 22 partidos
+ya jugados o en juego de los 39 de la ventana:
+
+| Instante | Partido | Retenido | Propuesto por la fuente |
+|---|---|---|---|
+| 2026-09-25T19:46:06Z | girona-albacete | 2-1 | 2-0 (real: **2-0**) |
+| 2026-09-26T13:20:30Z | ceuta-real-sociedad-b | 1-1 | 0-1 |
+| 2026-09-26T14:54:05Z | lugo-racing-ferrol | 1-0 | 0-0 |
+| 2026-09-26T17:51:13Z | celta-fortuna-sabadell | 1-2 | 1-1 |
+| 2026-09-27T10:08:07Z | barakaldo-aviles | 0-1 | 0-0 |
+| 2026-09-27T14:16:51Z | mirandes-unionistas | 0-1 | 0-0 |
+
+**Seis de 22 partidos, un 27 %.** Cada una deja el marcador publicado mal hasta
+el final del partido, porque RN-03 no tiene vuelta sin operador (EPIC-004).
+Y hay **cinco `forced_finish`** además (RN-02 cerrando a kickoff + 120 sin que la
+fuente confirme el final), que también piden explicación en el informe.
+
+**El caso del Mirandés, en vivo mientras se anotaba la muestra de H-3**, es el más
+claro de los seis porque tiene referencia externa independiente:
+
+- 14:13:49Z la fuente da `0-1` · 14:16:49Z se retracta a `0-0` → RN-03 retiene
+  `0-1` y abre su alerta.
+- 14:42:51Z la fuente da `1-0` (gol del Mirandés, confirmado por radio galega a
+  las 14:42:29Z). **Tampoco se publica**: sigue `0-1` en la v53 de las 14:52:51Z.
+- **Y esa segunda regresión NO abrió alerta propia**: solo hay una fila de
+  `mirandes-unionistas` en `alerts`. O sea que **la cuenta de alertas subestima
+  el daño**: seis alertas no son seis marcadores mal, son seis partidos mal con
+  un número de errores mayor dentro.
+- Efecto colateral en CA-3: la fila `mirandes…,1-0` de `referencias.csv` saldrá
+  como **no casada, «el marcador 1-0 nunca se publicó»**. No es una errata de
+  quien anotó: es el defecto apareciendo por el otro lado.
+
 ### La alerta `regression` del viernes, con los números medidos
 
 Medido en solo lectura el sábado 26 a las 10:20Z sobre `observations` y
