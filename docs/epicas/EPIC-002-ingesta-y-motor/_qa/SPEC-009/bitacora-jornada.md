@@ -38,6 +38,7 @@ Instantes en UTC con `Z`. Lo que no esté aquí, el lunes no existió.
 |---|---|---|
 | 2026-09-25T19:07:09Z | `GET /fixtures?live=…` | prueba del script local de captura de CA-8 (no se escribió fixture) |
 | 2026-09-25T19:36:00Z | `GET /fixtures?live=…` | ensayo del workflow `captura-ca8` en GitHub Actions (run 36180127367; fixture de prueba, borrado) |
+| 2026-09-26T15:10:00Z | `GET /fixtures?live=140-141-435-875-439` | **captura de CA-8** en GitHub Actions (run 36235253961). **Una sola petición**: aceptó en el primer sondeo con las cuatro ligas en juego |
 
 ## Incidencias y rarezas
 
