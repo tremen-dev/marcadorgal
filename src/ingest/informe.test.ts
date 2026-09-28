@@ -189,11 +189,11 @@ describe("CA-1 el informe entero", () => {
     }
   });
 
-  it("sin cadencia ni latencia interna el techo propio no se etiqueta, se declara ausente", () => {
+  it("sin cadencia el techo propio no se etiqueta, se declara ausente", () => {
     const { texto, informe } = informeJornada(vacio());
     expect(informe.techoPropio).toBeNull();
     expect(texto).toContain(
-      "techo propio: n/a (hace falta cadencia y latencia interna para sumarlo)",
+      "techo propio: n/a (hace falta la cadencia (a) para darlo)",
     );
     expect(texto).not.toContain("peor caso (n=0)");
   });
@@ -385,11 +385,28 @@ describe("CA-2 (b) latencia interna", () => {
     });
   });
 
-  it("dice con esas palabras que mide captura → publicación y no extremo a extremo", () => {
+  // N-10: la advertencia se imprime tal como la entrecomilla CA-2 (b). El
+  // informe es Markdown y la parte en varias líneas; se compara con los
+  // espacios normalizados.
+  const plano = (texto: string) => texto.replace(/\s+/g, " ");
+
+  it("imprime la advertencia fija de N-10 tal como la entrecomilla CA-2 (b)", () => {
     const { texto } = conDecisions();
-    expect(texto).toContain("captura → publicación");
-    expect(texto).toContain("No es latencia extremo a extremo");
-    expect(texto).toContain("observed_at = capturedAt");
+    expect(plano(texto)).toContain(
+      "es cero por construcción —`observed_at` y `decided_at` salen del mismo reloj inyectado por ruta (ADR-008 §7)— y **no mide** tiempo de proceso; las muestras no nulas son la antigüedad de la observación citada por RN-02",
+    );
+  });
+
+  it("no dice que (b) mida proceso: ni «raw store, parse, inserción y motor» ni captura → publicación", () => {
+    const { texto } = conDecisions();
+    const t = plano(texto);
+    expect(t).not.toContain("raw store, parse, inserción y motor");
+    expect(t).not.toContain("raw store");
+    expect(t).not.toContain("captura → publicación");
+    expect(t).not.toContain("esto mide");
+    // Tampoco que la latencia interna pese como una medida de miles de
+    // capturas: lo que pesa más que (ii) es (a), la cadencia (CA-3).
+    expect(t).not.toContain("la cadencia y la latencia interna");
   });
 
   it("dice que el 0-0 del estreno cuenta como cambio de marcador", () => {
@@ -403,7 +420,7 @@ describe("CA-2 (b) latencia interna", () => {
     expect(texto).toContain("un estreno por partido además de los");
   });
 
-  it("el techo propio es p95(cadencia) + p95(latencia interna)", () => {
+  it("el techo propio es p95(a), el de la cadencia, sin sumar (b) (N-10)", () => {
     const { texto, informe } = informeJornada(
       vacio({
         matches: [partido({ kickoff: seg(0), decidedAt: seg(34) })],
@@ -424,8 +441,26 @@ describe("CA-2 (b) latencia interna", () => {
     );
     expect(informe.cadencia.p95).toBe(30 * SEC);
     expect(informe.latenciaInterna.p95).toBe(4 * SEC);
-    expect(informe.techoPropio).toBe(34 * SEC);
-    expect(texto).toContain("techo propio");
+    expect(informe.techoPropio).toBe(30 * SEC);
+    expect(texto).toContain(
+      "techo propio = p95(a), el p95 de cadencia, sin sumar (b)",
+    );
+    expect(texto).not.toContain("+ p95 latencia interna");
+  });
+
+  it("el techo propio sale aunque (b) no tenga ninguna muestra", () => {
+    const { informe } = informeJornada(
+      vacio({
+        matches: [partido({ kickoff: seg(0), decidedAt: seg(30) })],
+        observations: [
+          obs({ id: "o1", observedAt: seg(0) }),
+          obs({ id: "o2", observedAt: seg(30) }),
+        ],
+      }),
+    );
+    expect(informe.latenciaInterna.n).toBe(0);
+    expect(informe.techoPropio).toBe(informe.cadencia.p95);
+    expect(informe.techoPropio).not.toBeNull();
   });
 
   it("una Decision que no cambia el marcador no cuenta", () => {

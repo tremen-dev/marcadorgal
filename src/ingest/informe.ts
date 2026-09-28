@@ -892,17 +892,17 @@ export function informeJornada(input: InformeInput): {
   }
 
   // ---- 3. Latencia interna ---------------------------------------------
+  // N-10: el número se imprime, pero con la advertencia fija de CA-2 (b)
+  // entrecomillada tal cual; y el techo propio es p95(a), sin sumar (b).
   const interna = estadisticos(latenciaInternaDe(input));
-  const techoPropio =
-    cad.stats.p95 === null || interna.p95 === null
-      ? null
-      : cad.stats.p95 + interna.p95;
+  const techoPropio = cad.stats.p95;
   push(
     "",
     BLOQUES[2],
-    "decided_at − observed_at de la observación citada que trae el marcador nuevo. Como",
-    "observed_at = capturedAt (SPEC-006 CA-7), esto mide captura → publicación: raw store,",
-    "parse, inserción y motor. No es latencia extremo a extremo y nadie debe leerlo así.",
+    "decided_at − observed_at de la observación citada que trae el marcador nuevo. Advertencia",
+    "(N-10): es cero por construcción —`observed_at` y `decided_at` salen del mismo reloj",
+    "inyectado por ruta (ADR-008 §7)— y **no mide** tiempo de proceso; las muestras no nulas",
+    "son la antigüedad de la observación citada por RN-02. No es latencia extremo a extremo.",
     "La primera Decision con marcador de cada partido —el 0-0 del estreno— cuenta",
     "como cambio: la muestra lleva un estreno por partido además de los goles.",
   );
@@ -916,8 +916,11 @@ export function informeJornada(input: InformeInput): {
     );
   push(
     techoPropio === null
-      ? "techo propio: n/a (hace falta cadencia y latencia interna para sumarlo)"
-      : `techo propio (${etiquetaP95(cad.stats.n)} cadencia + ${etiquetaP95(interna.n)} latencia interna): ${segundos(techoPropio)} — el peor caso de «el proveedor ya lo tenía → nosotros lo publicamos»`,
+      ? "techo propio: n/a (hace falta la cadencia (a) para darlo)"
+      : `techo propio = p95(a), el p95 de cadencia, sin sumar (b): ${segundos(techoPropio)}` +
+          (cad.stats.n < INFORME_P95_MIN_SAMPLES
+            ? ` — ${etiquetaP95(cad.stats.n)}`
+            : ""),
   );
 
   // ---- 4. Latencia extremo a extremo -----------------------------------
@@ -945,7 +948,7 @@ export function informeJornada(input: InformeInput): {
   push(
     `tamaño esperable: los ${input.matches.length} partidos de la ventana dan del orden de ${goles} goles, pero la muestra`,
     "la limita lo que una persona puede seguir a la vez (H-3: domingo 27, 14:00Z-17:00Z),",
-    "así que pesa menos que la cadencia y la latencia interna, de miles de capturas.",
+    "así que pesa menos que la cadencia (a), que se calcula sobre miles de capturas.",
     `referencias no casadas: ${externa.noCasadas.length}`,
     ...listaContada(
       externa.noCasadas.map((r) => `  ${r.fila}  →  ${r.motivo}`),
