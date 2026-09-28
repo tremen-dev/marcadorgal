@@ -2,7 +2,7 @@
 id: SPEC-009
 tipo: spec
 epica: EPIC-002
-estado: en-progreso
+estado: en-revision
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-09-21, por: sdd-arquitecto}
@@ -12,6 +12,7 @@ historial:
   - {estado: en-progreso, fecha: 2026-09-29, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-09-29, por: sdd-implementador}
   - {estado: en-progreso, fecha: 2026-09-29, por: sdd-verificador}
+  - {estado: en-revision, fecha: 2026-09-29, por: sdd-implementador}
 ---
 # SPEC-009 — Jornada de medición e informe
 
