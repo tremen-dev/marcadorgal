@@ -200,8 +200,17 @@ export type Informe = {
   contraste: {
     total: number;
     coinciden: number;
-    // Matches in a non-`finished` state that board and the provider say the
-    // same way (CA-7): not discrepancies, and never branch (c2).
+    // `postponed` that board and the provider say the same way: a legitimate
+    // close of that match (CA-9 (a), N-8). Its own bucket, with a mandatory
+    // hand-written explanation, and it does not lower the verdict.
+    aplazadosAcordados: readonly {
+      matchId: string;
+      marcador: string;
+      rawRef: string | null;
+    }[];
+    // Matches in `suspended`, `scheduled` or `live` that board and the
+    // provider say the same way (CA-7): not discrepancies, never branch (c2),
+    // but a named reserva of CA-9 (b) — the round really stayed incomplete.
     acordadosNoFinished: readonly {
       matchId: string;
       status: string;
@@ -670,10 +679,12 @@ export function veredictoDe(v: VeredictoInput): Veredicto {
   // CA-9 (a) asks for every match `finished`; CA-7 admits the state the
   // provider confirms, with its alert explained. Both at once: it is not a
   // discrepancy and never branch (c2), but it is a reserva with its name on it,
-  // because a match that did not finish is not what (a) describes.
+  // because a match that did not finish is not what (a) describes. A
+  // `postponed` both sides agree on is not counted here: since N-8 it is a
+  // legitimate close and never reaches this function.
   if (v.acordadosNoFinished > 0)
     reservas.push(
-      `${v.acordadosNoFinished} partido(s) en un estado no-finished que el proveedor confirma (CA-7), con su alerta explicada`,
+      `${v.acordadosNoFinished} partido(s) en suspended, scheduled o live que el proveedor confirma (CA-7): la ronda quedó incompleta, estado no-finished con su alerta explicada`,
     );
   // V-6, y por la misma razón que el anterior: CA-5 compara el status y el
   // score del proveedor, no su silencio. Un partido del que no contestó no
@@ -1061,6 +1072,9 @@ export function informeJornada(input: InformeInput): {
     push(sinDatos("se generó el informe sin --contrastar"));
   else {
     const coinciden: string[] = [];
+    const aplazados: NonNullable<
+      Informe["contraste"]
+    >["aplazadosAcordados"][number][] = [];
     const acordados: NonNullable<
       Informe["contraste"]
     >["acordadosNoFinished"][number][] = [];
@@ -1099,6 +1113,13 @@ export function informeJornada(input: InformeInput): {
         coinciden.push(
           `  ${fila.matchId}  ${nuestro.status} ${nuestro.marcador}`,
         );
+      // N-8: the border is the state of dominio.md, not a judgement.
+      else if (acuerdo && nuestro.status === "postponed")
+        aplazados.push({
+          matchId: fila.matchId,
+          marcador: nuestro.marcador,
+          rawRef: ultimoRawRef.get(fila.matchId)?.rawRef ?? null,
+        });
       else if (acuerdo)
         acordados.push({
           matchId: fila.matchId,
@@ -1117,6 +1138,7 @@ export function informeJornada(input: InformeInput): {
     contraste = {
       total: input.contraste.length,
       coinciden: coinciden.length,
+      aplazadosAcordados: aplazados,
       acordadosNoFinished: acordados,
       sinRespuesta,
       discrepancias,
@@ -1126,12 +1148,26 @@ export function informeJornada(input: InformeInput): {
       `peticiones del contraste: ${input.contrastePeticiones ?? 0} (aparte de las del tick)`,
       "coinciden:",
       ...primeras(coinciden, "(ninguno)"),
+      `aplazamientos que el proveedor confirma: ${aplazados.length}`,
+      ...(aplazados.length === 0
+        ? []
+        : [
+            "  CA-9 (a), N-8: cierre legítimo, no baja el veredicto; su explicación a mano es obligatoria.",
+            ...primerasFilas(
+              aplazados,
+              (a) => [
+                `  ${a.matchId}  postponed ${a.marcador}  ·  raw_ref: ${a.rawRef ?? "ninguno"}`,
+                "    explicación:",
+              ],
+              "(ninguno)",
+            ),
+          ]),
       `estados no-finished que el proveedor confirma: ${acordados.length}`,
       ...(acordados.length === 0
         ? []
         : [
-            "  CA-7 los contempla («o el estado que el proveedor confirme, con su alerta explicada»):",
-            "  no son discrepancias ni la rama (c2), pero su explicación es obligatoria y bajan a reservas.",
+            "  suspended, scheduled o live (CA-7): no son discrepancias ni la rama (c2),",
+            "  pero la ronda quedó incompleta: su explicación es obligatoria y bajan a reservas.",
             ...primerasFilas(
               acordados,
               (a) => [

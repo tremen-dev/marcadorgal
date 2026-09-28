@@ -1198,11 +1198,15 @@ describe("CA-2 (a)/CA-4 (b) el silencio final cuenta", () => {
 // distintas, y es lo único que puede disparar la rama (c2) «motor equivocado».
 describe("CA-5/CA-7 un estado no-finished acordado no es discrepancia", () => {
   // Cobertura sana (120 de 120) con dos partidos: uno finished coincidente y
-  // uno postponed que board y proveedor dicen igual.
-  const conAcordado = (proveedor: {
-    status: MatchStatus;
-    score: { home: number; away: number } | null;
-  }) =>
+  // uno en un estado no-finished (por defecto suspended) que board y
+  // proveedor pueden decir igual o no.
+  const conAcordado = (
+    proveedor: {
+      status: MatchStatus;
+      score: { home: number; away: number } | null;
+    },
+    enBoard: MatchStatus = "suspended",
+  ) =>
     informeJornada(
       vacio({
         hasta: at(60),
@@ -1211,7 +1215,7 @@ describe("CA-5/CA-7 un estado no-finished acordado no es discrepancia", () => {
           partido({
             id: "aplazado",
             kickoff: at(10),
-            status: "postponed",
+            status: enBoard,
             score: null,
             decidedAt: at(20),
           }),
@@ -1244,7 +1248,7 @@ describe("CA-5/CA-7 un estado no-finished acordado no es discrepancia", () => {
 
   it("lo cuenta aparte, con su raw_ref y su explicación, y no como discrepancia", () => {
     const { texto, informe } = conAcordado({
-      status: "postponed",
+      status: "suspended",
       score: null,
     });
     expect(informe.cobertura.porcentaje).toBe(1);
@@ -1252,21 +1256,21 @@ describe("CA-5/CA-7 un estado no-finished acordado no es discrepancia", () => {
     expect(informe.contraste?.acordadosNoFinished).toEqual([
       {
         matchId: "aplazado",
-        status: "postponed",
+        status: "suspended",
         marcador: "sin marcador",
         rawRef: "raw/a.gz",
       },
     ]);
     expect(texto).toContain("estados no-finished que el proveedor confirma: 1");
     expect(texto).toContain(
-      "aplazado  postponed sin marcador  ·  raw_ref: raw/a.gz",
+      "aplazado  suspended sin marcador  ·  raw_ref: raw/a.gz",
     );
     expect(texto).toContain("discrepancias: 0");
   });
 
   it("no dispara la rama (c2): baja a válida con reservas y dice por qué", () => {
     const { texto, informe } = conAcordado({
-      status: "postponed",
+      status: "suspended",
       score: null,
     });
     expect(informe.veredicto).toMatchObject({
@@ -1278,7 +1282,7 @@ describe("CA-5/CA-7 un estado no-finished acordado no es discrepancia", () => {
   });
 
   it("la cuenta de CA-5 se sigue imprimiendo tal cual", () => {
-    const { texto } = conAcordado({ status: "postponed", score: null });
+    const { texto } = conAcordado({ status: "suspended", score: null });
     expect(texto).toContain(
       "1 de 2 partidos con `finished` y marcador coincidente.",
     );
@@ -1292,6 +1296,78 @@ describe("CA-5/CA-7 un estado no-finished acordado no es discrepancia", () => {
     expect(informe.contraste?.acordadosNoFinished).toEqual([]);
     expect(informe.contraste?.discrepancias).toHaveLength(1);
     expect(informe.veredicto).toMatchObject({ valor: "no válida", rama: "c2" });
+  });
+
+  // N-8: la letra enmendada de CA-9 (a). La frontera la traza el estado de
+  // dominio.md, no un juicio: solo `postponed` acordado es cierre legítimo.
+  describe("N-8 un aplazamiento acordado es cierre legítimo", () => {
+    const aplazado = () =>
+      conAcordado({ status: "postponed", score: null }, "postponed");
+
+    it("va a su propio cubo, aparte de los coincidentes, de las reservas y de las discrepancias", () => {
+      const { informe } = aplazado();
+      expect(informe.contraste?.aplazadosAcordados).toEqual([
+        { matchId: "aplazado", marcador: "sin marcador", rawRef: "raw/a.gz" },
+      ]);
+      expect(informe.contraste?.acordadosNoFinished).toEqual([]);
+      expect(informe.contraste?.discrepancias).toEqual([]);
+      expect(informe.contraste?.coinciden).toBe(1);
+    });
+
+    it("se imprime aparte, con su raw_ref y su hueco de explicación obligatoria", () => {
+      const { texto } = aplazado();
+      expect(texto).toContain("aplazamientos que el proveedor confirma: 1");
+      expect(texto).toContain(
+        "aplazado  postponed sin marcador  ·  raw_ref: raw/a.gz",
+      );
+      const lineas = texto.split("\n");
+      const fila = lineas.indexOf(
+        "  aplazado  postponed sin marcador  ·  raw_ref: raw/a.gz",
+      );
+      expect(lineas[fila + 1]).toBe("    explicación:");
+      expect(texto).toContain(
+        "estados no-finished que el proveedor confirma: 0",
+      );
+      expect(texto).toContain("discrepancias: 0");
+    });
+
+    it("no baja el veredicto: una jornada con un aplazamiento acordado sale válida", () => {
+      const { informe } = aplazado();
+      expect(informe.veredicto).toMatchObject({
+        valor: "válida",
+        rama: null,
+        razones: [],
+      });
+    });
+
+    it.each(["suspended", "scheduled", "live"] as const)(
+      "%s acordado sigue siendo reserva nombrada de (b)",
+      (status) => {
+        const { informe } = conAcordado({ status, score: null }, status);
+        expect(informe.contraste?.aplazadosAcordados).toEqual([]);
+        expect(informe.contraste?.acordadosNoFinished).toHaveLength(1);
+        expect(informe.veredicto).toMatchObject({
+          valor: "válida con reservas",
+          rama: null,
+        });
+      },
+    );
+
+    it("un desacuerdo sobre un aplazamiento sigue siendo discrepancia y rama (c2)", () => {
+      for (const [proveedor, enBoard] of [
+        [{ status: "finished", score: { home: 1, away: 1 } }, "postponed"],
+        [{ status: "postponed", score: null }, "finished"],
+        [{ status: "suspended", score: null }, "postponed"],
+      ] as const) {
+        const { informe } = conAcordado(proveedor, enBoard);
+        expect(informe.contraste?.aplazadosAcordados).toEqual([]);
+        expect(informe.contraste?.discrepancias).toHaveLength(1);
+        expect(informe.veredicto).toMatchObject({
+          valor: "no válida",
+          rama: "c2",
+        });
+      }
+    });
   });
 });
 
