@@ -1048,7 +1048,10 @@ describe("CA-9 veredicto", () => {
 
     it("ingesta rota sin contraste sigue siendo (c1): no depende de CA-5", () => {
       const { texto, informe } = conCobertura(90, { contraste: null });
-      expect(informe.veredicto).toMatchObject({ valor: "no válida", rama: "c1" });
+      expect(informe.veredicto).toMatchObject({
+        valor: "no válida",
+        rama: "c1",
+      });
       expect(texto).toContain("ingesta rota");
     });
 
@@ -1057,7 +1060,10 @@ describe("CA-9 veredicto", () => {
         contraste: null,
         declaraciones: { intervencionSobreElDato: ["observación a mano"] },
       });
-      expect(informe.veredicto).toMatchObject({ valor: "no válida", rama: null });
+      expect(informe.veredicto).toMatchObject({
+        valor: "no válida",
+        rama: null,
+      });
     });
 
     it("con contraste el comportamiento no cambia: válida y (c2) como antes", () => {

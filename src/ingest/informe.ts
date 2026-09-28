@@ -154,7 +154,7 @@ export type HuecoLargo = {
 };
 
 export type Veredicto = {
-  valor: "válida" | "válida con reservas" | "no válida";
+  valor: "válida" | "válida con reservas" | "no válida" | "sin veredicto";
   rama: "c1" | "c2" | null;
   razones: readonly string[];
   pendientes: readonly string[];
@@ -621,6 +621,10 @@ function dentroDe(spans: readonly Span[], instant: Instant): boolean {
 type VeredictoInput = {
   cobertura: number | null;
   competicionesMudas: readonly string[];
+  // V-15: false when the run had no --contrastar. CA-9 (a) and (b) both need
+  // the scores to match (CA-5), so without it only what does not depend on
+  // CA-5 is decided: (c1) and the intervention on the data.
+  contrastado: boolean;
   discrepancias: number;
   acordadosNoFinished: number;
   sinRespuesta: number;
@@ -714,6 +718,16 @@ export function veredictoDe(v: VeredictoInput): Veredicto {
     );
   if (d.alertasExplicadas === false)
     reservas.push("alguna alerta abierta quedó sin explicación");
+  if (!v.contrastado)
+    return {
+      valor: "sin veredicto",
+      rama: null,
+      razones: [
+        "falta el contraste de CA-5 (--contrastar): CA-9 (a) exige marcador coincidente y sin él no está medido",
+        ...reservas,
+      ],
+      pendientes,
+    };
   if (reservas.length > 0)
     return {
       valor: "válida con reservas",
@@ -1228,6 +1242,7 @@ export function informeJornada(input: InformeInput): {
   const veredicto = veredictoDe({
     cobertura,
     competicionesMudas,
+    contrastado: contraste !== null,
     discrepancias: contraste?.discrepancias.length ?? 0,
     acordadosNoFinished: contraste?.acordadosNoFinished.length ?? 0,
     sinRespuesta: contraste?.sinRespuesta.length ?? 0,
