@@ -661,7 +661,8 @@ export function veredictoDe(v: VeredictoInput): Veredicto {
   if (razones.length > 0)
     return { valor: "no válida", rama: "c1", razones, pendientes };
 
-  // (c2) ingesta sana y motor equivocado: no se repite, se recalcula (N-3).
+  // (c2) ingesta sana y Decisions equivocadas: no se repite (N-3). Su causa,
+  // (c2-i) implementación o (c2-ii) regla, no sale de ninguna consulta (N-9).
   if (v.discrepancias > 0 && v.observaciones > 0) {
     razones.push(
       `${v.discrepancias} partido(s) con marcador que no cuadra con el proveedor, sobre una ingesta con ${v.observaciones} observaciones`,
@@ -1250,10 +1251,14 @@ export function informeJornada(input: InformeInput): {
     );
   if (veredicto.rama === "c2")
     push(
-      "  rama (c2) ingesta sana y motor equivocado: no se repite. El crudo vive 30 días",
-      "  (ADR-007 §5) y src/decide/replay.ts es determinista: se corrige el motor, se recalcula",
-      "  el log de Decisions sobre las observaciones guardadas y el informe se rehace con los",
-      "  números del replay, anotando que la latencia interna se midió sobre la original.",
+      "  rama (c2) ingesta sana y Decisions equivocadas: no se repite. El crudo vive 30 días",
+      "  (ADR-007 §5) y src/decide/replay.ts es determinista. N-9 la parte por su causa, y la",
+      "  causa no la deriva ninguna consulta: se escribe a mano debajo.",
+      "  (c2-i) defecto de implementación: se corrige y se recalcula por replay dentro de la spec",
+      "  que lo encuentra; el informe se rehace con el replay y CA-2 b queda sobre la original.",
+      "  (c2-ii) defecto de regla: se documenta con su medida, abre residual y se deriva a",
+      "  sdd-arquitecto, sin tocar reglas.md, ADR-004 ni src/decide.",
+      "    causa (c2-i o c2-ii, a mano, obligatoria):",
     );
   push(
     `salvedad de H-1: criterio 5 cerrado sobre ${palabra(competiciones.length)} competiciones de ${palabra(input.competicionesDeclaradas.length)};` +

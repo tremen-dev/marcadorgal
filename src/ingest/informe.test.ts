@@ -957,6 +957,53 @@ describe("CA-9 veredicto", () => {
     expect(texto).toContain("no se repite");
   });
 
+  // F-SPEC-009-11. N-9 parte (c2) por su causa, y la causa no sale de ninguna
+  // consulta: el bloque 9 describe las dos sub-ramas y deja el hueco a mano.
+  describe("N-9 la rama (c2) se parte por su causa", () => {
+    const bloque9 = () => {
+      const { texto } = conCobertura(120, {
+        observations: [
+          obs({ id: "o1", observedAt: seg(0) }),
+          obs({ id: "o2", observedAt: seg(30) }),
+        ],
+        contraste: [
+          {
+            matchId: MATCH,
+            proveedor: { status: "finished", score: { home: 9, away: 9 } },
+          },
+        ],
+      });
+      return texto.slice(texto.indexOf("## 9. Veredicto"));
+    };
+    const plano = (s: string) => s.replace(/\s+/g, " ");
+
+    it("nombra (c2-i) defecto de implementación: se corrige y se replayea en la spec que lo encuentra", () => {
+      expect(plano(bloque9())).toMatch(
+        /\(c2-i\) defecto de implementación[^()]*se corrige[^()]*replay[^()]*dentro de la spec que lo encuentra/,
+      );
+    });
+
+    it("nombra (c2-ii) defecto de regla: se documenta, abre residual y se deriva sin tocar reglas.md, ADR-004 ni src/decide", () => {
+      const t = plano(bloque9());
+      expect(t).toMatch(
+        /\(c2-ii\) defecto de regla[^()]*se documenta con su medida, abre residual y se deriva a sdd-arquitecto/,
+      );
+      expect(t).toContain("sin tocar reglas.md, ADR-004 ni src/decide");
+    });
+
+    it("dice que la causa no la deriva ninguna consulta y deja el hueco a mano", () => {
+      const t = bloque9();
+      expect(plano(t)).toContain("la causa no la deriva ninguna consulta");
+      expect(t).toMatch(/^ {4}causa \(c2-i o c2-ii, a mano, obligatoria\):$/m);
+    });
+
+    it("no afirma que se corrige el motor como consecuencia única", () => {
+      const t = plano(bloque9());
+      expect(t).not.toContain("se corrige el motor");
+      expect(t).not.toContain("motor equivocado");
+    });
+  });
+
   it("una intervención sobre el dato invalida; sobre la plataforma solo baja el veredicto", () => {
     expect(
       conCobertura(120, {
