@@ -75,11 +75,23 @@ abiertas en la ventana: 17
   forced_finish: 9
   regression: 8
   2026-09-25T19:46:06.084Z  regression  segunda-division-2026-27-j7-girona-albacete  {"current":{"away":1,"home":2},"proposed":{"away":0,"home":2},"sourceId":"api-football","observationId":"7278a59b-84c2-41cf-8724-d9acf25ddef1"}
-    explicación:
+    explicación: gol fantasma de la fuente (2-1) durante 2 observaciones; volvió a 2-0 y lo confirmó 74 veces. 2-0 era el resultado real (crónica de prensa). RN-03 retuvo el 2-1 y cerró así: es la primera discrepancia del bloque 8. Hallazgo 2.
   2026-09-26T13:20:30.979Z  regression  segunda-division-2026-27-j7-ceuta-real-sociedad-b  {"current":{"away":1,"home":1},"proposed":{"away":1,"home":0},"sourceId":"api-football","observationId":"5812c1e1-38be-488c-b114-ea279399dd97"}
-    explicación:
+    explicación: dos causas en el mismo partido: esta regresión, y un cierre forzoso a kickoff+120 con 2-1 cuando la fuente acabó dando 3-1. Hallazgos 2 y 3.
   … y 15 más, explicadas por kind
+explicación de las 15 restantes, por kind (F-SPEC-009-4):
+  regression (6 más): la fuente publica un marcador, se retracta, y RN-03 mantiene el
+    vigente porque «un marcador no baja salvo por el operador», que es EPIC-004. De las 8,
+    6 acabaron con el marcador final equivocado y 2 acertaron. El número de confirmaciones
+    NO separa unas de otras (3 a 87 en ambos grupos). Detalle y propuesta: hallazgo 2.
+  forced_finish (9): la fuente deja el partido clavado en el minuto 90 en `live` y no manda
+    el final dentro de kickoff + 120 min; RN-02 cierra, que es lo que debe hacer. Las nueve
+    tienen `minute: 90` y `lastStatus: live`. Una de ellas (merida-logrones) congeló un 3-4
+    que la fuente acabó dando 3-5: es la única discrepancia que no viene de RN-03. Hallazgo 3.
 unresolved_team y conflict se esperaban en cero: unresolved_team 0, conflict 0.
+
+Lo que este informe no ve, medido aparte: `hallazgos-jornada.md` (cobertura de la
+fuente en Terceira, RN-03, cierres forzosos, calendario desfasado y latencia).
 
 ## 8. Contraste de marcadores
 Una sola tanda de peticiones por ids=, al terminar la jornada y fuera de

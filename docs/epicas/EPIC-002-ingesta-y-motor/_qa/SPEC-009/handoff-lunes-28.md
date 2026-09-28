@@ -63,12 +63,14 @@ salvo por el operador») retiene el falso **hasta el final del partido**, y el
 operador es EPIC-004. Caso con referencia externa: `girona-albacete` cerró
 `finished 2-1` cuando acabó **2-0** (crónica de Marca).
 
-El motor **cumple la regla al pie de la letra**; lo que falla es la regla. Dato
-que deja la decisión casi tomada: en el Girona el marcador fantasma vivió **2
-observaciones (60 s)** y su corrección se confirmó **75 veces seguidas (37 min)**.
-La pregunta para sdd-arquitecto: **¿cuántas confirmaciones seguidas de la fuente
-ganadora bastan para aceptar una bajada?** Con dos o tres, todos estos casos se
-corrigen en 90 s y la protección sigue en pie.
+El motor **cumple la regla al pie de la letra**; lo que falla es la regla.
+
+**Corregido el 2026-09-28**: aquí se decía que la decisión estaba «casi tomada»
+con un umbral de dos o tres confirmaciones seguidas. **Las 8 regresiones medidas
+lo refutan** — ver `hallazgos-jornada.md`, hallazgo 2. El número de
+confirmaciones **no separa** una corrección real de un error de la fuente, y la
+propuesta que sí sostiene el dato es otra: **que la monotonía no sobreviva al
+cierre**.
 
 Detalle que agrava la cuenta: en `mirandes-unionistas` la **segunda** regresión no
 abrió alerta propia, así que **8 alertas no son 8 marcadores mal, son 8 partidos

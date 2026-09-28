@@ -174,11 +174,11 @@ Medido en solo lectura el sábado 26 a las 10:20Z sobre `observations` y
   falso para siempre. Con 39 partidos por delante esto **se va a repetir**.
 - **Decisión que fuerza, y de quién es**: RN-03 vive en `reglas.md` y su
   prioridad en ADR-004, así que la letra es de **sdd-arquitecto** (vía
-  `/sdd-orquestador`), no un parche. La pregunta concreta que el dato deja
-  contestada de antemano: **¿cuántas confirmaciones seguidas de la fuente
-  ganadora bastan para aceptar una bajada?** Con dos o tres, este partido se
-  habría corregido en 90 s. Lo que RN-03 protege —una fuente que parpadea a la
-  baja— duró 60 s; lo que RN-03 rompe —una corrección de verdad— duró 37 min.
+  `/sdd-orquestador`), no un parche.
+  **CORREGIDO el 2026-09-28 con las 8 regresiones medidas**: aquí se propuso un
+  umbral de «dos o tres confirmaciones seguidas» para aceptar una bajada. **El
+  dato lo refuta**, y está en «Umbral de confirmaciones» más abajo: el número de
+  confirmaciones **no separa** una corrección real de un error de la fuente.
 - **Consecuencia para el lunes**: `--contrastar` de CA-5 dará **discrepancia**
   aquí (nosotros `2-1`, el proveedor `2-0`), y cada partido con gol anulado dará
   otra. Eso apunta a la rama **(c2)** de CA-9 —ingesta sana, decisiones
