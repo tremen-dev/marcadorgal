@@ -246,12 +246,16 @@ export function decide(input: EngineInput): EngineOutput {
 
   // 2. RN-02 forced finish (H-3): above RN-05 and above whatever the sources
   //    are still saying. It publishes a finished nobody confirmed, so it
-  //    always leaves a forced_finish Alert behind (H-5 (iii)).
+  //    always leaves a forced_finish Alert behind (H-5 (iii)). RN-03 does
+  //    not survive the close (ADR-010 §1): the score is the winning fresh
+  //    observation's, and the current one only when nobody fresh has one.
   if (
     current !== null &&
     current.status === "live" &&
     instantDiff(match.kickoff, now) >= minutes(FORCED_FINISH_MINUTES)
   ) {
+    const freshScore =
+      winner === undefined ? null : stateOf(winner.observation).score;
     open.push({
       kind: "forced_finish",
       matchId,
@@ -264,12 +268,19 @@ export function decide(input: EngineInput): EngineOutput {
       },
     });
     return publish(
-      draft(
-        { status: "finished", score: current.score, minute: null },
-        "RN-02",
-        "provisional",
-        [...current.observationIds],
-      ),
+      freshScore === null || winner === undefined
+        ? draft(
+            { status: "finished", score: current.score, minute: null },
+            "RN-02",
+            "provisional",
+            [...current.observationIds],
+          )
+        : draft(
+            { status: "finished", score: freshScore, minute: null },
+            "RN-02",
+            "provisional",
+            [winner.observation.id],
+          ),
     );
   }
 
@@ -314,11 +325,16 @@ export function decide(input: EngineInput): EngineOutput {
   )
     return publish(null);
 
-  // 4. RN-03 monotonía: a score never goes down but by the operator. The
-  //    proposed status is published wearing the current score, and the
-  //    retreat leaves an Alert for the operator (N-3).
+  // 4. RN-03 monotonía: a score never goes down but by the operator while
+  //    the match is in play. The proposed status is published wearing the
+  //    current score, and the retreat leaves an Alert for the operator (N-3).
+  //    It does not survive the close (ADR-010 §1): the transition to finished
+  //    falls through to RN-01 and publishes the winner as it comes.
   const held = current?.score ?? null;
+  const closing =
+    proposed.status === "finished" && current?.status !== "finished";
   if (
+    !closing &&
     held !== null &&
     proposed.score !== null &&
     (proposed.score.home < held.home || proposed.score.away < held.away)

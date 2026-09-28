@@ -795,3 +795,113 @@ describe("CA-12 decide is pure and total", () => {
     });
   });
 });
+
+// SPEC-012 CA-2 (ADR-010 §1): RN-03 rules while the match is in play and does
+// not survive the close. The transition to finished publishes the score of the
+// winning observation (RN-01), not the held one.
+describe("SPEC-012 CA-2 the close publishes the winning observation", () => {
+  it("(i) held 2-1 and a source finished 2-0 publishes 2-0", () => {
+    const winner = obs("ten", 95, finished(2, 0));
+    const { decision, open } = decide(
+      input({
+        current: current(live(2, 1, 90), { rule: "RN-03" }),
+        observations: [winner],
+        now: at(95),
+      }),
+    );
+    expect(decision).toMatchObject({
+      status: "finished",
+      score: { home: 2, away: 0 },
+      minute: null,
+    });
+    expect(decision?.rule).not.toBe("RN-03");
+    expect(decision?.observationIds).toEqual([winner.id]);
+    expect(open).toEqual([]);
+  });
+
+  it("(ii) forced at +120 with a fresh live 1-0 over a current 1-1 publishes 1-0", () => {
+    const fresh = obs("ten", 119, live(1, 0, 90));
+    const { decision, open } = decide(
+      input({
+        current: current(live(1, 1, 90), { rule: "RN-03" }),
+        observations: [fresh],
+        now: at(121),
+      }),
+    );
+    expect(decision).toMatchObject({
+      status: "finished",
+      score: { home: 1, away: 0 },
+      minute: null,
+      rule: "RN-02",
+      qualifier: "provisional",
+    });
+    expect(decision?.observationIds).toEqual([fresh.id]);
+    expect(open).toMatchObject([{ kind: "forced_finish" }]);
+  });
+
+  it("(iii) forced with no fresh observation publishes the current and nothing else changes", () => {
+    const stale = obs("ten", 110, live(1, 0, 90));
+    const vigente = current(live(1, 1, 90), { rule: "RN-03" });
+    const { decision } = decide(
+      input({ current: vigente, observations: [stale], now: at(121) }),
+    );
+    expect(decision).toMatchObject({
+      status: "finished",
+      score: { home: 1, away: 1 },
+      rule: "RN-02",
+      qualifier: "provisional",
+    });
+    expect(decision?.observationIds).toEqual(vigente.observationIds);
+  });
+
+  it("(iv) in play a retreat still holds and opens a regression", () => {
+    const retreat = obs("ten", 88, live(2, 0, 88));
+    const { decision, open } = decide(
+      input({
+        current: current(live(2, 1, 85)),
+        observations: [retreat],
+        now: at(88),
+      }),
+    );
+    expect(decision).toMatchObject({
+      status: "live",
+      score: { home: 2, away: 1 },
+      minute: 88,
+      rule: "RN-03",
+    });
+    expect(open).toEqual([
+      {
+        kind: "regression",
+        matchId: MATCH.id,
+        details: {
+          sourceId: "ten",
+          observationId: retreat.id,
+          current: { home: 2, away: 1 },
+          proposed: { home: 2, away: 0 },
+        },
+      },
+    ]);
+  });
+
+  it("(v) the close does not resolve the open regression (EPIC-004)", () => {
+    const byTheSource = decide(
+      input({
+        current: current(live(2, 1, 90), { rule: "RN-03" }),
+        observations: [obs("ten", 95, finished(2, 0))],
+        now: at(95),
+      }),
+    );
+    const forced = decide(
+      input({
+        current: current(live(1, 1, 90), { rule: "RN-03" }),
+        observations: [obs("ten", 119, live(1, 0, 90))],
+        now: at(121),
+      }),
+    );
+    expect(byTheSource.resolve).toEqual([]);
+    expect(forced.resolve).toEqual([]);
+    expect(
+      [...byTheSource.open, ...forced.open].map((a) => a.kind),
+    ).not.toContain("regression");
+  });
+});
