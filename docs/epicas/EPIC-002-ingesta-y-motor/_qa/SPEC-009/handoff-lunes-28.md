@@ -145,6 +145,32 @@ Las 9 referencias que **no casan** no son erratas: 6 son de `arosa-alaves-b`
 4. Regenerar el informe entero (camino de solo lectura, filas append-only) y
    **ese** es el informe con el veredicto definitivo.
 
+## Decisión humana (Alberto Fojo, 2026-09-29): opción B para V-12
+
+El verificador levantó **V-12**: CA-9 (c2) manda que SPEC-009 corrija el motor y
+rehaga el informe con el replay —y «Fuera de alcance» y CA-10 lo confirman—, pero
+eso no estaba planificado y **su premisa no encaja**: el motor cumple RN-03 al pie
+de la letra; lo equivocado es la **regla**, que es de sdd-arquitecto.
+
+**Decidido: B.** (c2) se enmienda para distinguir dos casos, y la corrección del
+marcador sale de SPEC-009 a una **spec nueva de EPIC-002**:
+
+- defecto de **implementación** → se arregla y se replayea **dentro** de la spec
+  que lo encuentre, como dice hoy (c2);
+- defecto de **regla** → la spec lo **documenta**, abre residual y va al
+  arquitecto; no cambia `reglas.md` por su cuenta.
+
+**SPEC-009 cierra con lo medido. EPIC-002 NO cierra hasta que el marcador esté
+corregido**, que es lo que mantiene honesta la promesa de la épica: la jornada
+quedó *registrada* sin intervención, pero todavía no *correcta*.
+
+**Límite que hay que escribir, porque (c2) tampoco lo anticipó**: el replay podrá
+arreglar **5 de los 7** partidos. En `ceuta-real-sociedad-b` y `merida-logrones`
+hay **0 observaciones** con el marcador que el proveedor acabó dando (la última
+guardada es `live 2-1` y `live 3-4`): el tick dejó de observar al cerrarse la
+ventana en kickoff + 120 y la corrección llegó después. **Ese dato no existe en
+nuestro almacén**, así que el informe rehecho **nunca** podrá decir 39 de 39.
+
 ## Lo que sigue congelado
 
 Código congelado desde el 2026-09-22 salvo lo del martes. **Nada de tocar
