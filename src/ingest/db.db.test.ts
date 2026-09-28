@@ -284,13 +284,20 @@ describe("CA-6 purges and stale keys", () => {
   it("opens and closes a purge and reads the last one", () =>
     rollback(async (tx) => {
       const db = dbIn(tx);
-      const id = await db.openPurge(NOW);
+      // The shared dev holds real purges written by the deployed tick
+      // (R-SPEC-009-8): seed after the newest one, never touch it.
+      const before = await db.lastPurge();
+      const startedAt =
+        before !== null && before.startedAt >= NOW
+          ? shiftInstant(before.startedAt, DAY_MS)
+          : NOW;
+      const id = await db.openPurge(startedAt);
       await db.closePurge(id, {
-        finishedAt: at(2_000),
+        finishedAt: shiftInstant(startedAt, 2_000),
         ok: true,
         deleted: 12,
       });
-      expect(await db.lastPurge()).toEqual({ startedAt: NOW, ok: true });
+      expect(await db.lastPurge()).toEqual({ startedAt, ok: true });
       const [row] = await tx`select * from raw_purges where id = ${id}`;
       expect(row).toMatchObject({ ok: true, deleted: 12, error: null });
     }));
