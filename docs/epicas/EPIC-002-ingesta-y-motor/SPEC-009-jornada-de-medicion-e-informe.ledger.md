@@ -843,6 +843,12 @@ competiciones en ventana en ese minuto más el `ids=` de los dos partidos que el
   correcto; la prosa no nombra la sub-rama y describe el tratamiento de (c2-i).
   Fuera del encargo de la 5ª vuelta (solo N-10); no se ha tocado. Destino: el
   orquestador decide si entra en esta spec (texto del bloque 9 + test) o se anota.
+  **Cerrado en la sexta vuelta (2026-09-29, `56afeb5` + `65031a1`)**: el orquestador
+  decidió que entra (letra de N-9 / CA-9). El bloque 9 describe (c2-i) y (c2-ii),
+  dice que la causa no la deriva ninguna consulta y deja `causa (c2-i o c2-ii, a
+  mano, obligatoria):`; ya no dice «se corrige el motor» ni «motor equivocado».
+  Test: `informe.test.ts` «N-9 la rama (c2) se parte por su causa» (4 casos). La
+  causa de esta jornada, escrita a mano en el informe: **(c2-ii)**.
 - **Residuales cerrados por CA-8 (2026-09-28).** **F-SPEC-005-1** —«no hay fixture
   `live=` con partidos de nuestras ligas en juego»— y **O-3 de SPEC-007** —«el
   adaptador nunca ha visto un crudo producido por el tick desplegado»— quedan
@@ -1427,6 +1433,49 @@ nuevo, solo líneas generadas:
 |---|---|
 | `env -u DATABASE_URL -u API_FOOTBALL_KEY -u NEXT_PUBLIC_SUPABASE_URL -u SUPABASE_SERVICE_ROLE_KEY -u INGEST_TICK_TOKEN npm run gates` | exit **0** · biome 142 ficheros · **46 test files, 698 tests** |
 | `npm run gates` | exit **0** · 46 test files, 698 tests |
+| `npm run test:db` | exit **0** · **8 test files, 71 tests** |
+| filas de `dev` antes y después de `test:db` | **idénticas**: `observations` 9341 · `decisions` 3351 · `alerts` 17 · `ingest_attempts` 2766 · `raw_purges` 8 · `matches` 1834 |
+| `git diff main --stat -- src/decide src/ingest/engine.ts src/ingest/tick.ts src/ingest/db.ts src/ingest/window.ts src/raw src/app/api supabase package-lock.json` | **vacío** |
+
+### Sexta vuelta: F-SPEC-009-11, la rama (c2) partida por N-9 (2026-09-29, sdd-implementador)
+
+SPEC-009 pasada a `en-progreso` (autorizado por el orquestador) y devuelta a
+`en-revision` al cerrar. Nada fuera de `src/ingest/informe*.ts`, el informe y este
+ledger. Ni ticks, ni escrituras en BD.
+
+| Paso | Commit | Test que lo fija | Rojo antes del arreglo, corrido y copiado |
+|---|---|---|---|
+| Bloque 9 (c2-i)/(c2-ii) + comentario de `veredictoDe` | `56afeb5` | `informe.test.ts` «N-9 la rama (c2) se parte por su causa»: nombra (c2-i) con corrección y replay dentro de la spec que lo encuentra; nombra (c2-ii) «se documenta con su medida, abre residual y se deriva a sdd-arquitecto» y «sin tocar reglas.md, ADR-004 ni src/decide»; «la causa no la deriva ninguna consulta» + línea `    causa (c2-i o c2-ii, a mano, obligatoria):`; no contiene «se corrige el motor» ni «motor equivocado» | `Tests 4 failed \| 92 passed (96)`: `expected '## 9. Veredicto veredicto: no válida …' to match /\(c2-i\) defecto de implementación…/`, `… to match /\(c2-ii\) defecto de regla…/`, `… to contain 'la causa no la deriva ninguna consulta'`, `… not to contain 'se corrige el motor'`. Verde: `96 passed (96)` |
+| Informe regenerado | `65031a1` | — | — |
+
+**Techo de líneas (V-8):** la rama (c2) pasa de 4 a 8 líneas. Caso «las listas que
+no se recortan…» (49 discrepantes, rama c2): **137 → 141**; caso «todos los ejes
+acotados saturados» (rama c1, no imprime el texto de c2): **142 → 142**. Tope 145, en verde.
+
+**Regeneración** (una vez, mismo comando que la quinta vuelta; HEAD `b7f39d6`
+guardado antes; conteos de `dev` antes y después idénticos: `observations` 9341 ·
+`decisions` 3351 · `alerts` 17 · `ingest_attempts` 2766 · `raw_purges` 8 · `matches` 1834).
+Salida generada: **122 líneas** (118 + 4); con las explicaciones a mano: **134
+líneas** (tope 145). Veredicto **`no válida (c2)`**, sin cambio.
+
+**Explicaciones:** las 13 líneas no vacías a mano de la quinta vuelta, comprobadas
+una a una con `grep -xF` contra el fichero nuevo: **0 faltan** (las únicas líneas
+de HEAD ausentes son las 4 de la prosa vieja de (c2), generadas). **Una nueva**, en
+el hueco del bloque 9:
+
+```
+    causa (c2-i o c2-ii, a mano, obligatoria): (c2-ii), defecto de regla (N-9): RN-03 retiene marcadores falsos (hallazgo 2 de `hallazgos-jornada.md`); residual R-SPEC-009-2; corrección especificada en ADR-010 + SPEC-012 (5 de 7) y SPEC-013 (los 2 restantes: ceuta-real-sociedad-b y merida-logrones).
+```
+
+`git diff b7f39d6 -- informe-jornada-2026-09-28.md`: solo el bloque 9 (−4 líneas
+viejas de (c2), +7 generadas nuevas, +1 causa a mano).
+
+**Cierre de esta vuelta:**
+
+| Comprobación | Salida |
+|---|---|
+| `env -u DATABASE_URL -u API_FOOTBALL_KEY -u NEXT_PUBLIC_SUPABASE_URL -u SUPABASE_SERVICE_ROLE_KEY -u INGEST_TICK_TOKEN npm run gates` | exit **0** · biome 142 ficheros · **46 test files, 702 tests** |
+| `npm run gates` | exit **0** · 46 test files, 702 tests |
 | `npm run test:db` | exit **0** · **8 test files, 71 tests** |
 | filas de `dev` antes y después de `test:db` | **idénticas**: `observations` 9341 · `decisions` 3351 · `alerts` 17 · `ingest_attempts` 2766 · `raw_purges` 8 · `matches` 1834 |
 | `git diff main --stat -- src/decide src/ingest/engine.ts src/ingest/tick.ts src/ingest/db.ts src/ingest/window.ts src/raw src/app/api supabase package-lock.json` | **vacío** |
