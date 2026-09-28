@@ -20,7 +20,7 @@ Actualizado: 2026-09-29
 | SPEC-006 — raw-store-en-storage-ventanas-por-partido-y-tick-de-ingesta | hecho | 2026-09-21 (sdd-verificador) |
 | SPEC-007 — motor-de-decisiones-cualificador-y-alertas | hecho | 2026-09-21 (sdd-verificador) |
 | SPEC-008 — despliegue-del-tick-pg-cron-vercel-cron-variables-y-sincronizacion-del-calendario | hecho | 2026-09-22 (sdd-verificador) |
-| SPEC-009 — jornada-de-medicion-e-informe | en-progreso | 2026-09-22 (sdd-implementador) |
+| SPEC-009 — jornada-de-medicion-e-informe | hecho | 2026-09-29 (sdd-verificador) |
 | SPEC-012 — la-monotonia-no-sobrevive-al-cierre-y-replay-de-la-jornada-medida | aprobada | 2026-09-29 (Alberto Fojo) |
 | SPEC-013 — reconciliacion-del-marcador-despues-del-cierre-forzoso | aprobada | 2026-09-29 (Alberto Fojo) |
 
@@ -53,6 +53,5 @@ Actualizado: 2026-09-29
 
 ## Resumen
 
-- hecho: 10
-- en-progreso: 1
+- hecho: 11
 - aprobada: 2
