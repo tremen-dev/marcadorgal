@@ -10,6 +10,7 @@ import {
   type RawCapture,
   type WindowMatch,
 } from "../../model/index.ts";
+import { LEAGUES } from "./calendar.ts";
 import { createApiFootballResults, liveQuery } from "./results.ts";
 
 const readJson = (rel: string): unknown =>
@@ -921,5 +922,89 @@ describe("CA-7 real fixtures parse", () => {
       minute: foreign.fixture.status.elapsed,
       addedMinute: foreign.fixture.status.extra,
     });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// SPEC-009 CA-8: the first live= body with matches of our own leagues really
+// in play, captured during the measured matchday (2026-09-26T15:10:00Z). It
+// closes F-SPEC-005-1: until now the live case with a resolved identity was
+// derived in memory from a foreign fixture of live-all-2026-09-21.json.
+// Everything is read off the file: the statuses asserted here are the ones the
+// provider sent, never a state the fixture does not carry.
+
+describe("SPEC-009 CA-8 live-2026-09-26.json parses", () => {
+  const live = readJson("./fixtures/live-2026-09-26.json") as ProviderBody & {
+    parameters: { live: string };
+  };
+  // The real request, not the ids= url of `capture`: this body is the answer
+  // to a live= of the five league ids.
+  const asked: RawCapture = {
+    sourceId: "api-football" as RawCapture["sourceId"],
+    capturedAt: "2026-09-26T15:10:00Z" as Instant,
+    requests: [
+      {
+        url: `https://v3.football.api-sports.io/fixtures?live=${live.parameters.live}`,
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(live),
+      },
+    ],
+  };
+
+  it("(i) every fixture yields a live observation with minute, none unresolved or skipped", () => {
+    const result = adapter.parse(asked);
+    expect(ParseResult.safeParse(result).success).toBe(true);
+    expect(result.requestErrors).toEqual([]);
+    expect(result.unresolved).toEqual([]);
+    expect(result.skipped).toEqual([]);
+    expect(result.observations).toHaveLength(live.response.length);
+    for (const o of result.observations) expect(o.status).toBe("live");
+    expect(
+      result.observations.filter((o) => o.minute !== null).length,
+    ).toBeGreaterThanOrEqual(1);
+    const by = Object.fromEntries(
+      result.observations.map((o) => [o.matchId, o]),
+    );
+    expect(by["primera-rfef-g1-2026-27-j5-cultural-leonesa-coria"]).toEqual({
+      matchId: "primera-rfef-g1-2026-27-j5-cultural-leonesa-coria",
+      status: "live",
+      score: { home: 2, away: 0 },
+      minute: 37,
+      addedMinute: null,
+    });
+    // Half time is a moment inside live (dominio.md), with its elapsed.
+    expect(by["segunda-division-2026-27-j7-granada-andorra"]).toEqual({
+      matchId: "segunda-division-2026-27-j7-granada-andorra",
+      status: "live",
+      score: { home: 0, away: 2 },
+      minute: 45,
+      addedMinute: null,
+    });
+  });
+
+  it("(ii) the statuses in the file, as they come: four 1H and one HT, no extra", () => {
+    const statuses = live.response.map((f) => f.fixture.status.short);
+    expect(new Set(statuses)).toEqual(new Set(["1H", "HT"]));
+    expect(statuses.filter((s) => s === "1H")).toHaveLength(4);
+    expect(statuses.filter((s) => s === "HT")).toHaveLength(1);
+    // No fixture carries `extra`, so no addedMinute is asserted here: that
+    // case keeps living in ids-2026-09-21.json and live-all-2026-09-21.json.
+    expect(live.response.every((f) => f.fixture.status.extra === null)).toBe(
+      true,
+    );
+    for (const f of live.response)
+      expect(f.fixture.status.elapsed).not.toBeNull();
+    expect(live.errors).toEqual([]);
+    expect(live.results).toBe(live.response.length);
+  });
+
+  it("(iii) the five leagues were asked for and four answered: Primera did not play (H-1)", () => {
+    expect(new Set(live.parameters.live.split("-"))).toEqual(
+      new Set(Object.values(LEAGUES).map(String)),
+    );
+    expect(new Set(live.response.map((f) => String(f.league.id)))).toEqual(
+      new Set(["141", "435", "875", "439"]),
+    );
   });
 });
