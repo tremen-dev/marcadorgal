@@ -379,7 +379,7 @@ const lista = (lines: readonly string[], vacio: string): string[] =>
 const listaContada = (lines: readonly string[]): string[] => [...lines];
 
 // The same for a list whose row costs more than one line (an alert plus the
-// blank left for its hand-written explanation): what is capped is the ten lines
+// blank left for its hand-written explanation): what is capped is the five lines
 // INFORME_FILAS_MOSTRADAS buys, not the number of rows, so no list can eat the
 // two pages of CA-10 by making its rows taller.
 function primerasFilas<T>(
@@ -407,6 +407,14 @@ function primeras(lines: readonly string[], vacio: string): string[] {
     ...lines.slice(0, INFORME_FILAS_MOSTRADAS),
     `  … y ${lines.length - INFORME_FILAS_MOSTRADAS} más`,
   ];
+}
+
+// Una muestra de valores cortos en la misma línea que su cuenta (V-8): los
+// primeros INFORME_FILAS_MOSTRADAS y el resto contado. Nada si no hay ninguno.
+function enLinea(valores: readonly string[]): string {
+  if (valores.length === 0) return "";
+  const resto = valores.length - INFORME_FILAS_MOSTRADAS;
+  return ` — ${valores.slice(0, INFORME_FILAS_MOSTRADAS).join(", ")}${resto > 0 ? ` … y ${resto} más` : ""}`;
 }
 
 // La misma, para una lista cuya cuenta ya se ha impreso arriba (V-7).
@@ -844,11 +852,11 @@ export function informeJornada(input: InformeInput): {
     `  cobertura sobre la ventana efectiva de cada partido: de kickoff − ${WINDOW_BEFORE_MINUTES} min al`,
     `  cierre de su Decision finished (forzado en kickoff + ${FORCED_FINISH_MINUTES} min, RN-02), no a kickoff + ${WINDOW_AFTER_MINUTES} min.`,
     `intentos dentro de la ventana de ADR-002 §2 pero tras el cierre de todo partido: ${trasElCierre.length}`,
-    `horas de ventana sin ejecuciones: ${horasSinEjecuciones.length}`,
-    ...primeras(
-      horasSinEjecuciones.map((h) => `  ${h}`),
-      "(ninguna)",
-    ).filter(() => horasSinEjecuciones.length > 0),
+    // Una hora es un instante corto: la muestra va en la misma línea que su
+    // cuenta, y la lista cuesta una línea y no seis (V-8).
+    `horas de ventana sin ejecuciones: ${horasSinEjecuciones.length}${enLinea(
+      horasSinEjecuciones.map((h) => `${h.slice(0, 13)}Z`),
+    )}`,
     `intentos fuera de la ventana de todo partido: ${fueraDeVentana.length}   ← criterio 2`,
     `intentos fallidos: ${fallidos.length}`,
     ...primeras(
@@ -1025,10 +1033,15 @@ export function informeJornada(input: InformeInput): {
   push(
     "",
     BLOQUES[6],
-    "Ninguna se resuelve aquí: eso es EPIC-004. Cada una lleva su explicación",
-    "escrita a mano debajo.",
+    "Ninguna se resuelve aquí (EPIC-004); cada una lleva su explicación a mano debajo.",
     `abiertas en la ventana: ${abiertas.length}`,
-    ...listaContada(porKind.map((k) => `  ${k.kind}: ${k.count}`)),
+    // AlertKind tiene cinco valores y el fixture solo usaba dos (V-8 (i)): el
+    // desglose por kind va en una línea, cueste lo que cueste la jornada.
+    ...(porKind.length === 0
+      ? []
+      : [
+          `  por kind: ${porKind.map((k) => `${k.kind}: ${k.count}`).join(" · ")}`,
+        ]),
   );
   // Capped like every other list (CA-10): two lines per alert with no ceiling
   // is what took the report past two pages, and a forced_finish per match is a
@@ -1166,8 +1179,7 @@ export function informeJornada(input: InformeInput): {
       ...(acordados.length === 0
         ? []
         : [
-            "  suspended, scheduled o live (CA-7): no son discrepancias ni la rama (c2),",
-            "  pero la ronda quedó incompleta: su explicación es obligatoria y bajan a reservas.",
+            "  suspended, scheduled o live (CA-7): ni discrepancia ni (c2); ronda incompleta, explicación obligatoria, bajan a reservas.",
             ...primerasFilas(
               acordados,
               (a) => [
@@ -1181,8 +1193,7 @@ export function informeJornada(input: InformeInput): {
       ...(sinRespuesta.length === 0
         ? []
         : [
-            "  No es discrepancia: CA-5 compara el status y el score del proveedor, no su silencio.",
-            "  No es la rama (c2), pero su explicación es obligatoria y bajan a reservas.",
+            "  CA-5 compara el status y el score del proveedor, no su silencio: ni discrepancia ni (c2); explicación obligatoria, bajan a reservas.",
             ...primerasFilas(
               sinRespuesta,
               (x) => [

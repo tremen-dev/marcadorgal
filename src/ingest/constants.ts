@@ -101,7 +101,13 @@ export const INFORME_FILAS_MOSTRADAS = 5;
 // listas, y el caso que satura a la vez todo lo demás —cinco competiciones,
 // las ocho listas acotadas llenas, el tick muerto, una alerta por partido—
 // está medido en `informe.test.ts` («el techo de todo lo que puede crecer a la
-// vez»): **137 líneas**, ocho por debajo del tope. Para llegar ahí hicieron
+// vez»): **137 líneas**, ocho por debajo del tope. V-8 encontró tres ejes que
+// ese fixture no expresaba (los cinco AlertKind, los acordados a la vez que los
+// silencios y, con N-8, el cubo de aplazamientos): saturados todos a la vez,
+// con cinco competiciones y el tick muerto, medían **154**. Con el desglose por
+// kind y las horas sin ejecuciones en una línea cada uno y la prosa de los
+// cubos del bloque 8 en una, ese techo mide **140** («con todos los ejes
+// acotados saturados a la vez»). Para llegar ahí hicieron
 // falta tres recortes de verdad, no uno: `INFORME_FILAS_MOSTRADAS` de diez a
 // cinco, la prosa que se repetía (el desglose por competición del bloque 1 ya
 // estaba en la primera línea del informe; el «(ninguno)» debajo de una cuenta

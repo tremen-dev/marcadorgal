@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
+  AlertKind,
   type Instant,
   type MatchStatus,
   MINUTE_MS,
@@ -1702,7 +1703,15 @@ describe("CA-10 el tope se cumple por construcción, no por fixture", () => {
     noCasadas?: number;
     // Las cinco competiciones de D-3 en la ventana, no cuatro: el techo.
     quinta?: boolean;
+    // Partidos que board y proveedor dejan en postponed (N-8) y en suspended
+    // a la vez que el resto, no en lugar del resto (V-8 (ii)).
+    aplazados?: number;
+    suspendidos?: number;
+    // Las alertas repartidas entre los cinco AlertKind y no entre dos (V-8 (i)).
+    todosLosKinds?: boolean;
   };
+
+  const KINDS = AlertKind.options;
 
   const jornada = ({
     status = "finished",
@@ -1716,6 +1725,9 @@ describe("CA-10 el tope se cumple por construcción, no por fixture", () => {
     muereEn = null,
     noCasadas = 0,
     quinta = false,
+    aplazados = 0,
+    suspendidos = 0,
+    todosLosKinds = false,
   }: Escenario) => {
     const comps = quinta
       ? [
@@ -1727,10 +1739,21 @@ describe("CA-10 el tope se cumple por construcción, no por fixture", () => {
           ],
         ]
       : COMPETICIONES;
+    // Los aplazados y los suspendidos son los últimos partidos, lejos de los
+    // silenciosos, los discrepantes y las referencias (los primeros): ningún
+    // eje se come a otro ni convierte una referencia en no casada.
+    const total = comps.reduce((n, [, , k]) => n + k, 0);
+    const estadoDe = (j: number): MatchStatus => {
+      const k = j - (total - aplazados - suspendidos);
+      if (k >= 0 && k < aplazados) return "postponed";
+      if (k >= aplazados) return "suspended";
+      return status;
+    };
     const matches: InformeMatchLike[] = [];
     let i = 0;
     for (const [competitionId, competitionName, n] of comps)
       for (let k = 0; k < n; k += 1) {
+        const estado = estadoDe(i);
         matches.push(
           partido({
             id: `m${i}`,
@@ -1738,9 +1761,9 @@ describe("CA-10 el tope se cumple por construcción, no por fixture", () => {
             competitionName,
             round: 4,
             kickoff: at(10 + i * 70),
-            status,
-            score: status === "finished" ? { home: 1, away: 0 } : null,
-            decidedAt: status === "finished" ? at(10 + i * 70 + 105) : null,
+            status: estado,
+            score: estado === "finished" ? { home: 1, away: 0 } : null,
+            decidedAt: estado === "finished" ? at(10 + i * 70 + 105) : null,
           }),
         );
         i += 1;
@@ -1805,7 +1828,11 @@ describe("CA-10 el tope se cumple por construcción, no por fixture", () => {
           motivo: "el marcador 1-0 nunca se publicó en ese partido",
         })),
         alerts: Array.from({ length: alertas }, (_, k) => ({
-          kind: k % 2 === 0 ? "forced_finish" : "silence",
+          kind: todosLosKinds
+            ? KINDS[k % KINDS.length]
+            : k % 2 === 0
+              ? "forced_finish"
+              : "silence",
           matchId: `m${k % matches.length}`,
           openedAt: at(10 + (k % matches.length) * 70 + 100),
           resolvedAt: null,
@@ -1833,13 +1860,15 @@ describe("CA-10 el tope se cumple por construcción, no por fixture", () => {
                             status: "finished" as MatchStatus,
                             score: { home: 9, away: 9 },
                           }
-                        : {
-                            status: proveedorStatus,
-                            score:
-                              proveedorStatus === "finished"
-                                ? { home: 1, away: 0 }
-                                : null,
-                          },
+                        : estadoDe(j) !== status
+                          ? { status: estadoDe(j), score: null }
+                          : {
+                              status: proveedorStatus,
+                              score:
+                                proveedorStatus === "finished"
+                                  ? { home: 1, away: 0 }
+                                  : null,
+                            },
                   },
             )
           : null,
@@ -1889,6 +1918,48 @@ describe("CA-10 el tope se cumple por construcción, no por fixture", () => {
     expect(informe.cobertura.competiciones).toHaveLength(5);
     expect(informe.alertas.filas).toHaveLength(49);
     expect(informe.contraste?.sinRespuesta).toHaveLength(10);
+    expect(lineas(texto)).toBeLessThanOrEqual(INFORME_MAX_LINEAS);
+  });
+
+  // V-8: el techo anterior se medía con un generador que no podía expresar
+  // tres ejes que una jornada sí: los cinco AlertKind, los acordados a la vez
+  // que los silencios, y (N-8) los aplazamientos acordados en su propio cubo.
+  // Aquí se saturan todos los ejes acotados a la vez, con cero discrepancias
+  // y cero referencias no casadas: si esto cabe, el tope es de construcción.
+  it("y con todos los ejes acotados saturados a la vez, incluido el cubo de N-8, también cabe", () => {
+    const { texto, informe } = jornada({
+      quinta: true,
+      alertas: 49,
+      todosLosKinds: true,
+      mudos: 20,
+      fallidos: 30,
+      muereEn: 30,
+      silenciosos: 10,
+      aplazados: 6,
+      suspendidos: 6,
+    });
+    expect(informe.cobertura.competiciones).toHaveLength(5);
+    expect(informe.alertas.porKind).toHaveLength(KINDS.length);
+    expect(informe.contraste?.sinRespuesta).toHaveLength(10);
+    expect(informe.contraste?.aplazadosAcordados).toHaveLength(6);
+    expect(informe.contraste?.acordadosNoFinished).toHaveLength(6);
+    expect(informe.contraste?.discrepancias).toHaveLength(0);
+    expect(informe.latenciaExterna.noCasadas).toHaveLength(0);
+    // Los dos ejes que V-8 aplana a una línea siguen diciendo su muestra.
+    expect(texto).toMatch(
+      /horas de ventana sin ejecuciones: \d+ — 2026-09-25T\d\dZ, .* … y \d+ más/,
+    );
+    expect(texto).toContain(
+      "  por kind: conflict: 10 · forced_finish: 10 · regression: 10 · silence: 10 · unresolved_team: 9",
+    );
+    for (const cuenta of [
+      "aplazamientos que el proveedor confirma: 6",
+      "estados no-finished que el proveedor confirma: 6",
+      "partidos sin respuesta del proveedor: 10",
+      "intentos fallidos: 30",
+      "sin ninguna observación: 20",
+    ])
+      expect(texto).toContain(cuenta);
     expect(lineas(texto)).toBeLessThanOrEqual(INFORME_MAX_LINEAS);
   });
 
