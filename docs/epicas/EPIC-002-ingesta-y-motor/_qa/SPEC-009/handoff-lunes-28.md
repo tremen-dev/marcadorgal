@@ -5,6 +5,38 @@
 > bitácora (`bitacora-jornada.md`) y el ledger de la spec. Rama
 > `ft/SPEC-009-jornada-de-medicion-e-informe`.
 
+## ACTUALIZADO 2026-09-29 — léelo antes que nada
+
+La jornada se midió, el informe se generó (una sola vez, con las explicaciones a
+mano encima: **no regenerar sin rehacerlas**) y el verificador emitió **RED**.
+Todo lo de más abajo describe el lunes 28 y sigue siendo cierto como historia;
+**lo pendiente hoy es esto**, en este orden:
+
+1. **V-10 — `npm run test:db` está en rojo.** `src/ingest/db.db.test.ts:293` asume
+   `raw_purges` vacía y la jornada la llenó con 8 purgados reales. Es deuda de
+   SPEC-006, pero CA-10 pide `test:db` en verde. → R-SPEC-009-8.
+2. **N-8, V-8 y V-9** — el bloque de código que ya estaba planificado. N-8 va
+   primero porque cambia el veredicto, no la maquetación; con **0 partidos
+   `postponed`** es inerte para esta jornada, pero la letra debe quedar bien.
+3. **Regenerar el informe** con los textos ya corregidos, y **re-verificar** para
+   el GREEN.
+4. **Implementar SPEC-012** (aprobada), y luego **SPEC-013** (aprobada, con
+   **H-2 todavía abierto**: si CA-5 espera a la jornada del 2026-10-02/04, la
+   spec no llega a `hecho` antes del lunes 5).
+5. **Tres residuales sin dueño**: R-SPEC-009-4 (el informe no ve un partido que
+   la fuente nunca mostró en juego), R-SPEC-009-5 (calendario desfasado 24 h) y
+   **R-SPEC-009-7** (la latencia interna es cero por construcción), este último
+   marcado «antes de cerrar EPIC-002».
+6. **Para producto**: la letra de EPIC-002 tiene que registrar que la épica **no
+   cierra hasta que el marcador esté corregido** (N-9). El arquitecto no toca
+   `_epica.md`.
+7. **Limpieza al cerrar SPEC-009**: borrar `.github/workflows/captura-ca8.yml` y
+   la rama `captura-ca8`.
+
+Lo aprobado el 2026-09-29: **ADR-010**, **SPEC-012** y **SPEC-013**, y **H-1 de
+SPEC-013** (corregir `ceuta-real-sociedad-b` y `merida-logrones` con la ejecución
+única de CA-6). Los hallazgos medidos están en `hallazgos-jornada.md`.
+
 ## Dónde estamos
 
 La ventana de CA-7 va del **viernes 25 18:20Z al lunes 28 21:00Z** y sigue
