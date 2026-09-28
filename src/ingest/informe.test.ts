@@ -1026,6 +1026,54 @@ describe("CA-9 veredicto", () => {
     expect(informe.veredicto.pendientes.length).toBeGreaterThan(0);
     expect(texto).toContain("declaraciones pendientes");
   });
+
+  // V-15. CA-9 (a) exige marcador coincidente (CA-5): sin --contrastar esa
+  // condición no está medida, y «sin contraste» no es «cero discrepancias».
+  describe("V-15 sin contraste no hay válida por omisión", () => {
+    it("ingesta sana sin contraste: sin veredicto, y dice que falta CA-5", () => {
+      const { texto, informe } = conCobertura(120, { contraste: null });
+      expect(informe.veredicto.valor).toBe("sin veredicto");
+      expect(informe.veredicto.rama).toBeNull();
+      expect(texto).not.toMatch(/^veredicto: válida/m);
+      expect(texto).toMatch(
+        /^veredicto: sin veredicto$\n^ {2}- falta el contraste de CA-5 \(--contrastar\)/m,
+      );
+    });
+
+    it("sin contraste y con reservas medibles tampoco es válida con reservas, y las lista", () => {
+      const { informe } = conCobertura(105, { contraste: null });
+      expect(informe.veredicto.valor).toBe("sin veredicto");
+      expect(informe.veredicto.razones.join(" ")).toContain("cobertura");
+    });
+
+    it("ingesta rota sin contraste sigue siendo (c1): no depende de CA-5", () => {
+      const { texto, informe } = conCobertura(90, { contraste: null });
+      expect(informe.veredicto).toMatchObject({ valor: "no válida", rama: "c1" });
+      expect(texto).toContain("ingesta rota");
+    });
+
+    it("una intervención sobre el dato invalida también sin contraste", () => {
+      const { informe } = conCobertura(120, {
+        contraste: null,
+        declaraciones: { intervencionSobreElDato: ["observación a mano"] },
+      });
+      expect(informe.veredicto).toMatchObject({ valor: "no válida", rama: null });
+    });
+
+    it("con contraste el comportamiento no cambia: válida y (c2) como antes", () => {
+      expect(conCobertura(120).informe.veredicto.valor).toBe("válida");
+      expect(
+        conCobertura(120, {
+          contraste: [
+            {
+              matchId: MATCH,
+              proveedor: { status: "finished", score: { home: 9, away: 9 } },
+            },
+          ],
+        }).informe.veredicto,
+      ).toMatchObject({ valor: "no válida", rama: "c2" });
+    });
+  });
 });
 
 // CA-1, la firma del comando: la cáscara se prueba como la de ingest:tick
