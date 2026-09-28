@@ -24,13 +24,14 @@ huecos > 90 s: 2
   2026-09-26T16:57:06.411Z  82397.5 s  tercera-rfef-g1-2026-27-j4-antela-somozas  Terceira Federación · Grupo 1
 
 ## 3. Latencia interna
-decided_at − observed_at de la observación citada que trae el marcador nuevo. Como
-observed_at = capturedAt (SPEC-006 CA-7), esto mide captura → publicación: raw store,
-parse, inserción y motor. No es latencia extremo a extremo y nadie debe leerlo así.
+decided_at − observed_at de la observación citada que trae el marcador nuevo. Advertencia
+(N-10): es cero por construcción —`observed_at` y `decided_at` salen del mismo reloj
+inyectado por ruta (ADR-008 §7)— y **no mide** tiempo de proceso; las muestras no nulas
+son la antigüedad de la observación citada por RN-02. No es latencia extremo a extremo.
 La primera Decision con marcador de cada partido —el 0-0 del estreno— cuenta
 como cambio: la muestra lleva un estreno por partido además de los goles.
 mediana: 0.0 s (n=132) · p95: 0.0 s (n=132) · máximo: 11.8 s (n=132)
-techo propio (p95 cadencia + p95 latencia interna): 32.8 s — el peor caso de «el proveedor ya lo tenía → nosotros lo publicamos»
+techo propio = p95(a), el p95 de cadencia, sin sumar (b): 32.8 s
 
 ## 4. Latencia extremo a extremo
 decided_at − instante de la referencia externa, una fila por gol referenciado
@@ -40,7 +41,7 @@ rango: [-94.8 s, 2278.2 s]
 objetivo de vision.md: mediana < 45 s → NO cumple · el p95 de vision.md no se contrasta con n=15
 tamaño esperable: los 39 partidos de la ventana dan del orden de 98 goles, pero la muestra
 la limita lo que una persona puede seguir a la vez (H-3: domingo 27, 14:00Z-17:00Z),
-así que pesa menos que la cadencia y la latencia interna, de miles de capturas.
+así que pesa menos que la cadencia (a), que se calcula sobre miles de capturas.
 referencias no casadas: 9
   primera-rfef-g1-2026-27-j5-mirandes-unionistas,1-0,2026-09-27T14:42:29.000Z,radio-galega  →  el marcador 1-0 nunca se publicó
   segunda-rfef-g1-2026-27-j4-arosa-alaves-b,0-1,2026-09-27T15:06:00.000Z,radio-galega  →  el marcador 0-1 nunca se publicó
@@ -69,11 +70,9 @@ con al menos un hueco > 15 min: 1
   tercera-rfef-g1-2026-27-j4-antela-somozas · Terceira Federación · Grupo 1 · hueco mayor: 82397.5 s
 
 ## 7. Alertas
-Ninguna se resuelve aquí: eso es EPIC-004. Cada una lleva su explicación
-escrita a mano debajo.
+Ninguna se resuelve aquí (EPIC-004); cada una lleva su explicación a mano debajo.
 abiertas en la ventana: 17
-  forced_finish: 9
-  regression: 8
+  por kind: forced_finish: 9 · regression: 8
   2026-09-25T19:46:06.084Z  regression  segunda-division-2026-27-j7-girona-albacete  {"current":{"away":1,"home":2},"proposed":{"away":0,"home":2},"sourceId":"api-football","observationId":"7278a59b-84c2-41cf-8724-d9acf25ddef1"}
     explicación: gol fantasma de la fuente (2-1) durante 2 observaciones; volvió a 2-0 y lo confirmó 74 veces. 2-0 era el resultado real (crónica de prensa). RN-03 retuvo el 2-1 y cerró así: es la primera discrepancia del bloque 8. Hallazgo 2.
   2026-09-26T13:20:30.979Z  regression  segunda-division-2026-27-j7-ceuta-real-sociedad-b  {"current":{"away":1,"home":1},"proposed":{"away":1,"home":0},"sourceId":"api-football","observationId":"5812c1e1-38be-488c-b114-ea279399dd97"}
@@ -105,6 +104,7 @@ coinciden:
   segunda-rfef-g1-2026-27-j4-amorebieta-ourense-cf  finished 0-1
   tercera-rfef-g1-2026-27-j4-atletico-arteixo-alondras  finished 2-4
   … y 27 más
+aplazamientos que el proveedor confirma: 0
 estados no-finished que el proveedor confirma: 0
 partidos sin respuesta del proveedor: 0
 discrepancias: 7
