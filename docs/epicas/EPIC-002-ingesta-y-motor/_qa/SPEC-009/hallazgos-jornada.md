@@ -7,16 +7,20 @@
 
 ## Lo que salió bien, y conviene leerlo primero
 
-La ingesta no falló: **cobertura 100 %** (2727 de 2731 ticks), **0 intentos
+La ingesta no falló: **cobertura 2727 de 2731 ticks (99,85 %)**, **0 intentos
 fallidos** de 2733, **0 horas de ventana sin ejecuciones**, **0 intentos fuera de
-la ventana de todo partido**, cadencia mediana **30,0 s** y p95 **32,8 s**, y
-latencia interna (captura → publicación) con **mediana y p95 de 0,0 s**. Tres
-silencios largos entre jornadas —14,4 h, 15,1 h y 21,3 h— con pg_cron invocando
-el tick cada 30 s y el tick declinando cada vez. **Cero intervenciones** de
-ningún tipo en los cuatro días.
+la ventana de todo partido**, y cadencia mediana **30,0 s** con p95 **32,8 s**.
+Tres silencios largos entre jornadas —14,4 h, 15,1 h y 21,3 h— con pg_cron
+invocando el tick cada 30 s y el tick declinando cada vez. **Cero
+intervenciones** de ningún tipo en los cuatro días, verificado por huella: cero
+Decisions con regla `operator`, cero alertas resueltas, cero observaciones con un
+`raw_ref` que no venga de un `ingest_attempts`.
 
-Los cuatro hallazgos de abajo son de la **fuente** y de las **reglas**, no del
-camino de ingesta.
+**La «latencia interna de 0,0 s» del informe NO está en esta lista a propósito**:
+es cero por construcción y no mide nada (hallazgo 5, R-SPEC-009-7).
+
+Los hallazgos de abajo son de la **fuente**, de las **reglas** y del **calendario
+declarado**, no del camino de ingesta.
 
 ## 1. La fuente no da Terceira en directo — 4 de 9 partidos
 
@@ -68,10 +72,28 @@ y un error de la fuente son indistinguibles en vivo: es exactamente el problema
 que RN-03 fue escrito para no tener que resolver.
 
 **Lo que el dato sí sostiene: que la monotonía no sobreviva al cierre.** Al pasar
-a `finished`, el marcador del proveedor manda sobre el retenido. Eso arregla **6
-de las 7 discrepancias** sin tocar el comportamiento en vivo, donde la monotonía
-sigue protegiendo del parpadeo. Y para el caso 7 hace falta otra cosa (hallazgo
-3). Alternativas de más calado, ambas en EPIC-004: **segunda fuente** (RN-04 ya
+a `finished`, el marcador del proveedor manda sobre el retenido. Eso arregla
+**5 de las 7 discrepancias** sin tocar el comportamiento en vivo, donde la
+monotonía sigue protegiendo del parpadeo.
+
+**Corregido el 2026-09-29 (V-14 del verificador, comprobado): son 5, no 6.**
+Comparando `board` con **nuestra propia última observación** de cada partido:
+
+| Partido | board | última obs | proveedor | ¿lo arregla? |
+|---|---|---|---|---|
+| girona-albacete | 2-1 | 2-0 | 2-0 | sí |
+| lugo-racing-ferrol | 1-1 | 1-0 | 1-0 | sí |
+| celta-fortuna-sabadell | 1-2 | 1-1 | 1-1 | sí |
+| mirandes-unionistas | 0-1 | 1-0 | 1-0 | sí |
+| burgos-eldense | 0-1 | 1-0 | 1-0 | sí |
+| **ceuta-real-sociedad-b** | 2-1 | **2-1** | 3-1 | **no** |
+| **merida-logrones** | 3-4 | **3-4** | 3-5 | **no** |
+
+En esos **dos** la última observación coincide con lo publicado: el marcador
+cambió **después** del cierre forzoso, así que no hay nada retenido que soltar.
+Necesitan reconciliar tras el cierre (hallazgo 3), que es otra decisión.
+
+Alternativas de más calado, ambas en EPIC-004: **segunda fuente** (RN-04 ya
 existe para eso) y **operador**, que es la única vuelta que RN-03 contempla hoy.
 
 Detalle que agrava la cuenta: en `mirandes-unionistas` la **segunda** regresión no
@@ -84,10 +106,13 @@ Las **9** alertas `forced_finish` tienen todas `minute: 90` y
 `lastStatus: "live"`: la fuente deja el partido clavado en el 90 y **nunca manda
 el final** dentro de kickoff + 120 min. RN-02 cierra, que es su trabajo.
 
-El precio: `merida-logrones` se cerró con **3-4** y la fuente acabó dando **3-5**.
-Es la única de las 7 discrepancias que **no** viene de RN-03, y la que el hallazgo
-2 no arregla: necesita reconciliar el marcador después del cierre, que es lo que
-`--contrastar` hace a mano una vez por jornada.
+El precio: `merida-logrones` se cerró con **3-4** y la fuente acabó dando **3-5**;
+es la única de las 7 discrepancias que **no** viene de RN-03. Pero los partidos
+que el hallazgo 2 **no** arregla son **dos**: ese y `ceuta-real-sociedad-b`
+(cerrado con 2-1, la fuente acabó dando 3-1), que además arrastra una regresión.
+Los dos necesitan **reconciliar el marcador después del cierre**, que es lo que
+`--contrastar` hace a mano una vez por jornada. Es una decisión distinta de la
+del hallazgo 2, y sin ella quedan 2 de 39 partidos cerrados en falso.
 
 Nota para el ledger: la decisión de Alberto en el gate de SPEC-007 —que el cierre
 forzoso **abra siempre alerta**— es lo único que hace visible este patrón. Sin
@@ -139,9 +164,25 @@ Tres salvedades obligatorias al leerlo:
 - **Instantes al minuto**, cargados con `:00` segundos, lo que adelanta la
   referencia y **agranda** la latencia. El sesgo es conservador a propósito.
 
-Y el contraste que importa: la **latencia interna** (captura → publicación) tiene
-mediana y p95 de **0,0 s**. Lo que nos separa del objetivo **no está en nuestro
-código**: está en el muestreo a 30 s y en lo que tarda la fuente.
+**Retirada el 2026-09-29 la conclusión que aquí había** (V-11 del verificador,
+comprobado por mi cuenta). Decía que la latencia interna es 0,0 s y que por tanto
+«lo que nos separa del objetivo no está en nuestro código». **Ese 0,0 s es cero
+por construcción, no por mérito**, y no sostiene ninguna conclusión:
+
+`results.ts` sella `capturedAt: now`; `tick.ts` hace
+`observedAt: o.observedAt ?? capture.capturedAt` porque el proveedor no data sus
+respuestas (SPEC-006 CA-7); y `engine.ts` hace `decidedAt: now` con **ese mismo
+`now`**, porque ADR-008 §7 le prohíbe leer el reloj. Medido sobre la ventana:
+**3317 de 3350 Decisions tienen `decided_at` idéntico al milisegundo** a la
+`observed_at` que citan (99,0 %). Por regla: RN-01 **19 de 3005** con latencia
+> 0, RN-03 **2 de 333**, y RN-02 **12 de 12** — y esas doce no miden trabajo
+nuestro, sino la antigüedad de la observación que cita un cierre forzoso.
+
+Así que el bloque 3 del informe **no** mide «raw store, parse, inserción y
+motor», y el «techo propio» de 32,8 s es **solo** el p95 de cadencia. Lo único
+medido de nuestro lado es el muestreo a 30 s. **Dónde está el retardo que nos
+separa de los 45 s sigue sin medirse**, y medirlo exige sellar un instante más
+(la entrada del tick, o la respuesta HTTP del proveedor). → **R-SPEC-009-7**.
 
 ## 9 referencias sin casar, ninguna por error de quien anotó
 
@@ -160,3 +201,11 @@ código**: está en el muestreo a 30 s y en lo que tarda la fuente.
   hasta medirlo. **sdd-arquitecto**.
 - **R-SPEC-009-6** — la latencia extremo a extremo no llega a los 45 s de
   `vision.md` con la única referencia externa disponible. **Producto**.
+- **R-SPEC-009-7** — la latencia interna es cero por construcción y el informe
+  dice que mide otra cosa; dónde está el retardo sigue sin medirse.
+  **sdd-arquitecto**, antes de cerrar EPIC-002.
+- **R-SPEC-009-8** — el caso de `test:db` de SPEC-006 depende del estado del `dev`
+  compartido y la jornada rompió esa suposición. **SPEC-006**.
+
+> Abiertos por el verificador el 2026-09-29 junto con el RED. La corrección de
+> «6 de las 7» a **5 de las 7** (V-14) cambia el encargo de R-SPEC-009-2.
