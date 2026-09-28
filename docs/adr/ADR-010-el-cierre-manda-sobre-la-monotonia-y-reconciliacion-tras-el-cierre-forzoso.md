@@ -1,13 +1,14 @@
 ---
 id: ADR-010
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-09-29, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-09-29, por: Alberto Fojo}
 ---
 # ADR-010: El cierre manda sobre la monotonía, y reconciliación tras el cierre forzoso
 
-- Deciders: sdd-arquitecto propone (2026-09-29); Alberto Fojo aprueba — **pendiente**. Llega aquí por decisión humana del 2026-09-29 (SPEC-009 **N-9**, opción B para V-12), que deriva **R-SPEC-009-2** al arquitecto en vez de arreglarlo dentro de SPEC-009.
+- Deciders: sdd-arquitecto propone (2026-09-29); Alberto Fojo **aprueba el 2026-09-29**. Llega aquí por decisión humana del 2026-09-29 (SPEC-009 **N-9**, opción B para V-12), que deriva **R-SPEC-009-2** al arquitecto en vez de arreglarlo dentro de SPEC-009.
 - Specs relacionadas: **SPEC-009** (origen, jornada medida 2026-09-25/28); **SPEC-012** consume §1 y §4; **SPEC-013** consume §2 y §3. Precisa RN-02 y RN-03 sin contradecir ADR-004 ni ADR-009; EPIC-004 (operador, segunda fuente) sigue detrás.
 
 ## Contexto
