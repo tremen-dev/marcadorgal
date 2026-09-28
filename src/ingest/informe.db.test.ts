@@ -156,8 +156,11 @@ describe("CA-2 cadencia y latencia interna contra la base de datos", () => {
 
         // La Decision que sube el marcador: 64 s − 60 s de su observación.
         expect(informe.latenciaInterna).toMatchObject({ n: 2, maximo: 4_000 });
-        expect(informe.techoPropio).toBe(FINAL + 4_000);
-        expect(texto).toContain("captura → publicación");
+        // N-10: el techo propio es p95(a), sin sumar (b), y el bloque 3 no
+        // dice que (b) mida proceso.
+        expect(informe.techoPropio).toBe(informe.cadencia.p95);
+        expect(texto).toContain("es cero por construcción");
+        expect(texto).not.toContain("captura → publicación");
       }),
     20_000,
   );
