@@ -119,10 +119,14 @@ discrepancias: 7
 ## 9. Veredicto
 veredicto: no válida (c2)
   - 7 partido(s) con marcador que no cuadra con el proveedor, sobre una ingesta con 9331 observaciones
-  rama (c2) ingesta sana y motor equivocado: no se repite. El crudo vive 30 días
-  (ADR-007 §5) y src/decide/replay.ts es determinista: se corrige el motor, se recalcula
-  el log de Decisions sobre las observaciones guardadas y el informe se rehace con los
-  números del replay, anotando que la latencia interna se midió sobre la original.
+  rama (c2) ingesta sana y Decisions equivocadas: no se repite. El crudo vive 30 días
+  (ADR-007 §5) y src/decide/replay.ts es determinista. N-9 la parte por su causa, y la
+  causa no la deriva ninguna consulta: se escribe a mano debajo.
+  (c2-i) defecto de implementación: se corrige y se recalcula por replay dentro de la spec
+  que lo encuentra; el informe se rehace con el replay y CA-2 b queda sobre la original.
+  (c2-ii) defecto de regla: se documenta con su medida, abre residual y se deriva a
+  sdd-arquitecto, sin tocar reglas.md, ADR-004 ni src/decide.
+    causa (c2-i o c2-ii, a mano, obligatoria): (c2-ii), defecto de regla (N-9): RN-03 retiene marcadores falsos (hallazgo 2 de `hallazgos-jornada.md`); residual R-SPEC-009-2; corrección especificada en ADR-010 + SPEC-012 (5 de 7) y SPEC-013 (los 2 restantes: ceuta-real-sociedad-b y merida-logrones).
 salvedad de H-1: criterio 5 cerrado sobre cuatro competiciones de cinco; primera-division no jugó en la ventana; su comprobación queda como R-SPEC-009-1.
 declaraciones pendientes (no se derivan de la base de datos): 3
   - intervención sobre el dato (H-2 (i)): invalida el criterio 5
