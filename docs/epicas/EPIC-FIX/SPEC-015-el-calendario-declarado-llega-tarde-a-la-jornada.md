@@ -2,12 +2,13 @@
 id: SPEC-015
 tipo: spec
 epica: EPIC-FIX
-estado: en-progreso
+estado: en-revision
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-09-29, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-09-29, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-09-29, por: sdd-implementador}
+  - {estado: en-revision, fecha: 2026-09-29, por: sdd-implementador}
 ---
 # SPEC-015 — El calendario declarado llega tarde a la jornada
 
