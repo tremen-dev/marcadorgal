@@ -1,7 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { Competition, type ImportedCalendar } from "../model/index.ts";
+import {
+  Competition,
+  type ImportedCalendar,
+  MatchId,
+  TeamId,
+} from "../model/index.ts";
 import { AliasFile, CalendarFile } from "./schema.ts";
-import { slugify, syncCalendar } from "./sync.ts";
+import {
+  autoAplicable,
+  formatSyncDiff,
+  type SyncDiff,
+  slugify,
+  syncCalendar,
+} from "./sync.ts";
 
 const competition = Competition.parse({
   id: "tercera-rfef-g1",
@@ -407,6 +418,7 @@ describe("CA-6 syncCalendar", () => {
       rematched: [],
       unconfirmed: ["tercera-rfef-g1-2026-27-j2-arenteiro-arosa"],
       ignoredRounds: imported.ignoredRounds,
+      kickoffs: {},
     });
   });
 
@@ -479,5 +491,201 @@ describe("CA-6 syncCalendar", () => {
     expect(slugify("Coruña B")).toBe("coruna-b");
     expect(slugify("  Racing  Villalbés ")).toBe("racing-villalbes");
     expect(slugify("Ourense C.F.")).toBe("ourense-c-f");
+  });
+});
+
+const emptyDiff = (): SyncDiff => ({
+  newTeams: [],
+  added: [],
+  rescheduled: [],
+  missing: [],
+  renamedAtProvider: [],
+  rematched: [],
+  unconfirmed: [],
+  ignoredRounds: {},
+  kickoffs: {},
+});
+
+describe("SPEC-015 CA-3 lo urgente se ve en el diff", () => {
+  // The clock is the caller's: formatSyncDiff never reads one.
+  const now = "2026-09-29T11:00:00Z";
+  const eldense = MatchId.parse("segunda-division-2026-27-j8-eldense-oviedo");
+  const celtaFortuna = MatchId.parse(
+    "segunda-division-2026-27-j9-celta-fortuna-real-sociedad-b",
+  );
+  const antela = MatchId.parse("tercera-rfef-g1-2026-27-j4-antela-somozas");
+  const lineOf = (text: string, id: string) =>
+    text.split("\n").find((l) => l.includes(id)) ?? "";
+
+  // The three cases of PR #19, with the sync of 2026-09-29.
+  const segunda: SyncDiff = {
+    ...emptyDiff(),
+    rescheduled: [
+      { id: eldense, from: "2026-10-04T15:00:00Z", to: "2026-10-02T18:30:00Z" },
+      {
+        id: celtaFortuna,
+        from: "2026-10-11T15:00:00Z",
+        to: "2026-10-10T19:00:00Z",
+      },
+    ],
+  };
+  const tercera: SyncDiff = {
+    ...emptyDiff(),
+    rescheduled: [
+      { id: antela, from: "2026-09-27T16:00:00Z", to: "2026-09-26T16:00:00Z" },
+    ],
+  };
+
+  it("marks eldense-oviedo URGENTE (it moves into the next 7 days)", () => {
+    const text = formatSyncDiff("segunda-division", segunda, now);
+    expect(lineOf(text, eldense)).toMatch(/^ {3}~ .*URGENTE$/);
+  });
+
+  it("leaves celta-fortuna-real-sociedad-b (10-10) without a mark", () => {
+    const line = lineOf(
+      formatSyncDiff("segunda-division", segunda, now),
+      celtaFortuna,
+    );
+    expect(line).toContain("2026-10-10T19:00:00Z");
+    expect(line).not.toMatch(/URGENTE|PASADO/);
+  });
+
+  it("marks antela-somozas PASADO (both kickoffs before now)", () => {
+    const line = lineOf(
+      formatSyncDiff("tercera-rfef-g1", tercera, now),
+      antela,
+    );
+    expect(line).toMatch(/PASADO$/);
+    expect(line).not.toContain("URGENTE");
+  });
+
+  it("adds urgentes: N to the header", () => {
+    const header = (text: string) => text.split("\n")[1];
+    expect(header(formatSyncDiff("segunda-division", segunda, now))).toMatch(
+      /urgentes: 1$/,
+    );
+    expect(header(formatSyncDiff("tercera-rfef-g1", tercera, now))).toMatch(
+      /urgentes: 0$/,
+    );
+  });
+
+  it("URGENTE when only the old kickoff is in the next 7 days", () => {
+    const pushedAway: SyncDiff = {
+      ...emptyDiff(),
+      rescheduled: [
+        {
+          id: eldense,
+          from: "2026-10-04T15:00:00Z",
+          to: "2026-11-04T15:00:00Z",
+        },
+      ],
+    };
+    expect(
+      lineOf(formatSyncDiff("segunda-division", pushedAway, now), eldense),
+    ).toMatch(/URGENTE$/);
+  });
+
+  it("the window is [now, now + 7 d], both ends included", () => {
+    const at = (kickoff: string): SyncDiff => ({
+      ...emptyDiff(),
+      added: [eldense],
+      kickoffs: { [eldense]: kickoff },
+    });
+    const mark = (kickoff: string) =>
+      lineOf(formatSyncDiff("segunda-division", at(kickoff), now), eldense);
+    expect(mark("2026-09-29T11:00:00Z")).toMatch(/URGENTE$/);
+    expect(mark("2026-10-06T11:00:00Z")).toMatch(/URGENTE$/);
+    expect(mark("2026-10-06T11:00:01Z")).not.toMatch(/URGENTE|PASADO/);
+    expect(mark("2026-09-29T10:59:59Z")).toMatch(/PASADO$/);
+  });
+
+  it("marks + and ? lines by the kickoff they carry", () => {
+    const text = formatSyncDiff(
+      "segunda-division",
+      {
+        ...emptyDiff(),
+        added: [eldense],
+        missing: [antela],
+        kickoffs: {
+          [eldense]: "2026-10-02T18:30:00Z",
+          [antela]: "2026-09-26T16:00:00Z",
+        },
+      },
+      now,
+    );
+    expect(lineOf(text, eldense)).toMatch(/^ {3}\+ .*URGENTE$/);
+    expect(lineOf(text, antela)).toMatch(/^ {3}\? .*PASADO$/);
+    expect(text.split("\n")[1]).toMatch(/urgentes: 1$/);
+  });
+
+  it("syncCalendar carries the kickoff of every added and missing match", () => {
+    const { calendar: current, aliases } = initial();
+    const { diff: first } = initial();
+    expect(first.kickoffs[first.added[0]]).toBeDefined();
+    const { diff } = syncCalendar({
+      current,
+      aliases,
+      imported: { ...imported, matches: imported.matches.slice(1) },
+      competition,
+      sourceId,
+    });
+    expect(diff.kickoffs).toEqual({
+      "tercera-rfef-g1-2026-27-j1-ourense-arenteiro": "2026-09-06T16:00:00Z",
+    });
+  });
+});
+
+describe("SPEC-015 CA-4 autoAplicable", () => {
+  const id = MatchId.parse("segunda-division-2026-27-j8-eldense-oviedo");
+  const moved = (): SyncDiff => ({
+    ...emptyDiff(),
+    rescheduled: [
+      { id, from: "2026-10-04T15:00:00Z", to: "2026-10-02T18:30:00Z" },
+    ],
+  });
+
+  it("true when every competition carries only reschedules", () => {
+    expect(autoAplicable([moved(), emptyDiff(), moved()])).toBe(true);
+  });
+
+  it("unconfirmed and ignoredRounds do not count", () => {
+    expect(
+      autoAplicable([
+        { ...moved(), unconfirmed: [id], ignoredRounds: { "Play-offs": 2 } },
+      ]),
+    ).toBe(true);
+  });
+
+  const breaking: [string, Partial<SyncDiff>][] = [
+    [
+      "newTeams",
+      {
+        newTeams: [
+          { externalId: "1", externalName: "X", teamId: TeamId.parse("x") },
+        ],
+      },
+    ],
+    ["added", { added: [id] }],
+    ["missing", { missing: [id] }],
+    [
+      "renamedAtProvider",
+      {
+        renamedAtProvider: [
+          { externalId: "1", from: "X", to: "Y", teamId: "x" },
+        ],
+      },
+    ],
+    ["rematched", { rematched: [{ externalId: "1", from: id, to: id }] }],
+  ];
+  it.each(breaking)("false with any %s, in any competition", (_, extra) => {
+    expect(autoAplicable([moved(), { ...emptyDiff(), ...extra }])).toBe(false);
+    expect(autoAplicable([{ ...moved(), ...extra }])).toBe(false);
+  });
+
+  it("false when there is nothing to apply (a file change nobody explained)", () => {
+    expect(autoAplicable([])).toBe(false);
+    expect(
+      autoAplicable([emptyDiff(), { ...emptyDiff(), unconfirmed: [id] }]),
+    ).toBe(false);
   });
 });

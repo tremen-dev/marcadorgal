@@ -1,6 +1,9 @@
 import {
   type Competition,
+  DAY_MS,
   type ImportedCalendar,
+  type Instant,
+  instantDiff,
   type MatchId,
   SourceId,
   type Team,
@@ -37,6 +40,9 @@ export type SyncDiff = {
   rematched: { externalId: string; from: MatchId; to: MatchId }[];
   unconfirmed: MatchId[];
   ignoredRounds: Record<string, number>;
+  // Kickoff of every added (the new one) and missing (the declared one) match,
+  // so the diff can tell what is urgent without the calendar (SPEC-015 CA-3).
+  kickoffs: Record<string, Instant>;
 };
 
 export type SyncResult = {
@@ -94,6 +100,7 @@ export function syncCalendar(input: SyncInput): SyncResult {
     rematched: [],
     unconfirmed: [],
     ignoredRounds: { ...imported.ignoredRounds },
+    kickoffs: {},
   };
 
   const freeSlug = (name: string): TeamId => {
@@ -187,12 +194,17 @@ export function syncCalendar(input: SyncInput): SyncResult {
     if (!existing) {
       matches.set(id, next);
       diff.added.push(id);
+      diff.kickoffs[id] = next.kickoff;
     } else if (existing.kickoff !== next.kickoff) {
       diff.rescheduled.push({ id, from: existing.kickoff, to: next.kickoff });
       existing.kickoff = next.kickoff;
     }
   }
-  for (const id of matches.keys()) if (!seen.has(id)) diff.missing.push(id);
+  for (const [id, m] of matches)
+    if (!seen.has(id)) {
+      diff.missing.push(id);
+      diff.kickoffs[id] = m.kickoff;
+    }
   diff.newTeams.sort((a, b) => a.teamId.localeCompare(b.teamId));
 
   return {
@@ -217,31 +229,85 @@ export function syncCalendar(input: SyncInput): SyncResult {
   };
 }
 
+// URGENTE: a kickoff (old or new) in [now, now + 7 d], so the change reaches
+// the next jornada. PASADO: every kickoff before now, so the match was already
+// played at another time (SPEC-015 CA-3).
+const URGENT_MS = 7 * DAY_MS;
+type Mark = "URGENTE" | "PASADO" | null;
+
+function markOf(now: Instant, kickoffs: (Instant | undefined)[]): Mark {
+  const offsets = kickoffs
+    .filter((k): k is Instant => k !== undefined)
+    .map((k) => instantDiff(now, k));
+  if (offsets.length === 0) return null;
+  if (offsets.some((ms) => ms >= 0 && ms <= URGENT_MS)) return "URGENTE";
+  if (offsets.every((ms) => ms < 0)) return "PASADO";
+  return null;
+}
+
 // Human-readable diff for calendario:sync (CA-7); new teams are marked REVISAR.
-export function formatSyncDiff(competitionId: string, diff: SyncDiff): string {
-  const lines = [
-    `== ${competitionId}`,
-    `   newTeams: ${diff.newTeams.length}  added: ${diff.added.length}  rescheduled: ${diff.rescheduled.length}  missing: ${diff.missing.length}  renamedAtProvider: ${diff.renamedAtProvider.length}  rematched: ${diff.rematched.length}  unconfirmed: ${diff.unconfirmed.length}`,
-  ];
+// The clock is the caller's: `now` comes from tools/calendario-sync.mjs.
+export function formatSyncDiff(
+  competitionId: string,
+  diff: SyncDiff,
+  now: Instant,
+): string {
+  const body: string[] = [];
+  const marked = (line: string, kickoffs: (Instant | undefined)[]) => {
+    const mark = markOf(now, kickoffs);
+    return mark ? `${line}  ${mark}` : line;
+  };
   for (const t of diff.newTeams)
-    lines.push(
+    body.push(
       `   REVISAR nuevo equipo: ${t.teamId} <- "${t.externalName}" (externalId ${t.externalId})`,
     );
-  for (const id of diff.added) lines.push(`   + ${id}`);
+  for (const id of diff.added)
+    body.push(marked(`   + ${id}`, [diff.kickoffs[id]]));
   for (const r of diff.rescheduled)
-    lines.push(`   ~ ${r.id}: ${r.from} -> ${r.to}`);
+    body.push(marked(`   ~ ${r.id}: ${r.from} -> ${r.to}`, [r.from, r.to]));
   for (const id of diff.missing)
-    lines.push(`   ? ausente en el proveedor: ${id}`);
+    body.push(
+      marked(`   ? ausente en el proveedor: ${id}`, [diff.kickoffs[id]]),
+    );
   for (const r of diff.renamedAtProvider)
-    lines.push(
+    body.push(
       `   ! el proveedor renombró ${r.teamId}: "${r.from}" -> "${r.to}" (externalId ${r.externalId})`,
     );
   for (const r of diff.rematched)
-    lines.push(
+    body.push(
       `   ! el id de partido ${r.externalId} del proveedor pasa de ${r.from} a ${r.to}`,
     );
-  for (const id of diff.unconfirmed) lines.push(`   TBD/PST: ${id}`);
+  for (const id of diff.unconfirmed) body.push(`   TBD/PST: ${id}`);
   for (const [round, n] of Object.entries(diff.ignoredRounds))
-    lines.push(`   ronda ignorada: ${round} (${n})`);
-  return lines.join("\n");
+    body.push(`   ronda ignorada: ${round} (${n})`);
+  return [
+    `== ${competitionId}`,
+    `   newTeams: ${diff.newTeams.length}  added: ${diff.added.length}  rescheduled: ${diff.rescheduled.length}  missing: ${diff.missing.length}  renamedAtProvider: ${diff.renamedAtProvider.length}  rematched: ${diff.rematched.length}  unconfirmed: ${diff.unconfirmed.length}  urgentes: ${countUrgent(diff, now)}`,
+    ...body,
+  ].join("\n");
+}
+
+// Number of URGENTE lines of a diff, for the title of the PR (SPEC-015 CA-3).
+export function countUrgent(diff: SyncDiff, now: Instant): number {
+  return [
+    ...diff.added.map((id) => [diff.kickoffs[id]]),
+    ...diff.rescheduled.map((r) => [r.from, r.to]),
+    ...diff.missing.map((id) => [diff.kickoffs[id]]),
+  ].filter((ks) => markOf(now, ks) === "URGENTE").length;
+}
+
+// A sync the workflow may merge on its own (SPEC-015 CA-4, H-1 b): every
+// competition carries only reschedules of matches that already exist, and at
+// least one. unconfirmed and ignoredRounds do not change the files. Whether
+// data/alias/** changed is the workflow's to check, on the working tree.
+export function autoAplicable(diffs: readonly SyncDiff[]): boolean {
+  const clean = diffs.every(
+    (d) =>
+      d.newTeams.length === 0 &&
+      d.added.length === 0 &&
+      d.missing.length === 0 &&
+      d.renamedAtProvider.length === 0 &&
+      d.rematched.length === 0,
+  );
+  return clean && diffs.some((d) => d.rescheduled.length > 0);
 }
