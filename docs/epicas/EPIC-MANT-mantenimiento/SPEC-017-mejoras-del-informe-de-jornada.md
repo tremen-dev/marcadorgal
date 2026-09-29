@@ -78,7 +78,9 @@ reunidos por decisión de Alberto Fojo (2026-09-29):
   llega a kickoff + `WINDOW_AFTER_MINUTES`, la misma regla que `isInWindow`
   (`src/ingest/window.ts`, SPEC-013 CA-3); cualquier otra vigente `finished`
   (RN-01, RN-12) cierra en su `decided_at`, como hoy. La regla vigente la trae
-  `informe-db.ts` de la Decision de `board` (`decision_id`). Las dos líneas
+  `informe-db.ts` de la Decision de `board` (`decision_id`). Cuando entre
+  SPEC-014 CA-8, el criterio pasa a ser `forcedFinish === true` y no la regla,
+  porque las 5 correcciones de SPEC-012 también son RN-02 (N-2). Las dos líneas
   explicativas del bloque 1 lo dicen sin crecer. Tests en `informe.test.ts`, «SPEC-017 CA-4»: (i) RN-02 a +120
   con ticks cada 30 s hasta +150 → cobertura 100 % y `tras el cierre` 0;
   (ii) RN-02 y luego RN-12 a +135 → la ventana cierra a +135 y los ticks
@@ -117,21 +119,24 @@ CA-7, CA-9 (V-15, N-8, N-9, N-10) y CA-10; SPEC-013 CA-3.
 - Enmendar RN-08; automatizar el contraste en el tick (ADR-010 §4).
 - Latencia interna con segundo reloj (R-SPEC-009-7, EPIC-003); desfase de
   calendario (R-SPEC-009-5); explicaciones a mano por partido (F-SPEC-009-4).
+- La guarda contra sobrescribir el fichero de `--salida` (modo de fallo de
+  F-SPEC-009-2): entrada nueva de EPIC-MANT (H-5).
 
 ## Notas para el gate humano
-- **H-1 Semántica de las banderas.** `--contrastar` relee si hay guardado y pide
-  solo si no; `--recontrastar` fuerza. Alternativa: `--contrastar` pide siempre
-  y se niega si ya hay uno. Pasada la purga de 30 días (ADR-007 §5) «nunca
-  contrastado» y «purgado» no se distinguen y `--contrastar` pediría otra tanda,
-  visible por su `capturado`. ¿Vale?
-- **H-2 Sin directo no baja el veredicto.** CA-9 fija umbrales antes de medir;
-  el bloque solo hace visible el hecho. ¿Confirmas?
-- **H-3 CA-4 sin excepción histórica.** Regenerar una ventana anterior al
-  despliegue de SPEC-013 contaría como esperados unos +120..+150 que el tick de
-  entonces no muestreaba. No se distingue; la única afectada no se regenera.
-- **H-4 pg_cron es informativo** y no entra en la cobertura. ¿O debería?
-- **H-5 ¿Guarda contra sobrescribir `--salida`?** Es el modo de fallo de
-  F-SPEC-009-2; no está en el encargo. Propongo M-entry en EPIC-MANT.
+Decididas por Alberto Fojo el 2026-09-29, todas según la recomendación:
+- **H-1** `--contrastar` relee el guardado y pide solo si no hay; `--recontrastar`
+  fuerza (CA-2). Pasada la purga de 30 días (ADR-007 §5) pediría otra tanda,
+  visible por su `capturado`.
+- **H-2** La línea «sin ninguna observación en juego» no baja el veredicto (CA-3).
+- **H-3** CA-4 no hace excepción con ventanas anteriores al despliegue de SPEC-013.
+- **H-4** pg_cron (`cron.job_run_details`) es solo informativo; la cobertura
+  sigue saliendo de `ingest_attempts` (CA-5).
+- **H-5** La guarda de `--salida` queda fuera (ver «Fuera de alcance»).
+- **N-2 Criterio de CA-4 y SPEC-014 CA-8** (añadido del orquestador, aprobado).
+  Hoy se reconoce el cierre forzoso por `rule = RN-02`; cuando entre la columna
+  `decisions.forced_finish`, por la marca. SPEC-017 no espera a SPEC-014: la que
+  se mergee después adapta `informe-db.ts` y añade a CA-4 el caso (iv): una
+  corrección RN-02 con marca `false` cierra en su `decided_at`.
 - **N-1 Depende de SPEC-013** (`window.ts`, RN-12 en `DecisionRule`), que sigue
   `en-revision` hasta el 2026-10-05: la rama sale de la suya o de `main` tras
   su merge. Plazo duro: antes del 2026-10-09; si entra antes del 2026-10-02, el
