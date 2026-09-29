@@ -145,7 +145,9 @@ try {
           fixtureIds,
           apiKey,
           userAgent: config.userAgent,
-          now: nowInstant(),
+          // The engine's now, as in the tick: a later stamp would put the
+          // Observation in the engine's future (found in the 2026-09-29 run).
+          now,
           fetch,
         }),
       store: createStorageRawStore({ ...rawStoreEnv(process.env), fetch }),

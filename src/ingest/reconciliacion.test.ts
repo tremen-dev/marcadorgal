@@ -207,4 +207,19 @@ describe("SPEC-013 CA-6 reconciliarCierres", () => {
     expect(db.observations.map((o) => o.matchId)).toEqual([CEUTA]);
     expect(afterInsert).toHaveBeenCalledTimes(1);
   });
+  // Found in the one real run (2026-09-29): the tool took now before asking
+  // and the capture was stamped later, so the Observation was in the future
+  // of the engine, which drops it (only what already happened). The capture
+  // must share the engine's now, as in the tick; otherwise it stops after
+  // keeping the raw and before inserting anything the engine cannot see.
+  it("stops, raw kept and nothing inserted, when the capture is stamped after now", async () => {
+    const { run, db, store, afterInsert } = setup((ids) => ({
+      ...captura(ids),
+      capturedAt: "2026-09-29T10:00:01.000Z",
+    }));
+    await expect(run()).rejects.toThrow(/posterior a now/);
+    expect(store.objects.size).toBe(1);
+    expect(db.observations).toEqual([]);
+    expect(afterInsert).not.toHaveBeenCalled();
+  });
 });

@@ -87,6 +87,12 @@ export async function reconciliarCierres(
       capture,
       `${etiqueta}-${fixtureId}`,
     );
+    // The engine only sees what already happened at now: a capture stamped
+    // later would be inserted and never decided on. Stop with the raw kept.
+    if (Date.parse(capture.capturedAt) > Date.parse(now))
+      throw new Error(
+        `la captura de ${matchId} (${capture.capturedAt}) es posterior a now (${now}): el motor no la vería`,
+      );
     const parsed = adapter.parse(capture);
     // The core owns id, sourceId, receivedAt and rawRef (SPEC-005 N-1), as
     // in the tick; only the match asked about is taken.
