@@ -30,6 +30,11 @@
 - **RN-06 — Trazabilidad.** Toda Decision registra la regla decisiva y los ids
   de las observaciones que la sostienen. Orden de decisión: operador > RN-03 >
   RN-05 > RN-02 > RN-01.
+- **RN-12 — Reconciliación tras cierre forzoso.** Un partido cerrado por el
+  cierre forzoso de RN-02 acepta el marcador final que la fuente confirme
+  después, mientras su ventana siga abierta. Solo cambia el marcador y el
+  cualificador, nunca el estado, y se registra con regla `RN-12`.
+  *Añadida el 2026-09-29 por ADR-010 §2.*
 
 ## Invariantes
 
