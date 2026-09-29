@@ -277,3 +277,41 @@ describe("SPEC-013 CA-2 decisions.rule accepts RN-12 and nothing invented", () =
       ).toBe("23514"); // check_violation
     }));
 });
+
+// SPEC-013 CA-4 against the real schema: forced at +120, the source confirms
+// at +125, RN-12 is written and the forced_finish alert stays open.
+describe("SPEC-013 CA-4 RN-12 through the database", () => {
+  it("writes the confirmed final with RN-12 and keeps forced_finish open", () =>
+    rollback(async (tx) => {
+      const matchId = await seedMatch(tx);
+      const tick = engineTx(tx);
+      await observe(tx, matchId, 2, 1, 90, at(115));
+      await decideMatches(tick, [matchId], at(115), SOURCES);
+      await decideMatches(tick, [matchId], at(121), SOURCES);
+      const [{ id: confirmation }] = await tx<{ id: string }[]>`
+        insert into observations (match_id, source_id, status, home_score,
+          away_score, minute, observed_at, received_at, raw_ref)
+        values (${matchId}, 'api-football', 'finished', 3, 1, null, ${at(125)},
+          ${at(125)}, 'raw/2026-09-25/api-football/y.json.gz')
+        returning id`;
+      expect(
+        await decideMatches(tick, [matchId], at(125), SOURCES),
+      ).toMatchObject({ decisions: 1, alerts: 0, resolved: 0 });
+
+      const rows = await decisions(tx, matchId);
+      expect(rows.map((r) => [r.status, r.rule, r.qualifier])).toEqual([
+        ["live", "RN-01", "provisional"],
+        ["finished", "RN-02", "provisional"],
+        ["finished", "RN-12", "confirmado"],
+      ]);
+      expect(rows.at(-1)).toMatchObject({
+        home_score: 3,
+        away_score: 1,
+        observation_ids: [confirmation],
+      });
+      const open = await alerts(tx, matchId);
+      expect(open.map((a) => [a.kind, a.resolved_at])).toEqual([
+        ["forced_finish", null],
+      ]);
+    }));
+});

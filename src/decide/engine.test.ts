@@ -905,3 +905,105 @@ describe("SPEC-012 CA-2 the close publishes the winning observation", () => {
     ).not.toContain("regression");
   });
 });
+
+// SPEC-013 CA-4 (ADR-010 §2): RN-12. A match closed provisional by the forced
+// finish of RN-02 accepts the final the winning source confirms later: the
+// score and the qualifier change, the status never does.
+describe("SPEC-013 CA-4 RN-12 accepts the final the source confirms", () => {
+  const forced = (home: number, away: number) =>
+    current(finished(home, away), { rule: "RN-02", qualifier: "provisional" });
+
+  it("(i) forced finished 2-1 and a source finished 3-1 publishes 3-1 with RN-12", () => {
+    const confirmation = obs("ten", 125, finished(3, 1));
+    const { decision } = decide(
+      input({
+        current: forced(2, 1),
+        observations: [confirmation],
+        now: at(125),
+      }),
+    );
+    expect(decision).toEqual({
+      status: "finished",
+      score: { home: 3, away: 1 },
+      minute: null,
+      matchId: MATCH.id,
+      qualifier: "confirmado",
+      rule: "RN-12",
+      observationIds: [confirmation.id],
+      decidedAt: at(125),
+    });
+  });
+
+  it("(ii) the score goes down (3-4 → 3-3) and is published all the same", () => {
+    const { decision, open } = decide(
+      input({
+        current: forced(3, 4),
+        observations: [obs("ten", 125, finished(3, 3))],
+        now: at(125),
+      }),
+    );
+    expect(decision).toMatchObject({
+      status: "finished",
+      score: { home: 3, away: 3 },
+      rule: "RN-12",
+      qualifier: "confirmado",
+    });
+    expect(open).toEqual([]);
+  });
+
+  it("(iii) a live after the close neither returns to live nor publishes", () => {
+    expect(
+      decide(
+        input({
+          current: forced(2, 1),
+          observations: [obs("ten", 125, live(3, 1, 90))],
+          now: at(125),
+        }),
+      ),
+    ).toEqual({ decision: null, open: [], resolve: [] });
+  });
+
+  it("(iv) a confirmed finished does not admit RN-12: nothing is published", () => {
+    for (const vigente of [
+      current(finished(3, 1), { rule: "RN-12", qualifier: "confirmado" }),
+      current(finished(3, 1), { rule: "RN-01", qualifier: "confirmado" }),
+    ])
+      expect(
+        decide(
+          input({
+            current: vigente,
+            observations: [obs("ten", 125, finished(3, 2))],
+            now: at(125),
+          }),
+        ),
+      ).toEqual({ decision: null, open: [], resolve: [] });
+  });
+
+  it("(v) the open forced_finish alert stays open", () => {
+    const { open, resolve } = decide(
+      input({
+        current: forced(2, 1),
+        observations: [obs("ten", 125, finished(3, 1))],
+        now: at(125),
+      }),
+    );
+    expect(resolve).toEqual([]);
+    expect(open).toEqual([]);
+  });
+
+  it("confirms the same score too: only the qualifier changes", () => {
+    const { decision } = decide(
+      input({
+        current: forced(2, 1),
+        observations: [obs("ten", 125, finished(2, 1))],
+        now: at(125),
+      }),
+    );
+    expect(decision).toMatchObject({
+      status: "finished",
+      score: { home: 2, away: 1 },
+      rule: "RN-12",
+      qualifier: "confirmado",
+    });
+  });
+});
