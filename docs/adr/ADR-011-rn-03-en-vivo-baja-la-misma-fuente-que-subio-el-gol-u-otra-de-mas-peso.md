@@ -1,9 +1,11 @@
 ---
 id: ADR-011
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-09-29, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-09-29, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # ADR-011: RN-03 en vivo: baja la misma fuente que subió el gol u otra de más peso
 

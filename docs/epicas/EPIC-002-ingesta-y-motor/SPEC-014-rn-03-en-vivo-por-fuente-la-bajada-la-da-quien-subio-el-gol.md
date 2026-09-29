@@ -2,10 +2,11 @@
 id: SPEC-014
 tipo: spec
 epica: EPIC-002
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-09-29, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-09-29, por: Alberto Fojo}
 ---
 # SPEC-014 — RN-03 en vivo por fuente: la bajada la da quien subió el gol
 
