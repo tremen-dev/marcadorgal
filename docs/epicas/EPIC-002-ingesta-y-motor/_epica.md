@@ -46,6 +46,34 @@ convierte eso en Observations y Decisions de una jornada de verdad.
 7. Un partido con equipo sin alias resuelto no entra en `observations`: abre
    una Alert `unresolved_team` y no rompe el tick (RN-10).
 
+## Enmienda del titular (Alberto Fojo, 2026-09-29) — N-9 de SPEC-009
+
+**EPIC-002 no cierra hasta que el marcador de la jornada medida esté
+corregido.** El criterio 5 pide *registrada sin intervención* **y** *marcador
+correcto*: la jornada del 2026-09-25/28 cumplió lo primero y no lo segundo
+(7 de 39 mal, por la regla RN-03, no por la ingesta). Una jornada registrada
+pero incorrecta no cierra la épica. La corrección no la repite: se hace por
+replay y reconciliación posteriores, fechados y escritos por reglas del
+sistema, que no invalidan el criterio 5 (SPEC-012 H-2).
+
+Estado medido al 2026-09-29 (evidencia en los ledgers, no aquí):
+
+- **Criterio 5**: cuatro competiciones de cinco (Primera no jugó,
+  R-SPEC-009-1). Ingesta sana (0 intentos fallidos de 2733, cobertura
+  99,85 %). Marcador: 32/39 → **37/39** con SPEC-012 → **39/39** con SPEC-013
+  CA-6. Cumplido en `dev`; cierra con el merge de SPEC-012 y SPEC-013.
+- **Criterio 6**: medido. Latencia gol → Decision **mediana +53 s** (n = 15,
+  referencia manual con precisión de minuto): **no alcanza** el objetivo de
+  45 s de `vision.md`; p95 no calculable con n < 20. Se decide en EPIC-003,
+  como dice el riesgo de abajo (R-SPEC-009-6, de producto).
+- **Cobertura de la fuente** (riesgo cumplido): 4 de 9 partidos de Tercera
+  sin directo, degradándose con la categoría (R-SPEC-009-3, de producto).
+
+**Para cerrar faltan**: CA-5 de SPEC-013 (jornada del 2026-10-02/04, lectura
+el 2026-10-05) y **SPEC-014** (ADR-011: en vivo, el marcador lo baja la misma
+fuente que subió el gol u otra de más peso), que la medición de las bajadas
+en vivo hizo necesaria: retener en vivo publicó ~742 ticks de marcador falso.
+
 ## Alcance
 
 - Dentro: contrato y registro de fuentes; adaptador de resultados de

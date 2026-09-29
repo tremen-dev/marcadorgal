@@ -2,7 +2,7 @@
 
 > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.
 > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.
-> Última actualización: 2026-09-23 (SPEC-011 hecho).
+> Última actualización: 2026-09-29 (SPEC-009 y SPEC-012 hecho; SPEC-013 a falta de CA-5).
 
 ## Qué es y en qué punto está
 
@@ -26,9 +26,15 @@ jornada completa, en una sola pantalla y en galego. Proyecto de tremen.dev.
 
 **SPEC-008 completa:** despliegue del tick en producción con pg_cron cada 30 s (extensión 1.6.4) y Vercel Cron cada minuto como respaldo, secretos en Supabase Vault (`npm run cron:setup`), sincronización semanal del calendario por GitHub Actions (los martes y con PR solo si hay diff), `npm run tick:salud` como semáforo de vitalidad.
 
-**SPEC-009 — Jornada de medición e informe:** aprobada el 2026-09-21, pendiente de ejecución (2026-09-25 al 2026-09-28). Mide el desempeño del tick en la primera jornada real con partidos.
+**SPEC-009 completa:** jornada real del 2026-09-25 al 28 (39 partidos, cuatro competiciones; Primera no jugó) medida sin intervención, con informe en `_qa/SPEC-009/`. Ingesta sana (0 intentos fallidos, cobertura 99,85 %, cadencia 30 s); veredicto `no válida (c2)` por defecto de **regla** (RN-03 retuvo 7 marcadores falsos). Latencia mediana +53 s contra el objetivo de 45 s. La fuente no da en directo 4 de 9 partidos de Tercera.
 
-EPIC-002 (ingesta y motor) en cierre: SPEC-005, SPEC-006, SPEC-007 y SPEC-008 hecho; última spec SPEC-009 aprobada y pendiente de medición en jornada real.
+**SPEC-012 completa:** la monotonía no sobrevive al cierre (ADR-010 §1) y replay de la jornada aplicado en `dev`: 37 de 39.
+
+**SPEC-013 (en revisión):** RN-12, reconciliación tras el cierre forzoso (ADR-010 §2); corrige los dos últimos partidos → **39 de 39**. Falta CA-5, que se mide con la jornada del 2026-10-02/04 (lectura el 2026-10-05).
+
+**SPEC-014 (aprobada, empieza tras fusionar SPEC-013):** RN-03 en vivo por fuente (ADR-011): el marcador lo baja la misma fuente que subió el gol u otra de más peso. La medición de las bajadas en vivo (`_qa/ADR-011/`) mostró que retener publicó ~742 ticks de marcador falso.
+
+EPIC-002 (ingesta y motor) **no cierra hasta que el marcador esté corregido** (N-9): cierra con SPEC-013 y SPEC-014 en `hecho`. PRs apilados: #16 (SPEC-009) → #17 (SPEC-012) → #18 (SPEC-013, borrador).
 
 **EPIC-FIX (correcciones urgentes):** SPEC-011 hecho. Arregla dos defectos de la ingesta: sin peticiones `live=` con un solo id de liga, y `ParseResult` gana cuarto canal `requestErrors` para guardar observaciones buenas aun si una petición falla. Entrada prioritaria para fallos que dañan medición en vivo.
 
@@ -83,6 +89,9 @@ de cada fuente la gestiona el titular fuera del repo (D-7).
 - ADR-006 Esquema base y acceso a datos: ids, append-only por trigger, versión de Decision, board, RLS.
 - ADR-007 Raw store en Supabase Storage: bucket privado, gzip, retención de 30 días.
 - ADR-008 Núcleo de ingesta: tick autenticado, cadencia, concurrencia, enganche del motor.
+- ADR-009 Ejecución del motor: enganche por observaciones, barrido por ausencia, precisiones a RN-02 y RN-04.
+- ADR-010 El cierre manda sobre la monotonía, y reconciliación tras el cierre forzoso (RN-12).
+- ADR-011 RN-03 en vivo: baja la misma fuente que subió el gol u otra de más peso (sustituye la letra en vivo de ADR-010 §1).
 
 ## Riesgos y preguntas abiertas
 
