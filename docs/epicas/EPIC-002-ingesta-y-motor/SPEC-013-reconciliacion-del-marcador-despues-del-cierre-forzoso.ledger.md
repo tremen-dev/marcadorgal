@@ -15,13 +15,13 @@ epica: EPIC-002
 <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
-| CA-1 | `docs/fundacion/reglas.md` RN-12 (74c11b2, fuera del implementador: F-SPEC-013-1) | `src/arch/reglas-rn12.test.ts` (5): RN-12 = cita de ADR-010 §2, en la sección de `Decision.rule`, `DecisionRule` ⊆ esa sección, RN-08 literal; rojo 2/5 en bb36c05, verde tras 74c11b2 | | |
-| CA-2 | `supabase/migrations/20260929081827_rn12_decision_rule.sql` · `src/model/vocab.ts` · 0078427 | `src/ingest/engine.db.test.ts` › «SPEC-013 CA-2» (inserta RN-12; RN-99 → 23514) · `src/model/model.test.ts` › DecisionRule; rojo antes de la migración | | |
-| CA-3 | `src/ingest/window.ts` (`rule` en `WindowInput`) · `src/ingest/db.ts` (`windowMatches` lee `decisions.rule` por `board.decision_id`) · ada3052 | `src/ingest/window.test.ts` › «SPEC-013 CA-3» (i)–(iv); `src/ingest/db.db.test.ts` › «at +125, a finished by …» (RN-02 dentro; RN-01, RN-12 fuera), rojo sin el cambio | | |
-| CA-4 | `src/decide/engine.ts` (bloque RN-12 antes de RN-05) · 15bfda2 | `src/decide/engine.test.ts` › «SPEC-013 CA-4» (i)–(v) + mismo marcador; rojo 4/6 antes · `src/ingest/engine.db.test.ts` › «SPEC-013 CA-4 RN-12 through the database» | | |
-| CA-5 | Lectura preparada abajo («CA-5: lectura para el 2026-10-05») | Pendiente de campo (H-2), jornada 2026-10-02/04 | | |
-| CA-6 | `src/ingest/reconciliacion.ts` · `tools/reconciliar-cierre.mjs` · script `reconciliar:cierre` · 568b2d0, 0a8df89 | `src/ingest/reconciliacion.test.ts` (6) · `src/ingest/reconciliacion.db.test.ts` (1, rollback, +1 Decision RN-12) · ejecución real: 3.er intento, `decisions` +2 RN-12 (3-1, 3-5), contraste 39/39 (abajo; F-SPEC-013-2 cerrado) | | |
-| CA-7 | Una migración; `package.json` solo `reconciliar:cierre`; lock sin cambios | `npm run gates` exit 0 (50 ficheros, 745 tests), también sin env; `npm run test:db` exit 0 (10, 79). Presupuesto de la jornada: pendiente de campo con CA-5 | | |
+| CA-1 | `docs/fundacion/reglas.md` RN-12 (74c11b2, fuera del implementador: F-SPEC-013-1) | `src/arch/reglas-rn12.test.ts` (5): RN-12 = cita de ADR-010 §2, en la sección de `Decision.rule`, `DecisionRule` ⊆ esa sección, RN-08 literal; rojo 2/5 en bb36c05, verde tras 74c11b2 | `reglas-rn12.test.ts` 5/5 dentro de gates; diff de `reglas.md` contra el merge-base de SPEC-012: RN-12 añadida en la sección de `Decision.rule`, RN-08 sin tocar (el cambio de RN-03 es de cf866f9, ajeno) | ✅ |
+| CA-2 | `supabase/migrations/20260929081827_rn12_decision_rule.sql` · `src/model/vocab.ts` · 0078427 | `src/ingest/engine.db.test.ts` › «SPEC-013 CA-2» (inserta RN-12; RN-99 → 23514) · `src/model/model.test.ts` › DecisionRule; rojo antes de la migración | migración leída (solo `decisions_rule_check`); en `dev`: `20260929081827` en `schema_migrations`, check con `RN-12` (`pg_get_constraintdef`), `db:push` «up to date»; tests en `test:db` 79/79 | ✅ |
+| CA-3 | `src/ingest/window.ts` (`rule` en `WindowInput`) · `src/ingest/db.ts` (`windowMatches` lee `decisions.rule` por `board.decision_id`) · ada3052 | `src/ingest/window.test.ts` › «SPEC-013 CA-3» (i)–(iv); `src/ingest/db.db.test.ts` › «at +125, a finished by …» (RN-02 dentro; RN-01, RN-12 fuera), rojo sin el cambio | `window.ts:28` `finished && rule !== "RN-02"` → fuera; tests (i)–(iv) y `db.db.test` (3 casos) verdes; `now` sigue por parámetro | ✅ |
+| CA-4 | `src/decide/engine.ts` (bloque RN-12 antes de RN-05) · 15bfda2 | `src/decide/engine.test.ts` › «SPEC-013 CA-4» (i)–(v) + mismo marcador; rojo 4/6 antes · `src/ingest/engine.db.test.ts` › «SPEC-013 CA-4 RN-12 through the database» | bloque RN-12 en `engine.ts:292-304` tras RN-02 y antes de RN-05; tests (i)–(v) con aserciones concretas + `engine.db.test` verdes | ✅ |
+| CA-5 | Lectura preparada abajo («CA-5: lectura para el 2026-10-05») | Pendiente de campo (H-2), jornada 2026-10-02/04 | no juzgado (H-2): de campo, jornada 2026-10-02/04 | 🚧 |
+| CA-6 | `src/ingest/reconciliacion.ts` · `tools/reconciliar-cierre.mjs` · script `reconciliar:cierre` · 568b2d0, 0a8df89 | `src/ingest/reconciliacion.test.ts` (6) · `src/ingest/reconciliacion.db.test.ts` (1, rollback, +1 Decision RN-12) · ejecución real: 3.er intento, `decisions` +2 RN-12 (3-1, 3-5), contraste 39/39 (abajo; F-SPEC-013-2 cerrado) | solo lectura en `dev`: v108 `finished` 3-1 y 3-5 `confirmado` RN-12, `observation_ids` → `raw_ref` `…09-11-36.152Z-SPEC-013-CA-6-{1569939,1570756}` (3.er intento); `decisions` RN-12 = 2; las 2 `forced_finish` abiertas; 7 Decisions desde 2026-09-28T21:00Z = las 7 discrepancias del informe, todas iguales al proveedor → 39/39 `finished`, sin peticiones. Salvedad: tres ejecuciones, no una (autorizadas por el titular); ensayo en seco no ejecutado por el verificador (permiso denegado), negativa comprobada por código (`plan()` antes de capturar) + test «never asks anything…» + board en RN-12 | ⚠️ |
+| CA-7 | Una migración; `package.json` solo `reconciliar:cierre`; lock sin cambios | `npm run gates` exit 0 (50 ficheros, 745 tests), también sin env; `npm run test:db` exit 0 (10, 79). Presupuesto de la jornada: pendiente de campo con CA-5 | `npm run gates` exit 0 (50 ficheros, 745 tests); `npm run test:db` exit 0 (10, 79), filas antes = después (3358/9345/17/2766); 1 migración; `package.json` solo el script; lock sin cambios. Presupuesto: pendiente de campo con CA-5 | 🚧 |
 
 ## Evidencia CA-6 — excepción escrita (2026-09-29)
 
@@ -55,9 +55,15 @@ from rec;
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
+**GREEN parcial a falta de CA-5 — 2026-09-29.** Spec sigue en `en-revision` (H-2): no pasa a `hecho` hasta leer CA-5 y el presupuesto de CA-7 tras la jornada 2026-10-02/04.
+- Comparado contra el merge-base con SPEC-012 (`93c2b87c`). Ajeno a SPEC-013 y no juzgado: cf866f9 (RN-03 por peso), 85a5c76, bed748e, fa97f52 (medición, ADR-011, SPEC-014); solo docs, sin código.
+- Conteos en `dev` (solo lectura): `decisions` 3358 · `observations` 9345 · `alerts` 17 (17 abiertas) · `ingest_attempts` 2766; idénticos antes y después de `npm run test:db`.
+- Contraste 39/39: los 39 partidos con kickoff 2026-09-25..28 están `finished`; los 7 discrepantes del informe (§8) coinciden hoy con el proveedor.
+- Observaciones no bloqueantes: (a) RN-12, `isInWindow` y la guarda de `reconciliar:cierre` identifican el cierre forzoso por `rule = 'RN-02'`; los 5 `finished` de SPEC-012 también son RN-02 (ya en F-SPEC-013-5), así que el día que un replay escriba dentro de +150 se leerán como cierre forzoso. (b) `npm run reconciliar:cierre` en seco no lo ejecutó el verificador (permiso denegado por el harness); la negativa queda por código, test y estado de `board`.
 
 ## Evidencia visual
 <!-- Tabla CA → captura en _qa/SPEC-013/. Informe HTML opcional: _qa/SPEC-013/informe.html -->
+n-a: SPEC-013 no tiene UI.
 
 ## Salvedades / follow-ups
 <!-- IDs F-SPEC-013-1, F-SPEC-013-2… con destino (spec futura o EPIC-MEJORA). -->
