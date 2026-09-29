@@ -2,11 +2,13 @@
 id: SPEC-012
 tipo: spec
 epica: EPIC-002
-estado: aprobada
+estado: en-revision
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-09-29, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-09-29, por: Alberto Fojo}
+  - {estado: en-progreso, fecha: 2026-09-29, por: sdd-implementador}
+  - {estado: en-revision, fecha: 2026-09-29, por: sdd-implementador}
 ---
 # SPEC-012 — La monotonía no sobrevive al cierre, y replay de la jornada medida
 
