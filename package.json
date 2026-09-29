@@ -23,7 +23,8 @@
     "ingest:tick": "node tools/ingest-tick.mjs",
     "cron:setup": "node tools/cron-setup.mjs",
     "tick:salud": "node tools/tick-salud.mjs",
-    "informe:jornada": "node tools/informe-jornada.mjs"
+    "informe:jornada": "node tools/informe-jornada.mjs",
+    "replay:jornada": "node tools/replay-jornada.mjs"
   },
   "dependencies": {
     "next": "16.3.5",

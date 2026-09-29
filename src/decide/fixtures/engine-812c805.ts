@@ -1,3 +1,8 @@
+// Frozen copy of src/decide/engine.ts at 812c805: the engine that ran the
+// measured matchday of SPEC-009, before ADR-010 §1. A fixture and nothing
+// else (SPEC-012 CA-3): it lets the replay show what "the engine of that day"
+// publishes against what the engine of today does. Never imported by
+// production code; never edited — it is history, not behaviour.
 import {
   type AlertKind,
   type DecisionRule,
@@ -12,21 +17,21 @@ import {
   OPERATOR_PRIORITY,
   type Qualifier,
   type Score,
-} from "../model/index.ts";
+} from "../../model/index.ts";
 import {
   CONFLICT_GRACE_MINUTES,
   FORCED_FINISH_MINUTES,
   KICKOFF_GRACE_MINUTES,
   OBSERVATION_WINDOW_MINUTES,
   SILENCE_MINUTES,
-} from "./thresholds.ts";
+} from "../thresholds.ts";
 import type {
   AlertDraft,
   DecisionDraft,
   EngineInput,
   EngineOutput,
   LastHeard,
-} from "./types.ts";
+} from "../types.ts";
 
 // One candidate: the freshest observation of a source, with its priority.
 type Candidate = { observation: Observation; priority: number };
@@ -246,16 +251,12 @@ export function decide(input: EngineInput): EngineOutput {
 
   // 2. RN-02 forced finish (H-3): above RN-05 and above whatever the sources
   //    are still saying. It publishes a finished nobody confirmed, so it
-  //    always leaves a forced_finish Alert behind (H-5 (iii)). RN-03 does
-  //    not survive the close (ADR-010 §1): the score is the winning fresh
-  //    observation's, and the current one only when nobody fresh has one.
+  //    always leaves a forced_finish Alert behind (H-5 (iii)).
   if (
     current !== null &&
     current.status === "live" &&
     instantDiff(match.kickoff, now) >= minutes(FORCED_FINISH_MINUTES)
   ) {
-    const freshScore =
-      winner === undefined ? null : stateOf(winner.observation).score;
     open.push({
       kind: "forced_finish",
       matchId,
@@ -268,19 +269,12 @@ export function decide(input: EngineInput): EngineOutput {
       },
     });
     return publish(
-      freshScore === null || winner === undefined
-        ? draft(
-            { status: "finished", score: current.score, minute: null },
-            "RN-02",
-            "provisional",
-            [...current.observationIds],
-          )
-        : draft(
-            { status: "finished", score: freshScore, minute: null },
-            "RN-02",
-            "provisional",
-            [winner.observation.id],
-          ),
+      draft(
+        { status: "finished", score: current.score, minute: null },
+        "RN-02",
+        "provisional",
+        [...current.observationIds],
+      ),
     );
   }
 
@@ -325,16 +319,11 @@ export function decide(input: EngineInput): EngineOutput {
   )
     return publish(null);
 
-  // 4. RN-03 monotonía: a score never goes down but by the operator while
-  //    the match is in play. The proposed status is published wearing the
-  //    current score, and the retreat leaves an Alert for the operator (N-3).
-  //    It does not survive the close (ADR-010 §1): the transition to finished
-  //    falls through to RN-01 and publishes the winner as it comes.
+  // 4. RN-03 monotonía: a score never goes down but by the operator. The
+  //    proposed status is published wearing the current score, and the
+  //    retreat leaves an Alert for the operator (N-3).
   const held = current?.score ?? null;
-  const closing =
-    proposed.status === "finished" && current?.status !== "finished";
   if (
-    !closing &&
     held !== null &&
     proposed.score !== null &&
     (proposed.score.home < held.home || proposed.score.away < held.away)
