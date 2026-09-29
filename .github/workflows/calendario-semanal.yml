@@ -1,8 +1,10 @@
-# Sincronización semanal del calendario declarado (SPEC-008 CA-8, H-5).
+# Sincronización del calendario declarado (SPEC-008 CA-8; SPEC-015).
 # El calendario de data/calendario/** es la fuente de verdad (D-3): el sync
-# propone en un PR y un humano ve los aplazamientos antes de que entren en
-# base. calendario:sync reescribe ficheros, así que no puede vivir en una
-# función serverless de filesystem de solo lectura.
+# propone en un PR, siempre el mismo, sobre la rama fija chore/calendario.
+# Las reprogramaciones puras (solo cambia la hora de un partido existente) se
+# fusionan solas y se cargan (SPEC-015 H-1, que enmienda H-5 de SPEC-008);
+# todo lo demás espera a un humano. calendario:sync reescribe ficheros, así
+# que no puede vivir en una función serverless de filesystem de solo lectura.
 name: calendario-semanal
 on:
   schedule:
@@ -34,14 +36,16 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      # gh workflow run del load tras la fusión automática (SPEC-015 CA-4).
+      actions: write
     env:
       TEMPORADA: ${{ inputs.temporada || '2026-27' }}
     steps:
       - uses: actions/checkout@v4
         with:
           # Clon completo: el paso del PR necesita conocer la rama remota
-          # chore/calendario-<fecha> cuando ya existe, y un clon superficial
-          # no trae ni su referencia de seguimiento ni sus objetos.
+          # chore/calendario cuando ya existe, y un clon superficial no trae
+          # ni su referencia de seguimiento ni sus objetos.
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
@@ -49,6 +53,7 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Sincronizar contra el proveedor
+        id: sync
         # shell: bash da "bash --noprofile --norc -eo pipefail {0}". Sin él el
         # shell por omisión es "bash -e {0}", sin pipefail, y el estado del
         # paso sería el de tee (siempre 0) en vez del de calendario:sync, que
@@ -58,6 +63,8 @@ jobs:
         shell: bash
         env:
           API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        # Además del diff, calendario:sync deja en GITHUB_OUTPUT urgentes=N y
+        # auto=si|no (SPEC-015 CA-3, CA-4).
         run: npm run calendario:sync -- "$TEMPORADA" | tee sync-diff.txt
       - name: ¿Hay diff en el calendario declarado?
         id: diff
@@ -68,17 +75,31 @@ jobs:
           else
             echo "cambios=si" >> "$GITHUB_OUTPUT"
           fi
+          # Un cambio en data/alias/** nunca se fusiona solo (SPEC-015 CA-4).
+          if [ -z "$(git status --porcelain data/alias)" ]; then
+            echo "alias=no" >> "$GITHUB_OUTPUT"
+          else
+            echo "alias=si" >> "$GITHUB_OUTPUT"
+          fi
       - name: Abrir o actualizar el PR
         if: steps.diff.outputs.cambios == 'si'
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          URGENTES: ${{ steps.sync.outputs.urgentes }}
         run: |
           set -euo pipefail
           fecha="$(date -u +%Y-%m-%d)"
-          rama="chore/calendario-$fecha"
+          # Una sola rama y un solo PR vivos (SPEC-015 CA-2): el sync corre de
+          # martes a sábado y cada ejecución actualiza el PR de la anterior.
+          rama="chore/calendario"
+          titulo="chore(calendario): sincronización $fecha"
+          URGENTES="${URGENTES:-0}"
+          if [ "$URGENTES" -gt 0 ]; then
+            titulo="$titulo — $URGENTES urgentes"
+          fi
           {
-            echo "Sincronización semanal del calendario declarado de \`$TEMPORADA\`."
+            echo "Sincronización del calendario declarado de \`$TEMPORADA\` ($fecha)."
             echo
             echo "Salida de \`npm run calendario:sync\`:"
             echo
@@ -86,24 +107,32 @@ jobs:
             cat sync-diff.txt
             echo '```'
             echo
-            echo "Fusiona solo si los aplazamientos y los cambios de horario son correctos (D-3)."
+            echo "URGENTE: la hora vieja o la nueva cae en los próximos 7 días. PASADO: el partido ya se jugó."
+            echo "Si solo hay reprogramaciones, el workflow fusiona y carga solo (SPEC-015 H-1). Si no, fusiona solo si los aplazamientos, los cambios de horario y los equipos son correctos (D-3)."
           } > "$RUNNER_TEMP/cuerpo.md"
           rm -f sync-diff.txt
 
           # El resultado del sync, a salvo del checkout que viene ahora.
           cp -R data/calendario data/alias "$RUNNER_TEMP/"
 
-          # La rama ya existe a partir del segundo martes, porque este mismo
-          # paso contempla que el PR esté abierto. Se construye ENCIMA de ella
-          # en vez de reescribirla: así el push es un avance rápido, no hace
-          # falta --force ni --force-with-lease, y nada de lo que haya en esa
-          # rama se pierde. Si alguien hubiera empujado algo entre el fetch y
-          # el push, el push se rechaza y el job falla, que es lo que tiene
-          # que pasar.
-          if git ls-remote --exit-code --heads origin "$rama" >/dev/null 2>&1; then
+          # Solo cuenta un PR ABIERTO: gh pr view <rama> también encuentra
+          # los fusionados y los cerrados.
+          abierto="$(gh pr list --head "$rama" --state open --json number --jq '.[0].number // empty')"
+          if [ -n "$abierto" ]; then
+            # PR abierto: se construye ENCIMA de su rama en vez de
+            # reescribirla. El push es un avance rápido, sin --force ni
+            # --force-with-lease, y nada de lo que haya en esa rama se pierde.
+            # Si alguien empujó algo entre el fetch y el push, el push se
+            # rechaza y el job falla, que es lo que tiene que pasar.
             git fetch origin "+refs/heads/$rama:refs/remotes/origin/$rama"
             git checkout -f -B "$rama" "refs/remotes/origin/$rama"
           else
+            # Sin PR abierto (fusionado, cerrado o nunca abierto): la rama se
+            # rehace desde main. La vieja se borra antes, así el push sigue
+            # sin forzar nada.
+            if git ls-remote --exit-code --heads origin "$rama" >/dev/null 2>&1; then
+              git push origin --delete "$rama"
+            fi
             git checkout -f -B "$rama"
           fi
 
@@ -116,17 +145,49 @@ jobs:
           if git diff --cached --quiet; then
             echo "La rama $rama ya trae este calendario: no se añade commit."
           else
-            git commit -m "chore(calendario): sincronización semanal $fecha"
+            git commit -m "chore(calendario): sincronización $fecha"
             git push origin "HEAD:refs/heads/$rama"
           fi
 
-          if gh pr view "$rama" --json number >/dev/null 2>&1; then
-            gh pr edit "$rama" --body-file "$RUNNER_TEMP/cuerpo.md"
+          if [ -n "$abierto" ]; then
+            gh pr edit "$abierto" --title "$titulo" --body-file "$RUNNER_TEMP/cuerpo.md"
           else
             gh pr create --base main --head "$rama" \
-              --title "chore(calendario): sincronización semanal $fecha" \
+              --title "$titulo" \
               --body-file "$RUNNER_TEMP/cuerpo.md"
           fi
+      - name: Fusionar y cargar las reprogramaciones puras
+        # SPEC-015 CA-4 (H-1 b): solo reprogramaciones en todas las
+        # competiciones y data/alias/** intacto. Lo demás espera al humano.
+        if: steps.diff.outputs.cambios == 'si' && steps.diff.outputs.alias == 'no' && steps.sync.outputs.auto == 'si'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          rama="chore/calendario"
+          # Nada más que data/calendario/** puede diferir de main: un commit
+          # humano que se haya quedado en la rama no se fusiona sin humano.
+          otros="$(git diff --name-only origin/main HEAD | grep -v '^data/calendario/' || true)"
+          if [ -n "$otros" ]; then
+            echo "La rama $rama trae más que el calendario; espera al humano:"
+            echo "$otros"
+            exit 0
+          fi
+          pr="$(gh pr list --head "$rama" --state open --json number --jq '.[0].number // empty')"
+          if [ -z "$pr" ]; then
+            echo "No hay PR abierto de $rama que fusionar." >&2
+            exit 1
+          fi
+          # GitHub calcula la fusionabilidad del PR tras el push: se reintenta.
+          for intento in 1 2 3 4 5; do
+            if gh pr merge "$pr" --merge; then break; fi
+            if [ "$intento" = 5 ]; then exit 1; fi
+            sleep 10
+          done
+          # Una fusión hecha con GITHUB_TOKEN no dispara on: push, así que
+          # el load se lanza a mano.
+          gh workflow run calendario-semanal.yml --ref main -f cargar=si -f temporada="$TEMPORADA"
 
   load:
     if: github.event_name == 'push' || inputs.cargar == 'si'
