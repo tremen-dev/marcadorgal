@@ -204,7 +204,7 @@ describe("SPEC-008 CA-8 the reader of the workflow", () => {
   it("reads a | block scalar whole, without parsing what is inside", () => {
     const run = str(stepNamed("sync", "Abrir o actualizar el PR")?.run);
     expect(run.split("\n")[0]).toBe("set -euo pipefail");
-    expect(run).toContain('rama="chore/calendario-$fecha"');
+    expect(run).toContain('rama="chore/calendario"');
     expect(run).toContain('gh pr create --base main --head "$rama" \\');
   });
 
@@ -214,8 +214,11 @@ describe("SPEC-008 CA-8 the reader of the workflow", () => {
 });
 
 describe("SPEC-008 CA-8 calendario-semanal.yml", () => {
-  it("runs weekly on Tuesday and can be launched by hand", () => {
-    expect(arr(on.schedule).map(obj)).toEqual([{ cron: "0 5 * * 2" }]);
+  it("runs every day from Tuesday to Saturday and can be launched by hand (SPEC-015 CA-1)", () => {
+    // The provider gives the real kickoff days after the placeholder one; a
+    // Tuesday-only sync put Wednesday-to-Saturday changes into the base after
+    // the jornada was played. 5 requests per run, 25 a week.
+    expect(arr(on.schedule).map(obj)).toEqual([{ cron: "0 5 * * 2-6" }]);
     expect(on).toHaveProperty("workflow_dispatch");
   });
 
@@ -249,7 +252,6 @@ describe("SPEC-008 CA-8 calendario-semanal.yml", () => {
     );
     const pr = stepNamed("sync", "Abrir o actualizar el PR");
     expect(pr?.if).toBe("steps.diff.outputs.cambios == 'si'");
-    expect(str(pr?.run)).toContain('rama="chore/calendario-$fecha"');
   });
 
   it("loads into the database on a push to main that touched the data", () => {
@@ -291,6 +293,98 @@ describe("SPEC-008 CA-8 calendario-semanal.yml", () => {
       (step) => typeof step.uses === "string" && step.uses.includes("checkout"),
     );
     expect(str(obj(checkout?.with)["fetch-depth"])).toBe("0");
+  });
+
+  const prRun = () => str(stepNamed("sync", "Abrir o actualizar el PR")?.run);
+  const commandsOf = (run: string) =>
+    run
+      .split("\n")
+      .filter((line) => !line.trim().startsWith("#"))
+      .join("\n");
+
+  it("SPEC-015 CA-2 keeps one fixed branch, chore/calendario", () => {
+    const run = prRun();
+    expect(run).toContain('rama="chore/calendario"\n');
+    expect(run).not.toContain("chore/calendario-$fecha");
+  });
+
+  it("SPEC-015 CA-2 updates the open PR of that branch instead of opening another", () => {
+    const run = commandsOf(prRun());
+    // Only an OPEN PR counts: gh pr view <branch> also finds merged ones.
+    expect(run).toContain(
+      'gh pr list --head "$rama" --state open --json number --jq',
+    );
+    // By number: gh pr edit <branch> may pick a merged PR of the same branch.
+    expect(run).toContain('gh pr edit "$abierto"');
+    expect(run).toMatch(/if \[ -n "\$abierto" \]; then[\s\S]*gh pr edit/);
+    expect(run).toContain('gh pr create --base main --head "$rama"');
+  });
+
+  it("SPEC-015 CA-2 rebuilds the branch from main once its PR was merged or closed", () => {
+    const run = commandsOf(prRun());
+    // Without an open PR the old branch goes away and a new one starts from
+    // the checkout of main; deleting it keeps the push free of --force.
+    expect(run).toContain('git push origin --delete "$rama"');
+    expect(run).not.toContain("--force");
+    const rebuild = run.slice(run.indexOf('git push origin --delete "$rama"'));
+    expect(rebuild).toContain('git checkout -f -B "$rama"');
+  });
+
+  it("SPEC-015 CA-3 the title of the PR ends in — N urgentes when N > 0", () => {
+    const step = stepNamed("sync", "Abrir o actualizar el PR");
+    expect(str(obj(step?.env).URGENTES)).toBe(
+      "${{ steps.sync.outputs.urgentes }}",
+    );
+    const run = prRun();
+    expect(run).toContain('if [ "$URGENTES" -gt 0 ]; then');
+    expect(run).toContain('titulo="$titulo — $URGENTES urgentes"');
+    expect(run).toContain('--title "$titulo"');
+    // The title is rewritten on update too: the count is today's.
+    expect(run).toMatch(/gh pr edit "\$abierto" --title "\$titulo"/);
+  });
+
+  it("SPEC-015 CA-4 the sync step exposes its verdict", () => {
+    const sync = stepNamed("sync", "Sincronizar contra el proveedor");
+    expect(sync?.id).toBe("sync");
+    const diff = stepNamed("sync", "¿Hay diff en el calendario declarado?");
+    expect(str(diff?.run)).toContain("git status --porcelain data/alias");
+    expect(str(diff?.run)).toContain('echo "alias=');
+  });
+
+  it("SPEC-015 CA-4 merges its own PR only for pure reschedules with data/alias untouched", () => {
+    const merge = stepNamed(
+      "sync",
+      "Fusionar y cargar las reprogramaciones puras",
+    );
+    expect(str(merge?.if)).toBe(
+      "steps.diff.outputs.cambios == 'si' && steps.diff.outputs.alias == 'no' && steps.sync.outputs.auto == 'si'",
+    );
+    const run = commandsOf(str(merge?.run));
+    expect(run).toContain(
+      'gh pr list --head "$rama" --state open --json number --jq',
+    );
+    expect(run).toContain('gh pr merge "$pr" --merge');
+    // Nothing but data/calendario/** may differ from main: a human commit
+    // left on the branch never merges without a human.
+    expect(run).toContain("git diff --name-only origin/main HEAD");
+    expect(run).toContain("data/calendario/");
+  });
+
+  it("SPEC-015 CA-4 launches load by workflow_dispatch after merging", () => {
+    // A merge made with GITHUB_TOKEN does not fire on: push, so the load
+    // that a human merge triggers has to be launched by hand.
+    const merge = stepNamed(
+      "sync",
+      "Fusionar y cargar las reprogramaciones puras",
+    );
+    const run = commandsOf(str(merge?.run));
+    expect(run).toContain(
+      'gh workflow run calendario-semanal.yml --ref main -f cargar=si -f temporada="$TEMPORADA"',
+    );
+    expect(run.indexOf("gh workflow run")).toBeGreaterThan(
+      run.indexOf("gh pr merge"),
+    );
+    expect(str(obj(obj(jobs.sync).permissions).actions)).toBe("write");
   });
 
   it("splits the two jobs by event", () => {

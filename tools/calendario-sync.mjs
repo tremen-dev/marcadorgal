@@ -5,13 +5,13 @@
 //
 // Usage: npm run calendario:sync -- <season> [competition_id...] [--dry-run]
 // Runs on Node's native type stripping: no tsx, no build step.
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { COMPETITIONS, IMPORTERS } from "../src/calendar/importers.ts";
 import { matchId } from "../src/calendar/match-id.ts";
 import { validateAliases, validateCalendar } from "../src/calendar/schema.ts";
-import { formatSyncDiff, syncCalendar } from "../src/calendar/sync.ts";
+import { autoAplicable, countUrgent, formatSyncDiff, syncCalendar } from "../src/calendar/sync.ts";
 
 try {
   process.loadEnvFile();
@@ -39,6 +39,9 @@ if (unknown.length) {
   console.error(`Competiciones desconocidas: ${unknown.join(", ")}`);
   process.exit(1);
 }
+// The clock of the sync: formatSyncDiff has none of its own (SPEC-015 CA-3).
+const now = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
+const diffs = [];
 const competitions = COMPETITIONS.filter((c) => !requested.length || requested.includes(c.id));
 
 const calendarDir = path.join(root, "data", "calendario", season);
@@ -109,7 +112,8 @@ for (const competition of competitions) {
     competition: { id: competition.id, season, name: competition.name, tier: competition.tier },
     sourceId: importer.id,
   });
-  console.log(formatSyncDiff(competition.id, result.diff));
+  console.log(formatSyncDiff(competition.id, result.diff, now));
+  diffs.push(result.diff);
 
   const issues = validateCalendar(result.calendar, { season, competitionId: competition.id });
   if (issues.length) {
@@ -135,6 +139,15 @@ for (const [sourceId, aliases] of aliasFiles) {
   }
   if (!dryRun) writeJson(file, aliases);
 }
+
+// For the workflow: the title of the PR carries the urgent count, and a sync
+// of pure reschedules merges on its own (SPEC-015 CA-3, CA-4). A failed run
+// never merges: the step fails before the workflow reads this.
+const urgentes = diffs.reduce((n, d) => n + countUrgent(d, now), 0);
+const auto = !failed && autoAplicable(diffs) ? "si" : "no";
+console.log(`urgentes: ${urgentes}`);
+console.log(`auto-aplicable: ${auto}`);
+if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, `urgentes=${urgentes}\nauto=${auto}\n`);
 
 if (dryRun) console.log("(--dry-run: no se ha escrito nada)");
 process.exit(failed ? 1 : 0);
