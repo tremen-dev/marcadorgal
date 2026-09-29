@@ -57,7 +57,10 @@
 
 ## No-negociables
 
-- **Un marcador no baja** salvo por el operador (RN-03).
+- **Un marcador en juego solo lo baja una fuente con más peso que la que lo
+  subió** — hoy, el operador (RN-03, enmendada por ADR-010 §1). Al terminar el
+  partido, manda la observación ganadora.
+  *Enmendado el 2026-09-29 por decisión del titular (Alberto Fojo).*
 - **Los conflictos no se publican: se alertan** (RN-04).
 - **Ninguna petición a una fuente fuera de la cadencia declarada** en su
   registro (RN-08).

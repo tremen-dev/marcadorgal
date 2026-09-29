@@ -14,11 +14,12 @@
   fuente ganadora, o a kickoff + 120 minutos si nadie lo cierra (con
   cualificador `provisional`). `postponed` y `suspended` solo por fuente con
   prioridad de federación o por operador. No hay más transiciones automáticas.
-- **RN-03 — Monotonía.** Un marcador no baja salvo por el operador **mientras
-  el partido está en juego**. Si la fuente ganadora propone un marcador menor
-  que el vigente, se mantiene el vigente y se abre una Alert. **La retención
-  no sobrevive al cierre: al pasar a `finished`, manda el marcador de la
-  observación ganadora.**
+- **RN-03 — Monotonía.** **Mientras el partido está en juego**, un marcador
+  solo lo baja una fuente con más peso que la que lo subió; hoy, el operador: un
+  gol que sube el operador no lo baja API-Football. Si una fuente que no pesa más
+  propone un marcador menor que el vigente, se mantiene el vigente y se abre una
+  Alert. **La retención no sobrevive al cierre: al pasar a `finished`, manda el
+  marcador de la observación ganadora.**
   *Enmendada el 2026-09-29 por ADR-010 §1.*
 - **RN-04 — Conflicto.** Si dos fuentes de prioridad igual o adyacente
   discrepan en el marcador durante más de 3 minutos, se mantiene la Decision

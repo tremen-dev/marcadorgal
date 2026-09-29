@@ -41,16 +41,29 @@ RN-04 sin tocar ADR-004.
    En la transición a `finished` —la confirme la fuente o la fuerce RN-02 a
    kickoff + 120— se publica el marcador de la **observación ganadora** (RN-01),
    no el retenido. Si no hay observación fresca, se publica el vigente. Letra
-   nueva de RN-03, que es la que `reglas.md` pasa a decir:
-   > **RN-03 — Monotonía.** Un marcador no baja salvo por el operador **mientras
-   > el partido está en juego**. Si la fuente ganadora propone un marcador menor
-   > que el vigente, se mantiene el vigente y se abre una Alert. **La retención
-   > no sobrevive al cierre: al pasar a `finished`, manda el marcador de la
-   > observación ganadora.**
+   nueva de RN-03, que es la que `reglas.md` pasa a decir (forma por peso desde
+   el 2026-09-29, ver la nota fechada al final de §1):
+   > **RN-03 — Monotonía.** **Mientras el partido está en juego**, un marcador
+   > solo lo baja una fuente con más peso que la que lo subió; hoy, el operador: un
+   > gol que sube el operador no lo baja API-Football. Si una fuente que no pesa más
+   > propone un marcador menor que el vigente, se mantiene el vigente y se abre una
+   > Alert. **La retención no sobrevive al cierre: al pasar a `finished`, manda el
+   > marcador de la observación ganadora.**
 
    No se reordena RN-06: RN-03 simplemente no tiene nada que decir en el cierre.
    El cierre **no resuelve** la alerta `regression` que quedó abierta (eso es
    EPIC-004): deja de propagar su error, nada más.
+
+   *2026-09-29, Alberto Fojo (titular), cierra F-SPEC-012-3:* RN-03 pasa de
+   «salvo por el operador» a su forma general **por peso**. Con «mismo peso» la
+   regla degenera con una sola fuente automática —la que sube y la que baja es
+   la misma— y en `eibar-las-palmas` se habría publicado 43 min un marcador
+   falso (`hallazgos-jornada.md`, hallazgo 2). «Más peso» coincide hoy con la
+   letra anterior (solo el operador baja) y generaliza sin reescribir la
+   constitución cuando entre una segunda fuente automática. Gol anulado en vivo:
+   la fuente propone menos, se retiene con Alert `regression` y el operador lo
+   confirma (EPIC-004); sin operador, el anulado se ve hasta el cierre y §1 lo
+   corrige al pitido. FOUNDATION.md recoge la misma forma.
 2. **RN-12 — Reconciliación posterior al cierre.** Un partido cerrado
    `provisional` por el cierre forzoso de RN-02 admite **una corrección del
    marcador** cuando la fuente publica por fin su resultado final, sin volver a
@@ -121,6 +134,10 @@ puro y replayable.
 
 - **Aceptar una bajada tras N confirmaciones seguidas.** Rechazada: **refutada
   por el dato**. Aciertos con 46 y 87 confirmaciones, peor fallo con 3.
+- **RN-03 por mismo peso** (baja la fuente que lo subió o una igual).
+  Rechazada el 2026-09-29: con una sola fuente automática equivale a derogar
+  RN-03 en vivo. Se adopta la **regla del peso** («más peso que la que lo
+  subió»), ver la nota fechada de §1.
 - **Derogar RN-03.** Rechazada: publicaría el parpadeo de la fuente en vivo, que
   es lo único que RN-03 sí evita, y 2 de 8 retenciones acertaron en vivo.
 - **Esperar al operador (EPIC-004).** Rechazada: deja 7 de 39 marcadores mal
