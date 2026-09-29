@@ -248,3 +248,32 @@ describe("CA-11 the engine against the database", () => {
       ).toBe("09000"); // triggered_action_exception
     }));
 });
+
+// SPEC-013 CA-2: RN-12 exists end to end. The check of decisions.rule takes
+// it, and still rejects what is not a rule: both directions.
+describe("SPEC-013 CA-2 decisions.rule accepts RN-12 and nothing invented", () => {
+  const insertRule = async (tx: TransactionSql, rule: string) => {
+    const matchId = await seedMatch(tx);
+    const observationId = await observe(tx, matchId, 3, 1, 90, at(95));
+    return tx`insert into decisions (match_id, status, home_score, away_score,
+        minute, qualifier, rule, observation_ids, decided_at)
+      values (${matchId}, 'finished', 3, 1, null, 'confirmado', ${rule},
+        ${tx.array([observationId])}::uuid[], ${at(130)})
+      returning rule`;
+  };
+
+  it("inserts a Decision with rule RN-12", () =>
+    rollback(async (tx) => {
+      const [row] = await insertRule(tx, "RN-12");
+      expect(row.rule).toBe("RN-12");
+    }));
+
+  it("still rejects an invented rule", () =>
+    rollback(async (tx) => {
+      expect(
+        await pgCode(
+          tx.savepoint((s) => insertRule(s as TransactionSql, "RN-99")),
+        ),
+      ).toBe("23514"); // check_violation
+    }));
+});

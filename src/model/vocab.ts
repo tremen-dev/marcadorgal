@@ -13,12 +13,15 @@ export const Qualifier = z.enum(["confirmado", "provisional", "sen_sinal"]);
 export type Qualifier = z.infer<typeof Qualifier>;
 
 // Only the deciding rules of reglas.md (ADR-004): RN-04 never publishes, RN-06 records.
+// RN-12 reconciles a forced finish with the final the source confirms later
+// (ADR-010 §2).
 export const DecisionRule = z.enum([
   "operator",
   "RN-01",
   "RN-02",
   "RN-03",
   "RN-05",
+  "RN-12",
 ]);
 export type DecisionRule = z.infer<typeof DecisionRule>;
 
