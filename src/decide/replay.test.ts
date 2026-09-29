@@ -14,6 +14,7 @@ import {
   shiftInstant,
 } from "../model/index.ts";
 import { createApiFootballResults } from "../sources/api-football/results.ts";
+import { decide as decideAt812c805 } from "./fixtures/engine-812c805.ts";
 import { replay } from "./replay.ts";
 import type { EngineMatch } from "./types.ts";
 
@@ -255,4 +256,49 @@ describe("CA-8 replay over the real parse of a provider capture", () => {
       expect(steps[0].output.open).toEqual([]);
     },
   );
+});
+
+// SPEC-012 CA-3. The same log through the engine that ran the measured
+// matchday (812c805, before ADR-010 §1) and through the engine of today. The
+// shape of girona-albacete: 2-0, the source blinks a 2-1 for two ticks and
+// retracts, then closes 2-0 itself.
+describe("SPEC-012 CA-3 the replay across ADR-010 §1", () => {
+  const BLINK = [
+    observation(MATCH.id, 1, live(0, 0, 1)),
+    observation(MATCH.id, 6, live(1, 0, 6)),
+    observation(MATCH.id, 43, live(2, 0, 43)),
+    observation(MATCH.id, 75, live(2, 1, 75)),
+    observation(MATCH.id, 76, live(2, 1, 75)),
+    observation(MATCH.id, 77, live(2, 0, 76)),
+    observation(MATCH.id, 112, live(2, 0, 90)),
+    observation(MATCH.id, 113, finished(2, 0)),
+  ];
+  const last = (steps: ReturnType<typeof replay>) => published(steps).at(-1);
+
+  it("ends finished 2-1 with the engine of the matchday", () => {
+    const steps = replay({
+      match: MATCH,
+      priority: PROVIDER,
+      observations: BLINK,
+      engine: decideAt812c805,
+    });
+    expect(last(steps)).toMatchObject({
+      status: "finished",
+      score: { home: 2, away: 1 },
+      rule: "RN-03",
+    });
+  });
+
+  it("ends finished 2-0 with the engine of today", () => {
+    const steps = replay({
+      match: MATCH,
+      priority: PROVIDER,
+      observations: BLINK,
+    });
+    expect(last(steps)).toMatchObject({
+      status: "finished",
+      score: { home: 2, away: 0 },
+      rule: "RN-01",
+    });
+  });
 });
