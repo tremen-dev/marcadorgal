@@ -2,11 +2,16 @@
 id: SPEC-012
 tipo: spec
 epica: EPIC-002
-estado: aprobada
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-09-29, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-09-29, por: Alberto Fojo}
+  - {estado: en-progreso, fecha: 2026-09-29, por: sdd-implementador}
+  - {estado: en-revision, fecha: 2026-09-29, por: sdd-implementador}
+  - {estado: en-progreso, fecha: 2026-09-29, por: sdd-implementador}
+  - {estado: en-revision, fecha: 2026-09-29, por: sdd-implementador}
+  - {estado: hecho, fecha: 2026-09-29, por: sdd-verificador}
 ---
 # SPEC-012 — La monotonía no sobrevive al cierre, y replay de la jornada medida
 
@@ -25,7 +30,7 @@ corregido.**
 
 ## Usuarios / roles afectados
 - Titular: aprueba antes **ADR-010** —esta spec cambia la letra de una regla de
-  `reglas.md`— y decide H-1 y H-3, que no son técnicos.
+  `reglas.md`— y decidió H-1 y H-2 el 2026-09-29; H-3 sigue abierto.
 - sdd-verificador: el corazón de esta spec es un **antes y un después medibles**
   sobre filas que ya existen. No hay trabajo de campo ni fecha de espera.
 - sdd-producto: es lo que permite cerrar EPIC-002. La letra de la épica la toca
@@ -61,8 +66,8 @@ SPEC-009 N-9, CA-9 (c2-ii) y R-SPEC-009-2 (el encargo).
 - Pantalla, snapshot y Realtime: EPIC-003.
 
 ## Notas para el gate humano
-- **H-1 (abierto). ¿Se aplica la corrección a `dev`, o solo se demuestra?** CA-4 con `--aplicar` escribe cinco Decisions nuevas sobre las filas de la jornada medida. A favor: es lo que hace que EPIC-002 pueda cerrar con el marcador **correcto**, que es la condición que el titular puso el 2026-09-29. En contra: `dev` es donde vive la evidencia de SPEC-009. **Mi recomendación: aplicar**, porque la alternativa deja la épica cerrando con un marcador que todos sabemos mal, y porque RN-07 hace la operación reversible por lectura: la versión vieja sigue ahí.
-- **H-2 (abierto, y es el que de verdad importa). La corrección no invalida el criterio 5, pero hay que decidirlo en voz alta.** H-2 (i) de SPEC-009 dice que tocar `decisions` **invalida** el criterio 5. Lo que CA-4 hace **no es eso**: ocurre **fuera** de la ventana ya cerrada, lo escribe una **regla del sistema** con su `rule` y sus `observation_ids`, no una persona con un `update`, y el informe del 2026-09-28 se queda intacto como evidencia de **lo que el sistema hizo**. La corrección es un hecho **posterior y fechado**, no un retoque del pasado. Pero la frontera es fina y la escribo aquí para que se cruce a propósito y no de puntillas.
+- **H-1 (decidido por Alberto Fojo, 2026-09-29). Se aplica: CA-4 con `--aplicar` escribe en `dev`.** Las Decisions correctoras se añaden sobre las filas de la jornada medida; se acepta la recomendación del arquitecto. Motivo: EPIC-002 solo cierra con el marcador **correcto** (condición del titular, 2026-09-29), y RN-07 hace la operación reversible por lectura: la versión vieja sigue en `decisions`. La evidencia de SPEC-009 en `dev` no se pierde: se le añade un hecho posterior.
+- **H-2 (decidido por Alberto Fojo, 2026-09-29). La corrección no invalida el criterio 5.** H-2 (i) de SPEC-009 dice que tocar `decisions` invalida el criterio 5; lo que hace CA-4 **no es eso**: la escribe una **regla del sistema**, **fuera** de la ventana ya cerrada, con su `rule` y sus `observation_ids`, como hecho **posterior y fechado**, no una persona con un `update` ni un retoque del pasado. El informe del 2026-09-28 queda **intacto** como evidencia de lo que hizo el sistema (CA-6). La frontera es fina y se cruza a propósito.
 - **H-3 (abierto). El reloj del crudo corre.** ADR-007 §5 retiene 30 días: las observaciones del 25 de septiembre **se purgan el 25 de octubre**. El replay de CA-3 y CA-4 se sostiene sobre `observations`, que son append-only y no se purgan, así que el arreglo no caduca; lo que caduca es poder **volver al crudo** a comprobarlo. Si esta spec no se implementa antes del **2026-10-25**, el fixture de CA-3 hay que capturarlo igualmente ahora.
 - **N-1 Esta spec no puede aprobarse antes que ADR-010.** CA-1 cambia la letra de una regla de `reglas.md`, y eso no se hace con una spec aprobada sobre un ADR en borrador.
 - **N-2 Las dos retenciones que acertaron no se rompen.** `eibar-las-palmas` (87 confirmaciones) y `barakaldo-aviles` (46) acabaron **bien** con RN-03 reteniendo, y con la enmienda siguen bien: en los dos el marcador del proveedor al cierre ya coincidía con el publicado, y por eso **no están entre las siete discrepancias**. Comprobado por el verificador contra `board` (V-14). CA-4 lo vuelve a comprobar sin querer: el replay no debe divergir en esos dos.

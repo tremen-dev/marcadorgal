@@ -31,6 +31,38 @@ Plan Pro, `User-Agent: marcador.gal (ingesta; https://marcador.gal)`.
 | `errors-live-2026-09-22.json` | `GET /fixtures?live=439` | 2026-09-22T22:07:38Z (intento fallido del ensayo de CA-6 de SPEC-009) | ninguno (`results: 0`, `response: []`) | Cuerpo de un **200 con `errors`**: `live` = «The Live field does not match the regular expression: [id-id-id...] or string: all.». Es la respuesta al id de liga suelto que producía `live=${leagues.join("-")}` con una sola competición en ventana, y el caso que reproduce la noche del 22 sin salir a la red (SPEC-011 CA-4). **Procedencia:** el valor de `errors` es el error literal registrado en los 23 intentos fallidos seguidos de esa noche; el sobre (`get`, `parameters`, `results`, `paging`, `response`) es el de este mismo endpoint, idéntico al de los dos ficheros de arriba. El objeto crudo del bucket del que sale está anotado en el ledger de SPEC-011 (N-5: la clave va al ledger, nunca al fixture) |
 | `live-2026-09-26.json` | `GET /fixtures?live=140-141-435-875-439` | 2026-09-26T15:10:00Z (captura de CA-8 de SPEC-009, automatizada en GitHub Actions; run 36235253961) | ninguno (`results: 5`, `errors: []`) | **Primera respuesta con partidos de las cinco ligas realmente en juego**, y por tanto el cierre de F-SPEC-005-1. 5 partidos de **cuatro** de las cinco ligas —Primera División no jugaba esa jornada (H-1 de SPEC-009)—: 435 Cultural Leonesa 2-0 Coria (`1H` 37'), 435 Lugo 1-0 Racing Ferrol (`1H` 37'), 875 Amorebieta 0-0 Ourense CF (`1H` 10'), 439 Atlético Arteixo 0-1 Alondras (`1H` 10') y 141 Granada 0-2 Andorra (`HT` 45'). Cuatro `1H` con `elapsed` y un `HT`: el caso «live resuelto con `minute`» deja de derivarse en memoria |
 
+## Jornada medida (SPEC-012 CA-3)
+
+Crudo del raw store (ADR-007), no una petición nueva: las capturas que el tick
+guardó en `raw/api-football/2026-09-25/` y que citan las `observations` del
+partido, descargadas en solo lectura el 2026-09-29. Cada captura es el sobre
+`RawCapture` tal cual lo guardó el almacén (`sourceId`, `capturedAt`,
+`requests[]` con `url`, `status`, `contentType` y `body`; sin cabeceras ni
+clave), descomprimido del `.json.gz` y comparado byte a byte con el objeto del
+bucket. Van juntas en un array JSON ordenado por `capturedAt` y comprimido con
+brotli (9 458 962 → 21 706 bytes): los cuerpos traen `events`, `lineups`,
+`statistics` y `players`, y en claro serían 9,5 MB.
+
+| Fichero | Petición | Captura (UTC) | Recorte | Contenido |
+|---|---|---|---|---|
+| `girona-albacete-2026-09-25.json.br` | `GET /fixtures?ids=1569941` (una por captura) | 2026-09-25T18:20:00.877Z → 20:23:06.436Z (247 capturas, cada ~30 s; ventana completa del partido) | ninguno (`results: 1` en las 247) | Girona 2-0 Albacete, 141 Segunda División, J7. La fuente da `live 2-1` de 19:45:04Z a 19:45:34Z (2 capturas) y vuelve a `2-0`; cierra `FT 2-0`. Es el caso de RN-03 de SPEC-009 N-9: el motor de la jornada (812c805) publica `finished 2-1`, el de ADR-010 §1 `finished 2-0` (`src/decide/replay.test.ts`) |
+
+Comando (la clave de servicio sale de `.env`; solo `GET`, nada se escribe):
+
+```sh
+set -a; . ./.env; set +a
+# por cada raw_ref de las observations del partido (raw/<key>):
+curl -s -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" \
+  -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+  "$NEXT_PUBLIC_SUPABASE_URL/storage/v1/object/raw/<key>" | gunzip
+# y se juntan en un array por capturedAt, comprimido con
+# zlib.brotliCompressSync (calidad 11, ventana 24).
+```
+
+Para leerlo: `zcat` no sirve; `node -e 'process.stdout.write(require("zlib").brotliDecompressSync(require("fs").readFileSync(process.argv[1])))' <fichero>`.
+Antes de commitear, además de `git grep`, se busca la clave en el contenido
+descomprimido: el binario no la mostraría aunque estuviera.
+
 Comando de captura (la clave sale de `.env`, H-1):
 
 ```sh

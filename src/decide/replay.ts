@@ -6,7 +6,7 @@ import type {
 } from "../model/index.ts";
 import { instantDiff } from "../model/index.ts";
 import { decide } from "./engine.ts";
-import type { EngineMatch, EngineOutput } from "./types.ts";
+import type { EngineInput, EngineMatch, EngineOutput } from "./types.ts";
 
 export type ReplayInput = {
   match: EngineMatch;
@@ -15,6 +15,10 @@ export type ReplayInput = {
   // Extra moments to evaluate: what nobody observes (RN-05, the forced finish
   // of RN-02) only happens when someone looks.
   instants?: Instant[];
+  // The engine to fold, decide() unless said otherwise: replaying the same
+  // log with an engine of another day is how a change of rule is measured
+  // (SPEC-012 CA-3).
+  engine?: (input: EngineInput) => EngineOutput;
 };
 
 export type ReplayStep = { now: Instant; output: EngineOutput };
@@ -36,6 +40,7 @@ export function replay({
   priority,
   observations,
   instants = [],
+  engine = decide,
 }: ReplayInput): ReplayStep[] {
   const moments = [
     ...new Set([...observations.map((o) => o.observedAt), ...instants]),
@@ -45,7 +50,7 @@ export function replay({
   let version = 0;
   const steps: ReplayStep[] = [];
   for (const now of moments) {
-    const output = decide({
+    const output = engine({
       match,
       current,
       observations: observations.filter(
