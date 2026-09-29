@@ -368,7 +368,7 @@
     },
     {
       "round": 6,
-      "kickoff": "2026-10-11T15:00:00Z",
+      "kickoff": "2026-10-11T10:00:00Z",
       "home": "alaves-b",
       "away": "gernika"
     },
@@ -386,7 +386,7 @@
     },
     {
       "round": 6,
-      "kickoff": "2026-10-11T15:00:00Z",
+      "kickoff": "2026-10-10T14:30:00Z",
       "home": "astorga",
       "away": "ourense-cf"
     },
@@ -404,19 +404,19 @@
     },
     {
       "round": 6,
-      "kickoff": "2026-10-11T15:00:00Z",
+      "kickoff": "2026-10-10T16:00:00Z",
       "home": "llanera",
       "away": "marino"
     },
     {
       "round": 6,
-      "kickoff": "2026-10-11T15:00:00Z",
+      "kickoff": "2026-10-11T10:30:00Z",
       "home": "oviedo-vetusta",
       "away": "rayo-cantabria"
     },
     {
       "round": 6,
-      "kickoff": "2026-10-11T15:00:00Z",
+      "kickoff": "2026-10-10T16:30:00Z",
       "home": "sestao-river",
       "away": "gimnastica"
     },
@@ -440,7 +440,7 @@
     },
     {
       "round": 7,
-      "kickoff": "2026-10-18T15:00:00Z",
+      "kickoff": "2026-10-17T16:00:00Z",
       "home": "gernika",
       "away": "amorebieta"
     },
@@ -458,7 +458,7 @@
     },
     {
       "round": 7,
-      "kickoff": "2026-10-18T15:00:00Z",
+      "kickoff": "2026-10-17T15:00:00Z",
       "home": "ourense-cf",
       "away": "coruxo"
     },
