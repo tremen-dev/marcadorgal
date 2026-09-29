@@ -35,8 +35,9 @@ convierte eso en Observations y Decisions de una jornada de verdad.
 5. **Una jornada real completa** —todos los partidos de la ronda en las
    competiciones que disputen jornada ese fin de semana— queda registrada
    sin intervención manual: todos los partidos con Decision `finished` y
-   marcador correcto contrastado con el proveedor, y las Alerts abiertas son
-   explicables (silencio, retroceso, equipo sin resolver). El informe dice
+   marcador correcto contrastado con el proveedor —o el estado que `board` y
+   el proveedor confirmen los dos, con su explicación escrita—, y las Alerts
+   abiertas son explicables (silencio, retroceso, equipo sin resolver). El informe dice
    cuántas competiciones se midieron; que las cinco producen Decisions se
    comprueba antes de cerrar EPIC-003.
 6. Métricas de esa jornada medidas y anotadas en el ledger: latencia gol →

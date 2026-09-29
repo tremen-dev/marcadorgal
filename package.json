@@ -22,7 +22,8 @@
     "calendario:xornada": "node tools/calendario-xornada.mjs",
     "ingest:tick": "node tools/ingest-tick.mjs",
     "cron:setup": "node tools/cron-setup.mjs",
-    "tick:salud": "node tools/tick-salud.mjs"
+    "tick:salud": "node tools/tick-salud.mjs",
+    "informe:jornada": "node tools/informe-jornada.mjs"
   },
   "dependencies": {
     "next": "16.3.5",

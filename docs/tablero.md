@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-09-23
+Actualizado: 2026-09-29
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -20,7 +20,9 @@ Actualizado: 2026-09-23
 | SPEC-006 — raw-store-en-storage-ventanas-por-partido-y-tick-de-ingesta | hecho | 2026-09-21 (sdd-verificador) |
 | SPEC-007 — motor-de-decisiones-cualificador-y-alertas | hecho | 2026-09-21 (sdd-verificador) |
 | SPEC-008 — despliegue-del-tick-pg-cron-vercel-cron-variables-y-sincronizacion-del-calendario | hecho | 2026-09-22 (sdd-verificador) |
-| SPEC-009 — jornada-de-medicion-e-informe | aprobada | 2026-09-21 (Alberto Fojo) |
+| SPEC-009 — jornada-de-medicion-e-informe | hecho | 2026-09-29 (sdd-verificador) |
+| SPEC-012 — la-monotonia-no-sobrevive-al-cierre-y-replay-de-la-jornada-medida | aprobada | 2026-09-29 (Alberto Fojo) |
+| SPEC-013 — reconciliacion-del-marcador-despues-del-cierre-forzoso | aprobada | 2026-09-29 (Alberto Fojo) |
 
 ## EPIC-FIX (aprobada)
 
@@ -47,8 +49,9 @@ Actualizado: 2026-09-23
 | ADR-007 | aprobada | raw-store-en-supabase-storage-bucket-claves-escritura-y-retencion | 2026-09-21 (Alberto Fojo) |
 | ADR-008 | aprobada | nucleo-de-ingesta-tick-autenticado-cadencia-concurrencia-y-puntos-de-enganche | 2026-09-21 (Alberto Fojo) |
 | ADR-009 | aprobada | ejecucion-del-motor-enganche-por-observaciones-barrido-por-ausencia-y-precisiones-a-rn-02-rn-04 | 2026-09-21 (Alberto Fojo) |
+| ADR-010 | aprobada | el-cierre-manda-sobre-la-monotonia-y-reconciliacion-tras-el-cierre-forzoso | 2026-09-29 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 10
-- aprobada: 1
+- hecho: 11
+- aprobada: 2
