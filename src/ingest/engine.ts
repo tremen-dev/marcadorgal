@@ -71,7 +71,7 @@ type LastHeardRow = {
   status: MatchStatus;
 };
 
-type ObservationRow = StateRow & {
+export type ObservationRow = StateRow & {
   id: string;
   match_id: string;
   source_id: string;
@@ -112,7 +112,7 @@ const toDecision = (row: DecisionRow): Decision =>
     decidedAt: instant(row.decided_at),
   }) as Decision;
 
-const toObservation = (row: ObservationRow): Observation =>
+export const toObservation = (row: ObservationRow): Observation =>
   ({
     ...stateOf(row),
     id: row.id as ObservationId,
@@ -145,7 +145,7 @@ const scoreOf = (draft: DecisionDraft) => ({
 
 // version and id are never written: the trigger and the default put them
 // (ADR-006 §3), which is what keeps the engine replayable.
-async function insertDecision(
+export async function insertDecision(
   sql: TransactionSql,
   draft: DecisionDraft,
 ): Promise<void> {
