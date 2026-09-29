@@ -214,8 +214,11 @@ describe("SPEC-008 CA-8 the reader of the workflow", () => {
 });
 
 describe("SPEC-008 CA-8 calendario-semanal.yml", () => {
-  it("runs weekly on Tuesday and can be launched by hand", () => {
-    expect(arr(on.schedule).map(obj)).toEqual([{ cron: "0 5 * * 2" }]);
+  it("runs every day from Tuesday to Saturday and can be launched by hand (SPEC-015 CA-1)", () => {
+    // The provider gives the real kickoff days after the placeholder one; a
+    // Tuesday-only sync put Wednesday-to-Saturday changes into the base after
+    // the jornada was played. 5 requests per run, 25 a week.
+    expect(arr(on.schedule).map(obj)).toEqual([{ cron: "0 5 * * 2-6" }]);
     expect(on).toHaveProperty("workflow_dispatch");
   });
 

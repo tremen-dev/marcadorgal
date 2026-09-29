@@ -6,9 +6,13 @@
 name: calendario-semanal
 on:
   schedule:
-    # Martes a las 05:00Z: entre jornadas, con tiempo de revisar antes del
+    # De martes a sábado a las 05:00Z (SPEC-015 CA-1): el proveedor publica
+    # la jornada con una hora de relleno y da la real días después, así que
+    # un sync solo de martes metía en base después de la jornada lo que
+    # llegaba de miércoles a sábado. 5 peticiones por ejecución, 25 a la
+    # semana. El schedule de GitHub llega tarde: la red fiable es la del
     # viernes.
-    - cron: '0 5 * * 2'
+    - cron: '0 5 * * 2-6'
   workflow_dispatch:
     inputs:
       temporada:
