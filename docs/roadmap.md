@@ -11,7 +11,9 @@ tipo: roadmap
 - **EPIC-002 — Ingesta y motor.** Contrato `SourceAdapter`, registro, adaptador
   de la primera fuente con fixtures reales, raw store, tick con ventanas,
   motor de decisiones, alertas. Cierra cuando una jornada real completa queda
-  registrada como Observations y Decisions sin intervención manual.
+  registrada como Observations y Decisions sin intervención manual **y con el
+  marcador corregido** (N-9, 2026-09-29): falta CA-5 de SPEC-013 (jornada del
+  2026-10-02/04) y SPEC-014 (ADR-011).
 
 ## Después (comprometido, sin empezar)
 
@@ -19,9 +21,20 @@ tipo: roadmap
   `docs/diseno/`, snapshot servido, Realtime con fallback a polling, tira de
   días, filtros, frescura, gl/es. Cierra con el dominio marcador.gal
   publicando una jornada real.
+  *Entradas de la jornada medida (2026-09-29):* **R-SPEC-009-6** — latencia
+  mediana +53 s contra 45 s de `vision.md`, con n = 15 y referencia a minuto:
+  se vuelve a medir con mejor referencia en Primera (2026-10-09/12) y aquí se
+  decide si cambia el objetivo, la cadencia o la fuente. **R-SPEC-009-7** —
+  medir la latencia interna exige un segundo reloj (ADR-008 §7); se trae de
+  EPIC-002 porque no afecta a que el marcador sea correcto, solo a desglosar
+  la latencia, y hace falta cuando se decida R-SPEC-009-6.
 - **EPIC-004 — Operador y fuentes push.** Panel mínimo con Auth, webhook
   genérico, segunda fuente automática registrada. Cierra cuando el operador
   corrige un marcador desde el móvil y el público lo ve en menos de 10 s.
+  *Entrada de la jornada medida (2026-09-29):* **R-SPEC-009-3** — la fuente
+  no dio en directo 4 de 9 partidos de Tercera; la cobertura se degrada con la
+  categoría. Operador o segunda fuente son las dos salidas: es el argumento
+  para no retrasar esta épica tras EPIC-003. Decidir el orden al cerrar EPIC-002.
 
 ## Hecho
 
