@@ -104,3 +104,21 @@ Pendientes de especificar, con su procedencia:
   línea en el comentario de cada constante. Procedencia: hallazgo del arquitecto
   al escribir `docs/fundacion/como-funciona.md`, 2026-09-22; derivado del código,
   no registrado en ningún ADR.
+- **M-9 — dos ticks solapados duplican versiones de Decision.** pg_cron (30 s)
+  y Vercel Cron (1 min) pueden solaparse: el segundo tick salta el intento por
+  cadencia pero corre el barrido del motor igual, y el advisory lock de ADR-008
+  solo protege `openAttempt`; el trigger de versión calcula `max + 1` sin
+  cerrojo. Medido: 21 Decisions repiten la tupla anterior y 2 tienen
+  `decided_at` invertido respecto a su versión; **0 marcadores incorrectos**.
+  Modo de fallo no observado: dos transacciones con la misma versión (una cae
+  por unicidad y, si es la del hook, se pierden las observaciones del tick), o
+  una lectura vieja que publica `live` sobre `finished`. Arreglo candidato,
+  con decisión en ADR-008/009: lock por partido sobre `match_id` en el motor, o
+  no barrer cuando la cadencia salta el intento. Importa a SPEC-014 (el dueño
+  de cada lado se calcula sobre el estado vigente). Procedencia: F-SPEC-012-4,
+  diagnóstico `docs/epicas/EPIC-FIX/_qa/diagnostico-2026-09-29.md`, 2026-09-29.
+- **M-10 — `informe:jornada --salida` sobrescribe sin avisar.** El informe de
+  jornada lleva explicaciones escritas a mano encima (F-SPEC-009-2); regenerar
+  sobre el mismo fichero las borra sin rastro. Arreglo: negarse a sobrescribir
+  salvo flag explícito. Procedencia: H-5 de SPEC-017, decidido fuera de su
+  alcance por el titular, 2026-09-29.

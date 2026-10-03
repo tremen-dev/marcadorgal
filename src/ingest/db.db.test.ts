@@ -104,6 +104,32 @@ describe("CA-6 windowMatches", () => {
       expect(rows.map((r) => r.id)).not.toContain(id);
     }));
 
+  // SPEC-013 CA-3: the current rule reaches isInWindow, so a finished forced
+  // by RN-02 stays in window until +150 and a confirmed one leaves at once.
+  it.each([
+    ["RN-02", "provisional", true],
+    ["RN-01", "provisional", false],
+    ["RN-12", "confirmado", false],
+  ] as const)(
+    "at +125, a finished by %s is in window: %s/%s",
+    (rule, qualifier, inside) =>
+      rollback(async (tx) => {
+        const kickoff = at(-125 * MINUTE_MS);
+        const id = await seedMatch(tx, kickoff);
+        const [{ id: oid }] = await tx`insert into observations
+        (match_id, source_id, status, home_score, away_score, observed_at, raw_ref)
+        values (${id}, 'test', 'live', 1, 0, ${kickoff}, 'raw/x') returning id`;
+        await tx`insert into decisions
+        (match_id, status, home_score, away_score, qualifier, rule, observation_ids, decided_at)
+        values (${id}, 'finished', 1, 0, ${qualifier}, ${rule}, ${[oid]}, ${NOW})`;
+        const rows = await dbIn(tx).windowMatches(NOW);
+        const row = rows.find((r) => r.id === id);
+        expect(row !== undefined).toBe(inside);
+        if (row !== undefined)
+          expect(row).toMatchObject({ status: "finished", rule });
+      }),
+  );
+
   it("leaves out a match that kicks off in eleven minutes", () =>
     rollback(async (tx) => {
       const id = await seedMatch(tx, at(11 * MINUTE_MS));

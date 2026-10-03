@@ -49,6 +49,7 @@ describe("CA-2 closed vocabularies", () => {
       "RN-02",
       "RN-03",
       "RN-05",
+      "RN-12",
     ]);
     expect(DecisionRule.safeParse("RN-04").success).toBe(false);
     expect(DecisionRule.safeParse("RN-06").success).toBe(false);

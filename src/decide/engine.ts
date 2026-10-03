@@ -284,6 +284,25 @@ export function decide(input: EngineInput): EngineOutput {
     );
   }
 
+  // RN-12 reconciliation (ADR-010 §2): a match closed provisional by the
+  // forced finish of RN-02 accepts the final the winning source confirms
+  // later. Score and qualifier change, the status never does, and RN-03 has
+  // nothing to say after the close (ADR-010 §1). It does not resolve the
+  // forced_finish alert (EPIC-004). A confirmed finished admits nothing.
+  if (current !== null && current.status === "finished") {
+    const confirmed = winner === undefined ? null : stateOf(winner.observation);
+    if (
+      current.rule === "RN-02" &&
+      winner !== undefined &&
+      confirmed !== null &&
+      confirmed.status === "finished"
+    )
+      return publish(
+        draft(confirmed, "RN-12", "confirmado", [winner.observation.id]),
+      );
+    if (current.qualifier === "confirmado") return publish(null);
+  }
+
   // 3. RN-05 silencio: nobody has said anything for fifteen minutes, so the
   //    match keeps its state and loses its qualifier.
   if (winner === undefined) {

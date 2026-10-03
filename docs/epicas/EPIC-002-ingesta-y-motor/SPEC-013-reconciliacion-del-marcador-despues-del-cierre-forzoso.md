@@ -2,11 +2,13 @@
 id: SPEC-013
 tipo: spec
 epica: EPIC-002
-estado: aprobada
+estado: en-revision
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-09-29, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-09-29, por: Alberto Fojo}
+  - {estado: en-progreso, fecha: 2026-09-29, por: sdd-implementador}
+  - {estado: en-revision, fecha: 2026-09-29, por: sdd-implementador}
 ---
 # SPEC-013 — Reconciliación del marcador después del cierre forzoso
 
@@ -27,8 +29,9 @@ le falta a EPIC-002 para cerrar con el marcador **correcto**, no solo registrado
 (SPEC-009 N-9).
 
 ## Usuarios / roles afectados
-- Titular: aprueba antes **ADR-010**, y decide **H-1** (corregir los dos partidos
-  de la jornada ya medida) y **H-2** (si CA-5 espera a la jornada del 2026-10-02/04).
+- Titular: aprueba antes **ADR-010**, y decidió **H-1** (se corrigen los dos
+  partidos de la jornada ya medida) y **H-2** (CA-5 espera a la jornada del
+  2026-10-02/04).
 - sdd-verificador: CA-1 a CA-4 y CA-7 se verifican sin campo; **CA-5 es de campo
   y con fecha** (jornada del 2026-10-02/04), y CA-6 es una ejecución única con
   antes y después.
@@ -71,7 +74,7 @@ SPEC-009 CA-5 (el camino `ids=` que CA-6 reutiliza), N-9 y R-SPEC-009-2.
 
 ## Notas para el gate humano
 - **H-1 (DECIDIDO por Alberto Fojo, 2026-09-29: se corrigen). ¿Se corrigen los dos partidos de la jornada ya medida?** **Autorizada la ejecución única de CA-6** sobre `ceuta-real-sociedad-b` y `merida-logrones`, con las condiciones que la propia CA-6 impone y que no son negociables: se pide por `ids=` con el camino de `src/ingest/contraste.ts`, **se guarda el crudo antes de parsear** (RN-09), lo publica el motor y no la mano, y la excepción se escribe en el ledger **con fecha, autorización y el `raw_ref` de las dos capturas**. Es el **último acto de la jornada medida**, no una vía abierta: no se convierte en regla, no se repite, y cualquier otro partido fuera de ventana necesita su propia autorización escrita. Razón de la decisión: es lo único que lleva el contraste a **39 de 39**, y cerrar EPIC-002 diciendo 39 sin hacerlo no sería honesto. El razonamiento de abajo se conserva porque sigue siendo el porqué de la letra. CA-6 lo hace con una ejecución única que **sí** toca las filas de la jornada, fuera de su ventana y fuera de la letra de RN-12. A favor: es lo único que lleva el contraste a 39 de 39, que es la condición que el titular puso el 2026-09-29. En contra: es una excepción, y las excepciones que no se escriben se repiten — por eso CA-6 obliga a escribirla con fecha, autorización y `raw_ref`. **Mi recomendación: hacerlo**, y que quede como el último acto de la jornada, no como una vía abierta. La alternativa honesta, si se rechaza, es cerrar EPIC-002 con **37 de 39** y un residual nombrado que espera al operador de EPIC-004; lo que no es honesto es cerrar diciendo 39.
-- **H-2 (abierto). CA-5 pone esta spec en el reloj de la jornada del 2026-10-02/04.** Tal como está escrita, SPEC-013 no puede llegar a `hecho` antes del lunes 5. Si eso es demasiado para EPIC-002, la alternativa es sacar CA-5 a residual (medir la prórroga en la primera jornada que corra) y cerrar la spec con CA-1 a CA-4, CA-6 y CA-7. **No lo decido yo**: es la misma disyuntiva que SPEC-009 resolvió midiendo, y la lección de esa spec fue que la hipótesis sin medir se paga después. Lo digo para que se elija a la vista, no por descuido.
+- **H-2 (DECIDIDO por Alberto Fojo, 2026-09-29: se espera a medir). CA-5 pone esta spec en el reloj de la jornada del 2026-10-02/04.** **CA-5 se queda como está, de campo**, en la jornada del 2026-10-02/04. La spec se implementa ya (CA-1 a CA-4, CA-6 y CA-7) y queda en **`en-revision` hasta leer CA-5**: no llega a `hecho` antes del lunes 2026-10-05. Razón: la hipótesis sin medir se paga después (lección de SPEC-009). El razonamiento de abajo se conserva porque es el porqué de la letra. Tal como está escrita, SPEC-013 no puede llegar a `hecho` antes del lunes 5. Si eso es demasiado para EPIC-002, la alternativa es sacar CA-5 a residual (medir la prórroga en la primera jornada que corra) y cerrar la spec con CA-1 a CA-4, CA-6 y CA-7. **No lo decido yo**: es la misma disyuntiva que SPEC-009 resolvió midiendo, y la lección de esa spec fue que la hipótesis sin medir se paga después. Lo digo para que se elija a la vista, no por descuido.
 - **N-1 Esta spec va detrás de SPEC-012.** CA-4 (ii) —aceptar un marcador que **baja** tras el cierre— solo es legal con la enmienda de RN-03 ya en `reglas.md`.
 - **N-2 La prórroga es casi gratis, y el porqué importa.** El partido clavado en el 90 **sigue saliendo en la llamada `live=`** que el tick ya hace, así que la prórroga no añade peticiones: añade hasta 30 min de tick despierto por los partidos que la fuente no cierra. CA-7 lo comprueba en vez de suponerlo.
 - **N-3 Esto no existe sin una decisión del gate de SPEC-007.** Que el cierre forzoso **abra siempre alerta** es lo único que hizo visible el patrón: 9 partidos de 39 se habrían cerrado sin que nadie lo supiera. Queda anotado porque es el ejemplo de para qué sirve una alerta que nadie resuelve todavía.
