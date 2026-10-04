@@ -2,11 +2,12 @@
 id: SPEC-016
 tipo: spec
 epica: EPIC-002
-estado: aprobada
+estado: en-progreso
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-04, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-10-04, por: Alberto Fojo}
+  - {estado: en-progreso, fecha: 2026-10-04, por: sdd-implementador}
 ---
 # SPEC-016 — RN-02 por fuente: aplazado y suspendido sin operador
 
