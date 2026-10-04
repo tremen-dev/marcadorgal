@@ -70,17 +70,16 @@ const tuple = (s: MatchState & { qualifier: Qualifier }) =>
 
 // RN-02 as a guard: an illegal transition never publishes, whichever rule
 // would have decided it. The forced finish of RN-02 is evaluated apart (H-3).
+// postponed and suspended come from the winning source like any other
+// transition, and leaving them is one more transition (ADR-012 §1, §3).
 function transitionAllowed(
   from: MatchStatus | null,
   to: MatchStatus,
-  priority: number,
   kickoff: Instant,
   now: Instant,
 ): boolean {
   // Nothing goes back from finished but the operator, handled before this.
   if (from === "finished" && to !== "finished") return false;
-  if (to === "postponed" || to === "suspended")
-    return priority >= FEDERATION_PRIORITY;
   const fresh = from === null || from === "scheduled";
   // A live claimed too far from kickoff is dropped in silence (N-5).
   if (fresh && to === "live")
@@ -104,6 +103,12 @@ const sameScore = (a: MatchState, b: MatchState) =>
   b.score !== null &&
   a.score.home === b.score.home &&
   a.score.away === b.score.away;
+
+// CA-7: a second source agrees when it says the same status and, if that
+// status carries a score, the same score (a postponed has none: ADR-012 §2).
+const agrees = (a: MatchState, b: MatchState) =>
+  a.status === b.status &&
+  ((a.score === null && b.score === null) || sameScore(a, b));
 
 // H-4: two priorities are adjacent when no other source the engine can see
 // carries a priority strictly between them. Equal priority counts.
@@ -220,8 +225,7 @@ export function decide(input: EngineInput): EngineOutput {
     const confirmer = ranked.find(
       (r) =>
         r.observation.sourceId !== candidate.observation.sourceId &&
-        stateOf(r.observation).status === state.status &&
-        sameScore(stateOf(r.observation), state),
+        agrees(stateOf(r.observation), state),
     );
     return confirmer === undefined
       ? draft(state, rule, "provisional", [candidate.observation.id])
@@ -337,7 +341,6 @@ export function decide(input: EngineInput): EngineOutput {
     !transitionAllowed(
       current?.status ?? null,
       proposed.status,
-      winner.priority,
       match.kickoff,
       now,
     )
