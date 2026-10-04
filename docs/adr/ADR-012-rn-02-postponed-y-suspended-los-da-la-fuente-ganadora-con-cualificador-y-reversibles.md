@@ -34,6 +34,13 @@ alerta (ADR-009 §3), así que nadie se entera.
    `suspended`. Se publica por `rule: RN-01` con `settle`: `provisional` con
    una sola fuente no oficial, `confirmado` con federación o con una segunda
    fuente que coincide (SPEC-007 CA-7). Ni migración ni campo nuevo.
+
+   *2026-10-04, sdd-arquitecto, cierra F-SPEC-016-2:* «coincide» es mismo
+   estado y, si lo lleva, mismo marcador. Por eso dos fuentes que dicen
+   `scheduled` salen `confirmado`, no `provisional`. Es la letra de SPEC-007
+   CA-7 («coinciden en `(status, score)`») y la de `dominio.md` (`provisional`
+   = una sola fuente no oficial). El `provisional` anterior venía de
+   `sameScore`, falso sin marcador, y no lo pedía ninguna regla.
 3. **Reversible sin caso especial.** La guarda ya deja salir de `postponed` y de
    `suspended` a `scheduled`, `live` o `finished`. Solo `finished` es
    terminal. Un `PST` erróneo se deshace en el primer tick en que la fuente dé
