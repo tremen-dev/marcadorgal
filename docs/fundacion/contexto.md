@@ -2,7 +2,7 @@
 
 > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.
 > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.
-> Última actualización: 2026-09-29 (SPEC-009 y SPEC-012 hecho; SPEC-013 a falta de CA-5).
+> Última actualización: 2026-10-04 (SPEC-015 y SPEC-016 hecho; SPEC-013 desplegada, a falta de CA-5).
 
 ## Qué es y en qué punto está
 
@@ -30,11 +30,15 @@ jornada completa, en una sola pantalla y en galego. Proyecto de tremen.dev.
 
 **SPEC-012 completa:** la monotonía no sobrevive al cierre (ADR-010 §1) y replay de la jornada aplicado en `dev`: 37 de 39.
 
-**SPEC-013 (en revisión):** RN-12, reconciliación tras el cierre forzoso (ADR-010 §2); corrige los dos últimos partidos → **39 de 39**. Falta CA-5, que se mide con la jornada del 2026-10-02/04 (lectura el 2026-10-05).
+**SPEC-013 (en revisión, desplegada el 2026-10-03):** RN-12, reconciliación tras el cierre forzoso (ADR-010 §2); corrige los dos últimos partidos → **39 de 39**. Falta CA-5, que se mide sobre los cierres forzosos posteriores al despliegue (lectura el 2026-10-05; el sábado 3, 5 de 5 confirmados por RN-12).
+
+**SPEC-016 completa (pendiente de desplegar tras leer CA-5 de SPEC-013):** `postponed` y `suspended` los da la fuente ganadora, `provisional` y deshacibles (ADR-012); antes RN-02 los reservaba a federación u operador y un aplazamiento real (`sabadell-andorra`, 2026-10-03) se quedaba en `scheduled`.
+
+**EPIC-FIX — SPEC-015 completa (salvo CA-5 de campo, 9-12 oct):** el calendario declarado se sincroniza de martes a sábado y las reprogramaciones puras se aplican solas; corrigió las horas de relleno de Segunda J8 y Tercera J5 antes de jugarse.
 
 **SPEC-014 (aprobada, empieza tras fusionar SPEC-013):** RN-03 en vivo por fuente (ADR-011): el marcador lo baja la misma fuente que subió el gol u otra de más peso. La medición de las bajadas en vivo (`_qa/ADR-011/`) mostró que retener publicó ~742 ticks de marcador falso.
 
-EPIC-002 (ingesta y motor) **no cierra hasta que el marcador esté corregido** (N-9): cierra con SPEC-013 y SPEC-014 en `hecho`. PRs apilados: #16 (SPEC-009) → #17 (SPEC-012) → #18 (SPEC-013, borrador).
+EPIC-002 (ingesta y motor) **no cierra hasta que el marcador esté corregido** (N-9): cierra con SPEC-013, SPEC-014 y SPEC-016 en `hecho`. SPEC-017 (EPIC-MANT, mejoras del informe) aprobada, antes del 2026-10-09.
 
 **EPIC-FIX (correcciones urgentes):** SPEC-011 hecho. Arregla dos defectos de la ingesta: sin peticiones `live=` con un solo id de liga, y `ParseResult` gana cuarto canal `requestErrors` para guardar observaciones buenas aun si una petición falla. Entrada prioritaria para fallos que dañan medición en vivo.
 
@@ -92,6 +96,7 @@ de cada fuente la gestiona el titular fuera del repo (D-7).
 - ADR-009 Ejecución del motor: enganche por observaciones, barrido por ausencia, precisiones a RN-02 y RN-04.
 - ADR-010 El cierre manda sobre la monotonía, y reconciliación tras el cierre forzoso (RN-12).
 - ADR-011 RN-03 en vivo: baja la misma fuente que subió el gol u otra de más peso (sustituye la letra en vivo de ADR-010 §1).
+- ADR-012 RN-02: `postponed` y `suspended` los da la fuente ganadora, con cualificador y reversibles.
 
 ## Riesgos y preguntas abiertas
 
