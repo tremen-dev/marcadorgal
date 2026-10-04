@@ -1,9 +1,11 @@
 ---
 id: ADR-012
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-10-04, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-04, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # ADR-012: RN-02: `postponed` y `suspended` los da la fuente ganadora, con cualificador y reversibles
 
