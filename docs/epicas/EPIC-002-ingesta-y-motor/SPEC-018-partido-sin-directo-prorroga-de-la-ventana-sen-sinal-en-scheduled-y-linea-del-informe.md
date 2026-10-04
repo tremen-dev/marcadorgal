@@ -98,6 +98,10 @@ con H-1..H-6 decididas.
   - **SPEC-017** (aprobada, con plazo antes del 2026-10-09): la línea de CA-6 va al lado de su CA-3, y su `ventanaEfectiva` (CA-4) es la que se extiende.
   - **SPEC-014** (aprobada): migración en `decisions`, `isInWindow` por `forcedFinish` y `engine.ts`.
 
-  Orden recomendado: 016 → 017 → 014 → 018. Si el titular prioriza esta spec sobre SPEC-014, la que entre después rebasa `window.ts` y la migración. El choque es pequeño pero real.
-- **N-2 CA-7 pide una petición nueva** en el momento de ejecutar, y no reutiliza el cuerpo de H-5. Con un `observed_at` del 2026-10-04 el motor lo descartaría por viejo (RN-01, 5 min), y forzar el `now` sería escribir a mano. **Para mirar con lupa:** si se autoriza la petición.
+  **Decidido por Alberto Fojo, 2026-10-04: orden 016 → 017 → 014 → 018.** La rama de esta spec sale de `main` cuando SPEC-014 esté fusionada.
+- **N-2 CA-7 pide una petición nueva** en el momento de ejecutar, y no reutiliza el cuerpo de H-5. Con un `observed_at` del 2026-10-04 el motor lo descartaría por viejo (RN-01, 5 min), y forzar el `now` sería escribir a mano. **Autorizado por Alberto Fojo, 2026-10-04:**
+  - Una ejecución única de CA-7 al implementar la spec: una sola petición `ids=` en ese momento.
+  - El crudo se guarda antes de parsear, por el camino de SPEC-013 CA-6.
+  - `decisions` sube exactamente en 2.
+  - Si falla, no hay segunda petición sin una autorización nueva.
 - **N-3** El horizonte de +6 h tiene cota (+206 y +236 en los dos tardíos), no una medida exacta (R-ADR-013-2). CA-8 lo vuelve a medir.
