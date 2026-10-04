@@ -19,7 +19,7 @@ la frase de RN-02: `postponed` y `suspended` los da la fuente ganadora, salen
 `provisional` y se pueden deshacer. Esta spec lo implementa.
 
 ## Usuarios / roles afectados
-- Titular: aprueba antes ADR-012 y responde H-1..H-3.
+- Titular: aprobó ADR-012 y decidió H-1..H-3 en el gate del 2026-10-04: H-1 sí, H-2 no y H-3 sí (ver N-5).
 - sdd-arquitecto: escribe la letra de CA-1 (hook protege-verdad; precedente F-SPEC-013-1).
 - Público (EPIC-003): ve «Aprazado» o «Suspendido» con cualificador `provisional`.
 
@@ -66,3 +66,8 @@ es lo que se ejecuta. ADR-009 §3–§4, ADR-010 y ADR-011 siguen vigentes.
   spec, `sabadell-andorra` sale como discrepancia (`scheduled` frente a
   `postponed`). Es un defecto de regla (c2-ii) y lo explica ADR-012. No es
   un fallo de ingesta.
+- **N-5 (decidido por Alberto Fojo, 2026-10-04).** En el gate aprueba ADR-012
+  y esta spec con las tres recomendaciones del arquitecto:
+  - **H-1 Sí.** `postponed` y `suspended` de una fuente automática se publican `provisional` y se pueden deshacer (CA-2).
+  - **H-2 No.** No hay alerta informativa: ningún CA la pide.
+  - **H-3 Sí.** `sabadell-andorra` se queda en `dev` como está hasta que se reprograme (R-SPEC-016-1).

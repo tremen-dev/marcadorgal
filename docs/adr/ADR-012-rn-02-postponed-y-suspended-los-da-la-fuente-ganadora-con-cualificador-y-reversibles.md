@@ -7,7 +7,7 @@ historial:
 ---
 # ADR-012: RN-02: `postponed` y `suspended` los da la fuente ganadora, con cualificador y reversibles
 
-- Deciders: sdd-arquitecto propone (2026-10-04) a partir del hallazgo de campo del 2026-10-03 que encargó **Alberto Fojo (titular)**. La intención de fondo es suya y ya está escrita en ADR-011: el producto es automático, sin «un operador el 100 % del tiempo vigilando». Aprobación: pendiente (H-1..H-3).
+- Deciders: sdd-arquitecto propone (2026-10-04) a partir del hallazgo de campo del 2026-10-03 que encargó **Alberto Fojo (titular)**. La intención de fondo es suya y ya está escrita en ADR-011: el producto es automático, sin «un operador el 100 % del tiempo vigilando». **Alberto Fojo decide H-1..H-3 en el gate del 2026-10-04**, con las recomendaciones del arquitecto.
 - Specs relacionadas: **SPEC-016** lo implementa. Enmienda **solo la frase de `postponed`/`suspended` de RN-02**; el resto de RN-02, ADR-009 §3 y §4, ADR-010 y ADR-011 siguen vigentes. Evidencia: `docs/epicas/EPIC-002-ingesta-y-motor/_qa/RN-02-postponed/medicion.md`.
 
 ## Contexto
@@ -78,11 +78,10 @@ fuente de federación (EPIC-004), confirma sin reescribir nada.
 - **Publicarlo con una alerta nueva.** Nadie la resuelve hasta
   EPIC-004 y el cualificador ya dice que es de una sola fuente.
 
-## Para el titular
-- **H-1** ¿Se publica `postponed`/`suspended` de una fuente automática sin
-  operador, `provisional` y reversible? Recomendación: sí.
-- **H-2** ¿Abre alerta informativa? Recomendación: no (como ADR-011 H-2).
-- **H-3** `sabadell-andorra` en `dev` (0 Decisions) se queda como está hasta
-  que se reprograme: `replay:jornada --aplicar` solo corrige `finished` y
-  extenderlo no compensa por un partido que aún no es público (EPIC-003).
-  Recomendación: sí. Ver R-SPEC-016-1.
+## Decidido por el titular (Alberto Fojo, 2026-10-04)
+- **H-1 Sí.** Un `postponed` o `suspended` de una fuente automática se
+  publica sin operador, sale `provisional` y se puede deshacer.
+- **H-2 No.** No abre alerta informativa, igual que en ADR-011 H-2.
+- **H-3 Sí.** `sabadell-andorra` se queda en `dev` como está, con 0 Decisions,
+  hasta que se reprograme. `replay:jornada --aplicar` no se extiende, porque
+  solo corrige partidos `finished`. Ver R-SPEC-016-1.
