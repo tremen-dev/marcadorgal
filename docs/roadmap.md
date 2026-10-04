@@ -35,6 +35,12 @@ tipo: roadmap
   no dio en directo 4 de 9 partidos de Tercera; la cobertura se degrada con la
   categoría. Operador o segunda fuente son las dos salidas: es el argumento
   para no retrasar esta épica tras EPIC-003. Decidir el orden al cerrar EPIC-002.
+  Recontado el 2026-10-04 (`EPIC-002/_qa/fuente-sin-directo/medicion.md`):
+  descontado el calendario mal declarado, la fuente no dio en directo 2 de 9
+  partidos de Tercera en J4 y 4 de 8 en J5, y 1 de 9 de Segunda RFEF en cada
+  jornada; Primera RFEF y Segunda, ninguno. ADR-013 / SPEC-018 traen el
+  resultado final sin operador; el directo sigue necesitando operador o
+  segunda fuente.
 
 ## Hecho
 
