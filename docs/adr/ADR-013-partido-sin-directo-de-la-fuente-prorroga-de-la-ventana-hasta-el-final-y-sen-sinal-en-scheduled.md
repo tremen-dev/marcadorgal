@@ -1,9 +1,11 @@
 ---
 id: ADR-013
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-10-04, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-04, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # ADR-013: Partido sin directo de la fuente: prórroga de la ventana hasta el final y `sen_sinal` en `scheduled`
 
