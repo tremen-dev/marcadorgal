@@ -7,7 +7,7 @@ historial:
 ---
 # ADR-013: Partido sin directo de la fuente: prórroga de la ventana hasta el final y `sen_sinal` en `scheduled`
 
-- Deciders: sdd-arquitecto propone (2026-10-04) a partir del hallazgo de campo del mismo día que encargó **Alberto Fojo (titular)**, con la intención de ADR-011: automático, sin operador vigilando. **Decide Alberto Fojo, H-1..H-6.**
+- Deciders: sdd-arquitecto propone (2026-10-04) a partir del hallazgo de campo del mismo día que encargó **Alberto Fojo (titular)**, con la intención de ADR-011: automático, sin operador vigilando. **Alberto Fojo decide H-1..H-6 en el gate del 2026-10-04, con las recomendaciones del arquitecto.**
 - Specs relacionadas: la implementa una **SPEC-018** que se escribe tras el gate. Toca la definición de **Ventana** (`dominio.md`, ADR-002 §2), **RN-05** y el modelo (`sen_sinal` solo en `live`). No toca RN-02, ADR-010 ni ADR-012. Evidencia: `docs/epicas/EPIC-002-ingesta-y-motor/_qa/fuente-sin-directo/medicion.md`.
 
 ## Contexto
@@ -20,7 +20,7 @@ después de +150, o no lo han dado: la ventana se cerró y `board` los muestra
 «por jugar» para siempre. Ninguno abre alerta. En los 8, mientras se jugaba,
 `board` dijo `scheduled`. ADR-012 no aplica: no hay `PST`.
 
-## Decisión (propuesta)
+## Decisión
 
 1. **Prórroga sin directo.** Un partido cuya Decision vigente a kickoff + 150
    sigue `scheduled` se queda en ventana hasta que la fuente dé `finished`,
@@ -57,8 +57,8 @@ peticiones por prórroga completa (3,5 h a una cada 5 min), y los rezagados de
 la misma hora van en un solo `ids=`.
 
 ### Negativas / follow-ups
-- **El horizonte de +6 h es una hipótesis**: no se sabe cuándo publica el
-  proveedor el `FT` tardío (R-ADR-013-2, H-5).
+- **El horizonte de +6 h tiene cota, no medida exacta**: los dos tardíos
+  publicaron el `FT` antes de +206 y +236 (H-5). R-ADR-013-2 sigue abierto.
 - **Cadencia por partido**: hoy la cadencia es de la fuente (RN-08,
   `minIntervalSeconds`). La prórroga añade un paso más lento dentro del mismo
   límite. Se decide en SPEC-018.
@@ -85,17 +85,21 @@ la misma hora van en un solo `ids=`.
 - **Cerrar a +150 con `finished` sin marcador.** Rechazada: inventa un estado
   que ninguna fuente dio.
 
-## Para el titular (H-n, con recomendación)
-- **H-1** ¿Prórroga hasta kickoff + 6 h? Recomendado: sí. La alternativa es
-  hasta las 23:59 locales del día.
-- **H-2** ¿Sondeo cada 5 min en la prórroga? Recomendado: sí. Con 30 s serían
-  unas 420 peticiones por partido.
-- **H-3** ¿`sen_sinal` en `scheduled` o un cualificador nuevo (`sen_directo`)?
-  Recomendado: reutilizar `sen_sinal`, sin vocabulario nuevo.
-- **H-4** ¿Sin alerta para `scheduled · sen_sinal`? Recomendado: sin alerta,
-  como ADR-012 H-2.
-- **H-5** ¿Autorizas **una** petición `ids=1572068-1612741` para medir R-ADR-013-2
-  antes de fijar H-1? Recomendado: sí, 1 de 7.500/día.
-- **H-6** ¿Se quedan los dos de `dev` como están, igual que ADR-012 H-3?
-  Recomendado: sí. Si H-5 trae su `FT`, SPEC-018 puede reconciliarlos, guardando
-  primero el crudo.
+## Decidido por el titular (Alberto Fojo, 2026-10-04)
+- **H-1 Sí.** Prórroga hasta kickoff + 6 h.
+- **H-2 Sí.** En la prórroga se consulta cada 5 min.
+- **H-3 Reutilizar `sen_sinal`.** Sin vocabulario nuevo.
+- **H-4 Sin alerta** para `scheduled · sen_sinal`.
+- **H-5 Autorizada una sola petición**, hecha a las 18:56:20Z. El cuerpo se
+  guardó antes de leerlo, sin cabeceras ni clave:
+  `_qa/fuente-sin-directo/h5-2026-10-04T18-56-20.580Z.json`. **El proveedor
+  ya tiene el final de los dos**: `1572068 Bergantiños 3-1 Coruxo` y
+  `1612741 Barco 1-0 Pontevedra II`, los dos `FT`. La hora de publicación no
+  viene en el crudo (`periods` son las horas nominales de cada parte), así que
+  queda acotada: entre el cierre de la ventana y la petición, es decir entre
+  **+150 y +236** (Bergantiños) y entre **+150 y +206** (Barco). Los 8 casos
+  caben en +6 h, con más de 2 h de margen. El horizonte se mantiene y se
+  revisa con lo que mida SPEC-018 (R-ADR-013-2 sigue abierto en su cota
+  superior).
+- **H-6 Sí.** Los dos se quedan en `dev` como están hasta SPEC-018, que los
+  reconcilia una sola vez guardando antes el crudo (R-ADR-013-1).

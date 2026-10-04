@@ -76,5 +76,7 @@ Crudos citados (`raw/api-football/2026-10-04/…`, se purgan el **2026-11-03**):
   Dueño: ADR-013 (H-6). No se corrige a mano.
 - **R-ADR-013-2** — cuándo publica el proveedor el `FT` de un partido sin
   directo pasado +150: sin medir (H-5). Fija el horizonte de la prórroga (H-1).
+  *H-5, 2026-10-04 18:56:20Z, una petición autorizada* (`h5-2026-10-04T18-56-20.580Z.json`):
+  `FT 3-1` y `FT 1-0`; publicados antes de +236 y +206. Sigue abierto en su cota.
 - **R-SPEC-009-3** (EPIC-004, de producto): recuento nuevo arriba; lo actualiza
   sdd-producto en `docs/roadmap.md`.
