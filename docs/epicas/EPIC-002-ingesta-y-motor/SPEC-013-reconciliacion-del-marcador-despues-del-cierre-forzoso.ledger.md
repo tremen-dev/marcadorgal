@@ -19,7 +19,7 @@ epica: EPIC-002
 | CA-2 | `supabase/migrations/20260929081827_rn12_decision_rule.sql` · `src/model/vocab.ts` · 0078427 | `src/ingest/engine.db.test.ts` › «SPEC-013 CA-2» (inserta RN-12; RN-99 → 23514) · `src/model/model.test.ts` › DecisionRule; rojo antes de la migración | migración leída (solo `decisions_rule_check`); en `dev`: `20260929081827` en `schema_migrations`, check con `RN-12` (`pg_get_constraintdef`), `db:push` «up to date»; tests en `test:db` 79/79 | ✅ |
 | CA-3 | `src/ingest/window.ts` (`rule` en `WindowInput`) · `src/ingest/db.ts` (`windowMatches` lee `decisions.rule` por `board.decision_id`) · ada3052 | `src/ingest/window.test.ts` › «SPEC-013 CA-3» (i)–(iv); `src/ingest/db.db.test.ts` › «at +125, a finished by …» (RN-02 dentro; RN-01, RN-12 fuera), rojo sin el cambio | `window.ts:28` `finished && rule !== "RN-02"` → fuera; tests (i)–(iv) y `db.db.test` (3 casos) verdes; `now` sigue por parámetro | ✅ |
 | CA-4 | `src/decide/engine.ts` (bloque RN-12 antes de RN-05) · 15bfda2 | `src/decide/engine.test.ts` › «SPEC-013 CA-4» (i)–(v) + mismo marcador; rojo 4/6 antes · `src/ingest/engine.db.test.ts` › «SPEC-013 CA-4 RN-12 through the database» | bloque RN-12 en `engine.ts:292-304` tras RN-02 y antes de RN-05; tests (i)–(v) con aserciones concretas + `engine.db.test` verdes | ✅ |
-| CA-5 | Lectura preparada abajo («CA-5: lectura para el 2026-10-05») | Pendiente de campo (H-2), jornada 2026-10-02/04 | no juzgado (H-2): de campo, jornada 2026-10-02/04 | 🚧 |
+| CA-5 | Lectura preparada abajo («CA-5: lectura para el 2026-10-05») | Pendiente de campo (H-2), jornada 2026-10-02/04 | 2026-10-06, solo lectura en `dev`, por partido, `forced_finish` abiertas tras el despliegue (2026-10-03T12:35:54Z): **8 de 8** con RN-12 en ≤ 30 min, **mediana 263 s**, **máximo 1186 s** (abajo, «CA-5: medido») | ✅ |
 | CA-6 | `src/ingest/reconciliacion.ts` · `tools/reconciliar-cierre.mjs` · script `reconciliar:cierre` · 568b2d0, 0a8df89 | `src/ingest/reconciliacion.test.ts` (6) · `src/ingest/reconciliacion.db.test.ts` (1, rollback, +1 Decision RN-12) · ejecución real: 3.er intento, `decisions` +2 RN-12 (3-1, 3-5), contraste 39/39 (abajo; F-SPEC-013-2 cerrado) | solo lectura en `dev`: v108 `finished` 3-1 y 3-5 `confirmado` RN-12, `observation_ids` → `raw_ref` `…09-11-36.152Z-SPEC-013-CA-6-{1569939,1570756}` (3.er intento); `decisions` RN-12 = 2; las 2 `forced_finish` abiertas; 7 Decisions desde 2026-09-28T21:00Z = las 7 discrepancias del informe, todas iguales al proveedor → 39/39 `finished`, sin peticiones. Salvedad: tres ejecuciones, no una (autorizadas por el titular); ensayo en seco no ejecutado por el verificador (permiso denegado), negativa comprobada por código (`plan()` antes de capturar) + test «never asks anything…» + board en RN-12 | ⚠️ |
 | CA-7 | Una migración; `package.json` solo `reconciliar:cierre`; lock sin cambios | `npm run gates` exit 0 (50 ficheros, 745 tests), también sin env; `npm run test:db` exit 0 (10, 79). Presupuesto de la jornada: pendiente de campo con CA-5 | `npm run gates` exit 0 (50 ficheros, 745 tests); `npm run test:db` exit 0 (10, 79), filas antes = después (3358/9345/17/2766); 1 migración; `package.json` solo el script; lock sin cambios. Presupuesto: pendiente de campo con CA-5 | 🚧 |
 
@@ -52,6 +52,26 @@ select count(*) as cierres_forzosos, count(rn12_at) as con_rn12_en_30min,
   max(extract(epoch from rn12_at - opened_at)) as max_s
 from rec;
 ```
+
+## CA-5: medido (verificador, 2026-10-06, solo lectura)
+
+Consulta de arriba con tres cambios: agrupada **por partido** (`min(opened_at)` por `match_id`, M-9), `:desde` = despliegue **2026-10-03T12:35:54Z**, `:hasta` = 2026-10-06, y `decisions` acotadas a `decided_at between '2026-10-02' and '2026-10-06'`. Transacción `read only`, `statement_timeout 30s`. `postgres(url, {max: 1, connect_timeout: 10})`, script local no versionado.
+
+| Partido | `forced_finish` abierta | RN-12 | Retraso |
+|---|---|---|---|
+| tercera-rfef-g1 j5 alondras-montaneros | 10-03 16:30:07Z | 16:31:26Z | 79 s |
+| primera-rfef-g1 j6 racing-ferrol-pontevedra | 10-03 16:30:07Z | 16:30:56Z | 49 s |
+| primera-rfef-g1 j6 real-union-ud-ourense | 10-03 16:30:07Z | 16:34:27Z | 260 s |
+| primera-rfef-g1 j6 barakaldo-arenas | 10-03 16:30:07Z | 16:35:57Z | 349 s |
+| primera-rfef-g1 j6 unionistas-cultural-leonesa | 10-03 18:45:05Z | 18:47:04Z | 119 s |
+| segunda j8 sporting-celta-fortuna | 10-04 16:15:07Z | 16:24:46Z | 579 s |
+| tercera-rfef-g1 j5 estradense-boiro | 10-04 18:00:07Z | 18:19:53Z | 1186 s |
+| segunda j8 cordoba-tenerife | 10-05 20:30:04Z | 20:34:31Z | 267 s |
+
+- **Resultado: 8 partidos con cierre forzoso, 8 con RN-12 en ≤ 30 min; mediana 263 s; máximo 1186 s (19 min 46 s).** Una fila de alerta por partido (8 filas = 8 partidos). RN-12 en el rango: 8 Decisions en 8 partidos, todas dentro de su media hora; ninguna fuera.
+- Antes del despliegue (2026-10-02 → 12:35:54Z) hubo 1 `forced_finish`, que no cuenta.
+- La medición provisional del orquestador decía 7: la diferencia es `cordoba-tenerife` (lunes 5, 20:30Z).
+- Lectura: la prórroga de 30 min basta en esta jornada; **no** procede subir `WINDOW_AFTER_MINUTES`. Salvedad de muestra: 8 casos y un máximo a 66 % del margen; se propone repetir esta misma lectura con la jornada 2026-10-09/12 como seguimiento (F-SPEC-013-6), no como condición.
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
