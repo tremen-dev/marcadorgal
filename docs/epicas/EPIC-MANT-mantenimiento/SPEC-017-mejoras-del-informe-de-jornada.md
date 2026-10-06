@@ -2,11 +2,12 @@
 id: SPEC-017
 tipo: spec
 epica: EPIC-MANT
-estado: aprobada
+estado: en-progreso
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-09-29, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-09-29, por: Alberto Fojo}
+  - {estado: en-progreso, fecha: 2026-10-06, por: sdd-implementador}
 ---
 # SPEC-017 — Mejoras del informe de jornada
 
