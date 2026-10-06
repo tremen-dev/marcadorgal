@@ -81,6 +81,19 @@ describe("CA-8 dictionaries", () => {
   });
 });
 
+describe("SPEC-019 CA-6 Xornada keys", () => {
+  it("has the Xornada texts in both locales", () => {
+    expect(t("gl", "xornada.liveCount", { n: 2 })).toBe("2 en xogo");
+    expect(t("es", "xornada.liveCount", { n: 2 })).toBe("2 en juego");
+    expect(t("gl", "xornada.title")).toBe("Xornada");
+    expect(t("es", "xornada.title")).toBe("Jornada");
+    expect(t("gl", "xornada.locale")).toBe("Lingua");
+    expect(t("es", "xornada.locale")).toBe("Idioma");
+    expect(gl.locales).toEqual({ gl: "gl", es: "es" });
+    expect(es.locales).toEqual(gl.locales);
+  });
+});
+
 describe("CA-9 domain literals", () => {
   it("gl.status equals the five literals of dominio.md, in order", () => {
     const md = readFileSync("docs/fundacion/dominio.md", "utf8");
