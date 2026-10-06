@@ -2,7 +2,7 @@
 id: SPEC-018
 tipo: spec
 epica: EPIC-002
-estado: en-revision
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-04, por: sdd-arquitecto}
@@ -11,6 +11,7 @@ historial:
   - {estado: en-revision, fecha: 2026-10-06, por: sdd-implementador}
   - {estado: en-progreso, fecha: 2026-10-06, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-10-06, por: sdd-implementador}
+  - {estado: hecho, fecha: 2026-10-06, por: sdd-verificador}
 ---
 # SPEC-018 — Partido sin directo: prórroga de la ventana, `sen_sinal` en `scheduled` y línea del informe
 
