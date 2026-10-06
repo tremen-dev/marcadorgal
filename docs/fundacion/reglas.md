@@ -29,9 +29,11 @@
 - **RN-04 — Conflicto.** Si dos fuentes de prioridad igual o adyacente
   discrepan en el marcador durante más de 3 minutos, se mantiene la Decision
   vigente y se abre una Alert. El conflicto nunca se publica.
-- **RN-05 — Silencio.** Un partido `live` sin observación nueva de ninguna
-  fuente en 15 minutos pasa a cualificador `sen_sinal` y abre una Alert. Al
-  llegar una observación nueva, vuelve a su cualificador normal.
+- **RN-05 — Silencio.** Un partido `live` sin observación nueva en 15 minutos,
+  o `scheduled` con kickoff pasado hace 15 minutos sin que ninguna fuente lo
+  dé en juego, pasa a cualificador `sen_sinal`. En `live` abre una Alert; en
+  `scheduled`, no.
+  *Enmendada el 2026-10-06 por ADR-013.*
 - **RN-06 — Trazabilidad.** Toda Decision registra la regla decisiva y los ids
   de las observaciones que la sostienen. Orden de decisión: operador > RN-03 >
   RN-05 > RN-02 > RN-12 > RN-01.
