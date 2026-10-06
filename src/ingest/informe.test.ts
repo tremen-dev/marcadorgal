@@ -2204,3 +2204,112 @@ describe("SPEC-017 CA-1/CA-2 el origen del contraste", () => {
     );
   });
 });
+
+// SPEC-017 CA-3. Un partido que la fuente nunca mostró en juego: pasa de
+// `scheduled` a `finished` con cientos de observaciones, cero `live` y ningún
+// hueco (hallazgo 1 de _qa/SPEC-009/hallazgos-jornada.md). Una línea en el
+// bloque 6, informativa: no entra en el veredicto.
+describe("SPEC-017 CA-3 partidos sin directo", () => {
+  const SIN = "sin ninguna observación en juego:";
+  const linea = (texto: string) =>
+    texto.split("\n").find((l) => l.startsWith(SIN));
+  const programadas = (matchId: string, n: number): ObsLike[] =>
+    Array.from({ length: n }, (_, i) =>
+      obs({
+        id: `${matchId}-s${i}`,
+        matchId,
+        observedAt: seg(i * 30),
+        status: "scheduled",
+        score: null,
+      }),
+    );
+
+  it("SPEC-017 CA-3 (i) 270 scheduled y cierre finished: listado", () => {
+    const { texto, informe } = informeJornada(
+      vacio({
+        matches: [partido()],
+        observations: [
+          ...programadas(MATCH, 269),
+          obs({
+            id: "fin",
+            observedAt: seg(269 * 30),
+            status: "finished",
+            score: { home: 1, away: 0 },
+          }),
+        ],
+      }),
+    );
+    expect(informe.sinSenal.sinDirecto).toEqual([
+      { matchId: MATCH, competicion: "Segunda División" },
+    ]);
+    expect(linea(texto)).toBe(`${SIN} 1 — ${MATCH}`);
+  });
+
+  it("SPEC-017 CA-3 (ii) con una observación live: no", () => {
+    const { texto, informe } = informeJornada(
+      vacio({
+        matches: [partido()],
+        observations: [
+          ...programadas(MATCH, 10),
+          obs({ id: "vivo", observedAt: seg(400) }),
+        ],
+      }),
+    );
+    expect(informe.sinSenal.sinDirecto).toEqual([]);
+    expect(linea(texto)).toBe(`${SIN} 0`);
+  });
+
+  it("SPEC-017 CA-3 (iii) cero observaciones: solo en «sin ninguna observación»", () => {
+    const { informe } = informeJornada(vacio({ matches: [partido()] }));
+    expect(informe.sinSenal.sinObservaciones).toHaveLength(1);
+    expect(informe.sinSenal.sinDirecto).toEqual([]);
+  });
+
+  it("SPEC-017 CA-3 (iv) postponed: no", () => {
+    const { informe } = informeJornada(
+      vacio({
+        matches: [partido({ status: "postponed", score: null })],
+        observations: programadas(MATCH, 10),
+      }),
+    );
+    expect(informe.sinSenal.sinDirecto).toEqual([]);
+  });
+
+  it("SPEC-017 CA-3 (v) el veredicto es idéntico con y sin él", () => {
+    const contraste = [
+      {
+        matchId: MATCH,
+        proveedor: { status: "finished" as const, score: { home: 1, away: 0 } },
+      },
+    ];
+    const attempts = Array.from({ length: 300 }, (_, i) => ({
+      startedAt: seg(i * 30),
+      sourceId: "api-football",
+      ok: true as boolean | null,
+      error: null,
+      requests: 1,
+    }));
+    const con = informeJornada(
+      vacio({
+        matches: [partido()],
+        observations: programadas(MATCH, 200),
+        attempts,
+        contraste,
+      }),
+    );
+    const sin = informeJornada(
+      vacio({
+        matches: [partido()],
+        observations: [
+          ...programadas(MATCH, 199),
+          obs({ id: "vivo", observedAt: seg(199 * 30) }),
+        ],
+        attempts,
+        contraste,
+      }),
+    );
+    expect(con.informe.sinSenal.sinDirecto).toHaveLength(1);
+    expect(sin.informe.sinSenal.sinDirecto).toHaveLength(0);
+    expect(con.informe.veredicto).toEqual(sin.informe.veredicto);
+  });
+});

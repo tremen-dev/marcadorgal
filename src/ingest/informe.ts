@@ -206,6 +206,9 @@ export type Informe = {
       competicion: string;
       ms: number;
     }[];
+    // SPEC-017 CA-3: finished, observed in the window and never once `live`:
+    // the source never showed it in play. Informative, not in the verdict.
+    sinDirecto: readonly { matchId: string; competicion: string }[];
   };
   alertas: {
     porKind: readonly { kind: string; count: number }[];
@@ -1024,6 +1027,20 @@ export function informeJornada(input: InformeInput): {
       ms: cad.mayorPorPartido.get(m.id) ?? 0,
     }))
     .filter((m) => m.ms > SILENCE_MINUTES * MINUTE_MS);
+  // SPEC-017 CA-3 (R-SPEC-009-4): a match that went from `scheduled` to
+  // `finished` with no `live` in between leaves no gap and no silence, so
+  // neither of the two lists above names it.
+  const conDirecto = new Set(
+    input.observations.filter((o) => o.status === "live").map((o) => o.matchId),
+  );
+  const sinDirecto = input.matches
+    .filter(
+      (m) =>
+        m.status === "finished" &&
+        conObservaciones.has(m.id) &&
+        !conDirecto.has(m.id),
+    )
+    .map((m) => ({ matchId: m.id, competicion: m.competitionName }));
   push(
     "",
     BLOQUES[5],
@@ -1048,6 +1065,9 @@ export function informeJornada(input: InformeInput): {
             `  ${m.matchId} · ${m.competicion} · hueco mayor: ${segundos(m.ms)}`,
         ),
       ),
+      `sin ninguna observación en juego: ${sinDirecto.length}${enLinea(
+        sinDirecto.map((m) => m.matchId),
+      )}`,
     );
 
   // ---- 7. Alertas -------------------------------------------------------
@@ -1333,7 +1353,7 @@ export function informeJornada(input: InformeInput): {
       picoPorMinuto:
         pico === null ? null : { minuto: pico.dia, total: pico.total },
     },
-    sinSenal: { sinObservaciones, conHuecoLargo },
+    sinSenal: { sinObservaciones, conHuecoLargo, sinDirecto },
     alertas: { porKind, filas: abiertas, inesperadas },
     contraste,
     veredicto,
