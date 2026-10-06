@@ -1,0 +1,260 @@
+/* Xornada, mobile wide row (docs/diseno/Movil.tpl.html, ADR-005).
+   Colours and families only through tokens.css; never the font shorthand. */
+
+.page {
+  min-height: 100dvh;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.bar {
+  height: var(--bar-mobile-header);
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: 0 14px;
+  border-bottom: var(--hairline) solid var(--line);
+}
+
+.logo {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: var(--tracking-display);
+  font-synthesis: none;
+  color: var(--fg);
+}
+
+.mark {
+  color: var(--marca);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.locales {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.locale {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target);
+  padding: 0 var(--space-8);
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--fg-dim);
+}
+
+.locale:hover {
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.localeCurrent {
+  composes: locale;
+  color: var(--marca);
+  background: color-mix(in srgb, var(--marca) 12%, transparent);
+}
+
+.localeDot {
+  color: var(--fg-dim);
+  opacity: 0.45;
+}
+
+.competitions {
+  margin: 0;
+  padding: 0;
+}
+
+.competition {
+  margin: 0;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-8) 14px;
+  background: var(--bg-elev);
+  border-top: var(--hairline) solid var(--line);
+  border-bottom: var(--hairline) solid var(--line);
+}
+
+/* D-2: the competition name wraps; it is never truncated. */
+.competitionName {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 1.2;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--marca);
+  overflow-wrap: break-word;
+}
+
+.livePill {
+  flex: none;
+  padding: 2px 6px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--directo) 14%, transparent);
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 9px;
+  line-height: 1.2;
+  color: var(--directo);
+}
+
+.rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Margin · (team, score) × 2. The design's 50px margin grows to 72px because
+   the status is a word (ADR-005 exc. 1); the star column is out of v1. Each
+   team shares a grid line with its score, so a wrapped name keeps them level. */
+.row {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  align-items: center;
+  gap: 6px;
+  min-height: 48px;
+  padding: 7px 14px;
+  border-bottom: var(--hairline) solid var(--line-row);
+}
+
+.live {
+  background: var(--bg-live);
+  box-shadow: var(--live-edge) var(--directo);
+}
+
+.noSignal {
+  box-shadow: var(--live-edge) var(--alerta);
+}
+
+.margin {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.marginMain {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 1.2;
+  letter-spacing: 0.03em;
+  color: var(--fg-muted);
+}
+
+.marginMinute {
+  font-size: 12px;
+}
+
+.dot {
+  flex: none;
+  width: var(--live-dot-size);
+  height: var(--live-dot-size);
+  border-radius: 50%;
+  background: var(--directo);
+  box-shadow: var(--live-dot-glow) var(--directo);
+}
+
+.ember {
+  color: var(--directo);
+}
+
+.amber {
+  color: var(--amber);
+}
+
+.red {
+  color: var(--alerta);
+}
+
+.qualifier {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+.sides {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 30px;
+  align-items: baseline;
+  gap: 3px 6px;
+  min-width: 0;
+}
+
+/* D-2: team names wrap; they are never truncated. */
+.team {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.25;
+  letter-spacing: var(--tracking-team);
+  color: var(--fg);
+  overflow-wrap: break-word;
+}
+
+.winner {
+  font-weight: 600;
+}
+
+.loser {
+  color: var(--fg-muted);
+}
+
+.dim {
+  color: var(--fg-muted);
+}
+
+.score {
+  text-align: right;
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg);
+}
+
+.scoreEmpty {
+  color: var(--fg-dim);
+}
+
+.scoreNoSignal {
+  color: var(--alerta);
+  text-decoration: underline dashed var(--alerta);
+  text-underline-offset: 3px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
