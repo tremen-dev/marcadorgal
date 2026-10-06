@@ -407,3 +407,83 @@ describe("SPEC-014 CA-2 CA-8 owners and mark through the database", () => {
       expect(rows.map((r) => r.rule)).not.toContain("RN-12");
     }));
 });
+
+// SPEC-018 CA-5: a scheduled · sen_sinal goes to the database and back. The
+// engine writes it at +20 (RN-05 in scheduled, no alert), reads it back as
+// the current Decision and writes nothing more with a later scheduled
+// observation; the check still rejects sen_sinal in finished.
+describe("SPEC-018 CA-5 scheduled · sen_sinal round trip", () => {
+  const observeScheduled = async (
+    tx: TransactionSql,
+    matchId: string,
+    observedAt: Instant,
+  ) => {
+    const [row] = await tx<{ id: string }[]>`
+      insert into observations (match_id, source_id, status, observed_at,
+        received_at, raw_ref)
+      values (${matchId}, 'api-football', 'scheduled', ${observedAt},
+        ${observedAt}, 'raw/2026-09-25/api-football/x.json.gz')
+      returning id`;
+    return row.id;
+  };
+
+  it("writes it, reads it back and does not blink", () =>
+    rollback(async (tx) => {
+      const matchId = await seedMatch(tx);
+      const tick = engineTx(tx);
+      const first = await observeScheduled(tx, matchId, at(-5));
+      await decideMatches(tick, [matchId], at(-5), SOURCES);
+      await observeScheduled(tx, matchId, at(19));
+      expect(await decideMatches(tick, [matchId], at(20), SOURCES)).toEqual({
+        matches: 1,
+        decisions: 1,
+        alerts: 0,
+        resolved: 0,
+      });
+      const rows = await decisions(tx, matchId);
+      expect(rows.map((r) => [r.status, r.qualifier, r.rule])).toEqual([
+        ["scheduled", "provisional", "RN-01"],
+        ["scheduled", "sen_sinal", "RN-05"],
+      ]);
+      expect(rows[1].observation_ids).toEqual([first]);
+      expect(rows[1]).toMatchObject({ forced_finish: false });
+      const [board] = await tx`select status, qualifier from board
+        where match_id = ${matchId}`;
+      expect(board).toMatchObject({
+        status: "scheduled",
+        qualifier: "sen_sinal",
+      });
+
+      await observeScheduled(tx, matchId, at(59));
+      expect(await decideMatches(tick, [matchId], at(60), SOURCES)).toEqual({
+        matches: 1,
+        decisions: 0,
+        alerts: 0,
+        resolved: 0,
+      });
+      expect(await alerts(tx, matchId)).toEqual([]);
+    }));
+
+  it("still rejects sen_sinal in finished, postponed and suspended", async () => {
+    for (const [status, score] of [
+      ["finished", 1],
+      ["postponed", null],
+      ["suspended", 1],
+    ] as const) {
+      let code: string | undefined;
+      await rollback(async (tx) => {
+        const matchId = await seedMatch(tx);
+        const o = await observeScheduled(tx, matchId, at(0));
+        code = await pgCode(
+          tx.savepoint(
+            (sp) => sp`insert into decisions (match_id, status, home_score,
+              away_score, qualifier, rule, observation_ids, decided_at)
+            values (${matchId}, ${status}, ${score}, ${score}, 'sen_sinal',
+              'RN-05', ${[o]}, ${at(20)})`,
+          ),
+        );
+      });
+      expect(code).toBe("23514");
+    }
+  });
+});

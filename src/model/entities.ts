@@ -86,10 +86,19 @@ export const Decision = MatchState.and(
     // the column existed. null reads as "not a forced finish".
     forcedFinish: z.boolean().nullable().default(null),
   }),
-).refine((d) => d.qualifier !== "sen_sinal" || d.status === "live", {
-  message: "sen_sinal only applies to live matches",
-  path: ["qualifier"],
-});
+  // sen_sinal: in live, or in scheduled with the kickoff past (RN-05, ADR-013
+  // §2, SPEC-018 CA-5). The kickoff is the match's, so only the status is
+  // checked here; decisions_sen_sinal_check says the same.
+).refine(
+  (d) =>
+    d.qualifier !== "sen_sinal" ||
+    d.status === "live" ||
+    d.status === "scheduled",
+  {
+    message: "sen_sinal only applies to live or scheduled matches",
+    path: ["qualifier"],
+  },
+);
 export type Decision = z.infer<typeof Decision>;
 
 export const Alert = z
