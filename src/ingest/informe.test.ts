@@ -2313,3 +2313,74 @@ describe("SPEC-017 CA-3 partidos sin directo", () => {
     expect(con.informe.veredicto).toEqual(sin.informe.veredicto);
   });
 });
+
+// SPEC-017 CA-4 (F-SPEC-013-4). Un `finished` forzado por RN-02 deja el
+// partido en ventana hasta kickoff + WINDOW_AFTER_MINUTES (isInWindow,
+// SPEC-013 CA-3): esos ticks son cobertura, no «tras el cierre». Cualquier
+// otro `finished` vigente cierra en su decided_at, como hasta ahora.
+describe("SPEC-017 CA-4 la prórroga del cierre forzoso es cobertura", () => {
+  const K = 10;
+  // Un tick cada 30 s desde kickoff − 10 hasta kickoff + 150, como el tick
+  // muestrea mientras isInWindow diga que sí.
+  const ticks = () => {
+    const out: InformeAttemptLike[] = [];
+    for (
+      let ms = Date.parse(at(K - 10));
+      ms < Date.parse(at(K + 150));
+      ms += 30 * SEC
+    )
+      out.push({
+        startedAt: new Date(ms).toISOString() as Instant,
+        sourceId: "api-football",
+        ok: true,
+        error: null,
+        requests: 1,
+      });
+    return out;
+  };
+  const tras = (texto: string) =>
+    texto
+      .split("\n")
+      .find((l) => l.startsWith("intentos dentro de la ventana de ADR-002 §2"));
+  const corre = (rule: string, cierre: number) =>
+    informeJornada(
+      vacio({
+        matches: [partido({ kickoff: at(K), decidedAt: at(K + cierre), rule })],
+        observations: [obs({ observedAt: at(K) })],
+        attempts: ticks(),
+      }),
+    );
+
+  it("SPEC-017 CA-4 (i) RN-02 a +120 con ticks hasta +150: cobertura 100 % y tras el cierre 0", () => {
+    const { texto, informe } = corre("RN-02", 120);
+    expect(informe.cobertura.ticksEsperados).toBe(160 * 2);
+    expect(informe.cobertura.ticksReales).toBe(160 * 2);
+    expect(informe.cobertura.porcentaje).toBe(1);
+    expect(tras(texto)).toMatch(/: 0$/);
+  });
+
+  it("SPEC-017 CA-4 (ii) RN-02 y luego RN-12 a +135: la ventana cierra a +135", () => {
+    const { texto, informe } = corre("RN-12", 135);
+    expect(informe.cobertura.ticksEsperados).toBe(145 * 2);
+    expect(informe.cobertura.porcentaje).toBe(1);
+    expect(tras(texto)).toMatch(/: 30$/);
+  });
+
+  it("SPEC-017 CA-4 (iii) RN-01 a +105: sin cambio", () => {
+    const { texto, informe } = corre("RN-01", 105);
+    expect(informe.cobertura.ticksEsperados).toBe(115 * 2);
+    expect(informe.cobertura.porcentaje).toBe(1);
+    expect(tras(texto)).toMatch(/: 90$/);
+  });
+
+  it("SPEC-017 CA-4 las dos líneas del bloque 1 lo dicen, sin crecer", () => {
+    const { texto } = corre("RN-02", 120);
+    const lineas = texto.split("\n");
+    const i = lineas.findIndex((l) =>
+      l.startsWith("  cobertura sobre la ventana efectiva de cada partido"),
+    );
+    expect(lineas[i + 1]).toContain("RN-02");
+    expect(lineas[i + 1]).toContain("kickoff + 150 min");
+    expect(lineas[i + 2]).toMatch(/^intentos dentro de la ventana/);
+  });
+});

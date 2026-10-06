@@ -375,3 +375,29 @@ describe("SPEC-017 CA-2 el contraste guardado", () => {
       expect(await contrasteGuardado(tx, `${etiqueta}-nada`)).toBeNull();
     }));
 });
+
+describe("SPEC-017 CA-4 la regla de la Decision vigente", () => {
+  it("SPEC-017 CA-4 trae la regla de la Decision de board", () =>
+    rollback(async (tx) => {
+      const forzado = await seedMatch(tx);
+      const sinDecision = await seedMatch(tx);
+      const o = await observe(tx, forzado, 1, 0, seg(30));
+      await decide(tx, forzado, 1, 0, seg(60), [o]);
+      await tx`insert into decisions (match_id, status, home_score, away_score,
+          minute, qualifier, rule, observation_ids, decided_at)
+        values (${forzado}, 'finished', 1, 0, null, 'provisional', 'RN-02',
+          ${[o]}, ${seg(120 * 60)})`;
+
+      const filas = await informeFilas(tx, DESDE, HASTA);
+      const regla = new Map(filas.matches.map((m) => [m.id, m.rule]));
+      expect(regla.get(forzado)).toBe("RN-02");
+      expect(regla.get(sinDecision)).toBeNull();
+      // Y con ella el informe cuenta la prórroga como ventana (CA-4 (i)).
+      // Solo el forzado: el otro, sin Decision, ocupa la ventana entera.
+      const { informe } = genera({
+        ...filas,
+        matches: filas.matches.filter((m) => m.id === forzado),
+      });
+      expect(informe.cobertura.ticksEsperados).toBe(160 * 2);
+    }));
+});

@@ -45,11 +45,13 @@ export async function informeFilas(
       home_score: number | null;
       away_score: number | null;
       decided_at: Date | null;
+      rule: string | null;
     }[]
-  >`select match_id, competition_id, competition_name, round, kickoff, status,
-      home_score, away_score, decided_at
-    from board where kickoff >= ${desde} and kickoff <= ${hasta}
-    order by kickoff, match_id`;
+  >`select b.match_id, b.competition_id, b.competition_name, b.round, b.kickoff,
+      b.status, b.home_score, b.away_score, b.decided_at, d.rule
+    from board b left join decisions d on d.id = b.decision_id
+    where b.kickoff >= ${desde} and b.kickoff <= ${hasta}
+    order by b.kickoff, b.match_id`;
   const ids = matches.map((m) => m.match_id);
 
   // Empty matchday: no ids to narrow by, and `= any('{}')` would return
@@ -134,6 +136,9 @@ export async function informeFilas(
       status: m.status,
       score: scoreOf(m.home_score, m.away_score),
       decidedAt: m.decided_at === null ? null : instant(m.decided_at),
+      // The rule of the current Decision, from board's decision_id: what
+      // tells a forced RN-02 finished from a confirmed one (SPEC-017 CA-4).
+      rule: m.rule,
     })),
     observations: observations.map((o) => ({
       id: o.id,

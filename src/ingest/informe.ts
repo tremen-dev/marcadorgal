@@ -44,6 +44,10 @@ export type InformeMatch = {
   status: MatchStatus;
   score: Score | null;
   decidedAt: Instant | null;
+  // The rule of that current Decision, null when there is none (SPEC-017
+  // CA-4): what tells a finished the source confirmed from one RN-02 forced.
+  // informe-db.ts always fills it; absent reads as null.
+  rule?: string | null;
 };
 
 export type InformeObservation = {
@@ -597,13 +601,20 @@ function latenciaExternaDe(input: InformeInput) {
 // forced finish only fires from `live` (RN-02), so a postponed or suspended one
 // really is sampled to the end of its window, and that is the fallback —
 // shrinking it to the forced finish would let the coverage pass 100 %.
+//
+// SPEC-017 CA-4 (F-SPEC-013-4): a `finished` forced by RN-02 is provisional and
+// keeps the match in window to its time edge, the same rule as isInWindow
+// (src/ingest/window.ts, SPEC-013 CA-3); its ticks are coverage, not "after the
+// close". Any other current `finished` (RN-01, RN-12) closes at its decided_at.
+// When SPEC-014 CA-8 lands, the criterion becomes the forced_finish mark and
+// not the rule, because the corrections of SPEC-012 are RN-02 too (N-2).
 type Span = { from: number; to: number };
 
 function ventanaEfectiva(m: InformeMatch): Span {
   const k = Date.parse(m.kickoff);
   const finDeVentana = k + WINDOW_AFTER_MINUTES * MINUTE_MS;
   const cierre =
-    m.status === "finished" && m.decidedAt !== null
+    m.status === "finished" && m.decidedAt !== null && m.rule !== "RN-02"
       ? Date.parse(m.decidedAt)
       : finDeVentana;
   return {
@@ -882,8 +893,8 @@ export function informeJornada(input: InformeInput): {
     push(`  ${sinDatos("ningún partido en la ventana")}`);
   push(
     `ticks: ${ticksReales} de ${esperados} esperados (${cobertura === null ? "n/a" : porcentaje(cobertura)})   ← cobertura de CA-9`,
-    `  cobertura sobre la ventana efectiva de cada partido: de kickoff − ${WINDOW_BEFORE_MINUTES} min al`,
-    `  cierre de su Decision finished (forzado en kickoff + ${FORCED_FINISH_MINUTES} min, RN-02), no a kickoff + ${WINDOW_AFTER_MINUTES} min.`,
+    `  cobertura sobre la ventana efectiva de cada partido: de kickoff − ${WINDOW_BEFORE_MINUTES} min al cierre de`,
+    `  su Decision finished; si es la forzada (RN-02, kickoff + ${FORCED_FINISH_MINUTES} min), a kickoff + ${WINDOW_AFTER_MINUTES} min.`,
     `intentos dentro de la ventana de ADR-002 §2 pero tras el cierre de todo partido: ${trasElCierre.length}`,
     // Una hora es un instante corto: la muestra va en la misma línea que su
     // cuenta, y la lista cuesta una línea y no seis (V-8).
