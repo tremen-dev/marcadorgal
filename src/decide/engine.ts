@@ -279,7 +279,12 @@ export function decide(input: EngineInput): EngineOutput {
   };
 
   // The signal is back: RN-05 closes its own alert, and only its own (N-3).
-  if (ranked.length > 0 && current?.qualifier === "sen_sinal")
+  // A scheduled · sen_sinal never opened one (ADR-013 H-4).
+  if (
+    ranked.length > 0 &&
+    current?.qualifier === "sen_sinal" &&
+    current.status === "live"
+  )
     resolve.push("silence");
 
   // 1. The operator publishes as is: no monotonía, no conflicto, no cierre
@@ -368,6 +373,27 @@ export function decide(input: EngineInput): EngineOutput {
       );
     if (current.qualifier === "confirmado") return publish(null);
   }
+
+  // 3. RN-05 in scheduled (ADR-013 §2, SPEC-018 CA-4): the kickoff is
+  //    fifteen minutes gone and no fresh observation gives the match live,
+  //    finished, postponed or suspended. It stays scheduled, loses its
+  //    qualifier and opens no Alert (H-4). A later scheduled observation does
+  //    not give it back (no blinking): only a real state does, through RN-01.
+  if (
+    current !== null &&
+    current.status === "scheduled" &&
+    instantDiff(match.kickoff, now) >= minutes(SILENCE_MINUTES) &&
+    ranked.every((r) => r.observation.status === "scheduled")
+  )
+    return publish(
+      draft(
+        { status: "scheduled", score: null, minute: null },
+        "RN-05",
+        "sen_sinal",
+        [...current.observationIds],
+        null,
+      ),
+    );
 
   // 3. RN-05 silencio: nobody has said anything for fifteen minutes, so the
   //    match keeps its state and loses its qualifier.
