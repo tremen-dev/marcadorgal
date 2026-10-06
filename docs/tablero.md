@@ -31,7 +31,7 @@ Actualizado: 2026-10-06
 
 | Spec | Estado | Último cambio |
 |---|---|---|
-| SPEC-019 — pantalla-xornada-movil-filas-estados-y-cualificadores-sobre-datos-de-demostracion | aprobada | 2026-10-06 (Alberto Fojo) |
+| SPEC-019 — pantalla-xornada-movil-filas-estados-y-cualificadores-sobre-datos-de-demostracion | hecho | 2026-10-06 (sdd-verificador) |
 
 ## EPIC-FIX (aprobada)
 
@@ -68,6 +68,5 @@ Actualizado: 2026-10-06
 
 ## Resumen
 
-- hecho: 17
-- aprobada: 1
+- hecho: 18
 - en-revision: 1
