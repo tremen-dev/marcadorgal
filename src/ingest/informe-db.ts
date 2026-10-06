@@ -91,9 +91,10 @@ export async function informeFilas(
             rule: string;
             decided_at: Date;
             observation_ids: string[];
+            forced_finish: boolean | null;
           }[]
         >`select id, match_id, version, status, home_score, away_score, rule,
-            decided_at, observation_ids
+            decided_at, observation_ids, forced_finish
           from decisions
           where match_id = any (${sql.array(ids)})
             and decided_at >= ${desde} and decided_at <= ${hasta}
@@ -165,6 +166,7 @@ export async function informeFilas(
       rule: d.rule,
       decidedAt: instant(d.decided_at),
       observationIds: d.observation_ids,
+      forcedFinish: d.forced_finish,
     })),
     // A finished attempt with no 'requests' key counts as zero requests, not
     // as a missing number: the tick always writes it when it got that far.

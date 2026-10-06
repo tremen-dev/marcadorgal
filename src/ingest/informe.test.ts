@@ -2749,6 +2749,87 @@ describe("SPEC-018 CA-6 sin directo y sin final", () => {
     expect(fuera(texto)).toMatch(/: 0 /);
   });
 
+  // N-4 (F-SPEC-018-6, CA-2 enmendada): un `live` tardío a +200 y su cierre
+  // forzoso no sacan el partido de la ventana; la prórroga sigue hasta el
+  // `finished` sin marca (RN-12 a +230). Sin él, hasta +360.
+  const tardio = (final: boolean): DecLike[] => [
+    dec({ status: "scheduled", score: null, decidedAt: at(K - 10) }),
+    dec({
+      id: "d2",
+      version: 2,
+      status: "live",
+      score: { home: 1, away: 0 },
+      decidedAt: at(K + 200),
+    }),
+    dec({
+      id: "d3",
+      version: 3,
+      status: "finished",
+      score: { home: 1, away: 0 },
+      rule: "RN-02",
+      decidedAt: at(K + 200),
+      forcedFinish: true,
+    }),
+    ...(final
+      ? [
+          dec({
+            id: "d4",
+            version: 4,
+            status: "finished",
+            score: { home: 2, away: 1 },
+            rule: "RN-12",
+            decidedAt: at(K + 230),
+            forcedFinish: false,
+          }),
+        ]
+      : []),
+  ];
+
+  it("SPEC-018 CA-6 un live tardío a +200 sigue en prórroga hasta el RN-12 de +230", () => {
+    const { texto, informe } = informeJornada(
+      vacio({
+        matches: [
+          partido({
+            kickoff: at(K),
+            status: "finished",
+            score: { home: 2, away: 1 },
+            decidedAt: at(K + 230),
+            forcedFinish: false,
+          }),
+        ],
+        observations: programadas(MATCH, 10),
+        decisions: tardio(true),
+        attempts: ticks(230),
+      }),
+    );
+    expect(informe.cobertura.ticksEsperados).toBe(160 * 2 + 80 / 5);
+    expect(informe.cobertura.ticksReales).toBe(160 * 2 + 80 / 5);
+    expect(tras(texto)).toMatch(/: 0$/);
+    expect(fuera(texto)).toMatch(/: 0 /);
+  });
+
+  it("SPEC-018 CA-6 un live tardío cerrado forzoso sin FT sigue en prórroga hasta +360", () => {
+    const { texto, informe } = informeJornada(
+      vacio({
+        matches: [
+          partido({
+            kickoff: at(K),
+            status: "finished",
+            score: { home: 1, away: 0 },
+            decidedAt: at(K + 200),
+            forcedFinish: true,
+          }),
+        ],
+        observations: programadas(MATCH, 10),
+        decisions: tardio(false),
+        attempts: ticks(360),
+      }),
+    );
+    expect(informe.cobertura.ticksEsperados).toBe(160 * 2 + 210 / 5);
+    expect(informe.cobertura.porcentaje).toBe(1);
+    expect(tras(texto)).toMatch(/: 0$/);
+  });
+
   it("SPEC-018 CA-6 un partido live a +150 no tiene prórroga", () => {
     const { informe } = informeJornada(
       vacio({

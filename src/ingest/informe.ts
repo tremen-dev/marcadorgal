@@ -71,6 +71,10 @@ export type InformeDecision = {
   rule: string;
   decidedAt: Instant;
   observationIds: readonly string[];
+  // The forced_finish mark of this Decision (SPEC-014 CA-8): only true is a
+  // forced finish of RN-02. It tells when the extension ends (SPEC-018 CA-6,
+  // N-4). informe-db.ts always fills it; absent reads as null.
+  forcedFinish?: boolean | null;
 };
 
 // requests comes from ingest_attempts.details->>'requests' and never from
@@ -654,11 +658,21 @@ function ventanaEfectiva(m: InformeMatch): Span {
 
 // SPEC-018 CA-6 (ADR-013 §1): the extension of the window of a match whose
 // Decision at kickoff + 150 was still `scheduled` (or there was none, which the
-// board reads as scheduled). It runs until the first Decision that is not
-// `scheduled` or until kickoff + EXTENSION_AFTER_MINUTES, the same rule as
-// isInWindow. The status at +150 comes from the decisions of the report; when
-// none is that early, from the current one if it was decided by then. null:
-// the match had no extension.
+// board reads as scheduled). It runs until the first Decision that takes the
+// match out —a `finished` without the mark, a `postponed` or a `suspended`— or
+// until kickoff + EXTENSION_AFTER_MINUTES, the same rule as isInWindow: a late
+// `live`, and the finished RN-02 forces from it, keep it in (CA-2, N-4). The
+// status at +150 comes from the decisions of the report; when none is that
+// early, from the current one if it was decided by then. null: the match had
+// no extension.
+const sacaDeLaProrroga = (
+  status: MatchStatus,
+  forcedFinish: boolean | null | undefined,
+): boolean =>
+  status === "postponed" ||
+  status === "suspended" ||
+  (status === "finished" && forcedFinish !== true);
+
 function prorroga(
   m: InformeMatch,
   decisiones: readonly InformeDecision[],
@@ -678,9 +692,13 @@ function prorroga(
   if (estadoEnElBorde !== "scheduled") return null;
   const salida =
     ordenadas.find(
-      (d) => Date.parse(d.decidedAt) > desde && d.status !== "scheduled",
+      (d) =>
+        Date.parse(d.decidedAt) > desde &&
+        sacaDeLaProrroga(d.status, d.forcedFinish),
     )?.decidedAt ??
-    (m.status !== "scheduled" && decidida !== null && decidida > desde
+    (sacaDeLaProrroga(m.status, m.forcedFinish) &&
+    decidida !== null &&
+    decidida > desde
       ? m.decidedAt
       : null);
   const hasta = salida === null ? limite : Math.min(Date.parse(salida), limite);
