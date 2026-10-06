@@ -3,6 +3,7 @@ import type { Instant, MatchStatus, Score } from "../model/index.ts";
 import type {
   InformeAlert,
   InformeAttempt,
+  InformeCron,
   InformeDecision,
   InformeMatch,
   InformeObservation,
@@ -24,6 +25,7 @@ export type InformeFilas = {
   decisions: InformeDecision[];
   attempts: InformeAttempt[];
   alerts: InformeAlert[];
+  cron: InformeCron;
 };
 
 // The matchday is every match whose kickoff falls inside the window: desde is
@@ -126,7 +128,12 @@ export async function informeFilas(
     from alerts where opened_at >= ${desde} and opened_at <= ${hasta}
     order by opened_at, kind`;
 
+  // Last, so that a failure here cannot abort the queries above inside a
+  // transaction: pg_cron is informative and the report never throws for it.
+  const cron = await informeCron(sql, desde, hasta);
+
   return {
+    cron,
     matches: matches.map((m) => ({
       id: m.match_id,
       competitionId: m.competition_id,
@@ -194,4 +201,31 @@ export async function contrasteGuardado(
       and right(name, ${cola.length}) = ${cola}
     order by created_at desc, name desc limit 1`;
   return row === undefined ? null : `raw/${row.name}`;
+}
+
+// SPEC-017 CA-5 (R-SPEC-009-9). pg_cron's own record of the window, with the
+// job name from cron.job, as tools/tick-salud.mjs reads it. Informative: if the
+// query fails the report says why and goes on.
+export async function informeCron(
+  sql: Sql | TransactionSql,
+  desde: Instant,
+  hasta: Instant,
+): Promise<InformeCron> {
+  try {
+    const rows = await sql<
+      { jobname: string; status: string | null; start_time: Date }[]
+    >`select coalesce(j.jobname, d.jobid::text) as jobname, d.status, d.start_time
+      from cron.job_run_details d left join cron.job j on j.jobid = d.jobid
+      where d.start_time >= ${desde} and d.start_time <= ${hasta}
+      order by d.start_time`;
+    return {
+      ejecuciones: rows.map((r) => ({
+        jobname: r.jobname,
+        status: r.status ?? "sin estado",
+        startTime: instant(r.start_time),
+      })),
+    };
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : String(e) };
+  }
 }

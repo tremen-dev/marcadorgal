@@ -401,3 +401,35 @@ describe("SPEC-017 CA-4 la regla de la Decision vigente", () => {
       expect(informe.cobertura.ticksEsperados).toBe(160 * 2);
     }));
 });
+
+describe("SPEC-017 CA-5 pg_cron", () => {
+  it("SPEC-017 CA-5 lee cron.job_run_details", () =>
+    rollback(async (tx) => {
+      await seedMatch(tx);
+      // Una ejecución sembrada en julio de 2027, donde no hay ninguna real.
+      const [job] = await tx<{ jobid: number }[]>`
+        select jobid from cron.job order by jobid limit 1`;
+      const jobid = job?.jobid ?? 999_999;
+      await tx`insert into cron.job_run_details
+          (jobid, runid, job_pid, database, username, command, status,
+           return_message, start_time, end_time)
+        values (${jobid}, (select coalesce(max(runid), 0) + 1 from cron.job_run_details),
+          1, 'postgres', 'postgres', 'select 1', 'succeeded', '1 row',
+          ${seg(60)}, ${seg(61)})`;
+
+      const filas = await informeFilas(tx, DESDE, HASTA);
+      expect(filas.cron).toEqual({
+        ejecuciones: [
+          {
+            jobname: expect.any(String),
+            status: "succeeded",
+            startTime: seg(60),
+          },
+        ],
+      });
+      const { texto } = genera(filas);
+      expect(texto).toContain(
+        "pg_cron (cron.job_run_details): 1 ejecuciones (succeeded 1)",
+      );
+    }));
+});

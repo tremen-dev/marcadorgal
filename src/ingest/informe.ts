@@ -88,6 +88,17 @@ export type InformeAlert = {
   details: unknown;
 };
 
+// SPEC-017 CA-5. The runs of pg_cron in the window (cron.job_run_details, with
+// cron.job for the name), or why they could not be read.
+export type InformeCronEjecucion = {
+  jobname: string;
+  status: string;
+  startTime: Instant;
+};
+export type InformeCron =
+  | { ejecuciones: readonly InformeCronEjecucion[] }
+  | { error: string };
+
 // One hand-written line of referencias.csv (CA-3).
 export type Referencia = {
   matchId: string;
@@ -149,6 +160,8 @@ export type InformeInput = {
   // Why there is no contrast although --contrastar was given (SPEC-017 CA-2):
   // its stored capture could not be read, and a second round is never implicit.
   contrasteAusente?: string;
+  // pg_cron's own record of the window (SPEC-017 CA-5); absent: not queried.
+  cron?: InformeCron;
   declaraciones?: Declaraciones;
 };
 
@@ -192,6 +205,14 @@ export type Informe = {
     horasSinEjecuciones: readonly Instant[];
     intentosFueraDeVentana: number;
     intentosFallidos: number;
+    // SPEC-017 CA-5: informative only, the coverage is ingest_attempts' (CA-9).
+    pgCron:
+      | {
+          ejecuciones: number;
+          porEstado: readonly { status: string; count: number }[];
+          horasSinEjecucion: readonly Instant[];
+        }
+      | { sinDatos: string };
   };
   cadencia: Estadisticos & { huecosLargos: readonly HuecoLargo[] };
   latenciaInterna: Estadisticos;
@@ -856,21 +877,45 @@ export function informeJornada(input: InformeInput): {
   );
   const fallidos = input.attempts.filter((a) => a.ok === false);
 
-  const horasConIntento = new Set(input.attempts.map((a) => hora(a.startedAt)));
-  const horasSinEjecuciones: Instant[] = [];
-  for (
-    let ms = Date.parse(hora(input.desde));
-    ms < Date.parse(input.hasta);
-    ms += HOUR_MS
-  ) {
-    const h = new Date(ms).toISOString() as Instant;
-    if (
-      dentroDe(medidas, h) &&
-      Date.parse(h) >= Date.parse(input.desde) &&
-      !horasConIntento.has(h)
-    )
-      horasSinEjecuciones.push(h);
-  }
+  // The hours of the measured window with none of these instants in them.
+  const horasSin = (instantes: readonly Instant[]): Instant[] => {
+    const con = new Set(instantes.map(hora));
+    const sin: Instant[] = [];
+    for (
+      let ms = Date.parse(hora(input.desde));
+      ms < Date.parse(input.hasta);
+      ms += HOUR_MS
+    ) {
+      const h = new Date(ms).toISOString() as Instant;
+      if (
+        dentroDe(medidas, h) &&
+        Date.parse(h) >= Date.parse(input.desde) &&
+        !con.has(h)
+      )
+        sin.push(h);
+    }
+    return sin;
+  };
+  const horasSinEjecuciones = horasSin(input.attempts.map((a) => a.startedAt));
+
+  // SPEC-017 CA-5 (R-SPEC-009-9): what pg_cron itself says it ran. One line,
+  // and never in the verdict: the coverage of CA-9 is ingest_attempts'.
+  const pgCron: Informe["cobertura"]["pgCron"] =
+    input.cron === undefined
+      ? { sinDatos: "no se consultó" }
+      : "error" in input.cron
+        ? { sinDatos: `la consulta falló: ${input.cron.error}` }
+        : input.cron.ejecuciones.length === 0
+          ? { sinDatos: "ninguna ejecución en la ventana" }
+          : {
+              ejecuciones: input.cron.ejecuciones.length,
+              porEstado: contar(input.cron.ejecuciones, (e) => e.status).map(
+                ({ k, count }) => ({ status: k, count }),
+              ),
+              horasSinEjecucion: horasSin(
+                input.cron.ejecuciones.map((e) => e.startTime),
+              ),
+            };
 
   push(
     `# Informe de la jornada · ${dia(input.desde)} → ${dia(input.hasta)}`,
@@ -901,6 +946,15 @@ export function informeJornada(input: InformeInput): {
     `horas de ventana sin ejecuciones: ${horasSinEjecuciones.length}${enLinea(
       horasSinEjecuciones.map((h) => `${h.slice(0, 13)}Z`),
     )}`,
+    "sinDatos" in pgCron
+      ? `pg_cron (cron.job_run_details): sin datos (${pgCron.sinDatos})`
+      : `pg_cron (cron.job_run_details): ${pgCron.ejecuciones} ejecuciones (${pgCron.porEstado
+          .map((e) => `${e.status} ${e.count}`)
+          .join(
+            " · ",
+          )}) · horas de ventana sin ninguna ejecución: ${pgCron.horasSinEjecucion.length}${enLinea(
+          pgCron.horasSinEjecucion.map((h) => `${h.slice(0, 13)}Z`),
+        )}`,
     `intentos fuera de la ventana de todo partido: ${fueraDeVentana.length}   ← criterio 2`,
     `intentos fallidos: ${fallidos.length}`,
     ...primeras(
@@ -1352,6 +1406,7 @@ export function informeJornada(input: InformeInput): {
       horasSinEjecuciones,
       intentosFueraDeVentana: fueraDeVentana.length,
       intentosFallidos: fallidos.length,
+      pgCron,
     },
     cadencia: { ...cad.stats, huecosLargos: cad.largos },
     latenciaInterna: interna,

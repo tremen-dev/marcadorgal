@@ -2384,3 +2384,82 @@ describe("SPEC-017 CA-4 la prórroga del cierre forzoso es cobertura", () => {
     expect(lineas[i + 2]).toMatch(/^intentos dentro de la ventana/);
   });
 });
+
+// SPEC-017 CA-5 (R-SPEC-009-9). La vitalidad de pg_cron en una línea del
+// bloque 1, informativa: la cobertura sigue saliendo de ingest_attempts.
+describe("SPEC-017 CA-5 pg_cron en el informe", () => {
+  const K = 10;
+  const linea = (texto: string) =>
+    texto.split("\n").find((l) => l.startsWith("pg_cron"));
+  // Una ejecución cada 30 s desde kickoff − 10 hasta el cierre a +105, menos
+  // las que caen en la hora que se le pida saltar.
+  const ejecuciones = (salta?: string) => {
+    const out: { jobname: string; status: string; startTime: Instant }[] = [];
+    for (
+      let ms = Date.parse(at(K - 10));
+      ms < Date.parse(at(K + 105));
+      ms += 30 * SEC
+    ) {
+      const startTime = new Date(ms).toISOString() as Instant;
+      if (salta !== undefined && startTime.startsWith(salta)) continue;
+      out.push({
+        jobname: "ingest-tick",
+        status: out.length === 3 ? "failed" : "succeeded",
+        startTime,
+      });
+    }
+    return out;
+  };
+  const corre = (cron: InformeInput["cron"]) =>
+    informeJornada(
+      vacio({
+        matches: [
+          partido({ kickoff: at(K), decidedAt: at(K + 105), rule: "RN-01" }),
+        ],
+        cron,
+      }),
+    );
+
+  it("SPEC-017 CA-5 todas las horas cubiertas: 0", () => {
+    const filas = ejecuciones();
+    const { texto } = corre({ ejecuciones: filas });
+    expect(linea(texto)).toBe(
+      `pg_cron (cron.job_run_details): ${filas.length} ejecuciones (failed 1 · succeeded ${filas.length - 1}) · horas de ventana sin ninguna ejecución: 0`,
+    );
+  });
+
+  it("SPEC-017 CA-5 una hora sin ejecución: listada", () => {
+    // La ventana va de 18:20 a 20:15: la hora de las 19 se queda sin pg_cron.
+    const filas = ejecuciones("2026-09-25T19");
+    const { texto, informe } = corre({ ejecuciones: filas });
+    expect(linea(texto)).toMatch(
+      /horas de ventana sin ninguna ejecución: 1 — 2026-09-25T19Z$/,
+    );
+    expect(informe.cobertura.pgCron).toMatchObject({
+      horasSinEjecucion: ["2026-09-25T19:00:00.000Z"],
+    });
+  });
+
+  it("SPEC-017 CA-5 sin datos: la línea lo dice", () => {
+    expect(linea(corre({ ejecuciones: [] }).texto)).toBe(
+      "pg_cron (cron.job_run_details): sin datos (ninguna ejecución en la ventana)",
+    );
+    expect(
+      linea(
+        corre({ error: 'relation "cron.job_run_details" does not exist' })
+          .texto,
+      ),
+    ).toBe(
+      'pg_cron (cron.job_run_details): sin datos (la consulta falló: relation "cron.job_run_details" does not exist)',
+    );
+    expect(linea(corre(undefined).texto)).toBe(
+      "pg_cron (cron.job_run_details): sin datos (no se consultó)",
+    );
+  });
+
+  it("SPEC-017 CA-5 no entra en el veredicto", () => {
+    expect(corre({ ejecuciones: [] }).informe.veredicto).toEqual(
+      corre({ ejecuciones: ejecuciones() }).informe.veredicto,
+    );
+  });
+});
