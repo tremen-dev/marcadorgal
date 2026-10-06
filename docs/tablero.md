@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-10-04
+Actualizado: 2026-10-06
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -22,9 +22,10 @@ Actualizado: 2026-10-04
 | SPEC-008 — despliegue-del-tick-pg-cron-vercel-cron-variables-y-sincronizacion-del-calendario | hecho | 2026-09-22 (sdd-verificador) |
 | SPEC-009 — jornada-de-medicion-e-informe | hecho | 2026-09-29 (sdd-verificador) |
 | SPEC-012 — la-monotonia-no-sobrevive-al-cierre-y-replay-de-la-jornada-medida | hecho | 2026-09-29 (sdd-verificador) |
-| SPEC-013 — reconciliacion-del-marcador-despues-del-cierre-forzoso | en-revision | 2026-09-29 (sdd-implementador) |
+| SPEC-013 — reconciliacion-del-marcador-despues-del-cierre-forzoso | hecho | 2026-10-06 (sdd-verificador) |
 | SPEC-014 — rn-03-en-vivo-por-fuente-la-bajada-la-da-quien-subio-el-gol | aprobada | 2026-09-29 (Alberto Fojo) |
 | SPEC-016 — rn-02-por-fuente-aplazado-y-suspendido-sin-operador | hecho | 2026-10-04 (sdd-verificador) |
+| SPEC-018 — partido-sin-directo-prorroga-de-la-ventana-sen-sinal-en-scheduled-y-linea-del-informe | aprobada | 2026-10-04 (Alberto Fojo) |
 
 ## EPIC-FIX (aprobada)
 
@@ -38,7 +39,7 @@ Actualizado: 2026-10-04
 | Spec | Estado | Último cambio |
 |---|---|---|
 | SPEC-010 — salud-del-tick-sin-falsos-fallos-y-retirada-de-medir-directo | hecho | 2026-09-22 (sdd-verificador) |
-| SPEC-017 — mejoras-del-informe-de-jornada | aprobada | 2026-09-29 (Alberto Fojo) |
+| SPEC-017 — mejoras-del-informe-de-jornada | hecho | 2026-10-06 (sdd-verificador) |
 
 ## ADRs
 
@@ -56,9 +57,10 @@ Actualizado: 2026-10-04
 | ADR-010 | aprobada | el-cierre-manda-sobre-la-monotonia-y-reconciliacion-tras-el-cierre-forzoso | 2026-09-29 (Alberto Fojo) |
 | ADR-011 | aprobada | rn-03-en-vivo-baja-la-misma-fuente-que-subio-el-gol-u-otra-de-mas-peso | 2026-09-29 (Alberto Fojo) |
 | ADR-012 | aprobada | rn-02-postponed-y-suspended-los-da-la-fuente-ganadora-con-cualificador-y-reversibles | 2026-10-04 (Alberto Fojo) |
+| ADR-013 | aprobada | partido-sin-directo-de-la-fuente-prorroga-de-la-ventana-hasta-el-final-y-sen-sinal-en-scheduled | 2026-10-04 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 13
-- en-revision: 2
+- hecho: 15
 - aprobada: 2
+- en-revision: 1

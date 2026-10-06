@@ -2,7 +2,7 @@
 
 > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.
 > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.
-> Última actualización: 2026-10-04 (SPEC-015 y SPEC-016 hecho; SPEC-013 desplegada, a falta de CA-5).
+> Última actualización: 2026-10-06 (SPEC-013, SPEC-016, SPEC-017 hecho).
 
 ## Qué es y en qué punto está
 
@@ -38,7 +38,7 @@ jornada completa, en una sola pantalla y en galego. Proyecto de tremen.dev.
 
 **SPEC-014 (aprobada, empieza tras fusionar SPEC-013):** RN-03 en vivo por fuente (ADR-011): el marcador lo baja la misma fuente que subió el gol u otra de más peso. La medición de las bajadas en vivo (`_qa/ADR-011/`) mostró que retener publicó ~742 ticks de marcador falso.
 
-EPIC-002 (ingesta y motor) **no cierra hasta que el marcador esté corregido** (N-9): cierra con SPEC-013, SPEC-014 y SPEC-016 en `hecho`. SPEC-017 (EPIC-MANT, mejoras del informe) aprobada, antes del 2026-10-09.
+EPIC-002 (ingesta y motor) **no cierra hasta que el marcador esté corregido** (N-9): cierra con SPEC-013, SPEC-014 y SPEC-016 en `hecho`. SPEC-017 (EPIC-MANT, mejoras del informe) hecho, antes del 2026-10-09.
 
 **EPIC-FIX (correcciones urgentes):** SPEC-011 hecho. Arregla dos defectos de la ingesta: sin peticiones `live=` con un solo id de liga, y `ParseResult` gana cuarto canal `requestErrors` para guardar observaciones buenas aun si una petición falla. Entrada prioritaria para fallos que dañan medición en vivo.
 
