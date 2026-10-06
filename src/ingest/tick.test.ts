@@ -18,6 +18,7 @@ import { createApiFootballResults } from "../sources/api-football/results.ts";
 import type { WindowRow } from "./db.ts";
 import { createMemoryIngestDb } from "./memory.ts";
 import { runTick } from "./tick.ts";
+import { isInWindow } from "./window.ts";
 
 const NOW = "2026-09-25T18:30:00.000Z" as Instant;
 const CAPTURED_AT = "2026-09-25T18:30:02.000Z" as Instant;
@@ -907,7 +908,23 @@ describe("SPEC-018 CA-3 the extension only asks by ids=", () => {
     return { db, urls, adapterFor, sweep, summary };
   };
 
-  it("three extension matches that are due go in one ids= and no live=", async () => {
+  // N-4: one of the three is a finished with the mark that RN-02 forced from a
+  // late live decided at its +200, five minutes ago; isInWindow keeps it in
+  // window (CA-2) and the tick asks for it like the others.
+  it("three extension matches that are due go in one ids= and no live=, one a forced finish decided at +200", async () => {
+    const FORCED_KICKOFF = shiftInstant(NOW, -205 * MINUTE_MS);
+    const forcedAt = shiftInstant(FORCED_KICKOFF, 200 * MINUTE_MS);
+    const forced = {
+      ...row(
+        "tercera-rfef-g1-2026-27-j5-e-f",
+        "tercera-rfef-g1",
+        FORCED_KICKOFF,
+        "finished",
+        forcedAt,
+      ),
+      forcedFinish: true,
+    };
+    expect(isInWindow({ ...forced, decidedAt: forcedAt }, NOW)).toBe(true);
     const { urls, db } = await run([
       row(
         "segunda-rfef-g1-2026-27-j5-a-b",
@@ -923,13 +940,7 @@ describe("SPEC-018 CA-3 the extension only asks by ids=", () => {
         "scheduled",
         shiftInstant(NOW, -5 * MINUTE_MS),
       ),
-      row(
-        "tercera-rfef-g1-2026-27-j5-e-f",
-        "tercera-rfef-g1",
-        LATE,
-        "scheduled",
-        shiftInstant(NOW, -30 * MINUTE_MS),
-      ),
+      forced,
     ]);
     expect(urls).toEqual([
       "https://v3.football.api-sports.io/fixtures?ids=101-102-103",
