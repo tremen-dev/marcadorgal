@@ -59,7 +59,9 @@ function dominioRow(term: string): string[] {
 
 describe("SPEC-018 CA-1 RN-05, Ventana and Cualificador say what ADR-013 fixes", () => {
   it("quotes non-empty blocks in ADR-013 §1 and §2", () => {
-    expect(adrQuote(/Letra\s+nueva\s+de\s+RN-05/)).toMatch(/^Un partido `live`/);
+    expect(adrQuote(/Letra\s+nueva\s+de\s+RN-05/)).toMatch(
+      /^Un partido `live`/,
+    );
     expect(adrQuote(/Letra\s+nueva\s+de\s+\*\*Ventana\*\*/)).toMatch(
       /^De kickoff − 10 min/,
     );

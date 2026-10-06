@@ -5,6 +5,13 @@
 export const WINDOW_BEFORE_MINUTES = 10;
 export const WINDOW_AFTER_MINUTES = 150;
 
+// Extension of the window for a match the source does not give live (ADR-013
+// §1, H-1, H-2): still scheduled at +150 —or without a Decision— it stays in
+// window until kickoff + 6 h, polled only by ids= and at most every 5 minutes.
+// Worst case per batch of laggards: (360 − 150) / 5 = 42 requests (CA-8).
+export const EXTENSION_AFTER_MINUTES = 360;
+export const EXTENSION_POLL_MINUTES = 5;
+
 // Cadence (RN-08, ADR-008 §3): the registry declares 30 s, and the guard
 // tolerates the jitter of the two triggers. Worst case: two calls 25 s apart.
 export const CADENCE_JITTER_SECONDS = 5;

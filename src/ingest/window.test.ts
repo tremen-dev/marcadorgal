@@ -5,8 +5,18 @@ import {
   MINUTE_MS,
   shiftInstant,
 } from "@/model";
-import { WINDOW_AFTER_MINUTES, WINDOW_BEFORE_MINUTES } from "./constants.ts";
-import { isInWindow, windowKickoffRange } from "./window.ts";
+import {
+  EXTENSION_AFTER_MINUTES,
+  EXTENSION_POLL_MINUTES,
+  WINDOW_AFTER_MINUTES,
+  WINDOW_BEFORE_MINUTES,
+} from "./constants.ts";
+import {
+  isDueForPoll,
+  isInExtension,
+  isInWindow,
+  windowKickoffRange,
+} from "./window.ts";
 
 const KICKOFF = "2026-09-25T18:30:00.000Z" as Instant;
 
@@ -29,8 +39,8 @@ describe("CA-3 isInWindow", () => {
   });
 
   it("closes a hundred and fifty minutes after kickoff", () => {
-    expect(inWindow(149)).toBe(true);
-    expect(inWindow(150)).toBe(false);
+    expect(inWindow(149, "live")).toBe(true);
+    expect(inWindow(150, "live")).toBe(false);
   });
 
   it("leaves a finished match out even inside the range", () => {
@@ -116,10 +126,89 @@ describe("SPEC-014 CA-8 CA-9 the window reads the mark, never the rule", () => {
   });
 });
 
-describe("CA-6 windowKickoffRange", () => {
-  it("bounds kickoff by now minus 150 and now plus 10 minutes", () => {
+// SPEC-018 CA-2 (ADR-013 §1): a match still scheduled at +150 —or without a
+// Decision, which the board reads as scheduled— stays in window until +360,
+// polled every 5 minutes and only by ids= (CA-3). Any other status leaves at
+// +150, as before.
+describe("SPEC-018 CA-2 the extension of the window", () => {
+  const at = (minutes: number) => shiftInstant(KICKOFF, minutes * MINUTE_MS);
+
+  it("uses the constants of the spec", () => {
+    expect([EXTENSION_AFTER_MINUTES, EXTENSION_POLL_MINUTES]).toEqual([360, 5]);
+  });
+
+  it("(i) a scheduled match at +200 is in window", () => {
+    expect(inWindow(150, "scheduled")).toBe(true);
+    expect(inWindow(200, "scheduled")).toBe(true);
+    expect(inWindow(359, "scheduled")).toBe(true);
+  });
+
+  it("(ii) at +360 it is out", () => {
+    expect(inWindow(360, "scheduled")).toBe(false);
+    expect(inWindow(361, "scheduled")).toBe(false);
+  });
+
+  it.each<[MatchStatus, boolean | null]>([
+    ["live", false],
+    ["finished", false],
+    ["finished", true],
+    ["postponed", false],
+    ["suspended", false],
+  ])("(iii) a %s match (forced: %s) at +200 is out", (status, forced) => {
+    expect(inWindow(200, status, forced)).toBe(false);
+  });
+
+  it("(iv) at +200 the poll is due only when the last observation is 5 min old", () => {
+    const due = (lastMinutes: number | null) =>
+      isDueForPoll(
+        {
+          kickoff: KICKOFF,
+          lastObservationAt: lastMinutes === null ? null : at(lastMinutes),
+        },
+        at(200),
+      );
+    expect(due(198)).toBe(false);
+    expect(due(196)).toBe(false);
+    expect(due(195)).toBe(true);
+    expect(due(150)).toBe(true);
+    expect(due(null)).toBe(true);
+  });
+
+  it("(iv) isInExtension says where the slow pace starts and ends", () => {
+    const ext = (minutes: number) =>
+      isInExtension({ kickoff: KICKOFF }, at(minutes));
+    expect([ext(149), ext(150), ext(359), ext(360)]).toEqual([
+      false,
+      true,
+      true,
+      false,
+    ]);
+  });
+
+  it("(v) between −10 and +150 everything is as today, and every tick polls", () => {
+    for (const status of [
+      "scheduled",
+      "live",
+      "postponed",
+      "suspended",
+    ] as const) {
+      expect(inWindow(-11, status)).toBe(false);
+      expect(inWindow(-10, status)).toBe(true);
+      expect(inWindow(149, status)).toBe(true);
+    }
+    expect(inWindow(30, "finished", false)).toBe(false);
+    for (const minutes of [-10, 0, 90, 149])
+      expect(
+        isDueForPoll(
+          { kickoff: KICKOFF, lastObservationAt: at(minutes) },
+          at(minutes),
+        ),
+      ).toBe(true);
+  });
+
+  it("windowKickoffRange reaches back to now minus 360 minutes", () => {
     expect(windowKickoffRange("2026-09-25T18:30:00.000Z" as Instant)).toEqual({
-      from: "2026-09-25T16:00:00.000Z",
+      from: "2026-09-25T12:30:00.000Z",
       to: "2026-09-25T18:40:00.000Z",
     });
   });
