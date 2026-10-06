@@ -1,3 +1,9 @@
+// Frozen copy of src/decide/engine.ts at 11a7159 (main before SPEC-014): the
+// engine where RN-03 only let a heavier source lower a score in play, so the
+// source never withdrew its own goal. A fixture and nothing else (SPEC-014
+// CA-5, CA-6): it lets the replay show what "the engine of main" publishes
+// against what the engine of ADR-011 does. Never imported by production code;
+// never edited — it is history, not behaviour.
 import {
   type AlertKind,
   type DecisionRule,
@@ -12,23 +18,21 @@ import {
   OPERATOR_PRIORITY,
   type Qualifier,
   type Score,
-  type ScoredBy,
-  type SourceId,
-} from "../model/index.ts";
+} from "../../model/index.ts";
 import {
   CONFLICT_GRACE_MINUTES,
   FORCED_FINISH_MINUTES,
   KICKOFF_GRACE_MINUTES,
   OBSERVATION_WINDOW_MINUTES,
   SILENCE_MINUTES,
-} from "./thresholds.ts";
+} from "../thresholds.ts";
 import type {
   AlertDraft,
   DecisionDraft,
   EngineInput,
   EngineOutput,
   LastHeard,
-} from "./types.ts";
+} from "../types.ts";
 
 // One candidate: the freshest observation of a source, with its priority.
 type Candidate = { observation: Observation; priority: number };
@@ -98,30 +102,6 @@ function holdingScore(state: MatchState, score: Score): MatchState {
   if (state.status === "finished" || state.status === "suspended")
     return { status: state.status, score, minute: null };
   return state;
-}
-
-// ADR-011 §3: an owner nobody recorded (every row before SPEC-014) is
-// api-football, the only source that published until then.
-const LEGACY_OWNER = "api-football" as SourceId;
-
-type Side = "home" | "away";
-const SIDES: readonly Side[] = ["home", "away"];
-
-// ADR-011 §2: after publishing, a side whose value changes (up or down) is
-// owned by the winning source; a side that does not change keeps its owner. A
-// state with no score has no owners (SPEC-014 CA-4).
-function ownersOf(
-  score: Score | null,
-  before: Score | null,
-  owners: ScoredBy,
-  winner: SourceId | null,
-): ScoredBy {
-  if (score === null) return { home: null, away: null };
-  const owner = (side: Side) =>
-    before !== null && before[side] === score[side]
-      ? owners[side]
-      : (winner ?? owners[side]);
-  return { home: owner("home"), away: owner("away") };
 }
 
 const sameScore = (a: MatchState, b: MatchState) =>
@@ -213,22 +193,11 @@ export function decide(input: EngineInput): EngineOutput {
     );
   const winner = ranked[0];
 
-  // The owners of the current Decision, legacy rows included (null stays null
-  // here: it is read as api-football only when a retreat is judged).
-  const currentOwners: ScoredBy = current?.scoredBy ?? {
-    home: null,
-    away: null,
-  };
-  const currentScore = current?.score ?? null;
-
-  // Every Decision of the engine says who owns each side and is no forced
-  // finish (CA-8); the forced finish of RN-02 overrides the mark.
   const draft = (
     state: MatchState,
     rule: DecisionRule,
     qualifier: Qualifier,
     observationIds: ObservationId[],
-    by: SourceId | null,
   ): DecisionDraft => ({
     ...state,
     matchId,
@@ -236,8 +205,6 @@ export function decide(input: EngineInput): EngineOutput {
     rule,
     observationIds,
     decidedAt: now,
-    scoredBy: ownersOf(state.score, currentScore, currentOwners, by),
-    forcedFinish: false,
   });
 
   // Idempotence (g): the same tuple twice writes one row, not two.
@@ -259,23 +226,19 @@ export function decide(input: EngineInput): EngineOutput {
     rule: DecisionRule,
     candidate: Candidate,
   ): DecisionDraft => {
-    const by = candidate.observation.sourceId;
     if (candidate.priority >= FEDERATION_PRIORITY)
-      return draft(state, rule, "confirmado", [candidate.observation.id], by);
+      return draft(state, rule, "confirmado", [candidate.observation.id]);
     const confirmer = ranked.find(
       (r) =>
         r.observation.sourceId !== candidate.observation.sourceId &&
         agrees(stateOf(r.observation), state),
     );
     return confirmer === undefined
-      ? draft(state, rule, "provisional", [candidate.observation.id], by)
-      : draft(
-          state,
-          rule,
-          "confirmado",
-          [candidate.observation.id, confirmer.observation.id],
-          by,
-        );
+      ? draft(state, rule, "provisional", [candidate.observation.id])
+      : draft(state, rule, "confirmado", [
+          candidate.observation.id,
+          confirmer.observation.id,
+        ]);
   };
 
   // The signal is back: RN-05 closes its own alert, and only its own (N-3).
@@ -286,13 +249,9 @@ export function decide(input: EngineInput): EngineOutput {
   //    forzoso (e).
   if (winner !== undefined && winner.priority >= OPERATOR_PRIORITY)
     return publish(
-      draft(
-        stateOf(winner.observation),
-        "operator",
-        "confirmado",
-        [winner.observation.id],
-        winner.observation.sourceId,
-      ),
+      draft(stateOf(winner.observation), "operator", "confirmado", [
+        winner.observation.id,
+      ]),
     );
 
   // 2. RN-02 forced finish (H-3): above RN-05 and above whatever the sources
@@ -307,39 +266,32 @@ export function decide(input: EngineInput): EngineOutput {
   ) {
     const freshScore =
       winner === undefined ? null : stateOf(winner.observation).score;
-    const closed =
-      freshScore === null || winner === undefined
-        ? draft(
-            { status: "finished", score: current.score, minute: null },
-            "RN-02",
-            "provisional",
-            [...current.observationIds],
-            null,
-          )
-        : draft(
-            { status: "finished", score: freshScore, minute: null },
-            "RN-02",
-            "provisional",
-            [winner.observation.id],
-            winner.observation.sourceId,
-          );
-    // CA-10: score is what the close publishes, heldScore what was published
-    // right before it (what score used to carry, so it is not lost).
-    const published = closed.score ?? current.score;
     open.push({
       kind: "forced_finish",
       matchId,
       details: {
-        score: { home: published.home, away: published.away },
-        heldScore: { home: current.score.home, away: current.score.away },
+        score: { home: current.score.home, away: current.score.away },
         minute: current.minute,
         kickoff: match.kickoff,
         lastObservedAt: last?.observedAt ?? null,
         lastStatus: last?.status ?? null,
       },
     });
-    // The one Decision of the engine that is a forced finish (CA-8).
-    return publish({ ...closed, forcedFinish: true });
+    return publish(
+      freshScore === null || winner === undefined
+        ? draft(
+            { status: "finished", score: current.score, minute: null },
+            "RN-02",
+            "provisional",
+            [...current.observationIds],
+          )
+        : draft(
+            { status: "finished", score: freshScore, minute: null },
+            "RN-02",
+            "provisional",
+            [winner.observation.id],
+          ),
+    );
   }
 
   // RN-12 reconciliation (ADR-010 §2): a match closed provisional by the
@@ -347,24 +299,16 @@ export function decide(input: EngineInput): EngineOutput {
   // later. Score and qualifier change, the status never does, and RN-03 has
   // nothing to say after the close (ADR-010 §1). It does not resolve the
   // forced_finish alert (EPIC-004). A confirmed finished admits nothing.
-  // Only the mark tells a forced finish (SPEC-014 CA-8, CA-9): a correction
-  // with rule RN-02 and any row without the mark is no forced finish.
   if (current !== null && current.status === "finished") {
     const confirmed = winner === undefined ? null : stateOf(winner.observation);
     if (
-      current.forcedFinish === true &&
+      current.rule === "RN-02" &&
       winner !== undefined &&
       confirmed !== null &&
       confirmed.status === "finished"
     )
       return publish(
-        draft(
-          confirmed,
-          "RN-12",
-          "confirmado",
-          [winner.observation.id],
-          winner.observation.sourceId,
-        ),
+        draft(confirmed, "RN-12", "confirmado", [winner.observation.id]),
       );
     if (current.qualifier === "confirmado") return publish(null);
   }
@@ -389,7 +333,6 @@ export function decide(input: EngineInput): EngineOutput {
           "RN-05",
           "sen_sinal",
           [...current.observationIds],
-          null,
         ),
       );
     }
@@ -410,44 +353,31 @@ export function decide(input: EngineInput): EngineOutput {
   )
     return publish(null);
 
-  // 4. RN-03 monotonía, side by side (ADR-011): while the match is in play a
-  //    side goes down only by its owner or by a heavier source. A side that
-  //    nobody may lower keeps the current value; the proposed status and
-  //    minute are published wearing it, and the retreat leaves an Alert for
-  //    the operator (N-3). An accepted retreat falls through to RN-01 with no
-  //    alert (ADR-011 §4). It does not survive the close (ADR-010 §1): the
-  //    transition to finished falls through to RN-01 and publishes the winner
-  //    as it comes.
-  const held = currentScore;
+  // 4. RN-03 monotonía: a score never goes down but by the operator while
+  //    the match is in play. The proposed status is published wearing the
+  //    current score, and the retreat leaves an Alert for the operator (N-3).
+  //    It does not survive the close (ADR-010 §1): the transition to finished
+  //    falls through to RN-01 and publishes the winner as it comes.
+  const held = current?.score ?? null;
   const closing =
     proposed.status === "finished" && current?.status !== "finished";
-  if (!closing && held !== null && proposed.score !== null) {
-    const proposedScore = proposed.score;
-    const mayLower = (side: Side) => {
-      const owner = currentOwners[side] ?? LEGACY_OWNER;
-      if (owner === winner.observation.sourceId) return true;
-      const weight = priority(owner);
-      return weight !== undefined && winner.priority > weight;
-    };
-    const keep = (side: Side) =>
-      proposedScore[side] < held[side] && !mayLower(side);
-    if (SIDES.some(keep)) {
-      open.push({
-        kind: "regression",
-        matchId,
-        details: {
-          sourceId: winner.observation.sourceId,
-          observationId: winner.observation.id,
-          current: { home: held.home, away: held.away },
-          proposed: { home: proposedScore.home, away: proposedScore.away },
-        },
-      });
-      const kept: Score = {
-        home: keep("home") ? held.home : proposedScore.home,
-        away: keep("away") ? held.away : proposedScore.away,
-      };
-      return publish(settle(holdingScore(proposed, kept), "RN-03", winner));
-    }
+  if (
+    !closing &&
+    held !== null &&
+    proposed.score !== null &&
+    (proposed.score.home < held.home || proposed.score.away < held.away)
+  ) {
+    open.push({
+      kind: "regression",
+      matchId,
+      details: {
+        sourceId: winner.observation.sourceId,
+        observationId: winner.observation.id,
+        current: { home: held.home, away: held.away },
+        proposed: { home: proposed.score.home, away: proposed.score.away },
+      },
+    });
+    return publish(settle(holdingScore(proposed, held), "RN-03", winner));
   }
 
   // 5. RN-04 conflicto: a guard, never a publication, so RN-04 is not a

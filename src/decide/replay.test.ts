@@ -16,6 +16,7 @@ import {
 } from "../model/index.ts";
 import { createApiFootballResults } from "../sources/api-football/results.ts";
 import { decide as decideAt0a40046 } from "./fixtures/engine-0a40046.ts";
+import { decide as decideAt11a7159 } from "./fixtures/engine-11a7159.ts";
 import { decide as decideAt812c805 } from "./fixtures/engine-812c805.ts";
 import {
   SABADELL_ANDORRA,
@@ -188,6 +189,7 @@ describe("CA-8 replay of a scripted match", () => {
         matchId: MATCH.id,
         details: {
           score: { home: 1, away: 0 },
+          heldScore: { home: 1, away: 0 },
           minute: 100,
           kickoff: KICKOFF,
           lastObservedAt: at(100),
@@ -390,8 +392,70 @@ describe("SPEC-016 CA-3 the replay of sabadell-andorra across ADR-012", () => {
         rule: "RN-01",
         observationIds: [sabadellAndorra[0].id],
         decidedAt: "2026-10-03T16:20:25.643Z",
+        scoredBy: { home: null, away: null },
+        forcedFinish: false,
       },
     ]);
     expect(steps.flatMap((s) => s.output.open)).toEqual([]);
+  });
+});
+
+// SPEC-014 CA-5 (ADR-011). The same real log of girona-albacete: the source
+// raised 2-1 and withdrew it itself at 19:46:04Z. With the engine of main
+// (11a7159) RN-03 holds the 2-1 in play until the close; with the engine of
+// ADR-011 the source that raised the goal lowers it, so 2-0 is published from
+// that tick on.
+describe("SPEC-014 CA-5 the replay of girona-albacete across ADR-011", () => {
+  const RETREAT = "2026-09-25T19:46:04.616Z";
+  const liveFrom = (steps: ReturnType<typeof replay>) =>
+    published(steps).filter(
+      (d) => d.status === "live" && Date.parse(d.now) >= Date.parse(RETREAT),
+    );
+  // The published score at every instant from the retreat to the close.
+  const scoreAt = (steps: ReturnType<typeof replay>) => {
+    let score = "";
+    const seen: string[] = [];
+    for (const s of steps) {
+      const d = s.output.decision;
+      if (d !== null && d.score !== null)
+        score = `${d.status} ${d.score.home}-${d.score.away}`;
+      if (Date.parse(s.now) >= Date.parse(RETREAT) && score.startsWith("live"))
+        seen.push(score);
+    }
+    return new Set(seen);
+  };
+
+  it("publishes live 2-1 from 19:46:04Z to the close with the engine of main", () => {
+    const steps = replay({
+      match: GIRONA,
+      priority: PROVIDER,
+      observations: girona,
+      engine: decideAt11a7159,
+    });
+    expect(scoreAt(steps)).toEqual(new Set(["live 2-1"]));
+    expect(liveFrom(steps)[0]).toMatchObject({
+      now: RETREAT,
+      score: { home: 2, away: 1 },
+      rule: "RN-03",
+    });
+  });
+
+  it("publishes live 2-0 from 19:46:04Z with the engine of ADR-011", () => {
+    const steps = replay({
+      match: GIRONA,
+      priority: PROVIDER,
+      observations: girona,
+    });
+    expect(scoreAt(steps)).toEqual(new Set(["live 2-0"]));
+    expect(liveFrom(steps)[0]).toMatchObject({
+      now: RETREAT,
+      score: { home: 2, away: 0 },
+      rule: "RN-01",
+    });
+    expect(
+      steps
+        .filter((s) => Date.parse(s.now) >= Date.parse(RETREAT))
+        .flatMap((s) => s.output.open.map((a) => a.kind)),
+    ).not.toContain("regression");
   });
 });
