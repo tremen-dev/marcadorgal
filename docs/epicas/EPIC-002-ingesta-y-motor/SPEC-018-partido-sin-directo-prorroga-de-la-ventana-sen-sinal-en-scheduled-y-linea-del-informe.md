@@ -34,14 +34,15 @@ con H-1..H-6 decididas.
 
   Test: `src/arch/reglas-rn05.test.ts` compara RN-05 con la cita de ADR-013, como `reglas-rn03.test.ts`.
 - **CA-2 Prórroga de la ventana.** En `src/ingest/window.ts`, constantes nuevas en `constants.ts` (`EXTENSION_AFTER_MINUTES = 360`, `EXTENSION_POLL_MINUTES = 5`):
-  - Un partido sigue en ventana entre +150 y +360 solo si su Decision vigente es `scheduled` o no tiene Decision.
+  - Entre +150 y +360 sigue en ventana un partido sin Decision, con vigente `scheduled`, o con vigente `live` o `finished` con marca (`forcedFinish = true`) **decidida en la prórroga** (`decidedAt ≥ kickoff + 150`). `WindowInput` lleva el `decidedAt` de la vigente (`null` sin Decision). Sale con un `finished` sin marca, `postponed` o `suspended` de la fuente, o a +360 (ADR-013 §1).
+  - El motor no cambia (RN-02 y ADR-009 §4 intactos). Un `live` en la prórroga se cierra forzoso en ese tick, con alerta `forced_finish`, y sigue en ventana. El `FT` de la fuente lo reconcilia por RN-12 (ADR-010 §2). A +360 sale como esté, sin alerta nueva.
   - `windowKickoffRange` extiende `from` hasta now − 360 min.
-  - Una función pura nueva decide si toca consulta: dentro de la prórroga, solo si su última observación es de hace ≥ 5 min.
+  - Una función pura nueva decide si toca consulta: dentro de la prórroga, sea cual sea el estado, solo si su última observación es de hace ≥ 5 min.
 
   Tests en `window.test.ts`:
   - (i) `scheduled` a +200 → en ventana.
   - (ii) a +360 → fuera.
-  - (iii) `live`, `finished`, `postponed` o `suspended` a +200 → fuera.
+  - (iii) A +200: `finished` sin marca, `postponed` o `suspended` → fuera. `live`, o `finished` con marca, decididos a +120 → fuera (SPEC-013 CA-3 intacta). Decididos a +200 → dentro a +200 y a +359, fuera a +360.
   - (iv) a +200 con la última observación de hace 2 min → no toca; de hace 5 min → toca.
   - (v) entre −10 y +150 todo igual que hoy.
 - **CA-3 La prórroga solo pide por `ids=`.**
@@ -49,7 +50,7 @@ con H-1..H-6 decididas.
   - Si el tick solo tiene partidos de prórroga y a ninguno le toca consulta, no hay intento ni petición.
   - Varios partidos de prórroga van en un solo `ids=`.
 
-  Tests en `tick.test.ts` con `fetch` doble: tres partidos en prórroga a los que les toca → 1 petición `ids=` con los tres y ninguna `live=`. Ninguno con observación de hace < 5 min.
+  Tests en `tick.test.ts` con `fetch` doble: tres partidos en prórroga a los que les toca, uno de ellos `finished` con marca decidido a +200 → 1 petición `ids=` con los tres y ninguna `live=`. Ninguno con observación de hace < 5 min.
 - **CA-4 `sen_sinal` en `scheduled` (RN-05).** En `src/decide/engine.ts`, con `now` inyectado. Vigente `scheduled`, `now ≥ kickoff + 15 min` y ninguna observación fresca `live`, `finished`, `postponed` ni `suspended` → Decision `scheduled`, `RN-05`, `sen_sinal`, **sin alerta**, citando las observaciones vigentes.
 
   Tests en `engine.test.ts`:
@@ -59,6 +60,7 @@ con H-1..H-6 decididas.
   - (iv) llega `finished` → `finished provisional RN-01`.
   - (v) llega `live` → `live` y su cualificador normal; en `live`, RN-05 sigue igual que hoy, con alerta.
   - (vi) `postponed` vigente → nada.
+  - (vii) Directo tardío, sin cambio en `engine.ts`. A +200, vigente `scheduled · sen_sinal` y llega `live` 1-0 → `live` RN-01. Barrido a +200 → `finished provisional RN-02` 1-0, `forcedFinish` y una alerta `forced_finish`. A +230 llega `finished` 2-1 → `finished confirmado RN-12` 2-1.
 - **CA-5 Modelo y migración.**
   - El `refine` de `Decision` (`src/model/entities.ts`) admite `sen_sinal` con `status` `live` o `scheduled`.
   - Una migración cambia `decisions_sen_sinal_check` a `status in ('live','scheduled')`.
@@ -89,7 +91,8 @@ con H-1..H-6 decididas.
 - Specs: SPEC-013 CA-6 (camino de CA-7) y SPEC-017 CA-3 y CA-4.
 
 ## Fuera de alcance
-- Partidos `live` sin cierre de la fuente: los cierra RN-02 a +120, como hoy.
+- Partidos `live` sin cierre de la fuente: los cierra RN-02 a +120, como hoy, también en la prórroga (CA-2).
+- Suspender RN-02 en la prórroga: pide un ADR que enmiende RN-02 y ADR-009 §4 (N-4).
 - `postponed` y `suspended`: son ADR-012 y SPEC-016.
 - Corregir el calendario: SPEC-015.
 - Segunda fuente u operador: EPIC-004.
@@ -108,3 +111,4 @@ con H-1..H-6 decididas.
   - `decisions` sube exactamente en 2.
   - Si falla, no hay segunda petición sin una autorización nueva.
 - **N-3** El horizonte de +6 h tiene cota (+206 y +236 en los dos tardíos), no una medida exacta (R-ADR-013-2). CA-8 lo vuelve a medir.
+- **N-4 CA-2 enmendada (F-SPEC-018-6).** **Decidido por Alberto Fojo, 2026-10-06:** se arregla en esta rama antes del 2026-10-09. La (iii) original sacaba de ventana un `live` a +200 contra ADR-013 §1, y el cierre forzoso se quedaba sin RN-12. La letra nueva es del arquitecto y cumple ADR-013, ADR-009 y ADR-010 sin tocarlos. **Mirar en el gate:** un `live` en la prórroga se publica `finished provisional` con el marcador parcial hasta que llegue el `FT`. No cerrarlo pide un ADR nuevo.
