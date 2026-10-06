@@ -27,6 +27,11 @@ Actualizado: 2026-10-06
 | SPEC-016 — rn-02-por-fuente-aplazado-y-suspendido-sin-operador | hecho | 2026-10-04 (sdd-verificador) |
 | SPEC-018 — partido-sin-directo-prorroga-de-la-ventana-sen-sinal-en-scheduled-y-linea-del-informe | hecho | 2026-10-06 (sdd-verificador) |
 
+## EPIC-003 — xornada-publica (aprobada)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
+
 ## EPIC-FIX (aprobada)
 
 | Spec | Estado | Último cambio |
