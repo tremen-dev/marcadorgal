@@ -1756,4 +1756,63 @@ describe("SPEC-018 CA-4 sen_sinal in scheduled", () => {
       ),
     ).toEqual({ decision: null, open: [], resolve: [] });
   });
+
+  // N-4 (F-SPEC-018-6): a late live in the extension, with no change in
+  // engine.ts. RN-02 and ADR-009 §4 close it at once with its alert, the
+  // window keeps it (CA-2) and RN-12 publishes the FT of the source.
+  it("(vii) late live at +200: live RN-01, forced finish RN-02 in the sweep, RN-12 at +230", () => {
+    const silent = current(scheduled, {
+      qualifier: "sen_sinal",
+      rule: "RN-05",
+    });
+    const late = obs("ten", 199, live(1, 0, 70));
+    const first = decide(
+      input({ current: silent, observations: [late], now: at(200) }),
+    );
+    expect(first.decision).toMatchObject({
+      status: "live",
+      score: { home: 1, away: 0 },
+      qualifier: "provisional",
+      rule: "RN-01",
+      forcedFinish: false,
+    });
+    expect(first.open).toEqual([]);
+
+    const vigenteLive = {
+      ...first.decision,
+      id: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb" as DecisionId,
+      version: 2,
+    } as Decision;
+    const sweep = decide(
+      input({ current: vigenteLive, observations: [], now: at(200) }),
+    );
+    expect(sweep.decision).toMatchObject({
+      status: "finished",
+      score: { home: 1, away: 0 },
+      qualifier: "provisional",
+      rule: "RN-02",
+      forcedFinish: true,
+      decidedAt: at(200),
+    });
+    expect(sweep.open.map((a) => a.kind)).toEqual(["forced_finish"]);
+
+    const vigenteForced = {
+      ...sweep.decision,
+      id: "cccccccc-cccc-4ccc-8ccc-cccccccccccc" as DecisionId,
+      version: 3,
+    } as Decision;
+    const ft = obs("ten", 229, finished(2, 1));
+    const confirmed = decide(
+      input({ current: vigenteForced, observations: [ft], now: at(230) }),
+    );
+    expect(confirmed.decision).toMatchObject({
+      status: "finished",
+      score: { home: 2, away: 1 },
+      qualifier: "confirmado",
+      rule: "RN-12",
+      forcedFinish: false,
+    });
+    expect(confirmed.decision?.observationIds).toEqual([ft.id]);
+    expect(confirmed.open).toEqual([]);
+  });
 });
