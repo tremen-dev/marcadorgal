@@ -171,3 +171,22 @@ export async function informeFilas(
     })),
   };
 }
+
+// SPEC-017 CA-2. The newest contrast stored under this etiqueta, as a raw_ref,
+// or null when there is none. Read only, out of the catalogue of Storage, the
+// way the purge of ADR-007 §5 lists its keys: the object itself is read back
+// through the Storage API by contraste.ts. The etiqueta is the tail of the key
+// (ADR-007 §2), compared as text and not with like, whose '_' and '%' mean
+// something else.
+export async function contrasteGuardado(
+  sql: Sql | TransactionSql,
+  etiqueta: string,
+): Promise<string | null> {
+  const cola = `-${etiqueta}.json.gz`;
+  const [row] = await sql<{ name: string }[]>`
+    select name from storage.objects
+    where bucket_id = 'raw' and name is not null
+      and right(name, ${cola.length}) = ${cola}
+    order by created_at desc, name desc limit 1`;
+  return row === undefined ? null : `raw/${row.name}`;
+}

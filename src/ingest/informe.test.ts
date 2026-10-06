@@ -1110,7 +1110,7 @@ describe("CA-1 npm run informe:jornada", () => {
     expect(r.status).toBe(1);
     expect(r.stderr).toContain("faltan <desde> y <hasta>");
     expect(r.stderr).toContain(
-      "<desde> <hasta> [--referencias <fichero>] [--contrastar]",
+      "<desde> <hasta> [--referencias <fichero>] [--contrastar | --recontrastar]",
     );
     expect(r.stdout).toBe("");
   });
@@ -2126,5 +2126,81 @@ describe("CA-10 el tope se cumple por construcción, no por fixture", () => {
     expect(texto).toContain("partidos sin respuesta del proveedor: 6");
     expect(texto).toContain("con al menos un hueco > 15 min: 27");
     expect(texto).toMatch(/por competición: /);
+  });
+});
+
+// SPEC-017 CA-1/CA-2. La línea de las peticiones del contraste dice de qué
+// captura sale: la que se pidió en esta ejecución, con su raw_ref, o la que se
+// releyó del raw store, con cuándo se capturó y cuánto costó entonces.
+describe("SPEC-017 CA-1/CA-2 el origen del contraste", () => {
+  const REF =
+    "raw/api-football/2026-09-28/2026-09-28T21-30-00.000Z-contraste-x.json.gz";
+  const fila = {
+    matchId: MATCH,
+    proveedor: { status: "finished" as const, score: { home: 1, away: 0 } },
+  };
+  const linea = (texto: string) =>
+    texto.split("\n").find((l) => l.startsWith("peticiones del contraste:"));
+
+  it("SPEC-017 CA-1 el raw_ref va en la misma línea que las peticiones", () => {
+    const { texto } = informeJornada(
+      vacio({
+        matches: [partido()],
+        contraste: [fila],
+        contrastePeticiones: 3,
+        contrasteCapturas: [
+          {
+            rawRef: REF,
+            capturedAt: "2026-09-28T21:30:00.000Z",
+            peticiones: 3,
+            releida: false,
+          },
+        ],
+      }),
+    );
+    expect(linea(texto)).toBe(
+      `peticiones del contraste: 3 (aparte de las del tick) · raw_ref: ${REF}`,
+    );
+  });
+
+  it("SPEC-017 CA-2 la línea dice de dónde sale el contraste", () => {
+    const { texto } = informeJornada(
+      vacio({
+        matches: [partido()],
+        contraste: [fila],
+        contrastePeticiones: 0,
+        contrasteCapturas: [
+          {
+            rawRef: REF,
+            capturedAt: "2026-09-28T21:30:00.000Z",
+            peticiones: 3,
+            releida: true,
+          },
+        ],
+      }),
+    );
+    expect(linea(texto)).toBe(
+      `peticiones del contraste: 0 en esta ejecución; releído de ${REF}, capturado 2026-09-28T21:30:00.000Z, 3 peticiones entonces`,
+    );
+  });
+
+  it("SPEC-017 CA-2 un contraste ilegible no existe: dice su motivo y no hay veredicto", () => {
+    const { texto, informe } = informeJornada(
+      vacio({
+        matches: [partido()],
+        contraste: null,
+        contrasteAusente: `la captura guardada ${REF} no se pudo leer`,
+      }),
+    );
+    expect(texto).toContain(
+      `(sin datos: la captura guardada ${REF} no se pudo leer)`,
+    );
+    expect(texto).not.toContain("se generó el informe sin --contrastar");
+    // El mismo veredicto que sin --contrastar (V-15): sin contraste no hay
+    // CA-9 (a) medido, sea porque no se pidió o porque no se pudo releer.
+    expect(informe.contraste).toBeNull();
+    expect(informe.veredicto).toEqual(
+      informeJornada(vacio({ matches: [partido()] })).informe.veredicto,
+    );
   });
 });

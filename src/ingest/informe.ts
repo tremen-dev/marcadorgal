@@ -106,6 +106,16 @@ export type ContrasteFila = {
   motivo?: string;
 };
 
+// SPEC-017 CA-1/CA-2. The capture a contrast comes from: asked in this run
+// (releida false) or read back from the raw store (releida true), with the
+// requests it cost when it was asked.
+export type ContrasteCaptura = {
+  rawRef: string;
+  capturedAt: Instant;
+  peticiones: number;
+  releida: boolean;
+};
+
 // The three facts of CA-9 that no query can answer: a person declares them.
 export type Declaraciones = {
   intervencionSobreElDato?: readonly string[];
@@ -130,6 +140,11 @@ export type InformeInput = {
   contraste: readonly ContrasteFila[] | null;
   // Requests the contrast made, noted apart from the tick's (CA-5, RN-08).
   contrastePeticiones?: number;
+  // The captures the contrast comes from, one per season (SPEC-017 CA-1/CA-2).
+  contrasteCapturas?: readonly ContrasteCaptura[];
+  // Why there is no contrast although --contrastar was given (SPEC-017 CA-2):
+  // its stored capture could not be read, and a second round is never implicit.
+  contrasteAusente?: string;
   declaraciones?: Declaraciones;
 };
 
@@ -1100,7 +1115,11 @@ export function informeJornada(input: InformeInput): {
     "ventana (RN-08), anotadas aparte de las del tick.",
   );
   if (input.contraste === null)
-    push(sinDatos("se generó el informe sin --contrastar"));
+    push(
+      sinDatos(
+        input.contrasteAusente ?? "se generó el informe sin --contrastar",
+      ),
+    );
   else {
     const coinciden: string[] = [];
     const aplazados: NonNullable<
@@ -1176,7 +1195,10 @@ export function informeJornada(input: InformeInput): {
     };
     push(
       `${coinciden.length} de ${input.contraste.length} partidos con \`finished\` y marcador coincidente.`,
-      `peticiones del contraste: ${input.contrastePeticiones ?? 0} (aparte de las del tick)`,
+      lineaPeticionesContraste(
+        input.contrastePeticiones ?? 0,
+        input.contrasteCapturas ?? [],
+      ),
       "coinciden:",
       ...primeras(coinciden, "(ninguno)"),
       `aplazamientos que el proveedor confirma: ${aplazados.length}`,
@@ -1317,6 +1339,29 @@ export function informeJornada(input: InformeInput): {
     veredicto,
   };
   return { texto: redact(out.join("\n"), input.secrets), informe };
+}
+
+// SPEC-017 CA-1/CA-2: one line says what the contrast cost in this run and
+// which capture it comes from — the raw_ref of the one asked now, or where the
+// one read back was stored, when it was captured and what it cost then.
+function lineaPeticionesContraste(
+  peticiones: number,
+  capturas: readonly ContrasteCaptura[],
+): string {
+  const pedidas = capturas.filter((c) => !c.releida);
+  const releidas = capturas.filter((c) => c.releida);
+  const cuenta =
+    releidas.length === 0
+      ? `${peticiones} (aparte de las del tick)`
+      : `${peticiones} en esta ejecución`;
+  return [
+    `peticiones del contraste: ${cuenta}`,
+    ...pedidas.map((c) => ` · raw_ref: ${c.rawRef}`),
+    ...releidas.map(
+      (c) =>
+        `; releído de ${c.rawRef}, capturado ${c.capturedAt}, ${c.peticiones} peticiones entonces`,
+    ),
+  ].join("");
 }
 
 // One line with the per-competition breakdown, so capping the list below never

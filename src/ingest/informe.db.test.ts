@@ -2,10 +2,11 @@ import type { TransactionSql } from "postgres";
 import { afterAll, describe, expect, it } from "vitest";
 import { AliasFile, type Instant, MINUTE_MS, shiftInstant } from "@/model";
 import { createSql } from "../db/connect.ts";
+import { createMemoryRawStore } from "../raw/memory.ts";
 import { apiFootballByIds } from "../sources/api-football/results.ts";
 import { contrastarMarcadores } from "./contraste.ts";
 import { informeJornada } from "./informe.ts";
-import { informeFilas } from "./informe-db.ts";
+import { contrasteGuardado, informeFilas } from "./informe-db.ts";
 
 // SPEC-009 CA-2/CA-3/CA-4/CA-5: the queries of the report against the real
 // schema, always rolled back. Nothing is instrumented and nothing is migrated:
@@ -325,6 +326,9 @@ describe("CA-5 el contraste con el proveedor", () => {
             now: seg(200),
             fetch: doble,
           }),
+        store: createMemoryRawStore(),
+        etiqueta: "contraste-test",
+        guardado: null,
       });
       // One request for two ids (≤ 20 per request, SPEC-005).
       expect(urls).toEqual([
@@ -336,6 +340,7 @@ describe("CA-5 el contraste con el proveedor", () => {
       const { texto, informe } = genera(filas, {
         contraste: salida.filas,
         contrastePeticiones: salida.peticiones,
+        contrasteCapturas: salida.captura === null ? [] : [salida.captura],
       });
       expect(informe.contraste).toMatchObject({ total: 2, coinciden: 1 });
       expect(informe.contraste?.discrepancias).toEqual([
@@ -351,5 +356,22 @@ describe("CA-5 el contraste con el proveedor", () => {
       );
       expect(texto).toContain("raw/ultimo.gz");
       expect(texto).toContain("peticiones del contraste: 1");
+    }));
+});
+
+describe("SPEC-017 CA-2 el contraste guardado", () => {
+  it("SPEC-017 CA-2 encuentra el contraste por su etiqueta", () =>
+    rollback(async (tx) => {
+      // Una etiqueta que nadie más usa: la búsqueda es por la cola de la clave.
+      const etiqueta = `contraste-test-${crypto.randomUUID()}-2026-27`;
+      const viejo = `api-football/2027-07-04/2027-07-04T21-00-00.000Z-${etiqueta}.json.gz`;
+      const nuevo = `api-football/2027-07-05/2027-07-05T09-00-00.000Z-${etiqueta}.json.gz`;
+      const otra = `api-football/2027-07-05/2027-07-05T10-00-00.000Z-${etiqueta}-otra.json.gz`;
+      await tx`insert into storage.objects (bucket_id, name, created_at)
+        values ('raw', ${viejo}, ${seg(0)}),
+               ('raw', ${nuevo}, ${seg(3600)}),
+               ('raw', ${otra}, ${seg(7200)})`;
+      expect(await contrasteGuardado(tx, etiqueta)).toBe(`raw/${nuevo}`);
+      expect(await contrasteGuardado(tx, `${etiqueta}-nada`)).toBeNull();
     }));
 });
