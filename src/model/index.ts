@@ -4,6 +4,7 @@ export * from "./entities.ts";
 export * from "./ids.ts";
 export * from "./instant.ts";
 export * from "./json.ts";
+export * from "./public.ts";
 export * from "./source.ts";
 export * from "./state.ts";
 export * from "./vocab.ts";
