@@ -1,3 +1,9 @@
+// Frozen copy of src/decide/engine.ts at 0a40046 (main before SPEC-016): the
+// engine that ran 2026-10-03, when RN-02 still kept postponed and suspended
+// for the federation or the operator. A fixture and nothing else (SPEC-016
+// CA-3): it lets the replay show what "the engine of main" publishes against
+// what the engine of ADR-012 does. Never imported by production code; never
+// edited — it is history, not behaviour.
 import {
   type AlertKind,
   type DecisionRule,
@@ -12,21 +18,21 @@ import {
   OPERATOR_PRIORITY,
   type Qualifier,
   type Score,
-} from "../model/index.ts";
+} from "../../model/index.ts";
 import {
   CONFLICT_GRACE_MINUTES,
   FORCED_FINISH_MINUTES,
   KICKOFF_GRACE_MINUTES,
   OBSERVATION_WINDOW_MINUTES,
   SILENCE_MINUTES,
-} from "./thresholds.ts";
+} from "../thresholds.ts";
 import type {
   AlertDraft,
   DecisionDraft,
   EngineInput,
   EngineOutput,
   LastHeard,
-} from "./types.ts";
+} from "../types.ts";
 
 // One candidate: the freshest observation of a source, with its priority.
 type Candidate = { observation: Observation; priority: number };
@@ -70,16 +76,17 @@ const tuple = (s: MatchState & { qualifier: Qualifier }) =>
 
 // RN-02 as a guard: an illegal transition never publishes, whichever rule
 // would have decided it. The forced finish of RN-02 is evaluated apart (H-3).
-// postponed and suspended come from the winning source like any other
-// transition, and leaving them is one more transition (ADR-012 §1, §3).
 function transitionAllowed(
   from: MatchStatus | null,
   to: MatchStatus,
+  priority: number,
   kickoff: Instant,
   now: Instant,
 ): boolean {
   // Nothing goes back from finished but the operator, handled before this.
   if (from === "finished" && to !== "finished") return false;
+  if (to === "postponed" || to === "suspended")
+    return priority >= FEDERATION_PRIORITY;
   const fresh = from === null || from === "scheduled";
   // A live claimed too far from kickoff is dropped in silence (N-5).
   if (fresh && to === "live")
@@ -103,12 +110,6 @@ const sameScore = (a: MatchState, b: MatchState) =>
   b.score !== null &&
   a.score.home === b.score.home &&
   a.score.away === b.score.away;
-
-// CA-7: a second source agrees when it says the same status and, if that
-// status carries a score, the same score (a postponed has none: ADR-012 §2).
-const agrees = (a: MatchState, b: MatchState) =>
-  a.status === b.status &&
-  ((a.score === null && b.score === null) || sameScore(a, b));
 
 // H-4: two priorities are adjacent when no other source the engine can see
 // carries a priority strictly between them. Equal priority counts.
@@ -225,7 +226,8 @@ export function decide(input: EngineInput): EngineOutput {
     const confirmer = ranked.find(
       (r) =>
         r.observation.sourceId !== candidate.observation.sourceId &&
-        agrees(stateOf(r.observation), state),
+        stateOf(r.observation).status === state.status &&
+        sameScore(stateOf(r.observation), state),
     );
     return confirmer === undefined
       ? draft(state, rule, "provisional", [candidate.observation.id])
@@ -341,6 +343,7 @@ export function decide(input: EngineInput): EngineOutput {
     !transitionAllowed(
       current?.status ?? null,
       proposed.status,
+      winner.priority,
       match.kickoff,
       now,
     )

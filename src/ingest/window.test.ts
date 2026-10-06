@@ -72,6 +72,21 @@ describe("SPEC-013 CA-3 the forced finish keeps the window open", () => {
   });
 });
 
+// SPEC-016 CA-4 (ADR-012 §3): a postponed or a suspended published by the
+// source, provisional, keeps the match in window until +150 so a wrong PST
+// can still be undone; window.ts does not change to get there.
+describe("SPEC-016 CA-4 postponed and suspended keep the window open", () => {
+  it.each<MatchStatus>(["postponed", "suspended"])(
+    "keeps a %s match in until +150 and leaves it out after",
+    (status) => {
+      expect(inWindow(125, status, "RN-01")).toBe(true);
+      expect(inWindow(149, status, "RN-01")).toBe(true);
+      expect(inWindow(150, status, "RN-01")).toBe(false);
+      expect(inWindow(151, status, "RN-01")).toBe(false);
+    },
+  );
+});
+
 describe("CA-6 windowKickoffRange", () => {
   it("bounds kickoff by now minus 150 and now plus 10 minutes", () => {
     expect(windowKickoffRange("2026-09-25T18:30:00.000Z" as Instant)).toEqual({

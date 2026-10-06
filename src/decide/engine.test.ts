@@ -48,6 +48,8 @@ const finished = (home: number, away: number) =>
   ({ status: "finished", score: { home, away }, minute: null }) as const;
 const scheduled = { status: "scheduled", score: null, minute: null } as const;
 const postponed = { status: "postponed", score: null, minute: null } as const;
+const suspended = (home: number, away: number) =>
+  ({ status: "suspended", score: { home, away }, minute: null }) as const;
 
 const obs = (
   sourceId: string,
@@ -190,11 +192,15 @@ describe("CA-3 RN-02 transitions", () => {
     expect(decision).toMatchObject({ status: "finished", rule: "RN-01" });
   });
 
-  it("does not publish postponed from a provider", () => {
+  it("publishes postponed from a provider, provisional (ADR-012)", () => {
     const { decision } = decide(
       input({ observations: [obs("ten", 49, postponed)] }),
     );
-    expect(decision).toBeNull();
+    expect(decision).toMatchObject({
+      status: "postponed",
+      rule: "RN-01",
+      qualifier: "provisional",
+    });
   });
 
   it("publishes postponed from a federation source", () => {
@@ -1005,5 +1011,162 @@ describe("SPEC-013 CA-4 RN-12 accepts the final the source confirms", () => {
       rule: "RN-12",
       qualifier: "confirmado",
     });
+  });
+});
+
+describe("SPEC-016 CA-2 postponed and suspended without an operator", () => {
+  it("(i) publishes postponed from a provider with no Decision, no alerts", () => {
+    const observation = obs("ten", 49, postponed);
+    expect(decide(input({ observations: [observation] }))).toEqual({
+      decision: {
+        status: "postponed",
+        score: null,
+        minute: null,
+        matchId: MATCH.id,
+        qualifier: "provisional",
+        rule: "RN-01",
+        observationIds: [observation.id],
+        decidedAt: at(50),
+      },
+      open: [],
+      resolve: [],
+    });
+  });
+
+  it("(ii) publishes suspended 1-1 over a live 1-1, provisional", () => {
+    const { decision, open } = decide(
+      input({
+        current: current(live(1, 1, 60)),
+        observations: [obs("ten", 49, suspended(1, 1))],
+      }),
+    );
+    expect(decision).toMatchObject({
+      status: "suspended",
+      score: { home: 1, away: 1 },
+      minute: null,
+      qualifier: "provisional",
+      rule: "RN-01",
+    });
+    expect(open).toEqual([]);
+  });
+
+  it("(iii) leaves postponed for live", () => {
+    const { decision } = decide(
+      input({
+        current: current(postponed),
+        observations: [obs("ten", 49, live(0, 0, 50))],
+      }),
+    );
+    expect(decision).toMatchObject({
+      status: "live",
+      score: { home: 0, away: 0 },
+      rule: "RN-01",
+      qualifier: "provisional",
+    });
+  });
+
+  it("(iii) leaves postponed for scheduled", () => {
+    const { decision } = decide(
+      input({
+        current: current(postponed),
+        observations: [obs("ten", 49, scheduled)],
+      }),
+    );
+    expect(decision).toMatchObject({
+      status: "scheduled",
+      rule: "RN-01",
+      qualifier: "provisional",
+    });
+  });
+
+  it("(iii) leaves suspended for live", () => {
+    const { decision } = decide(
+      input({
+        current: current(suspended(1, 1)),
+        observations: [obs("ten", 49, live(1, 1, 70))],
+      }),
+    );
+    expect(decision).toMatchObject({
+      status: "live",
+      score: { home: 1, away: 1 },
+      rule: "RN-01",
+      qualifier: "provisional",
+    });
+  });
+
+  it("(iv) confirms postponed when a second source of priority 20 agrees", () => {
+    const ten = obs("ten", 48, postponed);
+    const twenty = obs("twenty", 49, postponed);
+    const { decision } = decide(input({ observations: [ten, twenty] }));
+    expect(decision).toMatchObject({
+      status: "postponed",
+      rule: "RN-01",
+      qualifier: "confirmado",
+      observationIds: [twenty.id, ten.id],
+    });
+  });
+
+  it("(iv) confirms suspended when a second source agrees on the score", () => {
+    const { decision } = decide(
+      input({
+        current: current(live(1, 1, 60)),
+        observations: [
+          obs("ten", 48, suspended(1, 1)),
+          obs("twenty", 49, suspended(1, 1)),
+        ],
+      }),
+    );
+    expect(decision).toMatchObject({
+      status: "suspended",
+      score: { home: 1, away: 1 },
+      qualifier: "confirmado",
+    });
+  });
+
+  it("(iv) a federation source still confirms on its own", () => {
+    const { decision } = decide(
+      input({ observations: [obs("fifty", 49, postponed)] }),
+    );
+    expect(decision).toMatchObject({
+      status: "postponed",
+      rule: "RN-01",
+      qualifier: "confirmado",
+    });
+  });
+
+  it("(v) does not force-finish a suspended at kickoff + 120", () => {
+    const vigente = current(suspended(1, 1));
+    expect(
+      decide(input({ current: vigente, observations: [], now: at(121) })),
+    ).toEqual({ decision: null, open: [], resolve: [] });
+    expect(
+      decide(
+        input({
+          current: vigente,
+          observations: [obs("ten", 120, suspended(1, 1))],
+          now: at(121),
+        }),
+      ),
+    ).toEqual({ decision: null, open: [], resolve: [] });
+  });
+
+  it("(vi) publishes nothing over a finished from a postponed", () => {
+    for (const source of ["ten", "fifty"])
+      expect(
+        decide(
+          input({
+            current: current(finished(2, 1), { qualifier: "confirmado" }),
+            observations: [obs(source, 49, postponed)],
+          }),
+        ),
+      ).toEqual({ decision: null, open: [], resolve: [] });
+    expect(
+      decide(
+        input({
+          current: current(finished(2, 1)),
+          observations: [obs("ten", 49, postponed)],
+        }),
+      ).decision,
+    ).toBeNull();
   });
 });

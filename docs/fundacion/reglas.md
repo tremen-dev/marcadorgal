@@ -12,8 +12,11 @@
 - **RN-02 — Transiciones.** `scheduled → live` cuando una fuente lo dice y
   el kickoff está a menos de 15 minutos. `live → finished` cuando lo dice la
   fuente ganadora, o a kickoff + 120 minutos si nadie lo cierra (con
-  cualificador `provisional`). `postponed` y `suspended` solo por fuente con
-  prioridad de federación o por operador. No hay más transiciones automáticas.
+  cualificador `provisional`). `postponed` y `suspended` los da la fuente
+  ganadora, como cualquier otra transición. Sin federación ni operador que lo
+  confirme, salen `provisional`. Salir de ellos es una transición más y sigue
+  la misma regla. No hay más transiciones automáticas.
+  *Enmendada el 2026-10-04 por ADR-012.*
 - **RN-03 — Monotonía.** **Mientras el partido está en juego**, un marcador
   solo lo baja una fuente con más peso que la que lo subió; hoy, el operador: un
   gol que sube el operador no lo baja API-Football. Si una fuente que no pesa más

@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-09-29
+Actualizado: 2026-10-04
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -22,19 +22,23 @@ Actualizado: 2026-09-29
 | SPEC-008 — despliegue-del-tick-pg-cron-vercel-cron-variables-y-sincronizacion-del-calendario | hecho | 2026-09-22 (sdd-verificador) |
 | SPEC-009 — jornada-de-medicion-e-informe | hecho | 2026-09-29 (sdd-verificador) |
 | SPEC-012 — la-monotonia-no-sobrevive-al-cierre-y-replay-de-la-jornada-medida | hecho | 2026-09-29 (sdd-verificador) |
-| SPEC-013 — reconciliacion-del-marcador-despues-del-cierre-forzoso | aprobada | 2026-09-29 (Alberto Fojo) |
+| SPEC-013 — reconciliacion-del-marcador-despues-del-cierre-forzoso | en-revision | 2026-09-29 (sdd-implementador) |
+| SPEC-014 — rn-03-en-vivo-por-fuente-la-bajada-la-da-quien-subio-el-gol | aprobada | 2026-09-29 (Alberto Fojo) |
+| SPEC-016 — rn-02-por-fuente-aplazado-y-suspendido-sin-operador | hecho | 2026-10-04 (sdd-verificador) |
 
 ## EPIC-FIX (aprobada)
 
 | Spec | Estado | Último cambio |
 |---|---|---|
 | SPEC-011 — peticion-live-con-una-sola-competicion-y-errores-por-peticion-que-no-tiran-el-intento | hecho | 2026-09-23 (sdd-verificador) |
+| SPEC-015 — el-calendario-declarado-llega-tarde-a-la-jornada | en-revision | 2026-09-29 (sdd-implementador) |
 
 ## EPIC-MANT — mantenimiento (borrador)
 
 | Spec | Estado | Último cambio |
 |---|---|---|
 | SPEC-010 — salud-del-tick-sin-falsos-fallos-y-retirada-de-medir-directo | hecho | 2026-09-22 (sdd-verificador) |
+| SPEC-017 — mejoras-del-informe-de-jornada | aprobada | 2026-09-29 (Alberto Fojo) |
 
 ## ADRs
 
@@ -50,8 +54,11 @@ Actualizado: 2026-09-29
 | ADR-008 | aprobada | nucleo-de-ingesta-tick-autenticado-cadencia-concurrencia-y-puntos-de-enganche | 2026-09-21 (Alberto Fojo) |
 | ADR-009 | aprobada | ejecucion-del-motor-enganche-por-observaciones-barrido-por-ausencia-y-precisiones-a-rn-02-rn-04 | 2026-09-21 (Alberto Fojo) |
 | ADR-010 | aprobada | el-cierre-manda-sobre-la-monotonia-y-reconciliacion-tras-el-cierre-forzoso | 2026-09-29 (Alberto Fojo) |
+| ADR-011 | aprobada | rn-03-en-vivo-baja-la-misma-fuente-que-subio-el-gol-u-otra-de-mas-peso | 2026-09-29 (Alberto Fojo) |
+| ADR-012 | aprobada | rn-02-postponed-y-suspended-los-da-la-fuente-ganadora-con-cualificador-y-reversibles | 2026-10-04 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 12
-- aprobada: 1
+- hecho: 13
+- en-revision: 2
+- aprobada: 2

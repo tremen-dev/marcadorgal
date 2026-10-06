@@ -15,7 +15,12 @@ import {
   shiftInstant,
 } from "../model/index.ts";
 import { createApiFootballResults } from "../sources/api-football/results.ts";
+import { decide as decideAt0a40046 } from "./fixtures/engine-0a40046.ts";
 import { decide as decideAt812c805 } from "./fixtures/engine-812c805.ts";
+import {
+  SABADELL_ANDORRA,
+  sabadellAndorra,
+} from "./fixtures/sabadell-andorra-2026-10-03.ts";
 import { replay } from "./replay.ts";
 import type { EngineMatch } from "./types.ts";
 
@@ -336,5 +341,57 @@ describe("SPEC-012 CA-3 the replay of girona-albacete across ADR-010 §1", () =>
       score: { home: 2, away: 0 },
       rule: "RN-01",
     });
+  });
+});
+
+describe("SPEC-016 CA-3 the replay of sabadell-andorra across ADR-012", () => {
+  const decisions = (steps: ReturnType<typeof replay>) =>
+    steps.flatMap((s) =>
+      s.output.decision === null ? [] : [s.output.decision],
+    );
+
+  it("holds the 319 real rows, all postponed from the provider", () => {
+    expect(sabadellAndorra).toHaveLength(319);
+    expect(new Set(sabadellAndorra.map((o) => o.id)).size).toBe(319);
+    expect(new Set(sabadellAndorra.map((o) => o.status))).toEqual(
+      new Set(["postponed"]),
+    );
+    expect(new Set(sabadellAndorra.map((o) => o.sourceId))).toEqual(
+      new Set(["api-football"]),
+    );
+    expect(sabadellAndorra[0].observedAt).toBe("2026-10-03T16:20:25.643Z");
+    expect(sabadellAndorra.at(-1)?.observedAt).toBe("2026-10-03T18:59:34.721Z");
+  });
+
+  it("publishes nothing with the engine of main", () => {
+    const steps = replay({
+      match: SABADELL_ANDORRA,
+      priority: PROVIDER,
+      observations: sabadellAndorra,
+      engine: decideAt0a40046,
+    });
+    expect(steps).toHaveLength(319);
+    expect(decisions(steps)).toEqual([]);
+  });
+
+  it("publishes one postponed provisional with the engine of today", () => {
+    const steps = replay({
+      match: SABADELL_ANDORRA,
+      priority: PROVIDER,
+      observations: sabadellAndorra,
+    });
+    expect(decisions(steps)).toEqual([
+      {
+        matchId: SABADELL_ANDORRA.id,
+        status: "postponed",
+        score: null,
+        minute: null,
+        qualifier: "provisional",
+        rule: "RN-01",
+        observationIds: [sabadellAndorra[0].id],
+        decidedAt: "2026-10-03T16:20:25.643Z",
+      },
+    ]);
+    expect(steps.flatMap((s) => s.output.open)).toEqual([]);
   });
 });
