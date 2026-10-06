@@ -31,6 +31,7 @@ Actualizado: 2026-10-06
 
 | Spec | Estado | Último cambio |
 |---|---|---|
+| SPEC-019 — pantalla-xornada-movil-filas-estados-y-cualificadores-sobre-datos-de-demostracion | aprobada | 2026-10-06 (Alberto Fojo) |
 
 ## EPIC-FIX (aprobada)
 
@@ -63,8 +64,10 @@ Actualizado: 2026-10-06
 | ADR-011 | aprobada | rn-03-en-vivo-baja-la-misma-fuente-que-subio-el-gol-u-otra-de-mas-peso | 2026-09-29 (Alberto Fojo) |
 | ADR-012 | aprobada | rn-02-postponed-y-suspended-los-da-la-fuente-ganadora-con-cualificador-y-reversibles | 2026-10-04 (Alberto Fojo) |
 | ADR-013 | aprobada | partido-sin-directo-de-la-fuente-prorroga-de-la-ventana-hasta-el-final-y-sen-sinal-en-scheduled | 2026-10-04 (Alberto Fojo) |
+| ADR-014 | aprobada | entorno-de-produccion-y-acceso-publico-a-board | 2026-10-06 (Alberto Fojo) |
 
 ## Resumen
 
 - hecho: 17
+- aprobada: 1
 - en-revision: 1
