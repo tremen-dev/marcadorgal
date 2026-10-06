@@ -19,6 +19,9 @@ export type WindowInput = {
   kickoff: Instant;
   status: MatchStatus;
   forcedFinish: boolean | null;
+  // When the current Decision was decided, null without one: it tells a live
+  // or a forced finish decided in the extension (SPEC-018 CA-2).
+  decidedAt: Instant | null;
 };
 
 // Window of ADR-002 §2, pure: now is given, never read. A match leaves the
@@ -31,10 +34,13 @@ export type WindowInput = {
 //
 // Since ADR-013 §1 (SPEC-018 CA-2) a match still scheduled at +150 —the board
 // reads a match without a Decision as scheduled— is extended until +360: the
-// source did not give it live and its final may come late. Any other status
-// leaves at +150 as before.
+// source did not give it live and its final may come late. A live decided in
+// the extension stays too, and so does the finished RN-02 forces from it in
+// the same tick, so RN-12 can hear the FT of the source (N-4). A live or a
+// forced finish decided before +150, a postponed or a suspended leave at +150
+// as before.
 export function isInWindow(
-  { kickoff, status, forcedFinish }: WindowInput,
+  { kickoff, status, forcedFinish, decidedAt }: WindowInput,
   now: Instant,
 ): boolean {
   if (status === "finished" && forcedFinish !== true) return false;
@@ -42,7 +48,13 @@ export function isInWindow(
   const nowMs = Date.parse(now);
   if (nowMs < kickoffMs - WINDOW_BEFORE_MINUTES * MINUTE_MS) return false;
   if (nowMs < kickoffMs + WINDOW_AFTER_MINUTES * MINUTE_MS) return true;
-  return status === "scheduled" && isInExtension({ kickoff }, now);
+  if (!isInExtension({ kickoff }, now)) return false;
+  if (status === "scheduled") return true;
+  if (status !== "live" && status !== "finished") return false;
+  return (
+    decidedAt !== null &&
+    Date.parse(decidedAt) >= kickoffMs + WINDOW_AFTER_MINUTES * MINUTE_MS
+  );
 }
 
 // The extension proper, [+150, +360), whatever the status: isInWindow has

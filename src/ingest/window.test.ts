@@ -22,13 +22,24 @@ const KICKOFF = "2026-09-25T18:30:00.000Z" as Instant;
 
 // forcedFinish is the mark of the current Decision (SPEC-014 CA-8): true
 // only for the forced finish of RN-02, false or null for anything else.
+// decidedAt is when that Decision was decided, in minutes from kickoff, or
+// null without a Decision (SPEC-018 CA-2).
 const inWindow = (
   minutes: number,
   status: MatchStatus = "scheduled",
   forcedFinish: boolean | null = null,
+  decidedMinutes: number | null = null,
 ) =>
   isInWindow(
-    { kickoff: KICKOFF, status, forcedFinish },
+    {
+      kickoff: KICKOFF,
+      status,
+      forcedFinish,
+      decidedAt:
+        decidedMinutes === null
+          ? null
+          : shiftInstant(KICKOFF, decidedMinutes * MINUTE_MS),
+    },
     shiftInstant(KICKOFF, minutes * MINUTE_MS),
   );
 
@@ -126,10 +137,11 @@ describe("SPEC-014 CA-8 CA-9 the window reads the mark, never the rule", () => {
   });
 });
 
-// SPEC-018 CA-2 (ADR-013 §1): a match still scheduled at +150 —or without a
-// Decision, which the board reads as scheduled— stays in window until +360,
-// polled every 5 minutes and only by ids= (CA-3). Any other status leaves at
-// +150, as before.
+// SPEC-018 CA-2 (ADR-013 §1, amended by N-4): a match still scheduled at
+// +150 —or without a Decision, which the board reads as scheduled— stays in
+// window until +360, polled every 5 minutes and only by ids= (CA-3). So does
+// a live, or a finished with the mark, decided in the extension. A finished
+// without the mark, a postponed or a suspended takes it out.
 describe("SPEC-018 CA-2 the extension of the window", () => {
   const at = (minutes: number) => shiftInstant(KICKOFF, minutes * MINUTE_MS);
 
@@ -149,13 +161,55 @@ describe("SPEC-018 CA-2 the extension of the window", () => {
   });
 
   it.each<[MatchStatus, boolean | null]>([
-    ["live", false],
     ["finished", false],
-    ["finished", true],
+    ["finished", null],
     ["postponed", false],
     ["suspended", false],
-  ])("(iii) a %s match (forced: %s) at +200 is out", (status, forced) => {
-    expect(inWindow(200, status, forced)).toBe(false);
+  ])(
+    "(iii) a %s match (forced: %s) of the source at +200 is out",
+    (status, forced) => {
+      expect(inWindow(200, status, forced, 200)).toBe(false);
+      expect(inWindow(200, status, forced, 120)).toBe(false);
+    },
+  );
+
+  // F-SPEC-018-6, N-4: a live, or the finished RN-02 forces from it, decided
+  // in the extension keeps the match in window so RN-12 can hear the FT of the
+  // source. Decided before +150 they leave at +150 (SPEC-013 CA-3 intact).
+  it.each<[MatchStatus, boolean | null]>([
+    ["live", false],
+    ["live", null],
+    ["finished", true],
+  ])(
+    "(iii) a %s (forced: %s) decided at +120 is out at +200",
+    (status, forced) => {
+      expect(inWindow(149, status, forced, 120)).toBe(true);
+      expect(inWindow(150, status, forced, 120)).toBe(false);
+      expect(inWindow(200, status, forced, 120)).toBe(false);
+    },
+  );
+
+  it.each<[MatchStatus, boolean | null]>([
+    ["live", false],
+    ["live", null],
+    ["finished", true],
+  ])(
+    "(iii) a %s (forced: %s) decided at +200 is in at +200 and +359, out at +360",
+    (status, forced) => {
+      expect(inWindow(200, status, forced, 200)).toBe(true);
+      expect(inWindow(359, status, forced, 200)).toBe(true);
+      expect(inWindow(360, status, forced, 200)).toBe(false);
+    },
+  );
+
+  it("(iii) the edge of the extension counts as decided in it", () => {
+    expect(inWindow(200, "live", false, 150)).toBe(true);
+    expect(inWindow(200, "live", false, 149)).toBe(false);
+  });
+
+  it("(iii) a scheduled stays in whatever its decidedAt", () => {
+    expect(inWindow(200, "scheduled", false, 20)).toBe(true);
+    expect(inWindow(200, "scheduled", false, null)).toBe(true);
   });
 
   it("(iv) at +200 the poll is due only when the last observation is 5 min old", () => {

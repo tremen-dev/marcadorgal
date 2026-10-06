@@ -86,7 +86,13 @@ function plan({
     if (
       Date.parse(vigente.kickoff) > Date.parse(now) ||
       isInWindow(
-        { kickoff: vigente.kickoff, status: "scheduled", forcedFinish: null },
+        // A scheduled is in or out by time alone: decidedAt does not matter.
+        {
+          kickoff: vigente.kickoff,
+          status: "scheduled",
+          forcedFinish: null,
+          decidedAt: null,
+        },
         now,
       )
     )

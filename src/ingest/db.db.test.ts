@@ -181,6 +181,37 @@ describe("SPEC-018 CA-2 windowMatches with the extension", () => {
       const later = await dbIn(tx).windowMatches(NOW);
       expect(later.map((r) => r.id)).not.toContain(outside);
     }));
+
+  // N-4 (F-SPEC-018-6): decided_at of the current Decision reaches
+  // isInWindow. At +200 a live, or a finished with the mark, decided in the
+  // extension stays in; decided at +120 it is out (SPEC-013 CA-3).
+  it.each([
+    ["live", null, 0, true],
+    ["finished", true, 0, true],
+    ["live", null, -80, false],
+    ["finished", true, -80, false],
+  ] as const)(
+    "at +200, a %s (mark %s) decided %s min from now is in window: %s",
+    (status, forcedFinish, decidedMinutes, inside) =>
+      rollback(async (tx) => {
+        const kickoff = at(-200 * MINUTE_MS);
+        const id = await seedMatch(tx, kickoff);
+        const decidedAt = at(decidedMinutes * MINUTE_MS);
+        const [{ id: oid }] = await tx`insert into observations
+          (match_id, source_id, status, home_score, away_score, observed_at, raw_ref)
+          values (${id}, 'test', 'live', 1, 0, ${decidedAt}, 'raw/x') returning id`;
+        await tx`insert into decisions
+          (match_id, status, home_score, away_score, qualifier, rule, observation_ids,
+           decided_at, forced_finish)
+          values (${id}, ${status}, 1, 0, 'provisional',
+            ${status === "live" ? "RN-01" : "RN-02"}, ${[oid]}, ${decidedAt},
+            ${forcedFinish})`;
+        const rows = await dbIn(tx).windowMatches(NOW);
+        const row = rows.find((r) => r.id === id);
+        expect(row !== undefined).toBe(inside);
+        if (row !== undefined) expect(row).not.toHaveProperty("decidedAt");
+      }),
+  );
 });
 
 describe("CA-6 openAttempt", () => {
