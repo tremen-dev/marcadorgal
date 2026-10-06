@@ -8,11 +8,6 @@ tipo: roadmap
 
 ## Ahora (en curso)
 
-Ninguna épica en curso desde el cierre de EPIC-002 (2026-10-06). El orden
-entre EPIC-003 y EPIC-004 está por decidir (ver EPIC-004).
-
-## Después (comprometido, sin empezar)
-
 - **EPIC-003 — Xornada pública.** Pantalla Xornada en móvil y escritorio según
   `docs/diseno/`, snapshot servido, Realtime con fallback a polling, tira de
   días, filtros, frescura, gl/es. Cierra con el dominio marcador.gal
@@ -24,13 +19,23 @@ entre EPIC-003 y EPIC-004 está por decidir (ver EPIC-004).
   medir la latencia interna exige un segundo reloj (ADR-008 §7); se trae de
   EPIC-002 porque no afecta a que el marcador sea correcto, solo a desglosar
   la latencia, y hace falta cuando se decida R-SPEC-009-6.
+  *Por qué ahora (titular, 2026-10-06):* el dato ya es correcto sin operador
+  (EPIC-002, SPEC-018) y tres de las cinco métricas norte de `vision.md`
+  (latencia mediana y p95, primera pintura) solo se miden con pantalla.
+  EPIC-004 no arregla rápido el directo de Tercera: la segunda fuente no está
+  identificada y el operador choca con «sin nadie detrás un sábado normal».
+  La pantalla muestra `sen sinal` donde la fuente no da directo.
+
+## Después (comprometido, sin empezar)
+
 - **EPIC-004 — Operador y fuentes push.** Panel mínimo con Auth, webhook
   genérico, segunda fuente automática registrada. Cierra cuando el operador
   corrige un marcador desde el móvil y el público lo ve en menos de 10 s.
   *Entrada de la jornada medida (2026-09-29):* **R-SPEC-009-3** — la fuente
   no dio en directo 4 de 9 partidos de Tercera; la cobertura se degrada con la
   categoría. Operador o segunda fuente son las dos salidas: es el argumento
-  para no retrasar esta épica tras EPIC-003. Decidir el orden al cerrar EPIC-002.
+  para no retrasar esta épica tras EPIC-003. **Orden decidido el 2026-10-06: va
+  después de EPIC-003** (ver «Ahora»).
   Recontado el 2026-10-04 (`EPIC-002/_qa/fuente-sin-directo/medicion.md`):
   descontado el calendario mal declarado, la fuente no dio en directo 2 de 9
   partidos de Tercera en J4 y 4 de 8 en J5, y 1 de 9 de Segunda RFEF en cada

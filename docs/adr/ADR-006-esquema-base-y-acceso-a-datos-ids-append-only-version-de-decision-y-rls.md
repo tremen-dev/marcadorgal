@@ -9,7 +9,7 @@ aprobada-por: Alberto Fojo
 ---
 # ADR-006: Esquema base y acceso a datos: ids, append-only, versión de Decision y RLS
 
-- Deciders: sdd-arquitecto propone (2026-09-20); Alberto Fojo aprueba (pendiente).
+- Deciders: sdd-arquitecto propone (2026-09-20); Alberto Fojo aprueba (2026-09-20, según el frontmatter; corregido solo el registro el 2026-10-06).
 - Specs relacionadas: SPEC-002 (origen); las de EPIC-002, EPIC-003 y EPIC-004 lo consumen.
 
 ## Contexto
