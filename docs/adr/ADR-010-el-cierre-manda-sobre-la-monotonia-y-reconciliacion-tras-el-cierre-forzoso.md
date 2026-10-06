@@ -64,6 +64,10 @@ RN-04 sin tocar ADR-004.
    la fuente propone menos, se retiene con Alert `regression` y el operador lo
    confirma (EPIC-004); sin operador, el anulado se ve hasta el cierre y §1 lo
    corrige al pitido. FOUNDATION.md recoge la misma forma.
+
+   *2026-10-06, supersedido en parte por ADR-011:* la letra en vivo de RN-03 de
+   este §1 (la cita y la nota fechada anterior) la fija ahora ADR-011 §1; la
+   cláusula del cierre de §1 y §2–§4 siguen vigentes.
 2. **RN-12 — Reconciliación posterior al cierre.** Un partido cerrado
    `provisional` por el cierre forzoso de RN-02 admite **una corrección del
    marcador** cuando la fuente publica por fin su resultado final, sin volver a
@@ -83,6 +87,8 @@ RN-04 sin tocar ADR-004.
    forzoso** no saca al partido de la ventana; lo sacan el borde de tiempo (+150)
    o el `finished` que la fuente confirme, lo que antes ocurra. Un `finished`
    **confirmado** sigue cerrando la ventana al instante, como hoy.
+
+   *2026-10-06, SPEC-014 CA-9:* «`finished` confirmado» es cualquier `finished` sin la marca `forced_finish`, tenga el cualificador que tenga; no el cualificador `confirmado`.
    - **La ventana de ADR-002 §2 no se toca**: sigue siendo
      `[kickoff − 10 min, kickoff + 150 min)`. Sin umbral nuevo, sin excepción a
      RN-08, y el criterio 2 de EPIC-002 se sigue midiendo con la misma consulta.

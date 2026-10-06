@@ -47,10 +47,10 @@ export async function informeFilas(
       home_score: number | null;
       away_score: number | null;
       decided_at: Date | null;
-      rule: string | null;
+      forced_finish: boolean | null;
     }[]
   >`select b.match_id, b.competition_id, b.competition_name, b.round, b.kickoff,
-      b.status, b.home_score, b.away_score, b.decided_at, d.rule
+      b.status, b.home_score, b.away_score, b.decided_at, d.forced_finish
     from board b left join decisions d on d.id = b.decision_id
     where b.kickoff >= ${desde} and b.kickoff <= ${hasta}
     order by b.kickoff, b.match_id`;
@@ -143,9 +143,10 @@ export async function informeFilas(
       status: m.status,
       score: scoreOf(m.home_score, m.away_score),
       decidedAt: m.decided_at === null ? null : instant(m.decided_at),
-      // The rule of the current Decision, from board's decision_id: what
-      // tells a forced RN-02 finished from a confirmed one (SPEC-017 CA-4).
-      rule: m.rule,
+      // The forced_finish mark of the current Decision, from board's
+      // decision_id: what tells a forced finished from any other (SPEC-017
+      // CA-4, N-2; SPEC-014 CA-8). null without Decision or before the column.
+      forcedFinish: m.forced_finish,
     })),
     observations: observations.map((o) => ({
       id: o.id,

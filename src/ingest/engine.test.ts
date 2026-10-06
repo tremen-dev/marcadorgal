@@ -76,6 +76,9 @@ const decisionRow = (over: Record<string, unknown> = {}) => ({
   rule: "RN-01",
   observation_ids: ["33333333-3333-4333-8333-333333333333"],
   decided_at: timestamptz(at(-1)),
+  home_source_id: null,
+  away_source_id: null,
+  forced_finish: null,
   ...over,
 });
 
@@ -172,7 +175,14 @@ describe("CA-9 writing a decision", () => {
       "RN-01",
       ["11111111-1111-4111-8111-111111111111"],
       NOW,
+      // SPEC-014 CA-4, CA-8: the owner of each side and the mark.
+      "api-football",
+      "api-football",
+      false,
     ]);
+    expect(insert?.text).toContain(
+      "home_source_id, away_source_id, forced_finish",
+    );
   });
 
   it("writes nothing when the tuple does not move (H-1)", async () => {
@@ -189,9 +199,11 @@ describe("CA-9 writing a decision", () => {
 });
 
 describe("CA-9 opening and resolving alerts", () => {
+  // The home goal is the operator's: api-football may not lower it
+  // (SPEC-014, ADR-011), so the retreat is held and alerted.
   const regression = {
     observations: [observationRow({ home_score: 0, away_score: 0 })],
-    decisions: [decisionRow()],
+    decisions: [decisionRow({ home_source_id: "operator" })],
   };
 
   it("guards every kind with the same not exists (N-3)", async () => {
@@ -414,5 +426,100 @@ describe("SPEC-008 CA-9 createEngineSweep", () => {
     });
     expect(calls).toEqual([]);
     expect(transactions).toHaveLength(1);
+  });
+});
+
+// SPEC-014 CA-4, CA-8: the adapter reads the owners and the mark of the
+// current Decision and hands them to the engine; legacy nulls read as such.
+describe("SPEC-014 CA-4 CA-8 the adapter reads and writes owners and mark", () => {
+  it("asks for home_source_id, away_source_id and forced_finish of the current decision", async () => {
+    const { tx, calls } = fakeTx(answering());
+    await decideMatches(tx, [MATCH], NOW, SOURCES);
+    expect(find(calls, "from decisions")?.text).toContain(
+      "home_source_id, away_source_id, forced_finish",
+    );
+  });
+
+  it("lets api-football withdraw a goal a legacy row (null owner) gives it", async () => {
+    const { tx, calls } = fakeTx(
+      answering({
+        observations: [observationRow({ home_score: 0, away_score: 0 })],
+        decisions: [decisionRow()],
+      }),
+    );
+    await decideMatches(tx, [MATCH], NOW, SOURCES);
+    const insert = find(calls, "insert into decisions");
+    expect(insert?.values.slice(2, 4)).toEqual([0, 0]);
+    expect(insert?.values[7]).toBe("RN-01");
+    expect(find(calls, "insert into alerts")).toBeUndefined();
+  });
+
+  it("keeps the owner of the held side it read", async () => {
+    const { tx, calls } = fakeTx(
+      answering({
+        observations: [
+          observationRow({ home_score: 0, away_score: 0, minute: 21 }),
+        ],
+        decisions: [
+          decisionRow({
+            home_source_id: "operator",
+            away_source_id: "api-football",
+          }),
+        ],
+        alerts: [{ id: "alert-1" }],
+      }),
+    );
+    await decideMatches(tx, [MATCH], NOW, SOURCES);
+    const insert = find(calls, "insert into decisions");
+    expect(insert?.values[7]).toBe("RN-03");
+    expect(insert?.values.slice(10)).toEqual([
+      "operator",
+      "api-football",
+      false,
+    ]);
+  });
+
+  it("reads the mark: only forced_finish true admits RN-12", async () => {
+    const run = async (forced_finish: boolean | null) => {
+      const { tx, calls } = fakeTx(
+        answering({
+          observations: [
+            observationRow({
+              status: "finished",
+              home_score: 2,
+              away_score: 0,
+              minute: null,
+            }),
+          ],
+          decisions: [
+            decisionRow({
+              status: "finished",
+              minute: null,
+              rule: "RN-02",
+              forced_finish,
+            }),
+          ],
+        }),
+      );
+      await decideMatches(tx, [MATCH], NOW, SOURCES);
+      return find(calls, "insert into decisions")?.values[7];
+    };
+    expect(await run(true)).toBe("RN-12");
+    expect(await run(false)).not.toBe("RN-12");
+    expect(await run(null)).not.toBe("RN-12");
+  });
+
+  it("writes true for the forced finish", async () => {
+    const { tx, calls } = fakeTx(
+      answering({
+        decisions: [decisionRow({ minute: 90 })],
+        matches: [{ ...matchRow, kickoff: timestamptz(at(-121)) }],
+        alerts: [{ id: "alert-9" }],
+      }),
+    );
+    await decideMatches(tx, [MATCH], NOW, SOURCES);
+    const insert = find(calls, "insert into decisions");
+    expect(insert?.values[7]).toBe("RN-02");
+    expect(insert?.values.at(-1)).toBe(true);
   });
 });

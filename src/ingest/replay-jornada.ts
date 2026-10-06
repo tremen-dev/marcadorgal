@@ -45,6 +45,11 @@ export type ReplayJornadaRow = {
   replay: BoardState | null;
   divergent: boolean;
   correction: DecisionDraft | null;
+  // SPEC-014 CA-6: the live ticks in which the published score is not the
+  // source's. A tick is a live observation of the match (N-3: they come out
+  // of observations), counted when what is published right after deciding at
+  // its instant is live too and wears another score.
+  liveTicks: number;
 };
 
 // The sweep of ADR-009: what nobody observes (RN-05, the forced finish of
@@ -71,6 +76,31 @@ const same = (a: BoardState, b: BoardState) =>
     ? a.score === b.score
     : a.score.home === b.score.home && a.score.away === b.score.away);
 
+const scoreKey = (score: Score) => `${score.home}-${score.away}`;
+
+function countLiveTicks(
+  steps: ReturnType<typeof replay>,
+  observations: Observation[],
+): number {
+  const sourceAt = new Map<Instant, Set<string>>();
+  for (const o of observations) {
+    if (o.status !== "live") continue;
+    const at = sourceAt.get(o.observedAt) ?? new Set<string>();
+    at.add(scoreKey(o.score));
+    sourceAt.set(o.observedAt, at);
+  }
+  let published: DecisionDraft | null = null;
+  let ticks = 0;
+  for (const step of steps) {
+    if (step.output.decision !== null) published = step.output.decision;
+    const source = sourceAt.get(step.now);
+    if (source === undefined || published === null) continue;
+    if (published.status !== "live") continue;
+    if (!source.has(scoreKey(published.score))) ticks += 1;
+  }
+  return ticks;
+}
+
 export function replayJornada({
   matches,
   observations,
@@ -81,10 +111,11 @@ export function replayJornada({
   return [...matches]
     .sort((a, b) => (a.match.id < b.match.id ? -1 : 1))
     .map(({ match, board }) => {
+      const own = observations.filter((o) => o.matchId === match.id);
       const steps = replay({
         match,
         priority: priority(match.competitionId),
-        observations: observations.filter((o) => o.matchId === match.id),
+        observations: own,
         instants: sweepInstants(match.kickoff),
         engine,
       });
@@ -99,7 +130,14 @@ export function replayJornada({
         last !== undefined &&
         board.status === "finished" &&
         last.status === "finished"
-          ? { ...last, rule: "RN-02" as const, decidedAt: now }
+          ? // A correction is not a close (SPEC-014 CA-8): RN-02 by SPEC-012
+            // CA-4, but never the mark of the forced finish.
+            {
+              ...last,
+              rule: "RN-02" as const,
+              forcedFinish: false,
+              decidedAt: now,
+            }
           : null;
       return {
         matchId: match.id,
@@ -107,6 +145,7 @@ export function replayJornada({
         replay: replayed,
         divergent,
         correction,
+        liveTicks: countLiveTicks(steps, own),
       };
     });
 }

@@ -44,10 +44,11 @@ export type InformeMatch = {
   status: MatchStatus;
   score: Score | null;
   decidedAt: Instant | null;
-  // The rule of that current Decision, null when there is none (SPEC-017
-  // CA-4): what tells a finished the source confirmed from one RN-02 forced.
-  // informe-db.ts always fills it; absent reads as null.
-  rule?: string | null;
+  // The forced_finish mark of that current Decision (SPEC-014 CA-8), null
+  // when there is none or it predates the column: only true tells a finished
+  // forced by RN-02 from any other (SPEC-017 CA-4, N-2). informe-db.ts always
+  // fills it; absent reads as null.
+  forcedFinish?: boolean | null;
 };
 
 export type InformeObservation = {
@@ -627,15 +628,16 @@ function latenciaExternaDe(input: InformeInput) {
 // keeps the match in window to its time edge, the same rule as isInWindow
 // (src/ingest/window.ts, SPEC-013 CA-3); its ticks are coverage, not "after the
 // close". Any other current `finished` (RN-01, RN-12) closes at its decided_at.
-// When SPEC-014 CA-8 lands, the criterion becomes the forced_finish mark and
-// not the rule, because the corrections of SPEC-012 are RN-02 too (N-2).
+// Since SPEC-014 CA-8 the criterion is the forced_finish mark and not the
+// rule, because the corrections of SPEC-012 are RN-02 too (N-2): a correction
+// (false) or a row older than the column (null) closes at its decided_at.
 type Span = { from: number; to: number };
 
 function ventanaEfectiva(m: InformeMatch): Span {
   const k = Date.parse(m.kickoff);
   const finDeVentana = k + WINDOW_AFTER_MINUTES * MINUTE_MS;
   const cierre =
-    m.status === "finished" && m.decidedAt !== null && m.rule !== "RN-02"
+    m.status === "finished" && m.decidedAt !== null && m.forcedFinish !== true
       ? Date.parse(m.decidedAt)
       : finDeVentana;
   return {

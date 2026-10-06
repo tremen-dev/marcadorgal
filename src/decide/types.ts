@@ -11,6 +11,7 @@ import type {
   Observation,
   ObservationId,
   Qualifier,
+  ScoredBy,
 } from "../model/index.ts";
 
 // What the engine needs of a match: no teams, no season, no status. The
@@ -43,6 +44,12 @@ export type DecisionDraft = MatchState & {
   rule: DecisionRule;
   observationIds: ObservationId[];
   decidedAt: Instant;
+  // SPEC-014: the owner of each side (ADR-011 §3) and the mark of the forced
+  // finish of RN-02 (CA-8). decide() always sets both; they are optional only
+  // because the engines frozen before SPEC-014 (src/decide/fixtures) predate
+  // them, and those are replayed, never written.
+  scoredBy?: ScoredBy;
+  forcedFinish?: boolean;
 };
 
 // The four kinds the engine opens. unresolved_team is the adapter's (RN-10)

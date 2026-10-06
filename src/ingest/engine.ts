@@ -63,6 +63,9 @@ type DecisionRow = StateRow & {
   rule: DecisionRule;
   observation_ids: string[];
   decided_at: Date;
+  home_source_id: string | null;
+  away_source_id: string | null;
+  forced_finish: boolean | null;
 };
 
 type LastHeardRow = {
@@ -110,6 +113,12 @@ const toDecision = (row: DecisionRow): Decision =>
     rule: row.rule,
     observationIds: row.observation_ids as ObservationId[],
     decidedAt: instant(row.decided_at),
+    // SPEC-014 CA-2, CA-8: null in the rows written before the migration.
+    scoredBy: {
+      home: row.home_source_id as SourceId | null,
+      away: row.away_source_id as SourceId | null,
+    },
+    forcedFinish: row.forced_finish,
   }) as Decision;
 
 export const toObservation = (row: ObservationRow): Observation =>
@@ -152,12 +161,15 @@ export async function insertDecision(
   const { home, away } = scoreOf(draft);
   await sql`insert into decisions
       (match_id, status, home_score, away_score, minute, added_minute,
-       qualifier, rule, observation_ids, decided_at)
+       qualifier, rule, observation_ids, decided_at,
+       home_source_id, away_source_id, forced_finish)
     values (${draft.matchId}, ${draft.status}, ${home}, ${away},
       ${draft.minute}, ${draft.status === "live" ? draft.addedMinute : null},
       ${draft.qualifier}, ${draft.rule},
       ${sql.array(draft.observationIds as unknown as string[])}::uuid[],
-      ${draft.decidedAt})`;
+      ${draft.decidedAt},
+      ${draft.scoredBy?.home ?? null}, ${draft.scoredBy?.away ?? null},
+      ${draft.forcedFinish ?? null})`;
 }
 
 // One open alert per (kind, match) while nobody resolves it, the four kinds
@@ -241,7 +253,8 @@ export async function decideMatches(
   // The current Decision of each match: the highest version (ADR-006 §3).
   const currents = await sql<DecisionRow[]>`
     select distinct on (match_id) id, match_id, version, status, home_score,
-      away_score, minute, added_minute, qualifier, rule, observation_ids, decided_at
+      away_score, minute, added_minute, qualifier, rule, observation_ids, decided_at,
+      home_source_id, away_source_id, forced_finish
     from decisions where match_id = any(${any})
     order by match_id, version desc`;
   const currentOf = new Map(currents.map((row) => [row.match_id, row]));

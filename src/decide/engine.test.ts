@@ -76,6 +76,8 @@ const current = (state: MatchState, extra: Partial<Decision> = {}): Decision =>
     rule: "RN-01",
     observationIds: [CURRENT_OBSERVATION],
     decidedAt: at(0),
+    scoredBy: { home: null, away: null },
+    forcedFinish: false,
     ...extra,
   }) as Decision;
 
@@ -310,14 +312,21 @@ describe("CA-4 RN-03 monotony and the regression alert", () => {
     ]);
   });
 
-  it("never mixes sides: 1-2 against 2-1 holds 2-1, not 2-2", () => {
-    const { decision } = decide(
+  // SPEC-014 (ADR-011 §2): RN-03 decides side by side and holds only the side
+  // that goes down without its owner; the side that goes up is published. It
+  // used to hold the whole score ("never mixes sides", SPEC-007).
+  it("holds only the side that goes down: 1-2 against 2-1 is 2-2 (ADR-011 §2)", () => {
+    const { decision, open } = decide(
       input({
         current: vigente,
         observations: [obs("ten", 49, live(1, 2, 75))],
       }),
     );
-    expect(decision).toMatchObject({ score: { home: 2, away: 1 } });
+    expect(decision).toMatchObject({
+      score: { home: 2, away: 2 },
+      rule: "RN-03",
+    });
+    expect(open).toMatchObject([{ kind: "regression" }]);
   });
 
   it("does not fire when both sides grow", () => {
@@ -616,6 +625,7 @@ describe("CA-6 RN-02 forced finish with a trace (H-3, H-5)", () => {
         matchId: MATCH.id,
         details: {
           score: { home: 1, away: 0 },
+          heldScore: { home: 1, away: 0 },
           minute: 90,
           kickoff: KICKOFF,
           lastObservedAt: null,
@@ -642,6 +652,7 @@ describe("CA-6 RN-02 forced finish with a trace (H-3, H-5)", () => {
         matchId: MATCH.id,
         details: {
           score: { home: 1, away: 0 },
+          heldScore: { home: 1, away: 0 },
           minute: 90,
           kickoff: KICKOFF,
           lastObservedAt: at(81),
@@ -917,7 +928,11 @@ describe("SPEC-012 CA-2 the close publishes the winning observation", () => {
 // score and the qualifier change, the status never does.
 describe("SPEC-013 CA-4 RN-12 accepts the final the source confirms", () => {
   const forced = (home: number, away: number) =>
-    current(finished(home, away), { rule: "RN-02", qualifier: "provisional" });
+    current(finished(home, away), {
+      rule: "RN-02",
+      qualifier: "provisional",
+      forcedFinish: true,
+    });
 
   it("(i) forced finished 2-1 and a source finished 3-1 publishes 3-1 with RN-12", () => {
     const confirmation = obs("ten", 125, finished(3, 1));
@@ -937,6 +952,8 @@ describe("SPEC-013 CA-4 RN-12 accepts the final the source confirms", () => {
       rule: "RN-12",
       observationIds: [confirmation.id],
       decidedAt: at(125),
+      scoredBy: { home: "ten", away: null },
+      forcedFinish: false,
     });
   });
 
@@ -1027,6 +1044,8 @@ describe("SPEC-016 CA-2 postponed and suspended without an operator", () => {
         rule: "RN-01",
         observationIds: [observation.id],
         decidedAt: at(50),
+        scoredBy: { home: null, away: null },
+        forcedFinish: false,
       },
       open: [],
       resolve: [],
@@ -1168,5 +1187,412 @@ describe("SPEC-016 CA-2 postponed and suspended without an operator", () => {
         }),
       ).decision,
     ).toBeNull();
+  });
+});
+
+// SPEC-014 (ADR-011). In play, a side of the score goes down only by its
+// owner — the source that fixed its published value — or a heavier source.
+// A null owner reads as api-football, the only source that published so far.
+const AF = "api-football";
+const OP = "operator";
+const owners = (home: string | null, away: string | null) => ({
+  scoredBy: {
+    home: home as SourceId | null,
+    away: away as SourceId | null,
+  },
+});
+const withProvider = (over: Partial<EngineInput>): EngineInput =>
+  input({
+    priority: priorities({
+      [AF]: 10,
+      "other-ten": 10,
+      five: 5,
+      twenty: 20,
+      operator: 100,
+    }),
+    ...over,
+  });
+
+describe("SPEC-014 CA-3 the engine decides the retreat side by side", () => {
+  it("(i) api-football raised 2-1 and proposes 2-0 in play: publishes 2-0, RN-01, no alert", () => {
+    const retreat = obs(AF, 49, live(2, 0, 75));
+    const { decision, open } = decide(
+      withProvider({
+        current: current(live(2, 1, 70), owners(AF, AF)),
+        observations: [retreat],
+      }),
+    );
+    expect(decision).toMatchObject({
+      status: "live",
+      score: { home: 2, away: 0 },
+      minute: 75,
+      rule: "RN-01",
+    });
+    expect(decision?.observationIds).toEqual([retreat.id]);
+    expect(open).toEqual([]);
+  });
+
+  it("(ii) the operator raised 1-0 and api-football proposes 0-0: holds 1-0 and opens regression", () => {
+    const retreat = obs(AF, 49, live(0, 0, 75));
+    const { decision, open } = decide(
+      withProvider({
+        current: current(live(1, 0, 70), owners(OP, null)),
+        observations: [retreat],
+      }),
+    );
+    expect(decision).toMatchObject({
+      status: "live",
+      score: { home: 1, away: 0 },
+      minute: 75,
+      rule: "RN-03",
+    });
+    expect(open).toEqual([
+      {
+        kind: "regression",
+        matchId: MATCH.id,
+        details: {
+          sourceId: AF,
+          observationId: retreat.id,
+          current: { home: 1, away: 0 },
+          proposed: { home: 0, away: 0 },
+        },
+      },
+    ]);
+  });
+
+  it("(iii) home by the operator, away by api-football, 0-0 from 1-1: publishes 1-0, RN-03, with alert", () => {
+    const { decision, open } = decide(
+      withProvider({
+        current: current(live(1, 1, 70), owners(OP, AF)),
+        observations: [obs(AF, 49, live(0, 0, 75))],
+      }),
+    );
+    expect(decision).toMatchObject({
+      status: "live",
+      score: { home: 1, away: 0 },
+      rule: "RN-03",
+    });
+    expect(open).toMatchObject([
+      {
+        kind: "regression",
+        details: {
+          current: { home: 1, away: 1 },
+          proposed: { home: 0, away: 0 },
+        },
+      },
+    ]);
+  });
+
+  it("(iv) a second source of equal or lower priority than the owner proposes less: holds and alerts", () => {
+    for (const source of ["other-ten", "five"]) {
+      const { decision, open } = decide(
+        withProvider({
+          current: current(live(2, 1, 70), owners(AF, AF)),
+          observations: [obs(source, 49, live(2, 0, 75))],
+        }),
+      );
+      expect(decision).toMatchObject({
+        score: { home: 2, away: 1 },
+        rule: "RN-03",
+      });
+      expect(open).toMatchObject([
+        { kind: "regression", details: { sourceId: source } },
+      ]);
+    }
+  });
+
+  it("(v) a null owner is api-football: it may withdraw it, a heavier source too, an equal one not", () => {
+    const vigente = current(live(2, 1, 70), owners(null, null));
+    const by = (source: string) =>
+      decide(
+        withProvider({
+          current: vigente,
+          observations: [obs(source, 49, live(2, 0, 75))],
+        }),
+      );
+    expect(by(AF).decision).toMatchObject({
+      score: { home: 2, away: 0 },
+      rule: "RN-01",
+    });
+    expect(by(AF).open).toEqual([]);
+    expect(by("twenty").decision).toMatchObject({
+      score: { home: 2, away: 0 },
+      rule: "RN-01",
+    });
+    expect(by("other-ten").decision).toMatchObject({
+      score: { home: 2, away: 1 },
+      rule: "RN-03",
+    });
+  });
+
+  it("a heavier source lowers a side another source raised", () => {
+    const { decision, open } = decide(
+      withProvider({
+        current: current(live(1, 0, 70), owners(AF, null)),
+        observations: [obs("twenty", 49, live(0, 0, 75))],
+      }),
+    );
+    expect(decision).toMatchObject({
+      score: { home: 0, away: 0 },
+      rule: "RN-01",
+    });
+    expect(open).toEqual([]);
+  });
+
+  it("holds one side and lets the other grow: 1-1 (operator, any) against 0-2 is 1-2", () => {
+    const { decision } = decide(
+      withProvider({
+        current: current(live(1, 1, 70), owners(OP, AF)),
+        observations: [obs(AF, 49, live(0, 2, 75))],
+      }),
+    );
+    expect(decision).toMatchObject({
+      score: { home: 1, away: 2 },
+      rule: "RN-03",
+    });
+    expect(decision?.scoredBy).toEqual({ home: OP, away: AF });
+  });
+});
+
+describe("SPEC-014 CA-4 the owner is recorded", () => {
+  it("a side that goes up takes the winning source; the other keeps its own", () => {
+    const { decision } = decide(
+      withProvider({
+        current: current(live(0, 0, 10), owners(AF, OP)),
+        observations: [obs("twenty", 49, live(1, 0, 50))],
+      }),
+    );
+    expect(decision?.scoredBy).toEqual({ home: "twenty", away: OP });
+  });
+
+  it("a side that goes down takes the winning source; the other keeps its own", () => {
+    const { decision } = decide(
+      withProvider({
+        current: current(live(2, 1, 70), owners("twenty", null)),
+        observations: [obs(AF, 49, live(2, 0, 75))],
+      }),
+    );
+    expect(decision).toMatchObject({
+      score: { home: 2, away: 0 },
+      rule: "RN-01",
+    });
+    expect(decision?.scoredBy).toEqual({ home: "twenty", away: AF });
+  });
+
+  it("a first score takes the winner on both sides", () => {
+    const { decision } = decide(
+      withProvider({ observations: [obs(AF, 49, live(0, 0, 3))] }),
+    );
+    expect(decision?.scoredBy).toEqual({ home: AF, away: AF });
+  });
+
+  it("a retention keeps the owner of the held side", () => {
+    const { decision } = decide(
+      withProvider({
+        current: current(live(1, 1, 70), owners(OP, AF)),
+        observations: [obs(AF, 49, live(0, 0, 75))],
+      }),
+    );
+    expect(decision?.scoredBy).toEqual({ home: OP, away: AF });
+  });
+
+  it("a score that does not move keeps both owners (minute, silence, forced finish)", () => {
+    const vigente = current(live(1, 1, 60), owners(OP, "twenty"));
+    const minute = decide(
+      withProvider({
+        current: vigente,
+        observations: [obs(AF, 49, live(1, 1, 61))],
+      }),
+    ).decision;
+    const silence = decide(
+      withProvider({ current: vigente, observations: [], now: at(80) }),
+    ).decision;
+    const forced = decide(
+      withProvider({
+        current: current(live(1, 1, 90), owners(OP, "twenty")),
+        observations: [],
+        now: at(121),
+      }),
+    ).decision;
+    for (const d of [minute, silence, forced])
+      expect(d?.scoredBy).toEqual({ home: OP, away: "twenty" });
+  });
+
+  it("a null score carries null owners", () => {
+    const postponedNow = decide(
+      withProvider({
+        current: current(live(1, 0, 20), owners(AF, AF)),
+        observations: [obs(AF, 49, postponed)],
+      }),
+    ).decision;
+    const first = decide(
+      withProvider({ observations: [obs(AF, 49, scheduled)] }),
+    ).decision;
+    expect(postponedNow).toMatchObject({ status: "postponed", score: null });
+    expect(postponedNow?.scoredBy).toEqual({ home: null, away: null });
+    expect(first?.scoredBy).toEqual({ home: null, away: null });
+  });
+
+  it("the operator owns what it changes", () => {
+    const { decision } = decide(
+      withProvider({
+        current: current(live(2, 1, 70), owners(AF, AF)),
+        observations: [obs(OP, 49, live(2, 0, 75))],
+      }),
+    );
+    expect(decision?.scoredBy).toEqual({ home: AF, away: OP });
+  });
+
+  it("RN-12 gives the changed side to the confirming source", () => {
+    const { decision } = decide(
+      withProvider({
+        current: current(finished(2, 1), {
+          rule: "RN-02",
+          forcedFinish: true,
+          ...owners(OP, AF),
+        }),
+        observations: [obs("twenty", 125, finished(3, 1))],
+        now: at(125),
+      }),
+    );
+    expect(decision).toMatchObject({ rule: "RN-12" });
+    expect(decision?.scoredBy).toEqual({ home: "twenty", away: AF });
+  });
+});
+
+describe("SPEC-014 CA-8 the forced finish carries its own mark", () => {
+  it("the forced finish comes out with true, with or without a fresh observation", () => {
+    const vigente = current(live(1, 1, 90));
+    for (const observations of [[], [obs(AF, 119, live(1, 0, 90))]])
+      expect(
+        decide(withProvider({ current: vigente, observations, now: at(121) }))
+          .decision,
+      ).toMatchObject({ rule: "RN-02", forcedFinish: true });
+  });
+
+  it("RN-01, RN-03, RN-05, RN-12 and the operator come out with false", () => {
+    const rn01 = decide(
+      withProvider({ observations: [obs(AF, 49, live(0, 0, 3))] }),
+    );
+    const rn03 = decide(
+      withProvider({
+        current: current(live(1, 0, 40), owners(OP, null)),
+        observations: [obs(AF, 49, live(0, 0, 50))],
+      }),
+    );
+    const rn05 = decide(
+      withProvider({
+        current: current(live(1, 0, 40)),
+        observations: [],
+        now: at(60),
+      }),
+    );
+    const rn12 = decide(
+      withProvider({
+        current: current(finished(1, 0), { rule: "RN-02", forcedFinish: true }),
+        observations: [obs(AF, 125, finished(2, 0))],
+        now: at(125),
+      }),
+    );
+    const operator = decide(
+      withProvider({ observations: [obs(OP, 49, live(0, 0, 3))] }),
+    );
+    expect(
+      [rn01, rn03, rn05, rn12, operator].map((o) => [
+        o.decision?.rule,
+        o.decision?.forcedFinish,
+      ]),
+    ).toEqual([
+      ["RN-01", false],
+      ["RN-03", false],
+      ["RN-05", false],
+      ["RN-12", false],
+      ["operator", false],
+    ]);
+  });
+
+  it("a finished RN-02 with the mark false or null plus a finished observation never publishes RN-12", () => {
+    for (const forcedFinish of [false, null])
+      expect(
+        decide(
+          withProvider({
+            current: current(finished(2, 1), { rule: "RN-02", forcedFinish }),
+            observations: [obs(AF, 125, finished(3, 1))],
+            now: at(125),
+          }),
+        ).decision?.rule,
+      ).not.toBe("RN-12");
+  });
+});
+
+describe("SPEC-014 CA-9 a confirmed finished has a single reading", () => {
+  it("(i) a finished RN-01 provisional without mark plus a higher finished is RN-01, never RN-12", () => {
+    const { decision } = decide(
+      withProvider({
+        current: current(finished(1, 0), { rule: "RN-01", forcedFinish: null }),
+        observations: [obs(AF, 125, finished(2, 0))],
+        now: at(125),
+      }),
+    );
+    expect(decision).toMatchObject({
+      status: "finished",
+      score: { home: 2, away: 0 },
+      rule: "RN-01",
+    });
+  });
+
+  it("(ii) a finished RN-12 confirmado plus a different finished publishes nothing", () => {
+    expect(
+      decide(
+        withProvider({
+          current: current(finished(3, 1), {
+            rule: "RN-12",
+            qualifier: "confirmado",
+          }),
+          observations: [obs(AF, 130, finished(3, 2))],
+          now: at(130),
+        }),
+      ),
+    ).toEqual({ decision: null, open: [], resolve: [] });
+  });
+});
+
+describe("SPEC-014 CA-10 the forced_finish alert tells what it publishes", () => {
+  it("current 1-1 and a fresh live 1-0: score 1-0, heldScore 1-1", () => {
+    const { open } = decide(
+      withProvider({
+        current: current(live(1, 1, 90)),
+        observations: [obs(AF, 119, live(1, 0, 90))],
+        now: at(121),
+      }),
+    );
+    expect(open).toMatchObject([
+      {
+        kind: "forced_finish",
+        details: {
+          score: { home: 1, away: 0 },
+          heldScore: { home: 1, away: 1 },
+        },
+      },
+    ]);
+  });
+
+  it("with no fresh observation both are the current one", () => {
+    const { open } = decide(
+      withProvider({
+        current: current(live(1, 1, 90)),
+        observations: [obs(AF, 110, live(1, 0, 90))],
+        now: at(121),
+      }),
+    );
+    expect(open).toMatchObject([
+      {
+        kind: "forced_finish",
+        details: {
+          score: { home: 1, away: 1 },
+          heldScore: { home: 1, away: 1 },
+        },
+      },
+    ]);
   });
 });

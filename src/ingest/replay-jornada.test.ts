@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { decide as decideAt11a7159 } from "../decide/fixtures/engine-11a7159.ts";
 import {
   type CompetitionId,
   type Instant,
@@ -151,6 +152,8 @@ describe("SPEC-012 CA-4 replayJornada", () => {
       rule: "RN-02",
       observationIds: [gironaLog[4].id],
       decidedAt: TODAY,
+      scoredBy: { home: "api-football", away: "api-football" },
+      forcedFinish: false,
     });
     expect(l.correction).toMatchObject({
       matchId: lugo.id,
@@ -182,5 +185,50 @@ describe("SPEC-012 CA-4 replayJornada", () => {
   it("is deterministic and orders the rows by match id", () => {
     expect(run()).toEqual(run());
     expect(run().map((r) => r.matchId)).toEqual([ceuta.id, girona.id, lugo.id]);
+  });
+});
+
+// SPEC-014 CA-8: a correction is not a close. Its rule stays RN-02 (SPEC-012
+// CA-4), but it carries the mark false even when the replay ended in a forced
+// finish (lugo: forced at +120 with a fresh live 1-0).
+describe("SPEC-014 CA-8 the correction of replay:jornada carries false", () => {
+  it("drafts every correction with forcedFinish false and rule RN-02", () => {
+    const [, g, l] = run();
+    for (const correction of [g.correction, l.correction])
+      expect(correction).toMatchObject({ rule: "RN-02", forcedFinish: false });
+  });
+});
+
+// SPEC-014 CA-6, the pure half: per match, the live ticks — each live
+// observation of the source is one tick — in which the published score
+// differs from the source's, with the engine of main and with ADR-011's.
+describe("SPEC-014 CA-6 live ticks where the published score is not the source's", () => {
+  const ticks = (rows: ReturnType<typeof replayJornada>) =>
+    Object.fromEntries(rows.map((r) => [r.matchId, r.liveTicks]));
+
+  it("counts the ticks RN-03 held against the source with the engine of main", () => {
+    expect(
+      ticks(
+        replayJornada({
+          matches: [
+            { match: girona, board: board(2, 1) },
+            { match: lugo, board: board(1, 1) },
+            { match: ceuta, board: board(2, 1) },
+          ],
+          observations: [...gironaLog, ...lugoLog, ...ceutaLog],
+          priority: PROVIDER,
+          now: TODAY,
+          engine: decideAt11a7159,
+        }),
+      ),
+    ).toEqual({ [ceuta.id]: 0, [girona.id]: 1, [lugo.id]: 3 });
+  });
+
+  it("counts none with the engine of ADR-011: the source withdraws its own goal", () => {
+    expect(ticks(run())).toEqual({
+      [ceuta.id]: 0,
+      [girona.id]: 0,
+      [lugo.id]: 0,
+    });
   });
 });

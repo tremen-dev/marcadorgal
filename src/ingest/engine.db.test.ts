@@ -71,7 +71,8 @@ const observe = async (
 
 const decisions = (tx: TransactionSql, matchId: string) =>
   tx`select version, status, home_score, away_score, minute, qualifier, rule,
-       observation_ids from decisions where match_id = ${matchId} order by version`;
+       observation_ids, home_source_id, away_source_id, forced_finish
+     from decisions where match_id = ${matchId} order by version`;
 
 const alerts = (tx: TransactionSql, matchId: string) =>
   tx`select kind, match_id, resolved_at, details from alerts
@@ -122,37 +123,33 @@ describe("CA-11 the engine against the database", () => {
         });
         expect((board.observed_at as Date).toISOString()).toBe(at(-1));
 
-        // A retreat: the published score holds and an alert is opened (RN-03).
+        // A retreat by the source that raised the goal: since ADR-011 it is
+        // published by RN-01, with no alert (SPEC-014 CA-3 (i)). The retreat
+        // that is held is proved below, with an operator's goal.
         const lastHeard = at(0);
         await observe(tx, matchId, 0, 0, 21, lastHeard);
         expect(await decideMatches(tick, [matchId], at(0), SOURCES)).toEqual({
           matches: 1,
           decisions: 1,
-          alerts: 1,
+          alerts: 0,
           resolved: 0,
         });
         rows = await decisions(tx, matchId);
         expect(rows).toHaveLength(2);
         expect(rows[1]).toMatchObject({
           version: 2,
-          home_score: 1,
+          home_score: 0,
           away_score: 0,
           minute: 21,
-          rule: "RN-03",
+          rule: "RN-01",
+          home_source_id: "api-football",
+          away_source_id: "api-football",
+          forced_finish: false,
         });
         let open = await alerts(tx, matchId);
-        expect(open).toHaveLength(1);
-        expect(open[0]).toMatchObject({
-          kind: "regression",
-          resolved_at: null,
-        });
-        expect(open[0].details).toMatchObject({
-          sourceId: "api-football",
-          current: { home: 1, away: 0 },
-          proposed: { home: 0, away: 0 },
-        });
+        expect(open).toHaveLength(0);
 
-        // Running it again writes no row and opens no second alert.
+        // Running it again writes no row and opens no alert.
         expect(await decideMatches(tick, [matchId], at(0), SOURCES)).toEqual({
           matches: 1,
           decisions: 0,
@@ -160,9 +157,10 @@ describe("CA-11 the engine against the database", () => {
           resolved: 0,
         });
         expect(await decisions(tx, matchId)).toHaveLength(2);
-        expect(await alerts(tx, matchId)).toHaveLength(1);
+        expect(await alerts(tx, matchId)).toHaveLength(0);
 
-        // Nobody closed the match: RN-02 does, with its trace (H-5).
+        // Nobody closed the match: RN-02 does, with its trace (H-5) and the
+        // mark of the forced finish (SPEC-014 CA-8).
         expect(await decideMatches(tick, [matchId], at(121), SOURCES)).toEqual({
           matches: 1,
           decisions: 1,
@@ -174,20 +172,22 @@ describe("CA-11 the engine against the database", () => {
         expect(rows[2]).toMatchObject({
           version: 3,
           status: "finished",
-          home_score: 1,
+          home_score: 0,
           away_score: 0,
           minute: null,
           qualifier: "provisional",
           rule: "RN-02",
+          forced_finish: true,
         });
         open = await alerts(tx, matchId);
-        expect(open).toHaveLength(2);
+        expect(open).toHaveLength(1);
         const forced = open.find((a) => a.kind === "forced_finish");
         expect(forced?.match_id).toBe(matchId);
         // The trace names the last observation, 121 minutes old and therefore
         // outside the fifteen minute window: the fourth query of CA-9 at work.
         expect(forced?.details).toMatchObject({
-          score: { home: 1, away: 0 },
+          score: { home: 0, away: 0 },
+          heldScore: { home: 0, away: 0 },
           minute: 21,
           kickoff: KICKOFF,
           lastObservedAt: lastHeard,
@@ -202,7 +202,7 @@ describe("CA-11 the engine against the database", () => {
           resolved: 0,
         });
         expect(await decisions(tx, matchId)).toHaveLength(3);
-        expect(await alerts(tx, matchId)).toHaveLength(2);
+        expect(await alerts(tx, matchId)).toHaveLength(1);
       }),
     // Six runs of the engine against a remote database, four queries each.
     30_000,
@@ -313,5 +313,97 @@ describe("SPEC-013 CA-4 RN-12 through the database", () => {
       expect(open.map((a) => [a.kind, a.resolved_at])).toEqual([
         ["forced_finish", null],
       ]);
+    }));
+});
+
+// SPEC-014 CA-2, CA-4, CA-8 against the real schema: the owners and the mark
+// exist end to end, legacy nulls included, always rolled back.
+describe("SPEC-014 CA-2 CA-8 owners and mark through the database", () => {
+  const insertDecision = async (
+    tx: TransactionSql,
+    matchId: string,
+    observationId: string,
+    over: {
+      status?: string;
+      minute?: number | null;
+      rule?: string;
+      home?: string | null;
+      away?: string | null;
+      forced?: boolean | null;
+      at?: Instant;
+    } = {},
+  ) =>
+    tx`insert into decisions (match_id, status, home_score, away_score,
+        minute, qualifier, rule, observation_ids, decided_at,
+        home_source_id, away_source_id, forced_finish)
+      values (${matchId}, ${over.status ?? "live"}, 1, 0,
+        ${over.minute === undefined ? 20 : over.minute}, 'provisional',
+        ${over.rule ?? "RN-01"}, ${tx.array([observationId])}::uuid[],
+        ${over.at ?? at(-1)}, ${over.home ?? null}, ${over.away ?? null},
+        ${over.forced ?? null})
+      returning home_source_id, away_source_id, forced_finish`;
+
+  it("round-trips true, false and null, and the two owners", () =>
+    rollback(async (tx) => {
+      const values: [string | null, string | null, boolean | null][] = [
+        ["operator", "api-football", true],
+        ["api-football", null, false],
+        [null, null, null],
+      ];
+      for (const [home, away, forced] of values) {
+        const matchId = await seedMatch(tx);
+        const o = await observe(tx, matchId, 1, 0, 20, at(-2));
+        await insertDecision(tx, matchId, o, { home, away, forced });
+        const [row] = await decisions(tx, matchId);
+        expect([
+          row.home_source_id,
+          row.away_source_id,
+          row.forced_finish,
+        ]).toEqual([home, away, forced]);
+      }
+    }));
+
+  it("holds the operator's goal against api-football and keeps its owner (RN-03)", () =>
+    rollback(async (tx) => {
+      const matchId = await seedMatch(tx);
+      const o = await observe(tx, matchId, 1, 0, 20, at(-2));
+      await insertDecision(tx, matchId, o, { home: "operator", away: null });
+      await observe(tx, matchId, 0, 0, 21, at(0));
+      expect(
+        await decideMatches(engineTx(tx), [matchId], at(0), SOURCES),
+      ).toMatchObject({ decisions: 1, alerts: 1 });
+      const rows = await decisions(tx, matchId);
+      expect(rows.at(-1)).toMatchObject({
+        home_score: 1,
+        away_score: 0,
+        minute: 21,
+        rule: "RN-03",
+        home_source_id: "operator",
+        // The away side did not move (0 → 0): it keeps its owner, null.
+        away_source_id: null,
+        forced_finish: false,
+      });
+      const [regression] = await alerts(tx, matchId);
+      expect(regression.kind).toBe("regression");
+    }));
+
+  it("does not reconcile a finished RN-02 without the mark (RN-12 reads the mark)", () =>
+    rollback(async (tx) => {
+      const matchId = await seedMatch(tx);
+      const o = await observe(tx, matchId, 1, 0, 90, at(110));
+      await insertDecision(tx, matchId, o, {
+        status: "finished",
+        minute: null,
+        rule: "RN-02",
+        forced: null,
+        at: at(120),
+      });
+      await tx`insert into observations (match_id, source_id, status, home_score,
+          away_score, minute, observed_at, received_at, raw_ref)
+        values (${matchId}, 'api-football', 'finished', 2, 0, null, ${at(125)},
+          ${at(125)}, 'raw/2026-09-25/api-football/y.json.gz')`;
+      await decideMatches(engineTx(tx), [matchId], at(125), SOURCES);
+      const rows = await decisions(tx, matchId);
+      expect(rows.map((r) => r.rule)).not.toContain("RN-12");
     }));
 });

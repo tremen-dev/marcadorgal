@@ -2390,7 +2390,10 @@ describe("SPEC-017 CA-3 partidos sin directo", () => {
 // SPEC-017 CA-4 (F-SPEC-013-4). Un `finished` forzado por RN-02 deja el
 // partido en ventana hasta kickoff + WINDOW_AFTER_MINUTES (isInWindow,
 // SPEC-013 CA-3): esos ticks son cobertura, no «tras el cierre». Cualquier
-// otro `finished` vigente cierra en su decided_at, como hasta ahora.
+// otro `finished` vigente cierra en su decided_at, como hasta ahora. Desde
+// SPEC-014 CA-8 (N-2 de SPEC-017) el forzado se reconoce por la marca
+// forcedFinish === true, nunca por la regla: las correcciones de
+// replay:jornada también son RN-02 y llevan false.
 describe("SPEC-017 CA-4 la prórroga del cierre forzoso es cobertura", () => {
   const K = 10;
   // Un tick cada 30 s desde kickoff − 10 hasta kickoff + 150, como el tick
@@ -2415,17 +2418,19 @@ describe("SPEC-017 CA-4 la prórroga del cierre forzoso es cobertura", () => {
     texto
       .split("\n")
       .find((l) => l.startsWith("intentos dentro de la ventana de ADR-002 §2"));
-  const corre = (rule: string, cierre: number) =>
+  const corre = (forcedFinish: boolean | null, cierre: number) =>
     informeJornada(
       vacio({
-        matches: [partido({ kickoff: at(K), decidedAt: at(K + cierre), rule })],
+        matches: [
+          partido({ kickoff: at(K), decidedAt: at(K + cierre), forcedFinish }),
+        ],
         observations: [obs({ observedAt: at(K) })],
         attempts: ticks(),
       }),
     );
 
   it("SPEC-017 CA-4 (i) RN-02 a +120 con ticks hasta +150: cobertura 100 % y tras el cierre 0", () => {
-    const { texto, informe } = corre("RN-02", 120);
+    const { texto, informe } = corre(true, 120);
     expect(informe.cobertura.ticksEsperados).toBe(160 * 2);
     expect(informe.cobertura.ticksReales).toBe(160 * 2);
     expect(informe.cobertura.porcentaje).toBe(1);
@@ -2433,21 +2438,33 @@ describe("SPEC-017 CA-4 la prórroga del cierre forzoso es cobertura", () => {
   });
 
   it("SPEC-017 CA-4 (ii) RN-02 y luego RN-12 a +135: la ventana cierra a +135", () => {
-    const { texto, informe } = corre("RN-12", 135);
+    const { texto, informe } = corre(false, 135);
     expect(informe.cobertura.ticksEsperados).toBe(145 * 2);
     expect(informe.cobertura.porcentaje).toBe(1);
     expect(tras(texto)).toMatch(/: 30$/);
   });
 
   it("SPEC-017 CA-4 (iii) RN-01 a +105: sin cambio", () => {
-    const { texto, informe } = corre("RN-01", 105);
+    const { texto, informe } = corre(false, 105);
     expect(informe.cobertura.ticksEsperados).toBe(115 * 2);
     expect(informe.cobertura.porcentaje).toBe(1);
     expect(tras(texto)).toMatch(/: 90$/);
   });
 
+  it("SPEC-017 CA-4 (iv) una corrección RN-02 con marca false cierra en su decided_at", () => {
+    const { texto, informe } = corre(false, 125);
+    expect(informe.cobertura.ticksEsperados).toBe(135 * 2);
+    expect(informe.cobertura.porcentaje).toBe(1);
+    expect(tras(texto)).toMatch(/: 50$/);
+  });
+
+  it("SPEC-017 CA-4 (iv) un finished anterior a la columna (marca null) cierra en su decided_at", () => {
+    const { informe } = corre(null, 125);
+    expect(informe.cobertura.ticksEsperados).toBe(135 * 2);
+  });
+
   it("SPEC-017 CA-4 las dos líneas del bloque 1 lo dicen, sin crecer", () => {
-    const { texto } = corre("RN-02", 120);
+    const { texto } = corre(true, 120);
     const lineas = texto.split("\n");
     const i = lineas.findIndex((l) =>
       l.startsWith("  cobertura sobre la ventana efectiva de cada partido"),
@@ -2487,7 +2504,11 @@ describe("SPEC-017 CA-5 pg_cron en el informe", () => {
     informeJornada(
       vacio({
         matches: [
-          partido({ kickoff: at(K), decidedAt: at(K + 105), rule: "RN-01" }),
+          partido({
+            kickoff: at(K),
+            decidedAt: at(K + 105),
+            forcedFinish: false,
+          }),
         ],
         cron,
       }),

@@ -56,7 +56,7 @@ const message = (e) => (e instanceof Error ? e.message : String(e));
 
 async function vigentes(sql) {
   return sql`select b.match_id, b.status, b.home_score, b.away_score,
-      b.qualifier, b.decision_version, d.rule
+      b.qualifier, b.decision_version, d.rule, d.forced_finish
     from board b join decisions d on d.id = b.decision_id
     where b.match_id = any(${MATCH_IDS}) order by b.match_id`;
 }
@@ -90,6 +90,8 @@ try {
     matchId: r.match_id,
     status: r.status,
     rule: r.rule,
+    // SPEC-014 CA-8: the guard reads the mark, never the rule.
+    forcedFinish: r.forced_finish,
   }));
 
   if (!aplicar) {

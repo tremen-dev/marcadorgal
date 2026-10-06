@@ -9,7 +9,7 @@ aprobada-por: Alberto Fojo
 ---
 # ADR-011: RN-03 en vivo: baja la misma fuente que subió el gol u otra de más peso
 
-- Deciders: **Alberto Fojo (titular) decide el núcleo el 2026-09-29** —«un marcador en juego lo baja la misma fuente que lo subió u otra de más peso»— porque la letra por peso exige «un operador el 100 % del tiempo vigilando» cada gol anulado, «y no es la intención»; el producto es automático. sdd-arquitecto redacta, mide y propone el resto (§2–§4). Aprobación del ADR: pendiente.
+- Deciders: **Alberto Fojo (titular) decide el núcleo el 2026-09-29** —«un marcador en juego lo baja la misma fuente que lo subió u otra de más peso»— porque la letra por peso exige «un operador el 100 % del tiempo vigilando» cada gol anulado, «y no es la intención»; el producto es automático. sdd-arquitecto redacta, mide y propone el resto (§2–§4). Alberto Fojo **aprueba el ADR el 2026-09-29**; H-1..H-3, abajo.
 - Specs relacionadas: **SPEC-014** lo implementa. Supersede **solo la letra en vivo de RN-03** de ADR-010 §1 (y su nota fechada); la cláusula del cierre de §1 y §2–§4 siguen vigentes. Evidencia: `_qa/ADR-011/medicion-bajadas.md`.
 
 ## Contexto
@@ -91,3 +91,7 @@ segunda fuente automática (EPIC-004) la regla generaliza sin reescribirse.
   excluye a RN-03 por construcción (una es en juego, la otra tras el cierre).
   Recomendación: sí, `operador > RN-03 > RN-05 > RN-02 > RN-12 > RN-01`, en
   SPEC-014 CA-1.
+- **Resueltas (Alberto Fojo):** H-1 = sí y H-2 = no, según recomendación, con
+  la aprobación del 2026-09-29 (SPEC-014 CA-3 (i)); **H-3 = sí el 2026-10-06**:
+  RN-06 pasa a `operador > RN-03 > RN-05 > RN-02 > RN-12 > RN-01`. §5 sigue en
+  pie para RN-03: no se mueve; RN-12 se añade al orden.

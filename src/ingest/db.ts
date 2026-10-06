@@ -1,6 +1,5 @@
 import type { Sql, TransactionSql } from "postgres";
 import type {
-  DecisionRule,
   Details,
   Instant,
   MatchStatus,
@@ -15,9 +14,10 @@ import { isInWindow, windowKickoffRange } from "./window.ts";
 // The port of ADR-008 §5. The tick knows only this interface, so CI proves it
 // with doubles and npm run test:db proves the postgres.js implementation.
 
+// forcedFinish: the mark of the current Decision (SPEC-014 CA-8).
 export type WindowRow = WindowMatch & {
   status: MatchStatus;
-  rule: DecisionRule | null;
+  forcedFinish: boolean | null;
 };
 
 // Moved to the model (SPEC-007 CA-2) and re-exported here: every importer of
@@ -158,10 +158,10 @@ export function createIngestDb(sql: Sql): IngestDb {
           home_team_id: string;
           away_team_id: string;
           status: MatchStatus;
-          rule: DecisionRule | null;
+          forced_finish: boolean | null;
         }[]
       >`select b.match_id, b.competition_id, b.season, b.kickoff, b.home_team_id,
-          b.away_team_id, b.status, d.rule
+          b.away_team_id, b.status, d.forced_finish
         from board b left join decisions d on d.id = b.decision_id
         where b.kickoff >= ${from} and b.kickoff <= ${to}
         order by b.kickoff, b.match_id`;
@@ -174,7 +174,7 @@ export function createIngestDb(sql: Sql): IngestDb {
           homeTeamId: r.home_team_id,
           awayTeamId: r.away_team_id,
           status: r.status,
-          rule: r.rule,
+          forcedFinish: r.forced_finish,
         }))
         .filter((m) => isInWindow(m, now)) as WindowRow[];
     },
