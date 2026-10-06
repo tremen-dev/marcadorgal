@@ -70,10 +70,11 @@ const captura = (fixtureIds: readonly string[]): RawCapture => ({
   ],
 });
 
-const forced = (matchId: string) => ({
+const forced = (matchId: string): Vigente => ({
   matchId,
-  status: "finished" as const,
-  rule: "RN-02" as const,
+  status: "finished",
+  rule: "RN-02",
+  forcedFinish: true,
 });
 
 function setup(capture = captura) {
@@ -179,12 +180,35 @@ describe("SPEC-013 CA-6 reconciliarCierres", () => {
     await expect(
       run([
         forced(CEUTA),
-        { matchId: MERIDA, status: "finished", rule: "RN-12" },
+        {
+          matchId: MERIDA,
+          status: "finished",
+          rule: "RN-12",
+          forcedFinish: false,
+        },
       ]),
     ).rejects.toThrow(/primera-rfef-g1-2026-27-j5-merida-logrones.*RN-12/);
     expect(capturar).not.toHaveBeenCalled();
     expect(store.objects.size).toBe(0);
   });
+
+  // SPEC-014 CA-8: the guard reads the mark, never the rule. A finished RN-02
+  // without it (a correction of replay:jornada, false; a forced finish
+  // written before the migration, null) is refused before asking anything.
+  it.each([false, null])(
+    "refuses a finished RN-02 whose mark is %s before asking anything",
+    async (forcedFinish) => {
+      const { run, capturar, store } = setup();
+      await expect(
+        run([
+          forced(CEUTA),
+          { matchId: MERIDA, status: "finished", rule: "RN-02", forcedFinish },
+        ]),
+      ).rejects.toThrow(/merida-logrones.*no está en cierre forzoso/);
+      expect(capturar).not.toHaveBeenCalled();
+      expect(store.objects.size).toBe(0);
+    },
+  );
 
   it("never asks anything when a match has no fixture alias or no Decision", async () => {
     const { run, capturar } = setup();

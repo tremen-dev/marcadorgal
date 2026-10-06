@@ -22,10 +22,13 @@ import type { AfterInsert } from "./tick.ts";
 // parse (RN-09), the Observation inserted and the engine hook run in one
 // transaction. The Decision is the engine's, never written by hand (D-5).
 
+// forcedFinish is the mark of the Decision (SPEC-014 CA-8): only true is a
+// forced finish; rule is kept for the message, never for the guard.
 export type Vigente = {
   matchId: string;
   status: MatchStatus;
   rule: DecisionRule;
+  forcedFinish: boolean | null;
 };
 
 export type ReconciliarOptions = {
@@ -65,9 +68,9 @@ function plan({ matchIds, vigentes, aliases }: ReconciliarOptions) {
     const vigente = vigentes.find((v) => v.matchId === matchId);
     if (vigente === undefined)
       throw new Error(`${matchId} no tiene Decision vigente`);
-    if (vigente.status !== "finished" || vigente.rule !== "RN-02")
+    if (vigente.status !== "finished" || vigente.forcedFinish !== true)
       throw new Error(
-        `${matchId} no está en cierre forzoso (vigente ${vigente.status} ${vigente.rule}): nada que reconciliar`,
+        `${matchId} no está en cierre forzoso (vigente ${vigente.status} ${vigente.rule}, forced_finish ${vigente.forcedFinish}): nada que reconciliar`,
       );
     return { matchId, fixtureId };
   });

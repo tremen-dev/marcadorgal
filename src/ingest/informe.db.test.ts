@@ -376,22 +376,32 @@ describe("SPEC-017 CA-2 el contraste guardado", () => {
     }));
 });
 
-describe("SPEC-017 CA-4 la regla de la Decision vigente", () => {
-  it("SPEC-017 CA-4 trae la regla de la Decision de board", () =>
+// SPEC-017 CA-4 con SPEC-014 CA-8 (N-2 de SPEC-017): informe-db.ts trae la
+// marca forced_finish de la Decision de board, no su regla.
+describe("SPEC-017 CA-4 la marca de la Decision vigente", () => {
+  it("SPEC-017 CA-4 trae la marca forced_finish de la Decision de board", () =>
     rollback(async (tx) => {
       const forzado = await seedMatch(tx);
+      const corregido = await seedMatch(tx);
+      const antiguo = await seedMatch(tx);
       const sinDecision = await seedMatch(tx);
       const o = await observe(tx, forzado, 1, 0, seg(30));
       await decide(tx, forzado, 1, 0, seg(60), [o]);
-      await tx`insert into decisions (match_id, status, home_score, away_score,
-          minute, qualifier, rule, observation_ids, decided_at)
-        values (${forzado}, 'finished', 1, 0, null, 'provisional', 'RN-02',
-          ${[o]}, ${seg(120 * 60)})`;
+      const finished = (matchId: string, forcedFinish: boolean | null) =>
+        tx`insert into decisions (match_id, status, home_score, away_score,
+            minute, qualifier, rule, observation_ids, decided_at, forced_finish)
+          values (${matchId}, 'finished', 1, 0, null, 'provisional', 'RN-02',
+            ${[o]}, ${seg(120 * 60)}, ${forcedFinish})`;
+      await finished(forzado, true);
+      await finished(corregido, false);
+      await finished(antiguo, null);
 
       const filas = await informeFilas(tx, DESDE, HASTA);
-      const regla = new Map(filas.matches.map((m) => [m.id, m.rule]));
-      expect(regla.get(forzado)).toBe("RN-02");
-      expect(regla.get(sinDecision)).toBeNull();
+      const marca = new Map(filas.matches.map((m) => [m.id, m.forcedFinish]));
+      expect(marca.get(forzado)).toBe(true);
+      expect(marca.get(corregido)).toBe(false);
+      expect(marca.get(antiguo)).toBeNull();
+      expect(marca.get(sinDecision)).toBeNull();
       // Y con ella el informe cuenta la prórroga como ventana (CA-4 (i)).
       // Solo el forzado: el otro, sin Decision, ocupa la ventana entera.
       const { informe } = genera({

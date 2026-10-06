@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  type DecisionRule,
   type Instant,
   type MatchStatus,
   MINUTE_MS,
@@ -11,13 +10,15 @@ import { isInWindow, windowKickoffRange } from "./window.ts";
 
 const KICKOFF = "2026-09-25T18:30:00.000Z" as Instant;
 
+// forcedFinish is the mark of the current Decision (SPEC-014 CA-8): true
+// only for the forced finish of RN-02, false or null for anything else.
 const inWindow = (
   minutes: number,
   status: MatchStatus = "scheduled",
-  rule: DecisionRule | null = null,
+  forcedFinish: boolean | null = null,
 ) =>
   isInWindow(
-    { kickoff: KICKOFF, status, rule },
+    { kickoff: KICKOFF, status, forcedFinish },
     shiftInstant(KICKOFF, minutes * MINUTE_MS),
   );
 
@@ -33,7 +34,7 @@ describe("CA-3 isInWindow", () => {
   });
 
   it("leaves a finished match out even inside the range", () => {
-    expect(inWindow(30, "finished", "RN-01")).toBe(false);
+    expect(inWindow(30, "finished", false)).toBe(false);
   });
 
   it.each<MatchStatus>(["scheduled", "live", "postponed", "suspended"])(
@@ -51,24 +52,25 @@ describe("CA-3 isInWindow", () => {
 // SPEC-013 CA-3 (ADR-010 §3): a finished forced by RN-02 is provisional and
 // does not take the match out of its window; the time edge (+150) or the
 // final the source confirms do. A confirmed finished still closes at once.
+// Since SPEC-014 CA-8 the forced finish is told by its mark, not by its rule:
+// RN-01, RN-12 and the operator write false.
 describe("SPEC-013 CA-3 the forced finish keeps the window open", () => {
   it("(i) a confirmed finished at +125 is out", () => {
-    expect(inWindow(125, "finished", "RN-01")).toBe(false);
-    expect(inWindow(125, "finished", "RN-12")).toBe(false);
-    expect(inWindow(125, "finished", "operator")).toBe(false);
+    expect(inWindow(125, "finished", false)).toBe(false);
+    expect(inWindow(125, "finished", null)).toBe(false);
   });
 
   it("(ii) a finished forced by RN-02 at +125 is in", () => {
-    expect(inWindow(125, "finished", "RN-02")).toBe(true);
+    expect(inWindow(125, "finished", true)).toBe(true);
   });
 
   it("(iii) the same at +151 is out: the time edge rules all the same", () => {
-    expect(inWindow(150, "finished", "RN-02")).toBe(false);
-    expect(inWindow(151, "finished", "RN-02")).toBe(false);
+    expect(inWindow(150, "finished", true)).toBe(false);
+    expect(inWindow(151, "finished", true)).toBe(false);
   });
 
   it("(iv) a live at +125 is in, as before", () => {
-    expect(inWindow(125, "live", "RN-01")).toBe(true);
+    expect(inWindow(125, "live", false)).toBe(true);
   });
 });
 
@@ -79,12 +81,39 @@ describe("SPEC-016 CA-4 postponed and suspended keep the window open", () => {
   it.each<MatchStatus>(["postponed", "suspended"])(
     "keeps a %s match in until +150 and leaves it out after",
     (status) => {
-      expect(inWindow(125, status, "RN-01")).toBe(true);
-      expect(inWindow(149, status, "RN-01")).toBe(true);
-      expect(inWindow(150, status, "RN-01")).toBe(false);
-      expect(inWindow(151, status, "RN-01")).toBe(false);
+      expect(inWindow(125, status, false)).toBe(true);
+      expect(inWindow(149, status, false)).toBe(true);
+      expect(inWindow(150, status, false)).toBe(false);
+      expect(inWindow(151, status, false)).toBe(false);
     },
   );
+});
+
+// SPEC-014 CA-8, CA-9: only the mark keeps a finished in window. A finished
+// RN-02 without it — a correction of replay:jornada, or a forced finish
+// written before the migration — is out; with it, in until +150. A finished
+// RN-01 provisional without the mark is a confirmed finished too: out.
+describe("SPEC-014 CA-8 CA-9 the window reads the mark, never the rule", () => {
+  it("a finished RN-02 without the mark (false or null) is out at +125", () => {
+    expect(inWindow(125, "finished", false)).toBe(false);
+    expect(inWindow(125, "finished", null)).toBe(false);
+  });
+
+  it("a finished with the mark is in until +150", () => {
+    expect(inWindow(121, "finished", true)).toBe(true);
+    expect(inWindow(149, "finished", true)).toBe(true);
+    expect(inWindow(150, "finished", true)).toBe(false);
+  });
+
+  it("does not take the rule any more", () => {
+    expect(
+      isInWindow(
+        // @ts-expect-error rule is not part of WindowInput since SPEC-014
+        { kickoff: KICKOFF, status: "finished", rule: "RN-02" },
+        shiftInstant(KICKOFF, 125 * MINUTE_MS),
+      ),
+    ).toBe(false);
+  });
 });
 
 describe("CA-6 windowKickoffRange", () => {

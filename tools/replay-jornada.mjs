@@ -4,6 +4,12 @@
 // src/ingest/replay-jornada.ts, every query from src/ingest/replay-jornada-db.ts.
 // Never asks any source for anything: it only reads observations and board.
 //
+// SPEC-014 CA-6: it also replays with the engine of main before ADR-011
+// (frozen at 11a7159, a fixture) and prints, per match and in total, the live
+// ticks in which the published score is not the source's, with both engines.
+// Without --aplicar every read runs in one read only transaction with a
+// statement_timeout, and the count of decisions is printed before and after.
+//
 // Usage: npm run replay:jornada -- <desde> <hasta> [--aplicar]
 //   <desde> <hasta>  ISO-8601 instants; the matchday of SPEC-009 is
 //                    2026-09-25T18:20Z 2026-09-28T21:00Z.
@@ -12,6 +18,7 @@
 //                    nothing is written.
 import { nowInstant } from "../src/clock.ts";
 import { createSql } from "../src/db/connect.ts";
+import { decide as decideAt11a7159 } from "../src/decide/fixtures/engine-11a7159.ts";
 import { replayJornada } from "../src/ingest/replay-jornada.ts";
 import {
   aplicarCorrecciones,
@@ -64,33 +71,61 @@ if (!process.env.DATABASE_URL) {
   process.exit(1);
 }
 
+// No statement of a dry run may hang the shell (SPEC-014 CA-6).
+const STATEMENT_TIMEOUT = "120s";
+
 const sql = createSql(process.env);
 try {
   const now = nowInstant();
-  const rows = replayJornada({
-    ...(await replayJornadaFilas(sql, args.desde, args.hasta)),
-    priority: replayPriority(SOURCES),
-    now,
-  });
+  const read = async (tx) => {
+    await tx.unsafe(`set local statement_timeout = '${STATEMENT_TIMEOUT}'`);
+    const [count] = await tx`select count(*)::int as n from decisions`;
+    const filas = await replayJornadaFilas(tx, args.desde, args.hasta);
+    return { decisions: count.n, filas };
+  };
+  // The reads are read only with or without --aplicar: the only write is
+  // aplicarCorrecciones, in its own transaction below.
+  const { decisions: before, filas } = await sql.begin("read only", read);
+  console.error(
+    `leídos ${filas.matches.length} partidos y ${filas.observations.length} observaciones; decisions = ${before}`,
+  );
+  const priority = replayPriority(SOURCES);
+  const rows = replayJornada({ ...filas, priority, now });
+  const main = new Map(
+    replayJornada({ ...filas, priority, now, engine: decideAt11a7159 }).map(
+      (r) => [r.matchId, r.liveTicks],
+    ),
+  );
 
-  console.log("| matchId | board | replay | diverge |");
-  console.log("|---|---|---|---|");
+  console.log("| matchId | board | replay | diverge | ticks live ≠ fuente (main → ADR-011) |");
+  console.log("|---|---|---|---|---|");
   for (const r of rows)
     console.log(
-      `| ${r.matchId} | ${marcador(r.board)} | ${marcador(r.replay)} | ${r.divergent ? (r.correction === null ? "sí (sin corrección)" : "sí") : "no"} |`,
+      `| ${r.matchId} | ${marcador(r.board)} | ${marcador(r.replay)} | ${r.divergent ? (r.correction === null ? "sí (sin corrección)" : "sí") : "no"} | ${main.get(r.matchId)} → ${r.liveTicks} |`,
     );
   const corrections = rows.filter((r) => r.correction !== null);
+  const total = (values) => values.reduce((a, b) => a + b, 0);
   console.log(
     `\n${rows.length} partidos, ${rows.filter((r) => r.divergent).length} divergen, ${corrections.length} con corrección.`,
   );
+  console.log(
+    `Ticks live con el marcador publicado distinto del de la fuente: ${total([...main.values()])} (motor de main, 11a7159) → ${total(rows.map((r) => r.liveTicks))} (motor de ADR-011), en ${rows.filter((r) => (main.get(r.matchId) ?? 0) > 0).length} → ${rows.filter((r) => r.liveTicks > 0).length} partidos.`,
+  );
 
-  if (!args.aplicar) console.log("En seco: no se ha escrito nada (sin --aplicar).");
-  else {
+  if (!args.aplicar) {
+    const [after] = await sql.begin("read only", async (tx) => {
+      await tx.unsafe(`set local statement_timeout = '${STATEMENT_TIMEOUT}'`);
+      return tx`select count(*)::int as n from decisions`;
+    });
+    console.log(
+      `En seco: no se ha escrito nada (sin --aplicar). decisions ${before} → ${after.n}.`,
+    );
+  } else {
     const counts = await sql.begin(async (tx) => {
-      const [before] = await tx`select count(*)::int as n from decisions`;
+      const [b] = await tx`select count(*)::int as n from decisions`;
       const added = await aplicarCorrecciones(tx, rows);
-      const [after] = await tx`select count(*)::int as n from decisions`;
-      return { before: before.n, added, after: after.n };
+      const [a] = await tx`select count(*)::int as n from decisions`;
+      return { before: b.n, added, after: a.n };
     });
     console.log(
       `--aplicar: decisions ${counts.before} → ${counts.after} (+${counts.added}), decided_at ${now}.`,

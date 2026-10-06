@@ -107,7 +107,9 @@ describe("SPEC-013 CA-6 the reconciliation through the database", () => {
       const [before] = await tx`select count(*)::int as n from decisions`;
       const [filas] = await reconciliarCierres({
         matchIds: [matchId],
-        vigentes: [{ matchId, status: "finished", rule: "RN-02" }],
+        vigentes: [
+          { matchId, status: "finished", rule: "RN-02", forcedFinish: true },
+        ],
         aliases,
         adapter: createApiFootballResults({ aliases, apiKey: "clave" }),
         capturar: async (ids) => capture(ids),

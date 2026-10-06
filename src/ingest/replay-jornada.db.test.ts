@@ -105,7 +105,7 @@ describe("SPEC-012 CA-4 the replay of a matchday against the database", () => {
       expect(after[0].n - before[0].n).toBe(1);
 
       const [added] = await tx`select version, status, home_score, away_score,
-          minute, qualifier, rule, observation_ids, decided_at
+          minute, qualifier, rule, observation_ids, decided_at, forced_finish
         from decisions where match_id = ${matchId} order by version desc limit 1`;
       expect(added).toMatchObject({
         version: 2,
@@ -116,6 +116,8 @@ describe("SPEC-012 CA-4 the replay of a matchday against the database", () => {
         qualifier: "provisional",
         rule: "RN-02",
         observation_ids: [final],
+        // SPEC-014 CA-8: a correction is not a close.
+        forced_finish: false,
       });
       expect((added.decided_at as Date).toISOString()).toBe(TODAY);
 
