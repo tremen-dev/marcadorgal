@@ -21,7 +21,7 @@ epica: EPIC-002
 | CA-4 | `src/decide/engine.ts` (bloque RN-12 antes de RN-05) · 15bfda2 | `src/decide/engine.test.ts` › «SPEC-013 CA-4» (i)–(v) + mismo marcador; rojo 4/6 antes · `src/ingest/engine.db.test.ts` › «SPEC-013 CA-4 RN-12 through the database» | bloque RN-12 en `engine.ts:292-304` tras RN-02 y antes de RN-05; tests (i)–(v) con aserciones concretas + `engine.db.test` verdes | ✅ |
 | CA-5 | Lectura preparada abajo («CA-5: lectura para el 2026-10-05») | Pendiente de campo (H-2), jornada 2026-10-02/04 | 2026-10-06, solo lectura en `dev`, por partido, `forced_finish` abiertas tras el despliegue (2026-10-03T12:35:54Z): **8 de 8** con RN-12 en ≤ 30 min, **mediana 263 s**, **máximo 1186 s** (abajo, «CA-5: medido») | ✅ |
 | CA-6 | `src/ingest/reconciliacion.ts` · `tools/reconciliar-cierre.mjs` · script `reconciliar:cierre` · 568b2d0, 0a8df89 | `src/ingest/reconciliacion.test.ts` (6) · `src/ingest/reconciliacion.db.test.ts` (1, rollback, +1 Decision RN-12) · ejecución real: 3.er intento, `decisions` +2 RN-12 (3-1, 3-5), contraste 39/39 (abajo; F-SPEC-013-2 cerrado) | solo lectura en `dev`: v108 `finished` 3-1 y 3-5 `confirmado` RN-12, `observation_ids` → `raw_ref` `…09-11-36.152Z-SPEC-013-CA-6-{1569939,1570756}` (3.er intento); `decisions` RN-12 = 2; las 2 `forced_finish` abiertas; 7 Decisions desde 2026-09-28T21:00Z = las 7 discrepancias del informe, todas iguales al proveedor → 39/39 `finished`, sin peticiones. Salvedad: tres ejecuciones, no una (autorizadas por el titular); ensayo en seco no ejecutado por el verificador (permiso denegado), negativa comprobada por código (`plan()` antes de capturar) + test «never asks anything…» + board en RN-12 | ⚠️ |
-| CA-7 | Una migración; `package.json` solo `reconciliar:cierre`; lock sin cambios | `npm run gates` exit 0 (50 ficheros, 745 tests), también sin env; `npm run test:db` exit 0 (10, 79). Presupuesto de la jornada: pendiente de campo con CA-5 | `npm run gates` exit 0 (50 ficheros, 745 tests); `npm run test:db` exit 0 (10, 79), filas antes = después (3358/9345/17/2766); 1 migración; `package.json` solo el script; lock sin cambios. Presupuesto: pendiente de campo con CA-5 | 🚧 |
+| CA-7 | Una migración; `package.json` solo `reconciliar:cierre`; lock sin cambios | `npm run gates` exit 0 (50 ficheros, 745 tests), también sin env; `npm run test:db` exit 0 (10, 79). Presupuesto de la jornada: pendiente de campo con CA-5 | `npm run gates` exit 0 (50 ficheros, 745 tests); `npm run test:db` exit 0 (10, 79), filas antes = después (3358/9345/17/2766); 1 migración; `package.json` solo el script; lock sin cambios. Presupuesto (2026-10-06, solo lectura, `ingest_attempts` 2026-10-02→06): máx. **1940/día** (≤ ~3.000), máx. **4/min** (≤ 6), 0 fallos; prórroga ≤ **122 peticiones** (≈ 3 % de 3964), abajo | ✅ |
 
 ## Evidencia CA-6 — excepción escrita (2026-09-29)
 
@@ -75,6 +75,11 @@ Consulta de arriba con tres cambios: agrupada **por partido** (`min(opened_at)` 
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
+**GREEN — 2026-10-06.** CA-5 y el presupuesto de CA-7 leídos en campo (solo lectura, sin ticks ni peticiones al proveedor ni escrituras). CA-1 a CA-4 ✅ y CA-6 ⚠️ según el veredicto de 2026-09-29 (abajo), sin código nuevo desde entonces. La spec pasa a `hecho`.
+- **CA-5**: 8 de 8 partidos con `forced_finish` tras el despliegue tienen RN-12 en ≤ 30 min; mediana 263 s, máximo 1186 s. No procede subir `WINDOW_AFTER_MINUTES`.
+- **CA-7 presupuesto** (`sum(details->>'requests')` de `ingest_attempts`, `started_at` 2026-10-02→06): 10-02 451 · 10-03 1304 · 10-04 1940 · 10-05 269 = **3964** peticiones en 2876 ticks, 0 fallidos; máx. 4/min y 2/tick. Cota superior de la prórroga: ticks entre la apertura de cada `forced_finish` y su RN-12 = 85 ticks, **122 peticiones** (≈ 3 % del total; cota porque muchos de esos ticks corrían igual por otros partidos en directo). Cada tick de la prórroga sigue pidiendo 1–2 (la llamada `live=`): no mueve el total de forma apreciable.
+- Sin baseline de jornada anterior en esta lectura (filtro de tiempo obligatorio 2026-10-02→06); el contraste se hace contra el presupuesto de SPEC-005 N-4, que es lo que pide la letra.
+
 **GREEN parcial a falta de CA-5 — 2026-09-29.** Spec sigue en `en-revision` (H-2): no pasa a `hecho` hasta leer CA-5 y el presupuesto de CA-7 tras la jornada 2026-10-02/04.
 - Comparado contra el merge-base con SPEC-012 (`93c2b87c`). Ajeno a SPEC-013 y no juzgado: cf866f9 (RN-03 por peso), 85a5c76, bed748e, fa97f52 (medición, ADR-011, SPEC-014); solo docs, sin código.
 - Conteos en `dev` (solo lectura): `decisions` 3358 · `observations` 9345 · `alerts` 17 (17 abiertas) · `ingest_attempts` 2766; idénticos antes y después de `npm run test:db`.
@@ -93,9 +98,10 @@ n-a: SPEC-013 no tiene UI.
 - **F-SPEC-013-4 — Cobertura del informe de SPEC-009 con la prórroga (destino: quien lea CA-5/CA-7 el 2026-10-05).** `ventanaEfectiva` (`src/ingest/informe.ts`) cierra en el `decided_at` del `finished` vigente: los ticks de +120 a +150 de un cierre forzoso saldrán como «tras el cierre», no como cobertura. El criterio 2 (ventana declarada) no cambia. No se toca: regenerar o cambiar el informe está fuera de alcance.
 - **F-SPEC-013-5 — Las correcciones de SPEC-012 son RN-02.** `replay:jornada --aplicar` escribe `finished` RN-02: con CA-3, un partido así dentro de +150 volvería a estar en ventana. Hoy da igual (ventanas vencidas).
 
+- **F-SPEC-013-6 — CA-5 con 8 casos (destino: lectura de la jornada 2026-10-09/12, no condición).** Muestra pequeña y un máximo de 1186 s (66 % del margen de 30 min). Repetir la misma consulta por partido con la jornada siguiente; si algún RN-12 llega tarde o no llega, entonces subir `WINDOW_AFTER_MINUTES` con su número.
+
 ## Cómo retomar (handoff)
 <!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->
 - Hecho: CA-1 (titular, 74c11b2), CA-2, CA-3, CA-4, CA-6 (código, tests y ejecución: 3.er intento, 39/39). `npm run gates` exit 0 (también sin env), `npm run test:db` exit 0.
 - **No volver a ejecutar `reconciliar:cierre`**: la vigente de los dos es RN-12, la guarda lo rechaza sin pedir nada.
-- Pendiente de campo: CA-5 y el presupuesto de CA-7 (jornada 2026-10-02/04; lectura arriba).
-- Spec en `en-revision`; no llega a `hecho` antes de leer CA-5 (H-2).
+- CA-5 y presupuesto de CA-7 leídos el 2026-10-06 (GREEN). Spec en `hecho`. Seguimiento: F-SPEC-013-6.
