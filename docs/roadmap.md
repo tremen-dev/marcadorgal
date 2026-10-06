@@ -8,12 +8,8 @@ tipo: roadmap
 
 ## Ahora (en curso)
 
-- **EPIC-002 — Ingesta y motor.** Contrato `SourceAdapter`, registro, adaptador
-  de la primera fuente con fixtures reales, raw store, tick con ventanas,
-  motor de decisiones, alertas. Cierra cuando una jornada real completa queda
-  registrada como Observations y Decisions sin intervención manual **y con el
-  marcador corregido** (N-9, 2026-09-29): falta CA-5 de SPEC-013 (jornada del
-  2026-10-02/04) y SPEC-014 (ADR-011).
+Ninguna épica en curso desde el cierre de EPIC-002 (2026-10-06). El orden
+entre EPIC-003 y EPIC-004 está por decidir (ver EPIC-004).
 
 ## Después (comprometido, sin empezar)
 
@@ -50,6 +46,14 @@ tipo: roadmap
   competiciones cargado. Cierra cuando `npm run gates` pasa en CI y la base de
   datos de dev tiene la jornada en curso cargada.
   **Cerrada el 2026-09-21** con sus cuatro specs hechas (SPEC-001..004).
+
+- **EPIC-002 — Ingesta y motor.** Contrato `SourceAdapter`, registro, adaptador
+  de la primera fuente con fixtures reales, raw store, tick con ventanas,
+  motor de decisiones, alertas. Cierra cuando una jornada real completa queda
+  registrada como Observations y Decisions sin intervención manual **y con el
+  marcador corregido** (N-9, 2026-09-29).
+  **Cerrada el 2026-10-06** con sus diez specs hechas (SPEC-005..009, 012..014,
+  016, 018).
 
 ## Permanente (sin fecha, no compite por prioridad)
 
