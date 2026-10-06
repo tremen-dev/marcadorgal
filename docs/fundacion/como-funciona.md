@@ -1,6 +1,6 @@
 # Cómo funciona marcador.gal
 
-> Explicación del sistema tal como está hoy (2026-09-22, SPEC-008 cerrada).
+> Explicación del sistema tal como está hoy (2026-10-06, EPIC-002 cerrada).
 > No es una spec ni un ADR: no decide nada, cuenta **por qué** lo decidido está
 > donde está. El *qué* se lee en el código; lo que se evapora es el porqué.
 > Cuando este documento y el código discrepen, manda el código.
@@ -31,7 +31,7 @@ flowchart TB
   PGCRON -- "pg_net" --> TICK
   VCRON --> TICK
 
-  WIN{"¿partidos en ventana?<br/>kickoff −10 min … +150 min"}
+  WIN{"¿partidos en ventana?<br/>kickoff −10 min … +150 min<br/>prórroga hasta +360 · ADR-013"}
   TICK --> WIN
   WIN -- no --> NADA["ni petición ni fila"]
   CAD{"cadencia RN-08<br/>advisory lock por fuente"}
@@ -70,8 +70,9 @@ flowchart TB
 ```
 
 El lazo `board → ventana` no es un error del dibujo: un partido sale de la
-ventana **por tiempo o porque su Decision vigente dice `finished`**, así que el
-resultado del motor decide a quién se le pregunta en el tick siguiente.
+ventana **por tiempo o porque su Decision vigente es un `finished` confirmado
+por la fuente**, así que el resultado del motor decide a quién se le pregunta en
+el tick siguiente.
 
 ---
 
@@ -133,16 +134,31 @@ arquitectura que exige shell explícito en todo paso con tubería
 ## 2. La ventana
 
 Un partido está **en ventana** desde `kickoff − 10 min` hasta `kickoff + 150 min`,
-y sale antes si su Decision vigente ya dice `finished` (`src/ingest/window.ts`,
-`WINDOW_BEFORE_MINUTES` / `WINDOW_AFTER_MINUTES`).
+y sale antes si su Decision vigente es un `finished` **sin la marca
+`forced_finish`** (`src/ingest/window.ts`, constantes en `src/ingest/constants.ts`).
+Un cierre forzoso no la saca: sigue en ventana hasta el borde para que RN-12 oiga
+el final que la fuente confirme después (ADR-010 §3).
 
 Los diez minutos de antes son para llegar al pitido inicial con el partido ya
 observado: el primer `live` no puede esperar al tick siguiente. Los 150 de
 después cubren 90 + descanso + añadidos + una interrupción larga. Y hay una
 relación que conviene no romper sin pensarlo: el barrido del motor solo recorre
 los partidos **en ventana**, así que el cierre forzoso de `kickoff + 120 min`
-(§6) solo puede dispararse porque la ventana llega a 150. Acortarla por debajo
-de 120 lo desactivaría en silencio.
+(§6) y su reconciliación solo pueden dispararse porque la ventana llega a 150.
+Acortarla por debajo de 120 lo desactivaría en silencio.
+
+**La prórroga (ADR-013 §1).** En Segunda RFEF y Tercera la fuente a veces no da
+un partido en directo: lo deja en `NS` y publica el `FT` horas después. Por eso
+un partido que a +150 sigue `scheduled` (o sin Decision) sigue en ventana hasta
+`kickoff + 360 min`. También siguen un `live` decidido ya dentro de la prórroga y
+el `finished` forzado que RN-02 saca de él, para que RN-12 reconcilie con el
+`FT` (SPEC-018 N-4); a cambio, ese partido se publica `finished provisional` con
+el marcador parcial hasta que llegue. Un `live` o cierre forzoso decidido antes
+de +150, un `postponed` o un `suspended` salen a +150 como siempre. En la
+prórroga el partido se pide **solo por `ids=`** —nunca suma su competición a
+`live=`— y como mucho cada 5 min, contados desde el `received_at` de su última
+observación (`isDueForPoll`): el peor caso son 42 peticiones por tanda de
+rezagados.
 
 `isInWindow` es una función pura que recibe `now`; la consulta a `board` solo
 acota por `kickoff` para no traerse la temporada entera y el filtro fino lo hace
@@ -273,7 +289,7 @@ que no está en la tabla se salta y se cuenta**: el día que el proveedor invent
 un `status.short` nuevo, aparece en `skipped`, no como un estado inventado en
 pantalla. Y el adaptador pide lo mínimo que RN-08 permite: una llamada `live=`
 solo si algo ha empezado ya, y después `ids=` en lotes de 20 con lo que esa
-respuesta no traía.
+respuesta no traía (los partidos en prórroga van solo por `ids=`, §2).
 
 La identidad es **todo o nada** (RN-10): una observación solo se acepta si su
 local y su visitante resuelven a un único `Match` del calendario declarado. Si
@@ -308,35 +324,52 @@ Las reglas, en prosa:
   igual. La antigüedad se mide con `observedAt`, el reloj de la fuente.
 - **RN-02 Transiciones.** `scheduled → live` solo si el kickoff está a menos de
   15 minutos (un `live` reclamado demasiado lejos se descarta en silencio, no
-  alerta). `postponed` y `suspended` solo desde prioridad de federación o del
-  operador. De `finished` no se vuelve salvo por el operador. Y el **cierre
-  forzoso**: a `kickoff + 120 min` un partido `live` se publica `finished` con el
-  marcador vigente y cualificador `provisional`.
-- **RN-03 Monotonía.** Un marcador no baja salvo por el operador. Si la fuente
-  ganadora propone un marcador menor, se publica su estado **llevando puesto el
-  marcador vigente** y se abre una alerta.
+  alerta). `postponed` y `suspended` los da la fuente ganadora como cualquier
+  otra transición, `provisional` sin federación ni operador, y salir de ellos es
+  otra transición más (ADR-012). De `finished` no se vuelve salvo por el
+  operador. Y el **cierre forzoso**: a `kickoff + 120 min` un partido `live` se
+  publica `finished` `provisional`, con el marcador de la observación ganadora
+  fresca (o el vigente si no hay ninguna), y la Decision lleva la marca
+  `forced_finish`.
+- **RN-03 Monotonía, por lado (ADR-011).** Mientras el partido está en juego,
+  cada lado del marcador solo lo baja la fuente que lo subió (su dueño, que la
+  Decision registra en `scoredBy`) u otra de más peso. Si la fuente ganadora
+  propone bajar un lado que no puede bajar, se publica su estado **llevando
+  puesto el valor vigente de ese lado** y se abre una alerta `regression`. La
+  retención no sobrevive al cierre: el paso a `finished` publica el marcador de
+  la ganadora (ADR-010 §1).
 - **RN-04 Conflicto.** Si dos fuentes de prioridad igual o adyacente discrepan
   más de 3 minutos, no se publica nada: se mantiene la Decision vigente y se
   alerta. Con una sola fuente registrada hoy no se dispara nunca.
 - **RN-05 Silencio.** Un `live` sin observación de nadie en 15 minutos pasa a
-  cualificador `sen_sinal` y alerta. Al volver la señal recupera su cualificador
-  normal y **el motor cierra esa alerta él mismo**: es la única que se
-  autorresuelve.
+  cualificador `sen_sinal` y abre una alerta `silence`. Al volver la señal
+  recupera su cualificador normal y **el motor cierra esa alerta él mismo**: es
+  la única que se autorresuelve. Un `scheduled` con el kickoff pasado hace 15
+  minutos sin que ninguna fuente lo dé en juego también pasa a `sen_sinal`, pero
+  **sin alerta** (ADR-013 §2): es lo normal de un partido que la fuente no da en
+  directo, y solo un estado real se lo quita.
 - **RN-06 Trazabilidad.** Toda Decision registra la regla decisiva y los ids de
   las observaciones que la sostienen.
+- **RN-12 Reconciliación.** Un partido cerrado por el cierre forzoso acepta el
+  `finished` que la fuente confirme después, mientras siga en ventana: cambia
+  marcador y cualificador, nunca el estado (ADR-010 §2). Solo la marca
+  `forced_finish` identifica un cierre forzoso, no la regla `RN-02`.
 
-**El orden de evaluación** es `operator → cierre forzoso RN-02 → RN-05 → guarda
-de legalidad de transición → RN-03 → RN-04 → RN-01`. Dos de esos pasos —la
-guarda de transición y RN-04— **nunca publican**, y por eso nunca aparecen en
-`Decision.rule`: `rule` solo admite `operator`, `RN-01`, `RN-02`, `RN-03` y
-`RN-05` (hay un `check` en la tabla). La precedencia de RN-06 gobierna qué regla
-se *registra* cuando sí se publica, no el orden en que se evalúan las guardas.
+**El orden de evaluación** es `operator → cierre forzoso RN-02 → RN-12 → RN-05
+en scheduled → RN-05 en live → guarda de legalidad de transición → RN-03 →
+RN-04 → RN-01`. Dos de esos pasos —la guarda de transición y RN-04— **nunca
+publican**, y por eso nunca aparecen en `Decision.rule`: `rule` solo admite
+`operator`, `RN-01`, `RN-02`, `RN-03`, `RN-05` y `RN-12` (hay un `check` en la
+tabla). La precedencia de RN-06 gobierna qué regla se *registra* cuando sí se
+publica, no el orden en que se evalúan las guardas.
 
 **El cualificador es derivado, no una columna más de entrada.** `confirmado` si
 la fuente ganadora tiene prioridad de federación o superior, o si una segunda
 fuente coincide en estado y marcador (y entonces se cita también su observación);
-`provisional` en cualquier otro caso; `sen_sinal` por RN-05. Con una sola fuente
-de prioridad 10, hoy **todo lo que se publica es `provisional`**. Es el precio
+`provisional` en cualquier otro caso; `sen_sinal` por RN-05, solo en `live` o
+`scheduled` (otro `check` en la tabla). Con una sola fuente
+de prioridad 10, hoy **todo lo que se publica es `provisional`**, salvo la
+reconciliación de RN-12, que publica `confirmado` el final de la fuente. Es el precio
 aceptado de haber descartado el motor de pesos heredado: «provisional a tiempo
 antes que confirmado tarde».
 
@@ -372,8 +405,10 @@ confirmado**, y se publica aunque sigan llegando observaciones `live`. Es un
 resultado potencialmente falso. La propuesta original era hacerlo en silencio; se
 rechazó en el gate con un argumento de una línea: *publicar un resultado falso
 con rastro es mejor que publicarlo sin rastro*. Así que **siempre** abre una
-alerta `forced_finish` con `score`, `minute`, `kickoff`, `lastObservedAt` y
-`lastStatus`, y no se autorresuelve nunca: la cierra el operador.
+alerta `forced_finish` con `score` (lo publicado), `heldScore` (lo vigente
+justo antes), `minute`, `kickoff`, `lastObservedAt` y `lastStatus`, y no se
+autorresuelve nunca: la cierra el operador, ni siquiera cuando RN-12 reconcilia
+el marcador después.
 
 Ese rastro obligó a una cuarta consulta, `lastHeard`, y el detalle merece
 recordarse: la primera versión sacaba «lo último que se oyó» de la ventana de 15
@@ -393,9 +428,9 @@ sesenta.
 
 | Clase | Quién la abre | Qué significa |
 |---|---|---|
-| `regression` | motor (RN-03) | La fuente ganadora propuso un marcador menor que el publicado. Se mantuvo el vigente. |
+| `regression` | motor (RN-03) | La fuente ganadora propuso bajar un lado que no le toca bajar (ADR-011). Ese lado mantuvo el vigente. |
 | `conflict` | motor (RN-04) | Dos fuentes de prioridad adyacente llevan más de 3 min discrepando. **No se publicó nada.** |
-| `silence` | motor (RN-05) | Un `live` lleva 15 min sin que nadie diga nada. Es la única que **se cierra sola** al volver la señal. |
+| `silence` | motor (RN-05) | Un `live` lleva 15 min sin que nadie diga nada. Es la única que **se cierra sola** al volver la señal. El `sen_sinal` de un `scheduled` no la abre. |
 | `forced_finish` | motor (RN-02) | Se publicó un `finished` que nadie confirmó, a kickoff + 120 min. |
 | `unresolved_team` | **la ingesta** (RN-10) | Llegó una observación cuyos equipos no resuelven a un único partido del calendario. |
 
@@ -531,39 +566,26 @@ hasta producción, a dos días del ensayo.
 
 ## 10. Los números de la jornada del 25 al 28
 
-**Pendiente de SPEC-009** (aprobada el 2026-09-21; ventana de medición del
-2026-09-25 18:20Z al 2026-09-28 21:00Z; informe el lunes 28 por la noche).
+Medida por SPEC-009 sin intervención: 39 partidos de cuatro competiciones
+(Primera no jugó; queda como R-SPEC-009-1), 0 intentos fallidos, cobertura de
+ticks del 99,85 %, cadencia de 30 s. Veredicto `no válida (c2)` por defecto de
+**regla**, no de ingesta: RN-03 retuvo 7 marcadores falsos. Lo corrigieron
+ADR-010/SPEC-012 y SPEC-013 (replay: 39 de 39) y ADR-011/SPEC-014. La latencia
+mediana gol → Decision fue +53 s (n = 15) contra el objetivo de 45 s de
+`vision.md`; se decide en EPIC-003 (R-SPEC-009-6). La fuente no dio en directo
+parte de Tercera y Segunda RFEF: de ahí ADR-013/SPEC-018.
 
-Nada del sistema ha visto todavía un partido de verdad: el motor se ha probado
-sobre partidos sembrados en transacciones que se revierten, y el adaptador sobre
-fixtures del repo. **Aquí no hay estimaciones a propósito.** Cuando el informe
-exista, estos huecos se rellenan con sus `n`:
-
-| | |
-|---|---|
-| Competiciones medidas | 4 de 5 (Primera División no juega esa ventana), 39 partidos |
-| Cadencia efectiva (huecos entre `observed_at`): mediana / p95 / máx | — |
-| Latencia interna captura → publicación: mediana / p95 / máx | — |
-| Latencia extremo a extremo (gol → Decision), mediana y n | — |
-| Peticiones al proveedor: total, por día, pico por minuto | — |
-| Partidos sin señal | — |
-| Alertas abiertas, por clase | — |
-| Veredicto (`válida` / `válida con reservas` / `no válida`) | — |
-
-El informe irá a
+Informe completo en
 `docs/epicas/EPIC-002-ingesta-y-motor/_qa/SPEC-009/informe-jornada-2026-09-28.md`.
-Los objetivos contra los que se contrasta están en `vision.md`: mediana < 45 s,
-p95 < 90 s, de gol a pantalla. Ojo con la lectura: lo que SPEC-009 puede medir
-llega **hasta la Decision**, que es el último eslabón que existe hoy; la pantalla
-es EPIC-003.
 
 ---
 
 ## Dónde seguir
 
 `FOUNDATION.md` (D-1..D-10) · `docs/fundacion/dominio.md` (el glosario manda
-sobre cualquier sinónimo) · `docs/fundacion/reglas.md` (RN-01..RN-11) ·
+sobre cualquier sinónimo) · `docs/fundacion/reglas.md` (RN-01..RN-12) ·
 ADR-003 (contrato de fuentes) · ADR-004 y **ADR-009** (el motor; ADR-009 es el
 que cuenta el doble enganche y el cierre forzoso) · ADR-007 (crudo) ·
-ADR-008 (núcleo de ingesta). Las cicatrices completas, con su evidencia, en los
+ADR-008 (núcleo de ingesta) · ADR-010 a ADR-013 (cierre y RN-12, RN-03 por
+fuente, aplazado y suspendido por fuente, partido sin directo). Las cicatrices completas, con su evidencia, en los
 ledgers de SPEC-005 a SPEC-008.
