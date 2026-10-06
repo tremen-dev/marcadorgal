@@ -104,15 +104,20 @@ describe("CA-6 windowMatches", () => {
       expect(rows.map((r) => r.id)).not.toContain(id);
     }));
 
-  // SPEC-013 CA-3: the current rule reaches isInWindow, so a finished forced
-  // by RN-02 stays in window until +150 and a confirmed one leaves at once.
+  // SPEC-013 CA-3: a finished forced by RN-02 stays in window until +150 and
+  // a confirmed one leaves at once. Since SPEC-014 CA-8 what reaches
+  // isInWindow is the mark of the current Decision, not its rule: a finished
+  // RN-02 without it (a correction, false; a row older than the column, null)
+  // leaves at once too.
   it.each([
-    ["RN-02", "provisional", true],
-    ["RN-01", "provisional", false],
-    ["RN-12", "confirmado", false],
+    ["RN-02", "provisional", true, true],
+    ["RN-02", "provisional", false, false],
+    ["RN-02", "provisional", null, false],
+    ["RN-01", "provisional", false, false],
+    ["RN-12", "confirmado", false, false],
   ] as const)(
-    "at +125, a finished by %s is in window: %s/%s",
-    (rule, qualifier, inside) =>
+    "at +125, a finished by %s %s with the mark %s is in window: %s",
+    (rule, qualifier, forcedFinish, inside) =>
       rollback(async (tx) => {
         const kickoff = at(-125 * MINUTE_MS);
         const id = await seedMatch(tx, kickoff);
@@ -120,13 +125,15 @@ describe("CA-6 windowMatches", () => {
         (match_id, source_id, status, home_score, away_score, observed_at, raw_ref)
         values (${id}, 'test', 'live', 1, 0, ${kickoff}, 'raw/x') returning id`;
         await tx`insert into decisions
-        (match_id, status, home_score, away_score, qualifier, rule, observation_ids, decided_at)
-        values (${id}, 'finished', 1, 0, ${qualifier}, ${rule}, ${[oid]}, ${NOW})`;
+        (match_id, status, home_score, away_score, qualifier, rule, observation_ids,
+         decided_at, forced_finish)
+        values (${id}, 'finished', 1, 0, ${qualifier}, ${rule}, ${[oid]}, ${NOW},
+          ${forcedFinish})`;
         const rows = await dbIn(tx).windowMatches(NOW);
         const row = rows.find((r) => r.id === id);
         expect(row !== undefined).toBe(inside);
         if (row !== undefined)
-          expect(row).toMatchObject({ status: "finished", rule });
+          expect(row).toMatchObject({ status: "finished", forcedFinish });
       }),
   );
 

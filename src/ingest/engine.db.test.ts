@@ -379,7 +379,8 @@ describe("SPEC-014 CA-2 CA-8 owners and mark through the database", () => {
         minute: 21,
         rule: "RN-03",
         home_source_id: "operator",
-        away_source_id: "api-football",
+        // The away side did not move (0 → 0): it keeps its owner, null.
+        away_source_id: null,
         forced_finish: false,
       });
       const [regression] = await alerts(tx, matchId);
