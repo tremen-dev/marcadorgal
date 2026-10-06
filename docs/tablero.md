@@ -25,7 +25,7 @@ Actualizado: 2026-10-06
 | SPEC-013 — reconciliacion-del-marcador-despues-del-cierre-forzoso | hecho | 2026-10-06 (sdd-verificador) |
 | SPEC-014 — rn-03-en-vivo-por-fuente-la-bajada-la-da-quien-subio-el-gol | hecho | 2026-10-06 (sdd-verificador) |
 | SPEC-016 — rn-02-por-fuente-aplazado-y-suspendido-sin-operador | hecho | 2026-10-04 (sdd-verificador) |
-| SPEC-018 — partido-sin-directo-prorroga-de-la-ventana-sen-sinal-en-scheduled-y-linea-del-informe | aprobada | 2026-10-04 (Alberto Fojo) |
+| SPEC-018 — partido-sin-directo-prorroga-de-la-ventana-sen-sinal-en-scheduled-y-linea-del-informe | hecho | 2026-10-06 (sdd-verificador) |
 
 ## EPIC-FIX (aprobada)
 
@@ -61,6 +61,5 @@ Actualizado: 2026-10-06
 
 ## Resumen
 
-- hecho: 16
-- aprobada: 1
+- hecho: 17
 - en-revision: 1
