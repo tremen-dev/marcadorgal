@@ -1845,6 +1845,12 @@ describe("CA-10 el tope se cumple por construcción, no por fixture", () => {
     suspendidos?: number;
     // Las alertas repartidas entre los cinco AlertKind y no entre dos (V-8 (i)).
     todosLosKinds?: boolean;
+    // SPEC-017: partidos que la fuente nunca mostró en juego (CA-3), pg_cron
+    // con una sola ejecución en toda la ventana (CA-5) y un contraste que sale
+    // de una captura pedida y otra releída a la vez (CA-1/CA-2).
+    sinDirecto?: number;
+    cronCasiMudo?: boolean;
+    capturasMixtas?: boolean;
   };
 
   const KINDS = AlertKind.options;
@@ -1864,6 +1870,9 @@ describe("CA-10 el tope se cumple por construcción, no por fixture", () => {
     aplazados = 0,
     suspendidos = 0,
     todosLosKinds = false,
+    sinDirecto = 0,
+    cronCasiMudo = false,
+    capturasMixtas = false,
   }: Escenario) => {
     const comps = quinta
       ? [
@@ -1919,7 +1928,14 @@ describe("CA-10 el tope se cumple por construcción, no por fixture", () => {
       ) {
         const instante = new Date(ms).toISOString() as Instant;
         observations.push(
-          obs({ id: `o${j}-${ms}`, matchId: m.id, observedAt: instante }),
+          obs({
+            id: `o${j}-${ms}`,
+            matchId: m.id,
+            observedAt: instante,
+            ...(j < mudos + sinDirecto
+              ? { status: "scheduled" as MatchStatus, score: null }
+              : {}),
+          }),
         );
         attempts.push({
           startedAt: instante,
@@ -2009,6 +2025,49 @@ describe("CA-10 el tope se cumple por construcción, no por fixture", () => {
             )
           : null,
         contrastePeticiones: 2,
+        ...(capturasMixtas
+          ? {
+              contrasteCapturas: [
+                {
+                  rawRef:
+                    "raw/api-football/2026-09-28/2026-09-28T21-30-00.000Z-contraste-2026-09-25T18-20-00.000Z-2026-09-28T21-00-00.000Z-2026-27.json.gz",
+                  capturedAt: "2026-09-28T21:30:00.000Z" as Instant,
+                  peticiones: 3,
+                  releida: true,
+                },
+                {
+                  rawRef:
+                    "raw/api-football/2026-09-29/2026-09-29T09-00-00.000Z-contraste-2026-09-25T18-20-00.000Z-2026-09-28T21-00-00.000Z-2027-28.json.gz",
+                  capturedAt: "2026-09-29T09:00:00.000Z" as Instant,
+                  peticiones: 2,
+                  releida: false,
+                },
+              ],
+            }
+          : {}),
+        ...(cronCasiMudo
+          ? {
+              cron: {
+                ejecuciones: [
+                  {
+                    jobname: "ingest-tick",
+                    status: "succeeded",
+                    startTime: at(5),
+                  },
+                  {
+                    jobname: "ingest-tick",
+                    status: "failed",
+                    startTime: at(6),
+                  },
+                  {
+                    jobname: "ingest-tick",
+                    status: "running",
+                    startTime: at(7),
+                  },
+                ],
+              },
+            }
+          : {}),
       }),
     );
   };
@@ -2073,8 +2132,22 @@ describe("CA-10 el tope se cumple por construcción, no por fixture", () => {
       silenciosos: 10,
       aplazados: 6,
       suspendidos: 6,
+      // SPEC-017 CA-6: las líneas nuevas, saturadas también.
+      sinDirecto: 10,
+      cronCasiMudo: true,
+      capturasMixtas: true,
     });
     expect(informe.cobertura.competiciones).toHaveLength(5);
+    expect(informe.sinSenal.sinDirecto).toHaveLength(10);
+    expect(texto).toMatch(
+      /^sin ninguna observación en juego: 10 — m20, m21, m22, m23, m24 … y 5 más$/m,
+    );
+    expect(texto).toMatch(
+      /^pg_cron \(cron\.job_run_details\): 3 ejecuciones \(failed 1 · running 1 · succeeded 1\) · horas de ventana sin ninguna ejecución: \d+ — .* … y \d+ más$/m,
+    );
+    expect(texto).toMatch(
+      /^peticiones del contraste: 2 en esta ejecución · raw_ref: .*; releído de .*, 3 peticiones entonces$/m,
+    );
     expect(informe.alertas.porKind).toHaveLength(KINDS.length);
     expect(informe.contraste?.sinRespuesta).toHaveLength(10);
     expect(informe.contraste?.aplazadosAcordados).toHaveLength(6);
