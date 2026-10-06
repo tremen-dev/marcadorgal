@@ -2,10 +2,11 @@ import type { TransactionSql } from "postgres";
 import { afterAll, describe, expect, it } from "vitest";
 import { AliasFile, type Instant, MINUTE_MS, shiftInstant } from "@/model";
 import { createSql } from "../db/connect.ts";
+import { createMemoryRawStore } from "../raw/memory.ts";
 import { apiFootballByIds } from "../sources/api-football/results.ts";
 import { contrastarMarcadores } from "./contraste.ts";
 import { informeJornada } from "./informe.ts";
-import { informeFilas } from "./informe-db.ts";
+import { contrasteGuardado, informeFilas } from "./informe-db.ts";
 
 // SPEC-009 CA-2/CA-3/CA-4/CA-5: the queries of the report against the real
 // schema, always rolled back. Nothing is instrumented and nothing is migrated:
@@ -325,6 +326,9 @@ describe("CA-5 el contraste con el proveedor", () => {
             now: seg(200),
             fetch: doble,
           }),
+        store: createMemoryRawStore(),
+        etiqueta: "contraste-test",
+        guardado: null,
       });
       // One request for two ids (≤ 20 per request, SPEC-005).
       expect(urls).toEqual([
@@ -336,6 +340,7 @@ describe("CA-5 el contraste con el proveedor", () => {
       const { texto, informe } = genera(filas, {
         contraste: salida.filas,
         contrastePeticiones: salida.peticiones,
+        contrasteCapturas: salida.captura === null ? [] : [salida.captura],
       });
       expect(informe.contraste).toMatchObject({ total: 2, coinciden: 1 });
       expect(informe.contraste?.discrepancias).toEqual([
@@ -351,5 +356,80 @@ describe("CA-5 el contraste con el proveedor", () => {
       );
       expect(texto).toContain("raw/ultimo.gz");
       expect(texto).toContain("peticiones del contraste: 1");
+    }));
+});
+
+describe("SPEC-017 CA-2 el contraste guardado", () => {
+  it("SPEC-017 CA-2 encuentra el contraste por su etiqueta", () =>
+    rollback(async (tx) => {
+      // Una etiqueta que nadie más usa: la búsqueda es por la cola de la clave.
+      const etiqueta = `contraste-test-${crypto.randomUUID()}-2026-27`;
+      const viejo = `api-football/2027-07-04/2027-07-04T21-00-00.000Z-${etiqueta}.json.gz`;
+      const nuevo = `api-football/2027-07-05/2027-07-05T09-00-00.000Z-${etiqueta}.json.gz`;
+      const otra = `api-football/2027-07-05/2027-07-05T10-00-00.000Z-${etiqueta}-otra.json.gz`;
+      await tx`insert into storage.objects (bucket_id, name, created_at)
+        values ('raw', ${viejo}, ${seg(0)}),
+               ('raw', ${nuevo}, ${seg(3600)}),
+               ('raw', ${otra}, ${seg(7200)})`;
+      expect(await contrasteGuardado(tx, etiqueta)).toBe(`raw/${nuevo}`);
+      expect(await contrasteGuardado(tx, `${etiqueta}-nada`)).toBeNull();
+    }));
+});
+
+describe("SPEC-017 CA-4 la regla de la Decision vigente", () => {
+  it("SPEC-017 CA-4 trae la regla de la Decision de board", () =>
+    rollback(async (tx) => {
+      const forzado = await seedMatch(tx);
+      const sinDecision = await seedMatch(tx);
+      const o = await observe(tx, forzado, 1, 0, seg(30));
+      await decide(tx, forzado, 1, 0, seg(60), [o]);
+      await tx`insert into decisions (match_id, status, home_score, away_score,
+          minute, qualifier, rule, observation_ids, decided_at)
+        values (${forzado}, 'finished', 1, 0, null, 'provisional', 'RN-02',
+          ${[o]}, ${seg(120 * 60)})`;
+
+      const filas = await informeFilas(tx, DESDE, HASTA);
+      const regla = new Map(filas.matches.map((m) => [m.id, m.rule]));
+      expect(regla.get(forzado)).toBe("RN-02");
+      expect(regla.get(sinDecision)).toBeNull();
+      // Y con ella el informe cuenta la prórroga como ventana (CA-4 (i)).
+      // Solo el forzado: el otro, sin Decision, ocupa la ventana entera.
+      const { informe } = genera({
+        ...filas,
+        matches: filas.matches.filter((m) => m.id === forzado),
+      });
+      expect(informe.cobertura.ticksEsperados).toBe(160 * 2);
+    }));
+});
+
+describe("SPEC-017 CA-5 pg_cron", () => {
+  it("SPEC-017 CA-5 lee cron.job_run_details", () =>
+    rollback(async (tx) => {
+      await seedMatch(tx);
+      // Una ejecución sembrada en julio de 2027, donde no hay ninguna real.
+      const [job] = await tx<{ jobid: number }[]>`
+        select jobid from cron.job order by jobid limit 1`;
+      const jobid = job?.jobid ?? 999_999;
+      await tx`insert into cron.job_run_details
+          (jobid, runid, job_pid, database, username, command, status,
+           return_message, start_time, end_time)
+        values (${jobid}, (select coalesce(max(runid), 0) + 1 from cron.job_run_details),
+          1, 'postgres', 'postgres', 'select 1', 'succeeded', '1 row',
+          ${seg(60)}, ${seg(61)})`;
+
+      const filas = await informeFilas(tx, DESDE, HASTA);
+      expect(filas.cron).toEqual({
+        ejecuciones: [
+          {
+            jobname: expect.any(String),
+            status: "succeeded",
+            startTime: seg(60),
+          },
+        ],
+      });
+      const { texto } = genera(filas);
+      expect(texto).toContain(
+        "pg_cron (cron.job_run_details): 1 ejecuciones (succeeded 1)",
+      );
     }));
 });

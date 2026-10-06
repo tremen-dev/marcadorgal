@@ -3,6 +3,7 @@ import type { Instant, MatchStatus, Score } from "../model/index.ts";
 import type {
   InformeAlert,
   InformeAttempt,
+  InformeCron,
   InformeDecision,
   InformeMatch,
   InformeObservation,
@@ -24,6 +25,7 @@ export type InformeFilas = {
   decisions: InformeDecision[];
   attempts: InformeAttempt[];
   alerts: InformeAlert[];
+  cron: InformeCron;
 };
 
 // The matchday is every match whose kickoff falls inside the window: desde is
@@ -45,11 +47,13 @@ export async function informeFilas(
       home_score: number | null;
       away_score: number | null;
       decided_at: Date | null;
+      rule: string | null;
     }[]
-  >`select match_id, competition_id, competition_name, round, kickoff, status,
-      home_score, away_score, decided_at
-    from board where kickoff >= ${desde} and kickoff <= ${hasta}
-    order by kickoff, match_id`;
+  >`select b.match_id, b.competition_id, b.competition_name, b.round, b.kickoff,
+      b.status, b.home_score, b.away_score, b.decided_at, d.rule
+    from board b left join decisions d on d.id = b.decision_id
+    where b.kickoff >= ${desde} and b.kickoff <= ${hasta}
+    order by b.kickoff, b.match_id`;
   const ids = matches.map((m) => m.match_id);
 
   // Empty matchday: no ids to narrow by, and `= any('{}')` would return
@@ -124,7 +128,12 @@ export async function informeFilas(
     from alerts where opened_at >= ${desde} and opened_at <= ${hasta}
     order by opened_at, kind`;
 
+  // Last, so that a failure here cannot abort the queries above inside a
+  // transaction: pg_cron is informative and the report never throws for it.
+  const cron = await informeCron(sql, desde, hasta);
+
   return {
+    cron,
     matches: matches.map((m) => ({
       id: m.match_id,
       competitionId: m.competition_id,
@@ -134,6 +143,9 @@ export async function informeFilas(
       status: m.status,
       score: scoreOf(m.home_score, m.away_score),
       decidedAt: m.decided_at === null ? null : instant(m.decided_at),
+      // The rule of the current Decision, from board's decision_id: what
+      // tells a forced RN-02 finished from a confirmed one (SPEC-017 CA-4).
+      rule: m.rule,
     })),
     observations: observations.map((o) => ({
       id: o.id,
@@ -170,4 +182,50 @@ export async function informeFilas(
       details: a.details,
     })),
   };
+}
+
+// SPEC-017 CA-2. The newest contrast stored under this etiqueta, as a raw_ref,
+// or null when there is none. Read only, out of the catalogue of Storage, the
+// way the purge of ADR-007 §5 lists its keys: the object itself is read back
+// through the Storage API by contraste.ts. The etiqueta is the tail of the key
+// (ADR-007 §2), compared as text and not with like, whose '_' and '%' mean
+// something else.
+export async function contrasteGuardado(
+  sql: Sql | TransactionSql,
+  etiqueta: string,
+): Promise<string | null> {
+  const cola = `-${etiqueta}.json.gz`;
+  const [row] = await sql<{ name: string }[]>`
+    select name from storage.objects
+    where bucket_id = 'raw' and name is not null
+      and right(name, ${cola.length}) = ${cola}
+    order by created_at desc, name desc limit 1`;
+  return row === undefined ? null : `raw/${row.name}`;
+}
+
+// SPEC-017 CA-5 (R-SPEC-009-9). pg_cron's own record of the window, with the
+// job name from cron.job, as tools/tick-salud.mjs reads it. Informative: if the
+// query fails the report says why and goes on.
+export async function informeCron(
+  sql: Sql | TransactionSql,
+  desde: Instant,
+  hasta: Instant,
+): Promise<InformeCron> {
+  try {
+    const rows = await sql<
+      { jobname: string; status: string | null; start_time: Date }[]
+    >`select coalesce(j.jobname, d.jobid::text) as jobname, d.status, d.start_time
+      from cron.job_run_details d left join cron.job j on j.jobid = d.jobid
+      where d.start_time >= ${desde} and d.start_time <= ${hasta}
+      order by d.start_time`;
+    return {
+      ejecuciones: rows.map((r) => ({
+        jobname: r.jobname,
+        status: r.status ?? "sin estado",
+        startTime: instant(r.start_time),
+      })),
+    };
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : String(e) };
+  }
 }

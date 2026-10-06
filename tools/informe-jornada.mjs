@@ -5,25 +5,35 @@
 // src/ingest/informe.ts, the same split as src/ingest/salud.ts +
 // tools/tick-salud.mjs.
 //
-// Usage: npm run informe:jornada -- <desde> <hasta> [--referencias <fichero>] [--contrastar]
+// Usage: npm run informe:jornada -- <desde> <hasta> [--referencias <fichero>] [--contrastar | --recontrastar]
 //   <desde> <hasta>    ISO-8601 instants; the window of N-1 is
 //                      2026-09-25T18:20Z 2026-09-28T21:00Z.
 //   --referencias <f>  referencias.csv of CA-3 (matchId,marcador,instante,fuente).
 //                      An empty file is fine: the block prints with n = 0.
 //   --contrastar       one round of ids= against the provider (CA-5), once, when
 //                      the matchday is over and outside every window (RN-08).
+//                      Its raw capture is stored before it is parsed and, once
+//                      stored, every later --contrastar reads it back and asks
+//                      nothing (SPEC-017 CA-1/CA-2).
+//   --recontrastar     asks the provider again even with a stored contrast: a
+//                      new object, and the newest is the one read from then on.
 //   --salida <f>       where to write it; by default it only prints.
 import { readFileSync, writeFileSync } from "node:fs";
 import { nowInstant } from "../src/clock.ts";
 import { createSql } from "../src/db/connect.ts";
 import { loadAliasFile } from "../src/ingest/aliases.ts";
-import { contrastarMarcadores } from "../src/ingest/contraste.ts";
+import {
+  contrastarMarcadores,
+  etiquetaContraste,
+} from "../src/ingest/contraste.ts";
 import {
   informeJornada,
   parseReferencias,
   secretosDelEntorno,
 } from "../src/ingest/informe.ts";
-import { informeFilas } from "../src/ingest/informe-db.ts";
+import { contrasteGuardado, informeFilas } from "../src/ingest/informe-db.ts";
+import { rawStoreEnv } from "../src/raw/env.ts";
+import { createStorageRawStore } from "../src/raw/store.ts";
 import {
   apiFootballByIds,
   createApiFootballResults,
@@ -37,14 +47,23 @@ try {
 }
 
 const USAGE =
-  "Uso: npm run informe:jornada -- <desde> <hasta> [--referencias <fichero>] [--contrastar] [--salida <fichero>]";
+  "Uso: npm run informe:jornada -- <desde> <hasta> [--referencias <fichero>] [--contrastar | --recontrastar] [--salida <fichero>]";
 
 function parseArgs(argv) {
   const positional = [];
-  const flags = { contrastar: false, referencias: null, salida: null };
+  const flags = {
+    contrastar: false,
+    recontrastar: false,
+    referencias: null,
+    salida: null,
+  };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === "--contrastar") flags.contrastar = true;
+    else if (arg === "--recontrastar") {
+      flags.contrastar = true;
+      flags.recontrastar = true;
+    }
     else if (arg === "--referencias" || arg === "--salida") {
       const value = argv[i + 1];
       if (value === undefined || value.startsWith("--"))
@@ -112,6 +131,8 @@ try {
 
   let contraste = null;
   let contrastePeticiones = 0;
+  const contrasteCapturas = [];
+  let contrasteAusente;
   if (args.contrastar) {
     const config = SOURCES.find((s) => s.id === "api-football");
     if (config === undefined) throw new Error("no api-football en el registro");
@@ -126,9 +147,11 @@ try {
     const seasonRows = await sql`select match_id, season from board
       where kickoff >= ${args.desde} and kickoff <= ${args.hasta}`;
     const season = new Map(seasonRows.map((r) => [r.match_id, r.season]));
+    const store = createStorageRawStore({ ...rawStoreEnv(process.env), fetch });
     contraste = [];
     for (const temporada of [...new Set(season.values())].sort()) {
       const aliases = loadAliasFile(temporada, config.id);
+      const etiqueta = etiquetaContraste(args.desde, args.hasta, temporada);
       const salida = await contrastarMarcadores({
         matches: filas.matches.filter((m) => season.get(m.id) === temporada),
         aliases,
@@ -141,9 +164,21 @@ try {
             now: nowInstant(),
             fetch,
           }),
+        store,
+        etiqueta,
+        guardado: await contrasteGuardado(sql, etiqueta),
+        recontrastar: args.recontrastar,
       });
-      contraste.push(...salida.filas);
       contrastePeticiones += salida.peticiones;
+      if (salida.captura !== null) contrasteCapturas.push(salida.captura);
+      // A stored contrast that cannot be read is not asked again (SPEC-017
+      // CA-2): the whole contrast is absent, with its reason, and no verdict.
+      if (salida.filas === null) {
+        contraste = null;
+        contrasteAusente = salida.motivo;
+        break;
+      }
+      contraste.push(...salida.filas);
       for (const id of salida.sinAlias)
         console.error(`aviso: ${id} no tiene alias de fixture y no se contrastó`);
     }
@@ -159,6 +194,8 @@ try {
     referenciasNoCasadas: noCasadas,
     contraste,
     contrastePeticiones,
+    contrasteCapturas,
+    contrasteAusente,
   });
   if (args.salida !== null) {
     writeFileSync(args.salida, `${texto}\n`);

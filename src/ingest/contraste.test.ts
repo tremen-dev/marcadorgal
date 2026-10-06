@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { AliasFile, type Instant, type RawCapture } from "@/model";
-import { createApiFootballResults } from "../sources/api-football/results.ts";
-import { contrastarMarcadores } from "./contraste.ts";
+import { createMemoryRawStore } from "../raw/memory.ts";
+import type { RawStore } from "../raw/store.ts";
+import {
+  apiFootballByIds,
+  createApiFootballResults,
+} from "../sources/api-football/results.ts";
+import { contrastarMarcadores, etiquetaContraste } from "./contraste.ts";
 
 // SPEC-009 CA-5, finding V-6. Un partido del que el proveedor no contesta no es
 // una discrepancia: es su silencio, y CA-5 pide comparar el `status` y el
@@ -66,10 +71,13 @@ const contrasta = (fixtures: readonly unknown[]) =>
     aliases,
     adapter: createApiFootballResults({ aliases, apiKey: "clave-de-prueba" }),
     capturar: async () => captura(fixtures),
+    store: createMemoryRawStore(),
+    etiqueta: "contraste-test",
+    guardado: null,
   });
 
 const fila = (salida: Awaited<ReturnType<typeof contrasta>>, id: string) => {
-  const f = salida.filas.find((x) => x.matchId === id);
+  const f = salida.filas?.find((x) => x.matchId === id);
   if (f === undefined) throw new Error(`sin fila para ${id}`);
   return f;
 };
@@ -128,6 +136,9 @@ describe("V-6 el silencio del proveedor vuelve con su motivo", () => {
       adapter: createApiFootballResults({ aliases, apiKey: "clave-de-prueba" }),
       capturar: async () =>
         captura([fixture("9001", "FT", { home: 2, away: 1 }, [1, 2])]),
+      store: createMemoryRawStore(),
+      etiqueta: "contraste-test",
+      guardado: null,
     });
     expect(salida.sinAlias).toEqual(["primera-rfef-g1-2026-27-j5-e-f"]);
     expect(fila(salida, "primera-rfef-g1-2026-27-j5-e-f").motivo).toBe(
@@ -167,5 +178,175 @@ describe("V-6 ABD, AWD y WO no son estados sin mapear", () => {
       });
       expect(fila(salida, FUERA).motivo).toBeUndefined();
     }
+  });
+});
+
+// SPEC-017 CA-1/CA-2. El contraste guarda su crudo antes de parsear (RN-09,
+// ADR-007 §2 y §6) y, guardado, se relee en vez de volver a pedir. La captura
+// sale de `apiFootballByIds` con un `fetch` doble: ninguna petición sale de
+// aquí, y el doble cuenta las que se habrían hecho.
+describe("SPEC-017 el crudo del contraste", () => {
+  const ETIQUETA = etiquetaContraste(
+    "2026-09-25T18:20:00.000Z",
+    "2026-09-28T21:00:00.000Z",
+    "2026-27",
+  );
+  const respuesta = [
+    fixture("9001", "FT", { home: 2, away: 1 }, [1, 2]),
+    fixture("9002", "FT", { home: 0, away: 0 }, [3, 4]),
+  ];
+
+  const dobleFetch = () => {
+    const urls: string[] = [];
+    const fetch: typeof globalThis.fetch = async (url) => {
+      urls.push(String(url));
+      return new Response(JSON.stringify({ response: respuesta }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      });
+    };
+    return { urls, fetch };
+  };
+
+  // El adaptador de verdad, con su `parse` envuelto para anotar cuándo corre.
+  const adaptadorEspiado = (log: string[]) => {
+    const real = createApiFootballResults({
+      aliases,
+      apiKey: "clave-de-prueba",
+    });
+    return {
+      ...real,
+      parse: (capture: RawCapture) => {
+        log.push("parse");
+        return real.parse(capture);
+      },
+    };
+  };
+
+  const corre = (
+    over: {
+      store?: RawStore;
+      fetch?: typeof globalThis.fetch;
+      guardado?: string | null;
+      recontrastar?: boolean;
+      now?: Instant;
+      log?: string[];
+    } = {},
+  ) =>
+    contrastarMarcadores({
+      matches: [{ id: CASA }, { id: FUERA }],
+      aliases,
+      adapter: adaptadorEspiado(over.log ?? []),
+      capturar: (fixtureIds) =>
+        apiFootballByIds({
+          fixtureIds,
+          apiKey: "clave-de-prueba",
+          userAgent: "test",
+          now: over.now ?? AHORA,
+          fetch: over.fetch ?? dobleFetch().fetch,
+        }),
+      store: over.store ?? createMemoryRawStore(),
+      etiqueta: ETIQUETA,
+      guardado: over.guardado ?? null,
+      recontrastar: over.recontrastar ?? false,
+    });
+
+  it("la etiqueta no lleva ':' y nombra ventana y temporada", () => {
+    expect(ETIQUETA).toBe(
+      "contraste-2026-09-25T18-20-00.000Z-2026-09-28T21-00-00.000Z-2026-27",
+    );
+  });
+
+  it("SPEC-017 CA-1 guarda el crudo antes de parsear", async () => {
+    const log: string[] = [];
+    const store = createMemoryRawStore(log);
+    const salida = await corre({ store, log });
+    expect(log).toEqual([
+      `put:api-football/2026-09-28/2026-09-28T20-00-00.000Z-${ETIQUETA}.json.gz`,
+      "parse",
+    ]);
+    expect(salida.captura).toEqual({
+      rawRef: `raw/api-football/2026-09-28/2026-09-28T20-00-00.000Z-${ETIQUETA}.json.gz`,
+      capturedAt: AHORA,
+      peticiones: 1,
+      releida: false,
+    });
+    expect(salida.peticiones).toBe(1);
+    expect(salida.filas).toHaveLength(2);
+  });
+
+  it("SPEC-017 CA-1 sin crudo guardado no hay contraste", async () => {
+    const log: string[] = [];
+    const store: RawStore = {
+      ...createMemoryRawStore(log),
+      put: async () => {
+        throw new Error("storage responded 500");
+      },
+    };
+    await expect(corre({ store, log })).rejects.toThrow(
+      "storage responded 500",
+    );
+    expect(log).not.toContain("parse");
+  });
+
+  it("SPEC-017 CA-2 releer no pide", async () => {
+    const store = createMemoryRawStore();
+    const primera = await corre({ store });
+    const doble = dobleFetch();
+    const log: string[] = [];
+    const segunda = await corre({
+      store,
+      fetch: doble.fetch,
+      guardado: primera.captura?.rawRef ?? null,
+      log,
+    });
+    expect(doble.urls).toEqual([]);
+    expect(log).toEqual(["parse"]);
+    expect(segunda.filas).toEqual(primera.filas);
+    expect(segunda.peticiones).toBe(0);
+    expect(segunda.captura).toEqual({
+      rawRef: primera.captura?.rawRef,
+      capturedAt: AHORA,
+      peticiones: 1,
+      releida: true,
+    });
+  });
+
+  it("SPEC-017 CA-2 --recontrastar pide y guarda otro", async () => {
+    const store = createMemoryRawStore();
+    const primera = await corre({ store });
+    const doble = dobleFetch();
+    const LUEGO = "2026-09-29T09:00:00.000Z" as Instant;
+    const segunda = await corre({
+      store,
+      fetch: doble.fetch,
+      guardado: primera.captura?.rawRef ?? null,
+      recontrastar: true,
+      now: LUEGO,
+    });
+    expect(doble.urls).toHaveLength(1);
+    expect(store.objects.size).toBe(2);
+    expect(segunda.captura?.releida).toBe(false);
+    expect(segunda.captura?.capturedAt).toBe(LUEGO);
+    expect(segunda.captura?.rawRef).not.toBe(primera.captura?.rawRef);
+    expect(segunda.peticiones).toBe(1);
+  });
+
+  it("SPEC-017 CA-2 captura ilegible: sin contraste y sin petición", async () => {
+    const doble = dobleFetch();
+    const log: string[] = [];
+    const guardado = `raw/api-football/2026-09-28/x-${ETIQUETA}.json.gz`;
+    const salida = await corre({
+      store: createMemoryRawStore(),
+      fetch: doble.fetch,
+      guardado,
+      log,
+    });
+    expect(doble.urls).toEqual([]);
+    expect(log).toEqual([]);
+    expect(salida.filas).toBeNull();
+    expect(salida.captura).toBeNull();
+    expect(salida.peticiones).toBe(0);
+    expect(salida.motivo).toContain(guardado);
   });
 });

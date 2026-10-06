@@ -44,6 +44,10 @@ export type InformeMatch = {
   status: MatchStatus;
   score: Score | null;
   decidedAt: Instant | null;
+  // The rule of that current Decision, null when there is none (SPEC-017
+  // CA-4): what tells a finished the source confirmed from one RN-02 forced.
+  // informe-db.ts always fills it; absent reads as null.
+  rule?: string | null;
 };
 
 export type InformeObservation = {
@@ -84,6 +88,17 @@ export type InformeAlert = {
   details: unknown;
 };
 
+// SPEC-017 CA-5. The runs of pg_cron in the window (cron.job_run_details, with
+// cron.job for the name), or why they could not be read.
+export type InformeCronEjecucion = {
+  jobname: string;
+  status: string;
+  startTime: Instant;
+};
+export type InformeCron =
+  | { ejecuciones: readonly InformeCronEjecucion[] }
+  | { error: string };
+
 // One hand-written line of referencias.csv (CA-3).
 export type Referencia = {
   matchId: string;
@@ -104,6 +119,16 @@ export type ContrasteFila = {
   // fixture from the response. Silence is not a discrepancy, but a silence
   // nobody can explain is worse than one that says why.
   motivo?: string;
+};
+
+// SPEC-017 CA-1/CA-2. The capture a contrast comes from: asked in this run
+// (releida false) or read back from the raw store (releida true), with the
+// requests it cost when it was asked.
+export type ContrasteCaptura = {
+  rawRef: string;
+  capturedAt: Instant;
+  peticiones: number;
+  releida: boolean;
 };
 
 // The three facts of CA-9 that no query can answer: a person declares them.
@@ -130,6 +155,13 @@ export type InformeInput = {
   contraste: readonly ContrasteFila[] | null;
   // Requests the contrast made, noted apart from the tick's (CA-5, RN-08).
   contrastePeticiones?: number;
+  // The captures the contrast comes from, one per season (SPEC-017 CA-1/CA-2).
+  contrasteCapturas?: readonly ContrasteCaptura[];
+  // Why there is no contrast although --contrastar was given (SPEC-017 CA-2):
+  // its stored capture could not be read, and a second round is never implicit.
+  contrasteAusente?: string;
+  // pg_cron's own record of the window (SPEC-017 CA-5); absent: not queried.
+  cron?: InformeCron;
   declaraciones?: Declaraciones;
 };
 
@@ -173,6 +205,14 @@ export type Informe = {
     horasSinEjecuciones: readonly Instant[];
     intentosFueraDeVentana: number;
     intentosFallidos: number;
+    // SPEC-017 CA-5: informative only, the coverage is ingest_attempts' (CA-9).
+    pgCron:
+      | {
+          ejecuciones: number;
+          porEstado: readonly { status: string; count: number }[];
+          horasSinEjecucion: readonly Instant[];
+        }
+      | { sinDatos: string };
   };
   cadencia: Estadisticos & { huecosLargos: readonly HuecoLargo[] };
   latenciaInterna: Estadisticos;
@@ -191,6 +231,9 @@ export type Informe = {
       competicion: string;
       ms: number;
     }[];
+    // SPEC-017 CA-3: finished, observed in the window and never once `live`:
+    // the source never showed it in play. Informative, not in the verdict.
+    sinDirecto: readonly { matchId: string; competicion: string }[];
   };
   alertas: {
     porKind: readonly { kind: string; count: number }[];
@@ -579,13 +622,20 @@ function latenciaExternaDe(input: InformeInput) {
 // forced finish only fires from `live` (RN-02), so a postponed or suspended one
 // really is sampled to the end of its window, and that is the fallback —
 // shrinking it to the forced finish would let the coverage pass 100 %.
+//
+// SPEC-017 CA-4 (F-SPEC-013-4): a `finished` forced by RN-02 is provisional and
+// keeps the match in window to its time edge, the same rule as isInWindow
+// (src/ingest/window.ts, SPEC-013 CA-3); its ticks are coverage, not "after the
+// close". Any other current `finished` (RN-01, RN-12) closes at its decided_at.
+// When SPEC-014 CA-8 lands, the criterion becomes the forced_finish mark and
+// not the rule, because the corrections of SPEC-012 are RN-02 too (N-2).
 type Span = { from: number; to: number };
 
 function ventanaEfectiva(m: InformeMatch): Span {
   const k = Date.parse(m.kickoff);
   const finDeVentana = k + WINDOW_AFTER_MINUTES * MINUTE_MS;
   const cierre =
-    m.status === "finished" && m.decidedAt !== null
+    m.status === "finished" && m.decidedAt !== null && m.rule !== "RN-02"
       ? Date.parse(m.decidedAt)
       : finDeVentana;
   return {
@@ -827,21 +877,45 @@ export function informeJornada(input: InformeInput): {
   );
   const fallidos = input.attempts.filter((a) => a.ok === false);
 
-  const horasConIntento = new Set(input.attempts.map((a) => hora(a.startedAt)));
-  const horasSinEjecuciones: Instant[] = [];
-  for (
-    let ms = Date.parse(hora(input.desde));
-    ms < Date.parse(input.hasta);
-    ms += HOUR_MS
-  ) {
-    const h = new Date(ms).toISOString() as Instant;
-    if (
-      dentroDe(medidas, h) &&
-      Date.parse(h) >= Date.parse(input.desde) &&
-      !horasConIntento.has(h)
-    )
-      horasSinEjecuciones.push(h);
-  }
+  // The hours of the measured window with none of these instants in them.
+  const horasSin = (instantes: readonly Instant[]): Instant[] => {
+    const con = new Set(instantes.map(hora));
+    const sin: Instant[] = [];
+    for (
+      let ms = Date.parse(hora(input.desde));
+      ms < Date.parse(input.hasta);
+      ms += HOUR_MS
+    ) {
+      const h = new Date(ms).toISOString() as Instant;
+      if (
+        dentroDe(medidas, h) &&
+        Date.parse(h) >= Date.parse(input.desde) &&
+        !con.has(h)
+      )
+        sin.push(h);
+    }
+    return sin;
+  };
+  const horasSinEjecuciones = horasSin(input.attempts.map((a) => a.startedAt));
+
+  // SPEC-017 CA-5 (R-SPEC-009-9): what pg_cron itself says it ran. One line,
+  // and never in the verdict: the coverage of CA-9 is ingest_attempts'.
+  const pgCron: Informe["cobertura"]["pgCron"] =
+    input.cron === undefined
+      ? { sinDatos: "no se consultó" }
+      : "error" in input.cron
+        ? { sinDatos: `la consulta falló: ${input.cron.error}` }
+        : input.cron.ejecuciones.length === 0
+          ? { sinDatos: "ninguna ejecución en la ventana" }
+          : {
+              ejecuciones: input.cron.ejecuciones.length,
+              porEstado: contar(input.cron.ejecuciones, (e) => e.status).map(
+                ({ k, count }) => ({ status: k, count }),
+              ),
+              horasSinEjecucion: horasSin(
+                input.cron.ejecuciones.map((e) => e.startTime),
+              ),
+            };
 
   push(
     `# Informe de la jornada · ${dia(input.desde)} → ${dia(input.hasta)}`,
@@ -864,14 +938,23 @@ export function informeJornada(input: InformeInput): {
     push(`  ${sinDatos("ningún partido en la ventana")}`);
   push(
     `ticks: ${ticksReales} de ${esperados} esperados (${cobertura === null ? "n/a" : porcentaje(cobertura)})   ← cobertura de CA-9`,
-    `  cobertura sobre la ventana efectiva de cada partido: de kickoff − ${WINDOW_BEFORE_MINUTES} min al`,
-    `  cierre de su Decision finished (forzado en kickoff + ${FORCED_FINISH_MINUTES} min, RN-02), no a kickoff + ${WINDOW_AFTER_MINUTES} min.`,
+    `  cobertura sobre la ventana efectiva de cada partido: de kickoff − ${WINDOW_BEFORE_MINUTES} min al cierre de`,
+    `  su Decision finished; si es la forzada (RN-02, kickoff + ${FORCED_FINISH_MINUTES} min), a kickoff + ${WINDOW_AFTER_MINUTES} min.`,
     `intentos dentro de la ventana de ADR-002 §2 pero tras el cierre de todo partido: ${trasElCierre.length}`,
     // Una hora es un instante corto: la muestra va en la misma línea que su
     // cuenta, y la lista cuesta una línea y no seis (V-8).
     `horas de ventana sin ejecuciones: ${horasSinEjecuciones.length}${enLinea(
       horasSinEjecuciones.map((h) => `${h.slice(0, 13)}Z`),
     )}`,
+    "sinDatos" in pgCron
+      ? `pg_cron (cron.job_run_details): sin datos (${pgCron.sinDatos})`
+      : `pg_cron (cron.job_run_details): ${pgCron.ejecuciones} ejecuciones (${pgCron.porEstado
+          .map((e) => `${e.status} ${e.count}`)
+          .join(
+            " · ",
+          )}) · horas de ventana sin ninguna ejecución: ${pgCron.horasSinEjecucion.length}${enLinea(
+          pgCron.horasSinEjecucion.map((h) => `${h.slice(0, 13)}Z`),
+        )}`,
     `intentos fuera de la ventana de todo partido: ${fueraDeVentana.length}   ← criterio 2`,
     `intentos fallidos: ${fallidos.length}`,
     ...primeras(
@@ -1009,6 +1092,20 @@ export function informeJornada(input: InformeInput): {
       ms: cad.mayorPorPartido.get(m.id) ?? 0,
     }))
     .filter((m) => m.ms > SILENCE_MINUTES * MINUTE_MS);
+  // SPEC-017 CA-3 (R-SPEC-009-4): a match that went from `scheduled` to
+  // `finished` with no `live` in between leaves no gap and no silence, so
+  // neither of the two lists above names it.
+  const conDirecto = new Set(
+    input.observations.filter((o) => o.status === "live").map((o) => o.matchId),
+  );
+  const sinDirecto = input.matches
+    .filter(
+      (m) =>
+        m.status === "finished" &&
+        conObservaciones.has(m.id) &&
+        !conDirecto.has(m.id),
+    )
+    .map((m) => ({ matchId: m.id, competicion: m.competitionName }));
   push(
     "",
     BLOQUES[5],
@@ -1033,6 +1130,9 @@ export function informeJornada(input: InformeInput): {
             `  ${m.matchId} · ${m.competicion} · hueco mayor: ${segundos(m.ms)}`,
         ),
       ),
+      `sin ninguna observación en juego: ${sinDirecto.length}${enLinea(
+        sinDirecto.map((m) => m.matchId),
+      )}`,
     );
 
   // ---- 7. Alertas -------------------------------------------------------
@@ -1100,7 +1200,11 @@ export function informeJornada(input: InformeInput): {
     "ventana (RN-08), anotadas aparte de las del tick.",
   );
   if (input.contraste === null)
-    push(sinDatos("se generó el informe sin --contrastar"));
+    push(
+      sinDatos(
+        input.contrasteAusente ?? "se generó el informe sin --contrastar",
+      ),
+    );
   else {
     const coinciden: string[] = [];
     const aplazados: NonNullable<
@@ -1176,7 +1280,10 @@ export function informeJornada(input: InformeInput): {
     };
     push(
       `${coinciden.length} de ${input.contraste.length} partidos con \`finished\` y marcador coincidente.`,
-      `peticiones del contraste: ${input.contrastePeticiones ?? 0} (aparte de las del tick)`,
+      lineaPeticionesContraste(
+        input.contrastePeticiones ?? 0,
+        input.contrasteCapturas ?? [],
+      ),
       "coinciden:",
       ...primeras(coinciden, "(ninguno)"),
       `aplazamientos que el proveedor confirma: ${aplazados.length}`,
@@ -1299,6 +1406,7 @@ export function informeJornada(input: InformeInput): {
       horasSinEjecuciones,
       intentosFueraDeVentana: fueraDeVentana.length,
       intentosFallidos: fallidos.length,
+      pgCron,
     },
     cadencia: { ...cad.stats, huecosLargos: cad.largos },
     latenciaInterna: interna,
@@ -1311,12 +1419,35 @@ export function informeJornada(input: InformeInput): {
       picoPorMinuto:
         pico === null ? null : { minuto: pico.dia, total: pico.total },
     },
-    sinSenal: { sinObservaciones, conHuecoLargo },
+    sinSenal: { sinObservaciones, conHuecoLargo, sinDirecto },
     alertas: { porKind, filas: abiertas, inesperadas },
     contraste,
     veredicto,
   };
   return { texto: redact(out.join("\n"), input.secrets), informe };
+}
+
+// SPEC-017 CA-1/CA-2: one line says what the contrast cost in this run and
+// which capture it comes from — the raw_ref of the one asked now, or where the
+// one read back was stored, when it was captured and what it cost then.
+function lineaPeticionesContraste(
+  peticiones: number,
+  capturas: readonly ContrasteCaptura[],
+): string {
+  const pedidas = capturas.filter((c) => !c.releida);
+  const releidas = capturas.filter((c) => c.releida);
+  const cuenta =
+    releidas.length === 0
+      ? `${peticiones} (aparte de las del tick)`
+      : `${peticiones} en esta ejecución`;
+  return [
+    `peticiones del contraste: ${cuenta}`,
+    ...pedidas.map((c) => ` · raw_ref: ${c.rawRef}`),
+    ...releidas.map(
+      (c) =>
+        `; releído de ${c.rawRef}, capturado ${c.capturedAt}, ${c.peticiones} peticiones entonces`,
+    ),
+  ].join("");
 }
 
 // One line with the per-competition breakdown, so capping the list below never

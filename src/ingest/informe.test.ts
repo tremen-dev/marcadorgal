@@ -1110,7 +1110,7 @@ describe("CA-1 npm run informe:jornada", () => {
     expect(r.status).toBe(1);
     expect(r.stderr).toContain("faltan <desde> y <hasta>");
     expect(r.stderr).toContain(
-      "<desde> <hasta> [--referencias <fichero>] [--contrastar]",
+      "<desde> <hasta> [--referencias <fichero>] [--contrastar | --recontrastar]",
     );
     expect(r.stdout).toBe("");
   });
@@ -1845,6 +1845,12 @@ describe("CA-10 el tope se cumple por construcción, no por fixture", () => {
     suspendidos?: number;
     // Las alertas repartidas entre los cinco AlertKind y no entre dos (V-8 (i)).
     todosLosKinds?: boolean;
+    // SPEC-017: partidos que la fuente nunca mostró en juego (CA-3), pg_cron
+    // con una sola ejecución en toda la ventana (CA-5) y un contraste que sale
+    // de una captura pedida y otra releída a la vez (CA-1/CA-2).
+    sinDirecto?: number;
+    cronCasiMudo?: boolean;
+    capturasMixtas?: boolean;
   };
 
   const KINDS = AlertKind.options;
@@ -1864,6 +1870,9 @@ describe("CA-10 el tope se cumple por construcción, no por fixture", () => {
     aplazados = 0,
     suspendidos = 0,
     todosLosKinds = false,
+    sinDirecto = 0,
+    cronCasiMudo = false,
+    capturasMixtas = false,
   }: Escenario) => {
     const comps = quinta
       ? [
@@ -1919,7 +1928,14 @@ describe("CA-10 el tope se cumple por construcción, no por fixture", () => {
       ) {
         const instante = new Date(ms).toISOString() as Instant;
         observations.push(
-          obs({ id: `o${j}-${ms}`, matchId: m.id, observedAt: instante }),
+          obs({
+            id: `o${j}-${ms}`,
+            matchId: m.id,
+            observedAt: instante,
+            ...(j < mudos + sinDirecto
+              ? { status: "scheduled" as MatchStatus, score: null }
+              : {}),
+          }),
         );
         attempts.push({
           startedAt: instante,
@@ -2009,6 +2025,49 @@ describe("CA-10 el tope se cumple por construcción, no por fixture", () => {
             )
           : null,
         contrastePeticiones: 2,
+        ...(capturasMixtas
+          ? {
+              contrasteCapturas: [
+                {
+                  rawRef:
+                    "raw/api-football/2026-09-28/2026-09-28T21-30-00.000Z-contraste-2026-09-25T18-20-00.000Z-2026-09-28T21-00-00.000Z-2026-27.json.gz",
+                  capturedAt: "2026-09-28T21:30:00.000Z" as Instant,
+                  peticiones: 3,
+                  releida: true,
+                },
+                {
+                  rawRef:
+                    "raw/api-football/2026-09-29/2026-09-29T09-00-00.000Z-contraste-2026-09-25T18-20-00.000Z-2026-09-28T21-00-00.000Z-2027-28.json.gz",
+                  capturedAt: "2026-09-29T09:00:00.000Z" as Instant,
+                  peticiones: 2,
+                  releida: false,
+                },
+              ],
+            }
+          : {}),
+        ...(cronCasiMudo
+          ? {
+              cron: {
+                ejecuciones: [
+                  {
+                    jobname: "ingest-tick",
+                    status: "succeeded",
+                    startTime: at(5),
+                  },
+                  {
+                    jobname: "ingest-tick",
+                    status: "failed",
+                    startTime: at(6),
+                  },
+                  {
+                    jobname: "ingest-tick",
+                    status: "running",
+                    startTime: at(7),
+                  },
+                ],
+              },
+            }
+          : {}),
       }),
     );
   };
@@ -2073,8 +2132,22 @@ describe("CA-10 el tope se cumple por construcción, no por fixture", () => {
       silenciosos: 10,
       aplazados: 6,
       suspendidos: 6,
+      // SPEC-017 CA-6: las líneas nuevas, saturadas también.
+      sinDirecto: 10,
+      cronCasiMudo: true,
+      capturasMixtas: true,
     });
     expect(informe.cobertura.competiciones).toHaveLength(5);
+    expect(informe.sinSenal.sinDirecto).toHaveLength(10);
+    expect(texto).toMatch(
+      /^sin ninguna observación en juego: 10 — m20, m21, m22, m23, m24 … y 5 más$/m,
+    );
+    expect(texto).toMatch(
+      /^pg_cron \(cron\.job_run_details\): 3 ejecuciones \(failed 1 · running 1 · succeeded 1\) · horas de ventana sin ninguna ejecución: \d+ — .* … y \d+ más$/m,
+    );
+    expect(texto).toMatch(
+      /^peticiones del contraste: 2 en esta ejecución · raw_ref: .*; releído de .*, 3 peticiones entonces$/m,
+    );
     expect(informe.alertas.porKind).toHaveLength(KINDS.length);
     expect(informe.contraste?.sinRespuesta).toHaveLength(10);
     expect(informe.contraste?.aplazadosAcordados).toHaveLength(6);
@@ -2126,5 +2199,340 @@ describe("CA-10 el tope se cumple por construcción, no por fixture", () => {
     expect(texto).toContain("partidos sin respuesta del proveedor: 6");
     expect(texto).toContain("con al menos un hueco > 15 min: 27");
     expect(texto).toMatch(/por competición: /);
+  });
+});
+
+// SPEC-017 CA-1/CA-2. La línea de las peticiones del contraste dice de qué
+// captura sale: la que se pidió en esta ejecución, con su raw_ref, o la que se
+// releyó del raw store, con cuándo se capturó y cuánto costó entonces.
+describe("SPEC-017 CA-1/CA-2 el origen del contraste", () => {
+  const REF =
+    "raw/api-football/2026-09-28/2026-09-28T21-30-00.000Z-contraste-x.json.gz";
+  const fila = {
+    matchId: MATCH,
+    proveedor: { status: "finished" as const, score: { home: 1, away: 0 } },
+  };
+  const linea = (texto: string) =>
+    texto.split("\n").find((l) => l.startsWith("peticiones del contraste:"));
+
+  it("SPEC-017 CA-1 el raw_ref va en la misma línea que las peticiones", () => {
+    const { texto } = informeJornada(
+      vacio({
+        matches: [partido()],
+        contraste: [fila],
+        contrastePeticiones: 3,
+        contrasteCapturas: [
+          {
+            rawRef: REF,
+            capturedAt: "2026-09-28T21:30:00.000Z",
+            peticiones: 3,
+            releida: false,
+          },
+        ],
+      }),
+    );
+    expect(linea(texto)).toBe(
+      `peticiones del contraste: 3 (aparte de las del tick) · raw_ref: ${REF}`,
+    );
+  });
+
+  it("SPEC-017 CA-2 la línea dice de dónde sale el contraste", () => {
+    const { texto } = informeJornada(
+      vacio({
+        matches: [partido()],
+        contraste: [fila],
+        contrastePeticiones: 0,
+        contrasteCapturas: [
+          {
+            rawRef: REF,
+            capturedAt: "2026-09-28T21:30:00.000Z",
+            peticiones: 3,
+            releida: true,
+          },
+        ],
+      }),
+    );
+    expect(linea(texto)).toBe(
+      `peticiones del contraste: 0 en esta ejecución; releído de ${REF}, capturado 2026-09-28T21:30:00.000Z, 3 peticiones entonces`,
+    );
+  });
+
+  it("SPEC-017 CA-2 un contraste ilegible no existe: dice su motivo y no hay veredicto", () => {
+    const { texto, informe } = informeJornada(
+      vacio({
+        matches: [partido()],
+        contraste: null,
+        contrasteAusente: `la captura guardada ${REF} no se pudo leer`,
+      }),
+    );
+    expect(texto).toContain(
+      `(sin datos: la captura guardada ${REF} no se pudo leer)`,
+    );
+    expect(texto).not.toContain("se generó el informe sin --contrastar");
+    // El mismo veredicto que sin --contrastar (V-15): sin contraste no hay
+    // CA-9 (a) medido, sea porque no se pidió o porque no se pudo releer.
+    expect(informe.contraste).toBeNull();
+    expect(informe.veredicto).toEqual(
+      informeJornada(vacio({ matches: [partido()] })).informe.veredicto,
+    );
+  });
+});
+
+// SPEC-017 CA-3. Un partido que la fuente nunca mostró en juego: pasa de
+// `scheduled` a `finished` con cientos de observaciones, cero `live` y ningún
+// hueco (hallazgo 1 de _qa/SPEC-009/hallazgos-jornada.md). Una línea en el
+// bloque 6, informativa: no entra en el veredicto.
+describe("SPEC-017 CA-3 partidos sin directo", () => {
+  const SIN = "sin ninguna observación en juego:";
+  const linea = (texto: string) =>
+    texto.split("\n").find((l) => l.startsWith(SIN));
+  const programadas = (matchId: string, n: number): ObsLike[] =>
+    Array.from({ length: n }, (_, i) =>
+      obs({
+        id: `${matchId}-s${i}`,
+        matchId,
+        observedAt: seg(i * 30),
+        status: "scheduled",
+        score: null,
+      }),
+    );
+
+  it("SPEC-017 CA-3 (i) 270 scheduled y cierre finished: listado", () => {
+    const { texto, informe } = informeJornada(
+      vacio({
+        matches: [partido()],
+        observations: [
+          ...programadas(MATCH, 269),
+          obs({
+            id: "fin",
+            observedAt: seg(269 * 30),
+            status: "finished",
+            score: { home: 1, away: 0 },
+          }),
+        ],
+      }),
+    );
+    expect(informe.sinSenal.sinDirecto).toEqual([
+      { matchId: MATCH, competicion: "Segunda División" },
+    ]);
+    expect(linea(texto)).toBe(`${SIN} 1 — ${MATCH}`);
+  });
+
+  it("SPEC-017 CA-3 (ii) con una observación live: no", () => {
+    const { texto, informe } = informeJornada(
+      vacio({
+        matches: [partido()],
+        observations: [
+          ...programadas(MATCH, 10),
+          obs({ id: "vivo", observedAt: seg(400) }),
+        ],
+      }),
+    );
+    expect(informe.sinSenal.sinDirecto).toEqual([]);
+    expect(linea(texto)).toBe(`${SIN} 0`);
+  });
+
+  it("SPEC-017 CA-3 (iii) cero observaciones: solo en «sin ninguna observación»", () => {
+    const { informe } = informeJornada(vacio({ matches: [partido()] }));
+    expect(informe.sinSenal.sinObservaciones).toHaveLength(1);
+    expect(informe.sinSenal.sinDirecto).toEqual([]);
+  });
+
+  it("SPEC-017 CA-3 (iv) postponed: no", () => {
+    const { informe } = informeJornada(
+      vacio({
+        matches: [partido({ status: "postponed", score: null })],
+        observations: programadas(MATCH, 10),
+      }),
+    );
+    expect(informe.sinSenal.sinDirecto).toEqual([]);
+  });
+
+  it("SPEC-017 CA-3 (v) el veredicto es idéntico con y sin él", () => {
+    const contraste = [
+      {
+        matchId: MATCH,
+        proveedor: { status: "finished" as const, score: { home: 1, away: 0 } },
+      },
+    ];
+    const attempts = Array.from({ length: 300 }, (_, i) => ({
+      startedAt: seg(i * 30),
+      sourceId: "api-football",
+      ok: true as boolean | null,
+      error: null,
+      requests: 1,
+    }));
+    const con = informeJornada(
+      vacio({
+        matches: [partido()],
+        observations: programadas(MATCH, 200),
+        attempts,
+        contraste,
+      }),
+    );
+    const sin = informeJornada(
+      vacio({
+        matches: [partido()],
+        observations: [
+          ...programadas(MATCH, 199),
+          obs({ id: "vivo", observedAt: seg(199 * 30) }),
+        ],
+        attempts,
+        contraste,
+      }),
+    );
+    expect(con.informe.sinSenal.sinDirecto).toHaveLength(1);
+    expect(sin.informe.sinSenal.sinDirecto).toHaveLength(0);
+    expect(con.informe.veredicto).toEqual(sin.informe.veredicto);
+  });
+});
+
+// SPEC-017 CA-4 (F-SPEC-013-4). Un `finished` forzado por RN-02 deja el
+// partido en ventana hasta kickoff + WINDOW_AFTER_MINUTES (isInWindow,
+// SPEC-013 CA-3): esos ticks son cobertura, no «tras el cierre». Cualquier
+// otro `finished` vigente cierra en su decided_at, como hasta ahora.
+describe("SPEC-017 CA-4 la prórroga del cierre forzoso es cobertura", () => {
+  const K = 10;
+  // Un tick cada 30 s desde kickoff − 10 hasta kickoff + 150, como el tick
+  // muestrea mientras isInWindow diga que sí.
+  const ticks = () => {
+    const out: InformeAttemptLike[] = [];
+    for (
+      let ms = Date.parse(at(K - 10));
+      ms < Date.parse(at(K + 150));
+      ms += 30 * SEC
+    )
+      out.push({
+        startedAt: new Date(ms).toISOString() as Instant,
+        sourceId: "api-football",
+        ok: true,
+        error: null,
+        requests: 1,
+      });
+    return out;
+  };
+  const tras = (texto: string) =>
+    texto
+      .split("\n")
+      .find((l) => l.startsWith("intentos dentro de la ventana de ADR-002 §2"));
+  const corre = (rule: string, cierre: number) =>
+    informeJornada(
+      vacio({
+        matches: [partido({ kickoff: at(K), decidedAt: at(K + cierre), rule })],
+        observations: [obs({ observedAt: at(K) })],
+        attempts: ticks(),
+      }),
+    );
+
+  it("SPEC-017 CA-4 (i) RN-02 a +120 con ticks hasta +150: cobertura 100 % y tras el cierre 0", () => {
+    const { texto, informe } = corre("RN-02", 120);
+    expect(informe.cobertura.ticksEsperados).toBe(160 * 2);
+    expect(informe.cobertura.ticksReales).toBe(160 * 2);
+    expect(informe.cobertura.porcentaje).toBe(1);
+    expect(tras(texto)).toMatch(/: 0$/);
+  });
+
+  it("SPEC-017 CA-4 (ii) RN-02 y luego RN-12 a +135: la ventana cierra a +135", () => {
+    const { texto, informe } = corre("RN-12", 135);
+    expect(informe.cobertura.ticksEsperados).toBe(145 * 2);
+    expect(informe.cobertura.porcentaje).toBe(1);
+    expect(tras(texto)).toMatch(/: 30$/);
+  });
+
+  it("SPEC-017 CA-4 (iii) RN-01 a +105: sin cambio", () => {
+    const { texto, informe } = corre("RN-01", 105);
+    expect(informe.cobertura.ticksEsperados).toBe(115 * 2);
+    expect(informe.cobertura.porcentaje).toBe(1);
+    expect(tras(texto)).toMatch(/: 90$/);
+  });
+
+  it("SPEC-017 CA-4 las dos líneas del bloque 1 lo dicen, sin crecer", () => {
+    const { texto } = corre("RN-02", 120);
+    const lineas = texto.split("\n");
+    const i = lineas.findIndex((l) =>
+      l.startsWith("  cobertura sobre la ventana efectiva de cada partido"),
+    );
+    expect(lineas[i + 1]).toContain("RN-02");
+    expect(lineas[i + 1]).toContain("kickoff + 150 min");
+    expect(lineas[i + 2]).toMatch(/^intentos dentro de la ventana/);
+  });
+});
+
+// SPEC-017 CA-5 (R-SPEC-009-9). La vitalidad de pg_cron en una línea del
+// bloque 1, informativa: la cobertura sigue saliendo de ingest_attempts.
+describe("SPEC-017 CA-5 pg_cron en el informe", () => {
+  const K = 10;
+  const linea = (texto: string) =>
+    texto.split("\n").find((l) => l.startsWith("pg_cron"));
+  // Una ejecución cada 30 s desde kickoff − 10 hasta el cierre a +105, menos
+  // las que caen en la hora que se le pida saltar.
+  const ejecuciones = (salta?: string) => {
+    const out: { jobname: string; status: string; startTime: Instant }[] = [];
+    for (
+      let ms = Date.parse(at(K - 10));
+      ms < Date.parse(at(K + 105));
+      ms += 30 * SEC
+    ) {
+      const startTime = new Date(ms).toISOString() as Instant;
+      if (salta !== undefined && startTime.startsWith(salta)) continue;
+      out.push({
+        jobname: "ingest-tick",
+        status: out.length === 3 ? "failed" : "succeeded",
+        startTime,
+      });
+    }
+    return out;
+  };
+  const corre = (cron: InformeInput["cron"]) =>
+    informeJornada(
+      vacio({
+        matches: [
+          partido({ kickoff: at(K), decidedAt: at(K + 105), rule: "RN-01" }),
+        ],
+        cron,
+      }),
+    );
+
+  it("SPEC-017 CA-5 todas las horas cubiertas: 0", () => {
+    const filas = ejecuciones();
+    const { texto } = corre({ ejecuciones: filas });
+    expect(linea(texto)).toBe(
+      `pg_cron (cron.job_run_details): ${filas.length} ejecuciones (failed 1 · succeeded ${filas.length - 1}) · horas de ventana sin ninguna ejecución: 0`,
+    );
+  });
+
+  it("SPEC-017 CA-5 una hora sin ejecución: listada", () => {
+    // La ventana va de 18:20 a 20:15: la hora de las 19 se queda sin pg_cron.
+    const filas = ejecuciones("2026-09-25T19");
+    const { texto, informe } = corre({ ejecuciones: filas });
+    expect(linea(texto)).toMatch(
+      /horas de ventana sin ninguna ejecución: 1 — 2026-09-25T19Z$/,
+    );
+    expect(informe.cobertura.pgCron).toMatchObject({
+      horasSinEjecucion: ["2026-09-25T19:00:00.000Z"],
+    });
+  });
+
+  it("SPEC-017 CA-5 sin datos: la línea lo dice", () => {
+    expect(linea(corre({ ejecuciones: [] }).texto)).toBe(
+      "pg_cron (cron.job_run_details): sin datos (ninguna ejecución en la ventana)",
+    );
+    expect(
+      linea(
+        corre({ error: 'relation "cron.job_run_details" does not exist' })
+          .texto,
+      ),
+    ).toBe(
+      'pg_cron (cron.job_run_details): sin datos (la consulta falló: relation "cron.job_run_details" does not exist)',
+    );
+    expect(linea(corre(undefined).texto)).toBe(
+      "pg_cron (cron.job_run_details): sin datos (no se consultó)",
+    );
+  });
+
+  it("SPEC-017 CA-5 no entra en el veredicto", () => {
+    expect(corre({ ejecuciones: [] }).informe.veredicto).toEqual(
+      corre({ ejecuciones: ejecuciones() }).informe.veredicto,
+    );
   });
 });
