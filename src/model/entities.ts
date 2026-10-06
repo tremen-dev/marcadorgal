@@ -62,6 +62,15 @@ export const Observation = MatchState.and(
 );
 export type Observation = z.infer<typeof Observation>;
 
+// The owner of each side of the score (ADR-011 §2, §3): the source of the
+// observation that fixed its published value. null when there is no score,
+// and in every row written before SPEC-014, where it reads as api-football.
+export const ScoredBy = z.object({
+  home: SourceId.nullable(),
+  away: SourceId.nullable(),
+});
+export type ScoredBy = z.infer<typeof ScoredBy>;
+
 export const Decision = MatchState.and(
   z.object({
     id: DecisionId,
@@ -71,6 +80,11 @@ export const Decision = MatchState.and(
     rule: DecisionRule,
     observationIds: z.array(ObservationId).min(1),
     decidedAt: Instant,
+    scoredBy: ScoredBy.default(() => ({ home: null, away: null })),
+    // true only for the forced finish of RN-02 (SPEC-014 CA-8); false for
+    // every other Decision of the engine; null in the rows written before
+    // the column existed. null reads as "not a forced finish".
+    forcedFinish: z.boolean().nullable().default(null),
   }),
 ).refine((d) => d.qualifier !== "sen_sinal" || d.status === "live", {
   message: "sen_sinal only applies to live matches",

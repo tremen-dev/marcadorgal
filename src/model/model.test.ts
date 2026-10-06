@@ -361,3 +361,50 @@ describe("CA-7 JSON round trip", () => {
       expect(walk(schema.parse(fixture))).toBe(false);
   });
 });
+
+// SPEC-014 CA-2 and CA-8: the owner of each side and the mark of the forced
+// finish. Both are optional to parse, so the rows written before the
+// migration (nulls) and a Decision without them still read.
+describe("SPEC-014 CA-2 CA-8 Decision carries scoredBy and forcedFinish", () => {
+  it("parses with the owner of each side and the mark", () => {
+    const parsed = Decision.parse({
+      ...fixtures.decision,
+      scoredBy: { home: "operator", away: "api-football" },
+      forcedFinish: false,
+    });
+    expect(parsed.scoredBy).toEqual({ home: "operator", away: "api-football" });
+    expect(parsed.forcedFinish).toBe(false);
+    expect(
+      Decision.parse({ ...fixtures.decision, forcedFinish: true }).forcedFinish,
+    ).toBe(true);
+  });
+
+  it("parses without owner nor mark: both null", () => {
+    const parsed = Decision.parse(fixtures.decision);
+    expect(parsed.scoredBy).toEqual({ home: null, away: null });
+    expect(parsed.forcedFinish).toBeNull();
+    expect(
+      Decision.parse({
+        ...fixtures.decision,
+        scoredBy: { home: null, away: null },
+        forcedFinish: null,
+      }),
+    ).toEqual(parsed);
+  });
+
+  it("rejects an owner that is not a source id, and a mark that is not a boolean", () => {
+    expect(
+      Decision.safeParse({
+        ...fixtures.decision,
+        scoredBy: { home: "API Football", away: null },
+      }).success,
+    ).toBe(false);
+    expect(
+      Decision.safeParse({ ...fixtures.decision, scoredBy: { home: null } })
+        .success,
+    ).toBe(false);
+    expect(
+      Decision.safeParse({ ...fixtures.decision, forcedFinish: "yes" }).success,
+    ).toBe(false);
+  });
+});
