@@ -298,7 +298,7 @@ describe("CA-6 entities", () => {
     ).toBe(false);
   });
 
-  it("Decision needs version >= 1, at least one observation and sen_sinal only when live", () => {
+  it("Decision needs version >= 1, at least one observation and sen_sinal only when live or scheduled", () => {
     expect(
       Decision.safeParse({ ...fixtures.decision, version: 0 }).success,
     ).toBe(false);
@@ -317,6 +317,37 @@ describe("CA-6 entities", () => {
         qualifier: "sen_sinal",
       }).success,
     ).toBe(false);
+  });
+
+  // SPEC-018 CA-5 (ADR-013 §2): sen_sinal also in scheduled, and still never
+  // in finished, postponed or suspended.
+  it("SPEC-018 CA-5 sen_sinal is accepted in scheduled and still rejected in finished, postponed and suspended", () => {
+    const { addedMinute: _, ...base } = fixtures.decision;
+    expect(
+      Decision.safeParse({
+        ...base,
+        status: "scheduled",
+        score: null,
+        minute: null,
+        qualifier: "sen_sinal",
+        rule: "RN-05",
+      }).success,
+    ).toBe(true);
+    const others = [
+      { status: "finished", score: { home: 1, away: 0 }, minute: null },
+      { status: "postponed", score: null, minute: null },
+      { status: "suspended", score: { home: 1, away: 0 }, minute: null },
+    ];
+    for (const state of others) {
+      expect(Decision.safeParse({ ...base, ...state }).success).toBe(true);
+      expect(
+        Decision.safeParse({
+          ...base,
+          ...state,
+          qualifier: "sen_sinal",
+        }).success,
+      ).toBe(false);
+    }
   });
 
   it("Alert needs a match unless the team is unresolved", () => {

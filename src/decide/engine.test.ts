@@ -579,13 +579,20 @@ describe("CA-6 RN-05 silence", () => {
     expect(open).toEqual([]);
   });
 
-  it("does not apply with no current decision, nor outside live", () => {
+  // Since SPEC-018 CA-4 a scheduled past kickoff + 15 does go to sen_sinal
+  // (ADR-013 §2): before +15 it does not, and neither do the other states.
+  it("does not apply with no current decision, nor outside live and a late scheduled", () => {
     expect(
       decide(input({ current: null, observations: [], now: at(20) })),
     ).toEqual({ decision: null, open: [], resolve: [] });
     expect(
       decide(
-        input({ current: current(scheduled), observations: [], now: at(20) }),
+        input({ current: current(scheduled), observations: [], now: at(14) }),
+      ),
+    ).toEqual({ decision: null, open: [], resolve: [] });
+    expect(
+      decide(
+        input({ current: current(postponed), observations: [], now: at(20) }),
       ),
     ).toEqual({ decision: null, open: [], resolve: [] });
   });
@@ -1594,5 +1601,218 @@ describe("SPEC-014 CA-10 the forced_finish alert tells what it publishes", () =>
         },
       },
     ]);
+  });
+});
+
+// SPEC-018 CA-4 (ADR-013 §2, RN-05): a scheduled match whose kickoff is 15
+// minutes gone, with no fresh observation that gives it live, finished,
+// postponed or suspended, goes to scheduled · sen_sinal, RN-05, citing the
+// current observations and opening no Alert (H-4). Nothing new comes out of
+// it but a real state: live, finished, postponed or suspended.
+describe("SPEC-018 CA-4 sen_sinal in scheduled", () => {
+  const VIGENTE = current(scheduled);
+
+  it("(i) at +14 nothing happens", () => {
+    expect(
+      decide(
+        input({
+          current: VIGENTE,
+          observations: [obs("ten", 13, scheduled)],
+          now: at(14),
+        }),
+      ),
+    ).toEqual({ decision: null, open: [], resolve: [] });
+  });
+
+  it("(ii) at +15 with scheduled observations it goes to sen_sinal with no alert", () => {
+    const { decision, open, resolve } = decide(
+      input({
+        current: VIGENTE,
+        observations: [obs("ten", 14, scheduled)],
+        now: at(15),
+      }),
+    );
+    expect(decision).toMatchObject({
+      status: "scheduled",
+      score: null,
+      minute: null,
+      qualifier: "sen_sinal",
+      rule: "RN-05",
+      forcedFinish: false,
+    });
+    expect(decision?.observationIds).toEqual(VIGENTE.observationIds);
+    expect(open).toEqual([]);
+    expect(resolve).toEqual([]);
+    expect(() =>
+      Decision.parse({
+        ...decision,
+        id: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+        version: 2,
+      }),
+    ).not.toThrow();
+  });
+
+  it("(ii) also with no observation at all", () => {
+    const { decision, open } = decide(
+      input({ current: VIGENTE, observations: [], now: at(40) }),
+    );
+    expect(decision).toMatchObject({
+      status: "scheduled",
+      qualifier: "sen_sinal",
+      rule: "RN-05",
+    });
+    expect(open).toEqual([]);
+  });
+
+  it("(iii) a later scheduled observation does not take sen_sinal away", () => {
+    const silent = current(scheduled, {
+      qualifier: "sen_sinal",
+      rule: "RN-05",
+    });
+    for (const minutes of [16, 60, 200, 359])
+      expect(
+        decide(
+          input({
+            current: silent,
+            observations: [obs("ten", minutes - 1, scheduled)],
+            now: at(minutes),
+          }),
+        ),
+      ).toEqual({ decision: null, open: [], resolve: [] });
+  });
+
+  it("(iv) a finished arriving gives finished provisional RN-01", () => {
+    const final = obs("ten", 229, finished(3, 1));
+    const { decision, open } = decide(
+      input({
+        current: current(scheduled, { qualifier: "sen_sinal", rule: "RN-05" }),
+        observations: [obs("ten", 200, scheduled), final],
+        now: at(230),
+      }),
+    );
+    expect(decision).toMatchObject({
+      status: "finished",
+      score: { home: 3, away: 1 },
+      qualifier: "provisional",
+      rule: "RN-01",
+      forcedFinish: false,
+    });
+    expect(decision?.observationIds).toEqual([final.id]);
+    expect(open).toEqual([]);
+  });
+
+  it("(v) a live arriving gives live with its normal qualifier, and in live RN-05 opens its alert as today", () => {
+    const { decision, open } = decide(
+      input({
+        current: current(scheduled, { qualifier: "sen_sinal", rule: "RN-05" }),
+        observations: [obs("ten", 29, live(0, 0, 29))],
+        now: at(30),
+      }),
+    );
+    expect(decision).toMatchObject({
+      status: "live",
+      qualifier: "provisional",
+      rule: "RN-01",
+    });
+    expect(open).toEqual([]);
+
+    const quiet = decide(
+      input({
+        current: current(live(0, 0, 29)),
+        observations: [],
+        now: at(60),
+      }),
+    );
+    expect(quiet.decision).toMatchObject({
+      status: "live",
+      qualifier: "sen_sinal",
+      rule: "RN-05",
+    });
+    expect(quiet.open.map((a) => a.kind)).toEqual(["silence"]);
+  });
+
+  it("(v) a fresh live from a lesser source is enough to keep it out of sen_sinal", () => {
+    const { decision } = decide(
+      input({
+        current: VIGENTE,
+        observations: [
+          obs("twenty", 19, scheduled),
+          obs("ten", 19, live(0, 0, 19)),
+        ],
+        now: at(20),
+      }),
+    );
+    expect(decision).toBeNull();
+  });
+
+  it("(vi) a current postponed: nothing", () => {
+    expect(
+      decide(
+        input({
+          current: current(postponed),
+          observations: [obs("ten", 19, postponed)],
+          now: at(20),
+        }),
+      ),
+    ).toEqual({ decision: null, open: [], resolve: [] });
+  });
+
+  // N-4 (F-SPEC-018-6): a late live in the extension, with no change in
+  // engine.ts. RN-02 and ADR-009 §4 close it at once with its alert, the
+  // window keeps it (CA-2) and RN-12 publishes the FT of the source.
+  it("(vii) late live at +200: live RN-01, forced finish RN-02 in the sweep, RN-12 at +230", () => {
+    const silent = current(scheduled, {
+      qualifier: "sen_sinal",
+      rule: "RN-05",
+    });
+    const late = obs("ten", 199, live(1, 0, 70));
+    const first = decide(
+      input({ current: silent, observations: [late], now: at(200) }),
+    );
+    expect(first.decision).toMatchObject({
+      status: "live",
+      score: { home: 1, away: 0 },
+      qualifier: "provisional",
+      rule: "RN-01",
+      forcedFinish: false,
+    });
+    expect(first.open).toEqual([]);
+
+    const vigenteLive = {
+      ...first.decision,
+      id: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb" as DecisionId,
+      version: 2,
+    } as Decision;
+    const sweep = decide(
+      input({ current: vigenteLive, observations: [], now: at(200) }),
+    );
+    expect(sweep.decision).toMatchObject({
+      status: "finished",
+      score: { home: 1, away: 0 },
+      qualifier: "provisional",
+      rule: "RN-02",
+      forcedFinish: true,
+      decidedAt: at(200),
+    });
+    expect(sweep.open.map((a) => a.kind)).toEqual(["forced_finish"]);
+
+    const vigenteForced = {
+      ...sweep.decision,
+      id: "cccccccc-cccc-4ccc-8ccc-cccccccccccc" as DecisionId,
+      version: 3,
+    } as Decision;
+    const ft = obs("ten", 229, finished(2, 1));
+    const confirmed = decide(
+      input({ current: vigenteForced, observations: [ft], now: at(230) }),
+    );
+    expect(confirmed.decision).toMatchObject({
+      status: "finished",
+      score: { home: 2, away: 1 },
+      qualifier: "confirmado",
+      rule: "RN-12",
+      forcedFinish: false,
+    });
+    expect(confirmed.decision?.observationIds).toEqual([ft.id]);
+    expect(confirmed.open).toEqual([]);
   });
 });

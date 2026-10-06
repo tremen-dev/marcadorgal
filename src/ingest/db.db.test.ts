@@ -152,6 +152,68 @@ describe("CA-6 windowMatches", () => {
     }));
 });
 
+// SPEC-018 CA-2: the query reaches back to +360 and isInWindow keeps only the
+// scheduled; each row carries received_at of its newest observation.
+describe("SPEC-018 CA-2 windowMatches with the extension", () => {
+  it("keeps a scheduled match at +200 with its last observation, and leaves a live one out", () =>
+    rollback(async (tx) => {
+      const kickoff = at(-200 * MINUTE_MS);
+      const quiet = await seedMatch(tx, kickoff);
+      const received = at(-3 * MINUTE_MS);
+      await tx`insert into observations
+        (match_id, source_id, status, observed_at, received_at, raw_ref)
+        values (${quiet}, 'test', 'scheduled', ${received}, ${received}, 'raw/x')`;
+      const rows = await dbIn(tx).windowMatches(NOW);
+      const row = rows.find((r) => r.id === quiet);
+      expect(row).toMatchObject({
+        status: "scheduled",
+        lastObservationAt: received,
+      });
+      expect(typeof row?.lastObservationAt).toBe("string");
+    }));
+
+  it("gives null as last observation of a match nobody has observed, and leaves +360 out", () =>
+    rollback(async (tx) => {
+      const inside = await seedMatch(tx, at(-200 * MINUTE_MS));
+      const rows = await dbIn(tx).windowMatches(NOW);
+      expect(rows.find((r) => r.id === inside)?.lastObservationAt).toBeNull();
+      const outside = await seedMatch(tx, at(-360 * MINUTE_MS));
+      const later = await dbIn(tx).windowMatches(NOW);
+      expect(later.map((r) => r.id)).not.toContain(outside);
+    }));
+
+  // N-4 (F-SPEC-018-6): decided_at of the current Decision reaches
+  // isInWindow. At +200 a live, or a finished with the mark, decided in the
+  // extension stays in; decided at +120 it is out (SPEC-013 CA-3).
+  it.each([
+    ["live", null, 0, true],
+    ["finished", true, 0, true],
+    ["live", null, -80, false],
+    ["finished", true, -80, false],
+  ] as const)(
+    "at +200, a %s (mark %s) decided %s min from now is in window: %s",
+    (status, forcedFinish, decidedMinutes, inside) =>
+      rollback(async (tx) => {
+        const kickoff = at(-200 * MINUTE_MS);
+        const id = await seedMatch(tx, kickoff);
+        const decidedAt = at(decidedMinutes * MINUTE_MS);
+        const [{ id: oid }] = await tx`insert into observations
+          (match_id, source_id, status, home_score, away_score, observed_at, raw_ref)
+          values (${id}, 'test', 'live', 1, 0, ${decidedAt}, 'raw/x') returning id`;
+        await tx`insert into decisions
+          (match_id, status, home_score, away_score, qualifier, rule, observation_ids,
+           decided_at, forced_finish)
+          values (${id}, ${status}, 1, 0, 'provisional',
+            ${status === "live" ? "RN-01" : "RN-02"}, ${[oid]}, ${decidedAt},
+            ${forcedFinish})`;
+        const rows = await dbIn(tx).windowMatches(NOW);
+        const row = rows.find((r) => r.id === id);
+        expect(row !== undefined).toBe(inside);
+        if (row !== undefined) expect(row).not.toHaveProperty("decidedAt");
+      }),
+  );
+});
+
 describe("CA-6 openAttempt", () => {
   it("opens, skips inside the cadence and opens again after it", () =>
     rollback(async (tx) => {

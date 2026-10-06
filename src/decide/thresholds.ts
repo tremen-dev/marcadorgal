@@ -9,7 +9,8 @@ export const OBSERVATION_WINDOW_MINUTES = 5;
 export const CONFLICT_GRACE_MINUTES = 3;
 
 // RN-05: a live match with no observation from any source for this long goes
-// to sen_sinal and opens an Alert.
+// to sen_sinal and opens an Alert; a scheduled one this long past its kickoff
+// with nobody giving it in play goes to sen_sinal with no Alert (ADR-013 §2).
 export const SILENCE_MINUTES = 15;
 
 // RN-02: nobody closed the match, so the engine does, provisional and with a

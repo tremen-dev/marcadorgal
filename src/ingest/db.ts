@@ -15,9 +15,12 @@ import { isInWindow, windowKickoffRange } from "./window.ts";
 // with doubles and npm run test:db proves the postgres.js implementation.
 
 // forcedFinish: the mark of the current Decision (SPEC-014 CA-8).
+// lastObservationAt: received_at of the newest observation of the match, from
+// any source, or null; it paces the extension of the window (SPEC-018 CA-2).
 export type WindowRow = WindowMatch & {
   status: MatchStatus;
   forcedFinish: boolean | null;
+  lastObservationAt: Instant | null;
 };
 
 // Moved to the model (SPEC-007 CA-2) and re-exported here: every importer of
@@ -159,13 +162,30 @@ export function createIngestDb(sql: Sql): IngestDb {
           away_team_id: string;
           status: MatchStatus;
           forced_finish: boolean | null;
+          decided_at: Date | null;
+          last_observation_at: Date | null;
         }[]
       >`select b.match_id, b.competition_id, b.season, b.kickoff, b.home_team_id,
-          b.away_team_id, b.status, d.forced_finish
+          b.away_team_id, b.status, d.forced_finish, d.decided_at,
+          (select max(o.received_at) from observations o
+            where o.match_id = b.match_id) as last_observation_at
         from board b left join decisions d on d.id = b.decision_id
         where b.kickoff >= ${from} and b.kickoff <= ${to}
         order by b.kickoff, b.match_id`;
+      // decided_at only feeds isInWindow (SPEC-018 CA-2): the row the tick
+      // gets keeps its shape.
       return rows
+        .filter((r) =>
+          isInWindow(
+            {
+              kickoff: instant(r.kickoff),
+              status: r.status,
+              forcedFinish: r.forced_finish,
+              decidedAt: r.decided_at === null ? null : instant(r.decided_at),
+            },
+            now,
+          ),
+        )
         .map((r) => ({
           id: r.match_id,
           competitionId: r.competition_id,
@@ -175,8 +195,11 @@ export function createIngestDb(sql: Sql): IngestDb {
           awayTeamId: r.away_team_id,
           status: r.status,
           forcedFinish: r.forced_finish,
-        }))
-        .filter((m) => isInWindow(m, now)) as WindowRow[];
+          lastObservationAt:
+            r.last_observation_at === null
+              ? null
+              : instant(r.last_observation_at),
+        })) as WindowRow[];
     },
 
     // Cadence guard and insert in one transaction behind an advisory lock
