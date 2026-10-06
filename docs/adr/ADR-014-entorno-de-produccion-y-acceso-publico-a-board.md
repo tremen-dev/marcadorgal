@@ -7,7 +7,7 @@ historial:
 ---
 # ADR-014: Entorno de producción y acceso público a board
 
-- Deciders: sdd-arquitecto propone (2026-10-06) por el riesgo «Entorno» de EPIC-003. Aprueba Alberto Fojo (pendiente: H-1..H-4).
+- Deciders: sdd-arquitecto propone (2026-10-06) por el riesgo «Entorno» de EPIC-003. **Alberto Fojo decide H-1..H-4 en el gate del 2026-10-06, las cuatro con la recomendación del arquitecto.**
 - Specs relacionadas: SPEC-020 (lectura pública y snapshot) y la de Realtime de EPIC-003 lo implementan. SPEC-019 no depende de él: define `PublicMatch`, que §3 cita. **Supersede ADR-006 §6** en la lectura de `anon` y `authenticated`. Precisa ADR-002 §6 (canal).
 
 ## Contexto
@@ -87,12 +87,10 @@ curada con su ADR. Pico de Realtime y coste: se miden en la jornada publicada.
 - **Leer como `postgres` también en la web**: una inyección o un error en la
   ruta pública tendría permisos de dueño.
 
-## Para el titular
+## Para el titular (resuelto el 2026-10-06 por Alberto Fojo)
 
-- **H-1.** ¿El proyecto actual pasa a producción (Pro, renombrado) y `dev`
-  pasa a ser local? *Recomendado: sí.*
-- **H-2.** ¿Se cierra la lectura anónima de las cinco tablas? *Recomendado: sí.*
-- **H-3.** ¿Rol `web_reader` y previews con datos reales de solo lectura?
-  *Recomendado: sí.*
-- **H-4.** ¿Canal privado (con política en `realtime.messages`) en vez de
-  público? *Recomendado: sí.*
+- **H-1 = sí.** El proyecto actual pasa a producción (Pro, renombrado) y `dev`
+  pasa a ser local (§1).
+- **H-2 = sí.** Se cierra la lectura anónima de las cinco tablas (§2).
+- **H-3 = sí.** Rol `web_reader` y previews con datos reales de solo lectura (§4).
+- **H-4 = sí.** Canal privado con política en `realtime.messages` (§5).
