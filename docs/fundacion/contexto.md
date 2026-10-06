@@ -2,7 +2,7 @@
 
 > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.
 > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.
-> Última actualización: 2026-10-06 (SPEC-013, SPEC-016, SPEC-017 hecho).
+> Última actualización: 2026-10-06 (SPEC-013, SPEC-014, SPEC-016, SPEC-017 hecho; SPEC-018 en curso).
 
 ## Qué es y en qué punto está
 
@@ -36,9 +36,11 @@ jornada completa, en una sola pantalla y en galego. Proyecto de tremen.dev.
 
 **EPIC-FIX — SPEC-015 completa (salvo CA-5 de campo, 9-12 oct):** el calendario declarado se sincroniza de martes a sábado y las reprogramaciones puras se aplican solas; corrigió las horas de relleno de Segunda J8 y Tercera J5 antes de jugarse.
 
-**SPEC-014 (aprobada, empieza tras fusionar SPEC-013):** RN-03 en vivo por fuente (ADR-011): el marcador lo baja la misma fuente que subió el gol u otra de más peso. La medición de las bajadas en vivo (`_qa/ADR-011/`) mostró que retener publicó ~742 ticks de marcador falso.
+**SPEC-014 completa (PR #32, fusionado el 2026-10-06):** RN-03 en vivo por fuente (ADR-011): el marcador lo baja la misma fuente que subió el gol u otra de más peso. La medición de las bajadas en vivo (`_qa/ADR-011/`) mostró que retener publicó ~742 ticks de marcador falso.
 
-EPIC-002 (ingesta y motor) **no cierra hasta que el marcador esté corregido** (N-9): cierra con SPEC-013, SPEC-014 y SPEC-016 en `hecho`. SPEC-017 (EPIC-MANT, mejoras del informe) hecho, antes del 2026-10-09.
+**SPEC-018 (en curso, la última de EPIC-002):** partido sin directo de la fuente (ADR-013): prórroga de la ventana hasta kickoff + 6 h si sigue `scheduled`, `sen_sinal` también en `scheduled` y línea `sin directo y sin final: N` en el informe.
+
+EPIC-002 (ingesta y motor) **no cierra hasta que el marcador esté corregido** (N-9): cierra con SPEC-013, SPEC-014 y SPEC-016 en `hecho`. SPEC-017 (EPIC-MANT, mejoras del informe) hecho (PR #31).
 
 **EPIC-FIX (correcciones urgentes):** SPEC-011 hecho. Arregla dos defectos de la ingesta: sin peticiones `live=` con un solo id de liga, y `ParseResult` gana cuarto canal `requestErrors` para guardar observaciones buenas aun si una petición falla. Entrada prioritaria para fallos que dañan medición en vivo.
 
