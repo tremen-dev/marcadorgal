@@ -18,12 +18,14 @@
   la misma regla. No hay más transiciones automáticas.
   *Enmendada el 2026-10-04 por ADR-012.*
 - **RN-03 — Monotonía.** **Mientras el partido está en juego**, un marcador
-  solo lo baja una fuente con más peso que la que lo subió; hoy, el operador: un
-  gol que sube el operador no lo baja API-Football. Si una fuente que no pesa más
-  propone un marcador menor que el vigente, se mantiene el vigente y se abre una
-  Alert. **La retención no sobrevive al cierre: al pasar a `finished`, manda el
-  marcador de la observación ganadora.**
+  solo lo baja la fuente que lo subió u otra con más peso: un gol que sube el
+  operador no lo baja API-Football, y un gol que sube API-Football lo puede
+  retirar API-Football. Si otra fuente que no pesa más propone un marcador
+  menor que el vigente, se mantiene el vigente y se abre una Alert. **La
+  retención no sobrevive al cierre: al pasar a `finished`, manda el marcador
+  de la observación ganadora.**
   *Enmendada el 2026-09-29 por ADR-010 §1.*
+  *Enmendada el 2026-10-06 por ADR-011.*
 - **RN-04 — Conflicto.** Si dos fuentes de prioridad igual o adyacente
   discrepan en el marcador durante más de 3 minutos, se mantiene la Decision
   vigente y se abre una Alert. El conflicto nunca se publica.
@@ -32,7 +34,8 @@
   llegar una observación nueva, vuelve a su cualificador normal.
 - **RN-06 — Trazabilidad.** Toda Decision registra la regla decisiva y los ids
   de las observaciones que la sostienen. Orden de decisión: operador > RN-03 >
-  RN-05 > RN-02 > RN-01.
+  RN-05 > RN-02 > RN-12 > RN-01.
+  *Enmendada el 2026-10-06 por ADR-011 (H-3).*
 - **RN-12 — Reconciliación tras cierre forzoso.** Un partido cerrado por el
   cierre forzoso de RN-02 acepta el marcador final que la fuente confirme
   después, mientras su ventana siga abierta. Solo cambia el marcador y el
