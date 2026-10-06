@@ -2557,3 +2557,257 @@ describe("SPEC-017 CA-5 pg_cron en el informe", () => {
     );
   });
 });
+
+// SPEC-018 CA-6 (ADR-013 §4). Un partido que la fuente no dio en directo y
+// cuyo final tampoco llegó: a kickoff + 150 sigue `scheduled`, sin una sola
+// observación `live` ni `postponed`. Una línea en el bloque 6, al lado de la
+// de SPEC-017 CA-3, informativa: no entra en el veredicto. Los ticks de su
+// prórroga son cobertura (a un tick cada EXTENSION_POLL_MINUTES), no «tras el
+// cierre» ni «fuera de la ventana».
+describe("SPEC-018 CA-6 sin directo y sin final", () => {
+  const SIN = "sin directo y sin final:";
+  const linea = (texto: string) =>
+    texto.split("\n").filter((l) => l.startsWith(SIN));
+  const K = 10;
+  const programadas = (matchId: string, n: number): ObsLike[] =>
+    Array.from({ length: n }, (_, i) =>
+      obs({
+        id: `${matchId}-s${i}`,
+        matchId,
+        observedAt: at(K - 10 + i),
+        status: "scheduled",
+        score: null,
+      }),
+    );
+  const sinCierre = partido({
+    kickoff: at(K),
+    status: "scheduled",
+    score: null,
+    decidedAt: at(K - 10),
+  });
+
+  it("SPEC-018 CA-6 (i) 320 scheduled, sin cierre: listado en una línea", () => {
+    const { texto, informe } = informeJornada(
+      vacio({ matches: [sinCierre], observations: programadas(MATCH, 320) }),
+    );
+    expect(informe.sinSenal.sinDirectoNiFinal).toEqual([
+      { matchId: MATCH, competicion: "Segunda División" },
+    ]);
+    expect(linea(texto)).toEqual([`${SIN} 1 — ${MATCH}`]);
+    // Va justo debajo de la de SPEC-017 CA-3.
+    const lineas = texto.split("\n");
+    expect(lineas[lineas.indexOf(`${SIN} 1 — ${MATCH}`) - 1]).toMatch(
+      /^sin ninguna observación en juego: /,
+    );
+    expect(informe.sinSenal.sinDirecto).toEqual([]);
+  });
+
+  it("SPEC-018 CA-6 (ii) con finished: no, va por SPEC-017 CA-3", () => {
+    const { texto, informe } = informeJornada(
+      vacio({
+        matches: [
+          partido({
+            kickoff: at(K),
+            decidedAt: at(K + 200),
+            forcedFinish: false,
+          }),
+        ],
+        observations: [
+          ...programadas(MATCH, 300),
+          obs({
+            id: "fin",
+            observedAt: at(K + 200),
+            status: "finished",
+            score: { home: 3, away: 1 },
+          }),
+        ],
+      }),
+    );
+    expect(informe.sinSenal.sinDirectoNiFinal).toEqual([]);
+    expect(linea(texto)).toEqual([`${SIN} 0`]);
+    expect(informe.sinSenal.sinDirecto).toHaveLength(1);
+  });
+
+  it("SPEC-018 CA-6 (iii) postponed: no", () => {
+    const postponed = informeJornada(
+      vacio({
+        matches: [
+          partido({ kickoff: at(K), status: "postponed", score: null }),
+        ],
+        observations: programadas(MATCH, 10),
+      }),
+    );
+    expect(postponed.informe.sinSenal.sinDirectoNiFinal).toEqual([]);
+    // Ni uno que sigue scheduled pero alguna fuente dio postponed o live.
+    for (const status of ["postponed", "live"] as const) {
+      const { informe } = informeJornada(
+        vacio({
+          matches: [sinCierre],
+          observations: [
+            ...programadas(MATCH, 10),
+            obs({ id: "x", observedAt: at(K + 20), status, score: null }),
+          ],
+        }),
+      );
+      expect(informe.sinSenal.sinDirectoNiFinal).toEqual([]);
+    }
+  });
+
+  it("SPEC-018 CA-6 un kickoff + 150 fuera de la ventana del informe no cuenta", () => {
+    const { informe } = informeJornada(
+      vacio({
+        matches: [sinCierre],
+        observations: programadas(MATCH, 10),
+        hasta: at(K + 149),
+      }),
+    );
+    expect(informe.sinSenal.sinDirectoNiFinal).toEqual([]);
+  });
+
+  // Un tick cada 30 s de kickoff − 10 a +150 y uno cada 5 min de +150 al
+  // final que llega a +200 (o a +360 si no llega).
+  const ticks = (hasta: number) => {
+    const out: InformeAttemptLike[] = [];
+    const push = (ms: number) =>
+      out.push({
+        startedAt: new Date(ms).toISOString() as Instant,
+        sourceId: "api-football",
+        ok: true,
+        error: null,
+        requests: 1,
+      });
+    for (
+      let ms = Date.parse(at(K - 10));
+      ms < Date.parse(at(K + 150));
+      ms += 30 * SEC
+    )
+      push(ms);
+    for (
+      let ms = Date.parse(at(K + 150));
+      ms < Date.parse(at(K + hasta));
+      ms += 5 * MINUTE_MS
+    )
+      push(ms);
+    return out;
+  };
+  const tras = (texto: string) =>
+    texto
+      .split("\n")
+      .find((l) => l.startsWith("intentos dentro de la ventana de ADR-002 §2"));
+  const fuera = (texto: string) =>
+    texto
+      .split("\n")
+      .find((l) =>
+        l.startsWith("intentos fuera de la ventana de todo partido"),
+      );
+
+  it("SPEC-018 CA-6 los ticks de la prórroga son cobertura: final a +200", () => {
+    const { texto, informe } = informeJornada(
+      vacio({
+        matches: [
+          partido({
+            kickoff: at(K),
+            decidedAt: at(K + 200),
+            forcedFinish: false,
+          }),
+        ],
+        observations: programadas(MATCH, 10),
+        decisions: [
+          dec({ status: "scheduled", score: null, decidedAt: at(K - 10) }),
+          dec({
+            id: "d2",
+            version: 2,
+            status: "finished",
+            score: { home: 3, away: 1 },
+            decidedAt: at(K + 200),
+          }),
+        ],
+        attempts: ticks(200),
+      }),
+    );
+    expect(informe.cobertura.ticksEsperados).toBe(160 * 2 + 50 / 5);
+    expect(informe.cobertura.ticksReales).toBe(160 * 2 + 50 / 5);
+    expect(informe.cobertura.porcentaje).toBe(1);
+    expect(tras(texto)).toMatch(/: 0$/);
+    expect(fuera(texto)).toMatch(/: 0 /);
+  });
+
+  it("SPEC-018 CA-6 los ticks de la prórroga son cobertura: sin final, hasta +360", () => {
+    const { texto, informe } = informeJornada(
+      vacio({
+        matches: [sinCierre],
+        observations: programadas(MATCH, 10),
+        decisions: [
+          dec({ status: "scheduled", score: null, decidedAt: at(K - 10) }),
+        ],
+        attempts: ticks(360),
+      }),
+    );
+    expect(informe.cobertura.ticksEsperados).toBe(160 * 2 + 210 / 5);
+    expect(informe.cobertura.porcentaje).toBe(1);
+    expect(tras(texto)).toMatch(/: 0$/);
+    expect(fuera(texto)).toMatch(/: 0 /);
+  });
+
+  it("SPEC-018 CA-6 un partido live a +150 no tiene prórroga", () => {
+    const { informe } = informeJornada(
+      vacio({
+        matches: [
+          partido({
+            kickoff: at(K),
+            decidedAt: at(K + 200),
+            forcedFinish: false,
+          }),
+        ],
+        observations: [obs({ observedAt: at(K) })],
+        decisions: [dec({ decidedAt: at(K) })],
+        attempts: ticks(150),
+      }),
+    );
+    expect(informe.cobertura.ticksEsperados).toBe(160 * 2);
+  });
+
+  it("SPEC-018 CA-6 la línea de cobertura dice la prórroga sin crecer", () => {
+    const { texto } = informeJornada(vacio({ matches: [sinCierre] }));
+    const lineas = texto.split("\n");
+    const i = lineas.findIndex((l) =>
+      l.startsWith("  cobertura sobre la ventana efectiva de cada partido"),
+    );
+    expect(lineas[i + 1]).toContain(
+      "si sigue scheduled, prórroga hasta kickoff + 360 min a un tick cada 5 min.",
+    );
+    expect(lineas[i + 2]).toMatch(/^intentos dentro de la ventana/);
+  });
+
+  it("SPEC-018 CA-6 (iv) el veredicto es idéntico con y sin él", () => {
+    const contraste = [
+      {
+        matchId: MATCH,
+        proveedor: { status: "scheduled" as const, score: null },
+      },
+    ];
+    const attempts = ticks(150);
+    const con = informeJornada(
+      vacio({
+        matches: [sinCierre],
+        observations: programadas(MATCH, 200),
+        attempts,
+        contraste,
+      }),
+    );
+    const sin = informeJornada(
+      vacio({
+        matches: [sinCierre],
+        observations: [
+          ...programadas(MATCH, 199),
+          obs({ id: "vivo", observedAt: at(K + 20) }),
+        ],
+        attempts,
+        contraste,
+      }),
+    );
+    expect(con.informe.sinSenal.sinDirectoNiFinal).toHaveLength(1);
+    expect(sin.informe.sinSenal.sinDirectoNiFinal).toHaveLength(0);
+    expect(con.informe.veredicto).toEqual(sin.informe.veredicto);
+  });
+});

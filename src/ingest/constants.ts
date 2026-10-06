@@ -115,7 +115,8 @@ export const INFORME_FILAS_MOSTRADAS = 5;
 // kind y las horas sin ejecuciones en una línea cada uno y la prosa de los
 // cubos del bloque 8 en una, ese techo mide **141** («con todos los ejes
 // acotados saturados a la vez»), y **142** desde que N-10 obliga al bloque 3
-// a imprimir su advertencia fija. Para llegar ahí hicieron
+// a imprimir su advertencia fija (144 con las tres líneas de SPEC-017 y 145,
+// el tope justo, con la de SPEC-018 CA-6). Para llegar ahí hicieron
 // falta tres recortes de verdad, no uno: `INFORME_FILAS_MOSTRADAS` de diez a
 // cinco, la prosa que se repetía (el desglose por competición del bloque 1 ya
 // estaba en la primera línea del informe; el «(ninguno)» debajo de una cuenta

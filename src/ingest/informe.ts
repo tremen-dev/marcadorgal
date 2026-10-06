@@ -11,6 +11,8 @@ import {
   type Score,
 } from "../model/index.ts";
 import {
+  EXTENSION_AFTER_MINUTES,
+  EXTENSION_POLL_MINUTES,
   INFORME_COVERAGE_RESERVED,
   INFORME_COVERAGE_VALID,
   INFORME_FILAS_MOSTRADAS,
@@ -235,6 +237,10 @@ export type Informe = {
     // SPEC-017 CA-3: finished, observed in the window and never once `live`:
     // the source never showed it in play. Informative, not in the verdict.
     sinDirecto: readonly { matchId: string; competicion: string }[];
+    // SPEC-018 CA-6: kickoff + 150 inside the report, still `scheduled`, and
+    // never once `live` nor `postponed`: no live and no final either (ADR-013
+    // §4). Informative, not in the verdict.
+    sinDirectoNiFinal: readonly { matchId: string; competicion: string }[];
   };
   alertas: {
     porKind: readonly { kind: string; count: number }[];
@@ -646,6 +652,56 @@ function ventanaEfectiva(m: InformeMatch): Span {
   };
 }
 
+// SPEC-018 CA-6 (ADR-013 §1): the extension of the window of a match whose
+// Decision at kickoff + 150 was still `scheduled` (or there was none, which the
+// board reads as scheduled). It runs until the first Decision that is not
+// `scheduled` or until kickoff + EXTENSION_AFTER_MINUTES, the same rule as
+// isInWindow. The status at +150 comes from the decisions of the report; when
+// none is that early, from the current one if it was decided by then. null:
+// the match had no extension.
+function prorroga(
+  m: InformeMatch,
+  decisiones: readonly InformeDecision[],
+): Span | null {
+  const k = Date.parse(m.kickoff);
+  const desde = k + WINDOW_AFTER_MINUTES * MINUTE_MS;
+  const limite = k + EXTENSION_AFTER_MINUTES * MINUTE_MS;
+  const ordenadas = decisiones.toSorted((a, b) => a.version - b.version);
+  const antes = ordenadas.filter((d) => Date.parse(d.decidedAt) <= desde);
+  const decidida = m.decidedAt === null ? null : Date.parse(m.decidedAt);
+  const estadoEnElBorde: MatchStatus =
+    antes.length > 0
+      ? (antes.at(-1)?.status ?? "scheduled")
+      : decidida !== null && decidida <= desde
+        ? m.status
+        : "scheduled";
+  if (estadoEnElBorde !== "scheduled") return null;
+  const salida =
+    ordenadas.find(
+      (d) => Date.parse(d.decidedAt) > desde && d.status !== "scheduled",
+    )?.decidedAt ??
+    (m.status !== "scheduled" && decidida !== null && decidida > desde
+      ? m.decidedAt
+      : null);
+  const hasta = salida === null ? limite : Math.min(Date.parse(salida), limite);
+  return hasta > desde ? { from: desde, to: hasta } : null;
+}
+
+// What of `spans` is not inside `fuera` (both merged and ordered).
+function restar(spans: readonly Span[], fuera: readonly Span[]): Span[] {
+  const out: Span[] = [];
+  for (const span of spans) {
+    let from = span.from;
+    for (const f of fuera) {
+      if (f.to <= from || f.from >= span.to) continue;
+      if (f.from > from) out.push({ from, to: f.from });
+      from = Math.max(from, f.to);
+    }
+    if (from < span.to) out.push({ from, to: span.to });
+  }
+  return out;
+}
+
 // Merged and ordered: one tick serves every match in window at that instant,
 // so what is expected of it is the union of the spans and never their sum.
 function union(spans: readonly Span[]): Span[] {
@@ -839,19 +895,37 @@ export function informeJornada(input: InformeInput): {
 
   // Numerator and denominator over the same span (V-1): the effective windows
   // of the matches, clipped to the measured window.
-  const medidas = union(input.matches.map(ventanaEfectiva))
-    .map((s) => ({
-      from: Math.max(s.from, Date.parse(input.desde)),
-      to: Math.min(s.to, Date.parse(input.hasta)),
-    }))
-    .filter((s) => s.to > s.from);
+  const recortar = (spans: readonly Span[]) =>
+    spans
+      .map((s) => ({
+        from: Math.max(s.from, Date.parse(input.desde)),
+        to: Math.min(s.to, Date.parse(input.hasta)),
+      }))
+      .filter((s) => s.to > s.from);
+  const medidas = recortar(union(input.matches.map(ventanaEfectiva)));
+  // SPEC-018 CA-6: the extension of ADR-013 is coverage too, expected at one
+  // tick every EXTENSION_POLL_MINUTES and only where no regular window of
+  // another match already expects one every INFORME_TICK_SECONDS.
+  const decisionesDe = new Map<string, InformeDecision[]>();
+  for (const d of input.decisions) {
+    const list = decisionesDe.get(d.matchId);
+    if (list === undefined) decisionesDe.set(d.matchId, [d]);
+    else list.push(d);
+  }
+  const prorrogas = input.matches
+    .map((m) => prorroga(m, decisionesDe.get(m.id) ?? []))
+    .filter((s): s is Span => s !== null);
+  const soloProrroga = recortar(restar(union(prorrogas), medidas));
+  const cubiertas = union([...medidas, ...soloProrroga]);
+  const duracion = (spans: readonly Span[]) =>
+    spans.reduce((total, s) => total + (s.to - s.from), 0);
   const esperados = Math.round(
-    medidas.reduce((total, s) => total + (s.to - s.from), 0) /
-      (INFORME_TICK_SECONDS * 1000),
+    duracion(medidas) / (INFORME_TICK_SECONDS * 1000) +
+      duracion(soloProrroga) / (EXTENSION_POLL_MINUTES * MINUTE_MS),
   );
   const ticksReales = new Set(
     input.attempts
-      .filter((a) => dentroDe(medidas, a.startedAt))
+      .filter((a) => dentroDe(cubiertas, a.startedAt))
       .map((a) => a.startedAt),
   ).size;
   const cobertura = esperados === 0 ? null : ticksReales / esperados;
@@ -860,13 +934,15 @@ export function informeJornada(input: InformeInput): {
   // window at that instant: outside it there must not be a single row (CA-7).
   const enVentanaDePartido = (instant: Instant): boolean => {
     const ms = Date.parse(instant);
-    return input.matches.some((m) => {
-      const k = Date.parse(m.kickoff);
-      return (
-        ms >= k - WINDOW_BEFORE_MINUTES * MINUTE_MS &&
-        ms < k + WINDOW_AFTER_MINUTES * MINUTE_MS
-      );
-    });
+    return (
+      input.matches.some((m) => {
+        const k = Date.parse(m.kickoff);
+        return (
+          ms >= k - WINDOW_BEFORE_MINUTES * MINUTE_MS &&
+          ms < k + WINDOW_AFTER_MINUTES * MINUTE_MS
+        );
+      }) || dentroDe(prorrogas, instant)
+    );
   };
   const fueraDeVentana = input.attempts.filter(
     (a) => !enVentanaDePartido(a.startedAt),
@@ -875,7 +951,7 @@ export function informeJornada(input: InformeInput): {
   // legitimate (the tick had not learnt the close yet) and they do not count as
   // coverage, so they are said out loud instead of inflating the ratio.
   const trasElCierre = input.attempts.filter(
-    (a) => enVentanaDePartido(a.startedAt) && !dentroDe(medidas, a.startedAt),
+    (a) => enVentanaDePartido(a.startedAt) && !dentroDe(cubiertas, a.startedAt),
   );
   const fallidos = input.attempts.filter((a) => a.ok === false);
 
@@ -890,7 +966,7 @@ export function informeJornada(input: InformeInput): {
     ) {
       const h = new Date(ms).toISOString() as Instant;
       if (
-        dentroDe(medidas, h) &&
+        dentroDe(cubiertas, h) &&
         Date.parse(h) >= Date.parse(input.desde) &&
         !con.has(h)
       )
@@ -941,7 +1017,8 @@ export function informeJornada(input: InformeInput): {
   push(
     `ticks: ${ticksReales} de ${esperados} esperados (${cobertura === null ? "n/a" : porcentaje(cobertura)})   ← cobertura de CA-9`,
     `  cobertura sobre la ventana efectiva de cada partido: de kickoff − ${WINDOW_BEFORE_MINUTES} min al cierre de`,
-    `  su Decision finished; si es la forzada (RN-02, kickoff + ${FORCED_FINISH_MINUTES} min), a kickoff + ${WINDOW_AFTER_MINUTES} min.`,
+    // SPEC-018 CA-6: la prórroga de ADR-013 cabe en la misma línea.
+    `  su Decision finished; si es la forzada (RN-02, kickoff + ${FORCED_FINISH_MINUTES} min), a kickoff + ${WINDOW_AFTER_MINUTES} min; si sigue scheduled, prórroga hasta kickoff + ${EXTENSION_AFTER_MINUTES} min a un tick cada ${EXTENSION_POLL_MINUTES} min.`,
     `intentos dentro de la ventana de ADR-002 §2 pero tras el cierre de todo partido: ${trasElCierre.length}`,
     // Una hora es un instante corto: la muestra va en la misma línea que su
     // cuenta, y la lista cuesta una línea y no seis (V-8).
@@ -1108,6 +1185,24 @@ export function informeJornada(input: InformeInput): {
         !conDirecto.has(m.id),
     )
     .map((m) => ({ matchId: m.id, competicion: m.competitionName }));
+  // SPEC-018 CA-6 (ADR-013 §4): its kickoff + 150 falls in the report, it is
+  // still `scheduled`, and no source ever gave it `live` nor `postponed`.
+  const conLiveOAplazado = new Set(
+    input.observations
+      .filter((o) => o.status === "live" || o.status === "postponed")
+      .map((o) => o.matchId),
+  );
+  const sinDirectoNiFinal = input.matches
+    .filter((m) => {
+      const borde = Date.parse(m.kickoff) + WINDOW_AFTER_MINUTES * MINUTE_MS;
+      return (
+        m.status === "scheduled" &&
+        borde >= Date.parse(input.desde) &&
+        borde <= Date.parse(input.hasta) &&
+        !conLiveOAplazado.has(m.id)
+      );
+    })
+    .map((m) => ({ matchId: m.id, competicion: m.competitionName }));
   push(
     "",
     BLOQUES[5],
@@ -1134,6 +1229,9 @@ export function informeJornada(input: InformeInput): {
       ),
       `sin ninguna observación en juego: ${sinDirecto.length}${enLinea(
         sinDirecto.map((m) => m.matchId),
+      )}`,
+      `sin directo y sin final: ${sinDirectoNiFinal.length}${enLinea(
+        sinDirectoNiFinal.map((m) => m.matchId),
       )}`,
     );
 
@@ -1421,7 +1519,12 @@ export function informeJornada(input: InformeInput): {
       picoPorMinuto:
         pico === null ? null : { minuto: pico.dia, total: pico.total },
     },
-    sinSenal: { sinObservaciones, conHuecoLargo, sinDirecto },
+    sinSenal: {
+      sinObservaciones,
+      conHuecoLargo,
+      sinDirecto,
+      sinDirectoNiFinal,
+    },
     alertas: { porKind, filas: abiertas, inesperadas },
     contraste,
     veredicto,
