@@ -1,16 +1,20 @@
 import { describe, expect, it, vi } from "vitest";
 import {
+  AliasFile,
   type CompetitionId,
   type FetchContext,
   type Instant,
+  MINUTE_MS,
   ParseResult,
   type RawCapture,
   type SourceAdapter,
   SourceConfig,
   SourceId,
+  shiftInstant,
   type WindowMatch,
 } from "@/model";
 import { createMemoryRawStore } from "../raw/memory.ts";
+import { createApiFootballResults } from "../sources/api-football/results.ts";
 import type { WindowRow } from "./db.ts";
 import { createMemoryIngestDb } from "./memory.ts";
 import { runTick } from "./tick.ts";
@@ -821,5 +825,178 @@ describe("SPEC-011 CA-5 a partial attempt", () => {
     const details = db.attempts[0].close?.details as { requestErrors?: number };
     expect(details.requestErrors ?? 0).toBe(0);
     expect(db.attempts[0].close?.ok).toBe(true);
+  });
+});
+
+// SPEC-018 CA-3 (ADR-013 §1): a match in the extension of the window is asked
+// for only by ids=, at most every 5 minutes, and never adds its competition to
+// live=. Proved with the real API-Football adapter over a fetch double.
+describe("SPEC-018 CA-3 the extension only asks by ids=", () => {
+  const API = config("api-football", [
+    "primera-rfef-g1",
+    "segunda-rfef-g1",
+    "tercera-rfef-g1",
+  ]);
+  const LATE = shiftInstant(NOW, -200 * MINUTE_MS);
+  const ALIASES: AliasFile = AliasFile.parse({
+    source: "api-football",
+    season: "2026-27",
+    teams: [],
+    matches: {
+      "101": "segunda-rfef-g1-2026-27-j5-a-b",
+      "102": "segunda-rfef-g1-2026-27-j5-c-d",
+      "103": "tercera-rfef-g1-2026-27-j5-e-f",
+      "201": "primera-rfef-g1-2026-27-j5-g-h",
+      "202": "tercera-rfef-g1-2026-27-j5-i-j",
+    },
+  });
+
+  const row = (
+    id: string,
+    competitionId: string,
+    kickoff: Instant,
+    status: WindowRow["status"],
+    lastObservationAt: Instant | null,
+  ): WindowRow =>
+    ({
+      id,
+      competitionId,
+      season: "2026-27",
+      kickoff,
+      homeTeamId: "a",
+      awayTeamId: "b",
+      status,
+      forcedFinish: null,
+      lastObservationAt,
+    }) as WindowRow;
+
+  const fetchDouble = () => {
+    const urls: string[] = [];
+    const fetch = (async (url: string) => {
+      urls.push(String(url));
+      return new Response('{"errors":[],"response":[]}', {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      });
+    }) as unknown as typeof globalThis.fetch;
+    return { urls, fetch };
+  };
+
+  const run = async (matches: WindowRow[]) => {
+    const { db, store } = harness();
+    db.matches = matches;
+    const { urls, fetch } = fetchDouble();
+    const adapterFor = vi.fn(() =>
+      createApiFootballResults({ aliases: ALIASES, apiKey: "test-key" }),
+    );
+    const sweep = vi.fn(async (_m: WindowRow[]) => ({
+      matches: 0,
+      decisions: 0,
+      alerts: 0,
+      resolved: 0,
+    }));
+    const summary = await runTick({
+      db,
+      store,
+      sources: [API],
+      adapterFor,
+      fetch,
+      now: NOW,
+      sweep,
+    });
+    return { db, urls, adapterFor, sweep, summary };
+  };
+
+  it("three extension matches that are due go in one ids= and no live=", async () => {
+    const { urls, db } = await run([
+      row(
+        "segunda-rfef-g1-2026-27-j5-a-b",
+        "segunda-rfef-g1",
+        LATE,
+        "scheduled",
+        null,
+      ),
+      row(
+        "segunda-rfef-g1-2026-27-j5-c-d",
+        "segunda-rfef-g1",
+        LATE,
+        "scheduled",
+        shiftInstant(NOW, -5 * MINUTE_MS),
+      ),
+      row(
+        "tercera-rfef-g1-2026-27-j5-e-f",
+        "tercera-rfef-g1",
+        LATE,
+        "scheduled",
+        shiftInstant(NOW, -30 * MINUTE_MS),
+      ),
+    ]);
+    expect(urls).toEqual([
+      "https://v3.football.api-sports.io/fixtures?ids=101-102-103",
+    ]);
+    expect(db.attempts).toHaveLength(1);
+  });
+
+  it("with only extension matches and none due there is no attempt and no request", async () => {
+    const recent = shiftInstant(NOW, -2 * MINUTE_MS);
+    const { urls, db, adapterFor, sweep, summary } = await run([
+      row(
+        "segunda-rfef-g1-2026-27-j5-a-b",
+        "segunda-rfef-g1",
+        LATE,
+        "scheduled",
+        recent,
+      ),
+      row(
+        "tercera-rfef-g1-2026-27-j5-e-f",
+        "tercera-rfef-g1",
+        LATE,
+        "scheduled",
+        recent,
+      ),
+    ]);
+    expect(urls).toEqual([]);
+    expect(db.attempts).toEqual([]);
+    expect(adapterFor).not.toHaveBeenCalled();
+    expect(summary.attempts).toEqual([]);
+    // The engine still sweeps every match in window: RN-05 reads absence.
+    expect(sweep.mock.calls[0]?.[0]).toHaveLength(2);
+  });
+
+  it("an extension match does not add its competition to live=, and one not due is not asked for", async () => {
+    const { urls } = await run([
+      row(
+        "primera-rfef-g1-2026-27-j5-g-h",
+        "primera-rfef-g1",
+        NOW,
+        "live",
+        NOW,
+      ),
+      row(
+        "tercera-rfef-g1-2026-27-j5-i-j",
+        "tercera-rfef-g1",
+        NOW,
+        "live",
+        NOW,
+      ),
+      row(
+        "segunda-rfef-g1-2026-27-j5-a-b",
+        "segunda-rfef-g1",
+        LATE,
+        "scheduled",
+        shiftInstant(NOW, -6 * MINUTE_MS),
+      ),
+      row(
+        "segunda-rfef-g1-2026-27-j5-c-d",
+        "segunda-rfef-g1",
+        LATE,
+        "scheduled",
+        shiftInstant(NOW, -1 * MINUTE_MS),
+      ),
+    ]);
+    expect(urls).toEqual([
+      "https://v3.football.api-sports.io/fixtures?live=435-439",
+      "https://v3.football.api-sports.io/fixtures?ids=101-201-202",
+    ]);
   });
 });

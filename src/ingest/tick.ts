@@ -10,6 +10,7 @@ import type { RawStore } from "../raw/store.ts";
 import type { IngestDb, IngestTx, WindowRow } from "./db.ts";
 import type { EngineCounts } from "./engine.ts";
 import { errorMessage, type PurgeOutcome, purgeRaw } from "./purge.ts";
+import { isDueForPoll, isInExtension } from "./window.ts";
 
 export type AttemptSummary = {
   sourceId: string;
@@ -116,8 +117,19 @@ export async function runTick(input: TickInput): Promise<TickSummary> {
   };
   if (matches.length === 0) return summary;
 
+  // The extension of the window is asked for at its own pace (ADR-013 §1,
+  // SPEC-018 CA-3): a match there that is not due is left out of every
+  // attempt, and a tick with nothing due asks nobody. The sweep still sees
+  // every match in window, because RN-05 is born of absence.
+  const polled = matches.filter((m) =>
+    isDueForPoll(
+      { kickoff: m.kickoff, lastObservationAt: m.lastObservationAt ?? null },
+      now,
+    ),
+  );
+
   const bySeason = new Map<string, WindowRow[]>();
-  for (const match of matches) {
+  for (const match of polled) {
     const list = bySeason.get(match.season);
     if (list === undefined) bySeason.set(match.season, [match]);
     else list.push(match);
@@ -182,7 +194,11 @@ async function runAttempt(
     if (pull === undefined)
       throw new Error(`pull source ${config.id} has no fetch`);
 
-    const present = new Set(own.map((m) => m.competitionId));
+    // A match in the extension never adds its competition to live=: the
+    // source does not give it live, and ids= is what brings it (CA-3).
+    const present = new Set(
+      own.filter((m) => !isInExtension(m, now)).map((m) => m.competitionId),
+    );
     const capture = await pull.call(adapter, {
       now,
       competitions: config.competitions.filter((c) => present.has(c)),
