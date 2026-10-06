@@ -76,9 +76,10 @@ describe("SPEC-016 CA-1 RN-02 says what ADR-012 §1 fixes", () => {
     expect(read("docs/fundacion/reglas.md")).not.toMatch(/RN-02[^\n]*derogad/i);
   });
 
-  it("leaves the order of RN-06 untouched", () => {
+  // SPEC-014 CA-1: ADR-012 did not touch RN-06; ADR-011 H-3 later added RN-12.
+  it("keeps RN-02 in the order of RN-06 (ADR-011 H-3)", () => {
     expect(words(read("docs/fundacion/reglas.md"))).toContain(
-      "Orden de decisión: operador > RN-03 > RN-05 > RN-02 > RN-01.",
+      "Orden de decisión: operador > RN-03 > RN-05 > RN-02 > RN-12 > RN-01.",
     );
   });
 });
