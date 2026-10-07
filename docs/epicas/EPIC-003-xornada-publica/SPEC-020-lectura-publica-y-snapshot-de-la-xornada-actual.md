@@ -11,6 +11,8 @@ historial:
   - {estado: en-revision, fecha: 2026-10-07, por: sdd-implementador}
   - {estado: en-progreso, fecha: 2026-10-07, por: sdd-verificador}
   - {estado: en-revision, fecha: 2026-10-07, por: sdd-implementador}
+  - {estado: en-progreso, fecha: 2026-10-07, por: sdd-implementador}
+  - {estado: en-revision, fecha: 2026-10-07, por: sdd-implementador}
 ---
 # SPEC-020 — Lectura pública y snapshot de la xornada actual
 
