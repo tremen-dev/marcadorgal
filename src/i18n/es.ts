@@ -23,6 +23,7 @@ export const es: Dictionary = {
     title: "Jornada",
     liveCount: "{n} en juego",
     locale: "Idioma",
+    unavailable: "Los resultados no están disponibles en este momento.",
   },
   locales: { gl: "gl", es: "es" },
 };

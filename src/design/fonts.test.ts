@@ -61,7 +61,7 @@ describe("CA-7 fonts and digits", () => {
     const files = globSync("src/**/*.css").map((f) =>
       relative(process.cwd(), f),
     );
-    expect(files).toContain("src/components/WaitingPage.module.css");
+    expect(files).toContain("src/components/xornada/Xornada.module.css");
     const offenders = files.flatMap((file) =>
       readFileSync(file, "utf8")
         .split("\n")

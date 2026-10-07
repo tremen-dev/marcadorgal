@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 import "../../globals.css";
-import { waitingMetadata } from "../../metadata";
+import { siteMetadata } from "../../metadata";
 
-export const metadata = waitingMetadata("es");
+export const metadata = siteMetadata("es");
 
 export default function EsLayout({ children }: { children: ReactNode }) {
   return (

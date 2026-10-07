@@ -1,7 +1,8 @@
 import "server-only";
 import postgres, { type Sql, type TransactionSql } from "postgres";
 import { sqlOptionsFor } from "../db/connect.ts";
-import type { PublicMatch } from "../model/index.ts";
+import type { Instant, PublicMatch } from "../model/index.ts";
+import { readCurrentXornada } from "./current.ts";
 import {
   toPublicMatches,
   type XornadaDbRow,
@@ -69,4 +70,13 @@ export function publicXornadaReader(): XornadaReader | null {
     connect_timeout: 5,
   });
   return createXornadaReader(pool);
+}
+
+// The current xornada for the page and /api/board (CA-6, CA-7): null when
+// there is no reader; a failed read throws and the caller decides.
+export async function readPublicXornada(
+  now: Instant,
+): Promise<PublicMatch[] | null> {
+  const reader = publicXornadaReader();
+  return reader === null ? null : readCurrentXornada(reader, now);
 }

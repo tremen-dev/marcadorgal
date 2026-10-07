@@ -38,8 +38,48 @@ describe("SPEC-020 CA-4 the public reader", () => {
       .map(rel)
       .filter((f) => !/\.test\.tsx?$/.test(f));
     const readers = files.filter((f) =>
-      read(f).includes("DATABASE_URL_PUBLIC"),
+      /env(\.DATABASE_URL_PUBLIC|\[["'`]DATABASE_URL_PUBLIC)/.test(read(f)),
     );
     expect(readers).toEqual([READER]);
+  });
+});
+
+// /, /es and /api/board read data only through the public reader: never the
+// db client of the tick, postgres or the demonstration data.
+const PUBLIC_ROUTES = [
+  "src/app/(gl)/page.tsx",
+  "src/app/(es)/es/page.tsx",
+  "src/app/xornada-home.tsx",
+  "src/app/api/board/route.ts",
+];
+
+const importsOf = (src: string): string[] =>
+  [...src.matchAll(/^\s*import\s[^;]*?from\s+"([^"]+)"/gm)].map((m) => m[1]);
+
+describe("SPEC-020 CA-4 /, /es and /api/board only import the reader", () => {
+  it.each(PUBLIC_ROUTES)("%s", (file) => {
+    const imports = importsOf(read(file));
+    expect(imports.length).toBeGreaterThan(0);
+    for (const specifier of imports) {
+      expect(specifier, file).not.toMatch(
+        /^(postgres|@\/db\/|\.\.?\/.*db\/|@\/xornada\/demo|@\/board\/(row|current))/,
+      );
+    }
+  });
+
+  it("the data reaches them from @/board/reader", () => {
+    expect(importsOf(read("src/app/xornada-home.tsx"))).toContain(
+      "@/board/reader",
+    );
+    expect(importsOf(read("src/app/api/board/route.ts"))).toContain(
+      "@/board/reader",
+    );
+    // The pages only compose the shared home.
+    expect(importsOf(read("src/app/(gl)/page.tsx"))).toEqual([
+      "../xornada-home",
+    ]);
+    expect(importsOf(read("src/app/(es)/es/page.tsx"))).toEqual([
+      "../../xornada-home",
+    ]);
   });
 });

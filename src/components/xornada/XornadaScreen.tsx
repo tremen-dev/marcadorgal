@@ -8,9 +8,17 @@ type Props = {
   competitions: XornadaCompetition[];
   // The same screen in each language, for the gl·es selector.
   paths: Readonly<Record<Locale, string>>;
+  // SPEC-020 CA-6: the data could not be read. Said in words, never shown as
+  // an empty xornada (D-9).
+  unavailable?: boolean;
 };
 
-export function XornadaScreen({ locale, competitions, paths }: Props) {
+export function XornadaScreen({
+  locale,
+  competitions,
+  paths,
+  unavailable = false,
+}: Props) {
   return (
     <div className={styles.page}>
       <header className={styles.bar}>
@@ -47,6 +55,11 @@ export function XornadaScreen({ locale, competitions, paths }: Props) {
       </header>
       <main>
         <h1 className={styles.srOnly}>{t(locale, "xornada.title")}</h1>
+        {unavailable && (
+          <p className={styles.unavailable} data-testid="xornada-unavailable">
+            {t(locale, "xornada.unavailable")}
+          </p>
+        )}
         {competitions.map((competition) => (
           <CompetitionSection
             key={competition.competitionId}

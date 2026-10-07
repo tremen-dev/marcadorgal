@@ -24,6 +24,7 @@ export const gl = {
     title: "Xornada",
     liveCount: "{n} en xogo",
     locale: "Lingua",
+    unavailable: "Os resultados non están dispoñibles agora mesmo.",
   },
   locales: { gl: "gl", es: "es" },
 } as const satisfies {
