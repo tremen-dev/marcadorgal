@@ -44,10 +44,10 @@ SPEC-019 (`PublicMatch`, `buildXornada`, F-SPEC-019-3), SPEC-004 (`currentRound`
 - Supabase Pro y renombrar a `prod`: spec de la jornada publicada.
 
 ## Notas para el gate humano
-- **H-1 Criterio de xornada actual.** Recomendación: `currentRound` por competición (CA-5), ya probado en `calendario:xornada`. Efecto: hacia el miércoles por la tarde la pantalla pasa de resultados a la siguiente ronda. Alternativa: ventana fija viernes-lunes.
-- **H-2 `live` de otra ronda.** Recomendación: sí se muestran (un partido aplazado que se juega entre semana no puede faltar mientras está en xogo).
-- **H-3 Publicar al mergear.** Recomendación: `/` muestra datos reales en producción ya en Free (sin Realtime la carga la acota la caché), con `noindex` hasta la spec de jornada publicada.
+- **H-1 Criterio de xornada actual (decidido, Alberto Fojo, 2026-10-07):** `currentRound` por competición (CA-5), ya probado en `calendario:xornada`, como recomendó el arquitecto. Efecto: hacia el miércoles por la tarde la pantalla pasa de resultados a la siguiente ronda. Se descartó la ventana fija viernes-lunes.
+- **H-2 `live` de otra ronda (decidido, Alberto Fojo, 2026-10-07):** sí se muestran (un partido aplazado que se juega entre semana no puede faltar mientras está en xogo).
+- **H-3 Publicar al mergear (decidido, Alberto Fojo, 2026-10-07):** sí: `/` muestra datos reales en producción ya en Free (sin Realtime la carga la acota la caché), con `noindex` hasta la spec de jornada publicada.
 - **N-1 Orden de despliegue.** Nada en `src/` ni `tools/` usa la clave `anon` ni PostgREST hoy (grep: solo tests), así que retirar `public_read` no rompe `main`. Antes del merge: `npm run db:push` (CA-2), `npm run db:web-reader`, variable en Vercel (CA-3). Si falta la variable, `/` dice «no dispoñible», no se rompe.
 - **N-2** `season` en la vista no está en la lista de §3: no es sensible (el canal `board:<season>` ya la publica) y evita leer temporadas pasadas.
-- **N-3 Precisión de ADR-014 §6.** «ETag por máxima `version`» no detecta cambios: `version` es por partido, y una Decision nueva en un partido con menos versiones no mueve el máximo. La spec usa el hash del cuerpo; la decisión (ETag y caché) no cambia.
+- **N-3 Precisión de ADR-014 §6.** «ETag por máxima `version`» no detecta cambios: `version` es por partido, y una Decision nueva en un partido con menos versiones no mueve el máximo. La spec usa el hash del cuerpo; la decisión (ETag y caché) no cambia. Aceptado por el titular (Alberto Fojo, 2026-10-07) como precisión en esta spec, sin ADR nuevo.
 - **N-4** CI no ejecuta `test:db` ni `e2e:db` (no hay base en CI, como hoy): los corre el verificador en local.
