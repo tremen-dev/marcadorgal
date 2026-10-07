@@ -1,3 +1,4 @@
+import { nowInstant } from "@/clock";
 import { getSql } from "@/db/client";
 import { adapterFor } from "@/ingest/adapters";
 import { authorizeTick } from "@/ingest/auth";
@@ -19,8 +20,10 @@ export const maxDuration = 60;
 // is what guards it either way. A second route would need its own entry in
 // outputFileTracingIncludes, which is indexed by path, and would deploy
 // without the alias (ADR-008 §8).
+// The route reads the clock for authorizeTick (ADR-008 §7): the signed bearer
+// of pg_cron is valid for a minute around now (ADR-015 §2, SPEC-020 CA-9).
 export const POST = createTickHandler({
-  authorize: (header) => authorizeTick(header, process.env),
+  authorize: (header) => authorizeTick(header, process.env, nowInstant()),
   run: (now) => {
     const db = createIngestDb(getSql());
     return runTick({

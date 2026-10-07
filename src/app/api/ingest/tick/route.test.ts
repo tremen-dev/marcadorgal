@@ -42,3 +42,39 @@ describe("SPEC-008 CA-2 GET and POST on /api/ingest/tick", () => {
     expect(mod.maxDuration).toBe(60);
   });
 });
+
+// SPEC-020 CA-9 (ADR-015 §2): the route hands its own now to authorizeTick,
+// so the signature of pg_cron passes the guard only around the present.
+describe("SPEC-020 CA-9 the route checks the signed bearer against now", () => {
+  const TOKEN = "route-test-token-0123456789abcdef0123";
+  const bearer = async (epoch: number) => {
+    const { createHmac } = await import("node:crypto");
+    const sig = createHmac("sha256", TOKEN).update(`t1.${epoch}`).digest("hex");
+    return `Bearer t1.${epoch}.${sig}`;
+  };
+  const call = async (authorization: string) => {
+    vi.resetModules();
+    process.env = { INGEST_TICK_TOKEN: TOKEN } as unknown as NodeJS.ProcessEnv;
+    const { POST } = await import(MODULE);
+    return POST(
+      new Request("http://localhost/api/ingest/tick", {
+        method: "POST",
+        headers: { authorization },
+      }),
+    ) as Promise<Response>;
+  };
+
+  it("lets a signature of now through the guard", async () => {
+    // Past the guard the tick needs a database it does not have here: 500,
+    // never 401.
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    const res = await call(await bearer(Math.floor(Date.now() / 1000)));
+    expect(res.status).toBe(500);
+    error.mockRestore();
+  });
+
+  it("refuses a signature two minutes old", async () => {
+    const res = await call(await bearer(Math.floor(Date.now() / 1000) - 120));
+    expect(res.status).toBe(401);
+  });
+});
