@@ -1,0 +1,136 @@
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { PublicMatch } from "@/model";
+import { toPublicMatches, type XornadaDbRow } from "./row";
+
+// SPEC-020 CA-4: a web.xornada row as postgres.js returns it (timestamptz as
+// Date) becomes a PublicMatch with ISO instants ending in Z; a row that does
+// not validate is left out and named, never thrown.
+
+const base: XornadaDbRow = {
+  match_id: "celta-coruna-2026-10-10",
+  competition_id: "primera-division",
+  season: "2026-27",
+  competition_name: "Primeira División",
+  tier: 1,
+  round: 9,
+  kickoff: new Date("2026-10-10T16:00:00Z"),
+  home_name: "Real Club Celta de Vigo",
+  home_short_name: "Celta",
+  away_name: "Real Club Deportivo de La Coruña",
+  away_short_name: null,
+  status: "scheduled",
+  home_score: null,
+  away_score: null,
+  minute: null,
+  added_minute: null,
+  qualifier: "confirmado",
+  version: 0,
+  observed_at: null,
+  decided_at: null,
+};
+
+const decided = {
+  version: 3,
+  observed_at: new Date("2026-10-10T16:47:00Z"),
+  decided_at: new Date("2026-10-10T16:47:05Z"),
+};
+
+afterEach(() => vi.restoreAllMocks());
+
+describe("SPEC-020 CA-4 toPublicMatches", () => {
+  it("a match without Decision", () => {
+    expect(toPublicMatches([base])).toEqual([
+      {
+        matchId: "celta-coruna-2026-10-10",
+        competitionId: "primera-division",
+        competitionName: "Primeira División",
+        tier: 1,
+        round: 9,
+        kickoff: "2026-10-10T16:00:00.000Z",
+        home: { name: "Real Club Celta de Vigo", shortName: "Celta" },
+        away: { name: "Real Club Deportivo de La Coruña", shortName: null },
+        status: "scheduled",
+        score: null,
+        minute: null,
+        qualifier: "confirmado",
+        version: 0,
+        observedAt: null,
+        decidedAt: null,
+      },
+    ]);
+  });
+
+  it("live 45+3 keeps the added minute apart, instants in Z", () => {
+    const [m] = toPublicMatches([
+      {
+        ...base,
+        ...decided,
+        status: "live",
+        home_score: 2,
+        away_score: 1,
+        minute: 45,
+        added_minute: 3,
+      },
+    ]);
+    expect(m).toMatchObject({
+      status: "live",
+      score: { home: 2, away: 1 },
+      minute: 45,
+      addedMinute: 3,
+      version: 3,
+      observedAt: "2026-10-10T16:47:00.000Z",
+      decidedAt: "2026-10-10T16:47:05.000Z",
+    });
+  });
+
+  it.each([
+    ["finished", { status: "finished", home_score: 1, away_score: 1 }],
+    ["suspended", { status: "suspended", home_score: 0, away_score: 1 }],
+    [
+      "postponed provisional",
+      { status: "postponed", qualifier: "provisional" },
+    ],
+    ["scheduled sen_sinal", { status: "scheduled", qualifier: "sen_sinal" }],
+    [
+      "live sen_sinal without minute",
+      { status: "live", home_score: 0, away_score: 0, qualifier: "sen_sinal" },
+    ],
+  ])("%s passes PublicMatch", (_name, row) => {
+    const out = toPublicMatches([{ ...base, ...decided, ...row }]);
+    expect(out).toHaveLength(1);
+    expect(PublicMatch.safeParse(out[0]).success).toBe(true);
+    expect(out[0].kickoff).toMatch(/Z$/);
+  });
+
+  it.each([
+    ["an unknown status", { status: "halftime" }],
+    [
+      "sen_sinal on a finished match",
+      {
+        status: "finished",
+        home_score: 1,
+        away_score: 0,
+        qualifier: "sen_sinal",
+      },
+    ],
+    [
+      "added time outside live",
+      {
+        status: "finished",
+        home_score: 1,
+        away_score: 0,
+        added_minute: 2,
+      },
+    ],
+    ["half a score", { status: "live", home_score: 1, away_score: null }],
+    ["version 0 with a decision instant", { version: 0 }],
+  ])("leaves out %s and names its matchId, without throwing", (_name, row) => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    const good = { ...base, match_id: "ok-match" };
+    const bad = { ...base, ...decided, ...row, match_id: "bad-match" };
+    const out = toPublicMatches([bad as XornadaDbRow, good]);
+    expect(out.map((m) => m.matchId)).toEqual(["ok-match"]);
+    expect(error).toHaveBeenCalledTimes(1);
+    expect(String(error.mock.calls[0].join(" "))).toContain("bad-match");
+  });
+});
