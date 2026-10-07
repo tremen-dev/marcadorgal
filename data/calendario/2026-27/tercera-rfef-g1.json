@@ -382,7 +382,7 @@
     },
     {
       "round": 6,
-      "kickoff": "2026-10-11T16:00:00Z",
+      "kickoff": "2026-10-11T15:30:00Z",
       "home": "boiro",
       "away": "viveiro"
     },
@@ -400,13 +400,13 @@
     },
     {
       "round": 6,
-      "kickoff": "2026-10-11T16:00:00Z",
+      "kickoff": "2026-10-11T10:30:00Z",
       "home": "montaneros",
       "away": "celta-c"
     },
     {
       "round": 6,
-      "kickoff": "2026-10-11T14:00:00Z",
+      "kickoff": "2026-10-11T10:00:00Z",
       "home": "pontevedra-b",
       "away": "portonovo"
     },
@@ -418,7 +418,7 @@
     },
     {
       "round": 6,
-      "kickoff": "2026-10-11T16:00:00Z",
+      "kickoff": "2026-10-11T15:00:00Z",
       "home": "villalbes",
       "away": "estradense"
     },
