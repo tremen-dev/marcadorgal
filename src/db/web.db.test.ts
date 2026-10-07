@@ -79,6 +79,45 @@ const asRole = async (
   await tx.unsafe(`set local role ${role}`);
 };
 
+// What CA-2 grants web_reader.
+const GRANTED = ["schema web USAGE", "table web.xornada SELECT"];
+
+// ADR-015 §1: what PUBLIC has on net (pg_net 0.20.4, granted by
+// supabase_admin, which postgres cannot revoke). Accepted and closed: every
+// login role of Supabase carries it. Nothing else may be added here without
+// going back to ADR-015.
+const NET_TABLE_PRIVILEGES = [
+  "SELECT",
+  "INSERT",
+  "UPDATE",
+  "DELETE",
+  "TRUNCATE",
+  "REFERENCES",
+  "TRIGGER",
+  "MAINTAIN",
+];
+const NET_RESIDUE = [
+  "schema net USAGE",
+  ...["net.http_request_queue", "net._http_response"].flatMap((t) =>
+    NET_TABLE_PRIVILEGES.map((p) => `table ${t} ${p}`),
+  ),
+  ...["USAGE", "SELECT", "UPDATE"].map(
+    (p) => `sequence net.http_request_queue_id_seq ${p}`,
+  ),
+  ...[
+    "net._await_response(bigint)",
+    "net._encode_url_with_params_array(text,text[])",
+    "net._http_collect_response(bigint,boolean)",
+    "net._urlencode_string(character varying)",
+    "net.check_worker_is_up()",
+    "net.http_collect_response(bigint,boolean)",
+    "net.http_delete(text,jsonb,jsonb,integer,jsonb)",
+    "net.wait_until_running()",
+    "net.wake()",
+    "net.worker_restart()",
+  ].map((f) => `function ${f} EXECUTE`),
+];
+
 const PUBLIC_TABLES = [
   "competitions",
   "teams",
@@ -193,7 +232,7 @@ describe("SPEC-020 CA-2 web_reader", () => {
     expect(migrations).not.toMatch(/password/i);
   });
 
-  it("has USAGE on web and SELECT on web.xornada only", async () => {
+  it("has USAGE on web and SELECT on web.xornada granted to it, nothing else", async () => {
     const grants = await sql`select table_schema, table_name, privilege_type
       from information_schema.role_table_grants where grantee = 'web_reader'
       order by 1, 2, 3`;
@@ -203,7 +242,68 @@ describe("SPEC-020 CA-2 web_reader", () => {
     const [{ usage }] =
       await sql`select has_schema_privilege('web_reader', 'web', 'USAGE') as usage`;
     expect(usage).toBe(true);
+    const memberOf =
+      await sql`select 1 from pg_auth_members where member = 'web_reader'::regrole`;
+    expect(memberOf).toHaveLength(0);
   });
+
+  // ADR-015 §3: everything web_reader can reach, in every schema but
+  // pg_catalog and information_schema, inherited from PUBLIC or not, must be
+  // USAGE on web, SELECT on web.xornada or the residue of ADR-015 §1. An
+  // object is reachable when web_reader has both the privilege on it and
+  // USAGE on its schema (without USAGE the name never resolves: that is why
+  // cron.job and vault give 42501 below). If pg_net or the image widen the
+  // residue, this breaks and the decision goes back to ADR-015.
+  it("reaches nothing beyond web.xornada and the declared net residue (ADR-015 §3)", async () => {
+    const reach = await sql<{ item: string }[]>`
+      with ns as (
+        select oid, nspname from pg_namespace
+        where nspname not in ('pg_catalog', 'information_schema')
+      ),
+      usable as (
+        select * from ns where has_schema_privilege('web_reader', oid, 'USAGE')
+      ),
+      table_privs as (
+        select unnest(array['SELECT', 'INSERT', 'UPDATE', 'DELETE', 'TRUNCATE',
+          'REFERENCES', 'TRIGGER']
+          || case when current_setting('server_version_num')::int >= 170000
+             then array['MAINTAIN'] else array[]::text[] end) as p
+      )
+      select 'schema ' || nspname || ' ' || p as item
+      from ns, unnest(array['USAGE', 'CREATE']) p
+      where has_schema_privilege('web_reader', ns.oid, p)
+      union all
+      select 'table ' || n.nspname || '.' || c.relname || ' ' || t.p
+      from pg_class c join usable n on n.oid = c.relnamespace, table_privs t
+      where c.relkind in ('r', 'v', 'm', 'f', 'p')
+        and has_table_privilege('web_reader', c.oid, t.p)
+      union all
+      select 'sequence ' || n.nspname || '.' || c.relname || ' ' || p
+      from pg_class c join usable n on n.oid = c.relnamespace,
+        unnest(array['USAGE', 'SELECT', 'UPDATE']) p
+      where c.relkind = 'S' and has_sequence_privilege('web_reader', c.oid, p)
+      union all
+      select 'function ' || p.oid::regprocedure::text || ' EXECUTE'
+      from pg_proc p join usable n on n.oid = p.pronamespace
+      where p.prorettype <> 'trigger'::regtype
+        and has_function_privilege('web_reader', p.oid, 'EXECUTE')
+      order by 1`;
+    const items = reach.map((r) => r.item);
+    const allowed = new Set([...GRANTED, ...NET_RESIDUE]);
+    expect(items.filter((i) => !allowed.has(i))).toEqual([]);
+    for (const granted of GRANTED) expect(items).toContain(granted);
+  });
+
+  // The inventory above needs USAGE on public revoked from PUBLIC; the roles
+  // that use public keep their own grant.
+  it.each(["postgres", "anon", "authenticated", "service_role"])(
+    "%s keeps USAGE on schema public",
+    async (role) => {
+      const [{ usage }] =
+        await sql`select has_schema_privilege(${role}, 'public', 'USAGE') as usage`;
+      expect(usage).toBe(true);
+    },
+  );
 
   it("reads the view", () =>
     rollback(async (tx) => {
@@ -215,15 +315,21 @@ describe("SPEC-020 CA-2 web_reader", () => {
       expect(rows[0]).toMatchObject({ status: "live", version: 1 });
     }));
 
-  it.each(["matches", "decisions", "observations", "board", "alerts"])(
-    "gets 42501 reading public.%s",
-    (table) =>
-      rollback(async (tx) => {
-        await asRole(tx, "web_reader");
-        expect(
-          await pgCode(tx, (s) => s.unsafe(`select 1 from public.${table}`)),
-        ).toBe("42501");
-      }),
+  it.each([
+    "public.matches",
+    "public.decisions",
+    "public.observations",
+    "public.board",
+    "public.alerts",
+    "vault.decrypted_secrets",
+    "cron.job",
+  ])("gets 42501 reading %s", (relation) =>
+    rollback(async (tx) => {
+      await asRole(tx, "web_reader");
+      expect(
+        await pgCode(tx, (s) => s.unsafe(`select 1 from ${relation}`)),
+      ).toBe("42501");
+    }),
   );
 
   it("gets 42501 on any INSERT", () =>
