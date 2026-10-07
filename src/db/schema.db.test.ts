@@ -277,7 +277,8 @@ describe("CA-12 extensions and RLS", () => {
     expect(rows.map((r) => r.extname).sort()).toEqual(["pg_cron", "pg_net"]);
   });
 
-  it("enables RLS on the nine tables and reads only the public five", async () => {
+  // SPEC-020 CA-2: ADR-014 §2 supersedes ADR-006 §6, no public_read is left.
+  it("enables RLS on every table and has no policy left", async () => {
     const rows = await sql`select c.relname, c.relrowsecurity,
         (select count(*)::int from pg_policies p where p.tablename = c.relname) as policies
       from pg_class c join pg_namespace n on n.oid = c.relnamespace
@@ -288,22 +289,18 @@ describe("CA-12 extensions and RLS", () => {
     ).toEqual({
       alerts: 0,
       calendar_loads: 0,
-      competitions: 1,
-      decisions: 1,
+      competitions: 0,
+      decisions: 0,
       ingest_attempts: 0,
-      matches: 1,
-      observations: 1,
+      matches: 0,
+      observations: 0,
       raw_purges: 0,
       team_aliases: 0,
-      teams: 1,
+      teams: 0,
     });
     const policies =
-      await sql`select tablename, cmd, roles, qual from pg_policies where schemaname = 'public'`;
-    for (const p of policies) {
-      expect(p.cmd).toBe("SELECT");
-      expect(p.qual).toBe("true");
-      expect([...p.roles].sort()).toEqual(["anon", "authenticated"]);
-    }
+      await sql`select tablename from pg_policies where schemaname = 'public'`;
+    expect(policies).toHaveLength(0);
   });
 
   it("board runs as the invoker", async () => {
@@ -312,14 +309,13 @@ describe("CA-12 extensions and RLS", () => {
     expect(options).toContain("security_invoker=true");
   });
 
-  it("anon cannot see alerts nor write observations, but can read board", () =>
+  it("anon cannot see alerts nor write observations, nor read board", () =>
     rollback(async (tx) => {
       const m = await seedMatch(tx);
       await tx`insert into alerts (kind, match_id, details) values ('silence', ${m}, '{}')`;
       await tx`set local role anon`;
       const [{ count }] = await tx`select count(*)::int as count from alerts`;
       expect(count).toBe(0);
-      await expect(tx`select * from board`).resolves.toBeDefined();
       expect(await pgCode(observation(tx, m, { status: "scheduled" }))).toBe(
         "42501",
       );
