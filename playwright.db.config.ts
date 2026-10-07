@@ -16,6 +16,7 @@ export default defineConfig({
   workers: 1,
   retries: 0,
   reporter: "list",
+  globalTeardown: "./e2e/db-teardown.ts",
   use: {
     baseURL: `http://localhost:${port}`,
     trace: "retain-on-failure",
