@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import type { TransactionSql } from "postgres";
+import type { Sql, TransactionSql } from "postgres";
 import { afterAll, describe, expect, it } from "vitest";
 import { getSql } from "./client.ts";
 
@@ -117,6 +117,153 @@ const NET_RESIDUE = [
     "net.worker_restart()",
   ].map((f) => `function ${f} EXECUTE`),
 ];
+
+// A privilege on a table is one on every column, so an allowed table
+// privilege allows the same column privilege (has_any_column_privilege).
+const COLUMN_PRIVILEGES = ["SELECT", "INSERT", "UPDATE", "REFERENCES"];
+const withColumns = (items: string[]): string[] =>
+  items.flatMap((item) => {
+    const m = /^table (\S+) (\S+)$/.exec(item);
+    return m && COLUMN_PRIVILEGES.includes(m[2])
+      ? [item, `columns ${m[1]} ${m[2]}`]
+      : [item];
+  });
+
+// pg_catalog functions with an effect beyond reading. All belong to
+// supabase_admin with PostgreSQL's default EXECUTE for PUBLIC, so postgres
+// can revoke none of them ("no privileges could be revoked").
+const CATALOG_WATCH =
+  "^(lo_|lo(read|write)$|binary_upgrade_|pg_(advisory|try_advisory|notify|logical|terminate|cancel|signal|create_.*slot|drop_replication|copy_.*slot|replication_slot|sync_replication|import|reload|read_|ls_|stat_reset|rotate|switch_wal|promote|backup|log_|wal_replay|create_restore_point|stop_making))";
+
+// Executable and refused inside by PostgreSQL (see the guarded cases).
+const CATALOG_GUARDED = new Set([
+  "pg_terminate_backend",
+  "pg_cancel_backend",
+  "pg_import_system_collations",
+  "pg_stop_making_pinned_objects",
+  "pg_copy_logical_replication_slot",
+  "pg_copy_physical_replication_slot",
+  "pg_create_logical_replication_slot",
+  "pg_create_physical_replication_slot",
+  "pg_drop_replication_slot",
+  "pg_logical_slot_get_binary_changes",
+  "pg_logical_slot_get_changes",
+  "pg_logical_slot_peek_binary_changes",
+  "pg_logical_slot_peek_changes",
+  "pg_replication_slot_advance",
+  "pg_sync_replication_slots",
+]);
+
+// V-4, beyond ADR-015 §1 and pending the titular (F-SPEC-020-11): not
+// revocable by postgres, no access to data.
+// - Large objects of its own (lo_compat_privileges off: never anyone
+//   else's): it can fill the disk.
+// - Advisory locks: it can hold the lock of openAttempt (src/ingest/db.ts).
+// - pg_notify on any channel; pg_logical_emit_message writes WAL.
+// - CONNECT and TEMP on Supabase's other databases (_supabase,
+//   storage_vectors, the templates): not ours; there it reaches only these
+//   same pg_catalog functions and temporary tables.
+const CATALOG_RESIDUE = new Set([
+  ...["lo_close", "lo_creat", "lo_create", "lo_from_bytea", "lo_get"],
+  ...["lo_lseek", "lo_lseek64", "lo_open", "lo_put", "lo_tell", "lo_tell64"],
+  ...["lo_truncate", "lo_truncate64", "lo_unlink", "loread", "lowrite"],
+  ...["pg_advisory_lock", "pg_advisory_lock_shared", "pg_advisory_unlock"],
+  ...["pg_advisory_unlock_all", "pg_advisory_unlock_shared"],
+  ...["pg_advisory_xact_lock", "pg_advisory_xact_lock_shared"],
+  ...["pg_try_advisory_lock", "pg_try_advisory_lock_shared"],
+  ...["pg_try_advisory_xact_lock", "pg_try_advisory_xact_lock_shared"],
+  "pg_notify",
+  "pg_logical_emit_message",
+]);
+const OTHER_DATABASE_RESIDUE = /^database (?!current )\S+ (CONNECT|TEMP)$/;
+
+const ALLOWED = new Set([
+  ...withColumns([...GRANTED, ...NET_RESIDUE]),
+  "database current CONNECT",
+]);
+const isAllowed = (item: string): boolean => {
+  if (ALLOWED.has(item) || OTHER_DATABASE_RESIDUE.test(item)) return true;
+  const fn = /^catalog (\S+) EXECUTE$/.exec(item)?.[1];
+  return (
+    fn !== undefined &&
+    (CATALOG_RESIDUE.has(fn) ||
+      CATALOG_GUARDED.has(fn) ||
+      fn.startsWith("binary_upgrade_"))
+  );
+};
+
+// Everything web_reader can reach (ADR-015 §3 plus V-4).
+async function reachable(q: Sql | Tx): Promise<string[]> {
+  const rows = await q<{ item: string }[]>`
+    with ns as (
+      select oid, nspname from pg_namespace
+      where nspname not in ('pg_catalog', 'information_schema')
+    ),
+    usable as (
+      select * from ns where has_schema_privilege('web_reader', oid, 'USAGE')
+    ),
+    rels as (
+      select c.oid, n.nspname || '.' || c.relname as name
+      from pg_class c join usable n on n.oid = c.relnamespace
+      where c.relkind in ('r', 'v', 'm', 'f', 'p')
+    ),
+    table_privs as (
+      select unnest(array['SELECT', 'INSERT', 'UPDATE', 'DELETE', 'TRUNCATE',
+        'REFERENCES', 'TRIGGER']
+        || case when current_setting('server_version_num')::int >= 170000
+           then array['MAINTAIN'] else array[]::text[] end) as p
+    )
+    select 'schema ' || nspname || ' ' || p as item
+    from ns, unnest(array['USAGE', 'CREATE']) p
+    where has_schema_privilege('web_reader', ns.oid, p)
+    union all
+    select 'table ' || r.name || ' ' || t.p
+    from rels r, table_privs t
+    where has_table_privilege('web_reader', r.oid, t.p)
+    union all
+    select 'columns ' || r.name || ' ' || p
+    from rels r, unnest(array['SELECT', 'INSERT', 'UPDATE', 'REFERENCES']) p
+    where has_any_column_privilege('web_reader', r.oid, p)
+    union all
+    select 'sequence ' || n.nspname || '.' || c.relname || ' ' || p
+    from pg_class c join usable n on n.oid = c.relnamespace,
+      unnest(array['USAGE', 'SELECT', 'UPDATE']) p
+    where c.relkind = 'S' and has_sequence_privilege('web_reader', c.oid, p)
+    union all
+    select 'function ' || p.oid::regprocedure::text || ' EXECUTE'
+    from pg_proc p join usable n on n.oid = p.pronamespace
+    where p.prorettype <> 'trigger'::regtype
+      and has_function_privilege('web_reader', p.oid, 'EXECUTE')
+    union all
+    select 'database ' || case when d.datname = current_database()
+      then 'current' else d.datname end || ' ' || p
+    from pg_database d, unnest(array['CONNECT', 'TEMP', 'CREATE']) p
+    where has_database_privilege('web_reader', d.oid, p)
+    union all
+    select distinct 'catalog ' || proname || ' EXECUTE'
+    from pg_proc
+    where pronamespace = 'pg_catalog'::regnamespace
+      and proname ~ ${CATALOG_WATCH}
+      and has_function_privilege('web_reader', oid, 'EXECUTE')
+    union all
+    -- Any grant on pg_catalog that web_reader benefits from: there are
+    -- only PostgreSQL's defaults today.
+    select 'catalog-acl ' || oid::regprocedure::text
+    from pg_proc
+    where pronamespace = 'pg_catalog'::regnamespace and proacl is not null
+      and has_function_privilege('web_reader', oid, 'EXECUTE')
+    union all
+    select 'largeobject ' || m.oid || ' ' || coalesce(a.privilege_type, 'OWNER')
+    from pg_largeobject_metadata m
+      left join lateral aclexplode(m.lomacl) a on true
+    where m.lomowner = 'web_reader'::regrole
+      or a.grantee in (0, 'web_reader'::regrole)
+    union all
+    select 'setting lo_compat_privileges on'
+    where current_setting('lo_compat_privileges')::bool
+    order by 1`;
+  return rows.map((r) => r.item);
+}
 
 const PUBLIC_TABLES = [
   "competitions",
@@ -252,47 +399,80 @@ describe("SPEC-020 CA-2 web_reader", () => {
   // USAGE on web, SELECT on web.xornada or the residue of ADR-015 §1. An
   // object is reachable when web_reader has both the privilege on it and
   // USAGE on its schema (without USAGE the name never resolves: that is why
-  // cron.job and vault give 42501 below). If pg_net or the image widen the
-  // residue, this breaks and the decision goes back to ADR-015.
-  it("reaches nothing beyond web.xornada and the declared net residue (ADR-015 §3)", async () => {
-    const reach = await sql<{ item: string }[]>`
-      with ns as (
-        select oid, nspname from pg_namespace
-        where nspname not in ('pg_catalog', 'information_schema')
-      ),
-      usable as (
-        select * from ns where has_schema_privilege('web_reader', oid, 'USAGE')
-      ),
-      table_privs as (
-        select unnest(array['SELECT', 'INSERT', 'UPDATE', 'DELETE', 'TRUNCATE',
-          'REFERENCES', 'TRIGGER']
-          || case when current_setting('server_version_num')::int >= 170000
-             then array['MAINTAIN'] else array[]::text[] end) as p
-      )
-      select 'schema ' || nspname || ' ' || p as item
-      from ns, unnest(array['USAGE', 'CREATE']) p
-      where has_schema_privilege('web_reader', ns.oid, p)
-      union all
-      select 'table ' || n.nspname || '.' || c.relname || ' ' || t.p
-      from pg_class c join usable n on n.oid = c.relnamespace, table_privs t
-      where c.relkind in ('r', 'v', 'm', 'f', 'p')
-        and has_table_privilege('web_reader', c.oid, t.p)
-      union all
-      select 'sequence ' || n.nspname || '.' || c.relname || ' ' || p
-      from pg_class c join usable n on n.oid = c.relnamespace,
-        unnest(array['USAGE', 'SELECT', 'UPDATE']) p
-      where c.relkind = 'S' and has_sequence_privilege('web_reader', c.oid, p)
-      union all
-      select 'function ' || p.oid::regprocedure::text || ' EXECUTE'
-      from pg_proc p join usable n on n.oid = p.pronamespace
-      where p.prorettype <> 'trigger'::regtype
-        and has_function_privilege('web_reader', p.oid, 'EXECUTE')
-      order by 1`;
-    const items = reach.map((r) => r.item);
-    const allowed = new Set([...GRANTED, ...NET_RESIDUE]);
-    expect(items.filter((i) => !allowed.has(i))).toEqual([]);
+  // cron.job and vault give 42501 below). V-4 widens it to columns,
+  // databases, large objects and the effectful functions of pg_catalog. If
+  // pg_net or the image widen the residue, this breaks and the decision goes
+  // back to ADR-015.
+  it("reaches nothing beyond web.xornada and the declared residue (ADR-015 §3, V-4)", async () => {
+    const items = await reachable(sql);
+    expect(items.filter((i) => !isAllowed(i))).toEqual([]);
     for (const granted of GRANTED) expect(items).toContain(granted);
   });
+
+  // V-4 (a): has_table_privilege does not see a grant on a column.
+  it("the inventory catches a column-level grant", () =>
+    rollback(async (tx) => {
+      await tx`create table web.v4_probe (a int, b int)`;
+      await tx`grant select (b) on web.v4_probe to web_reader`;
+      expect(await reachable(tx)).toContain("columns web.v4_probe SELECT");
+    }));
+
+  // V-4 (b): TEMP is revoked from PUBLIC on the project database; CONNECT
+  // is what web_reader needs.
+  it("connects to the project database without TEMP or CREATE", () =>
+    rollback(async (tx) => {
+      const [db] = await tx`select
+        has_database_privilege('web_reader', current_database(), 'CONNECT') as connect,
+        has_database_privilege('web_reader', current_database(), 'TEMP') as temp,
+        has_database_privilege('web_reader', current_database(), 'CREATE') as create`;
+      expect(db).toEqual({ connect: true, temp: false, create: false });
+      await asRole(tx, "web_reader");
+      expect(
+        await pgCode(tx, (s) => s`create temp table v4_temp (a int)`),
+      ).toBe("42501");
+    }));
+
+  // V-4 (b): every other role keeps the TEMP it had through PUBLIC.
+  it.each([
+    "postgres",
+    "anon",
+    "authenticated",
+    "service_role",
+    "authenticator",
+  ])("%s keeps TEMP on the project database", async (role) => {
+    const [{ temp }] =
+      await sql`select has_database_privilege(${role}, current_database(), 'TEMP') as temp`;
+    expect(temp).toBe(true);
+  });
+
+  // V-4 (c): PostgreSQL checks inside these functions (superuser,
+  // REPLICATION, the target's role, binary upgrade); PUBLIC executes them but
+  // they refuse web_reader.
+  it.each([
+    ["pg_terminate_backend", "42501", "select pg_terminate_backend($1)"],
+    ["pg_cancel_backend", "42501", "select pg_cancel_backend($1)"],
+    [
+      "replication slots",
+      "42501",
+      "select pg_create_physical_replication_slot('v4_probe')",
+    ],
+    ["collations", "42501", "select pg_import_system_collations('web')"],
+    ["pinned objects", "42501", "select pg_stop_making_pinned_objects()"],
+    [
+      "binary upgrade",
+      "55P02",
+      "select binary_upgrade_set_next_pg_type_oid(0)",
+    ],
+  ])("pg_catalog guarded: %s refuses web_reader (%s)", (_, code, query) =>
+    rollback(async (tx) => {
+      const [{ pid }] = await tx`select pid from pg_stat_activity
+        where usename = 'postgres' and pid <> pg_backend_pid()
+        order by backend_type = 'client backend' limit 1`;
+      await asRole(tx, "web_reader");
+      const params = query.includes("$1") ? [pid] : [];
+      expect(await pgCode(tx, (s) => s.unsafe(query, params))).toBe(code);
+    }),
+  );
 
   // The inventory above needs USAGE on public revoked from PUBLIC; the roles
   // that use public keep their own grant.
