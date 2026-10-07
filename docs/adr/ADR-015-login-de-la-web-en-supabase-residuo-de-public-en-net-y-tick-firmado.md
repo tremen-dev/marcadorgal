@@ -1,13 +1,15 @@
 ---
 id: ADR-015
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-10-07, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-07, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # ADR-015: Login de la web en Supabase: residuo de PUBLIC en net y tick firmado
 
-- Deciders: sdd-arquitecto propone (2026-10-07) por V-1 del verificador de SPEC-020. Decide Alberto Fojo (H-1..H-3), pendiente.
+- Deciders: sdd-arquitecto propone (2026-10-07) por V-1 del verificador de SPEC-020. Alberto Fojo decide H-1..H-3 el 2026-10-07, las tres con la recomendación del arquitecto.
 - Specs relacionadas: SPEC-020 (CA-2, CA-9). **Precisa ADR-014 §4** («`SELECT` solo sobre ella») y **ADR-008 §1** (autenticación del disparador pg_cron). No cambia nada más de ambos.
 
 ## Contexto
@@ -85,10 +87,11 @@ base y de Vercel a menos de 60 s (NTP en ambos).
 - **Token de un solo uso en tabla**: mismo efecto que §2 con estado y una
   consulta más en la autenticación.
 
-## Para el titular
+## Para el titular (resuelto el 2026-10-07 por Alberto Fojo)
 
 - **H-1** ¿Se acepta el residuo de §1 para `web_reader` con §2-§4? Recomendado: sí.
 - **H-2** ¿Firma con ventana de 60 s para pg_cron, dentro de SPEC-020 (CA-9)
   porque bloquea el despliegue? Recomendado: sí.
 - **H-3** ¿Los previews conservan `DATABASE_URL_PUBLIC` (ADR-014 H-3)? Quitarla
   reduce dónde puede filtrarse, no el residuo. Recomendado: sí, se conserva.
+- **Resueltas (Alberto Fojo, 2026-10-07):** H-1 = sí, H-2 = sí, H-3 = sí.

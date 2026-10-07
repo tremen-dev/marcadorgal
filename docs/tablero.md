@@ -32,7 +32,7 @@ Actualizado: 2026-10-07
 | Spec | Estado | Último cambio |
 |---|---|---|
 | SPEC-019 — pantalla-xornada-movil-filas-estados-y-cualificadores-sobre-datos-de-demostracion | hecho | 2026-10-06 (sdd-verificador) |
-| SPEC-020 — lectura-publica-y-snapshot-de-la-xornada-actual | aprobada | 2026-10-07 (Alberto Fojo) |
+| SPEC-020 — lectura-publica-y-snapshot-de-la-xornada-actual | en-progreso | 2026-10-07 (sdd-verificador) |
 
 ## EPIC-FIX (aprobada)
 
@@ -66,9 +66,10 @@ Actualizado: 2026-10-07
 | ADR-012 | aprobada | rn-02-postponed-y-suspended-los-da-la-fuente-ganadora-con-cualificador-y-reversibles | 2026-10-04 (Alberto Fojo) |
 | ADR-013 | aprobada | partido-sin-directo-de-la-fuente-prorroga-de-la-ventana-hasta-el-final-y-sen-sinal-en-scheduled | 2026-10-04 (Alberto Fojo) |
 | ADR-014 | aprobada | entorno-de-produccion-y-acceso-publico-a-board | 2026-10-06 (Alberto Fojo) |
+| ADR-015 | aprobada | login-de-la-web-en-supabase-residuo-de-public-en-net-y-tick-firmado | 2026-10-07 (Alberto Fojo) |
 
 ## Resumen
 
 - hecho: 18
-- aprobada: 1
+- en-progreso: 1
 - en-revision: 1
