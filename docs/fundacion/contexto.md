@@ -2,7 +2,7 @@
 
 > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.
 > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.
-> Última actualización: 2026-10-06 (EPIC-002 cerrada; SPEC-018 hecho).
+> Última actualización: 2026-10-07 (EPIC-003 en curso; SPEC-019 hecho; SPEC-020 en borrador).
 
 ## Qué es y en qué punto está
 
@@ -42,6 +42,8 @@ Migraciones de SPEC-014 y SPEC-018 aplicadas en `dev`.
 
 **EPIC-002 (ingesta y motor) cerrada el 2026-10-06 (`hecho`)** con sus 10 specs (005-009, 012-014, 016, 018).
 
+**EPIC-003 (xornada pública) en curso, aprobada el 2026-10-06.** SPEC-019 completa (PR #36): contrato `PublicMatch`, modelo de vista `buildXornada` y pantalla Xornada móvil sobre datos de demostración en `/demo/xornada` (404 en producción). SPEC-020 (lectura pública y snapshot) en borrador.
+
 **EPIC-MANT — SPEC-017 completa (PR #31):** mejoras del informe de jornada, entre ellas el contraste con crudo propio (`--contrastar`).
 
 **EPIC-FIX (correcciones urgentes):** SPEC-011 hecho. Arregla dos defectos de la ingesta: sin peticiones `live=` con un solo id de liga, y `ParseResult` gana cuarto canal `requestErrors` para guardar observaciones buenas aun si una petición falla. Entrada prioritaria para fallos que dañan medición en vivo.
@@ -72,8 +74,8 @@ el motor, luego la pantalla.
 
 - Next.js 16 App Router, React 19, TypeScript estricto, zod 4, npm, Node 24.
 - Supabase: Postgres (migraciones SQL con la CLI), Realtime Broadcast, Auth
-  para el operador, Storage para el crudo. Dos proyectos: dev (Free) y prod
-  (Pro). `postgres.js` sin ORM en el servidor; `supabase-js` solo en cliente.
+  para el operador, Storage para el crudo. Un proyecto remoto (producción,
+  Pro antes de la jornada publicada) y Supabase local para desarrollo (ADR-014). `postgres.js` sin ORM en el servidor; `supabase-js` solo en cliente.
 - Vercel Pro: un proyecto, dominio marcador.gal, previews por PR.
 - Ingesta: pg_cron llama cada 30 s a `POST /api/ingest/tick` vía pg_net; Vercel
   Cron cada minuto como respaldo. El tick solo sondea fuentes con partidos en
@@ -111,6 +113,7 @@ de cada fuente la gestiona el titular fuera del repo (D-7).
 - ADR-011 RN-03 en vivo: baja la misma fuente que subió el gol u otra de más peso (sustituye la letra en vivo de ADR-010 §1).
 - ADR-012 RN-02: `postponed` y `suspended` los da la fuente ganadora, con cualificador y reversibles.
 - ADR-013 Partido sin directo de la fuente: prórroga de la ventana hasta +6 h y `sen_sinal` en `scheduled`.
+- ADR-014 Entorno y acceso público: el proyecto Supabase actual pasa a producción (desarrollo y `test:db` en local), el navegador no lee Postgres, el público ve solo `PublicMatch` vía `web.xornada` y rol `web_reader`, Realtime por Broadcast privado. Supersede ADR-006 §6. Por decisión del titular (2026-10-07) Supabase sigue en Free hasta la jornada publicada.
 
 ## Riesgos y preguntas abiertas
 
