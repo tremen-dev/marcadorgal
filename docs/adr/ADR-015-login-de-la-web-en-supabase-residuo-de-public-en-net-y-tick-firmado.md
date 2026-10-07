@@ -32,6 +32,12 @@ no expone `net`. El job `ingest-tick` deja en la cola `Bearer
 1. **Se mantiene `web_reader` (ADR-014 §4) con un residuo cerrado y
    nombrado**: lo que PUBLIC tiene en `net` (arriba) y nada más. «`SELECT` solo
    sobre `web.xornada`» se lee como «solo eso, más este residuo». (H-1)
+   *2026-10-07, ampliado por el titular (F-SPEC-020-11):* el residuo incluye
+   también lo que PUBLIC ejecuta en `pg_catalog` y `postgres` no puede revocar
+   (large objects propios, advisory locks, `pg_notify`, `pg_logical_emit_message`)
+   y `CONNECT`/`TEMP` en las otras bases de Supabase. Ninguno da datos ni
+   escritura en tablas; `TEMP` en la base del proyecto sí se revoca. El riesgo
+   de retener el lock de `openAttempt` se blinda en una spec de EPIC-MANT.
 2. **Ningún secreto reutilizable en la cola.** El job de pg_cron envía
    `Authorization: Bearer t1.<epoch>.<firma>`, con `<epoch>` en segundos UTC
    de `now()` y `<firma>` = HMAC-SHA256 en hex minúsculas de `t1.<epoch>` con la
@@ -95,3 +101,4 @@ base y de Vercel a menos de 60 s (NTP en ambos).
 - **H-3** ¿Los previews conservan `DATABASE_URL_PUBLIC` (ADR-014 H-3)? Quitarla
   reduce dónde puede filtrarse, no el residuo. Recomendado: sí, se conserva.
 - **Resueltas (Alberto Fojo, 2026-10-07):** H-1 = sí, H-2 = sí, H-3 = sí.
+- **H-4 (Alberto Fojo, 2026-10-07):** residuo ampliado de §1 (F-SPEC-020-11) = sí, con spec de EPIC-MANT para blindar el advisory lock de `openAttempt`.
