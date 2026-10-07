@@ -10,7 +10,8 @@ Proyecto gestionado con el estándar **tremen-sdd**. Antes de trabajar:
 
 Idioma de trabajo: español (docs/specs). Código e identificadores: inglés.
 Texto visible al usuario: galego por defecto, castellano en `/es`, siempre vía
-i18n. Los términos de dominio de `docs/fundacion/dominio.md` no se traducen.
+i18n. Los términos de dominio de `docs/fundacion/dominio.md` no se traducen en
+código ni docs; en la interfaz, ver la cabecera de `dominio.md`.
 
 ## Reglas de la casa
 
