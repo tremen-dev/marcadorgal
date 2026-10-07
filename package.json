@@ -15,6 +15,7 @@
     "tokens:css": "node tools/tokens-css.mjs",
     "gates": "npm run typecheck && npm run lint && npm run test && npm run build",
     "e2e": "playwright test",
+    "e2e:db": "playwright test --config playwright.db.config.ts",
     "db:push": "node tools/db-push.mjs",
     "db:web-reader": "node tools/db-web-reader.mjs",
     "test:db": "node tools/test-db.mjs",
