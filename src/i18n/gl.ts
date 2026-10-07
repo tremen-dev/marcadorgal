@@ -20,6 +20,12 @@ export const gl = {
     sen_sinal: "sen sinal",
   },
   freshness: { lastData: "último dato hai {n} min" },
+  xornada: {
+    title: "Xornada",
+    liveCount: "{n} en xogo",
+    locale: "Lingua",
+  },
+  locales: { gl: "gl", es: "es" },
 } as const satisfies {
   [group: string]: unknown;
   status: Record<MatchStatus, string>;

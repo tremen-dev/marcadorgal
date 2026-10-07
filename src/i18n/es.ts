@@ -19,4 +19,10 @@ export const es: Dictionary = {
     sen_sinal: "sin señal",
   },
   freshness: { lastData: "último dato hace {n} min" },
+  xornada: {
+    title: "Jornada",
+    liveCount: "{n} en juego",
+    locale: "Idioma",
+  },
+  locales: { gl: "gl", es: "es" },
 };
