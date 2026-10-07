@@ -22,6 +22,7 @@ describe("SPEC-020 CA-1 isLoopbackUrl", () => {
     "postgres://u:p@localhost:5432/db",
     "postgresql://u:p@127.0.0.2/db",
     "postgresql://u:p@[::1]:54322/postgres",
+    "postgresql://postgres:postgres@127.0.0.1:54322/postgres?sslmode=disable",
   ])("accepts %s", (url) => {
     expect(isLoopbackUrl(url)).toBe(true);
   });
@@ -33,6 +34,12 @@ describe("SPEC-020 CA-1 isLoopbackUrl", () => {
     "postgresql://u:p@10.0.0.1/db",
     "not a url",
     "",
+    // V-3: libpq and pgx honour host/hostaddr in the query over the authority.
+    "postgresql://postgres:postgres@127.0.0.1:54322/postgres?host=db.invalid",
+    "postgresql://postgres:postgres@127.0.0.1:54322/postgres?hostaddr=10.0.0.1",
+    "postgresql://postgres:postgres@localhost:54322/postgres?sslmode=disable&host=db.invalid",
+    "postgresql://postgres:postgres@127.0.0.1:54322/postgres?HOST=db.invalid",
+    "postgresql://postgres:postgres@127.0.0.1:54322/postgres?%68ost=db.invalid",
   ])("rejects %s", (url) => {
     expect(isLoopbackUrl(url)).toBe(false);
   });

@@ -7,14 +7,23 @@ export function databaseUrl(env: Env): string {
 }
 
 // The local Supabase in Docker (ADR-014 §1): localhost, 127.0.0.0/8 or ::1.
-// Anything that does not parse is not loopback.
+// Anything that does not parse is not loopback, and neither is a URL whose
+// query names host or hostaddr: libpq and pgx (the Supabase CLI) honour them
+// over the authority (SPEC-020 CA-1, V-3). Keys are compared decoded and in
+// any case, so neither %68ost nor HOST slips through.
+const HOST_KEYS = new Set(["host", "hostaddr"]);
+
 export function isLoopbackUrl(url: string): boolean {
-  let host: string;
+  let parsed: URL;
   try {
-    host = new URL(url).hostname;
+    parsed = new URL(url);
   } catch {
     return false;
   }
+  for (const key of parsed.searchParams.keys()) {
+    if (HOST_KEYS.has(key.trim().toLowerCase())) return false;
+  }
+  const host = parsed.hostname;
   return (
     host === "localhost" ||
     host === "[::1]" ||

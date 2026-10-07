@@ -57,6 +57,19 @@ describe("SPEC-020 CA-1 npm run test:db guard", () => {
     expect(r.stderr + r.stdout).not.toContain("pooler.supabase.com");
   });
 
+  it.each(["host", "hostaddr"])(
+    "refuses a loopback URL whose query carries %s (V-3)",
+    (key) => {
+      const url = `postgresql://postgres:s3cr3t@127.0.0.1:54322/postgres?${key}=db.invalid`;
+      const r = run({ DATABASE_URL: url });
+      expect(r.status).toBe(1);
+      expect(r.called).toBe(false);
+      expect(r.stderr).toContain("host or hostaddr");
+      expect(r.stderr + r.stdout).not.toContain("s3cr3t");
+      expect(r.stderr + r.stdout).not.toContain("db.invalid");
+    },
+  );
+
   it("refuses without DATABASE_URL", () => {
     const r = run({});
     expect(r.status).toBe(1);

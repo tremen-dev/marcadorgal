@@ -22,7 +22,7 @@ if (!url) {
 }
 if (!isLoopbackUrl(url)) {
   console.error(
-    "test:db only runs against the local Supabase: the host of DATABASE_URL is not loopback.\n" +
+    "test:db only runs against the local Supabase: the host of DATABASE_URL is not loopback, or its query names host or hostaddr.\n" +
       "Run: supabase start, then DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:54322/postgres npm run test:db",
   );
   process.exit(1);
