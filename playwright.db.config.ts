@@ -1,9 +1,12 @@
 import { randomBytes } from "node:crypto";
 import { defineConfig, devices } from "@playwright/test";
+import { REMOTE_SECRETS } from "./src/db/env.ts";
 
 // npm run e2e:db (SPEC-020 CA-6, N-4): the home over the local Supabase with a
 // seed. Never in CI, never against the remote project (production, ADR-014).
-// The URLs are fixed to loopback here and win over any .env.
+// The URLs are fixed to loopback here and win over any .env. Storage too, and
+// the remote secrets go empty: Next does not overwrite an empty variable with
+// the .env (SPEC-022 CA-7).
 const port = 3110;
 export const LOCAL_DATABASE_URL =
   "postgresql://postgres:postgres@127.0.0.1:54322/postgres";
@@ -31,6 +34,9 @@ export default defineConfig({
       DATABASE_URL: LOCAL_DATABASE_URL,
       WEB_READER_PASSWORD: password,
       DATABASE_URL_PUBLIC: `postgresql://web_reader:${password}@127.0.0.1:54322/postgres`,
+      NEXT_PUBLIC_SUPABASE_URL: "http://127.0.0.1:54321",
+      SUPABASE_SERVICE_ROLE_KEY: "",
+      ...Object.fromEntries(REMOTE_SECRETS.map((name) => [name, ""])),
     },
   },
 });
