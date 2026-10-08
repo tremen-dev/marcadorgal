@@ -50,6 +50,10 @@ const STATUS: Readonly<Record<string, MatchStatus>> = {
   ABD: "suspended",
 };
 
+// Pauses with no minute to run: half-time, and the break before or inside
+// extra time (SPEC-021, H-1). A moment inside live, never a sixth state.
+const HALF_TIME: ReadonlySet<string> = new Set(["HT", "BT"]);
+
 const ProviderId = z.union([z.int(), z.string().min(1)]);
 const ProviderTeam = z.looseObject({ id: ProviderId, name: z.string() });
 const ProviderFixture = z.looseObject({
@@ -193,7 +197,12 @@ function toState(
   if (home === null || away === null) return "missing_score";
   const score = { home, away };
   if (status === "live")
-    return { status, score, ...liveMinutes(f.fixture.status) };
+    return {
+      status,
+      score,
+      ...liveMinutes(f.fixture.status),
+      halfTime: HALF_TIME.has(short),
+    };
   return { status, score, minute: null };
 }
 

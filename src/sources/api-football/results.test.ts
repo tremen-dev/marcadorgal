@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { brotliDecompressSync } from "node:zlib";
 import { describe, expect, it } from "vitest";
 import {
   AliasFile,
@@ -511,9 +512,19 @@ describe("CA-6 state mapping (N-7, N-8)", () => {
     expect(o).toEqual({ matchId: BASE_MATCH, status, score, minute: null });
   });
 
-  it.each(["1H", "HT", "2H", "ET", "BT", "P", "LIVE"])(
-    "%s -> live with score, minute and addedMinute",
-    (short) => {
+  // SPEC-021 CA-2: HT and BT (H-1) are half-time, a moment inside live; the
+  // minute and added minute of the source are kept as they come (N-3).
+  it.each([
+    ["1H", false],
+    ["HT", true],
+    ["2H", false],
+    ["ET", false],
+    ["BT", true],
+    ["P", false],
+    ["LIVE", false],
+  ] as const)(
+    "%s -> live with score, minute, addedMinute and halfTime %s",
+    (short, halfTime) => {
       const [o] = parseOne(
         variant({ short, elapsed: 45, extra: 3 }, goals),
       ).observations;
@@ -523,6 +534,7 @@ describe("CA-6 state mapping (N-7, N-8)", () => {
         score,
         minute: 45,
         addedMinute: 3,
+        halfTime,
       });
     },
   );
@@ -921,6 +933,7 @@ describe("CA-7 real fixtures parse", () => {
       score: foreign.goals,
       minute: foreign.fixture.status.elapsed,
       addedMinute: foreign.fixture.status.extra,
+      halfTime: false,
     });
   });
 });
@@ -972,6 +985,7 @@ describe("SPEC-009 CA-8 live-2026-09-26.json parses", () => {
       score: { home: 2, away: 0 },
       minute: 37,
       addedMinute: null,
+      halfTime: false,
     });
     // Half time is a moment inside live (dominio.md), with its elapsed.
     expect(by["segunda-division-2026-27-j7-granada-andorra"]).toEqual({
@@ -980,7 +994,30 @@ describe("SPEC-009 CA-8 live-2026-09-26.json parses", () => {
       score: { home: 0, away: 2 },
       minute: 45,
       addedMinute: null,
+      halfTime: true,
     });
+  });
+
+  it("SPEC-021 CA-2: the HT fixture is the only one at half-time; the four 1H carry false", () => {
+    const result = adapter.parse(asked);
+    const shortOf = new Map(
+      live.response.map((f) => [String(f.fixture.id), f.fixture.status.short]),
+    );
+    const matchOf = new Map(
+      Object.entries(aliases.matches ?? {}).map(([ext, id]) => [id, ext]),
+    );
+    const halfTimes = result.observations.map((o) => {
+      expect(o.status).toBe("live");
+      const ext = matchOf.get(o.matchId) as string;
+      return [shortOf.get(ext), o.status === "live" ? o.halfTime : undefined];
+    });
+    expect(halfTimes.filter(([s]) => s === "1H")).toEqual([
+      ["1H", false],
+      ["1H", false],
+      ["1H", false],
+      ["1H", false],
+    ]);
+    expect(halfTimes.filter(([s]) => s === "HT")).toEqual([["HT", true]]);
   });
 
   it("(ii) the statuses in the file, as they come: four 1H and one HT, no extra", () => {
@@ -1006,5 +1043,36 @@ describe("SPEC-009 CA-8 live-2026-09-26.json parses", () => {
     expect(new Set(live.response.map((f) => String(f.league.id)))).toEqual(
       new Set(["141", "435", "875", "439"]),
     );
+  });
+});
+
+// SPEC-021 CA-2. The 247 real captures of girona-albacete (SPEC-012): the
+// adapter says halfTime true exactly in the captures whose status is HT.
+describe("SPEC-021 CA-2 girona-albacete-2026-09-25.json.br", () => {
+  const captures: RawCapture[] = JSON.parse(
+    brotliDecompressSync(
+      readFileSync(
+        new URL("./fixtures/girona-albacete-2026-09-25.json.br", import.meta.url),
+      ),
+    ).toString("utf8"),
+  );
+
+  it("halfTime is true exactly in the HT captures, and false in every other live one", () => {
+    expect(captures).toHaveLength(247);
+    let ht = 0;
+    for (const raw of captures) {
+      const body = JSON.parse(raw.requests[0].body) as {
+        response: { fixture: { status: { short: string } } }[];
+      };
+      const short = body.response[0].fixture.status.short;
+      const [o] = adapter.parse(raw).observations;
+      if (o.status === "live") expect(o.halfTime).toBe(short === "HT");
+      else expect(o).not.toHaveProperty("halfTime");
+      if (short === "HT") {
+        ht++;
+        expect(o).toMatchObject({ status: "live", halfTime: true });
+      }
+    }
+    expect(ht).toBeGreaterThan(0);
   });
 });
