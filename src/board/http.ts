@@ -15,6 +15,13 @@ export type ReadXornada = (now: Instant) => Promise<PublicMatch[] | null>;
 const etagOf = (body: string): string =>
   `"${createHash("sha256").update(body).digest("base64url")}"`;
 
+const bodyOf = (matches: readonly PublicMatch[]): string =>
+  JSON.stringify({ matches });
+
+// SPEC-024 CA-7: the ETag of a xornada, the same /api/board would give.
+export const boardEtag = (matches: readonly PublicMatch[]): string =>
+  etagOf(bodyOf(matches));
+
 // If-None-Match uses the weak comparison (RFC 9110 §13.1.2): W/ is ignored.
 function notModified(header: string | null, etag: string): boolean {
   if (header === null) return false;
@@ -50,7 +57,7 @@ export async function boardResponse(
     console.error("/api/board: DATABASE_URL_PUBLIC is not set");
     return unavailable();
   }
-  const body = JSON.stringify({ matches });
+  const body = bodyOf(matches);
   const etag = etagOf(body);
   const headers = {
     "Cache-Control": BOARD_CACHE_CONTROL,

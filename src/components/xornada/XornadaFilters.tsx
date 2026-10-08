@@ -15,10 +15,15 @@ import {
   type XornadaState,
 } from "@/xornada/filter";
 
-// SPEC-023 CA-6: the one client component of the screen. It renders nothing:
-// it reads the fragment and hides rows and sections with `hidden` over the
-// served HTML, keeps the links' fragments in step and folds a competition
-// from the sidebar. Without JavaScript the HTML is the whole xornada.
+// SPEC-023 CA-6 (amended by SPEC-024 H-1): the filter component of the
+// screen, next to XornadaLive. It renders nothing: it reads the fragment and
+// hides rows and sections with `hidden` over the rendered HTML, keeps the
+// links' fragments in step and folds a competition from the sidebar. Without
+// JavaScript the HTML is the whole xornada.
+
+// SPEC-024 CA-5: XornadaLive fires it after every repaint; the fragment is
+// applied again and stays as it is.
+export const REPAINT_EVENT = "xornada:repaint";
 
 const ROWS = "li[data-day]";
 
@@ -180,11 +185,13 @@ export function XornadaFilters() {
     root.addEventListener("click", onClick);
     root.addEventListener("toggle", onToggle, true);
     window.addEventListener("hashchange", fromHash);
+    document.addEventListener(REPAINT_EVENT, fromHash);
     fromHash();
     return () => {
       root.removeEventListener("click", onClick);
       root.removeEventListener("toggle", onToggle, true);
       window.removeEventListener("hashchange", fromHash);
+      document.removeEventListener(REPAINT_EVENT, fromHash);
     };
   }, []);
   return null;

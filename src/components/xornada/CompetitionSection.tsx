@@ -5,7 +5,12 @@ import { liveCountTemplates } from "./labels";
 import { MatchRow } from "./MatchRow";
 import styles from "./Xornada.module.css";
 
-type Props = { competition: XornadaCompetition; locale: Locale };
+type Props = {
+  competition: XornadaCompetition;
+  locale: Locale;
+  // SPEC-024 CA-9: matchId → minutes since its last observation.
+  ages?: ReadonlyMap<string, number>;
+};
 
 export const sectionId = (competitionId: string): string =>
   `xornada-${competitionId}`;
@@ -14,7 +19,7 @@ export const detailsId = (competitionId: string): string =>
 
 // SPEC-023 CA-5: each competition folds with <details>, without JavaScript.
 // The fold lives in the DOM only: never in the URL, never remembered (N-2).
-export function CompetitionSection({ competition, locale }: Props) {
+export function CompetitionSection({ competition, locale, ages }: Props) {
   const { competitionId } = competition;
   const headingId = `competition-${competitionId}`;
   return (
@@ -71,7 +76,12 @@ export function CompetitionSection({ competition, locale }: Props) {
         </summary>
         <ul className={styles.rows}>
           {competition.rows.map((row) => (
-            <MatchRow key={row.matchId} row={row} locale={locale} />
+            <MatchRow
+              key={row.matchId}
+              row={row}
+              locale={locale}
+              age={ages?.get(row.matchId) ?? null}
+            />
           ))}
         </ul>
       </details>

@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { PublicMatch } from "@/model";
-import { BOARD_CACHE_CONTROL, boardResponse } from "./http";
+import { BOARD_CACHE_CONTROL, boardEtag, boardResponse } from "./http";
 
 // SPEC-020 CA-7 (ADR-014 §6, N-3): GET /api/board with the reader injected.
 const NOW = "2026-10-10T17:00:00.000Z";
@@ -119,5 +119,20 @@ describe("SPEC-020 CA-7 boardResponse", () => {
     const res = await boardResponse(read(null), NOW, null);
     expect(res.status).toBe(503);
     expect(res.headers.get("cache-control")).toBe("no-store");
+  });
+});
+
+// SPEC-024 CA-7: the page hands the client the ETag of the xornada it
+// served, so its first request to /api/board can already be a 304.
+describe("SPEC-024 boardEtag", () => {
+  it("is the ETag /api/board gives for the same matches", async () => {
+    const res = await boardResponse(read([match]), NOW, null);
+    expect(boardEtag([match])).toBe(res.headers.get("etag"));
+    const notModified = await boardResponse(
+      read([match]),
+      NOW,
+      boardEtag([match]),
+    );
+    expect(notModified.status).toBe(304);
   });
 });

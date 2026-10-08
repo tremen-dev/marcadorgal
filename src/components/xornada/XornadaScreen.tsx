@@ -1,11 +1,9 @@
 import { LOCALES, type Locale, t } from "@/i18n";
-import { countFilters } from "@/xornada/filter";
 import type { XornadaCompetition, XornadaDay } from "@/xornada/view";
-import { CompetitionNav } from "./CompetitionNav";
-import { CompetitionSection } from "./CompetitionSection";
 import styles from "./Xornada.module.css";
-import { DayStrip, FilterPills } from "./XornadaControls";
+import { XornadaBody } from "./XornadaBody";
 import { XornadaFilters } from "./XornadaFilters";
+import { XornadaLive, type XornadaLiveProps } from "./XornadaLive";
 
 type Props = {
   locale: Locale;
@@ -17,6 +15,9 @@ type Props = {
   // SPEC-020 CA-6: the data could not be read. Said in words, never shown as
   // an empty xornada (D-9).
   unavailable?: boolean;
+  // SPEC-024: / and /es keep themselves up to date in the client; the demos
+  // do not (they neither subscribe nor poll).
+  live?: Pick<XornadaLiveProps, "matches" | "servedAt" | "season" | "etag">;
 };
 
 export function XornadaScreen({
@@ -25,9 +26,9 @@ export function XornadaScreen({
   days,
   paths,
   unavailable = false,
+  live,
 }: Props) {
-  const rows = competitions.flatMap((c) => c.rows);
-  const hasRows = rows.length > 0;
+  const hasRows = competitions.some((c) => c.rows.length > 0);
   return (
     <div className={styles.page} data-xornada>
       <header className={styles.bar}>
@@ -63,47 +64,24 @@ export function XornadaScreen({
           ))}
         </nav>
       </header>
-      {hasRows && (
-        <div className={styles.controls}>
-          <DayStrip days={days} locale={locale} />
-          <FilterPills
-            counts={countFilters(rows, null)}
-            locale={locale}
-            selfHref={paths[locale]}
-          />
-        </div>
+      {live === undefined ? (
+        <XornadaBody
+          locale={locale}
+          competitions={competitions}
+          days={days}
+          paths={paths}
+          unavailable={unavailable}
+        />
+      ) : (
+        <XornadaLive
+          locale={locale}
+          paths={paths}
+          days={days}
+          unavailable={unavailable}
+          {...live}
+        />
       )}
-      <div className={styles.body}>
-        {hasRows && (
-          <CompetitionNav competitions={competitions} locale={locale} />
-        )}
-        <main className={styles.main}>
-          <h1 className={styles.srOnly}>{t(locale, "xornada.title")}</h1>
-          {unavailable && (
-            <p className={styles.unavailable} data-testid="xornada-unavailable">
-              {t(locale, "xornada.unavailable")}
-            </p>
-          )}
-          {competitions.map((competition) => (
-            <CompetitionSection
-              key={competition.competitionId}
-              competition={competition}
-              locale={locale}
-            />
-          ))}
-          {hasRows && (
-            <p
-              className={styles.empty}
-              hidden
-              data-xornada-empty
-              data-testid="xornada-empty"
-            >
-              {t(locale, "xornada.empty")}
-            </p>
-          )}
-        </main>
-      </div>
-      {hasRows && <XornadaFilters />}
+      {(hasRows || live !== undefined) && <XornadaFilters />}
     </div>
   );
 }

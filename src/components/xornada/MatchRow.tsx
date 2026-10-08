@@ -2,7 +2,13 @@ import { formatTime, type Locale, t } from "@/i18n";
 import { minuteLabel, type XornadaRow } from "@/xornada/view";
 import styles from "./Xornada.module.css";
 
-type Props = { row: XornadaRow; locale: Locale };
+type Props = {
+  row: XornadaRow;
+  locale: Locale;
+  // SPEC-024 CA-9 (RN-11, H-4): minutes since the last observation of a live
+  // row, only from 2 min (rowAge); the source clock, never the browser's.
+  age?: number | null;
+};
 
 const cx = (...names: (string | false | null | undefined)[]): string =>
   names.filter(Boolean).join(" ");
@@ -21,7 +27,7 @@ function qualifierColor(row: XornadaRow): string {
   return row.qualifier === "sen_sinal" ? styles.red : styles.amber;
 }
 
-export function MatchRow({ row, locale }: Props) {
+export function MatchRow({ row, locale, age = null }: Props) {
   const isLive = row.status === "live";
   const noSignal = row.qualifier === "sen_sinal";
   const { margin } = row;
@@ -105,6 +111,11 @@ export function MatchRow({ row, locale }: Props) {
           {scoreText("away")}
         </span>
       </div>
+      {age !== null && (
+        <span className={styles.rowAge} data-testid="row-age">
+          {t(locale, "freshness.lastData", { n: age })}
+        </span>
+      )}
     </li>
   );
 }

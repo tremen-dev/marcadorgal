@@ -3,6 +3,10 @@ import { BOARD_CACHE_CONTROL } from "./src/board/http.ts";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // SPEC-024 CA-6 (H-6): the Realtime switch is always inlined, "" when
+  // unset, so with it off the client code of Realtime (and the Supabase URL
+  // and key it would read) is dropped from the bundle.
+  env: { NEXT_PUBLIC_REALTIME: process.env.NEXT_PUBLIC_REALTIME ?? "" },
   poweredByHeader: false,
   // ISR of / and /es with revalidate 10 (SPEC-020 CA-7, ADR-014 §6):
   // s-maxage=10, stale-while-revalidate=30 (expireTime minus revalidate),

@@ -20,7 +20,8 @@ export default defineConfig({
     url: `http://localhost:${port}/`,
     reuseExistingServer: false,
     // No reader in CI (SPEC-020 CA-6): an empty value wins over any .env.
-    env: { DATABASE_URL_PUBLIC: "" },
+    // SPEC-024 CA-10: the switch off, whatever the .env says.
+    env: { DATABASE_URL_PUBLIC: "", NEXT_PUBLIC_REALTIME: "" },
     timeout: 180_000,
   },
 });
