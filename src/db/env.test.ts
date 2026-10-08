@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { databaseUrl, isLoopbackUrl } from "./env";
+import {
+  databaseUrl,
+  isLoopbackUrl,
+  localStorageEnv,
+  parseStatusEnv,
+  REMOTE_SECRETS,
+  withoutRemoteSecrets,
+} from "./env";
 
 describe("CA-13 databaseUrl", () => {
   it("returns DATABASE_URL from the given environment", () => {
@@ -42,5 +49,63 @@ describe("SPEC-020 CA-1 isLoopbackUrl", () => {
     "postgresql://postgres:postgres@127.0.0.1:54322/postgres?%68ost=db.invalid",
   ])("rejects %s", (url) => {
     expect(isLoopbackUrl(url)).toBe(false);
+  });
+});
+
+describe("SPEC-022 local Storage env from supabase status", () => {
+  const status = [
+    'ANON_KEY="anon-local"',
+    'API_URL="http://127.0.0.1:54321"',
+    'DB_URL="postgresql://postgres:postgres@127.0.0.1:54322/postgres"',
+    'SERVICE_ROLE_KEY="service-local"',
+    "",
+  ].join("\n");
+
+  it('parses KEY="value" lines and ignores the rest', () => {
+    expect(
+      parseStatusEnv(`${status}A new version of Supabase CLI is available\n`),
+    ).toEqual({
+      ANON_KEY: "anon-local",
+      API_URL: "http://127.0.0.1:54321",
+      DB_URL: "postgresql://postgres:postgres@127.0.0.1:54322/postgres",
+      SERVICE_ROLE_KEY: "service-local",
+    });
+  });
+
+  it("maps API_URL and SERVICE_ROLE_KEY to the app's names (CA-1)", () => {
+    expect(localStorageEnv(status)).toEqual({
+      NEXT_PUBLIC_SUPABASE_URL: "http://127.0.0.1:54321",
+      SUPABASE_SERVICE_ROLE_KEY: "service-local",
+    });
+  });
+
+  it.each([
+    [
+      "a remote API_URL",
+      status.replace("http://127.0.0.1:54321", "https://x.supabase.co"),
+    ],
+    ["no API_URL", status.replace(/API_URL=.*\n/, "")],
+    ["no SERVICE_ROLE_KEY", status.replace(/SERVICE_ROLE_KEY=.*\n/, "")],
+    ["empty output", ""],
+  ])("is null with %s (CA-2)", (_, text) => {
+    expect(localStorageEnv(text)).toBeNull();
+  });
+
+  it("blanks every remote secret and keeps the rest (CA-4)", () => {
+    const env = Object.fromEntries(REMOTE_SECRETS.map((k) => [k, "prod"]));
+    const out = withoutRemoteSecrets({ ...env, PATH: "/bin" });
+    expect(out.PATH).toBe("/bin");
+    for (const k of REMOTE_SECRETS) expect(out[k]).toBe("");
+    expect([...REMOTE_SECRETS].sort()).toEqual(
+      [
+        "API_FOOTBALL_KEY",
+        "CRON_SECRET",
+        "DATABASE_PASSWORD",
+        "INGEST_TICK_TOKEN",
+        "INGEST_TICK_URL",
+        "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+        "SUPABASE_ACCESS_TOKEN",
+      ].sort(),
+    );
   });
 });
