@@ -2,10 +2,11 @@
 id: SPEC-022
 tipo: spec
 epica: EPIC-FIX
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-08, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-08, por: Alberto Fojo}
 ---
 # SPEC-022 — test:db no toca Storage de producción
 
@@ -69,3 +70,4 @@ Raw store (`dominio.md`); ADR-007 (bucket y service role key), ADR-014 §1
 - El nombre `SERVICE_ROLE_KEY` lo da la CLI v2.117. Si cambia, el implementador
   lo anota en el ledger. Lectura opcional para el verificador: listar el prefijo
   `test/` del bucket remoto (solo lectura) y confirmar que no quedan restos.
+- **Decididas por el titular (Alberto Fojo, 2026-10-08):** H-1 = combinar forzar y negarse; H-2 = sí, guarda de `fetch`. Spec aprobada.
