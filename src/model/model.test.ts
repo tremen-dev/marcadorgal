@@ -183,9 +183,9 @@ describe("CA-5 match state with score", () => {
     expect(
       ok({ status: "finished", score, minute: null, halfTime: false }),
     ).toBe(false);
-    expect(ok({ status: "suspended", score, minute: null, halfTime: true })).toBe(
-      false,
-    );
+    expect(
+      ok({ status: "suspended", score, minute: null, halfTime: true }),
+    ).toBe(false);
     expect(
       ok({ status: "scheduled", score: null, minute: null, halfTime: false }),
     ).toBe(false);

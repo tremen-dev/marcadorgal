@@ -1052,7 +1052,10 @@ describe("SPEC-021 CA-2 girona-albacete-2026-09-25.json.br", () => {
   const captures: RawCapture[] = JSON.parse(
     brotliDecompressSync(
       readFileSync(
-        new URL("./fixtures/girona-albacete-2026-09-25.json.br", import.meta.url),
+        new URL(
+          "./fixtures/girona-albacete-2026-09-25.json.br",
+          import.meta.url,
+        ),
       ),
     ).toString("utf8"),
   );
