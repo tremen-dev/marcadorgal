@@ -232,18 +232,24 @@ describe("SPEC-024 CA-3 one conversion", () => {
     ["an instant that is not one", { kickoff: "mañá" }],
     ["a sixth status", { status: "halftime" }],
     ["a missing column", { tier: undefined }],
-  ])("an invalid payload (%s) is dropped with console.error naming the matchId", (_n, change) => {
-    const error = vi.spyOn(console, "error").mockImplementation(() => {});
-    expect(toPublicMatch({ ...payload, ...change })).toBeNull();
-    expect(error).toHaveBeenCalledTimes(1);
-    expect(String(error.mock.calls[0].join(" "))).toContain(
-      "celta-coruna-2026-10-10",
-    );
-  });
+  ])(
+    "an invalid payload (%s) is dropped with console.error naming the matchId",
+    (_n, change) => {
+      const error = vi.spyOn(console, "error").mockImplementation(() => {});
+      expect(toPublicMatch({ ...payload, ...change })).toBeNull();
+      expect(error).toHaveBeenCalledTimes(1);
+      expect(String(error.mock.calls[0].join(" "))).toContain(
+        "celta-coruna-2026-10-10",
+      );
+    },
+  );
 
-  it.each([null, "x", 3, []])("a payload that is not a row (%s) is dropped", (value) => {
-    const error = vi.spyOn(console, "error").mockImplementation(() => {});
-    expect(toPublicMatch(value)).toBeNull();
-    expect(error).toHaveBeenCalledTimes(1);
-  });
+  it.each([null, "x", 3, []])(
+    "a payload that is not a row (%s) is dropped",
+    (value) => {
+      const error = vi.spyOn(console, "error").mockImplementation(() => {});
+      expect(toPublicMatch(value)).toBeNull();
+      expect(error).toHaveBeenCalledTimes(1);
+    },
+  );
 });
