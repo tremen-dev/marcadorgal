@@ -2,7 +2,7 @@
 
 > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.
 > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.
-> Última actualización: 2026-10-07 (EPIC-003 en curso; SPEC-019 hecho; SPEC-020 en borrador).
+> Última actualización: 2026-10-08 (EPIC-003 en curso; SPEC-019 y SPEC-020 hecho; `/` sirve datos reales).
 
 ## Qué es y en qué punto está
 
@@ -42,7 +42,7 @@ Migraciones de SPEC-014 y SPEC-018 aplicadas en `dev`.
 
 **EPIC-002 (ingesta y motor) cerrada el 2026-10-06 (`hecho`)** con sus 10 specs (005-009, 012-014, 016, 018).
 
-**EPIC-003 (xornada pública) en curso, aprobada el 2026-10-06.** SPEC-019 completa (PR #36): contrato `PublicMatch`, modelo de vista `buildXornada` y pantalla Xornada móvil sobre datos de demostración en `/demo/xornada` (404 en producción). SPEC-020 (lectura pública y snapshot) en borrador.
+**EPIC-003 (xornada pública) en curso, aprobada el 2026-10-06.** SPEC-019 completa (PR #36): contrato `PublicMatch`, modelo de vista `buildXornada` y pantalla Xornada móvil sobre datos de demostración en `/demo/xornada` (404 en producción). SPEC-020 completa (PRs #38 y #39, desplegada el 2026-10-08): vista `web.xornada` y rol `web_reader`, sin lectura anónima de las tablas, `/` y `/es` sirven la xornada actual real con `noindex` y `/api/board` con ETag y caché de 10 s; pg_cron firma el tick (ADR-015). Pendiente: credenciales de producción en el entorno Preview de Vercel (F-SPEC-020-12, EPIC-FIX); blindar el advisory lock de `openAttempt` y `reset all` al rotar `web_reader` (EPIC-MANT).
 
 **EPIC-MANT — SPEC-017 completa (PR #31):** mejoras del informe de jornada, entre ellas el contraste con crudo propio (`--contrastar`).
 
@@ -114,6 +114,7 @@ de cada fuente la gestiona el titular fuera del repo (D-7).
 - ADR-012 RN-02: `postponed` y `suspended` los da la fuente ganadora, con cualificador y reversibles.
 - ADR-013 Partido sin directo de la fuente: prórroga de la ventana hasta +6 h y `sen_sinal` en `scheduled`.
 - ADR-014 Entorno y acceso público: el proyecto Supabase actual pasa a producción (desarrollo y `test:db` en local), el navegador no lee Postgres, el público ve solo `PublicMatch` vía `web.xornada` y rol `web_reader`, Realtime por Broadcast privado. Supersede ADR-006 §6. Por decisión del titular (2026-10-07) Supabase sigue en Free hasta la jornada publicada.
+- ADR-015 Login de la web en Supabase: `web_reader` conserva un residuo no revocable de PUBLIC (pg_net en `net`, funciones de `pg_catalog`), sin datos ni escritura en tablas; el disparador de pg_cron firma el tick con HMAC (±60 s) y la llave no sale de Vault.
 
 ## Riesgos y preguntas abiertas
 
