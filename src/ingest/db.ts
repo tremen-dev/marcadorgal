@@ -75,7 +75,8 @@ export interface IngestDb {
 // Every instant becomes an Instant here: no Date leaves this layer (D-9).
 const instant = (value: Date): Instant => value.toISOString();
 
-// One row of observations; added_minute only in live (SPEC-005 N-8).
+// One row of observations; added_minute only in live (SPEC-005 N-8), and
+// half_time only true in live (SPEC-021: absent is false).
 const observationRow = (o: Observation) => ({
   id: o.id,
   match_id: o.matchId,
@@ -85,6 +86,7 @@ const observationRow = (o: Observation) => ({
   away_score: o.score === null ? null : o.score.away,
   minute: o.minute,
   added_minute: o.status === "live" ? o.addedMinute : null,
+  half_time: o.status === "live" && o.halfTime === true,
   observed_at: o.observedAt,
   received_at: o.receivedAt,
   raw_ref: o.rawRef,

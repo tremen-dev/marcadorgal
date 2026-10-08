@@ -57,7 +57,7 @@ export async function replayJornadaFilas(
       ? []
       : await sql<ObservationRow[]>`
           select id, match_id, source_id, status, home_score, away_score, minute,
-            added_minute, observed_at, received_at, raw_ref
+            added_minute, half_time, observed_at, received_at, raw_ref
           from observations
           where match_id = any (${sql.array(ids)})
             and observed_at >= ${desde} and observed_at <= ${hasta}
