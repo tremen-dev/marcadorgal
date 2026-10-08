@@ -57,6 +57,7 @@ export function MatchRow({ row, locale }: Props) {
         noSignal && styles.noSignal,
       )}
       data-testid="match-row"
+      data-match-id={row.matchId}
       data-status={row.status}
       data-qualifier={row.qualifier}
     >

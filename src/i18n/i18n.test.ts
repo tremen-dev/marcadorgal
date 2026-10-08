@@ -89,6 +89,15 @@ describe("SPEC-019 CA-6 Xornada keys", () => {
     expect(t("es", "xornada.title")).toBe("Jornada");
     expect(t("gl", "xornada.locale")).toBe("Lingua");
     expect(t("es", "xornada.locale")).toBe("Idioma");
+  });
+
+  it("SPEC-020 CA-6 says the xornada is not available, in both languages", () => {
+    expect(t("gl", "xornada.unavailable")).toBe(
+      "Os resultados non están dispoñibles agora mesmo.",
+    );
+    expect(t("es", "xornada.unavailable")).toBe(
+      "Los resultados no están disponibles en este momento.",
+    );
     expect(gl.locales).toEqual({ gl: "gl", es: "es" });
     expect(es.locales).toEqual(gl.locales);
   });

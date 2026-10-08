@@ -258,3 +258,14 @@
   white-space: nowrap;
   border: 0;
 }
+
+/* SPEC-020 CA-6: the data could not be read; words, not an empty screen. */
+.unavailable {
+  margin: 0;
+  padding: var(--space-16) 14px;
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--fg-dim);
+}

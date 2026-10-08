@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 import "../globals.css";
-import { waitingMetadata } from "../metadata";
+import { siteMetadata } from "../metadata";
 
-export const metadata = waitingMetadata("gl");
+export const metadata = siteMetadata("gl");
 
 export default function GlLayout({ children }: { children: ReactNode }) {
   return (

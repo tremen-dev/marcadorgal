@@ -15,7 +15,7 @@ describe("CA-12 no hex outside the tokens", () => {
     const files = sources();
     expect(files.length).toBeGreaterThan(10);
     expect(files).toContain("src/design/tokens.css");
-    expect(files).toContain("src/components/WaitingPage.module.css");
+    expect(files).toContain("src/components/xornada/Xornada.module.css");
   });
 
   it("no file other than tokens.ts/tokens.css contains a hex colour", () => {
@@ -26,8 +26,10 @@ describe("CA-12 no hex outside the tokens", () => {
   });
 });
 
-describe("CA-11 WaitingPage.module.css consumes tokens.css", () => {
-  const css = readFileSync("src/components/WaitingPage.module.css", "utf8");
+// SPEC-020 CA-6: the waiting page left /; the screen that replaced it keeps
+// the guarantee.
+describe("CA-11 Xornada.module.css consumes tokens.css", () => {
+  const css = readFileSync("src/components/xornada/Xornada.module.css", "utf8");
   const tokens = readFileSync("src/design/tokens.css", "utf8");
   const defined = new Set(
     [...tokens.matchAll(/(--[\w-]+)\s*:/g)].map((m) => m[1]),
@@ -37,12 +39,5 @@ describe("CA-11 WaitingPage.module.css consumes tokens.css", () => {
     const used = [...css.matchAll(/var\((--[\w-]+)\)/g)].map((m) => m[1]);
     expect(used.length).toBeGreaterThan(0);
     expect(used.filter((name) => !defined.has(name))).toEqual([]);
-  });
-
-  it(".switch uses the touch target token and .heading is weight 800", () => {
-    expect(css).toMatch(
-      /\.switch\s*\{[^}]*min-height:\s*var\(--touch-target\);/,
-    );
-    expect(css).toMatch(/\.heading\s*\{[^}]*font-weight:\s*800;/);
   });
 });
