@@ -50,6 +50,7 @@ describe("CA-5 generated CSS", () => {
       "--row-compact: 30px;",
       "--sidebar: 236px;",
       "--panel: 372px;",
+      "--breakpoint-desktop: 1024px;",
       "--grid-row-wide: 56px minmax(0, 1fr) 52px 32px;",
       "--grid-row-compact: 32px minmax(0, 1fr) 46px minmax(0, 1fr) 14px;",
       "--live-dot-size: 6px;",

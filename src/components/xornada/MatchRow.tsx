@@ -65,6 +65,7 @@ export function MatchRow({ row, locale }: Props) {
       data-match-id={row.matchId}
       data-status={row.status}
       data-qualifier={row.qualifier}
+      data-day={row.day}
     >
       <div className={styles.margin}>
         <span

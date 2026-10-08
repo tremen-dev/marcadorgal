@@ -150,3 +150,107 @@ describe("CA-10 typed t()", () => {
     expect(() => t("gl", "freshness.lastData")).toBeDefined();
   });
 });
+
+describe("SPEC-023 Xornada controls", () => {
+  it("CA-1/CA-2 weekdays and the day label: «ven 29» / «vie 29»", () => {
+    expect(gl.weekday).toEqual({
+      mon: "lun",
+      tue: "mar",
+      wed: "mér",
+      thu: "xov",
+      fri: "ven",
+      sat: "sáb",
+      sun: "dom",
+    });
+    expect(es.weekday).toEqual({
+      mon: "lun",
+      tue: "mar",
+      wed: "mié",
+      thu: "jue",
+      fri: "vie",
+      sat: "sáb",
+      sun: "dom",
+    });
+    expect(
+      t("gl", "xornada.dayLabel", { weekday: gl.weekday.fri, day: 29 }),
+    ).toBe("ven 29");
+    expect(
+      t("es", "xornada.dayLabel", { weekday: es.weekday.fri, day: 29 }),
+    ).toBe("vie 29");
+  });
+
+  it("CA-3 filters: Todos · En xogo · Rematados / Todos · En juego · Finalizados, never «Directo»", () => {
+    expect(gl.filter).toMatchObject({
+      all: "Todos",
+      live: "En xogo",
+      finished: "Rematados",
+    });
+    expect(es.filter).toMatchObject({
+      all: "Todos",
+      live: "En juego",
+      finished: "Finalizados",
+    });
+    expect(JSON.stringify([gl, es])).not.toMatch(/Directo/i);
+  });
+
+  it("CA-3 empty: «nada aquí» in both", () => {
+    expect(t("gl", "xornada.empty")).toBe("nada aquí");
+    expect(t("es", "xornada.empty")).toBe("nada aquí");
+  });
+
+  it("CA-5/CA-7 round and sidebar: «xornada N», «Competicións»", () => {
+    expect(t("gl", "xornada.round", { n: 8 })).toBe("xornada 8");
+    expect(t("es", "xornada.round", { n: 8 })).toBe("jornada 8");
+    expect(t("gl", "xornada.competitions")).toBe("Competicións");
+    expect(t("es", "xornada.competitions")).toBe("Competiciones");
+    expect(t("gl", "xornada.matchCount", { n: 4 })).toBe("4 partidos");
+    expect(t("es", "xornada.matchCount", { n: 4 })).toBe("4 partidos");
+    expect(t("gl", "xornada.matchCountOne", { n: 1 })).toBe("1 partido");
+    expect(t("es", "xornada.matchCountOne", { n: 1 })).toBe("1 partido");
+  });
+
+  it("B-2 months, abbreviated, and the day label with its month", () => {
+    expect(Object.values(gl.month)).toEqual([
+      "xan",
+      "feb",
+      "mar",
+      "abr",
+      "maio",
+      "xuñ",
+      "xul",
+      "ago",
+      "set",
+      "out",
+      "nov",
+      "dec",
+    ]);
+    expect(Object.values(es.month)).toEqual([
+      "ene",
+      "feb",
+      "mar",
+      "abr",
+      "may",
+      "jun",
+      "jul",
+      "ago",
+      "sep",
+      "oct",
+      "nov",
+      "dic",
+    ]);
+    expect(
+      t("gl", "xornada.dayMonthLabel", {
+        weekday: gl.weekday.sat,
+        day: 12,
+        month: gl.month.sep,
+      }),
+    ).toBe("sáb 12 set");
+    expect(
+      t("es", "xornada.dayMonthLabel", {
+        weekday: es.weekday.sat,
+        day: 12,
+        month: es.month.sep,
+      }),
+    ).toBe("sáb 12 sep");
+  });
+});

@@ -42,6 +42,11 @@ divergencias con el dominio que hay que resolver antes de codificarlo.
    fuera de v1; se hereda la fila ampla y el layout móvil.
 5. La marca de agua para capturas se hereda como idea; su forma final se decide
    en la spec de la pantalla.
+6. *2026-10-08, decisión del titular (SPEC-023 F-3):* el objetivo táctil de
+   44 px no se exige en v1 a los controles densos del diseño (tira de días,
+   píldoras de filtro, entradas del lateral y cabeceras de competición), que
+   miden lo que dibuja el diseño; deben cumplir WCAG 2.5.8 AA (24 px con su
+   espaciado). El resto de controles sigue con 44 px.
 
 ## Consecuencias
 
