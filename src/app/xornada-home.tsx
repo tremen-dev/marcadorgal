@@ -3,8 +3,8 @@ import { readPublicXornada } from "@/board/reader";
 import { nowInstant } from "@/clock";
 import { XornadaScreen } from "@/components/xornada/XornadaScreen";
 import { type Locale, t } from "@/i18n";
-import type { PublicMatch } from "@/model";
-import { buildXornada } from "@/xornada/view";
+import type { Instant, PublicMatch } from "@/model";
+import { buildXornada, xornadaDays } from "@/xornada/view";
 
 // / and /es (SPEC-020 CA-6): the snapshot of the current xornada, rendered on
 // the server from web.xornada through the public reader only. Not indexed
@@ -21,9 +21,9 @@ export function homeMetadata(locale: Locale): Metadata {
   };
 }
 
-async function snapshot(): Promise<PublicMatch[] | null> {
+async function snapshot(now: Instant): Promise<PublicMatch[] | null> {
   try {
-    return await readPublicXornada(nowInstant());
+    return await readPublicXornada(now);
   } catch (e) {
     console.error(
       `xornada: read failed: ${e instanceof Error ? e.message : String(e)}`,
@@ -33,11 +33,13 @@ async function snapshot(): Promise<PublicMatch[] | null> {
 }
 
 export async function HomeXornada({ locale }: { locale: Locale }) {
-  const matches = await snapshot();
+  const now = nowInstant();
+  const matches = await snapshot(now);
   return (
     <XornadaScreen
       locale={locale}
       competitions={matches === null ? [] : buildXornada(matches)}
+      days={matches === null ? [] : xornadaDays(matches, now)}
       paths={HOME_PATHS}
       unavailable={matches === null}
     />

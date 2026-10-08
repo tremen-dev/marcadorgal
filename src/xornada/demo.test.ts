@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { PublicMatch } from "@/model";
-import { DEMO_MATCHES, isDemoAvailable } from "./demo";
-import { buildXornada } from "./view";
+import { DEMO_MATCHES, DEMO_NOW, isDemoAvailable } from "./demo";
+import { buildXornada, xornadaDays } from "./view";
 
 const xornada = buildXornada([...DEMO_MATCHES]);
 const rows = xornada.flatMap((c) => c.rows);
@@ -91,5 +91,24 @@ describe("SPEC-019 CA-5 isDemoAvailable", () => {
     expect(isDemoAvailable({ VERCEL_ENV: "preview" })).toBe(true);
     expect(isDemoAvailable({ VERCEL_ENV: "development" })).toBe(true);
     expect(isDemoAvailable({})).toBe(true);
+  });
+});
+
+describe("SPEC-023 CA-8 demonstration days", () => {
+  const days = xornadaDays(DEMO_MATCHES, DEMO_NOW);
+
+  it("spans at least three days, one of them today", () => {
+    expect(days.length).toBeGreaterThanOrEqual(3);
+    expect(days.filter((d) => d.today)).toHaveLength(1);
+  });
+
+  it("two of its days have live, finished and scheduled rows", () => {
+    const full = days.filter((d) => {
+      const statuses = new Set<string>(
+        rows.filter((r) => r.day === d.date).map((r) => r.status),
+      );
+      return ["live", "finished", "scheduled"].every((s) => statuses.has(s));
+    });
+    expect(full.length).toBeGreaterThanOrEqual(2);
   });
 });

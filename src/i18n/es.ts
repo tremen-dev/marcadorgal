@@ -26,6 +26,28 @@ export const es: Dictionary = {
     unavailable: "Los resultados no están disponibles en este momento.",
     // SPEC-021: half-time, a moment inside live (never an abbreviation).
     halfTime: "Descanso",
+    // SPEC-023: the strip of days, the filters, the sidebar.
+    days: "Días",
+    dayLabel: "{weekday} {day}",
+    empty: "nada aquí",
+    round: "jornada {n}",
+    competitions: "Competiciones",
+    matchCount: "{n} partidos",
+  },
+  weekday: {
+    mon: "lun",
+    tue: "mar",
+    wed: "mié",
+    thu: "jue",
+    fri: "vie",
+    sat: "sáb",
+    sun: "dom",
+  },
+  filter: {
+    label: "Filtro",
+    all: "Todos",
+    live: "En juego",
+    finished: "Finalizados",
   },
   locales: { gl: "gl", es: "es" },
 };

@@ -97,6 +97,9 @@ export const MEASURE = {
   rowCompact: 30,
   sidebar: 236,
   panel: 372,
+  // SPEC-023 CA-7: from here up, the desktop layout (ADR-005 leaves it to the
+  // screen's spec).
+  breakpointDesktop: 1024,
 } as const;
 
 export const GRID = {

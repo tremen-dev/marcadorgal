@@ -152,6 +152,7 @@ describe("CA-4 scales and measures", () => {
       rowCompact: 30,
       sidebar: 236,
       panel: 372,
+      breakpointDesktop: 1024,
     });
   });
   it("GRID", () => {
@@ -169,5 +170,26 @@ describe("CA-4 scales and measures", () => {
     expect(FOCUS_RING_PX).toBe(2);
     expect(INPUT_FONT_PX).toBe(16);
     expect(HAIRLINE_PX).toBe(1);
+  });
+});
+
+// SPEC-023 CA-7: the desktop layout starts at 1024 px. A media query cannot
+// read a custom property, so every min-width query of the screen's CSS must
+// say the token's value.
+describe("SPEC-023 CA-7 breakpointDesktop", () => {
+  it("is 1024 px", () => {
+    expect(MEASURE.breakpointDesktop).toBe(1024);
+  });
+
+  it("is the only width the Xornada CSS queries", () => {
+    const css = readFileSync(
+      "src/components/xornada/Xornada.module.css",
+      "utf8",
+    );
+    const queries = [...css.matchAll(/@media[^{]*/g)].map((m) => m[0].trim());
+    expect(queries.length).toBeGreaterThan(0);
+    for (const query of queries) {
+      expect(query).toBe(`@media (min-width: ${MEASURE.breakpointDesktop}px)`);
+    }
   });
 });

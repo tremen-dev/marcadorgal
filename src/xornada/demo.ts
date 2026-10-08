@@ -143,6 +143,8 @@ function demoMatch(
 
 const RAW: unknown[] = [
   // Deliberately shuffled: buildXornada orders competitions and rows.
+  // SPEC-023 CA-8: Friday to Monday; Saturday and Sunday each have live,
+  // finished and scheduled rows.
   demoMatch(
     TERCERA_RFEF,
     "2026-10-03T17:00:00Z",
@@ -159,7 +161,7 @@ const RAW: unknown[] = [
   ),
   demoMatch(
     TERCERA_RFEF,
-    "2026-10-03T14:00:00Z",
+    "2026-10-02T17:00:00Z",
     team("Silva SD", "Silva"),
     team("UD Somozas", "Somozas"),
     finished(1, 1),
@@ -189,14 +191,14 @@ const RAW: unknown[] = [
   ),
   demoMatch(
     PRIMERA,
-    "2026-10-03T12:00:00Z",
+    "2026-10-04T10:00:00Z",
     team("Real Betis", "Betis"),
     team("Villarreal CF", "Villarreal"),
     finished(2, 2),
   ),
   demoMatch(
     PRIMERA,
-    "2026-10-03T19:00:00Z",
+    "2026-10-05T19:00:00Z",
     team("Athletic Club", "Athletic"),
     team("Real Sociedad"),
     scheduled(),
@@ -204,7 +206,7 @@ const RAW: unknown[] = [
 
   demoMatch(
     SEGUNDA_RFEF,
-    "2026-10-03T15:00:00Z",
+    "2026-10-04T15:00:00Z",
     team("SD Compostela", "Compostela"),
     team("Ourense CF"),
     live(2, 0, 90, 5),
@@ -257,7 +259,7 @@ const RAW: unknown[] = [
   ),
   demoMatch(
     SEGUNDA,
-    "2026-10-03T12:00:00Z",
+    "2026-10-02T18:30:00Z",
     team("Real Oviedo", "Oviedo"),
     team("Real Sporting", "Sporting"),
     finished(0, 1),
@@ -303,12 +305,15 @@ const RAW: unknown[] = [
   ),
   demoMatch(
     PRIMERA_RFEF,
-    "2026-10-03T18:30:00Z",
+    "2026-10-04T16:30:00Z",
     team("Unionistas de Salamanca CF", "Unionistas"),
     team("Real Avilés Industrial", "Avilés"),
     scheduled(),
   ),
 ];
+
+// SPEC-023: the demonstration's «now», so its strip has a today (Saturday).
+export const DEMO_NOW = "2026-10-03T16:50:00Z";
 
 export const DEMO_MATCHES: readonly PublicMatch[] = z
   .array(PublicMatch)

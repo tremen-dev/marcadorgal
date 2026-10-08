@@ -27,6 +27,28 @@ export const gl = {
     unavailable: "Os resultados non están dispoñibles agora mesmo.",
     // SPEC-021: half-time, a moment inside live (never an abbreviation).
     halfTime: "Descanso",
+    // SPEC-023: the strip of days, the filters, the sidebar.
+    days: "Días",
+    dayLabel: "{weekday} {day}",
+    empty: "nada aquí",
+    round: "xornada {n}",
+    competitions: "Competicións",
+    matchCount: "{n} partidos",
+  },
+  weekday: {
+    mon: "lun",
+    tue: "mar",
+    wed: "mér",
+    thu: "xov",
+    fri: "ven",
+    sat: "sáb",
+    sun: "dom",
+  },
+  filter: {
+    label: "Filtro",
+    all: "Todos",
+    live: "En xogo",
+    finished: "Rematados",
   },
   locales: { gl: "gl", es: "es" },
 } as const satisfies {

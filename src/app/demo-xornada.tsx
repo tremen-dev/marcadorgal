@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { XornadaScreen } from "@/components/xornada/XornadaScreen";
 import { type Locale, t } from "@/i18n";
-import { DEMO_MATCHES, isDemoAvailable } from "@/xornada/demo";
-import { buildXornada } from "@/xornada/view";
+import { DEMO_MATCHES, DEMO_NOW, isDemoAvailable } from "@/xornada/demo";
+import { buildXornada, xornadaDays } from "@/xornada/view";
 
 // /demo/xornada and /es/demo/xornada (SPEC-019 CA-5): server content only,
 // never in production, never indexed.
@@ -25,6 +25,7 @@ export function DemoXornada({ locale }: { locale: Locale }) {
     <XornadaScreen
       locale={locale}
       competitions={buildXornada([...DEMO_MATCHES])}
+      days={xornadaDays(DEMO_MATCHES, DEMO_NOW)}
       paths={DEMO_PATHS}
     />
   );
