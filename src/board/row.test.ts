@@ -27,6 +27,7 @@ const base: XornadaDbRow = {
   version: 0,
   observed_at: null,
   decided_at: null,
+  half_time: false,
 };
 
 const decided = {
@@ -77,6 +78,7 @@ describe("SPEC-020 CA-4 toPublicMatches", () => {
       score: { home: 2, away: 1 },
       minute: 45,
       addedMinute: 3,
+      halfTime: false,
       version: 3,
       observedAt: "2026-10-10T16:47:00.000Z",
       decidedAt: "2026-10-10T16:47:05.000Z",
@@ -132,5 +134,62 @@ describe("SPEC-020 CA-4 toPublicMatches", () => {
     expect(out.map((m) => m.matchId)).toEqual(["ok-match"]);
     expect(error).toHaveBeenCalledTimes(1);
     expect(String(error.mock.calls[0].join(" "))).toContain("bad-match");
+  });
+});
+
+describe("SPEC-021 CA-6 half_time to halfTime", () => {
+  const live = {
+    ...base,
+    ...decided,
+    status: "live",
+    home_score: 1,
+    away_score: 0,
+    minute: 45,
+  };
+
+  it("a live row at half-time gives halfTime true, with its minute kept", () => {
+    const [m] = toPublicMatches([{ ...live, half_time: true }]);
+    expect(m).toMatchObject({ status: "live", minute: 45, halfTime: true });
+  });
+
+  it("a live row out of half-time gives halfTime false", () => {
+    const [m] = toPublicMatches([{ ...live, half_time: false }]);
+    expect(m).toMatchObject({ status: "live", halfTime: false });
+  });
+
+  it("a row outside live carries no halfTime", () => {
+    const [m] = toPublicMatches([
+      { ...base, ...decided, status: "finished", home_score: 1, away_score: 0 },
+    ]);
+    expect(m).not.toHaveProperty("halfTime");
+  });
+
+  it("a live row without the key (the view before the migration) is left out and named (F-SPEC-019-3)", () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    const { half_time: _, ...old } = { ...live, match_id: "old-view" };
+    const out = toPublicMatches([
+      old as XornadaDbRow,
+      { ...base, match_id: "ok-match" },
+    ]);
+    expect(out.map((m) => m.matchId)).toEqual(["ok-match"]);
+    expect(error).toHaveBeenCalledTimes(1);
+    expect(String(error.mock.calls[0].join(" "))).toContain("old-view");
+    expect(String(error.mock.calls[0].join(" "))).toContain("halfTime");
+  });
+
+  it("half_time true outside live is left out, not dropped in silence", () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    const out = toPublicMatches([
+      {
+        ...base,
+        ...decided,
+        status: "finished",
+        home_score: 1,
+        away_score: 0,
+        half_time: true,
+      },
+    ]);
+    expect(out).toEqual([]);
+    expect(error).toHaveBeenCalledTimes(1);
   });
 });

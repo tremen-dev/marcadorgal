@@ -38,13 +38,16 @@ const STATES = [
   ["finished", 1, 2, null, null, "provisional"],
 ];
 
-async function decide(tx, matchId, [status, home, away, minute, added, qualifier]) {
+async function decide(tx, matchId, [status, home, away, minute, added, qualifier, halfTime]) {
   const state = {
     status,
     home_score: home,
     away_score: away,
     minute,
     added_minute: added,
+    // SPEC-021: only the half-time case names the column; the rest take the
+    // default false.
+    ...(halfTime === undefined ? {} : { half_time: halfTime }),
   };
   const [{ id }] = await tx`insert into observations ${tx({
     match_id: matchId,
@@ -99,6 +102,21 @@ try {
       for (const [i, state] of STATES.entries()) await decide(tx, current[i].matchId, state);
       if (earlier) await decide(tx, earlier.matchId, ["live", 1, 0, 67, null, "confirmado"]);
     });
+  }
+  // SPEC-021 CA-6, CA-7: a live at half-time (with the minute the source
+  // reports), once per season and apart from the block above, so a local
+  // database seeded before SPEC-021 gets it too.
+  const halfTime = await sql`select 1 from decisions d join matches m on m.id = d.match_id
+    where m.season = ${season} and d.half_time limit 1`;
+  if (halfTime.length === 0) {
+    const current = currentXornada(index, now).sort(
+      (a, b) => a.kickoff.localeCompare(b.kickoff) || a.matchId.localeCompare(b.matchId),
+    );
+    const free = current[STATES.length];
+    if (!free) throw new Error("no free match in the current xornada for half-time");
+    await sql.begin((tx) =>
+      decide(tx, free.matchId, ["live", 1, 0, 45, null, "confirmado", true]),
+    );
   }
   console.log(`e2e:db seed ready for ${season}`);
 } finally {

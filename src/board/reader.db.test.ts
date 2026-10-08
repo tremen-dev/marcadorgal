@@ -23,7 +23,7 @@ async function rollback(fn: (tx: TransactionSql) => Promise<void>) {
 
 type Seed = {
   id: string;
-  decision?: Record<string, string | number | null>;
+  decision?: Record<string, string | number | boolean | null>;
 };
 
 const SEEDS: Seed[] = [
@@ -50,6 +50,17 @@ const SEEDS: Seed[] = [
       away_score: 0,
       minute: null,
       qualifier: "sen_sinal",
+    },
+  },
+  // SPEC-021 CA-6: a live at half-time, with the minute the source reported.
+  {
+    id: "t-live-half-time",
+    decision: {
+      status: "live",
+      home_score: 1,
+      away_score: 0,
+      minute: 45,
+      half_time: true,
     },
   },
   {
@@ -128,6 +139,13 @@ describe("SPEC-020 CA-4 createXornadaReader as web_reader", () => {
         addedMinute: 3,
         version: 1,
       });
+      expect(byId.get("t-live-45-3")).toMatchObject({ halfTime: false });
+      expect(byId.get("t-live-half-time")).toMatchObject({
+        status: "live",
+        minute: 45,
+        halfTime: true,
+      });
+      expect(byId.get("t-finished")).not.toHaveProperty("halfTime");
       expect(byId.get("t-postponed-provisional")).toMatchObject({
         status: "postponed",
         qualifier: "provisional",
