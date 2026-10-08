@@ -30,7 +30,12 @@ export function MatchRow({ row, locale }: Props) {
       ? formatTime(margin.kickoff, locale)
       : margin.kind === "minute"
         ? minuteLabel(margin)
-        : t(locale, row.statusKey);
+        : margin.kind === "halfTime"
+          ? t(locale, "xornada.halfTime")
+          : t(locale, row.statusKey);
+  // SPEC-021 H-2: at half-time there is no minute to run, so no live dot;
+  // the ember inset still says the match is in play.
+  const showDot = isLive && !noSignal && margin.kind !== "halfTime";
   const dimNames = row.status === "postponed";
   const nameClass = (side: "home" | "away") =>
     cx(
@@ -70,9 +75,7 @@ export function MatchRow({ row, locale }: Props) {
           )}
           data-testid="match-margin"
         >
-          {isLive && !noSignal && (
-            <span className={styles.dot} aria-hidden="true" />
-          )}
+          {showDot && <span className={styles.dot} aria-hidden="true" />}
           {marginText}
         </span>
         {margin.kind !== "status" && (

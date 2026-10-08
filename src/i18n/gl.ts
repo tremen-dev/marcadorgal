@@ -25,6 +25,8 @@ export const gl = {
     liveCount: "{n} en xogo",
     locale: "Lingua",
     unavailable: "Os resultados non están dispoñibles agora mesmo.",
+    // SPEC-021: half-time, a moment inside live (never an abbreviation).
+    halfTime: "Descanso",
   },
   locales: { gl: "gl", es: "es" },
 } as const satisfies {

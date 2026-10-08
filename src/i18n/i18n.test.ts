@@ -38,6 +38,11 @@ describe("CA-8 dictionaries", () => {
     }
   });
 
+  it("SPEC-021 CA-7: half-time is «Descanso» in both, never an abbreviation", () => {
+    expect(gl.xornada.halfTime).toBe("Descanso");
+    expect(es.xornada.halfTime).toBe("Descanso");
+  });
+
   it("status and qualifier keys mirror the model enums", () => {
     expect(Object.keys(gl.status)).toEqual(MatchStatus.options);
     expect(Object.keys(gl.qualifier)).toEqual(Qualifier.options);
