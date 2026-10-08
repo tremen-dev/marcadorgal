@@ -23,7 +23,11 @@ export function isLoopbackUrl(url: string): boolean {
   for (const key of parsed.searchParams.keys()) {
     if (HOST_KEYS.has(key.trim().toLowerCase())) return false;
   }
-  const host = parsed.hostname;
+  return isLoopbackHost(parsed.hostname);
+}
+
+// A WHATWG URL hostname: localhost, 127.0.0.0/8 or [::1].
+export function isLoopbackHost(host: string): boolean {
   return (
     host === "localhost" ||
     host === "[::1]" ||
