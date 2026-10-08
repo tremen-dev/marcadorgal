@@ -185,16 +185,21 @@
   color: var(--fg-dim);
 }
 
+/* V-1: the live count carries its words on screen, never colour alone. */
 .navLive {
   composes: navCount;
   color: var(--directo);
+  white-space: nowrap;
 }
 
 /* SPEC-023 CA-6: what the client hides with `hidden` stays hidden, whatever
    display its class gives it. */
 .row[hidden],
 .competition[hidden],
-.empty[hidden] {
+.empty[hidden],
+.livePill[hidden],
+.navCount[hidden],
+.navLive[hidden] {
   display: none;
 }
 

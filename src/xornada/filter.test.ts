@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
+  competitionCounts,
   countFilters,
   EMPTY_STATE,
+  formatCount,
   fragmentOf,
   parseFragment,
   rowMatches,
@@ -123,5 +125,52 @@ describe("SPEC-023 CA-3 countFilters", () => {
       live: 0,
       finished: 0,
     });
+  });
+});
+
+// SPEC-023 iteration 2 (F-4): the sidebar and each header follow the day and
+// the filter chosen.
+describe("SPEC-023 F-4 competitionCounts", () => {
+  const rows = [
+    { status: "live", day: "2026-10-03" },
+    { status: "live", day: "2026-10-04" },
+    { status: "finished", day: "2026-10-03" },
+    { status: "scheduled", day: "2026-10-04" },
+  ];
+
+  it("the whole xornada with no state", () => {
+    expect(competitionCounts(rows, EMPTY_STATE)).toEqual({
+      matching: 4,
+      live: 2,
+    });
+  });
+
+  it("only the rows of the chosen day", () => {
+    expect(
+      competitionCounts(rows, { day: "2026-10-03", filter: null }),
+    ).toEqual({ matching: 2, live: 1 });
+  });
+
+  it("only the rows of the chosen filter, combined with the day", () => {
+    expect(competitionCounts(rows, { day: null, filter: "finished" })).toEqual({
+      matching: 1,
+      live: 0,
+    });
+    expect(
+      competitionCounts(rows, { day: "2026-10-04", filter: "live" }),
+    ).toEqual({ matching: 1, live: 1 });
+  });
+});
+
+// SPEC-023 iteration 2 (B-3): «1 partido», «N partidos».
+describe("SPEC-023 B-3 formatCount", () => {
+  const templates = { one: "{n} partido", other: "{n} partidos" };
+  it.each([
+    [0, "0 partidos"],
+    [1, "1 partido"],
+    [2, "2 partidos"],
+    [11, "11 partidos"],
+  ])("%i → %s", (n, text) => {
+    expect(formatCount(templates, n)).toBe(text);
   });
 });

@@ -30,9 +30,11 @@ export const gl = {
     // SPEC-023: the strip of days, the filters, the sidebar.
     days: "Días",
     dayLabel: "{weekday} {day}",
+    dayMonthLabel: "{weekday} {day} {month}",
     empty: "nada aquí",
     round: "xornada {n}",
     competitions: "Competicións",
+    matchCountOne: "{n} partido",
     matchCount: "{n} partidos",
   },
   weekday: {
@@ -43,6 +45,20 @@ export const gl = {
     fri: "ven",
     sat: "sáb",
     sun: "dom",
+  },
+  month: {
+    jan: "xan",
+    feb: "feb",
+    mar: "mar",
+    apr: "abr",
+    may: "maio",
+    jun: "xuñ",
+    jul: "xul",
+    aug: "ago",
+    sep: "set",
+    oct: "out",
+    nov: "nov",
+    dec: "dec",
   },
   filter: {
     label: "Filtro",

@@ -356,6 +356,130 @@ for (const route of routes) {
       );
     });
 
+    // Iteration 2, V-1: in the sidebar, live and total are not told apart by
+    // colour alone: the live count carries its words on screen.
+    test("V-1 the sidebar live count is labelled on screen, the total is a bare number", async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 1440, height: 900 });
+      await page.goto(route.path);
+      const live = page.getByTestId("sidebar-live").first();
+      await expect(live).toBeVisible();
+      await expect(live).toHaveText(
+        route.dict.xornada.liveCount.replace("{n}", "2"),
+      );
+      expect(await live.getAttribute("aria-hidden")).toBeNull();
+      for (const width of [1024, 1440]) {
+        await page.setViewportSize({ width, height: 900 });
+        const truncated = await page
+          .locator('[data-testid="sidebar-live"]:visible')
+          .evaluateAll(
+            (els) =>
+              els.filter(
+                (el) =>
+                  el.scrollWidth > el.clientWidth ||
+                  el.getBoundingClientRect().height > 20,
+              ).length,
+          );
+        expect(truncated).toBe(0);
+      }
+      // Fold the filter to Rematados: no live left, the bare total shows.
+      await page.getByTestId("filter-finished").click();
+      const entry = page.getByTestId("sidebar-entry").first();
+      await expect(entry.getByTestId("sidebar-live")).toBeHidden();
+      await expect(entry.getByTestId("sidebar-total")).toBeVisible();
+      await expect(
+        entry.getByTestId("sidebar-total").locator('[aria-hidden="true"]'),
+      ).toHaveText(/^\d+$/);
+    });
+
+    // Iteration 2, F-4: the sidebar numbers and each header's live pill
+    // follow the day and the filter chosen.
+    for (const width of [390, 1440]) {
+      test(`F-4 counts follow the day and the filter at ${width}px`, async ({
+        page,
+      }) => {
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto(route.path);
+        const check = async () => {
+          const sections = await page
+            .getByTestId("competition")
+            .evaluateAll((els) =>
+              els.map((el) => {
+                const rows = [
+                  ...el.querySelectorAll<HTMLElement>(
+                    '[data-testid="match-row"]',
+                  ),
+                ].filter((r) => !r.hidden);
+                const pill = el.querySelector<HTMLElement>(
+                  '[data-testid="live-pill"]',
+                );
+                return {
+                  id: el.getAttribute("data-competition") ?? "",
+                  matching: rows.length,
+                  live: rows.filter((r) => r.dataset.status === "live").length,
+                  pill: pill && !pill.hidden ? pill.textContent : null,
+                };
+              }),
+            );
+          for (const s of sections) {
+            const label = route.dict.xornada.liveCount.replace(
+              "{n}",
+              String(s.live),
+            );
+            expect(s.pill, s.id).toBe(s.live > 0 ? `${s.live}${label}` : null);
+            const entry = page.locator(
+              `[data-testid="sidebar-entry"][data-competition-toggle="${s.id}"]`,
+            );
+            const live = entry.getByTestId("sidebar-live");
+            const total = entry.getByTestId("sidebar-total");
+            if (s.live > 0) {
+              expect(
+                await live.evaluate((el) => (el as HTMLElement).hidden),
+              ).toBe(false);
+              await expect(live).toHaveText(label);
+              expect(
+                await total.evaluate((el) => (el as HTMLElement).hidden),
+              ).toBe(true);
+            } else {
+              expect(
+                await live.evaluateAll((els) =>
+                  els.every((el) => (el as HTMLElement).hidden),
+                ),
+              ).toBe(true);
+              expect(
+                await total.evaluate((el) => (el as HTMLElement).hidden),
+              ).toBe(false);
+              const words =
+                s.matching === 1
+                  ? route.dict.xornada.matchCountOne
+                  : route.dict.xornada.matchCount;
+              await expect(total).toHaveText(
+                `${s.matching}${words.replace("{n}", String(s.matching))}`,
+              );
+            }
+          }
+          return sections;
+        };
+        await check();
+        // A day with no live match empties every pill that had one.
+        await page.getByTestId("day-link").nth(0).click();
+        const friday = await check();
+        expect(friday.every((s) => s.live === 0)).toBe(true);
+        await page.getByTestId("day-link").nth(1).click();
+        await check();
+        await page.getByTestId("filter-finished").click();
+        expect((await check()).every((s) => s.live === 0)).toBe(true);
+        await page.getByTestId("filter-live").click();
+        await check();
+        await page.goto(`${route.path}#d=2026-10-04&f=finished`);
+        await page.reload();
+        await check();
+        if (width >= 1024)
+          await capture(page, `contadores-${route.lang}-${width}`);
+      });
+    }
+
     test("CA-7 mobile at 390px: the SPEC-019 layout plus strip and filters", async ({
       page,
     }) => {

@@ -1,5 +1,7 @@
 import { type Locale, t } from "@/i18n";
 import type { XornadaCompetition } from "@/xornada/view";
+import { CountLabel } from "./CountLabel";
+import { liveCountTemplates } from "./labels";
 import { MatchRow } from "./MatchRow";
 import styles from "./Xornada.module.css";
 
@@ -41,11 +43,24 @@ export function CompetitionSection({ competition, locale }: Props) {
             {t(locale, "xornada.round", { n: competition.round })}
           </span>
           <span className={styles.spacer} />
+          {/* F-4: the client keeps it in step with the day and the filter
+              (hidden when none of the rows left is live). Filtering only
+              lowers the count, so it is served only with live matches. */}
           {competition.liveCount > 0 && (
-            <span className={styles.livePill} data-testid="live-pill">
-              <span aria-hidden="true">{competition.liveCount}</span>
+            <span
+              className={styles.livePill}
+              data-competition-count={competitionId}
+              data-show="live"
+              data-testid="live-pill"
+            >
+              <span aria-hidden="true" data-n>
+                {competition.liveCount}
+              </span>
               <span className={styles.srOnly}>
-                {t(locale, "xornada.liveCount", { n: competition.liveCount })}
+                <CountLabel
+                  templates={liveCountTemplates(locale)}
+                  n={competition.liveCount}
+                />
               </span>
             </span>
           )}

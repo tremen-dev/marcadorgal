@@ -2,8 +2,10 @@
 
 import { useEffect } from "react";
 import {
+  competitionCounts,
   countFilters,
   EMPTY_STATE,
+  formatCount,
   fragmentOf,
   parseFragment,
   rowMatches,
@@ -51,6 +53,35 @@ function apply(root: HTMLElement, state: XornadaState): void {
     section.hidden = !visible;
     anyVisible ||= visible;
   }
+  // F-4: the sidebar numbers and each header's live pill follow the state.
+  for (const section of root.querySelectorAll<HTMLElement>(
+    "section[data-competition]",
+  )) {
+    const id = section.dataset.competition ?? "";
+    const counts = competitionCounts(
+      rows.filter(({ el }) => section.contains(el)),
+      state,
+    );
+    for (const el of root.querySelectorAll<HTMLElement>(
+      "[data-competition-count]",
+    )) {
+      if (el.dataset.competitionCount !== id) continue;
+      const live = el.dataset.show === "live";
+      const n = live ? counts.live : counts.matching;
+      el.hidden = live ? counts.live === 0 : counts.live > 0;
+      for (const number of el.querySelectorAll<HTMLElement>("[data-n]"))
+        number.textContent = String(n);
+      for (const label of el.querySelectorAll<HTMLElement>("[data-label-one]"))
+        label.textContent = formatCount(
+          {
+            one: label.dataset.labelOne ?? "",
+            other: label.dataset.labelOther ?? "",
+          },
+          n,
+        );
+    }
+  }
+
   const empty = root.querySelector<HTMLElement>("[data-xornada-empty]");
   if (empty) empty.hidden = anyVisible;
 

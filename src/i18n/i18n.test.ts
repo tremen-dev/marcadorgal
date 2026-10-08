@@ -205,5 +205,52 @@ describe("SPEC-023 Xornada controls", () => {
     expect(t("es", "xornada.competitions")).toBe("Competiciones");
     expect(t("gl", "xornada.matchCount", { n: 4 })).toBe("4 partidos");
     expect(t("es", "xornada.matchCount", { n: 4 })).toBe("4 partidos");
+    expect(t("gl", "xornada.matchCountOne", { n: 1 })).toBe("1 partido");
+    expect(t("es", "xornada.matchCountOne", { n: 1 })).toBe("1 partido");
+  });
+
+  it("B-2 months, abbreviated, and the day label with its month", () => {
+    expect(Object.values(gl.month)).toEqual([
+      "xan",
+      "feb",
+      "mar",
+      "abr",
+      "maio",
+      "xuñ",
+      "xul",
+      "ago",
+      "set",
+      "out",
+      "nov",
+      "dec",
+    ]);
+    expect(Object.values(es.month)).toEqual([
+      "ene",
+      "feb",
+      "mar",
+      "abr",
+      "may",
+      "jun",
+      "jul",
+      "ago",
+      "sep",
+      "oct",
+      "nov",
+      "dic",
+    ]);
+    expect(
+      t("gl", "xornada.dayMonthLabel", {
+        weekday: gl.weekday.sat,
+        day: 12,
+        month: gl.month.sep,
+      }),
+    ).toBe("sáb 12 set");
+    expect(
+      t("es", "xornada.dayMonthLabel", {
+        weekday: es.weekday.sat,
+        day: 12,
+        month: es.month.sep,
+      }),
+    ).toBe("sáb 12 sep");
   });
 });

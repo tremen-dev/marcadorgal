@@ -166,10 +166,31 @@ const WEEKDAYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
 export type Weekday = (typeof WEEKDAYS)[number];
 export type WeekdayKey = `weekday.${Weekday}`;
 
+const MONTHS = [
+  "jan",
+  "feb",
+  "mar",
+  "apr",
+  "may",
+  "jun",
+  "jul",
+  "aug",
+  "sep",
+  "oct",
+  "nov",
+  "dec",
+] as const;
+export type Month = (typeof MONTHS)[number];
+export type MonthKey = `month.${Month}`;
+
 export type XornadaDay = {
   date: string;
   weekdayKey: WeekdayKey;
   dayOfMonth: number;
+  monthKey: MonthKey;
+  // SPEC-023 B-2: the month is not the month of today (YYYY-MM, Madrid), so
+  // the strip says it («sáb 12 set» next to «ven 9»).
+  otherMonth: boolean;
   today: boolean;
 };
 
@@ -181,6 +202,8 @@ function dayOf(date: string, today: string): XornadaDay {
     date,
     weekdayKey: `weekday.${weekday}`,
     dayOfMonth: day,
+    monthKey: `month.${MONTHS[month - 1]}`,
+    otherMonth: date.slice(0, 7) !== today.slice(0, 7),
     today: date === today,
   };
 }

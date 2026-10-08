@@ -312,18 +312,24 @@ describe("SPEC-023 CA-1 xornadaDays", () => {
         date: "2026-10-23",
         weekdayKey: "weekday.fri",
         dayOfMonth: 23,
+        monthKey: "month.oct",
+        otherMonth: false,
         today: false,
       },
       {
         date: "2026-10-25",
         weekdayKey: "weekday.sun",
         dayOfMonth: 25,
+        monthKey: "month.oct",
+        otherMonth: false,
         today: false,
       },
       {
         date: "2026-10-26",
         weekdayKey: "weekday.mon",
         dayOfMonth: 26,
+        monthKey: "month.oct",
+        otherMonth: false,
         today: false,
       },
     ]);
@@ -359,6 +365,36 @@ describe("SPEC-023 CA-1 xornadaDays", () => {
     );
     expect(days.map((d) => d.date)).toEqual(["2026-10-01", "2026-10-03"]);
     expect(days[0]).toMatchObject({ weekdayKey: "weekday.thu", today: true });
+  });
+
+  it("B-2: the month, and whether it is not the month of today (Madrid)", () => {
+    const days = xornadaDays(
+      [
+        match({ status: "live", kickoff: "2026-09-12T16:00:00Z" }),
+        match({ kickoff: "2026-10-09T18:00:00Z" }),
+        match({ kickoff: "2026-11-01T12:00:00Z" }),
+      ],
+      "2026-10-08T10:00:00Z",
+    );
+    expect(days.map((d) => [d.date, d.monthKey, d.otherMonth])).toEqual([
+      ["2026-09-12", "month.sep", true],
+      ["2026-10-09", "month.oct", false],
+      ["2026-11-01", "month.nov", true],
+    ]);
+    // 22:30Z on 30 September is already 1 October in Madrid: same month.
+    expect(
+      xornadaDays(
+        [match({ kickoff: "2026-10-01T10:00:00Z" })],
+        "2026-09-30T22:30:00Z",
+      )[0].otherMonth,
+    ).toBe(false);
+    // Same month of another year is another month.
+    expect(
+      xornadaDays(
+        [match({ kickoff: "2025-10-04T10:00:00Z" })],
+        "2026-10-03T10:00:00Z",
+      )[0].otherMonth,
+    ).toBe(true);
   });
 
   it("every weekday has its key", () => {

@@ -1,20 +1,12 @@
 import { type Locale, t } from "@/i18n";
 import type { FilterCounts } from "@/xornada/filter";
 import type { XornadaDay } from "@/xornada/view";
+import { dayLabel } from "./labels";
 import styles from "./Xornada.module.css";
 
 // SPEC-023 CA-2 and CA-3: the strip of days and the filters, served as plain
 // links over the whole xornada. Without JavaScript nothing is selected but
 // Todos (H-3); XornadaFilters applies the fragment over this HTML.
-
-export function dayLabel(day: XornadaDay, locale: Locale): string {
-  const label = t(locale, "xornada.dayLabel", {
-    weekday: t(locale, day.weekdayKey),
-    day: day.dayOfMonth,
-  });
-  // Today in capitals, as the design writes it («SÁB 30»).
-  return day.today ? label.toLocaleUpperCase(locale) : label;
-}
 
 export function DayStrip({
   days,

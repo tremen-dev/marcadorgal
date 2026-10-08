@@ -76,3 +76,27 @@ export function countFilters(
   }
   return counts;
 }
+
+// SPEC-023 F-4: the numbers of a competition (sidebar, header pill) over the
+// rows the state leaves: `matching` of them, `live` of those.
+export function competitionCounts(
+  rows: readonly FilterableRow[],
+  state: XornadaState,
+): { matching: number; live: number } {
+  let matching = 0;
+  let live = 0;
+  for (const row of rows) {
+    if (!rowMatches(row, state)) continue;
+    matching += 1;
+    if (row.status === "live") live += 1;
+  }
+  return { matching, live };
+}
+
+export type CountTemplates = { readonly one: string; readonly other: string };
+
+// SPEC-023 B-3: «1 partido», «N partidos». The templates come from i18n with
+// `{n}` in them, so the client can fill them without the dictionaries.
+export function formatCount(templates: CountTemplates, n: number): string {
+  return (n === 1 ? templates.one : templates.other).replace("{n}", String(n));
+}

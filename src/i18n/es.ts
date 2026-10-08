@@ -29,9 +29,11 @@ export const es: Dictionary = {
     // SPEC-023: the strip of days, the filters, the sidebar.
     days: "Días",
     dayLabel: "{weekday} {day}",
+    dayMonthLabel: "{weekday} {day} {month}",
     empty: "nada aquí",
     round: "jornada {n}",
     competitions: "Competiciones",
+    matchCountOne: "{n} partido",
     matchCount: "{n} partidos",
   },
   weekday: {
@@ -42,6 +44,20 @@ export const es: Dictionary = {
     fri: "vie",
     sat: "sáb",
     sun: "dom",
+  },
+  month: {
+    jan: "ene",
+    feb: "feb",
+    mar: "mar",
+    apr: "abr",
+    may: "may",
+    jun: "jun",
+    jul: "jul",
+    aug: "ago",
+    sep: "sep",
+    oct: "oct",
+    nov: "nov",
+    dec: "dic",
   },
   filter: {
     label: "Filtro",
