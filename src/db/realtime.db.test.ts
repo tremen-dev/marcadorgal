@@ -1,5 +1,10 @@
 import type { TransactionSql } from "postgres";
 import { afterAll, describe, expect, it } from "vitest";
+import {
+  toPublicMatch,
+  toPublicMatches,
+  type XornadaDbRow,
+} from "../board/row.ts";
 import { getSql } from "./client.ts";
 
 // SPEC-024 CA-1 and CA-2 (ADR-014 §5, N-2, H-6): the trigger that sends the
@@ -35,7 +40,7 @@ async function pgCode(
 }
 
 async function seedMatch(tx: Tx): Promise<string> {
-  const id = `test:${crypto.randomUUID()}`;
+  const id = `test-${crypto.randomUUID()}`;
   await tx`insert into competitions (id, season, name, tier) values ('test-comp', ${SEASON}, 'Test', 5)
     on conflict do nothing`;
   await tx`insert into teams (id, name, short_name) values ('test-home', 'Home FC', 'Home'), ('test-away', 'Away CF', null)
@@ -72,9 +77,17 @@ async function insertDecision(tx: Tx, matchId: string): Promise<void> {
 }
 
 const boardMessages = (tx: Tx) =>
-  tx<{ topic: string; event: string; private: boolean; payload: Record<string, unknown>; extension: string }[]>`
+  tx<
+    {
+      topic: string;
+      event: string;
+      private: boolean;
+      payload: Record<string, unknown>;
+      extension: string;
+    }[]
+  >`
     select topic, event, private, payload, extension from realtime.messages
-    where topic like 'board:%' and payload ->> 'match_id' like 'test:%'`;
+    where topic like 'board:%' and payload ->> 'match_id' like 'test-%'`;
 
 const asRole = async (tx: Tx, role: "anon" | "authenticated") => {
   await tx.unsafe(`set local role ${role}`);
@@ -130,7 +143,16 @@ describe("SPEC-024 CA-1 board_delta", () => {
         cols.map((c) => c.column_name).sort(),
       );
       expect(payload).toEqual(row);
-      expect(payload).toMatchObject({ match_id: m, status: "live", version: 1 });
+      expect(payload).toMatchObject({
+        match_id: m,
+        status: "live",
+        version: 1,
+      });
+      // CA-3 end to end: the payload and the reader give the same PublicMatch.
+      const viewRows = await tx<
+        XornadaDbRow[]
+      >`select * from web.xornada where match_id = ${m}`;
+      expect(toPublicMatch(msg.payload)).toEqual(toPublicMatches(viewRows)[0]);
       for (const key of Object.keys(msg.payload)) {
         expect(key).not.toMatch(
           /^(rule|observation_ids|forced_finish)$|_source_id$/,
@@ -169,14 +191,14 @@ describe("SPEC-024 CA-1 board_delta", () => {
 describe("SPEC-024 CA-2 board_receive and private", () => {
   const seedMessages = async (tx: Tx) => {
     await tx`insert into realtime.messages (topic, extension, payload, event, private)
-      values (${TOPIC}, 'broadcast', '{"match_id":"test:a"}', 'decision', true),
-             ('other:x', 'broadcast', '{"match_id":"test:b"}', 'decision', true),
-             (${TOPIC}, 'presence', '{"match_id":"test:c"}', 'decision', true)`;
+      values (${TOPIC}, 'broadcast', '{"match_id":"test-a"}', 'decision', true),
+             ('other:x', 'broadcast', '{"match_id":"test-b"}', 'decision', true),
+             (${TOPIC}, 'presence', '{"match_id":"test-c"}', 'decision', true)`;
   };
   const visible = (tx: Tx) =>
     tx<{ topic: string; extension: string }[]>`
       select topic, extension from realtime.messages
-      where payload ->> 'match_id' like 'test:%' order by topic`;
+      where payload ->> 'match_id' like 'test-%' order by topic`;
 
   it("is the only policy of realtime.messages: SELECT for anon", async () => {
     const rows = await sql`select policyname, cmd, roles from pg_policies
@@ -213,16 +235,18 @@ describe("SPEC-024 CA-2 board_receive and private", () => {
       expect(
         await pgCode(
           tx,
-          (s) => s`insert into realtime.messages (topic, extension, payload, event, private)
-          values (${TOPIC}, 'broadcast', '{"match_id":"test:fake"}', 'decision', true)`,
+          (
+            s,
+          ) => s`insert into realtime.messages (topic, extension, payload, event, private)
+          values (${TOPIC}, 'broadcast', '{"match_id":"test-fake"}', 'decision', true)`,
         ),
       ).toBe("42501");
       const updated = await tx`update realtime.messages set payload = '{}'
-        where payload ->> 'match_id' like 'test:%' returning 1`;
+        where payload ->> 'match_id' like 'test-%' returning 1`;
       expect(updated).toHaveLength(0);
-      expect(
-        await pgCode(tx, (s) => s`delete from realtime.messages`),
-      ).toBe("42501");
+      expect(await pgCode(tx, (s) => s`delete from realtime.messages`)).toBe(
+        "42501",
+      );
     }));
 
   it("authenticated sees none", () =>
