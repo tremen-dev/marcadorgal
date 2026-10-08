@@ -276,7 +276,7 @@ const PUBLIC_TABLES = [
 afterAll(() => sql.end());
 
 describe("SPEC-020 CA-2 web.xornada", () => {
-  it("has exactly the columns of ADR-014 §3 plus season, in order", async () => {
+  it("has exactly the columns of ADR-014 §3 plus season, and half_time last (SPEC-021 CA-4)", async () => {
     const cols = await sql`select column_name from information_schema.columns
       where table_schema = 'web' and table_name = 'xornada' order by ordinal_position`;
     expect(cols.map((c) => c.column_name)).toEqual([
@@ -300,6 +300,7 @@ describe("SPEC-020 CA-2 web.xornada", () => {
       "version",
       "observed_at",
       "decided_at",
+      "half_time",
     ]);
   });
 
@@ -338,6 +339,7 @@ describe("SPEC-020 CA-2 web.xornada", () => {
         version: 0,
         observed_at: null,
         decided_at: null,
+        half_time: false,
       });
     }));
 
@@ -573,3 +575,36 @@ describe.each(["anon", "authenticated"] as const)(
       }));
   },
 );
+
+describe("SPEC-021 CA-4 web.xornada carries half_time", () => {
+  it("is the half_time of the latest Decision", () =>
+    rollback(async (tx) => {
+      const m = await seedMatch(tx);
+      await seedDecision(tx, m);
+      const [first] =
+        await tx`select half_time from web.xornada where match_id = ${m}`;
+      expect(first.half_time).toBe(false);
+      const [{ id }] =
+        await tx`select id from observations where match_id = ${m}`;
+      await tx`insert into decisions ${tx({
+        match_id: m,
+        status: "live",
+        home_score: 2,
+        away_score: 1,
+        minute: 45,
+        half_time: true,
+        qualifier: "provisional",
+        rule: "RN-01",
+        observation_ids: [id],
+        decided_at: "2026-09-20T16:48:00Z",
+      })}`;
+      const [row] =
+        await tx`select status, minute, half_time, version from web.xornada where match_id = ${m}`;
+      expect(row).toEqual({
+        status: "live",
+        minute: 45,
+        half_time: true,
+        version: 2,
+      });
+    }));
+});
