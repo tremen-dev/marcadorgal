@@ -2,10 +2,11 @@
 id: SPEC-024
 tipo: spec
 epica: EPIC-003
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-08, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-08, por: Alberto Fojo}
 ---
 # SPEC-024 — Realtime, fallback y frescura
 
