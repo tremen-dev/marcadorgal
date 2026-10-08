@@ -73,6 +73,5 @@ Actualizado: 2026-10-08
 
 ## Resumen
 
-- hecho: 20
+- hecho: 21
 - en-revision: 2
-- aprobada: 1
