@@ -24,6 +24,8 @@ export const es: Dictionary = {
     liveCount: "{n} en juego",
     locale: "Idioma",
     unavailable: "Los resultados no están disponibles en este momento.",
+    // SPEC-021: half-time, a moment inside live (never an abbreviation).
+    halfTime: "Descanso",
   },
   locales: { gl: "gl", es: "es" },
 };

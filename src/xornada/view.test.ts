@@ -14,6 +14,7 @@ type Overrides = {
   score?: Score | null;
   minute?: number | null;
   addedMinute?: number | null;
+  halfTime?: boolean;
   qualifier?: Qualifier;
   kickoff?: string;
   home?: { name: string; shortName: string | null };
@@ -49,7 +50,9 @@ function match(o: Overrides = {}): PublicMatch {
     score:
       o.score !== undefined ? o.score : scored ? { home: 1, away: 0 } : null,
     minute: status === "live" ? (o.minute !== undefined ? o.minute : 30) : null,
-    ...(status === "live" ? { addedMinute: o.addedMinute ?? null } : {}),
+    ...(status === "live"
+      ? { addedMinute: o.addedMinute ?? null, halfTime: o.halfTime ?? false }
+      : {}),
     qualifier: o.qualifier ?? "confirmado",
     version: 3,
     observedAt: "2026-10-03T16:30:00Z",
@@ -216,5 +219,61 @@ describe("SPEC-019 CA-2 buildXornada order", () => {
 
   it("an empty board is an empty xornada", () => {
     expect(buildXornada([])).toEqual([]);
+  });
+});
+
+// SPEC-021 CA-7: half-time is a moment inside live. The row stays in live, no
+// minute is shown even when the source has one, and the margin says the word.
+describe("SPEC-021 CA-7 half-time in the view", () => {
+  it.each([
+    ["confirmado", 45, null, null],
+    ["provisional", 45, 2, "qualifier.provisional"],
+    ["sen_sinal", 45, null, "qualifier.sen_sinal"],
+    ["confirmado", null, null, null],
+  ] as const)(
+    "live %s at half-time (minute %s+%s) has the halfTime margin",
+    (qualifier, minute, addedMinute, qualifierKey) => {
+      const row = rowOf(
+        match({
+          status: "live",
+          halfTime: true,
+          qualifier,
+          minute,
+          addedMinute,
+        }),
+      );
+      expect(row.margin).toEqual({ kind: "halfTime" });
+      expect(row.status).toBe("live");
+      expect(row.statusKey).toBe("status.live");
+      expect(row.qualifier).toBe(qualifier);
+      expect(row.qualifierKey).toBe(qualifierKey);
+      expect(row.score).toEqual({ home: 1, away: 0 });
+    },
+  );
+
+  it("live out of half-time keeps its minute", () => {
+    expect(
+      rowOf(match({ status: "live", halfTime: false, minute: 47 })).margin,
+    ).toEqual({ kind: "minute", minute: 47, addedMinute: null });
+  });
+
+  it("a half-time row stays first, with live, and counts in the en xogo pill", () => {
+    const [competition] = buildXornada([
+      match({ status: "finished" }),
+      match({ status: "live", halfTime: true, id: "ht" }),
+      match({ status: "scheduled" }),
+      match({ status: "live", halfTime: true, qualifier: "sen_sinal" }),
+    ]);
+    expect(competition.liveCount).toBe(2);
+    expect(competition.rows.map((r) => r.status)).toEqual([
+      "live",
+      "live",
+      "finished",
+      "scheduled",
+    ]);
+    expect(competition.rows.slice(0, 2).map((r) => r.margin.kind)).toEqual([
+      "halfTime",
+      "halfTime",
+    ]);
   });
 });

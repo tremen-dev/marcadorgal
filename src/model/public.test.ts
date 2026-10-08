@@ -29,7 +29,14 @@ const examples = {
     observedAt: null,
     decidedAt: null,
   },
-  live: { ...base, status: "live", score, minute: 45, addedMinute: 3 },
+  live: {
+    ...base,
+    status: "live",
+    score,
+    minute: 45,
+    addedMinute: 3,
+    halfTime: false,
+  },
   finished: { ...base, status: "finished", score, minute: null },
   postponed: { ...base, status: "postponed", score: null, minute: null },
   suspended: { ...base, status: "suspended", score, minute: null },
@@ -111,4 +118,22 @@ describe("SPEC-019 CA-1 PublicMatch", () => {
     expect(ok({ ...examples.finished, tier: 0 })).toBe(false);
     expect(ok({ ...examples.finished, tier: 6 })).toBe(false);
   });
+});
+
+describe("SPEC-021 CA-6 PublicMatch carries halfTime only in live", () => {
+  it("live demands an explicit boolean halfTime", () => {
+    expect(ok({ ...examples.live, halfTime: true })).toBe(true);
+    expect(ok({ ...examples.live, halfTime: false })).toBe(true);
+    const { halfTime: _, ...missing } = examples.live;
+    expect(ok(missing)).toBe(false);
+    expect(ok({ ...examples.live, halfTime: null })).toBe(false);
+  });
+
+  it.each(["scheduled", "finished", "postponed", "suspended"] as const)(
+    "%s rejects halfTime, true or false",
+    (status) => {
+      expect(ok({ ...examples[status], halfTime: false })).toBe(false);
+      expect(ok({ ...examples[status], halfTime: true })).toBe(false);
+    },
+  );
 });

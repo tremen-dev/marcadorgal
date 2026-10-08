@@ -1,3 +1,4 @@
+import { mkdirSync } from "node:fs";
 import { expect, type Page, test } from "@playwright/test";
 import { es } from "../src/i18n/es";
 import { gl } from "../src/i18n/gl";
@@ -9,6 +10,7 @@ const routes = [
 ] as const;
 
 const MINUTE = /^\d+(\+\d+)?'$/;
+const CAPTURES = process.env.QA_CAPTURE_DIR;
 
 type RowInfo = {
   status: string;
@@ -46,7 +48,9 @@ for (const route of routes) {
         if (row.status !== "scheduled") {
           const saysIt =
             row.margin === route.dict.status[status] ||
-            (row.status === "live" && MINUTE.test(row.margin));
+            (row.status === "live" && MINUTE.test(row.margin)) ||
+            (row.status === "live" &&
+              row.margin === route.dict.xornada.halfTime);
           expect(saysIt, `${row.status}: ${row.text}`).toBe(true);
           expect(row.text).toContain(route.dict.status[status]);
         } else {
@@ -157,6 +161,62 @@ for (const route of routes) {
             document.documentElement.clientWidth,
         );
         expect(overflow).toBe(false);
+      });
+    }
+
+    // SPEC-021 CA-7: half-time is a moment inside live. The row stays live,
+    // says «Descanso» and no minute, keeps the ember inset, has no dot, and
+    // its margin does not overflow.
+    for (const width of [360, 390]) {
+      test(`SPEC-021 CA-7 half-time row at ${width}px`, async ({ page }) => {
+        await page.setViewportSize({ width, height: 844 });
+        await page.goto(route.path);
+        const halfTime = route.dict.xornada.halfTime;
+        const rows = page.getByTestId("match-row").filter({
+          has: page.getByTestId("match-margin").getByText(halfTime),
+        });
+        await expect(rows).toHaveCount(2);
+        for (let i = 0; i < 2; i++) {
+          const row = rows.nth(i);
+          await expect(row).toHaveAttribute("data-status", "live");
+          await expect(row.getByTestId("match-margin")).toHaveText(halfTime);
+          await expect(row).toContainText(route.dict.status.live);
+          expect(await row.textContent()).not.toMatch(/\d+(\+\d+)?'/);
+          const fits = await row
+            .getByTestId("match-margin")
+            .evaluate((el) => el.scrollWidth <= el.clientWidth);
+          expect(fits).toBe(true);
+        }
+        // Confirmed: ember inset and no dot. Sen sinal: red, with its label.
+        const ok = rows.and(page.locator('[data-qualifier="confirmado"]'));
+        await expect(ok).toHaveCount(1);
+        await expect(ok.locator('[class*="dot"]')).toHaveCount(0);
+        expect(await ok.getAttribute("class")).toMatch(/live/);
+        const noSignal = rows.and(page.locator('[data-qualifier="sen_sinal"]'));
+        await expect(noSignal).toHaveCount(1);
+        await expect(noSignal).toContainText(route.dict.qualifier.sen_sinal);
+        expect(await noSignal.getAttribute("class")).toMatch(/noSignal/);
+        // Still counted in the «en xogo» pill of its competition.
+        const competition = page.getByTestId("competition").filter({ has: ok });
+        const live = await competition
+          .locator('[data-testid="match-row"][data-status="live"]')
+          .count();
+        await expect(competition.getByTestId("live-pill")).toContainText(
+          route.dict.xornada.liveCount.replace("{n}", String(live)),
+        );
+        const overflow = await page.evaluate(
+          () =>
+            document.documentElement.scrollWidth >
+            document.documentElement.clientWidth,
+        );
+        expect(overflow).toBe(false);
+        if (CAPTURES) {
+          mkdirSync(CAPTURES, { recursive: true });
+          await page.evaluate(() => document.fonts.ready);
+          await competition.screenshot({
+            path: `${CAPTURES}/descanso-${route.lang}-${width}.png`,
+          });
+        }
       });
     }
 

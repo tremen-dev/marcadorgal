@@ -4,6 +4,7 @@ import {
   FEDERATION_PRIORITY,
   type Instant,
   instantDiff,
+  isHalfTime,
   type MatchState,
   type MatchStatus,
   MINUTE_MS,
@@ -53,6 +54,7 @@ function stateOf(o: Observation): MatchState {
       score: o.score,
       minute: o.minute,
       addedMinute: o.addedMinute,
+      halfTime: o.halfTime ?? false,
     };
   if (o.status === "finished" || o.status === "suspended")
     return { status: o.status, score: o.score, minute: null };
@@ -60,13 +62,15 @@ function stateOf(o: Observation): MatchState {
 }
 
 // The published tuple of H-1: a Decision is born when any of these moves, the
-// minute included. The rule is deliberately out of it.
+// minute and half-time included (SPEC-021 CA-3: an absent halfTime is false).
+// The rule is deliberately out of it.
 const tuple = (s: MatchState & { qualifier: Qualifier }) =>
   [
     s.status,
     s.score === null ? "-" : `${s.score.home}-${s.score.away}`,
     s.minute ?? "-",
     (s.status === "live" ? s.addedMinute : null) ?? "-",
+    isHalfTime(s) ? "HT" : "-",
     s.qualifier,
   ].join("|");
 
@@ -411,6 +415,7 @@ export function decide(input: EngineInput): EngineOutput {
             score: current.score,
             minute: current.minute,
             addedMinute: current.addedMinute,
+            halfTime: current.halfTime ?? false,
           },
           "RN-05",
           "sen_sinal",

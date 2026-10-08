@@ -12,6 +12,7 @@ import {
   type DecisionId,
   type DecisionRule,
   type Instant,
+  isHalfTime,
   type MatchId,
   type MatchState,
   type MatchStatus,
@@ -51,6 +52,7 @@ type StateRow = {
   away_score: number | null;
   minute: number | null;
   added_minute: number | null;
+  half_time: boolean;
 };
 
 type MatchRow = { id: string; competition_id: string; kickoff: Date };
@@ -93,6 +95,7 @@ function stateOf(row: StateRow): MatchState {
       score: { home: row.home_score ?? 0, away: row.away_score ?? 0 },
       minute: row.minute,
       addedMinute: row.added_minute,
+      halfTime: row.half_time,
     };
   if (row.status === "finished" || row.status === "suspended")
     return {
@@ -162,14 +165,14 @@ export async function insertDecision(
   await sql`insert into decisions
       (match_id, status, home_score, away_score, minute, added_minute,
        qualifier, rule, observation_ids, decided_at,
-       home_source_id, away_source_id, forced_finish)
+       home_source_id, away_source_id, forced_finish, half_time)
     values (${draft.matchId}, ${draft.status}, ${home}, ${away},
       ${draft.minute}, ${draft.status === "live" ? draft.addedMinute : null},
       ${draft.qualifier}, ${draft.rule},
       ${sql.array(draft.observationIds as unknown as string[])}::uuid[],
       ${draft.decidedAt},
       ${draft.scoredBy?.home ?? null}, ${draft.scoredBy?.away ?? null},
-      ${draft.forcedFinish ?? null})`;
+      ${draft.forcedFinish ?? null}, ${isHalfTime(draft)})`;
 }
 
 // One open alert per (kind, match) while nobody resolves it, the four kinds
@@ -253,7 +256,7 @@ export async function decideMatches(
   // The current Decision of each match: the highest version (ADR-006 §3).
   const currents = await sql<DecisionRow[]>`
     select distinct on (match_id) id, match_id, version, status, home_score,
-      away_score, minute, added_minute, qualifier, rule, observation_ids, decided_at,
+      away_score, minute, added_minute, half_time, qualifier, rule, observation_ids, decided_at,
       home_source_id, away_source_id, forced_finish
     from decisions where match_id = any(${any})
     order by match_id, version desc`;
@@ -264,7 +267,7 @@ export async function decideMatches(
   const since = shiftInstant(now, -SILENCE_MINUTES * MINUTE_MS);
   const observations = await sql<ObservationRow[]>`
     select id, match_id, source_id, status, home_score, away_score, minute,
-      added_minute, observed_at, received_at, raw_ref
+      added_minute, half_time, observed_at, received_at, raw_ref
     from observations where match_id = any(${any}) and observed_at >= ${since}
     order by observed_at`;
   const observationsOf = group(observations, (row) => row.match_id);

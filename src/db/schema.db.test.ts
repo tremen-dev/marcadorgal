@@ -469,3 +469,89 @@ describe("SPEC-007 CA-1 the forced_finish alert kind", () => {
       expect(row.id).toBeDefined();
     }));
 });
+
+// SPEC-021 CA-4: half_time is a moment inside live, additive and with a
+// default, so the code deployed before the migration keeps inserting.
+describe("SPEC-021 CA-4 half_time on observations and decisions", () => {
+  it("an insert without half_time (the deployed code) reads false", () =>
+    rollback(async (tx) => {
+      const m = await seedMatch(tx);
+      const [{ id }] = await observation(tx, m, {
+        status: "live",
+        home_score: 1,
+        away_score: 0,
+        minute: 45,
+      });
+      const [{ id: did }] = await decision(tx, m, {}, [id]);
+      const [o] = await tx`select half_time from observations where id = ${id}`;
+      const [d] = await tx`select half_time from decisions where id = ${did}`;
+      expect(o.half_time).toBe(false);
+      expect(d.half_time).toBe(false);
+    }));
+
+  it("is boolean not null default false on both tables", async () => {
+    const cols =
+      await sql`select table_name, data_type, is_nullable, column_default
+      from information_schema.columns
+      where table_schema = 'public' and column_name = 'half_time' order by table_name`;
+    expect(cols.map((c) => ({ ...c }))).toEqual([
+      {
+        table_name: "decisions",
+        data_type: "boolean",
+        is_nullable: "NO",
+        column_default: "false",
+      },
+      {
+        table_name: "observations",
+        data_type: "boolean",
+        is_nullable: "NO",
+        column_default: "false",
+      },
+    ]);
+  });
+
+  it("accepts half_time true on live", () =>
+    rollback(async (tx) => {
+      const m = await seedMatch(tx);
+      const [{ id }] = await observation(tx, m, {
+        status: "live",
+        home_score: 1,
+        away_score: 0,
+        minute: 45,
+        half_time: true,
+      });
+      const [row] = await decision(tx, m, { minute: 45, half_time: true }, [
+        id,
+      ]);
+      expect(row.id).toBeDefined();
+    }));
+
+  it.each([
+    ["finished", { status: "finished", home_score: 1, away_score: 0 }],
+    ["suspended", { status: "suspended", home_score: 1, away_score: 0 }],
+    ["scheduled", { status: "scheduled" }],
+    ["postponed", { status: "postponed" }],
+  ])("rejects half_time true on %s with 23514", (_name, state) =>
+    rollback(async (tx) => {
+      const m = await seedMatch(tx);
+      const [{ id }] = await observation(tx, m, { status: "scheduled" });
+      // Each in its own savepoint, so the first 23514 does not abort the rest.
+      expect(
+        await pgCode(
+          tx.savepoint((s) =>
+            observation(s as Tx, m, { ...state, half_time: true }),
+          ),
+        ),
+      ).toBe("23514");
+      expect(
+        await pgCode(
+          tx.savepoint((s) =>
+            decision(s as Tx, m, { minute: null, ...state, half_time: true }, [
+              id,
+            ]),
+          ),
+        ),
+      ).toBe("23514");
+    }),
+  );
+});

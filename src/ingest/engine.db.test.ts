@@ -487,3 +487,68 @@ describe("SPEC-018 CA-5 scheduled · sen_sinal round trip", () => {
     }
   });
 });
+
+// SPEC-021 CA-5: half_time goes in and out of the database with the engine:
+// written on observations and Decisions, read back from the current Decision
+// and from the observations.
+describe("SPEC-021 CA-5 half_time round trip", () => {
+  const observeHalfTime = async (
+    tx: TransactionSql,
+    matchId: string,
+    halfTime: boolean,
+    observedAt: Instant,
+  ) => {
+    await tx`insert into observations (match_id, source_id, status, home_score,
+        away_score, minute, half_time, observed_at, received_at, raw_ref)
+      values (${matchId}, 'api-football', 'live', 1, 0, 45, ${halfTime},
+        ${observedAt}, ${observedAt}, 'raw/2026-09-25/api-football/x.json.gz')`;
+  };
+  const halfTimes = (tx: TransactionSql, matchId: string) =>
+    tx`select version, status, minute, qualifier, rule, half_time
+       from decisions where match_id = ${matchId} order by version`;
+
+  it("writes a live Decision at half-time, reads it back and publishes no twin", () =>
+    rollback(async (tx) => {
+      const matchId = await seedMatch(tx);
+      await observeHalfTime(tx, matchId, true, at(47));
+      await decideMatches(engineTx(tx), [matchId], at(47), SOURCES);
+      // Same observation, next tick: the current Decision is read with its
+      // half_time, so the tuple does not move.
+      await observeHalfTime(tx, matchId, true, at(48));
+      await decideMatches(engineTx(tx), [matchId], at(48), SOURCES);
+      expect((await halfTimes(tx, matchId)).map((r) => ({ ...r }))).toEqual([
+        {
+          version: 1,
+          status: "live",
+          minute: 45,
+          qualifier: "provisional",
+          rule: "RN-01",
+          half_time: true,
+        },
+      ]);
+      // The second half starts: one Decision back to false.
+      await observeHalfTime(tx, matchId, false, at(62));
+      await decideMatches(engineTx(tx), [matchId], at(62), SOURCES);
+      expect((await halfTimes(tx, matchId)).map((r) => r.half_time)).toEqual([
+        true,
+        false,
+      ]);
+    }));
+
+  it("the silence at half-time writes sen_sinal keeping half_time", () =>
+    rollback(async (tx) => {
+      const matchId = await seedMatch(tx);
+      await observeHalfTime(tx, matchId, true, at(47));
+      await decideMatches(engineTx(tx), [matchId], at(47), SOURCES);
+      await decideMatches(engineTx(tx), [matchId], at(63), SOURCES);
+      expect((await halfTimes(tx, matchId)).map((r) => ({ ...r }))).toEqual([
+        expect.objectContaining({ version: 1, half_time: true }),
+        expect.objectContaining({
+          version: 2,
+          qualifier: "sen_sinal",
+          rule: "RN-05",
+          half_time: true,
+        }),
+      ]);
+    }));
+});

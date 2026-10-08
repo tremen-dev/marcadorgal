@@ -311,6 +311,54 @@ describe("CA-6 insertObservations", () => {
       ]);
     }));
 
+  it("SPEC-021 CA-5: stores half_time on live, false when absent and outside live", () =>
+    rollback(async (tx) => {
+      const db = dbIn(tx);
+      const id = await seedMatch(tx, NOW);
+      const state = (s: Record<string, unknown>) =>
+        s as Partial<Observation> & Pick<Observation, "status">;
+      const rows = [
+        observation(
+          id,
+          "raw/x",
+          state({
+            status: "live",
+            score: { home: 1, away: 0 },
+            minute: 45,
+            addedMinute: null,
+            halfTime: true,
+          }),
+        ),
+        observation(
+          id,
+          "raw/x",
+          state({
+            status: "live",
+            score: { home: 1, away: 0 },
+            minute: 30,
+            addedMinute: null,
+          }),
+        ),
+        observation(
+          id,
+          "raw/x",
+          state({
+            status: "finished",
+            score: { home: 2, away: 0 },
+            minute: null,
+          }),
+        ),
+      ];
+      await db.transaction((t) => t.insertObservations(rows));
+      const back = await tx`select status, minute, half_time
+        from observations where match_id = ${id} order by status, minute`;
+      expect(back.map((r) => ({ ...r }))).toEqual([
+        { status: "finished", minute: null, half_time: false },
+        { status: "live", minute: 30, half_time: false },
+        { status: "live", minute: 45, half_time: true },
+      ]);
+    }));
+
   it("writes nothing when the list is empty", () =>
     rollback(async (tx) => {
       await expect(

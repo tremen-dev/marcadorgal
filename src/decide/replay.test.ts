@@ -459,3 +459,62 @@ describe("SPEC-014 CA-5 the replay of girona-albacete across ADR-011", () => {
     ).not.toContain("regression");
   });
 });
+
+// SPEC-021 CA-3. The same real log of girona-albacete through the engine of
+// today: the source said HT from 19:18:03Z to 19:34:34Z. One Decision opens
+// half-time, the next one that moves closes it, nothing goes sen_sinal in
+// between and the close does not change.
+describe("SPEC-021 CA-3 half-time in the replay of girona-albacete", () => {
+  const HT_FROM = "2026-09-25T19:18:03";
+  const HT_TO = "2026-09-25T19:34:34";
+  const steps = replay({
+    match: GIRONA,
+    priority: PROVIDER,
+    observations: girona,
+  });
+  const decisions = steps.flatMap((s) =>
+    s.output.decision === null ? [] : [s.output.decision],
+  );
+
+  it("publishes exactly one Decision into half-time and the next one out of it", () => {
+    const into = decisions.filter(
+      (d, i) =>
+        d.status === "live" &&
+        d.halfTime === true &&
+        !(decisions[i - 1]?.status === "live" && decisions[i - 1].halfTime),
+    );
+    expect(into).toHaveLength(1);
+    expect(into[0].decidedAt.startsWith(HT_FROM)).toBe(true);
+    const i = decisions.indexOf(into[0]);
+    const out = decisions[i + 1];
+    expect(out).toMatchObject({ status: "live", halfTime: false });
+    expect(out.decidedAt.startsWith(HT_TO)).toBe(true);
+    expect(
+      decisions.filter((d) => d.status === "live" && d.halfTime === true),
+    ).toHaveLength(1);
+  });
+
+  it("goes sen_sinal zero times in the sixteen and a half minutes of half-time", () => {
+    const inside = steps.filter(
+      (s) =>
+        Date.parse(s.now) >= Date.parse(`${HT_FROM}Z`) &&
+        Date.parse(s.now) <= Date.parse(`${HT_TO}.999Z`),
+    );
+    expect(inside.length).toBeGreaterThan(30);
+    expect(
+      inside.flatMap((s) =>
+        s.output.decision?.qualifier === "sen_sinal" ? [s] : [],
+      ),
+    ).toEqual([]);
+    expect(inside.flatMap((s) => s.output.open)).toEqual([]);
+  });
+
+  it("still ends finished 2-0", () => {
+    expect(decisions.at(-1)).toMatchObject({
+      status: "finished",
+      score: { home: 2, away: 0 },
+      rule: "RN-01",
+    });
+    expect(decisions.at(-1)).not.toHaveProperty("halfTime");
+  });
+});

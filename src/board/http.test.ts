@@ -19,6 +19,7 @@ const match = {
   score: { home: 1, away: 0 },
   minute: 45,
   addedMinute: 3,
+  halfTime: false,
   qualifier: "confirmado",
   version: 4,
   observedAt: "2026-10-10T16:47:00.000Z",
@@ -60,6 +61,16 @@ describe("SPEC-020 CA-7 boardResponse", () => {
       null,
     );
     expect(a.headers.get("etag")).not.toBe(b.headers.get("etag"));
+  });
+
+  it("SPEC-021 CA-6: returns halfTime as the reader gives it", async () => {
+    const atHalfTime = { ...match, halfTime: true } as PublicMatch;
+    const res = await boardResponse(read([atHalfTime]), NOW, null);
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { matches: PublicMatch[] };
+    expect(body.matches[0]).toMatchObject({ status: "live", halfTime: true });
+    const before = await boardResponse(read([match]), NOW, null);
+    expect(res.headers.get("etag")).not.toBe(before.headers.get("etag"));
   });
 
   it("an empty xornada is still 200 with an empty list", async () => {

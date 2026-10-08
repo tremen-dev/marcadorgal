@@ -29,6 +29,8 @@ export type XornadaDbRow = {
   version: number;
   observed_at: Date | null;
   decided_at: Date | null;
+  // SPEC-021 CA-4: the last column of web.xornada.
+  half_time: boolean;
 };
 
 // What the selection of the current xornada needs of every match (CA-5).
@@ -65,6 +67,11 @@ function candidate(row: XornadaDbRow): unknown {
     // PublicMatch rejects it instead of it being dropped in silence.
     ...(row.status === "live" || row.added_minute !== null
       ? { addedMinute: row.added_minute }
+      : {}),
+    // SPEC-021 CA-6: the same for half-time. A live row without the column
+    // (the view before the migration) carries undefined and is rejected.
+    ...(row.status === "live" || row.half_time === true
+      ? { halfTime: row.half_time }
       : {}),
     qualifier: row.qualifier,
     version: row.version,

@@ -179,9 +179,11 @@ describe("CA-9 writing a decision", () => {
       "api-football",
       "api-football",
       false,
+      // SPEC-021 CA-5: half_time, false for a live outside half-time.
+      false,
     ]);
     expect(insert?.text).toContain(
-      "home_source_id, away_source_id, forced_finish",
+      "home_source_id, away_source_id, forced_finish, half_time",
     );
   });
 
@@ -476,6 +478,7 @@ describe("SPEC-014 CA-4 CA-8 the adapter reads and writes owners and mark", () =
       "operator",
       "api-football",
       false,
+      false, // half_time (SPEC-021 CA-5)
     ]);
   });
 
@@ -520,6 +523,8 @@ describe("SPEC-014 CA-4 CA-8 the adapter reads and writes owners and mark", () =
     await decideMatches(tx, [MATCH], NOW, SOURCES);
     const insert = find(calls, "insert into decisions");
     expect(insert?.values[7]).toBe("RN-02");
-    expect(insert?.values.at(-1)).toBe(true);
+    // forced_finish, then half_time (SPEC-021 CA-5): a finished is never
+    // at half-time.
+    expect(insert?.values.slice(-2)).toEqual([true, false]);
   });
 });

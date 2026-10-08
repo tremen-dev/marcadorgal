@@ -1816,3 +1816,127 @@ describe("SPEC-018 CA-4 sen_sinal in scheduled", () => {
     expect(confirmed.open).toEqual([]);
   });
 });
+
+// SPEC-021 CA-3: half-time is a moment inside live and part of the published
+// tuple; an absent halfTime is false (N-2).
+describe("SPEC-021 CA-3 half-time in the published tuple", () => {
+  const ht = (home: number, away: number, minute: number | null = 45) =>
+    ({ ...live(home, away, minute), halfTime: true }) as const;
+  const notHt = (home: number, away: number, minute: number | null = 45) =>
+    ({ ...live(home, away, minute), halfTime: false }) as const;
+
+  it("publishes when half-time starts and when it ends", () => {
+    const starts = decide(
+      input({
+        current: current(notHt(1, 0)),
+        observations: [obs("ten", 49, ht(1, 0))],
+      }),
+    ).decision;
+    expect(starts).toMatchObject({
+      status: "live",
+      minute: 45,
+      halfTime: true,
+      rule: "RN-01",
+    });
+    const ends = decide(
+      input({
+        current: current(ht(1, 0)),
+        observations: [obs("ten", 49, notHt(1, 0))],
+      }),
+    ).decision;
+    expect(ends).toMatchObject({ status: "live", halfTime: false });
+  });
+
+  it("publishes nothing for equal observations inside half-time", () => {
+    expect(
+      decide(
+        input({
+          current: current(ht(1, 0)),
+          observations: [obs("ten", 49, ht(1, 0))],
+        }),
+      ).decision,
+    ).toBeNull();
+  });
+
+  it("live without halfTime and live with false are the same tuple", () => {
+    expect(
+      decide(
+        input({
+          current: current(live(1, 0, 45)),
+          observations: [obs("ten", 49, notHt(1, 0))],
+        }),
+      ).decision,
+    ).toBeNull();
+    expect(
+      decide(
+        input({
+          current: current(notHt(1, 0)),
+          observations: [obs("ten", 49, live(1, 0, 45))],
+        }),
+      ).decision,
+    ).toBeNull();
+  });
+
+  it("every live Decision carries halfTime explicitly", () => {
+    const { decision } = decide(
+      input({ observations: [obs("ten", 49, live(1, 0, 30))] }),
+    );
+    expect(decision).toMatchObject({ status: "live", halfTime: false });
+  });
+
+  it("fifteen minutes of silence in half-time publishes RN-05 sen_sinal keeping halfTime", () => {
+    const { decision, open } = decide(
+      input({ current: current(ht(1, 0)), observations: [], now: at(20) }),
+    );
+    expect(decision).toMatchObject({
+      status: "live",
+      score: { home: 1, away: 0 },
+      minute: 45,
+      halfTime: true,
+      qualifier: "sen_sinal",
+      rule: "RN-05",
+    });
+    expect(open.map((a) => a.kind)).toEqual(["silence"]);
+  });
+
+  it("RN-03 holds the score without touching halfTime", () => {
+    const { decision } = decide(
+      input({
+        current: current(notHt(2, 0), {
+          scoredBy: {
+            home: "fifty" as SourceId,
+            away: "fifty" as SourceId,
+          },
+        }),
+        observations: [obs("ten", 49, ht(1, 0))],
+      }),
+    );
+    expect(decision).toMatchObject({
+      rule: "RN-03",
+      score: { home: 2, away: 0 },
+      halfTime: true,
+    });
+  });
+
+  it("no Decision outside live carries halfTime: forced finish, finished, suspended", () => {
+    const forced = decide(
+      input({
+        current: current(ht(1, 0)),
+        observations: [obs("ten", 120, ht(1, 0))],
+        now: at(121),
+      }),
+    ).decision;
+    expect(forced).toMatchObject({ status: "finished", rule: "RN-02" });
+    expect(forced).not.toHaveProperty("halfTime");
+    for (const state of [finished(1, 0), suspended(1, 0)]) {
+      const d = decide(
+        input({
+          current: current(ht(1, 0)),
+          observations: [obs("ten", 49, state)],
+        }),
+      ).decision;
+      expect(d).toMatchObject({ status: state.status });
+      expect(d).not.toHaveProperty("halfTime");
+    }
+  });
+});

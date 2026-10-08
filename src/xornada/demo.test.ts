@@ -72,6 +72,19 @@ describe("SPEC-019 CA-5 demonstration data", () => {
   });
 });
 
+describe("SPEC-021 CA-7 half-time in the demonstration data", () => {
+  it("has a live at half-time and a live at half-time sen sinal, both with no minute", () => {
+    const halfTimes = rows.filter((r) => r.margin.kind === "halfTime");
+    expect(halfTimes.map((r) => [r.status, r.qualifier])).toEqual(
+      expect.arrayContaining([
+        ["live", "confirmado"],
+        ["live", "sen_sinal"],
+      ]),
+    );
+    expect(halfTimes).toHaveLength(2);
+  });
+});
+
 describe("SPEC-019 CA-5 isDemoAvailable", () => {
   it("is false in production and true anywhere else", () => {
     expect(isDemoAvailable({ VERCEL_ENV: "production" })).toBe(false);

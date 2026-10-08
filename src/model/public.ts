@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { CompetitionId, MatchId } from "./ids.ts";
 import { Instant } from "./instant.ts";
-import { MatchState } from "./state.ts";
+import { HalfTime, MatchState } from "./state.ts";
 import { Qualifier } from "./vocab.ts";
 
 // What the anonymous public sees of a match (ADR-014 §3) and nothing else:
@@ -37,7 +37,9 @@ const [scheduled, live, finished, postponed, suspended] = MatchState.options;
 export const PublicMatch = z
   .discriminatedUnion("status", [
     z.strictObject({ ...scheduled.shape, ...fields }),
-    z.strictObject({ ...live.shape, ...fields }),
+    // SPEC-021 CA-6: halfTime is explicit in public live, never inferred
+    // from its absence; the other four reject it (their shape says never).
+    z.strictObject({ ...live.shape, halfTime: HalfTime, ...fields }),
     z.strictObject({ ...finished.shape, ...fields }),
     z.strictObject({ ...postponed.shape, ...fields }),
     z.strictObject({ ...suspended.shape, ...fields }),
