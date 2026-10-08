@@ -172,11 +172,9 @@ for (const route of routes) {
         await page.setViewportSize({ width, height: 844 });
         await page.goto(route.path);
         const halfTime = route.dict.xornada.halfTime;
-        const rows = page
-          .getByTestId("match-row")
-          .filter({
-            has: page.getByTestId("match-margin").getByText(halfTime),
-          });
+        const rows = page.getByTestId("match-row").filter({
+          has: page.getByTestId("match-margin").getByText(halfTime),
+        });
         await expect(rows).toHaveCount(2);
         for (let i = 0; i < 2; i++) {
           const row = rows.nth(i);

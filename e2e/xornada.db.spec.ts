@@ -134,6 +134,37 @@ test("CA-7 /api/board: the same selection, cache, ETag and 304", async ({
   expect(await again.text()).toBe("");
 });
 
+// SPEC-021 CA-6, CA-7: the seed puts one live match at half-time (minute 45
+// stored). /api/board says halfTime true and the home says «Descanso».
+test("SPEC-021 /api/board carries halfTime and / and /es say Descanso", async ({
+  page,
+  request,
+}) => {
+  const body = (await (await request.get("/api/board")).json()) as {
+    matches: { matchId: string; status: string; halfTime?: boolean }[];
+  };
+  const atHalfTime = body.matches.filter((m) => m.halfTime === true);
+  expect(atHalfTime).toHaveLength(1);
+  expect(atHalfTime[0]).toMatchObject({ status: "live", minute: 45 });
+  for (const m of body.matches)
+    if (m.status === "live") expect(typeof m.halfTime).toBe("boolean");
+    else expect(m).not.toHaveProperty("halfTime");
+  for (const [path, dict] of [
+    ["/", gl],
+    ["/es", es],
+  ] as const) {
+    await page.goto(path);
+    const row = page.locator(
+      `[data-testid="match-row"][data-match-id="${atHalfTime[0].matchId}"]`,
+    );
+    await expect(row).toHaveAttribute("data-status", "live");
+    await expect(row.getByTestId("match-margin")).toHaveText(
+      dict.xornada.halfTime,
+    );
+    expect(await row.textContent()).not.toMatch(/\d+(\+\d+)?'/);
+  }
+});
+
 test("QA captures of / and /es at 390 px", async ({ page }) => {
   test.skip(!CAPTURES, "QA_CAPTURE_DIR not set");
   mkdirSync(CAPTURES ?? "", { recursive: true });
