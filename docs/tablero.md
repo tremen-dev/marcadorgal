@@ -34,7 +34,7 @@ Actualizado: 2026-10-08
 | SPEC-019 — pantalla-xornada-movil-filas-estados-y-cualificadores-sobre-datos-de-demostracion | hecho | 2026-10-06 (sdd-verificador) |
 | SPEC-020 — lectura-publica-y-snapshot-de-la-xornada-actual | hecho | 2026-10-08 (sdd-verificador) |
 | SPEC-021 — descanso-dentro-de-live-del-adaptador-a-la-fila | en-revision | 2026-10-08 (sdd-implementador) |
-| SPEC-023 — escritorio-tira-de-dias-filtros-y-plegar-competicion | aprobada | 2026-10-08 (Alberto Fojo) |
+| SPEC-023 — escritorio-tira-de-dias-filtros-y-plegar-competicion | hecho | 2026-10-08 (sdd-verificador) |
 
 ## EPIC-FIX (aprobada)
 
@@ -73,6 +73,6 @@ Actualizado: 2026-10-08
 
 ## Resumen
 
-- hecho: 19
+- hecho: 20
 - en-revision: 2
-- aprobada: 2
+- aprobada: 1
