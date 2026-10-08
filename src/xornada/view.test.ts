@@ -5,11 +5,12 @@ import {
   type Qualifier,
   type Score,
 } from "@/model";
-import { buildXornada, minuteLabel } from "./view";
+import { buildXornada, madridDate, minuteLabel, xornadaDays } from "./view";
 
 type Overrides = {
   id?: string;
   tier?: number;
+  round?: number;
   status?: MatchStatus;
   score?: Score | null;
   minute?: number | null;
@@ -42,7 +43,7 @@ function match(o: Overrides = {}): PublicMatch {
     competitionId,
     competitionName,
     tier,
-    round: 8,
+    round: o.round ?? 8,
     kickoff: o.kickoff ?? "2026-10-03T16:00:00Z",
     home: o.home ?? { name: "RC Celta", shortName: "Celta" },
     away: o.away ?? { name: "Real Madrid", shortName: null },
@@ -275,5 +276,135 @@ describe("SPEC-021 CA-7 half-time in the view", () => {
       "halfTime",
       "halfTime",
     ]);
+  });
+});
+
+// SPEC-023 CA-1: the days of the xornada, in Europe/Madrid, from the kickoffs.
+describe("SPEC-023 CA-1 madridDate", () => {
+  it.each([
+    ["2026-10-24T22:30:00Z", "2026-10-25"], // CEST: +2
+    ["2026-10-25T23:30:00Z", "2026-10-26"], // CET after the change: +1
+    ["2026-10-25T22:59:00Z", "2026-10-25"],
+    ["2026-03-29T00:30:00Z", "2026-03-29"],
+    ["2026-12-31T23:00:00Z", "2027-01-01"],
+  ])("%s → %s", (instant, date) => {
+    expect(madridDate(instant)).toBe(date);
+  });
+});
+
+describe("SPEC-023 CA-1 xornadaDays", () => {
+  it("an empty list has no days", () => {
+    expect(xornadaDays([], "2026-10-03T12:00:00Z")).toEqual([]);
+  });
+
+  it("distinct Madrid dates, ascending, across the change of time", () => {
+    const days = xornadaDays(
+      [
+        match({ kickoff: "2026-10-25T23:30:00Z" }),
+        match({ kickoff: "2026-10-24T22:30:00Z" }),
+        match({ kickoff: "2026-10-25T10:00:00Z" }),
+        match({ kickoff: "2026-10-23T18:00:00Z" }),
+      ],
+      "2026-10-24T09:00:00Z",
+    );
+    expect(days).toEqual([
+      {
+        date: "2026-10-23",
+        weekdayKey: "weekday.fri",
+        dayOfMonth: 23,
+        today: false,
+      },
+      {
+        date: "2026-10-25",
+        weekdayKey: "weekday.sun",
+        dayOfMonth: 25,
+        today: false,
+      },
+      {
+        date: "2026-10-26",
+        weekdayKey: "weekday.mon",
+        dayOfMonth: 26,
+        today: false,
+      },
+    ]);
+  });
+
+  it("today only on the Madrid date of now", () => {
+    const matches = [
+      match({ kickoff: "2026-10-03T16:00:00Z" }),
+      match({ kickoff: "2026-10-04T16:00:00Z" }),
+    ];
+    // 22:30Z on the 3rd is already the 4th in Madrid.
+    expect(
+      xornadaDays(matches, "2026-10-03T22:30:00Z").map((d) => [
+        d.date,
+        d.today,
+      ]),
+    ).toEqual([
+      ["2026-10-03", false],
+      ["2026-10-04", true],
+    ]);
+    expect(
+      xornadaDays(matches, "2026-10-05T10:00:00Z").some((d) => d.today),
+    ).toBe(false);
+  });
+
+  it("a live match of another round adds its day", () => {
+    const days = xornadaDays(
+      [
+        match({ round: 8, kickoff: "2026-10-03T16:00:00Z" }),
+        match({ round: 7, status: "live", kickoff: "2026-10-01T18:00:00Z" }),
+      ],
+      "2026-10-01T19:00:00Z",
+    );
+    expect(days.map((d) => d.date)).toEqual(["2026-10-01", "2026-10-03"]);
+    expect(days[0]).toMatchObject({ weekdayKey: "weekday.thu", today: true });
+  });
+
+  it("every weekday has its key", () => {
+    const days = xornadaDays(
+      [5, 6, 7, 8, 9, 10, 11].map((d) =>
+        match({ kickoff: `2026-10-${String(d).padStart(2, "0")}T12:00:00Z` }),
+      ),
+      "2026-10-01T00:00:00Z",
+    );
+    expect(days.map((d) => d.weekdayKey)).toEqual([
+      "weekday.mon",
+      "weekday.tue",
+      "weekday.wed",
+      "weekday.thu",
+      "weekday.fri",
+      "weekday.sat",
+      "weekday.sun",
+    ]);
+  });
+});
+
+describe("SPEC-023 CA-1 buildXornada day and round", () => {
+  it("each row carries its Madrid day", () => {
+    const [competition] = buildXornada([
+      match({ id: "a", kickoff: "2026-10-24T22:30:00Z" }),
+      match({ id: "b", kickoff: "2026-10-24T16:00:00Z" }),
+    ]);
+    expect(
+      Object.fromEntries(competition.rows.map((r) => [r.matchId, r.day])),
+    ).toEqual({ a: "2026-10-25", b: "2026-10-24" });
+  });
+
+  it("each competition carries the most frequent round of its rows", () => {
+    const [competition] = buildXornada([
+      match({ round: 9 }),
+      match({ round: 8 }),
+      match({ round: 9 }),
+    ]);
+    expect(competition.round).toBe(9);
+  });
+
+  it("a tie of rounds goes to the lower one", () => {
+    const [competition] = buildXornada([
+      match({ round: 9 }),
+      match({ round: 8 }),
+    ]);
+    expect(competition.round).toBe(8);
   });
 });

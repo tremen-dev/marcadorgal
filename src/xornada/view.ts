@@ -33,12 +33,16 @@ export type XornadaRow = {
   statusKey: StatusKey;
   qualifierKey: QualifierKey | null;
   winner: "home" | "away" | null;
+  // SPEC-023 CA-1: the Madrid date of the kickoff, YYYY-MM-DD.
+  day: string;
 };
 
 export type XornadaCompetition = {
   competitionId: CompetitionId;
   name: string;
   tier: number;
+  // SPEC-023 CA-1: the most frequent round of its rows; a tie, the lower.
+  round: number;
   liveCount: number;
   rows: XornadaRow[];
 };
@@ -91,6 +95,7 @@ function rowOf(m: PublicMatch): XornadaRow {
     qualifierKey:
       m.qualifier === "confirmado" ? null : `qualifier.${m.qualifier}`,
     winner: winnerOf(m),
+    day: madridDate(m.kickoff),
   };
 }
 
@@ -118,6 +123,7 @@ export function buildXornada(matches: PublicMatch[]): XornadaCompetition[] {
         competitionId: first.competitionId,
         name: first.competitionName,
         tier: first.tier,
+        round: roundOf(group),
         liveCount: group.filter((m) => m.status === "live").length,
         rows: [...group].sort(compareMatches).map(rowOf),
       };
@@ -126,4 +132,66 @@ export function buildXornada(matches: PublicMatch[]): XornadaCompetition[] {
       (a, b) =>
         a.tier - b.tier || compareText(a.competitionId, b.competitionId),
     );
+}
+
+function roundOf(group: PublicMatch[]): number {
+  const counts = new Map<number, number>();
+  for (const m of group) counts.set(m.round, (counts.get(m.round) ?? 0) + 1);
+  let best = { round: Number.POSITIVE_INFINITY, n: 0 };
+  for (const [round, n] of counts) {
+    if (n > best.n || (n === best.n && round < best.round)) best = { round, n };
+  }
+  return best.round;
+}
+
+// SPEC-023 CA-1: the days of the xornada. Dates are civil dates of
+// Europe/Madrid; formatting them into words is the components' job (i18n).
+const TIME_ZONE = "Europe/Madrid";
+const MADRID_DATE = new Intl.DateTimeFormat("en-CA", {
+  timeZone: TIME_ZONE,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
+// The civil date of an instant in Europe/Madrid, YYYY-MM-DD.
+export function madridDate(instant: Instant): string {
+  const parts = MADRID_DATE.formatToParts(new Date(instant));
+  const part = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((p) => p.type === type)?.value ?? "";
+  return `${part("year")}-${part("month")}-${part("day")}`;
+}
+
+const WEEKDAYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
+export type Weekday = (typeof WEEKDAYS)[number];
+export type WeekdayKey = `weekday.${Weekday}`;
+
+export type XornadaDay = {
+  date: string;
+  weekdayKey: WeekdayKey;
+  dayOfMonth: number;
+  today: boolean;
+};
+
+function dayOf(date: string, today: string): XornadaDay {
+  const [year, month, day] = date.split("-").map(Number);
+  const weekday =
+    WEEKDAYS[new Date(Date.UTC(year, month - 1, day)).getUTCDay()];
+  return {
+    date,
+    weekdayKey: `weekday.${weekday}`,
+    dayOfMonth: day,
+    today: date === today,
+  };
+}
+
+// The distinct Madrid dates of the kickoffs, ascending. `now` only marks today.
+export function xornadaDays(
+  matches: readonly Pick<PublicMatch, "kickoff">[],
+  now: Instant,
+): XornadaDay[] {
+  const today = madridDate(now);
+  return [...new Set(matches.map((m) => madridDate(m.kickoff)))]
+    .sort(compareText)
+    .map((date) => dayOf(date, today));
 }
