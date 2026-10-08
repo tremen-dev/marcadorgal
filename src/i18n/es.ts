@@ -18,7 +18,14 @@ export const es: Dictionary = {
     provisional: "provisional",
     sen_sinal: "sin señal",
   },
-  freshness: { lastData: "último dato hace {n} min" },
+  freshness: {
+    lastData: "último dato hace {n} min",
+    servedAt: "Actualizado a las {time}",
+    now: "Actualizado ahora",
+    ago: "Actualizado hace {n} min",
+    polling: "Sin tiempo real: se actualiza cada 30 s",
+    offline: "Sin conexión",
+  },
   xornada: {
     title: "Jornada",
     liveCount: "{n} en juego",

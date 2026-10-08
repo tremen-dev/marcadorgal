@@ -254,3 +254,24 @@ describe("SPEC-023 Xornada controls", () => {
     ).toBe("sáb 12 sep");
   });
 });
+
+describe("SPEC-024 CA-8 freshness of the screen", () => {
+  it("the line and the notice, in both languages", () => {
+    expect(t("gl", "freshness.servedAt", { time: "18:05" })).toBe(
+      "Actualizado ás 18:05",
+    );
+    expect(t("es", "freshness.servedAt", { time: "18:05" })).toBe(
+      "Actualizado a las 18:05",
+    );
+    expect(gl.freshness.now).toBe("Actualizado agora");
+    expect(es.freshness.now).toBe("Actualizado ahora");
+    expect(t("gl", "freshness.ago", { n: 3 })).toBe("Actualizado hai 3 min");
+    expect(t("es", "freshness.ago", { n: 3 })).toBe("Actualizado hace 3 min");
+    expect(gl.freshness.polling).toBe("Sen tempo real: actualízase cada 30 s");
+    expect(es.freshness.polling).toBe(
+      "Sin tiempo real: se actualiza cada 30 s",
+    );
+    expect(gl.freshness.offline).toBe("Sen conexión");
+    expect(es.freshness.offline).toBe("Sin conexión");
+  });
+});
