@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   databaseUrl,
   isLoopbackUrl,
+  localAnonKey,
   localStorageEnv,
   parseStatusEnv,
   REMOTE_SECRETS,
@@ -89,6 +90,23 @@ describe("SPEC-022 local Storage env from supabase status", () => {
     ["empty output", ""],
   ])("is null with %s (CA-2)", (_, text) => {
     expect(localStorageEnv(text)).toBeNull();
+  });
+
+  // SPEC-024 CA-10: the Realtime of e2e:db is the local one, with its key.
+  it("localAnonKey: the ANON_KEY of a loopback API_URL", () => {
+    expect(localAnonKey(status)).toBe("anon-local");
+  });
+
+  it.each([
+    [
+      "a remote API_URL",
+      status.replace("http://127.0.0.1:54321", "https://x.supabase.co"),
+    ],
+    ["no API_URL", status.replace(/API_URL=.*\n/, "")],
+    ["no ANON_KEY", status.replace(/ANON_KEY=.*\n/, "")],
+    ["empty output", ""],
+  ])("localAnonKey is null with %s", (_, text) => {
+    expect(localAnonKey(text)).toBeNull();
   });
 
   it("blanks every remote secret and keeps the rest (CA-4)", () => {
