@@ -33,6 +33,7 @@ Actualizado: 2026-10-08
 |---|---|---|
 | SPEC-019 — pantalla-xornada-movil-filas-estados-y-cualificadores-sobre-datos-de-demostracion | hecho | 2026-10-06 (sdd-verificador) |
 | SPEC-020 — lectura-publica-y-snapshot-de-la-xornada-actual | hecho | 2026-10-08 (sdd-verificador) |
+| SPEC-021 — descanso-dentro-de-live-del-adaptador-a-la-fila | aprobada | 2026-10-08 (Alberto Fojo) |
 
 ## EPIC-FIX (aprobada)
 
@@ -71,4 +72,5 @@ Actualizado: 2026-10-08
 ## Resumen
 
 - hecho: 19
+- aprobada: 1
 - en-revision: 1

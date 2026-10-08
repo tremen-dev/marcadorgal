@@ -122,3 +122,12 @@ Pendientes de especificar, con su procedencia:
   sobre el mismo fichero las borra sin rastro. Arreglo: negarse a sobrescribir
   salvo flag explícito. Procedencia: H-5 de SPEC-017, decidido fuera de su
   alcance por el titular, 2026-09-29.
+- **M-11 — Endurecer `web_reader` ante una credencial filtrada.** Dos huecos
+  que solo importan si se filtra `DATABASE_URL_PUBLIC` (ADR-015): (a) quien
+  la tenga puede retener el advisory lock de `openAttempt` (`src/ingest/db.ts`)
+  y frenar la ingesta: arreglo, `lock_timeout` o lock `try` y saltar la vuelta;
+  (b) puede dejar ajustes pegados al rol (`alter role web_reader set
+  statement_timeout = 1`) que rotar la contraseña no deshace: arreglo,
+  `alter role web_reader reset all` en `db:web-reader` y comprobar
+  `pg_db_role_setting` vacío. Procedencia: F-SPEC-020-11 y V-6 de SPEC-020;
+  a la cola por decisión del titular, 2026-10-08.

@@ -2,10 +2,11 @@
 id: SPEC-021
 tipo: spec
 epica: EPIC-003
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-08, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-08, por: Alberto Fojo}
 ---
 # SPEC-021 — Descanso dentro de live: del adaptador a la fila
 
@@ -48,6 +49,7 @@ observaciones o Decisions antiguas (RN-07: sin backfill; las de antes quedan
 - **H-1 `BT` (pausa antes o dentro de la prórroga).** ¿También «Descanso»? *Recomendación: sí*; es una pausa sin minuto que correr y solo afecta a play-offs.
 - **H-2 Punto vivo en descanso.** `Componentes.dc.html` lo quita («sen minuto que correr»); `Movil.tpl.html` lo deja. *Recomendación: sin punto*, como la ficha del componente; el inserto ember dice que sigue en juego.
 - **H-3 ¿ADR?** `PublicMatch` (ADR-014 §3) gana un campo. *Recomendación: precisión en esta spec, sin ADR* (precedente SPEC-020 N-2/N-3): no es sensible y no cambia qué se oculta.
+- **Decididas por el titular (Alberto Fojo, 2026-10-08):** H-1 = sí (`BT` también «Descanso»); H-2 = sin punto vivo; H-3 = sin ADR, precisión en esta spec. Spec aprobada.
 - **N-1 Orden de despliegue: migración primero.** «Merge primero» no es posible: el código nuevo inserta `half_time` y, sin la columna, el tick falla y se para la ingesta. Al revés es seguro: la columna tiene default, la vista solo añade al final y el lector desplegado elige campos de `select *`. 1) GREEN con `test:db` local. 2) `npm run db:push` desde la rama. 3) Comprobar `ingest_attempts` ok y `/api/board` 200 con los mismos partidos. 4) Merge y despliegue. 5) CA-9. El Preview de la PR (lee producción) descarta los `live` hasta el paso 2.
 - **N-2** `halfTime` es opcional en el tipo porque los motores congelados de `src/decide/fixtures/` no se editan; en base es `not null default false` y en `PublicMatch` es explícito.
 - **N-3** El minuto de la fuente se guarda en descanso (crudo fiel, N-8) y solo la vista lo calla. Se descartó un enum de fases (`first_half`…): más de lo que la pantalla necesita.
