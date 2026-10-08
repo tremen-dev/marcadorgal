@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-10-07
+Actualizado: 2026-10-08
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -32,7 +32,7 @@ Actualizado: 2026-10-07
 | Spec | Estado | Último cambio |
 |---|---|---|
 | SPEC-019 — pantalla-xornada-movil-filas-estados-y-cualificadores-sobre-datos-de-demostracion | hecho | 2026-10-06 (sdd-verificador) |
-| SPEC-020 — lectura-publica-y-snapshot-de-la-xornada-actual | en-progreso | 2026-10-07 (sdd-verificador) |
+| SPEC-020 — lectura-publica-y-snapshot-de-la-xornada-actual | hecho | 2026-10-08 (sdd-verificador) |
 
 ## EPIC-FIX (aprobada)
 
@@ -70,6 +70,5 @@ Actualizado: 2026-10-07
 
 ## Resumen
 
-- hecho: 18
-- en-progreso: 1
+- hecho: 19
 - en-revision: 1
