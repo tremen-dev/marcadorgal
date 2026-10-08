@@ -2,6 +2,7 @@ import { afterAll, describe, expect, it } from "vitest";
 import { getSql } from "./client.ts";
 
 const sql = getSql();
+const TICK_TOKEN = "no-es-un-secreto-0123456789abcdef0123";
 afterAll(() => sql.end());
 
 type JobRow = {
@@ -42,8 +43,7 @@ describe("SPEC-008 CA-4 pg_cron job ingest-tick", () => {
     expect(job.command).toContain("net.http_post");
     expect(job.command).toContain("timeout_milliseconds := 55000");
     expect(job.command).not.toContain("Bearer sb");
-    const token = process.env.INGEST_TICK_TOKEN;
-    expect(token).toBeDefined();
-    expect(job.command).not.toContain(token as string);
+    // A fixed, non-secret value (SPEC-022 CA-4): the suite reads no secret.
+    expect(job.command).not.toContain(TICK_TOKEN);
   });
 });
