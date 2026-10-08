@@ -60,6 +60,7 @@ type State =
       score: { home: number; away: number };
       minute: number | null;
       addedMinute: number | null;
+      halfTime: boolean;
     }
   | {
       status: "finished" | "suspended";
@@ -88,6 +89,15 @@ const live = (
   score: { home, away },
   minute,
   addedMinute,
+  halfTime: false,
+});
+// SPEC-021: half-time, with the minute the source still reports (N-3).
+const halfTime = (home: number, away: number): State => ({
+  status: "live",
+  score: { home, away },
+  minute: 45,
+  addedMinute: null,
+  halfTime: true,
 });
 const finished = (home: number, away: number): State => ({
   status: "finished",
@@ -229,6 +239,21 @@ const RAW: unknown[] = [
     team("Celta Fortuna"),
     team("CE Sabadell", "Sabadell"),
     live(0, 0, null),
+  ),
+  demoMatch(
+    SEGUNDA,
+    "2026-10-03T16:15:00Z",
+    team("Granada CF", "Granada"),
+    team("FC Andorra", "Andorra"),
+    halfTime(0, 2),
+  ),
+  demoMatch(
+    SEGUNDA,
+    "2026-10-03T16:15:00Z",
+    team("Girona FC", "Girona"),
+    team("CD Tenerife", "Tenerife"),
+    halfTime(1, 1),
+    "sen_sinal",
   ),
   demoMatch(
     SEGUNDA,

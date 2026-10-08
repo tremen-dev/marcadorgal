@@ -14,6 +14,9 @@ import type {
 export type Margin =
   | { kind: "time"; kickoff: Instant }
   | { kind: "minute"; minute: number; addedMinute: number | null }
+  // SPEC-021: half-time, a moment inside live with no minute to run. The
+  // source's minute is kept in the data (N-3) and silenced here.
+  | { kind: "halfTime" }
   | { kind: "status" };
 
 export type StatusKey = `status.${MatchStatus}`;
@@ -62,6 +65,7 @@ function compareMatches(a: PublicMatch, b: PublicMatch): number {
 
 function marginOf(m: PublicMatch): Margin {
   if (m.status === "scheduled") return { kind: "time", kickoff: m.kickoff };
+  if (m.status === "live" && m.halfTime) return { kind: "halfTime" };
   if (m.status === "live" && m.minute !== null)
     return { kind: "minute", minute: m.minute, addedMinute: m.addedMinute };
   return { kind: "status" };
