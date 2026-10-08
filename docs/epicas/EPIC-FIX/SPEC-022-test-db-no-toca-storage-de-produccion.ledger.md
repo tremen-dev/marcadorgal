@@ -15,14 +15,14 @@ epica: EPIC-FIX
 <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
-| CA-1 | `tools/test-db.mjs`; `localStorageEnv`/`parseStatusEnv` en `src/db/env.ts` | `src/db/test-db.test.ts` «SPEC-022 CA-1» (supabase y npx falsos; entorno y `.env` de producción) · `src/db/env.test.ts` «SPEC-022 local Storage env» | | 🚧 |
-| CA-2 | `tools/test-db.mjs` (status falla / API_URL no loopback / sin SERVICE_ROLE_KEY → exit 1) | `src/db/test-db.test.ts` «SPEC-022 CA-2» (status falla; `API_URL=https://x.supabase.co`) | | 🚧 |
-| CA-3 | `vitest.db.config.mts` | `src/db/db-config.test.ts` (import en subproceso: remota, `.env` de producción, ausente → falla; loopback → carga) | | 🚧 |
-| CA-4 | `REMOTE_SECRETS`/`withoutRemoteSecrets` en `src/db/env.ts`; `tools/test-db.mjs`; `vitest.db.config.mts`; `src/db/cron.db.test.ts` (valor fijo) | `src/db/remote-secrets.db.test.ts` · `src/db/test-db.test.ts` «blanks the remote secrets» · `src/db/env.test.ts` | | 🚧 |
-| CA-5 | `src/db/fetch-guard.ts` (+ `isLoopbackHost` en `src/db/env.ts`), `src/db/fetch-guard.setup.ts`, `setupFiles` en `vitest.db.config.mts` | `src/db/fetch-guard.test.ts`; suite de base entera verde con la guarda (16 ficheros, 166 tests) | | 🚧 |
-| CA-6 | (sin código: consecuencia de CA-1) | `npm run test:db` con `.env` de producción → 0; ver evidencia abajo | | 🚧 |
-| CA-7 | `playwright.db.config.ts` | `src/db/playwright-db-config.test.ts` | | 🚧 |
-| CA-8 | Ficheros: los de arriba más tests; sin migraciones, dependencias ni cambios en `src/raw/*` | `npm run gates` → 0 (67 ficheros, 1136 tests) | | 🚧 |
+| CA-1 | `tools/test-db.mjs`; `localStorageEnv`/`parseStatusEnv` en `src/db/env.ts` | `src/db/test-db.test.ts` «SPEC-022 CA-1» (supabase y npx falsos; entorno y `.env` de producción) · `src/db/env.test.ts` «SPEC-022 local Storage env» | `test-db.test.ts` verde en gates; `npm run test:db` real → Storage local (logs del contenedor) | ✅ |
+| CA-2 | `tools/test-db.mjs` (status falla / API_URL no loopback / sin SERVICE_ROLE_KEY → exit 1) | `src/db/test-db.test.ts` «SPEC-022 CA-2» (status falla; `API_URL=https://x.supabase.co`) | sondeo propio con `supabase` falso: `API_URL` = `https://evil.invalid`, `http://localhost.evil.invalid:54321`, `http://127.0.0.1@evil.invalid`, `http://127.0.0.1.evil.invalid`, vacía → exit 1, solo `status -o env` llamado, 0 fugas | ✅ |
+| CA-3 | `vitest.db.config.mts` | `src/db/db-config.test.ts` (import en subproceso: remota, `.env` de producción, ausente → falla; loopback → carga) | `vitest --config vitest.db.config.mts` con el `.env` y `NEXT_PUBLIC_SUPABASE_URL=https://prod.invalid` / `http://127.0.0.1@prod.invalid` → Startup Error «not loopback», exit 1 | ✅ |
+| CA-4 | `REMOTE_SECRETS`/`withoutRemoteSecrets` en `src/db/env.ts`; `tools/test-db.mjs`; `vitest.db.config.mts`; `src/db/cron.db.test.ts` (valor fijo) | `src/db/remote-secrets.db.test.ts` · `src/db/test-db.test.ts` «blanks the remote secrets» · `src/db/env.test.ts` | `remote-secrets.db.test.ts` verde en `test:db`; sondeo en worker con el `.env` real: las 7 vacías | ✅ |
+| CA-5 | `src/db/fetch-guard.ts` (+ `isLoopbackHost` en `src/db/env.ts`), `src/db/fetch-guard.setup.ts`, `setupFiles` en `vitest.db.config.mts` | `src/db/fetch-guard.test.ts`; suite de base entera verde con la guarda (16 ficheros, 166 tests) | `fetch-guard.test.ts` verde; sondeo en la config de base: referencia `fetch` guardada a nivel de módulo, `Request`, `127.0.0.1@evil.invalid`, `localhost.evil.invalid` → rechazadas por la guarda | ✅ |
+| CA-6 | (sin código: consecuencia de CA-1) | `npm run test:db` con `.env` de producción → 0; ver evidencia abajo | `test:db` → exit 0, 16 ficheros/166 tests; contenedor local: POST/GET/DELETE `raw/test/<uuid>`; bucket remoto `test/` listado (solo lectura) → 0 objetos | ✅ |
+| CA-7 | `playwright.db.config.ts` | `src/db/playwright-db-config.test.ts` | `playwright-db-config.test.ts` verde; `npm run e2e:db` → 7 passed, 1 skipped | ✅ |
+| CA-8 | Ficheros: los de arriba más tests; sin migraciones, dependencias ni cambios en `src/raw/*` | `npm run gates` → 0 (67 ficheros, 1136 tests) | `npm run gates` → exit 0 (67 ficheros, 1136 tests, build ok); sin cambios en `supabase/`, `package*.json`, `src/raw/*` | ✅ |
 
 ### Evidencia del implementador (2026-10-08)
 - `npm run test:db` con el `.env` de producción (`NEXT_PUBLIC_SUPABASE_URL=https://<ref>.supabase.co`), solo `DATABASE_URL` exportada a loopback: `exit=0`, `Test Files 16 passed (16)`, `Tests 166 passed (166)`.
@@ -33,6 +33,12 @@ epica: EPIC-FIX
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
+**GREEN — 2026-10-08.** CA-1..CA-8 ✅. Gates: `npm run gates` → 0 (1136 tests); `npm run e2e` → 38 passed; `npm run e2e:db` → 7 passed, 1 skipped (preexistente); `DATABASE_URL=<loopback> npm run test:db` con el `.env` de producción → 0 (166 tests), put/get/remove en el contenedor local. Guardas probadas solo con hosts `*.invalid`.
+- CA-8 frente a F-SPEC-022-2: amparado. `fetch-guard.ts` + `fetch-guard.setup.ts` son «el setup de `fetch`» partido en lógica testeable e instalación; `isLoopbackHost` y el resto de añadidos viven en `src/db/env.ts`, fichero permitido.
+- Tests de SPEC-020 tocados: solo «on loopback applies the migrations…» de `test-db.test.ts` (y una línea de import en `env.test.ts`). Lo exige CA-1/CA-2: `status` corre antes de `db push`, y el doble antiguo no respondía a `status`. La aserción sigue y se endurece (orden de llamadas).
+- Límite (H-2, aceptado): `node:http` y sockets crudos no pasan por la guarda; un `http.get` a `prod.invalid` desde la suite sale a DNS. Ningún código de `src/` ni `tools/` importa `undici`, `node:http(s)` ni `node:net`.
+- O-1 (baja): lanzando vitest a mano con `NEXT_PUBLIC_SUPABASE_URL` local, `SUPABASE_SERVICE_ROLE_KEY` de producción sigue en `process.env`. Solo puede ir a loopback (CA-3 + CA-5).
+- O-2 (baja, fuera de la letra): `.env.local` trae `VERCEL_OIDC_TOKEN`; Next lo carga en `e2e:db` porque no está en la lista de CA-4. Destino: EPIC-MANT.
 
 ## Evidencia visual
 <!-- Tabla CA → captura en _qa/SPEC-022/. Informe HTML opcional: _qa/SPEC-022/informe.html -->
