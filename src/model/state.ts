@@ -14,11 +14,20 @@ export const Minute = z.int().min(0).max(130);
 // not 48. null when there is no added time; never 0.
 export const AddedMinute = z.int().min(1).max(30);
 
-// Only the live branch carries added time; the object schemas strip unknown
-// keys, so the other four reject it explicitly instead of dropping it.
-const noAddedMinute = { addedMinute: z.never().optional() };
-const noScore = { score: z.null(), minute: z.null(), ...noAddedMinute };
-const finalScore = { score: Score, minute: z.null(), ...noAddedMinute };
+// Half-time is a moment inside live, never a sixth status (SPEC-021). Optional
+// because the frozen engines in src/decide/fixtures do not set it (N-2):
+// absent reads as false. Use isHalfTime() rather than the raw field.
+export const HalfTime = z.boolean();
+
+// Only the live branch carries added time and half-time; the object schemas
+// strip unknown keys, so the other four reject them explicitly instead of
+// dropping them.
+const liveOnly = {
+  addedMinute: z.never().optional(),
+  halfTime: z.never().optional(),
+};
+const noScore = { score: z.null(), minute: z.null(), ...liveOnly };
+const finalScore = { score: Score, minute: z.null(), ...liveOnly };
 
 // Discriminated by status, in MatchStatus order: no score before the match,
 // a score once it starts, and a minute (with its added time) only while it is
@@ -30,6 +39,7 @@ export const MatchState = z.discriminatedUnion("status", [
     score: Score,
     minute: Minute.nullable(),
     addedMinute: AddedMinute.nullable(),
+    halfTime: HalfTime.optional(),
   }),
   z.object({ status: z.literal("finished"), ...finalScore }),
   z.object({ status: z.literal("postponed"), ...noScore }),
@@ -49,4 +59,9 @@ export function compareLiveMinute(a: LiveMinute, b: LiveMinute): number {
     (a.minute ?? -1) - (b.minute ?? -1) ||
     (a.addedMinute ?? 0) - (b.addedMinute ?? 0)
   );
+}
+
+// SPEC-021 N-2: an absent halfTime is false.
+export function isHalfTime(state: MatchState): boolean {
+  return state.status === "live" && state.halfTime === true;
 }

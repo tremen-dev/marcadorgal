@@ -174,6 +174,33 @@ describe("CA-5 match state with score", () => {
     ).toBe(false);
   });
 
+  it("SPEC-021 CA-1: halfTime lives only in the live branch", () => {
+    const live = { status: "live", score, minute: 45, addedMinute: null };
+    expect(ok({ ...live, halfTime: true })).toBe(true);
+    expect(ok({ ...live, halfTime: false })).toBe(true);
+    expect(ok(live)).toBe(true);
+    expect(ok({ ...live, halfTime: "yes" })).toBe(false);
+    expect(
+      ok({ status: "finished", score, minute: null, halfTime: false }),
+    ).toBe(false);
+    expect(ok({ status: "suspended", score, minute: null, halfTime: true })).toBe(
+      false,
+    );
+    expect(
+      ok({ status: "scheduled", score: null, minute: null, halfTime: false }),
+    ).toBe(false);
+    expect(
+      ok({ status: "postponed", score: null, minute: null, halfTime: true }),
+    ).toBe(false);
+    expect(MatchStatus.options).toEqual([
+      "scheduled",
+      "live",
+      "finished",
+      "postponed",
+      "suspended",
+    ]);
+  });
+
   it("rejects scheduled with score", () => {
     expect(ok({ status: "scheduled", score, minute: null })).toBe(false);
   });
