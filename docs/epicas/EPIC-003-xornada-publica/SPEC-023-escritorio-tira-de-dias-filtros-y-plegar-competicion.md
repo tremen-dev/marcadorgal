@@ -2,10 +2,11 @@
 id: SPEC-023
 tipo: spec
 epica: EPIC-003
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-08, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-08, por: Alberto Fojo}
 ---
 # SPEC-023 — Escritorio, tira de días, filtros y plegar competición
 
@@ -53,3 +54,4 @@ detalle (ADR-005 exc. 4); recordar el plegado.
 - **H-6 Lateral de escritorio.** El diseño lo titula «As miñas ligas» (personalización que no hay); recomendado «Competicións» / «Competiciones». Alternativa: quitar el lateral (pediría anotarlo en ADR-005 por ADR nuevo).
 - **N-1** El diseño trunca con elipsis en filas y lateral: manda D-2 (CA-8).
 - **N-2** Para Realtime: el plegado vive en el DOM (`<details>`) y el filtro en el fragmento; repintar filas no debe reabrir secciones ni perder el filtro.
+- **Decididas por el titular (Alberto Fojo, 2026-10-08):** H-1..H-6 según recomendación (H-2: sin flechas en v1, navegar entre xornadas queda para otra spec; H-6: lateral «Competicións» / «Competiciones»). Spec aprobada.
