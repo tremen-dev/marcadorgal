@@ -60,6 +60,16 @@ export function localStorageEnv(statusText: string): {
   return { NEXT_PUBLIC_SUPABASE_URL: url, SUPABASE_SERVICE_ROLE_KEY: key };
 }
 
+// SPEC-024 CA-10: the anon key of the local Supabase, for the Realtime of
+// e2e:db. Never the .env one: only with a loopback API_URL.
+export function localAnonKey(statusText: string): string | null {
+  const status = parseStatusEnv(statusText);
+  const url = status.API_URL ?? "";
+  const key = status.ANON_KEY ?? "";
+  if (!url || !key || !isLoopbackUrl(url)) return null;
+  return key;
+}
+
 // Remote secrets the database suite never needs (SPEC-022 CA-4).
 export const REMOTE_SECRETS = [
   "API_FOOTBALL_KEY",

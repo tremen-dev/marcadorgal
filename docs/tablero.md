@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-10-08
+Actualizado: 2026-10-09
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -35,7 +35,7 @@ Actualizado: 2026-10-08
 | SPEC-020 — lectura-publica-y-snapshot-de-la-xornada-actual | hecho | 2026-10-08 (sdd-verificador) |
 | SPEC-021 — descanso-dentro-de-live-del-adaptador-a-la-fila | en-revision | 2026-10-08 (sdd-implementador) |
 | SPEC-023 — escritorio-tira-de-dias-filtros-y-plegar-competicion | hecho | 2026-10-08 (sdd-verificador) |
-| SPEC-024 — realtime-fallback-y-frescura | aprobada | 2026-10-08 (Alberto Fojo) |
+| SPEC-024 — realtime-fallback-y-frescura | hecho | 2026-10-09 (sdd-verificador) |
 
 ## EPIC-FIX (aprobada)
 
@@ -74,6 +74,5 @@ Actualizado: 2026-10-08
 
 ## Resumen
 
-- hecho: 21
+- hecho: 22
 - en-revision: 2
-- aprobada: 1

@@ -19,7 +19,16 @@ export const gl = {
     provisional: "provisional",
     sen_sinal: "sen sinal",
   },
-  freshness: { lastData: "último dato hai {n} min" },
+  // SPEC-024 CA-8, CA-9 (D-9, RN-11): the row (source clock) and the line
+  // of the screen (browser clock), never mixed.
+  freshness: {
+    lastData: "último dato hai {n} min",
+    servedAt: "Actualizado ás {time}",
+    now: "Actualizado agora",
+    ago: "Actualizado hai {n} min",
+    polling: "Sen tempo real: actualízase cada 30 s",
+    offline: "Sen conexión",
+  },
   xornada: {
     title: "Xornada",
     liveCount: "{n} en xogo",

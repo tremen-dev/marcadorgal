@@ -442,6 +442,34 @@
   line-height: 1.2;
 }
 
+/* SPEC-024 CA-9 (H-4): the age of a live row's data, under the teams, dim.
+   Words, no status colour; it wraps rather than truncate (D-2). */
+.rowAge {
+  grid-column: 2;
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 1.2;
+  color: var(--fg-dim);
+  overflow-wrap: anywhere;
+}
+
+/* SPEC-024 CA-8 (D-9, H-5): the browser clock, out of the table, between
+   the controls and the first competition. Neutral tokens only. */
+.freshness {
+  margin: 0;
+  padding: var(--space-8) 14px;
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--fg-dim);
+}
+
+.freshnessNotice:not(:empty)::before {
+  content: " · ";
+}
+
 .sides {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 30px;
@@ -621,5 +649,9 @@
   .sides {
     grid-template-columns: minmax(0, 1fr) 46px;
     gap: 4px var(--space-8);
+  }
+
+  .freshness {
+    padding: var(--space-8) var(--space-16);
   }
 }

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { PublicMatch } from "@/model";
-import { toPublicMatches, type XornadaDbRow } from "./row";
+import { toPublicMatch, toPublicMatches, type XornadaDbRow } from "./row";
 
 // SPEC-020 CA-4: a web.xornada row as postgres.js returns it (timestamptz as
 // Date) becomes a PublicMatch with ISO instants ending in Z; a row that does
@@ -192,4 +192,64 @@ describe("SPEC-021 CA-6 half_time to halfTime", () => {
     expect(out).toEqual([]);
     expect(error).toHaveBeenCalledTimes(1);
   });
+});
+
+// SPEC-024 CA-3: one conversion for the reader (postgres.js, Date) and for
+// the Realtime payload (to_jsonb of the same row: strings with an offset and
+// microseconds, plus the id realtime.send appends).
+describe("SPEC-024 CA-3 one conversion", () => {
+  const live = {
+    ...base,
+    status: "live",
+    home_score: 2,
+    away_score: 1,
+    minute: 45,
+    added_minute: 3,
+    version: 3,
+    observed_at: new Date("2026-10-10T16:47:00.123Z"),
+    decided_at: new Date("2026-10-10T16:47:05Z"),
+  };
+  const payload = {
+    ...live,
+    kickoff: "2026-10-10T16:00:00+00:00",
+    observed_at: "2026-10-10T18:47:00.123456+02:00",
+    decided_at: "2026-10-10T16:47:05+00:00",
+    id: "6d1f2a52-6c1e-4a51-9f3f-1d8c2b0f8a10",
+  };
+
+  it("the same match by the reader and by the payload gives equal objects, in Z", () => {
+    const [byReader] = toPublicMatches([live]);
+    const byPayload = toPublicMatch(payload);
+    expect(byPayload).toEqual(byReader);
+    expect(byPayload).toMatchObject({
+      kickoff: "2026-10-10T16:00:00.000Z",
+      observedAt: "2026-10-10T16:47:00.123Z",
+      decidedAt: "2026-10-10T16:47:05.000Z",
+    });
+  });
+
+  it.each([
+    ["an instant that is not one", { kickoff: "mañá" }],
+    ["a sixth status", { status: "halftime" }],
+    ["a missing column", { tier: undefined }],
+  ])(
+    "an invalid payload (%s) is dropped with console.error naming the matchId",
+    (_n, change) => {
+      const error = vi.spyOn(console, "error").mockImplementation(() => {});
+      expect(toPublicMatch({ ...payload, ...change })).toBeNull();
+      expect(error).toHaveBeenCalledTimes(1);
+      expect(String(error.mock.calls[0].join(" "))).toContain(
+        "celta-coruna-2026-10-10",
+      );
+    },
+  );
+
+  it.each([null, "x", 3, []])(
+    "a payload that is not a row (%s) is dropped",
+    (value) => {
+      const error = vi.spyOn(console, "error").mockImplementation(() => {});
+      expect(toPublicMatch(value)).toBeNull();
+      expect(error).toHaveBeenCalledTimes(1);
+    },
+  );
 });

@@ -72,6 +72,10 @@ export function publicXornadaReader(): XornadaReader | null {
   return createXornadaReader(pool);
 }
 
+// SPEC-024 CA-6: the season of the served xornada names the Realtime
+// channel (board:<season>); the page takes it from here, like its data.
+export { seasonOf } from "./current.ts";
+
 // The current xornada for the page and /api/board (CA-6, CA-7): null when
 // there is no reader; a failed read throws and the caller decides.
 export async function readPublicXornada(

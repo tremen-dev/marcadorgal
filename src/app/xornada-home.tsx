@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { readPublicXornada } from "@/board/reader";
+import { boardEtag } from "@/board/http";
+import { readPublicXornada, seasonOf } from "@/board/reader";
 import { nowInstant } from "@/clock";
 import { XornadaScreen } from "@/components/xornada/XornadaScreen";
 import { type Locale, t } from "@/i18n";
@@ -42,6 +43,13 @@ export async function HomeXornada({ locale }: { locale: Locale }) {
       days={matches === null ? [] : xornadaDays(matches, now)}
       paths={HOME_PATHS}
       unavailable={matches === null}
+      // SPEC-024: the client keeps it up to date from the served state.
+      live={{
+        matches: matches ?? [],
+        servedAt: now,
+        season: seasonOf(now),
+        etag: matches === null ? null : boardEtag(matches),
+      }}
     />
   );
 }
