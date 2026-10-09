@@ -13,6 +13,10 @@
 // It only reads the public screen: no secret, no cookie, nothing written but
 // its two files.
 //
+// The verdict only exists for --url https://marcador.gal with / and /es,
+// n 20 and a pause of 15 s (CA-3); anything else is a trial and its report
+// says MUESTRA NO VÁLIDA.
+//
 // Usage: npm run primera:pintura -- [--n 20] [--url https://marcador.gal]
 //          [--rutas /,/es] [--pausa 15] [--salida <directorio>]
 //   --n       passes per route (CA-3: 20); routes alternate.
@@ -130,6 +134,7 @@ async function unaPasada(browser, url, ruta) {
     lcpMs: null,
     primeraFilaMs: null,
     ttfbRedMs: null,
+    finDocumentoRedMs: null,
     recursos: [],
     error: null,
   };
@@ -147,6 +152,12 @@ async function unaPasada(browser, url, ruta) {
     cdp.on("Network.responseReceived", (e) => {
       if (documento !== null && e.requestId === documento.id)
         crudo.ttfbRedMs = (e.timestamp - documento.enviado) * 1000;
+    });
+    // End of the document on the same clock, so the transfer stretch of the
+    // report does not mix CDP with Navigation Timing.
+    cdp.on("Network.loadingFinished", (e) => {
+      if (documento !== null && e.requestId === documento.id)
+        crudo.finDocumentoRedMs = (e.timestamp - documento.enviado) * 1000;
     });
     await aplicaPerfil(cdp, PERFIL_3G);
     await page.addInitScript(sondaEnPagina);

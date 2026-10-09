@@ -111,6 +111,7 @@ const crudo = (over: Partial<CrudoPasada> = {}): CrudoPasada => ({
     },
   ],
   ttfbRedMs: null,
+  finDocumentoRedMs: null,
   error: null,
   ...over,
 });
@@ -163,14 +164,40 @@ describe("SPEC-026 CA-2 pasada (one pass from its raw capture)", () => {
   // Navigation Timing does not see the latency CDP adds (responseStart stays
   // at a few ms against localhost); the CDP response of the document does.
   it("takes the TTFB of the emulated network when CDP saw it", () => {
-    const p = pasada(crudo({ ttfbRedMs: 1000 }));
+    const p = pasada(crudo({ ttfbRedMs: 1000, finDocumentoRedMs: 1300 }));
     expect(p.ttfbMs).toBe(1000);
-    expect(p.transferenciaMs).toBe(100);
-    expect(p.renderMs).toBe(400);
   });
 
-  it("never prints a negative transfer", () => {
-    expect(pasada(crudo({ ttfbRedMs: 1200 })).transferenciaMs).toBe(0);
+  // V-2: the transfer ends where CDP saw the document finish
+  // (Network.loadingFinished), on the same clock as the TTFB; render is what
+  // is left until the FCP. TTFB + transfer + render = FCP.
+  it("splits the FCP on CDP's clock: TTFB, transfer, render", () => {
+    const p = pasada(crudo({ ttfbRedMs: 1000, finDocumentoRedMs: 1300 }));
+    expect(p.transferenciaMs).toBe(300);
+    expect(p.renderMs).toBe(200);
+    expect((p.ttfbMs ?? 0) + (p.transferenciaMs ?? 0) + (p.renderMs ?? 0)).toBe(
+      p.fcpMs,
+    );
+  });
+
+  it("does not blame render for a transfer Navigation Timing cut short", () => {
+    // responseEnd (1100) is on the page clock, before the emulated TTFB.
+    const p = pasada(crudo({ ttfbRedMs: 1200, finDocumentoRedMs: 1450 }));
+    expect(p.transferenciaMs).toBe(250);
+    expect(p.renderMs).toBe(50);
+  });
+
+  it("a streamed document still loading at the FCP: no negative render", () => {
+    const p = pasada(crudo({ ttfbRedMs: 1000, finDocumentoRedMs: 1800 }));
+    expect(p.transferenciaMs).toBe(500);
+    expect(p.renderMs).toBe(0);
+  });
+
+  it("without CDP's end, falls back to Navigation Timing alone", () => {
+    const p = pasada(crudo({ ttfbRedMs: 1000 }));
+    expect(p.ttfbMs).toBe(1000);
+    expect(p.transferenciaMs).toBe(400);
+    expect(p.renderMs).toBe(400);
   });
 
   it("falls back to the encoded size when the transfer size is zero", () => {
@@ -267,7 +294,12 @@ describe("SPEC-026 CA-3 resumenRuta (p75 per route, threshold 2000 ms)", () => {
 });
 
 describe("SPEC-026 CA-3 veredicto (each route, valid sample)", () => {
-  const opciones = { pausaS: 15, nObjetivo: 20, rutas: ["/", "/es"] };
+  const opciones = {
+    url: "https://marcador.gal",
+    pausaS: 15,
+    nObjetivo: 20,
+    rutas: ["/", "/es"],
+  };
 
   it("complies when both routes comply", () => {
     const v = veredicto(
@@ -314,6 +346,39 @@ describe("SPEC-026 CA-3 veredicto (each route, valid sample)", () => {
       "/: n = 1 < 20",
       "/es: sin pasadas",
     ]);
+  });
+
+  // V-1: the sample of CA-3 is / and /es on https://marcador.gal, whatever
+  // the flags say; the report still prints for local trials.
+  it.each([
+    [["/"], ["/es: sin pasadas"]],
+    [["/x"], ["/: sin pasadas", "/es: sin pasadas"]],
+    [["/es", "/x"], ["/: sin pasadas"]],
+  ])("routes %j with n 20 and pause 15 → invalid sample", (rutas, motivos) => {
+    const v = veredicto(
+      rutas.map((r) => resumenRuta(r, conFcp(r, veinte(1000)))),
+      { ...opciones, rutas },
+    );
+    expect(v).toEqual({ estado: "no-valida", motivos });
+  });
+
+  it.each([
+    ["http://localhost:3201", false],
+    ["https://marcador-gal.vercel.app", false],
+    ["https://marcador.gal.evil.example", false],
+    ["https://marcador.gal/", true],
+    ["https://marcador.gal", true],
+  ])("base URL %s → valid %s", (url, valida) => {
+    const v = veredicto(
+      [
+        resumenRuta("/", conFcp("/", veinte(1000))),
+        resumenRuta("/es", conFcp("/es", veinte(1000))),
+      ],
+      { ...opciones, url },
+    );
+    expect(v.estado).toBe(valida ? "cumple" : "no-valida");
+    if (!valida)
+      expect(v.motivos).toEqual([`destino ${url} ≠ https://marcador.gal`]);
   });
 });
 

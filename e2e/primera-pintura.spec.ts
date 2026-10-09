@@ -14,6 +14,8 @@ type Json = {
     pasada: {
       ruta: string;
       ttfbMs: number | null;
+      transferenciaMs: number | null;
+      renderMs: number | null;
       fcpMs: number | null;
       filasEnHtml: number;
       datoEnHtml: boolean;
@@ -67,6 +69,11 @@ test("primera:pintura measures the local build under the «3G» profile", async 
     expect(p.fcpMs).toBeGreaterThan(0);
     // CA-1: the 300 ms of emulated RTT are there even against localhost.
     expect(p.ttfbMs).toBeGreaterThanOrEqual(300);
+    // CA-4 (V-2): the three stretches are on CDP's clock and add up to the FCP.
+    expect(p.transferenciaMs).toBeGreaterThan(0);
+    expect(
+      (p.ttfbMs ?? 0) + (p.transferenciaMs ?? 0) + (p.renderMs ?? 0),
+    ).toBeCloseTo(p.fcpMs ?? 0, 0);
     expect(p.fallo).toBeNull();
   }
   expect(raiz.datoEnHtml).toBe(false);
@@ -75,5 +82,9 @@ test("primera:pintura measures the local build under the «3G» profile", async 
   const informe = readFileSync(path.join(salida, String(md)), "utf8");
   expect(informe).toContain("red 1600 kbit/s de bajada");
   expect(informe).toContain("**Veredicto: MUESTRA NO VÁLIDA**");
+  // V-1: a local build is never a verdict, and neither is a sample without /es.
+  expect(informe).toMatch(
+    /destino http:\/\/(localhost|127\.0\.0\.1):\d+ ≠ https:\/\/marcador\.gal/,
+  );
   expect(informe).toContain(`JSON crudo de cada pasada: \`${json}\``);
 });

@@ -8,6 +8,10 @@ export const UMBRAL_FCP_MS = 2000;
 export const PERCENTIL = 0.75;
 // CA-3: passes at least 15 s apart, so the sample includes CDN misses.
 export const PAUSA_MIN_S = 15;
+// CA-3: the sample is these routes on this origin; anything else (a local
+// `next start`, a preview) still gets a report, never a verdict.
+export const DESTINO = "https://marcador.gal";
+export const RUTAS = ["/", "/es"] as const;
 
 // CA-1: the profile lives in the tool; it travels here to be printed.
 export type Perfil = {
@@ -47,6 +51,9 @@ export type CrudoPasada = {
   // responseReceived − requestWillBeSent. Navigation Timing's responseStart
   // does not include the latency CDP adds, so this one wins when present.
   ttfbRedMs: number | null;
+  // End of the document on the same CDP clock: Network.loadingFinished −
+  // requestWillBeSent. With ttfbRedMs it splits the FCP without mixing clocks.
+  finDocumentoRedMs: number | null;
   recursos: {
     name: string;
     startTime: number;
@@ -107,6 +114,31 @@ const extension = (url: string) => {
   }
 };
 
+// CA-4: where the time to the FCP goes. On CDP's clock when it saw both ends
+// of the document (TTFB + transfer + render = FCP; a document still streaming
+// at the FCP leaves render at 0); otherwise on Navigation Timing alone.
+function reparto(c: CrudoPasada): {
+  transferencia: number | null;
+  render: number | null;
+} {
+  const fcp = c.fcpMs;
+  if (c.ttfbRedMs !== null && c.finDocumentoRedMs !== null) {
+    const fin = Math.max(c.ttfbRedMs, c.finDocumentoRedMs);
+    const corte =
+      fcp === null ? fin : Math.max(c.ttfbRedMs, Math.min(fin, fcp));
+    return {
+      transferencia: corte - c.ttfbRedMs,
+      render: fcp === null ? null : Math.max(0, fcp - fin),
+    };
+  }
+  const nav = c.navegacion;
+  if (nav === null) return { transferencia: null, render: null };
+  return {
+    transferencia: Math.max(0, nav.responseEnd - nav.responseStart),
+    render: fcp === null ? null : Math.max(0, fcp - nav.responseEnd),
+  };
+}
+
 export function pasada(c: CrudoPasada): Pasada {
   const nav = c.navegacion;
   const ttfb = c.ttfbRedMs ?? nav?.responseStart ?? null;
@@ -118,6 +150,7 @@ export function pasada(c: CrudoPasada): Pasada {
     iniciales
       .filter((r) => extension(r.name) === ext)
       .reduce((s, r) => s + tamano(r), 0);
+  const tramos = reparto(c);
   const datoEnHtml = c.filas.conDato > 0;
   const filasAlFcp =
     c.fcpMs !== null && c.primeraFilaMs !== null && c.primeraFilaMs <= c.fcpMs;
@@ -138,9 +171,8 @@ export function pasada(c: CrudoPasada): Pasada {
     ruta: c.ruta,
     inicio: c.inicio,
     ttfbMs: ttfb,
-    transferenciaMs:
-      nav && ttfb !== null ? Math.max(0, nav.responseEnd - ttfb) : null,
-    renderMs: nav && c.fcpMs !== null ? c.fcpMs - nav.responseEnd : null,
+    transferenciaMs: tramos.transferencia,
+    renderMs: tramos.render,
     fcpMs: c.fcpMs,
     lcpMs: c.lcpMs,
     bytesDocumento: nav ? tamano(nav) : 0,
@@ -234,12 +266,18 @@ export type Veredicto = {
 
 export function veredicto(
   resumenes: ResumenRuta[],
-  o: { pausaS: number; nObjetivo: number; rutas: string[] },
+  o: { url: string; pausaS: number; nObjetivo: number; rutas: string[] },
 ): Veredicto {
   const invalidez: string[] = [];
+  if (o.url.replace(/\/+$/, "") !== DESTINO)
+    invalidez.push(`destino ${o.url} ≠ ${DESTINO}`);
   if (o.pausaS < PAUSA_MIN_S)
     invalidez.push(`pausa ${o.pausaS} s < ${PAUSA_MIN_S} s`);
-  for (const ruta of o.rutas) {
+  const rutas = [
+    ...RUTAS,
+    ...o.rutas.filter((r) => !RUTAS.some((x) => x === r)),
+  ];
+  for (const ruta of rutas) {
     const r = resumenes.find((x) => x.ruta === ruta);
     if (!r || r.n === 0) invalidez.push(`${ruta}: sin pasadas`);
     else if (r.n < o.nObjetivo)
@@ -334,7 +372,7 @@ export function informePintura(e: {
       "",
       "## Dónde se va el tiempo",
       "",
-      "TTFB = cabeceras del documento en la red emulada (CDP); transferencia = responseEnd − TTFB; render = FCP − responseEnd.",
+      "TTFB = cabeceras del documento en la red emulada (CDP); transferencia = hasta el fin del documento (CDP `loadingFinished`) o el FCP si llega antes; render = FCP − fin del documento. TTFB + transferencia + render = FCP.",
       "",
       ...lentas.map(
         (r) =>
