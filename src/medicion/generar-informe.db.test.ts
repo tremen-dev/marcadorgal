@@ -133,7 +133,9 @@ describe("SPEC-025 CA-5 generarInforme", () => {
       });
 
       expect(out.crudosLeidos).toBe(1);
-      expect(out.crudosAusentes).toEqual([]);
+      // V-1: the newest capture of each score is read too; the 1-0's is not
+      // in this store, and the report says so instead of failing.
+      expect(out.crudosAusentes).toEqual(["raw/test/older.json.gz"]);
       // Goal 2 (31'): [15:00:00, 15:01:00) → middle 15:00:30; painted 15:10:20.
       expect(out.texto).toMatch(/\| \(e\) total \| 1 \| 590\.0 s \|/);
       // (a) 30 s, (b) 0.4 s, (c) 0.7 s, (d) 18.5 s, split 3 s + 15.5 s.
