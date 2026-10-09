@@ -15,16 +15,35 @@ epica: EPIC-003
 <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
-| CA-1 | `src/board/weeks.ts` (`weekOf`, `weekXornada`, `seasonWeeks`); `src/calendar/current-round.ts` exporta `median` | `src/board/weeks.test.ts` «SPEC-027 CA-1 weekOf» (10 casos: martes 00:00, lunes 23:59, cambio de hora 2026-10-25, fin de año) y «CA-1 weekXornada and seasonWeeks» (vie-lun, lun 23:59, cambio de hora, ronda de miércoles + fin de semana, aplazado J3 en semana de J8, parón, índice vacío) | | ❌ |
-| CA-2 | `src/board/weeks.ts` (`homeWeek`, `neighbourWeeks`, `weekHref`, `weekArrows`) | `src/board/weeks.test.ts` «SPEC-027 CA-2 …» (sábado J5, miércoles tras punto medio, miércoles mixto Primeira J8 + Terceira J6, parón, primera/última → `null`, solo temporada de `now`, simetría, `weekHref`) | | |
-| CA-3 | `src/board/week-route.ts` (`weekParam`, `weekPage`), `src/board/week-read.ts` (`readWeekPage`), `src/app/xornada-week.tsx`, `src/app/(gl)/xornada/[fecha]/page.tsx`, `src/app/(es)/es/xornada/[fecha]/page.tsx` | `src/board/week-route.test.ts` (tabla 404/308/307/404/page/unavailable); `src/board/week-read.test.ts`; `e2e/xornada-weeks.db.spec.ts` «CA-3 without JS…», «CA-3 answers…», «CA-3 the names… gl and es»; `e2e/xornada-weeks.spec.ts` «CA-3 … without a reader», «308 … 404», «a browser follows the 308» | | |
-| CA-4 | `next.config.ts` (`headers()` para `/xornada/:fecha` y `/es/xornada/:fecha`); `revalidate = 10` + `generateStaticParams() → []` en las dos páginas | `src/arch/week-cache.test.ts`; `curl -I` abajo; build: `● /xornada/[fecha]`, `● /es/xornada/[fecha]` sin páginas prerenderizadas | | |
-| CA-5 | `src/components/xornada/SnapshotFreshness.tsx`, `src/xornada/freshness.ts` (`snapshotFreshness`), `XornadaScreen` (`freshness`, sin `live` en las semanas) | `src/xornada/freshness.test.ts` «SPEC-027 CA-5 snapshotFreshness»; `e2e/xornada-weeks.db.spec.ts` «CA-5 a week page is a snapshot…» (interruptor on: 0 `/api/board`, 0 WebSocket, sin supabase-js; día, filtro, plegado); `e2e/xornada-weeks.spec.ts` (interruptor off); e2e SPEC-024 en verde | | |
-| CA-6 | `src/components/xornada/XornadaControls.tsx` (`WeekArrow`, `DayStrip` con `arrows`), `XornadaBody`/`XornadaLive`/`XornadaScreen` (prop `arrows`), `src/app/xornada-home.tsx` (`readHome`), `Xornada.module.css` (`.strip`, `.daysInStrip`, `.weekArrow`), `src/i18n/{gl,es}.ts` (`xornada.previous/next`) | `e2e/xornada-weeks.db.spec.ts` «CA-6 arrows on … at {360,390,1024,1440}px» (gl, es; portada y semana) y «CA-6 without JS…»; `src/i18n/i18n.test.ts` «SPEC-027 CA-6» | | |
-| CA-7 | — | `npm run gates` (1468 tests, build sin `DATABASE_URL_PUBLIC`), `npm run e2e` 98 ✓, `npm run e2e:db` 31 ✓ + 1 skip, `npm run test:db` 189 ✓; `git diff origin/main --stat -- src/sources src/decide src/ingest supabase src/app/api src/board/http.ts src/board/reader.ts` vacío; `package.json`/lock sin cambios; tests de `currentRound`/`currentXornada` sin cambios | | |
+| CA-1 | `src/board/weeks.ts` (`weekOf`, `weekXornada`, `seasonWeeks`); `src/calendar/current-round.ts` exporta `median` | `src/board/weeks.test.ts` «SPEC-027 CA-1 weekOf» (10 casos: martes 00:00, lunes 23:59, cambio de hora 2026-10-25, fin de año) y «CA-1 weekXornada and seasonWeeks» (vie-lun, lun 23:59, cambio de hora, ronda de miércoles + fin de semana, aplazado J3 en semana de J8, parón, índice vacío) | vitest verde; `weekOf` contra oráculo independiente (Intl weekday) cada 7 min de 2026-2027: 150172 instantes, 0 discrepancias; tabla cubre todos los casos de la letra | ✅ |
+| CA-2 | `src/board/weeks.ts` (`homeWeek`, `neighbourWeeks`, `weekHref`, `weekArrows`) | `src/board/weeks.test.ts` «SPEC-027 CA-2 …» (sábado J5, miércoles tras punto medio, miércoles mixto Primeira J8 + Terceira J6, parón, primera/última → `null`, solo temporada de `now`, simetría, `weekHref`) | vitest verde; miércoles mixto revisado a mano (Primeira J9 pasa el punto medio, Terceira J6 no → home 10-17, ‹ 10-10 con Primeira J8 + Terceira J6); flechas reales en `next start`: `/` ‹ `/xornada/2026-10-03` › `/xornada/2026-10-17`; desde 10-03 › `/`, desde 10-17 ‹ `/` | ✅ |
+| CA-3 | `src/board/week-route.ts` (`weekParam`, `weekPage`), `src/board/week-read.ts` (`readWeekPage`), `src/app/xornada-week.tsx`, `src/app/(gl)/xornada/[fecha]/page.tsx`, `src/app/(es)/es/xornada/[fecha]/page.tsx` | `src/board/week-route.test.ts` (tabla 404/308/307/404/page/unavailable); `src/board/week-read.test.ts`; `e2e/xornada-weeks.db.spec.ts` «CA-3 without JS…», «CA-3 answers…», «CA-3 the names… gl and es»; `e2e/xornada-weeks.spec.ts` «CA-3 … without a reader», «308 … 404», «a browser follows the 308» | `curl -I` propio (abajo): 200/308/307/404 según la letra, `noindex, nofollow`, selector al par, filas = `weekXornada` (e2e) | ✅ |
+| CA-4 | `next.config.ts` (`headers()` para `/xornada/:fecha` y `/es/xornada/:fecha`); `revalidate = 10` + `generateStaticParams() → []` en las dos páginas | `src/arch/week-cache.test.ts`; `curl -I` abajo; build: `● /xornada/[fecha]`, `● /es/xornada/[fecha]` sin páginas prerenderizadas | build sin `DATABASE_URL_PUBLIC` verde; `.next/server/app` sin HTML de `xornada/[fecha]`; `x-nextjs-cache: MISS` en primera visita; 200 con las directivas. Salvedades F-1 y F-2 | ⚠️ |
+| CA-5 | `src/components/xornada/SnapshotFreshness.tsx`, `src/xornada/freshness.ts` (`snapshotFreshness`), `XornadaScreen` (`freshness`, sin `live` en las semanas) | `src/xornada/freshness.test.ts` «SPEC-027 CA-5 snapshotFreshness»; `e2e/xornada-weeks.db.spec.ts` «CA-5 a week page is a snapshot…» (interruptor on: 0 `/api/board`, 0 WebSocket, sin supabase-js; día, filtro, plegado); `e2e/xornada-weeks.spec.ts` (interruptor off); e2e SPEC-024 en verde | interruptor encendido: e2e:db verde en las 3 pasadas; apagado: recorrido propio con lector local, con y sin JS, 390/1440: 0 `/api/board`, 0 WebSocket, sin chunk supabase-js, `data-transport=snapshot`, «Actualizado ás HH:MM» | ✅ |
+| CA-6 | `src/components/xornada/XornadaControls.tsx` (`WeekArrow`, `DayStrip` con `arrows`), `XornadaBody`/`XornadaLive`/`XornadaScreen` (prop `arrows`), `src/app/xornada-home.tsx` (`readHome`), `Xornada.module.css` (`.strip`, `.daysInStrip`, `.weekArrow`), `src/i18n/{gl,es}.ts` (`xornada.previous/next`) | `e2e/xornada-weeks.db.spec.ts` «CA-6 arrows on … at {360,390,1024,1440}px» (gl, es; portada y semana) y «CA-6 without JS…»; `src/i18n/i18n.test.ts` «SPEC-027 CA-6» | e2e verde (360-1440, gl/es, teclado, foco); recorrido propio sin JS 360/390/1440: › y ‹ visibles, 26×39 (móvil) y 24×43 (escritorio), sin truncado ni scroll horizontal, fuera de `day-strip`, sin `#`. Supresión Biome justificada (la regla rechaza `aria-label` con hijo `aria-hidden`; comprobado aislado) | ✅ |
+| CA-7 | — | `npm run gates` (1468 tests, build sin `DATABASE_URL_PUBLIC`), `npm run e2e` 98 ✓, `npm run e2e:db` 31 ✓ + 1 skip, `npm run test:db` 189 ✓; `git diff origin/main --stat -- src/sources src/decide src/ingest supabase src/app/api src/board/http.ts src/board/reader.ts` vacío; `package.json`/lock sin cambios; tests de `currentRound`/`currentXornada` sin cambios | gates, e2e (98 ✓) y test:db (189 ✓) verdes; diff de fronteras vacío; sin dependencias. **`e2e:db` rojo en 2 de 3 pasadas** (F-3); `origin/main` 4/4 verde y la rama sin `xornada-weeks.db.spec.ts` 3/3 verde | ❌ |
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
+**RED — 2026-10-10 (sdd-verificador).** CA-1, CA-2, CA-3, CA-5 y CA-6 cumplidos; CA-4 con salvedades F-1/F-2 aceptables; CA-7 no: `npm run e2e:db` falla en 2 de 3 pasadas completas.
+
+Evidencia de F-3 (rama a59af85, base local, secuencial):
+```
+e2e:db rama completa       pasada 1 ✘  pasada 2 ✓  pasada 3 ✘   (xornada.db.spec.ts:108 «CA-6 team and competition names identical in gl and es»)
+e2e:db origin/main         4/4 ✓ (14 passed)
+rama sin xornada-weeks.db  3/3 ✓ (realtime + xornada.db, 14 passed)
+```
+El diff del fallo es de orden/estado de filas entre `/` y `/es`, no de nombres: las dos portadas son instantáneas ISR independientes tomadas antes y después de las Decisions de `xornada-realtime.db`; el nuevo `xornada-weeks.db.spec.ts`, que corre entre ambos, desplaza su regeneración. Defecto del test (supone dos ISR simultáneos), no de la app ni de ISR; lo destapa esta rama y CA-7 exige el gate en verde.
+
+Otros: `test:db` falló una vez por estado sucio previo de la base local (`matches_pkey` en SPEC-018); tras reset, 189 ✓. Gates: 1468 ✓, 1 aviso Biome preexistente en `src/arch/deploy.test.ts`.
+
+CA-4, `next start` propio (lector local, interruptor apagado, 2026-10-09, portada = 2026-10-10):
+```
+200 /xornada/2026-10-03, /es/xornada/2026-10-03, /xornada/2026-10-17   Cache-Control: public, s-maxage=10, stale-while-revalidate=30
+308 /xornada/2026-10-05 → /xornada/2026-10-03 ; /es/xornada/2026-10-06 → /es/xornada/2026-10-10   (location x2 en MISS, x1 en HIT)
+307 /xornada/2026-10-10 → / ; /es/xornada/2026-10-10 → /es
+404 /xornada/2027-08-14, /xornada/2026-05-23, /xornada/2026-02-30, /xornada/hoxe, /es/xornada/2026-13-01   (todas con s-maxage=10)
+```
 
 ## Evidencia visual
 <!-- Tabla CA → captura en _qa/SPEC-027/. Informe HTML opcional: _qa/SPEC-027/informe.html -->
@@ -33,6 +52,7 @@ epica: EPIC-003
 | CA-6 portada | `flechas-portada-{gl,es}-{360,390,1024,1440}.png` (el foco visible queda en ›, último Tab) |
 | CA-6 semana | `flechas-semana-{gl,es}-{360,390,1024,1440}.png` |
 | CA-6 primera semana (hueco sin ‹) | `flechas-primera-semana-{gl,es}.png` |
+| CA-5/CA-6 verificador (interruptor apagado, lector local) | `verif-off-{portada-gl,portada-es,semana-gl-2026-10-03,semana-es-2026-10-03,semana-gl-2026-10-17,semana-es-2026-10-17}-{390,1440}-{js,nojs}.png` |
 
 Generadas con `QA_CAPTURE_DIR=$PWD/docs/epicas/EPIC-003-xornada-publica/_qa/SPEC-027 npm run e2e:db -- e2e/xornada-weeks.db.spec.ts` → 17 passed.
 
