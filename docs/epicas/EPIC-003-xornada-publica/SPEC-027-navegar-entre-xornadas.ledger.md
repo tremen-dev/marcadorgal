@@ -89,6 +89,8 @@ Cache-Control: public, s-maxage=10, stale-while-revalidate=30
 
 **Iteración 2 — GREEN condicionado, 2026-10-10 (sdd-verificador).** F-3 resuelto (e2e:db 4/4). El corte de F-4 cumple el orden de CA-3: 308 antes que 404 y sin lectura. Quedan para el titular F-1 (`Location` duplicada en MISS, Next 16.3.5; comprobar en Vercel), F-2 (`s-maxage=10` en 404 y redirecciones) y F-4 (temporada S-(S+1) sin rondas fuera de esos dos años; sin lector, una fecha fuera da 404 y no `unavailable`, que es la respuesta que daría también con lector). Spec en `en-revision` hasta que las acepte.
 
+**GREEN — 2026-10-10 (sdd-verificador).** El titular (Alberto Fojo) aceptó F-1, F-2 y F-4 el 2026-10-10 (spec, ee225ae). CA-3 y CA-4 quedan ⚠️ con salvedad aceptada; spec a `hecho`.
+
 ## Salvedades / follow-ups
 <!-- IDs F-SPEC-027-1, F-SPEC-027-2… con destino (spec futura o EPIC-MEJORA). -->
 - **F-SPEC-027-1** `next start` (Next 16.3.5) repite la cabecera `Location` idéntica en el primer render (MISS) de un 307/308 ISR; en HIT sale una. Chrome la sigue (e2e «a browser follows the 308»); los tests normalizan. Comprobar en Vercel. Destino: EPIC-MEJORA.
