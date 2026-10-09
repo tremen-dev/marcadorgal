@@ -4,6 +4,7 @@ import {
   ROW_AGE_MIN_MS,
   rowAge,
   screenFreshness,
+  snapshotFreshness,
   transportNotice,
 } from "./freshness";
 
@@ -109,5 +110,20 @@ describe("SPEC-024 CA-9 rowAge (source clock, observedAt)", () => {
 
   it("the threshold is 2 min", () => {
     expect(ROW_AGE_MIN_MS).toBe(2 * MIN);
+  });
+});
+
+describe("SPEC-027 CA-5 snapshotFreshness (a week page, never live)", () => {
+  const served = Date.parse("2026-10-09T18:00:00Z");
+  it.each([
+    [null, { key: "freshness.servedAt" }],
+    [served, { key: "freshness.servedAt" }],
+    [served + 59_999, { key: "freshness.servedAt" }],
+    [served + 60_000, { key: "freshness.ago", n: 1 }],
+    [served + 47 * 60_000 + 5_000, { key: "freshness.ago", n: 47 }],
+    // A browser clock behind the server's is not «hai -1 min».
+    [served - 120_000, { key: "freshness.servedAt" }],
+  ])("now %s → %o", (now, out) => {
+    expect(snapshotFreshness(served, now)).toEqual(out);
   });
 });

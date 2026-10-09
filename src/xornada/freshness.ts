@@ -17,6 +17,22 @@ export function screenFreshness(last: number, now: number): ScreenFreshness {
   return { key: "freshness.ago", n: Math.floor(elapsed / MINUTE_MS) };
 }
 
+// SPEC-027 CA-5 (H-4): a week page is a snapshot. Served (and before the
+// browser clock is read) it says «Actualizado ás HH:MM»; after a minute,
+// «hai N min» counted from that instant. Never a transport notice.
+export type SnapshotFreshness =
+  | { key: "freshness.servedAt" }
+  | { key: "freshness.ago"; n: number };
+
+export function snapshotFreshness(
+  servedAt: number,
+  now: number | null,
+): SnapshotFreshness {
+  if (now === null || now - servedAt < MINUTE_MS)
+    return { key: "freshness.servedAt" };
+  return { key: "freshness.ago", n: Math.floor((now - servedAt) / MINUTE_MS) };
+}
+
 // How the screen is being kept up to date (CA-6, CA-7). `connecting` is the
 // first wait for SUBSCRIBED: nothing is said until it fails. After a failure
 // the retries stay `polling`, the effective source, so the notice stays.

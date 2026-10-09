@@ -17,6 +17,9 @@ const nextConfig: NextConfig = {
     return [
       { source: "/", headers: cache },
       { source: "/es", headers: cache },
+      // SPEC-027 CA-4: the week pages, ISR of 10 s on demand, the same.
+      { source: "/xornada/:fecha", headers: cache },
+      { source: "/es/xornada/:fecha", headers: cache },
     ];
   },
   // next dev appends a nextjs-agent-rules block to CLAUDE.md, which is a truth

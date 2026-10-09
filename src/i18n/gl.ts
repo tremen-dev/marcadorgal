@@ -45,6 +45,9 @@ export const gl = {
     competitions: "Competicións",
     matchCountOne: "{n} partido",
     matchCount: "{n} partidos",
+    // SPEC-027 CA-6: the arrows of the strip, to the neighbour weeks.
+    previous: "Xornada anterior",
+    next: "Xornada seguinte",
   },
   weekday: {
     mon: "lun",

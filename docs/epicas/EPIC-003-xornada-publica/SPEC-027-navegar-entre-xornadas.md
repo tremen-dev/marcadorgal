@@ -2,11 +2,16 @@
 id: SPEC-027
 tipo: spec
 epica: EPIC-003
-estado: aprobada
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-09, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-10-09, por: Alberto Fojo}
+  - {estado: en-progreso, fecha: 2026-10-09, por: sdd-implementador}
+  - {estado: en-revision, fecha: 2026-10-09, por: sdd-implementador}
+  - {estado: en-progreso, fecha: 2026-10-10, por: sdd-verificador}
+  - {estado: en-revision, fecha: 2026-10-10, por: sdd-implementador}
+  - {estado: hecho, fecha: 2026-10-10, por: sdd-verificador}
 ---
 # SPEC-027 — Navegar entre xornadas
 
@@ -54,3 +59,4 @@ Temporadas pasadas; ir a una ronda concreta o a una fecha con selector;
 - **N-2** Un `live` de una semana pasada (aplazado de esa ronda) se ve allí como snapshot de ≤ 10 s y en `/` en directo (SPEC-020 H-2).
 - **N-3** Las flechas de `/` se calculan al servir: con la pestaña abierta del martes al miércoles tarde, ‹ apunta una semana atrás de más hasta recargar (la semana saltada sigue a un ›). Aceptable en v1.
 - **Decididas por el titular (Alberto Fojo, 2026-10-09):** H-1..H-6 según recomendación (semana de martes a lunes por mediana de cada ronda; URL por fecha con clave en el sábado; la semana de la portada es `/`; semanas fuera de `/` sin polling ni Realtime; solo la temporada en curso; las flechas no llevan el fragmento). Spec aprobada.
+- **Salvedades aceptadas por el titular (Alberto Fojo, 2026-10-10):** F-1 (`Location` duplicada en el primer render de Next 16.3.5; se comprueba en Vercel tras el despliegue), F-2 (404 y redirecciones con `s-maxage=10`) y F-4 (una temporada S-(S+1) no tiene rondas fuera de esos dos años civiles).

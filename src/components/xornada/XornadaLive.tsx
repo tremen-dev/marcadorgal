@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import type { Neighbours } from "@/board/weeks";
 import { formatTime, type Locale, t } from "@/i18n";
 import { realtimeConfig } from "@/live/config";
 import type { LiveSnapshot, OpenChannel, Visibility } from "@/live/transport";
@@ -41,6 +42,8 @@ export type XornadaLiveProps = {
   season: string;
   // The ETag /api/board gives for the served xornada.
   etag: string | null;
+  // SPEC-027 CA-6: computed when served (N-3).
+  arrows?: Neighbours;
 };
 
 function lazyOpener(config: { url: string; key: string }): OpenChannel {
@@ -114,6 +117,7 @@ export function XornadaLive({
   servedAt,
   season,
   etag,
+  arrows,
 }: XornadaLiveProps) {
   const [snapshot, setSnapshot] = useState<LiveSnapshot>(() => ({
     board: initialBoard(matches, days),
@@ -196,6 +200,7 @@ export function XornadaLive({
       paths={paths}
       unavailable={unavailable && snapshot.lastSeen === null}
       ages={ages}
+      arrows={arrows}
       freshness={
         <FreshnessLine
           locale={locale}

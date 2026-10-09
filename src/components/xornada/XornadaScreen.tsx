@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+import type { Neighbours } from "@/board/weeks";
 import { LOCALES, type Locale, t } from "@/i18n";
 import type { XornadaCompetition, XornadaDay } from "@/xornada/view";
 import styles from "./Xornada.module.css";
@@ -18,6 +20,10 @@ type Props = {
   // SPEC-024: / and /es keep themselves up to date in the client; the demos
   // do not (they neither subscribe nor poll).
   live?: Pick<XornadaLiveProps, "matches" | "servedAt" | "season" | "etag">;
+  // SPEC-027: ‹ and › of the strip, and the freshness line of a week page
+  // (a snapshot, never live: H-4).
+  arrows?: Neighbours;
+  freshness?: ReactNode;
 };
 
 export function XornadaScreen({
@@ -27,6 +33,8 @@ export function XornadaScreen({
   paths,
   unavailable = false,
   live,
+  arrows,
+  freshness,
 }: Props) {
   const hasRows = competitions.some((c) => c.rows.length > 0);
   return (
@@ -71,6 +79,8 @@ export function XornadaScreen({
           days={days}
           paths={paths}
           unavailable={unavailable}
+          arrows={arrows}
+          freshness={freshness}
         />
       ) : (
         <XornadaLive
@@ -78,6 +88,7 @@ export function XornadaScreen({
           paths={paths}
           days={days}
           unavailable={unavailable}
+          arrows={arrows}
           {...live}
         />
       )}

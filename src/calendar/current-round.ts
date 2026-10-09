@@ -27,7 +27,8 @@ export function currentRound(
   return best?.round ?? null;
 }
 
-function median(values: number[]): number {
+// SPEC-027 CA-1: the week of a round is the week of this same median.
+export function median(values: number[]): number {
   const sorted = [...values].sort((a, b) => a - b);
   const mid = sorted.length >> 1;
   return sorted.length % 2 === 1
