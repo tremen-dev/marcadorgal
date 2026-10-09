@@ -274,11 +274,18 @@ describe("SPEC-025 CA-4 latencia.ts is pure", () => {
 describe("SPEC-025 CA-2/CA-4 rawRefsDeReferencia", () => {
   it("the newest capture of each match and the newest one where it was live, once each", async () => {
     const { rawRefsDeReferencia } = await import("./latencia.ts");
-    const o = (matchId: string, s: number, status: string, rawRef: string) => ({
+    const o = (
+      matchId: string,
+      s: number,
+      status: string,
+      rawRef: string,
+      total: number | null = null,
+    ) => ({
       matchId,
       observedAt: t(s),
       status,
       rawRef,
+      total,
     });
     expect(
       rawRefsDeReferencia([
@@ -289,6 +296,30 @@ describe("SPEC-025 CA-2/CA-4 rawRefsDeReferencia", () => {
         o("m3", 10, "scheduled", "raw/d"),
       ]),
     ).toEqual(["raw/b", "raw/c", "raw/d"]);
+  });
+
+  it("V-1: also the newest capture of each score, so a goal whose events only came live is read", async () => {
+    const { rawRefsDeReferencia } = await import("./latencia.ts");
+    const o = (s: number, status: string, rawRef: string, total: number) => ({
+      matchId: "m1",
+      observedAt: t(s),
+      status,
+      rawRef,
+      total,
+    });
+    expect(
+      rawRefsDeReferencia([
+        o(0, "live", "raw/a", 0),
+        o(10, "live", "raw/b", 0),
+        o(20, "live", "raw/c", 1),
+        o(30, "live", "raw/d", 1),
+        // Late goal seen first at FT (events: [] in that body) and a second
+        // FT capture; the newest live one is raw/e with the 2-0.
+        o(40, "live", "raw/e", 2),
+        o(50, "finished", "raw/f", 3),
+        o(60, "finished", "raw/g", 3),
+      ]),
+    ).toEqual(["raw/b", "raw/d", "raw/e", "raw/g"]);
   });
 });
 

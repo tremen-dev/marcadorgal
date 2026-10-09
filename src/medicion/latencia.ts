@@ -403,31 +403,26 @@ export function medirLatencia(input: LatenciaInput): Latencia {
 
 // The stored captures that give the provider's reference of a match (CA-2),
 // without downloading every tick: the newest one that cites it (its final
-// events) and the newest one where it was live (the start of both halves,
-// which some leagues empty once the match is over). Ordered, no repeats.
+// events), the newest one where it was live (the start of both halves, which
+// some leagues empty once the match is over) and the newest one of each score
+// it went through (V-1: some FT bodies come with `events: []`, so a goal's
+// event may only be in a live body). Ordered, no repeats.
 export function rawRefsDeReferencia(
   observations: readonly (Pick<
     LatObservation,
-    "matchId" | "observedAt" | "rawRef"
+    "matchId" | "observedAt" | "rawRef" | "total"
   > & { status: string })[],
 ): string[] {
   const newest = new Map<string, { at: Instant; rawRef: string }>();
-  const newestLive = new Map<string, { at: Instant; rawRef: string }>();
-  const keep = (
-    map: Map<string, { at: Instant; rawRef: string }>,
-    o: (typeof observations)[number],
-  ) => {
-    const prev = map.get(o.matchId);
+  const keep = (key: string, o: (typeof observations)[number]) => {
+    const prev = newest.get(key);
     if (prev === undefined || o.observedAt > prev.at)
-      map.set(o.matchId, { at: o.observedAt, rawRef: o.rawRef });
+      newest.set(key, { at: o.observedAt, rawRef: o.rawRef });
   };
   for (const o of observations) {
-    keep(newest, o);
-    if (o.status === "live") keep(newestLive, o);
+    keep(`${o.matchId}\u0000newest`, o);
+    if (o.status === "live") keep(`${o.matchId}\u0000live`, o);
+    if (o.total !== null) keep(`${o.matchId}\u0000score:${o.total}`, o);
   }
-  return [
-    ...new Set(
-      [...newest.values(), ...newestLive.values()].map((x) => x.rawRef),
-    ),
-  ].sort();
+  return [...new Set([...newest.values()].map((x) => x.rawRef))].sort();
 }

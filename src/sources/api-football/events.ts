@@ -41,6 +41,8 @@ type RawFixture = {
   fixtureId: string;
   leagueId: string | null;
   periods: { first: number | null; second: number | null };
+  // home + away of the body's score, or null when it gives none.
+  scored: number | null;
   events: RawEvent[] | null;
 };
 
@@ -98,6 +100,9 @@ function rawFixtures(body: string): RawFixture[] {
     if (fixtureId === null) continue;
     const periods = isRecord(item.fixture.periods) ? item.fixture.periods : {};
     const league = isRecord(item.league) ? item.league : {};
+    const goals = isRecord(item.goals) ? item.goals : {};
+    const home = intOrNull(goals.home);
+    const away = intOrNull(goals.away);
     out.push({
       fixtureId,
       leagueId: idOf(league.id),
@@ -105,6 +110,7 @@ function rawFixtures(body: string): RawFixture[] {
         first: intOrNull(periods.first),
         second: intOrNull(periods.second),
       },
+      scored: home === null || away === null ? null : home + away,
       events: Array.isArray(item.events)
         ? item.events.map(goalEvent).filter((g): g is RawEvent => g !== null)
         : null,
@@ -168,9 +174,28 @@ export function goalEvents(body: string): FixtureGoals[] {
   return rawFixtures(body).map(toGoals);
 }
 
+// Whether a body's events are the whole list of its goals. Short: fewer goal
+// events than its own score, or none at all when it gives no score. The
+// provider sends `events: []` in some FT bodies (V-1): that is the events
+// missing, not the goals gone.
+const isShort = (f: RawFixture, events: RawEvent[]): boolean =>
+  f.scored === null ? events.length === 0 : events.length < f.scored;
+
+// The events to keep: the newest body's, unless they are short and an
+// earlier capture had more (a goal disallowed later is gone from a complete
+// list, and a complete list always replaces).
+function mergedEvents(
+  f: RawFixture,
+  prev: RawEvent[] | null,
+): RawEvent[] | null {
+  if (f.events === null) return prev;
+  if (prev !== null && isShort(f, f.events) && prev.length > f.events.length)
+    return prev;
+  return f.events;
+}
+
 // The goals of every fixture across stored captures, oldest to newest: the
-// events of the newest body that has them (a goal disallowed later is gone
-// from it) and, half by half, the newest start the provider gave (it empties
+// events of the newest body that has them complete (mergedEvents) and, half by half, the newest start the provider gave (it empties
 // periods once the match is over).
 export function goalReferences(
   captures: readonly RawCapture[],
@@ -192,7 +217,8 @@ export function goalReferences(
             first: f.periods.first ?? prev?.periods.first ?? null,
             second: f.periods.second ?? prev?.periods.second ?? null,
           },
-          events: f.events ?? prev?.events ?? null,
+          scored: f.scored ?? prev?.scored ?? null,
+          events: mergedEvents(f, prev?.events ?? null),
         });
       }
   return [...merged.values()].map(toGoals);
