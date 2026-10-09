@@ -106,6 +106,13 @@ describe("SPEC-019 CA-6 Xornada keys", () => {
     expect(gl.locales).toEqual({ gl: "gl", es: "es" });
     expect(es.locales).toEqual(gl.locales);
   });
+
+  it("SPEC-027 CA-6 names the arrows of the strip in both languages", () => {
+    expect(t("gl", "xornada.previous")).toBe("Xornada anterior");
+    expect(t("gl", "xornada.next")).toBe("Xornada seguinte");
+    expect(t("es", "xornada.previous")).toBe("Jornada anterior");
+    expect(t("es", "xornada.next")).toBe("Jornada siguiente");
+  });
 });
 
 describe("CA-9 domain literals", () => {

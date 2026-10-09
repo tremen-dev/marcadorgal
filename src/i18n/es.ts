@@ -42,6 +42,9 @@ export const es: Dictionary = {
     competitions: "Competiciones",
     matchCountOne: "{n} partido",
     matchCount: "{n} partidos",
+    // SPEC-027 CA-6: the arrows of the strip, to the neighbour weeks.
+    previous: "Jornada anterior",
+    next: "Jornada siguiente",
   },
   weekday: {
     mon: "lun",

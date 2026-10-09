@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { Neighbours } from "@/board/weeks";
 import { type Locale, t } from "@/i18n";
 import { countFilters } from "@/xornada/filter";
 import type { XornadaCompetition, XornadaDay } from "@/xornada/view";
@@ -22,6 +23,8 @@ export type XornadaBodyProps = {
   freshness?: ReactNode;
   // SPEC-024 CA-9: matchId → minutes since its last observation.
   ages?: ReadonlyMap<string, number>;
+  // SPEC-027 CA-6: ‹ and › of the strip (the public pages only).
+  arrows?: Neighbours;
 };
 
 export function XornadaBody({
@@ -32,6 +35,7 @@ export function XornadaBody({
   unavailable = false,
   freshness,
   ages,
+  arrows,
 }: XornadaBodyProps) {
   const rows = competitions.flatMap((c) => c.rows);
   const hasRows = rows.length > 0;
@@ -39,7 +43,7 @@ export function XornadaBody({
     <>
       {hasRows && (
         <div className={styles.controls}>
-          <DayStrip days={days} locale={locale} />
+          <DayStrip days={days} locale={locale} arrows={arrows} />
           <FilterPills
             counts={countFilters(rows, null)}
             locale={locale}

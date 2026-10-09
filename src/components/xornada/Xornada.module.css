@@ -53,6 +53,52 @@
   color: var(--marca-ink);
 }
 
+/* SPEC-027 CA-6: with the arrows, the bar is the strip and only the days
+   inside it scroll; ‹ and › stay at its ends (Movil.tpl.html, 26 px). */
+.strip {
+  height: var(--bar-mobile-days);
+  flex: none;
+  display: flex;
+  align-items: stretch;
+  gap: 3px;
+  padding: 0 10px;
+  background: var(--bg-subtle);
+  border-bottom: var(--hairline) solid var(--line);
+}
+
+.daysInStrip {
+  height: auto;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+  background: none;
+  border-bottom: 0;
+}
+
+/* ≥ 24 px of target (ADR-005 exc. 6); the glyph says nothing alone, the
+   label does. The focus ring stays inside the bar. */
+.weekArrow {
+  width: 26px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--fg-dim);
+}
+
+a.weekArrow:hover {
+  color: var(--fg);
+  text-decoration: none;
+}
+
+a.weekArrow:focus-visible {
+  outline-offset: -2px;
+}
+
 .filters {
   min-height: var(--bar-mobile-segment);
   flex: none;
@@ -585,6 +631,28 @@
     flex: none;
     padding: 6px 12px;
     font-size: 12px;
+  }
+
+  /* Escritorio.tpl.html: 15 px, 8 px from the days, the bar's full height. */
+  .strip {
+    height: 100%;
+    flex: 0 1 auto;
+    min-width: 0;
+    gap: 0;
+    padding: 0;
+    background: none;
+    border-bottom: 0;
+  }
+
+  .daysInStrip {
+    height: auto;
+    flex: 0 1 auto;
+    padding: 0 var(--space-8);
+  }
+
+  .weekArrow {
+    width: 24px;
+    font-size: 15px;
   }
 
   .filters {
