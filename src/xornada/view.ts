@@ -35,6 +35,9 @@ export type XornadaRow = {
   winner: "home" | "away" | null;
   // SPEC-023 CA-1: the Madrid date of the kickoff, YYYY-MM-DD.
   day: string;
+  // SPEC-025 CA-3: the version of the Decision on screen (0 without one), so
+  // the probe knows which Decision a paint shows.
+  version: number;
 };
 
 export type XornadaCompetition = {
@@ -96,6 +99,7 @@ function rowOf(m: PublicMatch): XornadaRow {
       m.qualifier === "confirmado" ? null : `qualifier.${m.qualifier}`,
     winner: winnerOf(m),
     day: madridDate(m.kickoff),
+    version: m.version,
   };
 }
 

@@ -72,6 +72,7 @@ export function MatchRow({ row, locale, age = null }: Props) {
       data-status={row.status}
       data-qualifier={row.qualifier}
       data-day={row.day}
+      data-version={row.version}
     >
       <div className={styles.margin}>
         <span

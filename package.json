@@ -27,6 +27,7 @@
     "cron:setup": "node tools/cron-setup.mjs",
     "tick:salud": "node tools/tick-salud.mjs",
     "informe:jornada": "node tools/informe-jornada.mjs",
+    "informe:latencia": "node tools/informe-latencia.mjs",
     "replay:jornada": "node tools/replay-jornada.mjs",
     "reconciliar:cierre": "node tools/reconciliar-cierre.mjs",
     "reconciliar:sin-directo": "node tools/reconciliar-sin-directo.mjs"
