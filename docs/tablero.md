@@ -38,6 +38,7 @@ Actualizado: 2026-10-09
 | SPEC-024 — realtime-fallback-y-frescura | hecho | 2026-10-09 (sdd-verificador) |
 | SPEC-025 — medicion-de-latencia-gol-pantalla-con-segundo-reloj-y-sonda-sintetica | en-revision | 2026-10-09 (sdd-implementador) |
 | SPEC-026 — primera-pintura-en-movil-con-3g | en-revision | 2026-10-09 (sdd-implementador) |
+| SPEC-027 — navegar-entre-xornadas | aprobada | 2026-10-09 (Alberto Fojo) |
 
 ## EPIC-FIX (aprobada)
 
@@ -79,3 +80,4 @@ Actualizado: 2026-10-09
 
 - hecho: 22
 - en-revision: 4
+- aprobada: 1
