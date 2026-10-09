@@ -21,10 +21,10 @@ export async function WeekXornada({
   locale: Locale;
   fecha: string;
 }) {
-  const param = weekParam(fecha, locale);
+  const now = nowInstant();
+  const param = weekParam(fecha, locale, now);
   if (param.kind === "notFound") notFound();
   if (param.kind === "redirect") permanentRedirect(param.location);
-  const now = nowInstant();
   const read = await readWeekPage(
     publicXornadaReader(),
     param.week,

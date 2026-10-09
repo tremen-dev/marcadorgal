@@ -60,8 +60,32 @@ describe("SPEC-027 CA-3 weekParam", () => {
     ["2026-10-03x", "es", { kind: "notFound" }],
     ["xornada", "gl", { kind: "notFound" }],
     ["", "gl", { kind: "notFound" }],
+    // A week key outside the calendar years of the season of now (2026-27:
+    // 2026 and 2027) is never one of its weeks: 404 before reading (it
+    // would be a new ISR key and one index read per date).
+    ["1990-01-06", "gl", { kind: "notFound" }],
+    ["2025-12-27", "es", { kind: "notFound" }],
+    ["2028-01-01", "gl", { kind: "notFound" }],
+    ["2026-01-03", "gl", { kind: "week", week: "2026-01-03" }],
+    ["2027-12-25", "es", { kind: "week", week: "2027-12-25" }],
+    // A day that is not its week key still gets its 308 (the date alone).
+    [
+      "1990-01-03",
+      "gl",
+      { kind: "redirect", status: 308, location: "/xornada/1990-01-06" },
+    ],
   ] as const)("%s (%s) → %o", (fecha, locale, out) => {
-    expect(weekParam(fecha, locale)).toEqual(out);
+    expect(weekParam(fecha, locale, now)).toEqual(out);
+  });
+
+  it("the season is the one of now", () => {
+    expect(weekParam("2028-01-01", "gl", "2027-07-01T00:00:00Z")).toEqual({
+      kind: "week",
+      week: "2028-01-01",
+    });
+    expect(weekParam("2026-01-03", "gl", "2027-07-01T00:00:00Z")).toEqual({
+      kind: "notFound",
+    });
   });
 });
 

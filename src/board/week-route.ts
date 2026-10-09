@@ -13,8 +13,8 @@ import {
 } from "./weeks.ts";
 
 // SPEC-027 CA-3 (H-2, H-3, H-5): the answer of /xornada/[fecha] and
-// /es/xornada/[fecha]. Pure, in two steps: the date alone decides 404 and
-// 308 (nothing is read); the week over the index of the season of now
+// /es/xornada/[fecha]. Pure, in two steps: the date (and the season of now)
+// decides 404 and 308 (nothing is read); the week over the index of the season of now
 // decides 307, 404 or the page.
 
 export type WeekParam =
@@ -43,7 +43,21 @@ function isDate(fecha: string): boolean {
   );
 }
 
-export function weekParam(fecha: string, locale: Locale): WeekParam {
+// The calendar years a season can play in: 2026-27 → 2026 and 2027. A week
+// key outside them is never one of seasonWeeks (H-5), so it is answered
+// 404 without reading: otherwise every valid Saturday would be a new ISR
+// key and one index read (F-4 of the verification).
+function inSeasonYears(week: string, now: Instant): boolean {
+  const start = Number(seasonOf(now).slice(0, 4));
+  const year = Number(week.slice(0, 4));
+  return year === start || year === start + 1;
+}
+
+export function weekParam(
+  fecha: string,
+  locale: Locale,
+  now: Instant,
+): WeekParam {
   if (!isDate(fecha)) return { kind: "notFound" };
   // Noon UTC is the same civil date in Madrid all year.
   const week = weekOf(`${fecha}T12:00:00Z`);
@@ -53,6 +67,7 @@ export function weekParam(fecha: string, locale: Locale): WeekParam {
       status: 308,
       location: weekHref(week, null, locale),
     };
+  if (!inSeasonYears(week, now)) return { kind: "notFound" };
   return { kind: "week", week };
 }
 

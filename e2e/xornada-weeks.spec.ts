@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { weekOf } from "../src/board/weeks";
 import { es } from "../src/i18n/es";
 import { gl } from "../src/i18n/gl";
 
@@ -7,6 +8,8 @@ import { gl } from "../src/i18n/gl";
 // week key says the xornada is unavailable, with no rows, no arrows and
 // nothing asked of /api/board or a socket.
 const CACHE = "public, s-maxage=10, stale-while-revalidate=30";
+// A week key of the season of now, whatever the date of the run.
+const thisWeek = weekOf(new Date().toISOString());
 
 for (const { prefix, lang, dict } of [
   { prefix: "", lang: "gl", dict: gl },
@@ -21,7 +24,7 @@ for (const { prefix, lang, dict } of [
       if (r.url().includes("/api/board")) board.push(r.url());
     });
     page.on("websocket", (ws) => sockets.push(ws.url()));
-    const response = await page.goto(`${prefix}/xornada/2026-10-03`);
+    const response = await page.goto(`${prefix}/xornada/${thisWeek}`);
     expect(response?.status()).toBe(200);
     expect(response?.headers()["cache-control"]).toBe(CACHE);
     await expect(page.locator("html")).toHaveAttribute("lang", lang);
@@ -58,6 +61,9 @@ for (const { prefix, lang, dict } of [
     }
     for (const bad of ["2026-02-30", "2026-10-3", "hoxe"])
       expect((await get(`${prefix}/xornada/${bad}`)).status()).toBe(404);
+    // A Saturday outside the years of the season of now: 404 before any
+    // read (without a reader a week key would say unavailable, 200).
+    expect((await get(`${prefix}/xornada/1990-01-06`)).status()).toBe(404);
   });
 
   test(`CA-3 ${prefix}/xornada/[fecha]: a browser follows the 308 of a first visit to the Saturday`, async ({
