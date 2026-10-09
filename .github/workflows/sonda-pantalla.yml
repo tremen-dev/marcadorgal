@@ -1,0 +1,74 @@
+# Sonda de pantalla (SPEC-025 CA-3, H-2). Abre https://marcador.gal/ y /es a
+# 390 px en un Chromium sin almacenamiento y escribe en JSONL cada pintura de
+# fila y cada respuesta de /api/board; el JSONL sube como artefacto y lo lee
+# npm run informe:latencia. Solo lee la pantalla pública: ningún secreto.
+#
+# El schedule solo corre desde main. Los cron son los bloques de la jornada
+# 2026-10-16/19 (N-2), en UTC, media hora antes del primer saque de cada
+# bloque (GitHub los dispara con retraso) y solapados donde un bloque pasa de
+# 5,5 h. Un cron de día y mes se repite cada año: tras la jornada se cambian
+# por los de la siguiente que se mida (la publicada, N-2) o se quitan.
+name: sonda-pantalla
+on:
+  schedule:
+    - cron: '0 18 16 10 *'   # vie 16: 18:30 y 19:00
+    - cron: '30 10 17 10 *'  # sáb 17: 11:00 a 14:30
+    - cron: '45 15 17 10 *'  # sáb 17: 16:00 a 19:00
+    - cron: '30 9 18 10 *'   # dom 18: 10:00 a 14:15
+    - cron: '30 14 18 10 *'  # dom 18: 15:00 a 18:30
+    - cron: '0 18 18 10 *'   # dom 18: 18:30 y 19:00
+    - cron: '0 18 19 10 *'   # lun 19: 18:30 y 19:00
+  workflow_dispatch:
+    inputs:
+      horas:
+        description: "horas de sonda (máximo 5.5)"
+        default: '5.5'
+
+permissions:
+  contents: read
+
+jobs:
+  sonda:
+    runs-on: ubuntu-latest
+    # 5,5 h de sonda + instalación y subida, dentro de las 6 h de un job.
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Horas de esta ejecución
+        id: horas
+        shell: bash
+        env:
+          CRON: ${{ github.event.schedule }}
+          HORAS: ${{ inputs.horas }}
+        run: |
+          set -euo pipefail
+          # Cada bloque dura lo que sus partidos (saque + ~2 h) y no más.
+          case "$CRON" in
+            '0 18 16 10 *'|'0 18 18 10 *'|'0 18 19 10 *') horas=3.25 ;;
+            '30 10 17 10 *'|'30 9 18 10 *'|'30 14 18 10 *') horas=5.5 ;;
+            '45 15 17 10 *') horas=5.5 ;;
+            *) horas="${HORAS:-5.5}" ;;
+          esac
+          echo "horas=$horas" >> "$GITHUB_OUTPUT"
+          echo "fichero=sonda-$(date -u +%Y-%m-%dT%H-%M-%SZ).jsonl" >> "$GITHUB_OUTPUT"
+      - name: Sonda
+        run: >-
+          node tools/sonda-pantalla.mjs
+          --horas "${{ steps.horas.outputs.horas }}"
+          --url https://marcador.gal
+          --rutas /,/es
+          --salida "sonda/${{ steps.horas.outputs.fichero }}"
+      - uses: actions/upload-artifact@v4
+        # También si el job se corta: lo escrito hasta ahí vale (una línea a la vez).
+        if: always()
+        with:
+          name: ${{ steps.horas.outputs.fichero }}
+          path: sonda/
+          retention-days: 30
+          if-no-files-found: warn
