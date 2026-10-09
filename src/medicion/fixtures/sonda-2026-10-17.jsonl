@@ -1,0 +1,13 @@
+{"tipo":"inicio","instante":"2026-10-17T16:00:00.000Z","url":"https://marcador.gal","rutas":["/","/es"],"ancho":390,"horas":0.1}
+{"tipo":"respuesta","ruta":"/","estado":200,"age":null,"xVercelCache":"MISS","date":"Sat, 17 Oct 2026 16:00:01 GMT","instante":"2026-10-17T16:00:01.250Z"}
+{"tipo":"pintura","ruta":"/","matchId":"segunda-division-2026-27-j10-deportivo-racing","version":3,"marcador":"0-0","estado":"live","paintedAt":"2026-10-17T16:00:01.400Z","inicial":true}
+{"tipo":"pintura","ruta":"/es","matchId":"segunda-division-2026-27-j10-deportivo-racing","version":3,"marcador":"0-0","estado":"live","paintedAt":"2026-10-17T16:00:01.600Z","inicial":true}
+{"tipo":"visibilidad","ruta":"/","estado":"visible","instante":"2026-10-17T16:01:00.000Z"}
+{"tipo":"visibilidad","ruta":"/es","estado":"hidden","instante":"2026-10-17T16:01:00.100Z"}
+{"tipo":"respuesta","ruta":"/","estado":304,"age":"12","xVercelCache":"HIT","date":"Sat, 17 Oct 2026 16:00:31 GMT","instante":"2026-10-17T16:00:31.900Z"}
+{"tipo":"respuesta","ruta":"/","estado":200,"age":"4","xVercelCache":"STALE","date":"Sat, 17 Oct 2026 16:01:02 GMT","instante":"2026-10-17T16:01:02.300Z"}
+{"tipo":"pintura","ruta":"/","matchId":"segunda-division-2026-27-j10-deportivo-racing","version":4,"marcador":"1-0","estado":"live","paintedAt":"2026-10-17T16:01:02.450Z","inicial":false}
+this is not json
+{"tipo":"pintura","ruta":"/","matchId":"x","version":"cuatro","paintedAt":"2026-10-17T16:01:02.450Z"}
+{"tipo":"error","ruta":"/es","mensaje":"page crashed","instante":"2026-10-17T16:02:00.000Z"}
+{"tipo":"fin","instante":"2026-10-17T16:06:00.000Z"}

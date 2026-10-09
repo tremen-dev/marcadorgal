@@ -346,3 +346,28 @@ test("CA-10: the demos neither subscribe nor poll", async ({ page }) => {
   expect(seen.sockets).toEqual([]);
   await expect(page.getByTestId("freshness")).toHaveCount(0);
 });
+
+// SPEC-025 CA-3 (H-2): the probe reads which Decision each row shows.
+test("SPEC-025 CA-3: each row carries data-version, and a new Decision repaints it", async ({
+  page,
+}) => {
+  const a1Goal = match("a1", "primera-division", 6, {
+    score: { home: 2, away: 0 },
+  });
+  await routeBoard(page, [
+    { status: 200, etag: '"one"', matches: LIST },
+    { status: 200, etag: '"two"', matches: [a1Goal, ...LIST.slice(1)] },
+  ]);
+  await page.clock.install({ time: NOW });
+  await page.goto("/");
+  await started(page);
+  await page.clock.runFor(POLL);
+  const row = page.locator('[data-testid="match-row"][data-match-id="a1"]');
+  await expect(row).toHaveAttribute("data-version", "2");
+  await expect(
+    page.locator('[data-testid="match-row"][data-match-id="a3"]'),
+  ).toHaveAttribute("data-version", "4");
+  await page.clock.runFor(POLL);
+  await expect(row).toHaveAttribute("data-version", "6");
+  await expect(row.getByTestId("score").first()).toHaveText("2");
+});

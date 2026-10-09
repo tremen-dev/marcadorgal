@@ -36,7 +36,7 @@ Actualizado: 2026-10-09
 | SPEC-021 — descanso-dentro-de-live-del-adaptador-a-la-fila | en-revision | 2026-10-08 (sdd-implementador) |
 | SPEC-023 — escritorio-tira-de-dias-filtros-y-plegar-competicion | hecho | 2026-10-08 (sdd-verificador) |
 | SPEC-024 — realtime-fallback-y-frescura | hecho | 2026-10-09 (sdd-verificador) |
-| SPEC-025 — medicion-de-latencia-gol-pantalla-con-segundo-reloj-y-sonda-sintetica | aprobada | 2026-10-09 (Alberto Fojo) |
+| SPEC-025 — medicion-de-latencia-gol-pantalla-con-segundo-reloj-y-sonda-sintetica | en-revision | 2026-10-09 (sdd-implementador) |
 | SPEC-026 — primera-pintura-en-movil-con-3g | aprobada | 2026-10-09 (Alberto Fojo) |
 
 ## EPIC-FIX (aprobada)
@@ -78,5 +78,5 @@ Actualizado: 2026-10-09
 ## Resumen
 
 - hecho: 22
-- en-revision: 2
-- aprobada: 2
+- en-revision: 3
+- aprobada: 1
