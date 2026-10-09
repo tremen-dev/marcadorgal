@@ -2,10 +2,11 @@
 id: SPEC-025
 tipo: spec
 epica: EPIC-003
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-09, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-09, por: Alberto Fojo}
 ---
 # SPEC-025 — Medición de latencia gol → pantalla con segundo reloj y sonda sintética
 
@@ -47,3 +48,4 @@ Analítica de visitantes.
 - **H-4 Si no se cumple:** el informe da tramo dominante y escenarios; el titular elige por escrito (objetivo, cadencia —×2 peticiones— o fuente) y eso cierra el criterio 3. Recomendado.
 - **N-1 Una página, al límite.** Por eso la primera pintura va en SPEC-026 y el segundo reloj en ADR-016.
 - **N-2 Fecha.** La jornada 2026-10-09/12 queda fuera (no hay código). Primera candidata: 2026-10-16/19. Las herramientas se repiten en la jornada publicada.
+- **Decididas por el titular (Alberto Fojo, 2026-10-09):** H-1 = minuto del proveedor + inicio de parte, calibrado con ≥ 8 goles anotados por el titular con segundos; H-2 = sonda en GitHub Actions; H-3 = Realtime proyectado, no medido; H-4 según recomendación. Spec aprobada.

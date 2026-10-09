@@ -2,10 +2,11 @@
 id: SPEC-026
 tipo: spec
 epica: EPIC-003
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-09, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-09, por: Alberto Fojo}
 ---
 # SPEC-026 — Primera pintura en móvil con 3G
 
@@ -40,3 +41,4 @@ Optimizar la página (spec aparte si no se cumple). Latencia gol → pantalla
 - **H-3 Si no se cumple:** residual y spec de optimización priorizada por el tramo dominante; el criterio 4 queda abierto hasta cumplir o hasta que el titular cambie el objetivo por escrito. Recomendado.
 - **N-1 Fecha.** El criterio pide la jornada del criterio 1 (la publicada). Recomendado: correrla además en la de SPEC-025 (2026-10-16/19) para llegar con datos.
 - **N-2 Partida de SPEC-025** para que cada una quepa en una página: comparten `src/medicion/` y nada más.
+- **Decididas por el titular (Alberto Fojo, 2026-10-09):** H-1 = perfil «3G» de WebPageTest, CPU ×4, percentil 75 por ruta; H-2 = medido desde el Mac del titular; H-3 según recomendación. Spec aprobada.

@@ -36,6 +36,8 @@ Actualizado: 2026-10-09
 | SPEC-021 — descanso-dentro-de-live-del-adaptador-a-la-fila | en-revision | 2026-10-08 (sdd-implementador) |
 | SPEC-023 — escritorio-tira-de-dias-filtros-y-plegar-competicion | hecho | 2026-10-08 (sdd-verificador) |
 | SPEC-024 — realtime-fallback-y-frescura | hecho | 2026-10-09 (sdd-verificador) |
+| SPEC-025 — medicion-de-latencia-gol-pantalla-con-segundo-reloj-y-sonda-sintetica | aprobada | 2026-10-09 (Alberto Fojo) |
+| SPEC-026 — primera-pintura-en-movil-con-3g | aprobada | 2026-10-09 (Alberto Fojo) |
 
 ## EPIC-FIX (aprobada)
 
@@ -71,8 +73,10 @@ Actualizado: 2026-10-09
 | ADR-013 | aprobada | partido-sin-directo-de-la-fuente-prorroga-de-la-ventana-hasta-el-final-y-sen-sinal-en-scheduled | 2026-10-04 (Alberto Fojo) |
 | ADR-014 | aprobada | entorno-de-produccion-y-acceso-publico-a-board | 2026-10-06 (Alberto Fojo) |
 | ADR-015 | aprobada | login-de-la-web-en-supabase-residuo-de-public-en-net-y-tick-firmado | 2026-10-07 (Alberto Fojo) |
+| ADR-016 | aprobada | segundo-reloj-de-medicion-instantes-sellados-por-la-base | 2026-10-09 (Alberto Fojo) |
 
 ## Resumen
 
 - hecho: 22
 - en-revision: 2
+- aprobada: 2

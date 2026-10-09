@@ -1,9 +1,11 @@
 ---
 id: ADR-016
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-10-09, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-09, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # ADR-016: Segundo reloj de medición: instantes sellados por la base
 
@@ -63,3 +65,5 @@ desglosan. Si un día se mide con otra base o réplica, su reloj es otro.
   sobrescribe y `window.ts` lo usa para la prórroga; además `now()` es el de la
   transacción, no el de la sentencia.
 - **Logs de Vercel**: retención corta, sin estructura y en otro reloj.
+
+- **Aprobado por el titular (Alberto Fojo, 2026-10-09)** junto con SPEC-025 y SPEC-026.
