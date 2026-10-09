@@ -444,3 +444,11 @@ describe("SPEC-023 CA-1 buildXornada day and round", () => {
     expect(competition.round).toBe(8);
   });
 });
+
+// SPEC-025 CA-3 (H-2): the row carries the version of its Decision, so the
+// probe can tell which Decision a paint shows (0: no Decision yet).
+describe("SPEC-025 CA-3 the row carries its version", () => {
+  it("is the version of the PublicMatch", () => {
+    expect(rowOf(match({ status: "live" })).version).toBe(3);
+  });
+});
