@@ -2,13 +2,14 @@
 id: SPEC-025
 tipo: spec
 epica: EPIC-003
-estado: en-revision
+estado: en-progreso
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-09, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-10-09, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-10-09, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-10-09, por: sdd-implementador}
+  - {estado: en-progreso, fecha: 2026-10-09, por: sdd-verificador}
 ---
 # SPEC-025 — Medición de latencia gol → pantalla con segundo reloj y sonda sintética
 
