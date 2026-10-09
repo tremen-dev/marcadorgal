@@ -2,11 +2,15 @@
 id: SPEC-026
 tipo: spec
 epica: EPIC-003
-estado: aprobada
+estado: en-revision
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-09, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-10-09, por: Alberto Fojo}
+  - {estado: en-progreso, fecha: 2026-10-09, por: sdd-implementador}
+  - {estado: en-revision, fecha: 2026-10-09, por: sdd-implementador}
+  - {estado: en-progreso, fecha: 2026-10-09, por: sdd-verificador}
+  - {estado: en-revision, fecha: 2026-10-09, por: sdd-implementador}
 ---
 # SPEC-026 — Primera pintura en móvil con 3G
 
@@ -42,3 +46,4 @@ Optimizar la página (spec aparte si no se cumple). Latencia gol → pantalla
 - **N-1 Fecha.** El criterio pide la jornada del criterio 1 (la publicada). Recomendado: correrla además en la de SPEC-025 (2026-10-16/19) para llegar con datos.
 - **N-2 Partida de SPEC-025** para que cada una quepa en una página: comparten `src/medicion/` y nada más.
 - **Decididas por el titular (Alberto Fojo, 2026-10-09):** H-1 = perfil «3G» de WebPageTest, CPU ×4, percentil 75 por ruta; H-2 = medido desde el Mac del titular; H-3 según recomendación. Spec aprobada.
+- **F-SPEC-026-1 aceptado por el titular (Alberto Fojo, 2026-10-09):** el TTFB se toma de CDP (`responseReceived − requestWillBeSent` del documento) y no de Navigation Timing, que no ve la latencia emulada; Navigation Timing queda como respaldo.
