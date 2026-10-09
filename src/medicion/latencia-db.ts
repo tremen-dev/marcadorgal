@@ -85,18 +85,6 @@ export async function latenciaFilas(
           where match_id = any (${sql.array(ids)})
           order by match_id, version`;
 
-  const attempts = await sql<
-    {
-      raw_ref: string | null;
-      started_at: Date;
-      opened_at: Date | null;
-      requests: string | null;
-    }[]
-  >`select raw_ref, started_at, opened_at, details->>'requests' as requests
-    from ingest_attempts
-    where started_at >= ${desde} and started_at <= ${hasta}
-    order by started_at`;
-
   // The raw objects the observations cite: name is raw_ref without "raw/".
   const keys = [
     ...new Set(
@@ -106,6 +94,22 @@ export async function latenciaFilas(
         .map((r) => r.slice("raw/".length)),
     ),
   ];
+  // The attempts of the window, and those that brought a cited observation
+  // even if they started after it (the window is by kickoff).
+  const refs = [...new Set(observations.map((o) => o.raw_ref))];
+  const attempts = await sql<
+    {
+      raw_ref: string | null;
+      started_at: Date;
+      opened_at: Date | null;
+      requests: string | null;
+    }[]
+  >`select raw_ref, started_at, opened_at, details->>'requests' as requests
+    from ingest_attempts
+    where (started_at >= ${desde} and started_at <= ${hasta})
+      or raw_ref = any (${sql.array(refs.length === 0 ? [""] : refs)})
+    order by started_at`;
+
   const rawObjects =
     keys.length === 0
       ? []
@@ -115,7 +119,9 @@ export async function latenciaFilas(
 
   const porDia = new Map<string, number>();
   for (const a of attempts) {
-    const dia = instant(a.started_at).slice(0, 10);
+    const started = instant(a.started_at);
+    if (started < desde || started > hasta) continue;
+    const dia = started.slice(0, 10);
     porDia.set(dia, (porDia.get(dia) ?? 0) + Number(a.requests ?? 0));
   }
 
