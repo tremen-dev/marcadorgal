@@ -110,6 +110,7 @@ const crudo = (over: Partial<CrudoPasada> = {}): CrudoPasada => ({
       encodedBodySize: 3_000,
     },
   ],
+  ttfbRedMs: null,
   error: null,
   ...over,
 });
@@ -157,6 +158,19 @@ describe("SPEC-026 CA-2 pasada (one pass from its raw capture)", () => {
     expect(pasada(crudo({ error: "timeout" })).fallo).toBe("error: timeout");
     expect(pasada(crudo({ status: 503 })).fallo).toBe("HTTP 503");
     expect(pasada(crudo({ fcpMs: null })).fallo).toBe("sin FCP");
+  });
+
+  // Navigation Timing does not see the latency CDP adds (responseStart stays
+  // at a few ms against localhost); the CDP response of the document does.
+  it("takes the TTFB of the emulated network when CDP saw it", () => {
+    const p = pasada(crudo({ ttfbRedMs: 1000 }));
+    expect(p.ttfbMs).toBe(1000);
+    expect(p.transferenciaMs).toBe(100);
+    expect(p.renderMs).toBe(400);
+  });
+
+  it("never prints a negative transfer", () => {
+    expect(pasada(crudo({ ttfbRedMs: 1200 })).transferenciaMs).toBe(0);
   });
 
   it("falls back to the encoded size when the transfer size is zero", () => {

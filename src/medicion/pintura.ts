@@ -43,6 +43,10 @@ export type CrudoPasada = {
   lcpMs: number | null;
   // performance.now() when the first [data-match-id] entered the DOM.
   primeraFilaMs: number | null;
+  // TTFB of the document as the emulated network sees it: CDP
+  // responseReceived − requestWillBeSent. Navigation Timing's responseStart
+  // does not include the latency CDP adds, so this one wins when present.
+  ttfbRedMs: number | null;
   recursos: {
     name: string;
     startTime: number;
@@ -105,6 +109,7 @@ const extension = (url: string) => {
 
 export function pasada(c: CrudoPasada): Pasada {
   const nav = c.navegacion;
+  const ttfb = c.ttfbRedMs ?? nav?.responseStart ?? null;
   // JS/CSS inicial: what the page asked for before DOMContentLoaded.
   const iniciales = c.recursos.filter(
     (r) => nav !== null && r.startTime <= nav.domContentLoadedEventEnd,
@@ -132,8 +137,9 @@ export function pasada(c: CrudoPasada): Pasada {
   return {
     ruta: c.ruta,
     inicio: c.inicio,
-    ttfbMs: nav?.responseStart ?? null,
-    transferenciaMs: nav ? nav.responseEnd - nav.responseStart : null,
+    ttfbMs: ttfb,
+    transferenciaMs:
+      nav && ttfb !== null ? Math.max(0, nav.responseEnd - ttfb) : null,
     renderMs: nav && c.fcpMs !== null ? c.fcpMs - nav.responseEnd : null,
     fcpMs: c.fcpMs,
     lcpMs: c.lcpMs,
@@ -328,7 +334,7 @@ export function informePintura(e: {
       "",
       "## Dónde se va el tiempo",
       "",
-      "TTFB = responseStart; transferencia = responseEnd − responseStart del documento; render = FCP − responseEnd.",
+      "TTFB = cabeceras del documento en la red emulada (CDP); transferencia = responseEnd − TTFB; render = FCP − responseEnd.",
       "",
       ...lentas.map(
         (r) =>
