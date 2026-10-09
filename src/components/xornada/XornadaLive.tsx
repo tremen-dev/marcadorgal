@@ -136,8 +136,9 @@ export function XornadaLive({
             key: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
           })
         : null;
-    // Folded at build: with the switch off, lazyOpener and its import are
-    // dropped and no chunk of supabase-js exists.
+    // Folded at build: with the switch off, lazyOpener is never called, so
+    // the supabase-js chunk (still emitted by the build) is never downloaded
+    // and the bundle carries no Supabase URL or key.
     const openChannel =
       REALTIME_SWITCH === "on" && config !== null ? lazyOpener(config) : null;
     setRealtime(openChannel !== null);

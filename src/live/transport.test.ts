@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { PublicMatch } from "@/model";
+import { transportNotice } from "@/xornada/freshness";
 import { initialBoard } from "@/xornada/live";
 import { xornadaDays } from "@/xornada/view";
 import {
@@ -472,6 +473,41 @@ describe("SPEC-024 CA-6 Realtime (switch on)", () => {
     ch.last().handlers.status("CLOSED");
     await vi.advanceTimersByTimeAsync(60_000);
     expect(ch.opened).toHaveLength(3);
+    live.stop();
+  });
+
+  // V-1 (CA-8): after a failure, polling is the effective source until a new
+  // SUBSCRIBED, retries included: «Sen tempo real» never goes away meanwhile.
+  it("after a failure the notice stays through every retry until SUBSCRIBED", async () => {
+    const ch = fakeChannel();
+    const f = fakeFetch([]);
+    const { live, snapshots, last } = start({ fetch: f.fn, open: ch.open });
+    await vi.advanceTimersByTimeAsync(0);
+    ch.last().handlers.status("CHANNEL_ERROR");
+    await vi.advanceTimersByTimeAsync(0);
+    const from = snapshots.length;
+    const notice = (s: LiveSnapshot) =>
+      transportNotice({ realtime: true, mode: s.mode, offline: s.offline });
+    // Two retries: one that times out (10 s) and one that fails outright.
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(ch.opened).toHaveLength(2);
+    const polls = f.calls.length;
+    await vi.advanceTimersByTimeAsync(SUBSCRIBE_TIMEOUT_MS);
+    expect(ch.opened[1].closed).toBe(true);
+    await vi.advanceTimersByTimeAsync(120_000);
+    expect(ch.opened).toHaveLength(3);
+    ch.last().handlers.status("TIMED_OUT");
+    await vi.advanceTimersByTimeAsync(0);
+    expect(f.calls.length).toBeGreaterThan(polls);
+    const during = snapshots.slice(from);
+    expect(during.length).toBeGreaterThan(0);
+    expect(during.map(notice)).toEqual(during.map(() => "freshness.polling"));
+    // A new SUBSCRIBED is what ends it.
+    await vi.advanceTimersByTimeAsync(240_000);
+    ch.last().handlers.status("SUBSCRIBED");
+    await vi.advanceTimersByTimeAsync(0);
+    expect(notice(last())).toBeNull();
+    expect(last().mode).toBe("realtime");
     live.stop();
   });
 });

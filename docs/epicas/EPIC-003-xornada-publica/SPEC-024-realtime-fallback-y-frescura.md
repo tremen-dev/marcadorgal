@@ -9,6 +9,8 @@ historial:
   - {estado: aprobada, fecha: 2026-10-08, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-10-08, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-10-09, por: sdd-implementador}
+  - {estado: en-progreso, fecha: 2026-10-09, por: sdd-implementador}
+  - {estado: en-revision, fecha: 2026-10-09, por: sdd-implementador}
 ---
 # SPEC-024 — Realtime, fallback y frescura
 

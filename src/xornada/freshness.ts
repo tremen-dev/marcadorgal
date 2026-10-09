@@ -18,7 +18,8 @@ export function screenFreshness(last: number, now: number): ScreenFreshness {
 }
 
 // How the screen is being kept up to date (CA-6, CA-7). `connecting` is the
-// first wait for SUBSCRIBED: nothing is said until it fails.
+// first wait for SUBSCRIBED: nothing is said until it fails. After a failure
+// the retries stay `polling`, the effective source, so the notice stays.
 export type TransportMode = "polling" | "connecting" | "realtime";
 
 export type TransportNoticeKey = "freshness.offline" | "freshness.polling";

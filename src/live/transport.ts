@@ -204,7 +204,9 @@ export function startLiveXornada(deps: LiveDeps): {
     if (stopped || open === null) return;
     const mine = ++generation;
     const current = () => mine === generation && !stopped;
-    set({ mode: "connecting" });
+    // Only the first attempt is `connecting`. A retry keeps `polling`: it is
+    // still the effective source until SUBSCRIBED, so the notice stays (V-1).
+    if (state.mode !== "polling") set({ mode: "connecting" });
     subscribeTimer = setTimeout(() => {
       if (current()) fail();
     }, SUBSCRIBE_TIMEOUT_MS);
