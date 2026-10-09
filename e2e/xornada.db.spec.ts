@@ -105,16 +105,51 @@ for (const route of [
   });
 }
 
+// What a page says each match is called: its competition and its teams, by
+// matchId. `/` and `/es` are separate ISR snapshots and may be taken on each
+// side of a Decision (xornada-realtime.db), so the order of the rows (by
+// state) may differ; the names may not.
+type Names = Record<string, { competition: string; teams: string[] }>;
+const namesById = (page: Page): Promise<Names> =>
+  page.getByTestId("match-row").evaluateAll((rows) =>
+    Object.fromEntries(
+      rows.map((r) => [
+        r.getAttribute("data-match-id") ?? "",
+        {
+          competition:
+            r
+              .closest("section[data-competition]")
+              ?.querySelector('[data-testid="competition-name"]')
+              ?.textContent ?? "",
+          teams: Array.from(
+            r.querySelectorAll('[data-testid="team-name"]'),
+            (el) => el.textContent ?? "",
+          ),
+        },
+      ]),
+    ),
+  );
+
 test("CA-6 team and competition names identical in gl and es", async ({
-  page,
+  browser,
 }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
   await page.goto("/");
-  const glTeams = await texts(page, "team-name");
-  const glCompetitions = await texts(page, "competition-name");
-  expect(glTeams.length).toBeGreaterThan(0);
+  const glNames = await namesById(page);
+  const glCompetitions = new Set(await texts(page, "competition-name"));
   await page.goto("/es");
-  expect(await texts(page, "team-name")).toEqual(glTeams);
-  expect(await texts(page, "competition-name")).toEqual(glCompetitions);
+  const esNames = await namesById(page);
+  const esCompetitions = new Set(await texts(page, "competition-name"));
+  await context.close();
+  expect(Object.keys(glNames).length).toBeGreaterThan(10);
+  expect(Object.keys(esNames).sort()).toEqual(Object.keys(glNames).sort());
+  for (const [id, names] of Object.entries(glNames)) {
+    expect(names.competition).not.toBe("");
+    expect(names.teams).toHaveLength(2);
+    expect(esNames[id]).toEqual(names);
+  }
+  expect(esCompetitions).toEqual(glCompetitions);
 });
 
 test("CA-7 /api/board: the same selection, cache, ETag and 304", async ({
