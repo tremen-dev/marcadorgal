@@ -291,3 +291,27 @@ describe("SPEC-025 CA-2/CA-4 rawRefsDeReferencia", () => {
     ).toEqual(["raw/b", "raw/c", "raw/d"]);
   });
 });
+
+describe("SPEC-025 CA-4 a response with no Age", () => {
+  it("spent no time in the CDN: cdn 0, the whole delivery is the wait, and it says so", () => {
+    const base = input();
+    const sonda = sondaJsonl([
+      {
+        tipo: "respuesta",
+        ruta: "/",
+        estado: 200,
+        age: null,
+        xVercelCache: "MISS",
+        date: new Date(T0 + 79_000).toUTCString(),
+        instante: t(79.9),
+      },
+      pintura("m1", 2, 80),
+    ]);
+    const m1 = medirLatencia({ ...base, sonda }).goles.find(
+      (g) => g.matchId === "m1",
+    );
+    expect(m1?.tramos.cdn).toBe(0);
+    expect(m1?.tramos.espera).toBe(18_500);
+    expect(m1?.motivos).toEqual(["respuesta sin Age: CDN 0 s"]);
+  });
+});

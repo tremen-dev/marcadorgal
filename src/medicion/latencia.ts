@@ -305,12 +305,12 @@ export function medirLatencia(input: LatenciaInput): Latencia {
             xVercelCache: r.xVercelCache,
             estado: r.estado,
           };
-          if (r.age === null) motivos.push("respuesta sin Age");
-          else {
-            tramos.cdn = r.age * 1000;
-            tramos.espera =
-              tramos.entrega === null ? null : tramos.entrega - tramos.cdn;
-          }
+          // No Age header: the response did not come out of the CDN's cache,
+          // so it spent no time there. Said, never assumed in silence.
+          if (r.age === null) motivos.push("respuesta sin Age: CDN 0 s");
+          tramos.cdn = (r.age ?? 0) * 1000;
+          tramos.espera =
+            tramos.entrega === null ? null : tramos.entrega - tramos.cdn;
         }
       }
     }
