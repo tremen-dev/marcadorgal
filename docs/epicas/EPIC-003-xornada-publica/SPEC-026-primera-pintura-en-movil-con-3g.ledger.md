@@ -15,17 +15,23 @@ epica: EPIC-003
 <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
-| CA-1 | `tools/primera-pintura.mjs` (`PERFIL_3G`, `aplicaPerfil`, `opcionesContexto`) | `src/medicion/primera-pintura-perfil.test.ts` (constante; CDP en B/s y ms; contexto 390×844, DPR 3, isMobile); `e2e/primera-pintura.spec.ts` (TTFB ≥ 300 ms contra localhost) | | ❌ |
-| CA-2 | `src/medicion/pintura.ts` (`filasEnHtml`, `pasada`); captura en `tools/primera-pintura.mjs` (`unaPasada`, `sondaEnPagina`) | `src/medicion/pintura.test.ts` «CA-2 filasEnHtml» (5) y «CA-2 pasada» (9); `e2e/primera-pintura.spec.ts` (demo con filas al FCP; `/` sin lector = fallo «sin dato en el HTML», contado) | | ❌ |
-| CA-3 | `src/medicion/pintura.ts` (`UMBRAL_FCP_MS`, `resumenRuta`, `veredicto`); script `primera:pintura` en `package.json` | `src/medicion/pintura.test.ts` «CA-3 resumenRuta» (1999/2000/2001 ms, pasada sin dato, sin pintura, caché, tramo) y «CA-3 veredicto» (cumple; una ruta sí y otra no; pasada sin dato; muestra no válida) | | ❌ |
-| CA-4 | `src/medicion/pintura.ts` (`informePintura`, `describirPerfil`); `.md` + `.json` en `tools/primera-pintura.mjs` | `src/medicion/pintura.test.ts` «CA-4 informePintura» (4); `e2e/primera-pintura.spec.ts` (ficheros y contenido). Campo: pendiente del titular (procedimiento abajo) | | ❌ |
-| CA-5 | sin dependencias nuevas; `git diff --stat origin/main` no toca `src/sources`, `src/decide`, `src/ingest` | `npm run gates` exit 0 (76 ficheros, 1315 tests, build OK); `npm run e2e` 91 passed; los tests no piden a la red (e2e contra `next start` local) | | ❌ |
+| CA-1 | `tools/primera-pintura.mjs` (`PERFIL_3G`, `aplicaPerfil`, `opcionesContexto`) | `src/medicion/primera-pintura-perfil.test.ts` (constante; CDP en B/s y ms; contexto 390×844, DPR 3, isMobile); `e2e/primera-pintura.spec.ts` (TTFB ≥ 300 ms contra localhost) | `primera-pintura-perfil.test.ts` 3/3; e2e verde; corrida local (`next start` :3201, n 3): TTFB CDP 311–312 ms con RTT 300 emulado; FCP 804–820 ms | ✅ |
+| CA-2 | `src/medicion/pintura.ts` (`filasEnHtml`, `pasada`); captura en `tools/primera-pintura.mjs` (`unaPasada`, `sondaEnPagina`) | `src/medicion/pintura.test.ts` «CA-2 filasEnHtml» (5) y «CA-2 pasada» (9); `e2e/primera-pintura.spec.ts` (demo con filas al FCP; `/` sin lector = fallo «sin dato en el HTML», contado) | corrida local: `responseStart` 5,7–8,5 ms vs CDP 312 ms → Navigation Timing no ve la latencia emulada; F-1 se aparta de la letra con causa real, pendiente de aceptación. Primera fila 329–331 ms ≤ FCP; `/` sin lector = fallo contado (e2e) | ⚠️ |
+| CA-3 | `src/medicion/pintura.ts` (`UMBRAL_FCP_MS`, `resumenRuta`, `veredicto`); script `primera:pintura` en `package.json` | `src/medicion/pintura.test.ts` «CA-3 resumenRuta» (1999/2000/2001 ms, pasada sin dato, sin pintura, caché, tramo) y «CA-3 veredicto» (cumple; una ruta sí y otra no; pasada sin dato; muestra no válida) | umbral estricto OK (1999 cumple, 2000 no; sondeado). Pero `veredicto` solo valida las rutas pasadas: `--rutas /` con n 20 y pausa 15 da **CUMPLE**; F-4 dice lo contrario (V-1) | ❌ |
+| CA-4 | `src/medicion/pintura.ts` (`informePintura`, `describirPerfil`); `.md` + `.json` en `tools/primera-pintura.mjs` | `src/medicion/pintura.test.ts` «CA-4 informePintura» (4); `e2e/primera-pintura.spec.ts` (ficheros y contenido). Campo: pendiente del titular (procedimiento abajo) | informe `.md` + `.json` generados y revisados (corrida local); falta el campo (titular, H-2) | 🚧 |
+| CA-5 | sin dependencias nuevas; `git diff --stat origin/main` no toca `src/sources`, `src/decide`, `src/ingest` | `npm run gates` exit 0 (76 ficheros, 1315 tests, build OK); `npm run e2e` 91 passed; los tests no piden a la red (e2e contra `next start` local) | `npm run gates` exit 0 (76 ficheros, 1315 tests, build OK); `npm run e2e` 91 passed; sin dependencias nuevas (lockfile intacto); `src/sources|decide|ingest` sin diff; tests de la cáscara contra localhost | ✅ |
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
+**RED — 2026-10-09 (sdd-verificador).** Gates y e2e en verde; perfil CA-1 aplicado de verdad por CDP; aritmética p75 estricta. Bloquea:
+- **V-1 (media, CA-3):** `veredicto(resumenes, {rutas})` comprueba n y pausa solo sobre las rutas recibidas; con `--rutas /` (o `--rutas /x`) y n 20, pausa 15 → `cumple`. F-SPEC-026-4 afirma «MUESTRA NO VÁLIDA si … falta `/` o `/es`»: falso. Arreglo: exigir `/` y `/es` (constante de CA-3) en `veredicto`, con caso en `pintura.test.ts`; valorar lo mismo para `--url` ≠ `https://marcador.gal` (hoy un `next start` local con n 20 y pausa 15 sale CUMPLE).
+- **V-2 (baja, CA-4):** `transferenciaMs = responseEnd (Navigation Timing) − ttfb (CDP)` mezcla dos relojes y recorta a 0; en local cuadra (≈ 37 ms para 8,6 kB a 200 kB/s), pero conviene documentarlo o tomar `loadingFinished` de CDP para que «dónde se va el tiempo» no culpe a render.
+- **F-1:** aceptable por la realidad medida (`responseStart` 6 ms vs CDP 312 ms); la letra de CA-2 dice Navigation Timing → ⚠️ hasta que el titular lo acepte.
+- Merge con `origin/main` (#52): sin conflictos (`git merge-tree`); árbol fusionado: tsc OK, biome OK, vitest 81 ficheros / 1391 tests verdes.
 
 ## Evidencia visual
 <!-- Tabla CA → captura en _qa/SPEC-026/. Informe HTML opcional: _qa/SPEC-026/informe.html -->
+Sin UI nueva: la evidencia es el informe `.md`/`.json` de la herramienta (corrida local, no versionada) y el e2e `e2e/primera-pintura.spec.ts`.
 
 ## Salvedades / follow-ups
 <!-- IDs F-SPEC-026-1, F-SPEC-026-2… con destino (spec futura o EPIC-MEJORA). -->
