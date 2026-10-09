@@ -270,3 +270,24 @@ describe("SPEC-025 CA-4 latencia.ts is pure", () => {
     expect(source).not.toMatch(/nowInstant|clock\.ts/);
   });
 });
+
+describe("SPEC-025 CA-2/CA-4 rawRefsDeReferencia", () => {
+  it("the newest capture of each match and the newest one where it was live, once each", async () => {
+    const { rawRefsDeReferencia } = await import("./latencia.ts");
+    const o = (matchId: string, s: number, status: string, rawRef: string) => ({
+      matchId,
+      observedAt: t(s),
+      status,
+      rawRef,
+    });
+    expect(
+      rawRefsDeReferencia([
+        o("m1", 0, "live", "raw/a"),
+        o("m1", 30, "live", "raw/b"),
+        o("m1", 60, "finished", "raw/c"),
+        o("m2", 30, "live", "raw/b"),
+        o("m3", 10, "scheduled", "raw/d"),
+      ]),
+    ).toEqual(["raw/b", "raw/c", "raw/d"]);
+  });
+});
