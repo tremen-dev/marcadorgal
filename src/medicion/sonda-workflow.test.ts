@@ -51,4 +51,29 @@ describe("SPEC-025 CA-3 sonda-pantalla.yml", () => {
     );
     expect(code).toMatch(/path: sonda\//);
   });
+
+  // V-2 (verifier, 2026-10-09): `inputs.horas` is text typed by whoever runs
+  // workflow_dispatch; it reaches the shell only through env and validated.
+  it("never interpolates an expression inside a run: script", () => {
+    const runs = code.split(/\n\s+(?:- )?run: /).slice(1);
+    expect(runs.length).toBeGreaterThan(0);
+    for (const run of runs) {
+      const script = run.split(/\n\s+- /)[0];
+      expect(script).not.toMatch(/\$\{\{/);
+    }
+  });
+
+  it("validates horas as a number up to 5.5 before writing it", () => {
+    expect(code).toMatch(
+      /\[\[ "\$horas" =~ \^\[0-9\]\+\(\\\.\[0-9\]\+\)\?\$ \]\]/,
+    );
+    expect(code).toMatch(/awk .*5\.5/);
+    expect(code).toMatch(/HORAS: \$\{\{ steps\.horas\.outputs\.horas \}\}/);
+  });
+
+  it("checks out without persisting credentials", () => {
+    expect(code).toMatch(
+      /uses: actions\/checkout@v4\n\s+with:\n\s+persist-credentials: false/,
+    );
+  });
 });
