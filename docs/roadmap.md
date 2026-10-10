@@ -26,10 +26,20 @@ tipo: roadmap
   identificada y el operador choca con «sin nadie detrás un sábado normal».
   La pantalla muestra `sen sinal` donde la fuente no da directo.
 
+- **EPIC-004 — Fuente RFEF.** Segunda fuente automática: `marcadores.rfef.es`,
+  oficial, prioridad 50 sobre API-Football, las cinco competiciones. Cierra
+  cuando una jornada medida no deja `sen sinal` donde la RFEF publica en
+  juego, sin empeorar cobertura, corrección ni latencia (< 45 s mediana).
+  *Por qué ahora (titular, 2026-10-10):* la segunda fuente ya existe (sondeo
+  del 2026-10-10: pública con cookie de sesión, cubre las cinco
+  competiciones, marcador ofuscado) y es la salida al directo de Tercera sin
+  esperar al operador. Corre en paralelo a EPIC-003.
+
 ## Después (comprometido, sin empezar)
 
-- **EPIC-004 — Operador y fuentes push.** Panel mínimo con Auth, webhook
-  genérico, segunda fuente automática registrada. Cierra cuando el operador
+- **EPIC-005 — Operador y fuentes push.** Panel mínimo con Auth, webhook
+  genérico. *Renumerada el 2026-10-10*: la segunda fuente automática salió
+  a EPIC-004 (fuente RFEF). Cierra cuando el operador
   corrige un marcador desde el móvil y el público lo ve en menos de 10 s.
   *Entrada de la jornada medida (2026-09-29):* **R-SPEC-009-3** — la fuente
   no dio en directo 4 de 9 partidos de Tercera; la cobertura se degrada con la
@@ -74,7 +84,8 @@ tipo: roadmap
 - Equipos favoritos (sin cuenta: almacenamiento local).
 - Detalle de partido con eventos (goles, tarjetas).
 - Notificaciones de gol.
-- Ligas territoriales gallegas (Preferente, Primeira Galega) si aparece fuente.
+- Ligas territoriales gallegas (Preferente, Primeira Galega): candidata
+  `marcadores.rfef.es` con `federacion=3` (sondeo 2026-10-10), tras EPIC-004.
 - Feed o widget para medios y clubes.
 
 ## Criterios de corte
