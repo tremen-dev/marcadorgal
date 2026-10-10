@@ -504,6 +504,38 @@ describe("CA-7 cadence", () => {
   });
 });
 
+describe("SPEC-029 CA-1", () => {
+  it("skips a locked source without asking it, keeps on with the others and sweeps", async () => {
+    const log: string[] = [];
+    const { db, store } = harness({ log });
+    db.matches = [match("m1", "primera-division")];
+    db.locked.add("primera-source");
+    const sweep = vi.fn(async () => ({}) as never);
+    const fetched: string[] = [];
+    const summary = await runTick({
+      db,
+      store,
+      sources: [PRIMERA, SEGUNDA],
+      adapterFor: (c) =>
+        stubAdapter({ id: c.id, log, onFetch: () => fetched.push(c.id) }),
+      fetch: forbiddenFetch,
+      now: NOW,
+      sweep,
+    });
+    expect(summary.attempts[0]).toMatchObject({
+      sourceId: "primera-source",
+      skipped: "locked",
+      ok: false,
+      observations: 0,
+    });
+    expect(summary.attempts[1]).toMatchObject({ sourceId: "other-source" });
+    expect(summary.attempts[1].skipped).toBeUndefined();
+    expect(fetched).toEqual(["other-source"]);
+    expect(db.attempts.map((a) => a.sourceId)).toEqual(["other-source"]);
+    expect(sweep).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe("CA-7 two seasons", () => {
   it("opens one attempt per source and season", async () => {
     const { db, store } = harness();

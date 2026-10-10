@@ -43,3 +43,38 @@ export async function setWebReaderPassword(
   if (!/^[A-Za-z0-9+/=$:-]+$/.test(verifier)) throw new Error("bad verifier");
   await sql.unsafe(`alter role web_reader with password '${verifier}'`);
 }
+
+// SPEC-029 CA-2 (ADR-015 §4): a leaked web_reader can leave defaults on its
+// own role (alter role web_reader set statement_timeout = 1) that a new
+// password does not undo. Every row of pg_db_role_setting for the role goes,
+// global and per database, and one left behind is an error that names no
+// setting nor value.
+export async function resetWebReaderSettings(sql: Sql): Promise<void> {
+  await sql.unsafe("alter role web_reader reset all");
+  const databases = await sql<{ datname: string }[]>`
+    select d.datname from pg_db_role_setting s
+    join pg_roles r on r.oid = s.setrole
+    join pg_database d on d.oid = s.setdatabase
+    where r.rolname = 'web_reader' and s.setdatabase <> 0`;
+  for (const { datname } of databases)
+    await sql.unsafe(
+      `alter role web_reader in database "${datname.replaceAll('"', '""')}" reset all`,
+    );
+  const [{ count }] = await sql<{ count: number }[]>`
+    select count(*)::int as count from pg_db_role_setting s
+    join pg_roles r on r.oid = s.setrole where r.rolname = 'web_reader'`;
+  if (count > 0)
+    throw new Error(
+      `web_reader: quedan ${count} ajustes en pg_db_role_setting`,
+    );
+}
+
+// SPEC-029 CA-3 (H-2): a new password does not close the sessions already
+// open, and one of them may hold the lock of openAttempt. Returns how many
+// were terminated; the web reconnects in milliseconds.
+export async function terminateWebReaderSessions(sql: Sql): Promise<number> {
+  const rows = await sql<{ done: boolean }[]>`
+    select pg_terminate_backend(pid) as done from pg_stat_activity
+    where usename = 'web_reader' and pid <> pg_backend_pid()`;
+  return rows.filter((r) => r.done).length;
+}

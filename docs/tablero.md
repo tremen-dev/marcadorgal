@@ -55,7 +55,7 @@ Actualizado: 2026-10-10
 |---|---|---|
 | SPEC-010 — salud-del-tick-sin-falsos-fallos-y-retirada-de-medir-directo | hecho | 2026-09-22 (sdd-verificador) |
 | SPEC-017 — mejoras-del-informe-de-jornada | hecho | 2026-10-06 (sdd-verificador) |
-| SPEC-029 — endurecer-web-reader-purgar-cron-y-v-7 | aprobada | 2026-10-10 (Alberto Fojo) |
+| SPEC-029 — endurecer-web-reader-purgar-cron-y-v-7 | hecho | 2026-10-10 (sdd-verificador) |
 
 ## ADRs
 
@@ -80,6 +80,5 @@ Actualizado: 2026-10-10
 
 ## Resumen
 
-- hecho: 24
+- hecho: 25
 - en-revision: 4
-- aprobada: 1

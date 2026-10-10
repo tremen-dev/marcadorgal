@@ -385,3 +385,37 @@ describe("SPEC-008 CA-7 the short window is shorter than the silence rule", () =
     expect(SALUD_RECENT_MINUTES).toBeLessThan(SILENCE_MINUTES);
   });
 });
+
+// SPEC-029 CA-5: a second job, daily, that has not run in the short window is
+// not silence: the tick ran. A failure of its own in the window is red all
+// the same, and names it.
+describe("SPEC-029 CA-5 tickSalud with purge-cron-history", () => {
+  const jobs = [
+    { jobname: "ingest-tick", schedule: "30 seconds", active: true },
+    { jobname: "purge-cron-history", schedule: "17 4 * * *", active: true },
+  ];
+
+  it("two jobs and the daily one without runs in 10 min is ok", () => {
+    const report = tickSalud(clean({ jobs }));
+    expect(report.ok).toBe(true);
+    expect(report.text).toContain("purge-cron-history  17 4 * * *  activo");
+  });
+
+  it("a failed run of the daily job in the short window is red with its name", () => {
+    const report = tickSalud(
+      clean({
+        jobs,
+        runs: [
+          { jobname: "ingest-tick", status: "succeeded", startTime: at(-1) },
+          {
+            jobname: "purge-cron-history",
+            status: "failed",
+            startTime: at(-3),
+          },
+        ],
+      }),
+    );
+    expect(report.ok).toBe(false);
+    expect(report.text).toMatch(/FALLO {2}\S+ {2}purge-cron-history {2}failed/);
+  });
+});

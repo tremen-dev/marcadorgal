@@ -121,3 +121,48 @@ describe("SPEC-008 CA-3 cron:setup", () => {
     expect(r.stdout).toBe("");
   });
 });
+
+// SPEC-029 CA-7 (M-12): cron:setup against the local database with the .env of
+// production would make the local pg_cron fire the production tick.
+describe("SPEC-029 CA-7 cronSecrets does not cross environments", () => {
+  const LOCAL_DB = "postgresql://postgres:postgres@127.0.0.1:54322/postgres";
+  const REMOTE_DB = "postgresql://postgres:pw@db.example.supabase.co:5432/x";
+
+  it("throws naming both variables, without values, for a local database and a remote tick", () => {
+    const run = () => cronSecrets({ ...ENV, DATABASE_URL: LOCAL_DB });
+    expect(run).toThrow(
+      /DATABASE_URL.*INGEST_TICK_URL|INGEST_TICK_URL.*DATABASE_URL/,
+    );
+    try {
+      run();
+    } catch (e) {
+      const text = String((e as Error).message);
+      expect(text).not.toContain(URL_VALUE);
+      expect(text).not.toContain("marcador.gal");
+      expect(text).not.toContain("54322");
+      expect(text).not.toContain(TOKEN_VALUE);
+    }
+  });
+
+  it("writes nothing in the vault when it throws", async () => {
+    const { sql, calls } = fakeSql();
+    await expect(
+      setupCronSecrets(sql, { ...ENV, DATABASE_URL: LOCAL_DB }),
+    ).rejects.toThrow("INGEST_TICK_URL");
+    expect(calls).toHaveLength(0);
+  });
+
+  it.each([
+    ["local + local", LOCAL_DB, "http://127.0.0.1:3000/api/ingest/tick"],
+    [
+      "local + host.docker.internal",
+      LOCAL_DB,
+      "http://host.docker.internal:3000/api/ingest/tick",
+    ],
+    ["remote + remote", REMOTE_DB, URL_VALUE],
+  ])("%s passes", (_, db, url) => {
+    expect(
+      cronSecrets({ ...ENV, DATABASE_URL: db, INGEST_TICK_URL: url }),
+    ).toHaveLength(2);
+  });
+});
