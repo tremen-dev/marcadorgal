@@ -1,4 +1,4 @@
-import type { Sql, TransactionSql } from "postgres";
+import postgres, { type Sql, type TransactionSql } from "postgres";
 import { afterAll, describe, expect, it } from "vitest";
 import {
   DAY_MS,
@@ -9,6 +9,7 @@ import {
   type Unresolved,
 } from "@/model";
 import { createSql } from "../db/connect.ts";
+import { setWebReaderPassword } from "../db/web-reader.ts";
 import { createIngestDb } from "./db.ts";
 
 // CA-6: the postgres.js implementation of the port, local only.
@@ -257,6 +258,44 @@ describe("CA-6 openAttempt under concurrency", () => {
     const [{ count }] =
       await sql`select count(*)::int as count from ingest_attempts where source_id = ${source}`;
     expect(count).toBe(1);
+  });
+});
+
+// SPEC-029 CA-1 (H-1 = A): a leaked DATABASE_URL_PUBLIC lets web_reader hold
+// the advisory lock of openAttempt (ADR-015 §1); the tick skips the source
+// instead of waiting for it.
+describe("SPEC-029 CA-1 lock retenido por web_reader: salta sin esperar", () => {
+  const source = `test-${crypto.randomUUID()}`;
+  afterAll(() => sql`delete from ingest_attempts where source_id = ${source}`);
+
+  it("returns skipped locked in under a second, inserts nothing, and opens once released", async () => {
+    const password = crypto.randomUUID().replaceAll("-", "");
+    await setWebReaderPassword(sql, password);
+    const url = new URL(process.env.DATABASE_URL ?? "");
+    url.username = "web_reader";
+    url.password = password;
+    const reader = postgres(url.toString(), {
+      ssl: false,
+      prepare: false,
+      max: 1,
+    });
+    const db = createIngestDb(sql);
+    try {
+      await reader`select pg_advisory_lock(hashtext(${`ingest_attempts:${source}`}))`;
+      const started = performance.now();
+      const locked = await db.openAttempt(source, NOW, 30);
+      expect(performance.now() - started).toBeLessThan(1000);
+      expect(locked).toEqual({ skipped: "locked" });
+      const [{ count }] =
+        await sql`select count(*)::int as count from ingest_attempts where source_id = ${source}`;
+      expect(count).toBe(0);
+
+      await reader`select pg_advisory_unlock(hashtext(${`ingest_attempts:${source}`}))`;
+      const opened = await db.openAttempt(source, NOW, 30);
+      expect(opened).toMatchObject({ id: expect.any(String) });
+    } finally {
+      await reader.end();
+    }
   });
 });
 

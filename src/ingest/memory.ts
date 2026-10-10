@@ -31,6 +31,8 @@ export type MemoryIngestDb = IngestDb & {
   matches: WindowRow[];
   attempts: MemoryAttempt[];
   cadence: Map<string, Instant>;
+  // Sources whose advisory lock someone else holds (SPEC-029 CA-1).
+  locked: Set<string>;
   observations: Observation[];
   alerts: MemoryAlert[];
   purges: MemoryPurge[];
@@ -47,6 +49,7 @@ export function createMemoryIngestDb(log: string[] = []): MemoryIngestDb {
     matches: [],
     attempts: [],
     cadence: new Map(),
+    locked: new Set(),
     observations: [],
     alerts: [],
     purges: [],
@@ -61,6 +64,7 @@ export function createMemoryIngestDb(log: string[] = []): MemoryIngestDb {
 
     async openAttempt(sourceId, now) {
       log.push(`openAttempt:${sourceId}`);
+      if (db.locked.has(sourceId)) return { skipped: "locked" as const };
       const lastStartedAt = db.cadence.get(sourceId);
       if (lastStartedAt !== undefined)
         return { skipped: "cadence" as const, lastStartedAt };

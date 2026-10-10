@@ -29,7 +29,8 @@ export type { Details, Json } from "../model/index.ts";
 
 export type OpenedAttempt =
   | { id: string }
-  | { skipped: "cadence"; lastStartedAt: Instant };
+  | { skipped: "cadence"; lastStartedAt: Instant }
+  | { skipped: "locked" };
 
 export type AttemptClose = {
   finishedAt: Instant;
@@ -206,11 +207,16 @@ export function createIngestDb(sql: Sql): IngestDb {
 
     // Cadence guard and insert in one transaction behind an advisory lock
     // (ADR-008 §3): two overlapping ticks produce one call to the provider.
+    // The lock is tried, never awaited (SPEC-029 CA-1, H-1 = A): whoever holds
+    // it, another tick or a leaked web_reader (ADR-015 §1), the source is
+    // skipped this time and the tick goes on.
     async openAttempt(sourceId, now, minIntervalSeconds) {
       const guardMs = (minIntervalSeconds - CADENCE_JITTER_SECONDS) * 1000;
       const since = shiftInstant(now, -guardMs);
       return sql.begin(async (tx) => {
-        await tx`select pg_advisory_xact_lock(hashtext(${`ingest_attempts:${sourceId}`}))`;
+        const [{ locked }] = await tx<{ locked: boolean }[]>`
+          select pg_try_advisory_xact_lock(hashtext(${`ingest_attempts:${sourceId}`})) as locked`;
+        if (!locked) return { skipped: "locked" as const };
         const [last] = await tx<{ started_at: Date }[]>`
           select started_at from ingest_attempts
           where source_id = ${sourceId} order by started_at desc limit 1`;

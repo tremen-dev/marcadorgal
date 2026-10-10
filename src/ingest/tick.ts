@@ -16,7 +16,8 @@ export type AttemptSummary = {
   sourceId: string;
   season: string;
   attemptId?: string;
-  skipped?: "cadence";
+  // cadence (RN-08) or a lock held by someone else (SPEC-029 CA-1).
+  skipped?: "cadence" | "locked";
   ok: boolean;
   error?: string;
   rawRef?: string;
@@ -182,8 +183,9 @@ async function runAttempt(
     now,
     config.minIntervalSeconds,
   );
-  // Cadence (RN-08): the source is skipped and nothing is asked of it.
-  if ("skipped" in opened) return { ...base, skipped: "cadence" };
+  // Cadence (RN-08) or a held lock (SPEC-029 CA-1): the source is skipped
+  // and nothing is asked of it.
+  if ("skipped" in opened) return { ...base, skipped: opened.skipped };
   const attemptId = opened.id;
 
   let rawRef: string | undefined;
