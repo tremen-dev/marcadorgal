@@ -133,6 +133,8 @@ for (const route of routes) {
             length: history.length,
           })),
         ).toEqual(before);
+        // The sidebar, sticky, next to the competition it took you to.
+        await capture(page, `lateral-${route.lang}-${width}`);
         // Day and filter still applied.
         await expect(page.getByTestId("filter-finished")).toHaveAttribute(
           "aria-current",
@@ -242,7 +244,6 @@ for (const route of routes) {
         await expect(
           page.locator(`[data-competition-link="${last}"]`),
         ).toBeInViewport();
-        await capture(page, `lateral-${route.lang}-${width}`);
 
         // A day that empties a competition hides its entry; back, it shows.
         await page.setViewportSize({ width, height: 900 });
@@ -283,6 +284,13 @@ for (const route of routes) {
         expect(emptied).toBe(true);
         await page.getByTestId("filter-all").click();
         expect((await check()).every((p) => !p.section)).toBe(true);
+        // Down at the last competition, the sidebar is still there.
+        await page.mouse.move(width - 100, 10);
+        await page.locator(`[data-competition-link="${last}"]`).click();
+        await settled(page);
+        expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+        await expect(sidebar).toBeInViewport();
+        await capture(page, `lateral-abajo-${route.lang}-${width}`);
       });
     }
 
