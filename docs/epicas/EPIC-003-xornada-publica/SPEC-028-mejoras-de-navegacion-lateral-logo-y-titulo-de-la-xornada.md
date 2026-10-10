@@ -61,3 +61,4 @@ SPEC-027 H-1); cambiar la tira o las flechas.
 - **N-1** Hoy nada es `sticky` arriba; el `scroll-margin-top` de CA-1 deja holgura y protege el salto si algún día lo hay.
 - **N-2** Hasta hidratar, pulsar el lateral hace el salto nativo (CA-2) y pone `#xornada-<id>`; es inofensivo.
 - **Decididas por el titular (Alberto Fojo, 2026-10-10):** H-1..H-5 y H-7 según recomendación; H-4 = sí, lateral sticky en escritorio; **H-6 = opción A** (título como pestaña activa: barra superior en escritorio, franja de 42 px entre la tira y los filtros en móvil). Spec aprobada.
+- **F-SPEC-028-1 aceptado por el titular (Alberto Fojo, 2026-10-10):** la parte pura del rango (`xornadaSpan`) vive en `src/xornada/range.ts` y `xornadaRange` (textos i18n) en `src/components/xornada/labels.ts`, por la frontera de SPEC-019 CA-2.
