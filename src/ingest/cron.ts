@@ -1,5 +1,5 @@
 import type { Sql } from "postgres";
-import type { Env } from "../db/env.ts";
+import { type Env, isLoopbackHost, isLoopbackUrl } from "../db/env.ts";
 
 // The two secrets the pg_cron job reads by name from vault.decrypted_secrets
 // (H-4): the migration never carries a value, and these are put here from
@@ -22,7 +22,30 @@ function required(env: Env, variable: string): string {
   return value;
 }
 
+// The host a local pg_cron (in Docker) reaches the local app by.
+const DOCKER_HOST = "host.docker.internal";
+
+function isLocalTickUrl(url: string): boolean {
+  try {
+    const { hostname } = new URL(url);
+    return isLoopbackHost(hostname) || hostname === DOCKER_HOST;
+  } catch {
+    return false;
+  }
+}
+
+// SPEC-029 CA-7 (M-12): with a local database and the .env of production the
+// local pg_cron would fire the production tick every 30 s. Names the two
+// variables, never their values.
+function assertSameEnvironment(env: Env, tickUrl: string): void {
+  if (isLoopbackUrl(env.DATABASE_URL ?? "") && !isLocalTickUrl(tickUrl))
+    throw new Error(
+      `DATABASE_URL is local but INGEST_TICK_URL is not (loopback or ${DOCKER_HOST}): cron:setup does not cross environments`,
+    );
+}
+
 export function cronSecrets(env: Env): CronSecret[] {
+  assertSameEnvironment(env, required(env, "INGEST_TICK_URL"));
   return [
     {
       name: TICK_URL_SECRET,
