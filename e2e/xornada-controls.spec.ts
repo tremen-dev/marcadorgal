@@ -264,15 +264,18 @@ for (const route of routes) {
         await section.getByTestId("competition-head").click();
         await expect(rows.first()).toBeVisible();
         if (width >= 1024) {
-          const entry = page.getByTestId("sidebar-entry").nth(1);
-          await entry.click();
+          // SPEC-028 CA-1 amends this CA: the sidebar takes you to the
+          // competition and opens it; it never folds or hides rows.
+          await section.getByTestId("competition-head").click();
           await expect(rows.first()).toBeHidden();
-          await expect(entry).toHaveAttribute("aria-expanded", "false");
-          await expect(page).toHaveURL(new RegExp(`${route.path}$`));
           await capture(page, `plegada-${route.lang}-${width}`);
+          const entry = page.getByTestId("sidebar-entry").nth(1);
+          await expect(entry).not.toHaveAttribute("aria-expanded");
           await entry.click();
           await expect(rows.first()).toBeVisible();
-          await expect(entry).toHaveAttribute("aria-expanded", "true");
+          await entry.click();
+          await expect(rows.first()).toBeVisible();
+          await expect(page).toHaveURL(new RegExp(`${route.path}$`));
         } else {
           await expect(page.getByTestId("sidebar")).toBeHidden();
         }
@@ -429,7 +432,7 @@ for (const route of routes) {
             );
             expect(s.pill, s.id).toBe(s.live > 0 ? `${s.live}${label}` : null);
             const entry = page.locator(
-              `[data-testid="sidebar-entry"][data-competition-toggle="${s.id}"]`,
+              `[data-testid="sidebar-entry"][data-competition-link="${s.id}"]`,
             );
             const live = entry.getByTestId("sidebar-live");
             const total = entry.getByTestId("sidebar-total");
