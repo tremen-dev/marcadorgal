@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { MatchId, SourceId, TeamId } from "./ids.ts";
+import { CompetitionId, MatchId, SourceId, TeamId } from "./ids.ts";
 import { Season } from "./vocab.ts";
 
 // data/alias/<season>/<source_id>.json: the only place where a provider's ids
@@ -17,5 +17,9 @@ export const AliasFile = z.strictObject({
   teams: z.array(AliasEntry),
   // Provider match id -> derived MatchId, written by calendario:sync (CA-3).
   matches: z.record(z.string().min(1), MatchId).optional(),
+  // Provider group id -> competition, for sources that name groups rather
+  // than competitions (rfef: codgrupo, ADR-017 §2). Groups not in the map
+  // are ignored.
+  competitions: z.record(z.string().min(1), CompetitionId).optional(),
 });
 export type AliasFile = z.infer<typeof AliasFile>;

@@ -85,8 +85,14 @@ export const Unresolved = z.strictObject({
 });
 export type Unresolved = z.infer<typeof Unresolved>;
 
-// Recorded, not alerted (N-2).
-export const SkippedReason = z.enum(["unsupported_status", "missing_score"]);
+// Recorded, not alerted (N-2). ambiguous_state and suspended_without_score
+// come from the rfef panel (ADR-017 §4, §8.3; SPEC-031).
+export const SkippedReason = z.enum([
+  "unsupported_status",
+  "missing_score",
+  "ambiguous_state",
+  "suspended_without_score",
+]);
 export type SkippedReason = z.infer<typeof SkippedReason>;
 
 export const Skipped = z.strictObject({
