@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import path from "node:path";
 
 // Test support (SPEC-031 CA-1): the real captures of fixtures/, as the text
 // TextDecoder("iso-8859-15") gives for the bytes the server sent. `.raw` holds
@@ -55,10 +56,11 @@ export const FIXTURES: readonly Fixture[] = [
   },
 ];
 
-const dir = new URL("./fixtures/", import.meta.url);
+// __dirname, not import.meta: Playwright loads this module as CommonJS (CA-3).
+const dir = path.join(__dirname, "fixtures");
 
 export function fixtureBytes(file: string): Uint8Array {
-  return readFileSync(new URL(file, dir));
+  return readFileSync(path.join(dir, file));
 }
 
 export function fixtureText(name: string): string {
