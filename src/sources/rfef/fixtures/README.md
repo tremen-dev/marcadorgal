@@ -40,16 +40,19 @@ Kickoff local (Europe/Madrid, CEST = UTC+2). `parpadea` = `<span
 class=parpadea>` en la celda; enlace = `verPartido(acta)` (acta cerrada),
 `verPartidoEnJuego(acta)` o ninguno.
 
-| Partido (grupo) | Kickoff local | Captura | Marcador | `parpadea` | Enlace |
+| Partido (grupo) | Kickoff local | Capturas | Marcador | `parpadea` | Enlace |
 |---|---|---|---|---|---|
-| Málaga–Espanyol (Primera, 33836085) | VIE 09-10 21:00 | 21:25:36Z | 1-1 | no | `verPartido` |
-| Rayo–Athletic (Primera) | SÁB 10-10 14:00 | 21:25:36Z | «Suspendido» | no | `verPartido` |
-| Real Madrid–Villarreal (Primera) | SÁB 10-10 21:00 | 21:25:36Z … 21:47:34Z | 0-0 | **sí, hasta 21:47Z** (kickoff +167 min) | ninguno |
-| Celta Fortuna–Real Sociedad B (Segunda, 33836087) | SÁB 10-10 21:00 | 21:25:36Z, 21:33:30Z, 21:40:32Z | marcador | no (sí en `paneles-masculino`, 20:49Z) | ninguno |
-| Fabril–Racing Ferrol (Primera Fed., 33836089) | SÁB 10-10 16:30 | 21:25:36Z | 0-1 | no | `verPartido` |
-| Mirandés–Zamora (Primera Fed.) | SÁB 10-10 21:00 | 21:25:32Z … 21:28Z | marcador | sí | `verPartidoEnJuego` |
-| Atl. Arteixo–Somozas (Tercera, 26991073) | SÁB 10-10 17:02 | 21:25:36Z | marcador | no | ninguno |
-| Pontevedra B–Portonovo (Tercera) | SÁB 10-10 20:00 | 21:25:36Z | marcador | no | ninguno |
+| Málaga–Espanyol (Primera, 33836085) | VIE 09-10 21:00 | 20:49Z, 21:25:36Z | 1-1 | no | `verPartido` |
+| Rayo–Athletic (Primera) | SÁB 10-10 14:00 | 20:49Z, 21:25:36Z | «Suspendido» | no | `verPartido` |
+| Alavés–Atlético, Barcelona–Getafe (Primera) | SÁB 10-10 16:15, 18:30 | 20:49Z, 21:25:36Z | 1-2, 3-0 | no | `verPartido` |
+| Real Madrid–Villarreal (Primera) | SÁB 10-10 21:00 | de 20:49Z a 21:47:34Z (8 capturas) | 0-0 | **sí, también a las 21:47Z** (kickoff +167 min) | ninguno |
+| Celta Fortuna–Real Sociedad B (Segunda, 33836087) | SÁB 10-10 21:00 | 20:49Z | 3-0 | sí | ninguno |
+| Celta Fortuna–Real Sociedad B (Segunda) | SÁB 10-10 21:00 | de 21:25:32Z a 21:40:32Z | 4-1 | no | ninguno |
+| Fabril–Racing Ferrol (Primera Fed., 33836089) y otras tres | SÁB 10-10 16:30 … 20:00 | 20:49Z, 21:25:36Z | 0-1 … | no | `verPartido` |
+| Mirandés–Zamora (Primera Fed.) | SÁB 10-10 21:00 | de 20:49Z a 21:28Z | 1-1 | sí | `verPartidoEnJuego` |
+| Cinco partidos de Segunda Fed. G1 (33836092) | SÁB 10-10 12:30 … 18:30 | 20:49Z, 21:25:36Z | varios | no | `verPartido` |
+| Atl. Arteixo–Somozas (Tercera, 26991073) | SÁB 10-10 17:02 | 21:25:36Z | 2-2 | no | ninguno |
+| Pontevedra B–Portonovo (Tercera) | SÁB 10-10 20:00 | 21:25:36Z | 0-1 | no | ninguno |
 
 **Minuto:** ninguna captura del panel trae el minuto (ADR-017 §8.2). La ficha
 `NFG_CmpPartidoEnJuego` no está entre los fixtures.
