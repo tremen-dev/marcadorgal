@@ -23,10 +23,14 @@ registra: no habrá ninguna petición desde producción hasta la spec de alta.
 - **CA-1 Fixtures reales.** `src/sources/rfef/fixtures/` lleva las capturas de
   `EPIC-004/_qa/sondeo/` (paneles del 2026-10-10, 20:49Z a 21:47Z), sin recortar,
   como texto igual a `TextDecoder("iso-8859-15")` de los bytes. Un README indica
-  petición, `Date` del servidor y procedencia. Lleva además ≥ 1 captura de
-  `federacion=3` con un partido de Segunda o Tercera Federación **en juego** (H-4).
-  Sin ella, CA-1 queda ⚠️ y la spec no cierra. Si esa captura contradice la tabla
-  de ADR-017 §4 (p. ej., Tercera en juego sin `parpadea`), PARA y vuelve al gate.
+  petición, `Date` del servidor y procedencia. Además, el implementador elige de
+  la serie de campo del 2026-10-11 (H-4; crudo en bytes y cabeceras en
+  `<scratchpad>/campo-2026-10-11/`, fuera del repo) los fixtures que entran:
+  como mínimo, un partido de Segunda o Tercera Federación en juego, el paso de
+  juego a final y de final a acta cerrada, y un «Suspendido» o un «Aplazado» si
+  los hay. Se documentan en el README una tabla de marcas por partido y minuto
+  (`parpadea`, `verPartido`/`verPartidoEnJuego`) y si el panel trae el minuto.
+  Si la serie contradice la tabla de ADR-017 §4, PARA y vuelve al gate.
 - **CA-2 Decodificador.** Hay un caso por técnica con celdas reales copiadas de
   los fixtures: texto plano; `ntype` (`ntype("idh1286541",8,0,"fa-5")` → `3`, con
   señuelo `5`); `::after{content:"1"}` con señuelo; `::before{content:"\0031"}`;
@@ -51,8 +55,12 @@ registra: no habrá ninguna petición desde producción hasta la spec de alta.
   y con `capturedAt` variable, bordes incluidos: +99/+100 para `finished`;
   −11/−10 y +109/+110 para `live`. El kickoff se pasa de Europe/Madrid a UTC en
   horario de verano y de invierno, y el año se infiere en el cambio de año
-  (captura del 31-dic, fila «02 - 01»). Un `live` lleva `minute` y
-  `addedMinute` `null` y no lleva `halfTime`. Nunca hay `scheduled`. Una fila
+  (captura del 31-dic, fila «02 - 01»). Un `live` lleva `minute: null` y
+  `addedMinute: null`, salvo que la serie demuestre que el panel trae el minuto
+  (ADR-017 §8.2). En ese caso lo lleva, decodificado con las mismas garantías de
+  CA-3 y CA-4. «Suspendido» con marcador → `suspended` con ese marcador; sin
+  marcador → `skipped: suspended_without_score`, hasta la spec del motor
+  (ADR-017 §8.3). «Aplazado» → `postponed`. Nunca hay `scheduled`. Una fila
   `-` no aparece ni en `observations`, ni en `skipped`, ni en `unresolved`. Sin
   `observedAt`.
 - **CA-6 Identidad (ADR-017 §2).** Con un `alias-test.json` de fixtures y el
@@ -61,7 +69,8 @@ registra: no habrá ninguna petición desde producción hasta la spec de alta.
   nada; (iii) equipo sin alias → `unknown_team` con nombres externos; (iv) par
   sin partido → `unknown_match`; (v) jornada ≠ `round` → `inconsistent_alias`;
   (vi) `pontevedra c.f. "B"` y `Pontevedra C.F. "B"` resuelven igual. En el modelo,
-  `AliasFile.competitions` es opcional y `SkippedReason` gana `ambiguous_state`;
+  `AliasFile.competitions` es opcional y `SkippedReason` gana `ambiguous_state` y
+  `suspended_without_score`;
   `api-football.json` sigue validando.
 - **CA-7 Fetch.** Con `fetch` doble: (i) ventana vacía → 0 llamadas. (ii) GET a la
   portada con `redirect: "manual"`, `JSESSIONID` tomada de `set-cookie`, y un GET a
@@ -82,12 +91,15 @@ D-4, D-6, D-9; ADR-003, ADR-007 §6, ADR-008 §8, ADR-017.
 ## Fuera de alcance
 - El alias completo de los ~98 equipos, el registro con prioridad 50, la carga del
   calendario por el núcleo y el alta en el tick: son las specs siguientes.
-- Minuto y RN-04 entre bandas (ADR-017 H-1 y H-2): spec del motor.
+- Spec del motor (ADR-017 §8): RN-04 por bandas, minuto prestado y `suspended`
+  sin marcador (modelo, check de `decisions`, interfaz), que retira el
+  `suspended_without_score` de esta spec.
 - Latencia y cobertura en una jornada real.
 
 ## Notas para el gate humano
-- Se decide junto con ADR-017 y sus H-1..H-4. Lo que pide esta spec es H-4: la
-  captura de campo es la que valida `parpadea`.
+- H-1..H-4 están resueltas por el titular (ADR-017, 2026-10-10). Lo que esta spec
+  necesita de la serie de campo es validar `parpadea`, la marca de acta y el
+  minuto.
 - El oráculo de CA-3 es la garantía de «nunca un dígito equivocado»: lo que el
   parser lee de un fixture es lo que un navegador pinta, celda a celda.
 - Numeración: SPEC-031 y ADR-017 salen de este worktree. Si otra rama los usa
