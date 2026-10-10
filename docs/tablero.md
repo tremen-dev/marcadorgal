@@ -48,6 +48,7 @@ Actualizado: 2026-10-10
 | SPEC-011 — peticion-live-con-una-sola-competicion-y-errores-por-peticion-que-no-tiran-el-intento | hecho | 2026-09-23 (sdd-verificador) |
 | SPEC-015 — el-calendario-declarado-llega-tarde-a-la-jornada | en-revision | 2026-09-29 (sdd-implementador) |
 | SPEC-022 — test-db-no-toca-storage-de-produccion | hecho | 2026-10-08 (sdd-verificador) |
+| SPEC-030 — la-portada-sirve-una-instantanea-isr-antigua | borrador | 2026-10-10 (sdd-arquitecto) |
 
 ## EPIC-MANT — mantenimiento (borrador)
 
@@ -82,3 +83,4 @@ Actualizado: 2026-10-10
 
 - hecho: 26
 - en-revision: 3
+- borrador: 1
