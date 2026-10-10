@@ -174,3 +174,13 @@ describe("SPEC-023 B-3 formatCount", () => {
     expect(formatCount(templates, n)).toBe(text);
   });
 });
+
+// SPEC-028 CA-2: a sidebar anchor in the fragment is not filter state.
+describe("SPEC-028 CA-2 parseFragment ignores #xornada-<id>", () => {
+  it.each(["#xornada-primera-division", "#xornada-segunda-federacion-g1"])(
+    "%s → whole xornada, Todos",
+    (hash) => {
+      expect(parseFragment(hash, DAYS)).toEqual(EMPTY_STATE);
+    },
+  );
+});

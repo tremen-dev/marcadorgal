@@ -45,6 +45,13 @@ export const es: Dictionary = {
     // SPEC-027 CA-6: the arrows of the strip, to the neighbour weeks.
     previous: "Jornada anterior",
     next: "Jornada siguiente",
+    // SPEC-028 CA-4: the logo, back to the current xornada.
+    home: "marcador.gal, jornada actual",
+    // SPEC-028 CA-5, CA-6: the visible title, «Xornada · 10–12 out».
+    heading: "Jornada · {range}",
+    rangeOneDay: "{day} {month}",
+    rangeSameMonth: "{from}–{to} {month}",
+    rangeTwoMonths: "{from} {fromMonth} – {to} {toMonth}",
   },
   weekday: {
     mon: "lun",
