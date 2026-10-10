@@ -2,10 +2,11 @@
 id: SPEC-031
 tipo: spec
 epica: EPIC-004
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-10, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-11, por: Alberto Fojo}
 ---
 # SPEC-031 — Adaptador rfef: fetch con sesión, parser puro y decodificador cerrado sobre fixtures reales
 

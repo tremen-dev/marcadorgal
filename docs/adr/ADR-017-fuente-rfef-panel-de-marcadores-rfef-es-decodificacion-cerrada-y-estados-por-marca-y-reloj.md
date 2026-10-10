@@ -1,9 +1,11 @@
 ---
 id: ADR-017
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-10-10, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-11, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # ADR-017: Fuente rfef: panel de marcadores.rfef.es, decodificación cerrada y estados por marca y reloj
 
