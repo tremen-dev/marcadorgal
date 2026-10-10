@@ -131,9 +131,11 @@ Pendientes de especificar, con su procedencia:
   `alter role web_reader reset all` en `db:web-reader` y comprobar
   `pg_db_role_setting` vacío. Procedencia: F-SPEC-020-11 y V-6 de SPEC-020;
   a la cola por decisión del titular, 2026-10-08.
+  **→ especificado en SPEC-029 (2026-10-10): ya no está pendiente.**
 - **M-12 — pg_cron local podría apuntar a producción.** El job `ingest-tick`
   de la base local hace `net.http_post` a la URL de su Vault, hoy vacío; si
   alguien corre `cron:setup` contra la base local con el `.env` de producción,
   el Supabase local dispararía el tick de producción. Arreglo: que `cron:setup`
   se niegue con base loopback o que el job local use una URL inerte.
   Procedencia: fuera de alcance de SPEC-022, 2026-10-08.
+  **→ especificado en SPEC-029 (2026-10-10), CA-7: ya no está pendiente.**
