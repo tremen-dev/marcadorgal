@@ -33,6 +33,15 @@ Todas las respuestas con `Content-Type: text/html;charset=ISO-8859-15`.
 La cabecera `Date` iba ~124 s por delante del reloj local (ADR-017): no se usa
 como `capturedAt` sin corregir. En los tests, `capturedAt` es un parámetro.
 
+## Alias de prueba (CA-6)
+
+`alias-test.json` no es el alias real (lo trae una spec siguiente): mapea los
+cinco `codgrupo` y unos pocos equipos del panel de las 21:25:36Z, con tres
+errores **a propósito** para los casos de identidad: CP Cacereño sin alias
+(`unknown_team`), Barakaldo CF apuntando a `celta-c` (par sin partido:
+`unknown_match`) y CD Coria y CD Extremadura cruzados (el par existe en la
+jornada 26, no en la 7: `inconsistent_alias`).
+
 ## Marcas por partido y minuto
 
 Del sondeo (2026-10-10), filas con marcador de las cinco competiciones.
