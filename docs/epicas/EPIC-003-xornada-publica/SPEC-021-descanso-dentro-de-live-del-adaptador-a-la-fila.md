@@ -2,13 +2,14 @@
 id: SPEC-021
 tipo: spec
 epica: EPIC-003
-estado: en-revision
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-08, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-10-08, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-10-08, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-10-08, por: sdd-implementador}
+  - {estado: hecho, fecha: 2026-10-10, por: sdd-verificador}
 ---
 # SPEC-021 — Descanso dentro de live: del adaptador a la fila
 

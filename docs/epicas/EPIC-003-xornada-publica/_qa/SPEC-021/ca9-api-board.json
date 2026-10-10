@@ -1,0 +1,33 @@
+{
+  "capturado": "2026-10-10T15:07:59.119Z",
+  "descanso": [
+    {
+      "status": "live",
+      "score": {
+        "home": 1,
+        "away": 1
+      },
+      "minute": 45,
+      "addedMinute": null,
+      "halfTime": true,
+      "matchId": "primera-division-2026-27-j8-alaves-atletico-madrid",
+      "competitionId": "primera-division",
+      "competitionName": "Primeira División",
+      "tier": 1,
+      "round": 8,
+      "kickoff": "2026-10-10T14:15:00.000Z",
+      "home": {
+        "name": "Deportivo Alavés",
+        "shortName": "Alavés"
+      },
+      "away": {
+        "name": "Atlético de Madrid",
+        "shortName": "Atlético"
+      },
+      "qualifier": "provisional",
+      "version": 54,
+      "observedAt": "2026-10-10T15:07:06.409Z",
+      "decidedAt": "2026-10-10T15:07:06.409Z"
+    }
+  ]
+}

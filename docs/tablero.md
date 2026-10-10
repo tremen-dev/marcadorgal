@@ -33,7 +33,7 @@ Actualizado: 2026-10-10
 |---|---|---|
 | SPEC-019 — pantalla-xornada-movil-filas-estados-y-cualificadores-sobre-datos-de-demostracion | hecho | 2026-10-06 (sdd-verificador) |
 | SPEC-020 — lectura-publica-y-snapshot-de-la-xornada-actual | hecho | 2026-10-08 (sdd-verificador) |
-| SPEC-021 — descanso-dentro-de-live-del-adaptador-a-la-fila | en-revision | 2026-10-08 (sdd-implementador) |
+| SPEC-021 — descanso-dentro-de-live-del-adaptador-a-la-fila | hecho | 2026-10-10 (sdd-verificador) |
 | SPEC-023 — escritorio-tira-de-dias-filtros-y-plegar-competicion | hecho | 2026-10-08 (sdd-verificador) |
 | SPEC-024 — realtime-fallback-y-frescura | hecho | 2026-10-09 (sdd-verificador) |
 | SPEC-025 — medicion-de-latencia-gol-pantalla-con-segundo-reloj-y-sonda-sintetica | en-revision | 2026-10-09 (sdd-implementador) |
@@ -80,5 +80,5 @@ Actualizado: 2026-10-10
 
 ## Resumen
 
-- hecho: 25
-- en-revision: 4
+- hecho: 26
+- en-revision: 3
