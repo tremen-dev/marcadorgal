@@ -2,10 +2,11 @@
 id: SPEC-028
 tipo: spec
 epica: EPIC-003
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-10, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-10, por: Alberto Fojo}
 ---
 # SPEC-028 — Mejoras de navegación: lateral, logo y título de la xornada
 
@@ -57,3 +58,4 @@ SPEC-027 H-1); cambiar la tira o las flechas.
 - **H-7 Texto: «Xornada · primer–último día con partidos»**, igual en todas las semanas. Recomendado. Alternativas: la ventana martes–lunes («6–12 out», incluye días sin partidos y confunde); añadir «esta semana» / «pasada» (más texto; el logo ya devuelve a la actual). Efecto: un `live` de otra ronda en la portada alarga el rango, igual que la tira (SPEC-023 CA-1).
 - **N-1** Hoy nada es `sticky` arriba; el `scroll-margin-top` de CA-1 deja holgura y protege el salto si algún día lo hay.
 - **N-2** Hasta hidratar, pulsar el lateral hace el salto nativo (CA-2) y pone `#xornada-<id>`; es inofensivo.
+- **Decididas por el titular (Alberto Fojo, 2026-10-10):** H-1..H-5 y H-7 según recomendación; H-4 = sí, lateral sticky en escritorio; **H-6 = opción A** (título como pestaña activa: barra superior en escritorio, franja de 42 px entre la tira y los filtros en móvil). Spec aprobada.
