@@ -1,0 +1,61 @@
+{
+  "capturado": "2026-10-10T15:10:25.526Z",
+  "descanso": [
+    {
+      "status": "live",
+      "score": {
+        "home": 1,
+        "away": 1
+      },
+      "minute": 45,
+      "addedMinute": null,
+      "halfTime": true,
+      "matchId": "primera-division-2026-27-j8-alaves-atletico-madrid",
+      "competitionId": "primera-division",
+      "competitionName": "Primeira División",
+      "tier": 1,
+      "round": 8,
+      "kickoff": "2026-10-10T14:15:00.000Z",
+      "home": {
+        "name": "Deportivo Alavés",
+        "shortName": "Alavés"
+      },
+      "away": {
+        "name": "Atlético de Madrid",
+        "shortName": "Atlético"
+      },
+      "qualifier": "provisional",
+      "version": 54,
+      "observedAt": "2026-10-10T15:07:06.409Z",
+      "decidedAt": "2026-10-10T15:07:06.409Z"
+    },
+    {
+      "status": "live",
+      "score": {
+        "home": 1,
+        "away": 1
+      },
+      "minute": 45,
+      "addedMinute": null,
+      "halfTime": true,
+      "matchId": "segunda-division-2026-27-j9-ceuta-sabadell",
+      "competitionId": "segunda-division",
+      "competitionName": "Segunda División",
+      "tier": 2,
+      "round": 9,
+      "kickoff": "2026-10-10T14:15:00.000Z",
+      "home": {
+        "name": "AD Ceuta",
+        "shortName": "Ceuta"
+      },
+      "away": {
+        "name": "CE Sabadell",
+        "shortName": "Sabadell"
+      },
+      "qualifier": "provisional",
+      "version": 56,
+      "observedAt": "2026-10-10T15:08:40.071Z",
+      "decidedAt": "2026-10-10T15:08:40.071Z"
+    }
+  ]
+}

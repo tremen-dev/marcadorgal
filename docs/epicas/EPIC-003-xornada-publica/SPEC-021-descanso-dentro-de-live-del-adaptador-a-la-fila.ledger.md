@@ -23,10 +23,13 @@ epica: EPIC-003
 | CA-6 | `src/model/public.ts`, `src/board/row.ts`, `tools/e2e-db-seed.mjs` | `public.test.ts` «SPEC-021 CA-6…»; `row.test.ts` «SPEC-021 CA-6 half_time to halfTime» (sin clave → omitida + console.error); `reader.db.test.ts` semilla `t-live-half-time`; `http.test.ts` «SPEC-021 CA-6: returns halfTime…»; `e2e/xornada.db.spec.ts` «SPEC-021 /api/board carries halfTime…» | `public.test.ts` estricto; `row.test.ts` sin clave → omitida + `console.error`; `reader.db.test.ts`; `/api/board` local: `tercera-rfef-g1-…-arteixo-somozas` `halfTime: true`, resto `live` `false` | ✅ |
 | CA-7 | `src/xornada/view.ts`, `src/xornada/demo.ts`, `src/components/xornada/MatchRow.tsx`, `src/i18n/{gl,es}.ts` | `view.test.ts` «SPEC-021 CA-7 half-time in the view»; `demo.test.ts`; `i18n.test.ts`; `e2e/xornada.spec.ts` «SPEC-021 CA-7 half-time row at 360/390px» (gl y es) | Playwright propio 360/390 gl/es en `/demo/xornada`, `/`, `/es`: margen «Descanso» sin `'` ni punto (innerHTML solo texto), `data-status=live`, píldora cuenta (Segunda 3 = 2 descanso + 1), ember/rojo `sen_sinal`, sin overflow ni scroll horizontal, sin `DESC` | ✅ |
 | CA-8 | — | `npm run gates` exit 0 (1105 tests); `npm run e2e` 38 passed; `npm run e2e:db` 7 passed, 1 skipped (capturas); `test:db` local 158 passed; sin dependencias nuevas; `git diff 075ac90 -- src/decide/fixtures package.json package-lock.json` vacío | `gates` exit 0 (1105); `e2e` 38 passed; `e2e:db` 7 passed 1 skipped (×2); `test:db` 158; sin deps; sin hex ni `font:` en el diff | ✅ |
-| CA-9 | pendiente (tras N-1) | ver «Cómo retomar» | no verificable antes de N-1 y de una jornada real | ❌ pendiente |
+| CA-9 | pendiente (tras N-1) | ver «Cómo retomar» | 2026-10-10, producción, solo lectura. SQL (`begin read only`): `decisions where half_time and decided_at >= '2026-10-10'` → 3 filas `live` minuto 45: `primera-division-2026-27-j8-alaves-atletico-madrid` v54 15:07:06Z, `segunda-division-2026-27-j9-ceuta-sabadell` v56 15:08:40Z, `segunda-rfef-g1-2026-27-j6-eibar-b-basconia` v51 11:18:25Z (antes: `primera-division-2026-27-j8-malaga-espanyol` 2026-10-09 19:47:53Z). `curl https://marcador.gal/api/board` 15:11:50Z → 200, Alavés-Atlético y Ceuta-Sabadell `live` 1-1 `minute` 45 `halfTime: true`, los otros dos `live` con `false` (`ca9-api-board-verificador.json`; del orquestador `ca9-api-board.json`, `ca9-api-board-2.json`). Captura de `/` tras polling: «Descanso · provisional» en ambas filas, sin minuto, píldora «En xogo 4» | ✅ |
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
+**GREEN — 2026-10-10.** CA-9 ✅ con evidencia de campo (SQL, `/api/board` y captura de `/`); CA-1..CA-9 ✅. Spec a `hecho`.
+- Observación (fuera de SPEC-021): la primera pintura de `/` servía HTML de las 13:57Z («Actualizado ás 15:57» Madrid) con Alavés-Atlético aún «16:15 Programado» (`ca9-descanso-produccion.png`, `ca9-fila.txt`); solo el polling trajo el descanso. Caché ISR de `/`: destino otra spec / EPIC-MEJORA.
+
 **GREEN condicionado — 2026-10-08.** CA-1..CA-8 ✅ con evidencia propia; CA-9 ❌ pendiente de N-1 y de una jornada real: la spec queda en `en-revision` hasta recogerla.
 - N-1 correcto y seguro: la suite de `origin/main` corre contra la base local migrada (insert sin `half_time` → `false`; lector por nombre ignora la columna; `create or replace view` conserva owner y grants). Añadir antes del paso 2 `npm run db:push -- --dry-run` y comprobar que solo lista `20261008120000_spec021_half_time.sql`.
 - F-SPEC-021-3 (preexistente, fuera de alcance; destino EPIC-MEJORA): `npm run test:db` con `DATABASE_URL` local sigue leyendo `NEXT_PUBLIC_SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY` del `.env` (producción): `src/raw/store.db.test.ts` crea y borra `test/<uuid>.json.gz` en el bucket remoto. En esta verificación ocurrió una vez (put, get, remove; el test confirma el borrado).
@@ -36,6 +39,8 @@ epica: EPIC-003
 | CA | Captura (sobre `/demo/xornada`, sección Segunda División) |
 |---|---|
 | CA-7 | `_qa/SPEC-021/descanso-gl-360.png`, `descanso-gl-390.png`, `descanso-es-360.png`, `descanso-es-390.png` |
+
+| CA-9 | `_qa/SPEC-021/ca9-descanso-produccion-tras-polling.png` (`/` producción tras 45 s de polling, «Descanso» en Alavés-Atlético y Ceuta-Sabadell); `ca9-descanso-produccion.png` + `ca9-fila.txt` (primera pintura con HTML en caché, observación); `ca9-api-board*.json` |
 
 Generadas con `QA_CAPTURE_DIR=$PWD/docs/epicas/EPIC-003-xornada-publica/_qa/SPEC-021 npm run e2e`.
 
