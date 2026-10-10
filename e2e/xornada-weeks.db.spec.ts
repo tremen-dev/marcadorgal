@@ -185,9 +185,10 @@ for (const { lang, prefix, home: homePath, dict } of LANGS) {
       if (live.length === 0)
         await expect(page.getByTestId("xornada-empty")).toBeVisible();
       await page.getByTestId("filter-all").click();
-      // SPEC-023 CA-5: folding from the sidebar hides the rows, not the head.
+      // SPEC-023 CA-5: folding from the header hides the rows, not the head
+      // (SPEC-028: the sidebar no longer folds).
       const section = page.locator("section[data-competition]").first();
-      await page.getByTestId("sidebar-entry").first().click();
+      await section.getByTestId("competition-head").click();
       await expect(
         section.getByTestId("match-row").filter({ visible: true }),
       ).toHaveCount(0);

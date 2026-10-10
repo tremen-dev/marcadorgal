@@ -238,7 +238,7 @@ test("CA-5 on: folded competition and #f=live; a Decision to finished leaves the
     )
     .first()
     .getAttribute("data-competition");
-  await page.locator(`[data-competition-toggle="${other}"]`).click();
+  await page.locator(`#rows-${other} summary`).click();
   await expect(page.locator(`#rows-${other}`)).not.toHaveAttribute("open");
   const live = Number(await page.locator('[data-count="live"]').textContent());
   await decide(id, { status: "finished", home: 2, away: 1, minute: null });

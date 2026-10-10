@@ -244,10 +244,8 @@ for (const route of [
       await expect(page.getByTestId("match-row")).toHaveCount(LIST.length);
       await expect.poll(() => visibleIds(page)).toEqual(["a1", "a2", "b1"]);
       await expect(page.locator('[data-count="live"]')).toHaveText("3");
-      // Fold Segunda from the sidebar.
-      await page
-        .locator('[data-competition-toggle="segunda-division"]')
-        .click();
+      // Fold Segunda from its header (SPEC-028: the sidebar no longer folds).
+      await page.locator("#rows-segunda-division summary").click();
       await expect(page.locator("#rows-segunda-division")).not.toHaveAttribute(
         "open",
       );
@@ -266,6 +264,47 @@ for (const route of [
         "open",
       );
       expect(new URL(page.url()).hash).toBe("#f=live");
+    });
+
+    // SPEC-028 CA-6: the visible title follows the days the client paints.
+    test("SPEC-028 CA-6: the title follows the repainted days", async ({
+      page,
+    }) => {
+      // A scheduled match on Sunday: no score, no minute, no live-only keys.
+      const { addedMinute, halfTime, ...base } = match(
+        "c1",
+        "segunda-division",
+        1,
+        { kickoff: "2026-10-11T16:00:00.000Z" },
+      );
+      void addedMinute;
+      void halfTime;
+      const sunday = {
+        ...base,
+        status: "scheduled",
+        score: null,
+        minute: null,
+      };
+      await routeBoard(page, [
+        { status: 200, etag: '"one"', matches: LIST },
+        { status: 200, etag: '"two"', matches: [...LIST, sunday] },
+      ]);
+      await page.clock.install({ time: NOW });
+      await page.goto(route.path);
+      const h1 = page.locator("h1");
+      // Served unavailable (no reader in CI): the title alone.
+      await expect(h1).toHaveText(route.dict.xornada.title);
+      await started(page);
+      await page.clock.runFor(POLL);
+      const month = route.dict.month.oct;
+      await expect(h1).toHaveText(
+        route.dict.xornada.heading.replace("{range}", `10 ${month}`),
+      );
+      await page.clock.runFor(POLL);
+      await expect(h1).toHaveText(
+        route.dict.xornada.heading.replace("{range}", `10–11 ${month}`),
+      );
+      await expect(h1).toHaveCount(1);
     });
 
     for (const width of [360, 390, 1024, 1440]) {

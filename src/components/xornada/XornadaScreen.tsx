@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { Neighbours } from "@/board/weeks";
-import { LOCALES, type Locale, t } from "@/i18n";
+import type { Locale } from "@/i18n";
 import type { XornadaCompetition, XornadaDay } from "@/xornada/view";
 import styles from "./Xornada.module.css";
 import { XornadaBody } from "./XornadaBody";
@@ -39,39 +39,6 @@ export function XornadaScreen({
   const hasRows = competitions.some((c) => c.rows.length > 0);
   return (
     <div className={styles.page} data-xornada>
-      <header className={styles.bar}>
-        <span className={styles.logo}>
-          marcador<span className={styles.mark}>▮</span>gal
-        </span>
-        <span className={styles.spacer} />
-        <nav
-          className={styles.locales}
-          aria-label={t(locale, "xornada.locale")}
-          data-testid="locale-switch"
-        >
-          {LOCALES.map((other, i) => (
-            <span key={other}>
-              {i > 0 && (
-                <span className={styles.localeDot} aria-hidden="true">
-                  ·
-                </span>
-              )}
-              <a
-                className={
-                  other === locale ? styles.localeCurrent : styles.locale
-                }
-                href={paths[other]}
-                hrefLang={other}
-                lang={other}
-                aria-current={other === locale ? "page" : undefined}
-                data-locale-href={paths[other]}
-              >
-                {t(locale, `locales.${other}`)}
-              </a>
-            </span>
-          ))}
-        </nav>
-      </header>
       {live === undefined ? (
         <XornadaBody
           locale={locale}

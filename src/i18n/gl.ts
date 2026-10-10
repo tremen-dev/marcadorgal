@@ -48,6 +48,13 @@ export const gl = {
     // SPEC-027 CA-6: the arrows of the strip, to the neighbour weeks.
     previous: "Xornada anterior",
     next: "Xornada seguinte",
+    // SPEC-028 CA-4: the logo, back to the current xornada.
+    home: "marcador.gal, xornada actual",
+    // SPEC-028 CA-5, CA-6: the visible title, «Xornada · 10–12 out».
+    heading: "Xornada · {range}",
+    rangeOneDay: "{day} {month}",
+    rangeSameMonth: "{from}–{to} {month}",
+    rangeTwoMonths: "{from} {fromMonth} – {to} {toMonth}",
   },
   weekday: {
     mon: "lun",

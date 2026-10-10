@@ -5,8 +5,10 @@ import { countFilters } from "@/xornada/filter";
 import type { XornadaCompetition, XornadaDay } from "@/xornada/view";
 import { CompetitionNav } from "./CompetitionNav";
 import { CompetitionSection } from "./CompetitionSection";
+import { xornadaHeading } from "./labels";
 import styles from "./Xornada.module.css";
 import { DayStrip, FilterPills } from "./XornadaControls";
+import { XornadaHeader } from "./XornadaHeader";
 
 // The controls, the sidebar and the sections of the screen. Rendered on the
 // server for the demos and by XornadaLive (SPEC-024 H-1) for / and /es, with
@@ -41,6 +43,15 @@ export function XornadaBody({
   const hasRows = rows.length > 0;
   return (
     <>
+      {/* SPEC-028 CA-6: rendered here, so the client's repaint (SPEC-024)
+          keeps the title in step with the days. */}
+      <XornadaHeader
+        locale={locale}
+        paths={paths}
+        heading={xornadaHeading(days, locale)}
+        strip={hasRows}
+      />
+      {!hasRows && <div className={styles.titleSpace} />}
       {hasRows && (
         <div className={styles.controls}>
           <DayStrip days={days} locale={locale} arrows={arrows} />
@@ -56,7 +67,6 @@ export function XornadaBody({
           <CompetitionNav competitions={competitions} locale={locale} />
         )}
         <main className={styles.main}>
-          <h1 className={styles.srOnly}>{t(locale, "xornada.title")}</h1>
           {freshness}
           {unavailable && (
             <p className={styles.unavailable} data-testid="xornada-unavailable">

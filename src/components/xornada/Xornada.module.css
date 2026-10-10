@@ -261,12 +261,20 @@ a.weekArrow:focus-visible {
 }
 
 .bar {
+  position: relative;
   height: var(--bar-mobile-header);
   display: flex;
   align-items: center;
   gap: var(--space-8);
   padding: 0 14px;
   border-bottom: var(--hairline) solid var(--line);
+}
+
+/* SPEC-028 CA-4: the logo is a link with the same look; no underline, the
+   global focus ring. */
+.logo,
+.logo:hover {
+  text-decoration: none;
 }
 
 .logo {
@@ -281,6 +289,52 @@ a.weekArrow:focus-visible {
 
 .mark {
   color: var(--marca);
+}
+
+/* SPEC-028 CA-6 (H-6 = A): the one <h1>, visible. Mobile: the 42 px row of
+   Movil.tpl.html's segment (barMobileSegment), between the strip and the
+   filters. It lives in the header (the client repaints it with the days) and
+   is placed under the strip: every bar above it has a fixed height. */
+.title {
+  position: absolute;
+  top: calc(100% + var(--hairline));
+  left: 0;
+  right: 0;
+  height: var(--bar-mobile-segment);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  border-bottom: var(--hairline) solid var(--line);
+}
+
+.bar[data-strip] .title {
+  top: calc(100% + var(--hairline) + var(--bar-mobile-days));
+}
+
+/* The active tab of Escritorio.tpl.html: sans 600 13 px, 2 px brand
+   underline inside. Decoration only: the title is the text. D-2: it wraps,
+   never truncates. */
+.titleText {
+  min-width: 0;
+  padding-bottom: 4px;
+  box-shadow: inset 0 -2px 0 var(--marca);
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--fg);
+  overflow-wrap: break-word;
+}
+
+/* The title row's room on mobile: under the strip (before the filters) or,
+   with no strip, under the header. */
+.controls .filters {
+  margin-top: var(--bar-mobile-segment);
+}
+
+.titleSpace {
+  height: var(--bar-mobile-segment);
 }
 
 .spacer {
@@ -329,8 +383,11 @@ a.weekArrow:focus-visible {
   padding: 0;
 }
 
+/* SPEC-028 CA-1: room above a header the sidebar jumps to, so nothing on
+   top (today nothing is sticky there, N-1) ever covers it. */
 .competition {
   margin: 0;
+  scroll-margin-top: var(--space-16);
 }
 
 /* SPEC-023 CA-5: the header is the <summary> of its <details>. */
@@ -376,9 +433,7 @@ a.weekArrow:focus-visible {
 }
 
 .details:not([open]) .arrowOpen,
-.details[open] .arrowClosed,
-.navEntry[aria-expanded="false"] .arrowOpen,
-.navEntry:not([aria-expanded="false"]) .arrowClosed {
+.details[open] .arrowClosed {
   display: none;
 }
 
@@ -607,6 +662,22 @@ a.weekArrow:focus-visible {
     font-size: 21px;
   }
 
+  /* In the header, 28 px after the logo (8 of gap + 20). */
+  .title,
+  .bar[data-strip] .title {
+    position: static;
+    height: auto;
+    flex: 0 1 auto;
+    min-width: 0;
+    margin-left: 20px;
+    padding: 0;
+    border-bottom: 0;
+  }
+
+  .titleSpace {
+    display: none;
+  }
+
   .controls {
     height: var(--bar-desktop-filter);
     flex-direction: row;
@@ -655,9 +726,11 @@ a.weekArrow:focus-visible {
     font-size: 15px;
   }
 
-  .filters {
+  .filters,
+  .controls .filters {
     min-height: 0;
     flex-wrap: nowrap;
+    margin-top: 0;
     margin-left: auto;
     padding: 0;
     border-bottom: 0;
@@ -672,7 +745,14 @@ a.weekArrow:focus-visible {
     align-items: stretch;
   }
 
+  /* SPEC-028 CA-3 (H-4): always at hand; taller than the viewport, it
+     scrolls inside itself. */
   .sidebar {
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    max-height: 100dvh;
+    overflow-y: auto;
     display: block;
     width: var(--sidebar);
     flex: none;
@@ -683,6 +763,12 @@ a.weekArrow:focus-visible {
   .main {
     flex: 1;
     max-width: 832px;
+  }
+
+  /* The divider runs the whole column, over the sidebar's own edge. */
+  .sidebar + .main {
+    margin-left: calc(-1 * var(--hairline));
+    border-left: var(--hairline) solid var(--line);
   }
 
   .head {

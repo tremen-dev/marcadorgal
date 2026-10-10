@@ -14,12 +14,13 @@ import {
   type XornadaFilter,
   type XornadaState,
 } from "@/xornada/filter";
+import { detailsId, sectionId } from "./CompetitionSection";
 
 // SPEC-023 CA-6 (amended by SPEC-024 H-1): the filter component of the
 // screen, next to XornadaLive. It renders nothing: it reads the fragment and
 // hides rows and sections with `hidden` over the rendered HTML, keeps the
-// links' fragments in step and folds a competition from the sidebar. Without
-// JavaScript the HTML is the whole xornada.
+// links' fragments in step and takes the sidebar to its competition
+// (SPEC-028 CA-1). Without JavaScript the HTML is the whole xornada.
 
 // SPEC-024 CA-5: XornadaLive fires it after every repaint; the fragment is
 // applied again and stays as it is.
@@ -87,6 +88,17 @@ function apply(root: HTMLElement, state: XornadaState): void {
     }
   }
 
+  // SPEC-028 CA-3 (H-3): a sidebar entry goes with its section.
+  for (const entry of root.querySelectorAll<HTMLElement>(
+    "a[data-competition-link]",
+  )) {
+    const section = document.getElementById(
+      sectionId(entry.dataset.competitionLink ?? ""),
+    );
+    const item = entry.closest("li");
+    if (item) item.hidden = section?.hidden ?? false;
+  }
+
   const empty = root.querySelector<HTMLElement>("[data-xornada-empty]");
   if (empty) empty.hidden = anyVisible;
 
@@ -119,6 +131,22 @@ function apply(root: HTMLElement, state: XornadaState): void {
   }
 }
 
+// SPEC-028 CA-1 (H-1, H-2): open the competition (never fold it), scroll to
+// it and focus its header. The URL stays as it is: no anchor in the
+// fragment, no history entry; day and filter stay applied.
+function goTo(competitionId: string): void {
+  const section = document.getElementById(sectionId(competitionId));
+  const details = document.getElementById(detailsId(competitionId));
+  if (!section) return;
+  if (details instanceof HTMLDetailsElement) details.open = true;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  section.scrollIntoView({
+    behavior: reduce ? "instant" : "smooth",
+    block: "start",
+  });
+  section.querySelector<HTMLElement>("summary")?.focus({ preventScroll: true });
+}
+
 export function XornadaFilters() {
   useEffect(() => {
     const root = document.querySelector<HTMLElement>("[data-xornada]");
@@ -145,15 +173,12 @@ export function XornadaFilters() {
       )
         return;
       const link = (event.target as Element | null)?.closest<HTMLElement>(
-        "a[data-day-link], a[data-filter-link], a[data-competition-toggle]",
+        "a[data-day-link], a[data-filter-link], a[data-competition-link]",
       );
       if (!link || !root.contains(link)) return;
       event.preventDefault();
-      if (link.dataset.competitionToggle !== undefined) {
-        const details = document.getElementById(
-          link.getAttribute("aria-controls") ?? "",
-        );
-        if (details instanceof HTMLDetailsElement) details.open = !details.open;
+      if (link.dataset.competitionLink !== undefined) {
+        goTo(link.dataset.competitionLink);
         return;
       }
       const next =
@@ -170,26 +195,12 @@ export function XornadaFilters() {
       set(next);
     };
 
-    // Folding from the summary or the sidebar keeps the sidebar in step.
-    const onToggle = (event: Event) => {
-      const details = event.target;
-      if (!(details instanceof HTMLDetailsElement)) return;
-      for (const entry of root.querySelectorAll<HTMLElement>(
-        "a[data-competition-toggle]",
-      )) {
-        if (entry.getAttribute("aria-controls") === details.id)
-          entry.setAttribute("aria-expanded", String(details.open));
-      }
-    };
-
     root.addEventListener("click", onClick);
-    root.addEventListener("toggle", onToggle, true);
     window.addEventListener("hashchange", fromHash);
     document.addEventListener(REPAINT_EVENT, fromHash);
     fromHash();
     return () => {
       root.removeEventListener("click", onClick);
-      root.removeEventListener("toggle", onToggle, true);
       window.removeEventListener("hashchange", fromHash);
       document.removeEventListener(REPAINT_EVENT, fromHash);
     };
