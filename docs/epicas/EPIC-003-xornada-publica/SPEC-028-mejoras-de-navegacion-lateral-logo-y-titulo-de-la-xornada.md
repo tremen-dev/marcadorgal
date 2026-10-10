@@ -2,11 +2,13 @@
 id: SPEC-028
 tipo: spec
 epica: EPIC-003
-estado: aprobada
+estado: en-revision
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-10, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-10-10, por: Alberto Fojo}
+  - {estado: en-progreso, fecha: 2026-10-10, por: sdd-implementador}
+  - {estado: en-revision, fecha: 2026-10-10, por: sdd-implementador}
 ---
 # SPEC-028 — Mejoras de navegación: lateral, logo y título de la xornada
 
