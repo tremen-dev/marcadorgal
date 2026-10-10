@@ -4,8 +4,13 @@ import { mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import type { Sql } from "postgres";
 import { describe, expect, it } from "vitest";
-import { parseWebReaderPassword, scramVerifier } from "./web-reader";
+import {
+  parseWebReaderPassword,
+  resetWebReaderSettings,
+  scramVerifier,
+} from "./web-reader";
 
 const PASSWORD = "0f3a9c2e7b5d41e8a6c09b7d3e1f2a4c";
 
@@ -110,5 +115,36 @@ describe("SPEC-020 CA-3 .env.example", () => {
     );
     expect(example).toMatch(/^DATABASE_URL_PUBLIC=$/m);
     expect(example).toMatch(/^WEB_READER_PASSWORD=$/m);
+  });
+});
+
+// SPEC-029 CA-2: a row of web_reader that survives the reset fails the
+// command, and the error names no setting nor value.
+describe("SPEC-029 CA-2 resetWebReaderSettings", () => {
+  const fakeSql = (left: number, statements: string[]) => {
+    const run = (text: string) => {
+      statements.push(text);
+      if (text.includes("count(*)")) return Promise.resolve([{ count: left }]);
+      if (text.includes("setdatabase"))
+        return Promise.resolve([{ datname: "postgres" }]);
+      return Promise.resolve([]);
+    };
+    const sql = (strings: TemplateStringsArray) => run(strings.join("?"));
+    return Object.assign(sql, { unsafe: run }) as unknown as Sql;
+  };
+
+  it("resets globally and in every database with a row", async () => {
+    const statements: string[] = [];
+    await resetWebReaderSettings(fakeSql(0, statements));
+    expect(statements).toContain("alter role web_reader reset all");
+    expect(statements).toContain(
+      'alter role web_reader in database "postgres" reset all',
+    );
+  });
+
+  it("throws when a row is left, without values", async () => {
+    await expect(resetWebReaderSettings(fakeSql(1, []))).rejects.toThrow(
+      "web_reader: quedan 1 ajustes en pg_db_role_setting",
+    );
   });
 });
