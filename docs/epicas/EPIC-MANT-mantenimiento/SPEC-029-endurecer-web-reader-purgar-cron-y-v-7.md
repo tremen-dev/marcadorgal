@@ -2,10 +2,11 @@
 id: SPEC-029
 tipo: spec
 epica: EPIC-MANT
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-10, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-10, por: Alberto Fojo}
 ---
 # SPEC-029 — Endurecer web_reader, purgar cron y V-7
 
@@ -112,3 +113,4 @@ ADR-015 §1; reducir `net._http_response` (pg_net ya poda); `VACUUM FULL`; M-9.
   db:web-reader` con la contraseña vigente; 4) el titular, solo lectura: `select
   jobname, schedule, active from cron.job`, al día siguiente `select
   min(start_time) from cron.job_run_details` y `npm run tick:salud`.
+- **Decididas por el titular (Alberto Fojo, 2026-10-10):** H-1 = A (lock `try` y saltar la vuelta); H-2..H-5 según recomendación. Spec aprobada.
