@@ -212,6 +212,7 @@ export function XornadaLive({
             realtime,
             mode: snapshot.mode,
             offline: snapshot.offline,
+            started,
           })}
         />
       }

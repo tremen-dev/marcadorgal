@@ -127,3 +127,30 @@ describe("SPEC-027 CA-5 snapshotFreshness (a week page, never live)", () => {
     expect(snapshotFreshness(served, now)).toEqual(out);
   });
 });
+
+// SPEC-029 CA-6 (V-7, H-5): before the transport has loaded the screen is the
+// served snapshot, and nothing is announced: «Sen tempo real» flashed ~15 ms on
+// every load with the switch on.
+describe("SPEC-029 CA-6 transportNotice before started", () => {
+  it("says nothing while the transport has not started", () => {
+    expect(
+      transportNotice({
+        realtime: true,
+        mode: "polling",
+        offline: false,
+        started: false,
+      }),
+    ).toBeNull();
+  });
+
+  it("says freshness.polling once started", () => {
+    expect(
+      transportNotice({
+        realtime: true,
+        mode: "polling",
+        offline: false,
+        started: true,
+      }),
+    ).toBe("freshness.polling");
+  });
+});

@@ -42,11 +42,16 @@ export type TransportNoticeKey = "freshness.offline" | "freshness.polling";
 
 // H-5: words, never a status colour. With the switch off polling is the
 // normal mode and is not announced; without connection it is said in both.
+// SPEC-029 CA-6 (V-7): while the transport has not loaded (`started` false)
+// the screen is the served snapshot and nothing is announced. The page passes
+// it; the transport, which only exists once started, may leave it out.
 export function transportNotice(state: {
   realtime: boolean;
   mode: TransportMode;
   offline: boolean;
+  started?: boolean;
 }): TransportNoticeKey | null {
+  if (state.started === false) return null;
   if (state.offline) return "freshness.offline";
   if (state.realtime && state.mode === "polling") return "freshness.polling";
   return null;
