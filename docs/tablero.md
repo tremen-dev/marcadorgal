@@ -39,6 +39,7 @@ Actualizado: 2026-10-10
 | SPEC-025 — medicion-de-latencia-gol-pantalla-con-segundo-reloj-y-sonda-sintetica | en-revision | 2026-10-09 (sdd-implementador) |
 | SPEC-026 — primera-pintura-en-movil-con-3g | en-revision | 2026-10-09 (sdd-implementador) |
 | SPEC-027 — navegar-entre-xornadas | hecho | 2026-10-10 (sdd-verificador) |
+| SPEC-028 — mejoras-de-navegacion-lateral-logo-y-titulo-de-la-xornada | aprobada | 2026-10-10 (Alberto Fojo) |
 
 ## EPIC-FIX (aprobada)
 
@@ -80,3 +81,4 @@ Actualizado: 2026-10-10
 
 - hecho: 23
 - en-revision: 4
+- aprobada: 1
