@@ -22,7 +22,9 @@ const ORIGIN = "https://marcadores.rfef.es";
 for (const fixture of FIXTURES) {
   test(`CA-3 oracle: ${fixture.name}`, async ({ page }) => {
     const url = `${ORIGIN}/oracle/${fixture.file}`;
-    const charset = fixture.file.endsWith(".raw") ? "ISO-8859-15" : "utf-8";
+    const charset = /\.raw(\.gz)?$/.test(fixture.file)
+      ? "ISO-8859-15"
+      : "utf-8";
     const aborted: string[] = [];
     await page.route("**/*", (route) => {
       if (route.request().url() === url)

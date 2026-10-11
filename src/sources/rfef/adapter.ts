@@ -20,9 +20,11 @@ import { rowState } from "./state.ts";
 
 const ORIGIN = "https://marcadores.rfef.es";
 export const PORTADA_URL = `${ORIGIN}/pnfg/`;
-// ADR-017 §1: one GET with the parameters in the url, the five competitions
-// (and Copa and juveniles) of federacion=3.
-export const PANEL_URL = `${ORIGIN}/pnfg/NPcd/NFG_CMP_Paneles?cod_primaria=3001668&grupo_categoria=900163685,900163686&resultados=1&columna=1&extendido=1&no_paginacion=1&tipo_peticion=1&federacion=3`;
+// ADR-018 §1 (supersedes ADR-017 §1): one POST, the query of ADR-017 §1 in
+// the body, nothing in the url. The GET answers a cache (E-1).
+export const PANEL_URL = `${ORIGIN}/pnfg/NPcd/NFG_CMP_Paneles`;
+export const PANEL_QUERY =
+  "cod_primaria=3001668&grupo_categoria=900163685,900163686&resultados=1&columna=1&extendido=1&no_paginacion=1&tipo_peticion=1&federacion=3";
 
 const RFEF = SourceId.parse("rfef");
 
@@ -89,6 +91,8 @@ export function createRfef({ aliases, calendar }: RfefOptions): SourceAdapter {
       unresolved: [],
       skipped: [],
     };
+    // A 200 with nothing in it (ADR-018 §3): its own reason, not "not a panel".
+    if (body.length === 0) throw new RfefFormatError("empty body");
     const panel = readPanel(body);
     if (!panel.codgrupos.some((g) => competitionOf.has(g)))
       throw new RfefFormatError("panel with no codgrupo of the map");
@@ -164,21 +168,27 @@ export function createRfef({ aliases, calendar }: RfefOptions): SourceAdapter {
         );
 
       const res = await ctx.fetch(PANEL_URL, {
-        method: "GET",
+        method: "POST",
         redirect: "manual",
         headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
           Cookie: `JSESSIONID=${session}`,
           "User-Agent": ctx.userAgent,
         },
+        body: PANEL_QUERY,
       });
       if (res.status < 200 || res.status > 299)
         throw new Error(`rfef responded ${res.status}`);
       const contentType = res.headers.get("content-type");
+      // An empty 200 does not throw: it goes to the raw capture as evidence,
+      // and parse turns it into "empty body" (ADR-018 §3).
       const body = new TextDecoder(charsetOf(contentType)).decode(
         await res.arrayBuffer(),
       );
       capture.requests.push({
         url: PANEL_URL,
+        method: "POST",
+        requestBody: PANEL_QUERY,
         status: res.status,
         contentType,
         body,

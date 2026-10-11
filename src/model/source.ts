@@ -25,8 +25,12 @@ export type FetchContext = {
 
 // One request of a capture: the body is text, never interpreted; the url
 // never carries secrets.
+// method and requestBody are optional (ADR-018 §2): GET by default; a POST
+// keeps the body it sent, as is. No request header ever goes here.
 export const RawRequest = z.strictObject({
   url: z.url(),
+  method: z.enum(["GET", "POST"]).optional(),
+  requestBody: z.string().optional(),
   status: z.int(),
   contentType: z.string().nullable(),
   body: z.string(),

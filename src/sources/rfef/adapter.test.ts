@@ -9,8 +9,18 @@ import {
   type RawCapture,
   type WindowMatch,
 } from "../../model/index.ts";
-import { createRfef, type DeclaredMatch, PANEL_URL } from "./adapter.ts";
-import { FIXTURES, fixtureText } from "./fixture-files.ts";
+import {
+  createRfef,
+  type DeclaredMatch,
+  PANEL_QUERY,
+  PANEL_URL,
+} from "./adapter.ts";
+import {
+  EMPTY_BODY_FILE,
+  FIXTURES,
+  fixtureBytes,
+  fixtureText,
+} from "./fixture-files.ts";
 
 const root = new URL("../../../", import.meta.url);
 const readJson = (rel: string): unknown =>
@@ -270,13 +280,21 @@ describe("CA-4 visible failure, never a digit", () => {
     );
   });
 
-  it("(vi) the body of the cookie page (NLogin) or an empty body", () => {
+  it("(vi) the body of the cookie page (NLogin) is not a panel", () => {
     const login = readFileSync(
       new URL("fixtures/sin-cookie-aceptada.html", import.meta.url),
       "utf8",
     );
     failsWith(login, /not a panel/);
-    failsWith("", /not a panel/);
+  });
+
+  it("(vi) an empty body has its own reason, empty body (E-1)", () => {
+    // The real 0-byte 200 of the POST series (the IP block).
+    const empty = new TextDecoder("iso-8859-15").decode(
+      fixtureBytes(EMPTY_BODY_FILE),
+    );
+    expect(empty).toBe("");
+    failsWith(empty, /^empty body$/);
   });
 
   it("(vii) a panel with no codgrupo of the map", () => {
@@ -360,24 +378,36 @@ describe("CA-7 fetch", () => {
     expect(result?.requests).toEqual([]);
   });
 
-  it("(ii) portada without redirects, then one GET with the session cookie", async () => {
+  it("(ii) portada without redirects, then one POST with the query in the body (E-1)", async () => {
     const { calls, fetch } = fake([
       portada("JSESSIONID=96339C96; Path=/pnfg; HttpOnly"),
       panel(),
     ]);
     const result = await adapter.fetch?.(ctx(fetch));
     expect(calls.map((c) => c.url)).toEqual([PORTADA, PANEL_URL]);
+    expect(calls[0].init?.method ?? "GET").toBe("GET");
     expect(calls[0].init?.redirect).toBe("manual");
     expect(new Headers(calls[0].init?.headers).get("user-agent")).toBe(UA);
-    const data = new Headers(calls[1].init?.headers);
+    expect(calls[1].init?.method).toBe("POST");
     expect(calls[1].init?.redirect).toBe("manual");
+    expect(calls[1].init?.body).toBe(PANEL_QUERY);
+    const data = new Headers(calls[1].init?.headers);
+    expect(data.get("content-type")).toBe("application/x-www-form-urlencoded");
     expect(data.get("cookie")).toBe("JSESSIONID=96339C96");
     expect(data.get("user-agent")).toBe(UA);
     expect(PANEL_URL).toBe(
-      "https://marcadores.rfef.es/pnfg/NPcd/NFG_CMP_Paneles?cod_primaria=3001668&grupo_categoria=900163685,900163686&resultados=1&columna=1&extendido=1&no_paginacion=1&tipo_peticion=1&federacion=3",
+      "https://marcadores.rfef.es/pnfg/NPcd/NFG_CMP_Paneles",
+    );
+    expect(PANEL_QUERY).toBe(
+      "cod_primaria=3001668&grupo_categoria=900163685,900163686&resultados=1&columna=1&extendido=1&no_paginacion=1&tipo_peticion=1&federacion=3",
     );
     expect(result?.requests).toHaveLength(1);
-    expect(result?.requests[0].url).toBe(PANEL_URL);
+    expect(result?.requests[0]).toMatchObject({
+      url: PANEL_URL,
+      method: "POST",
+      requestBody: PANEL_QUERY,
+    });
+    expect(result?.requests[0].url).not.toContain("?");
     expect(result?.capturedAt).toBe(NOW);
     expect(JSON.stringify(result)).not.toContain("96339C96");
     expect(JSON.stringify(result)).not.toContain("JSESSIONID");
@@ -409,4 +439,29 @@ describe("CA-7 fetch", () => {
       );
     },
   );
+
+  it("(iv) a 200 with an empty body does not throw: it goes to the raw capture, and parse says empty body", async () => {
+    const { fetch } = fake([
+      portada("JSESSIONID=abc; Path=/pnfg"),
+      // As the real block answers: 200, Content-Length: 0, no Content-Type.
+      new Response(Buffer.from(fixtureBytes(EMPTY_BODY_FILE)), {
+        status: 200,
+        headers: { "content-length": "0" },
+      }),
+    ]);
+    const capture = await adapter.fetch?.(ctx(fetch));
+    expect(capture?.requests).toHaveLength(1);
+    expect(capture?.requests[0]).toMatchObject({
+      url: PANEL_URL,
+      method: "POST",
+      status: 200,
+      body: "",
+    });
+    if (capture === undefined) throw new Error("no fetch");
+    const result = ParseResult.parse(adapter.parse(capture));
+    expect(result.observations).toEqual([]);
+    expect(result.requestErrors).toEqual([
+      { url: PANEL_URL, error: "empty body" },
+    ]);
+  });
 });

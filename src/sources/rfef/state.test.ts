@@ -94,6 +94,8 @@ describe("CA-5 states (ADR-017 §4)", () => {
     );
   });
 
+  // The rule, not evidence: the sondeo was a GET and may have been a cache
+  // (ADR-018, «Sobre ADR-017 §4»).
   it("parpadea at 21:47Z (kickoff + 167 min, the sondeo) is ambiguous", () => {
     const late = readPanel(
       fixtureText("paneles-fed3-enjuego-2026-10-10T21-47-34Z"),
@@ -151,5 +153,80 @@ describe("CA-5 states (ADR-017 §4)", () => {
         expect(rowState(r, at(KICKOFF + d * MIN))).not.toMatchObject({
           status: "scheduled",
         });
+  });
+});
+
+// E-1: the evidence of the table comes from the POST series of 2026-10-11.
+describe("CA-5 states over the POST series (ADR-018)", () => {
+  const panel = (ts: string) =>
+    readPanel(fixtureText(`campo-post-2026-10-11T${ts}Z-todos`));
+  const find = (rows: PanelRow[], home: string) => {
+    const r = rows.find((x) => x.home === home);
+    if (r === undefined) throw new Error(`no row ${home}`);
+    return r;
+  };
+  const AT_1500 = "2026-10-11T15:00:15Z" as Instant;
+  const AT_1535 = "2026-10-11T15:35:05Z" as Instant;
+  const live = (home: number, away: number) => ({
+    status: "live",
+    score: { home, away },
+    minute: null,
+    addedMinute: null,
+  });
+
+  it("Segunda Fed. at kickoff, with parpadea and no link yet, is live", () => {
+    const coruxo = find(panel("15-00-15").rows, "Coruxo FC");
+    expect(coruxo.cell.blinking).toBe(true);
+    expect(coruxo.acta).toBeNull();
+    expect(rowState(coruxo, AT_1500)).toEqual(live(0, 0));
+  });
+
+  it("Tercera at kickoff + 5 with parpadea is live", () => {
+    const boiro = find(
+      panel("15-35-05").rows.filter((r) => r.codgrupo === "26991073"),
+      "c.d. boiro",
+    );
+    expect(rowState(boiro, AT_1535)).toEqual(live(0, 0));
+  });
+
+  it("Primera Fed. with verPartidoEnJuego and parpadea at kickoff + 65 is live, without a minute", () => {
+    const pontevedra = find(panel("15-35-05").rows, "Pontevedra CF");
+    expect(pontevedra.acta?.kind).toBe("open");
+    expect(rowState(pontevedra, AT_1535)).toEqual(live(0, 1));
+  });
+
+  it("Tercera never shows an acta: finished by the clock (kickoff + 270)", () => {
+    const montaneros = find(
+      panel("15-00-15").rows,
+      "atl. coruña montañeros c.f.",
+    );
+    expect(montaneros.acta).toBeNull();
+    expect(montaneros.cell.blinking).toBe(false);
+    expect(rowState(montaneros, AT_1500)).toEqual({
+      status: "finished",
+      score: { home: 3, away: 1 },
+      minute: null,
+    });
+  });
+
+  it("Segunda Fed. with verPartido is finished", () => {
+    const vetusta = find(panel("15-00-15").rows, "Real Oviedo Vetusta");
+    expect(vetusta.acta?.kind).toBe("closed");
+    expect(rowState(vetusta, AT_1500)).toEqual({
+      status: "finished",
+      score: { home: 2, away: 1 },
+      minute: null,
+    });
+  });
+
+  it("no row of the five competitions is ambiguous in the POST fixtures", () => {
+    const FIVE = ["33836085", "33836087", "33836089", "33836092", "26991073"];
+    for (const [ts, at] of [
+      ["15-00-15", AT_1500],
+      ["15-02-24", "2026-10-11T15:02:24Z" as Instant],
+      ["15-35-05", AT_1535],
+    ] as const)
+      for (const r of panel(ts).rows.filter((x) => FIVE.includes(x.codgrupo)))
+        expect(rowState(r, at)).not.toBe("ambiguous_state");
   });
 });
