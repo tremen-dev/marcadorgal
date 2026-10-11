@@ -37,7 +37,9 @@ afirma que la web da el minuto en directo. Queda como **hipótesis por verificar
 con la serie de campo.
 
 ## Decisión
-1. **Petición.** Por intento: un GET a la portada para la sesión, sin seguir
+1. **Petición.** *2026-10-11, supersedido por ADR-018 §1:* la petición de datos
+   va por POST; lo que sigue es la letra original.
+   Por intento: un GET a la portada para la sesión, sin seguir
    redirecciones (la cookie no va al crudo), y **un** GET a
    `NFG_CMP_Paneles?cod_primaria=3001668&grupo_categoria=900163685,900163686&resultados=1&columna=1&extendido=1&no_paginacion=1&tipo_peticion=1&federacion=3`.
    Charset del `content-type`. Al crudo solo va el segundo. `minIntervalSeconds: 30`.

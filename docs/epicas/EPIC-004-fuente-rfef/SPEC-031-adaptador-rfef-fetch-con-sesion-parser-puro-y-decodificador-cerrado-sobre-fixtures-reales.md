@@ -22,7 +22,7 @@ registra: no habrá ninguna petición desde producción hasta la spec de alta.
 - Espectador: no ve nada todavía. Titular: decide sobre las capturas (H-4).
 
 ## Criterios de aceptación
-- **CA-1 Fixtures reales.** `src/sources/rfef/fixtures/` lleva las capturas de
+- **CA-1 Fixtures reales.** *Enmendado el 2026-10-11 por decisión del titular, E-1.* `src/sources/rfef/fixtures/` lleva las capturas de
   `EPIC-004/_qa/sondeo/` (paneles del 2026-10-10, 20:49Z a 21:47Z), sin recortar,
   como texto igual a `TextDecoder("iso-8859-15")` de los bytes. Un README indica
   petición, `Date` del servidor y procedencia. Además, el implementador elige de
@@ -45,7 +45,7 @@ registra: no habrá ninguna petición desde producción hasta la spec de alta.
   parser lee de esa fila (`1-0`, `Suspendido`, `-`). Texto visible = recorrido con
   `getComputedStyle`, que incluye `::before`/`::after` y excluye lo que está en
   `display:none`. 0 discrepancias. Corre en `npm run e2e` (CI).
-- **CA-4 Falla visible, nunca un dígito.** Cada mutación de un fixture real es un
+- **CA-4 Falla visible, nunca un dígito.** *Enmendado el 2026-10-11 por decisión del titular, E-1.* Cada mutación de un fixture real es un
   caso y da `requestErrors` con el motivo y **cero** observaciones de esa petición,
   sin excepción: (i) tabla de 39 valores o con un `10`; (ii) función desempaquetada
   con otro cuerpo; (iii) `ntype` llamado sin definirse; (iv) forma desconocida en
@@ -53,7 +53,7 @@ registra: no habrá ninguna petición desde producción hasta la spec de alta.
   ausente); (v) un lado que no es `^\d{1,2}$`; (vi) cuerpo de `NLogin` o vacío;
   (vii) panel sin ningún `codgrupo` del mapa. Control positivo: cambiar un dígito
   de un `content` cambia la salida.
-- **CA-5 Estados (ADR-017 §4).** Un caso por fila de la tabla, sobre filas reales
+- **CA-5 Estados (ADR-017 §4).** *Enmendado el 2026-10-11 por decisión del titular, E-1.* Un caso por fila de la tabla, sobre filas reales
   y con `capturedAt` variable, bordes incluidos: +99/+100 para `finished`;
   −11/−10 y +109/+110 para `live`. El kickoff se pasa de Europe/Madrid a UTC en
   horario de verano y de invierno, y el año se infiere en el cambio de año
@@ -65,7 +65,7 @@ registra: no habrá ninguna petición desde producción hasta la spec de alta.
   (ADR-017 §8.3). «Aplazado» → `postponed`. Nunca hay `scheduled`. Una fila
   `-` no aparece ni en `observations`, ni en `skipped`, ni en `unresolved`. Sin
   `observedAt`.
-- **CA-6 Identidad (ADR-017 §2).** Con un `alias-test.json` de fixtures y el
+- **CA-6 Identidad (ADR-017 §2).** *Enmendado el 2026-10-11 por decisión del titular, E-1.* Con un `alias-test.json` de fixtures y el
   calendario declarado real de 2026-27: (i) Fabril–Racing Ferrol con acta →
   `finished` 0-1 con el `MatchId` declarado; (ii) Copa y juveniles no producen
   nada; (iii) equipo sin alias → `unknown_team` con nombres externos; (iv) par
@@ -74,7 +74,7 @@ registra: no habrá ninguna petición desde producción hasta la spec de alta.
   `AliasFile.competitions` es opcional y `SkippedReason` gana `ambiguous_state` y
   `suspended_without_score`;
   `api-football.json` sigue validando.
-- **CA-7 Fetch.** Con `fetch` doble: (i) ventana vacía → 0 llamadas. (ii) GET a la
+- **CA-7 Fetch.** *Enmendado el 2026-10-11 por decisión del titular, E-1.* Con `fetch` doble: (i) ventana vacía → 0 llamadas. (ii) GET a la
   portada con `redirect: "manual"`, `JSESSIONID` tomada de `set-cookie`, y un GET a
   la URL de ADR-017 §1 con `Cookie` y el `User-Agent` del contexto; `requests` tiene
   1 elemento con la query en `url` y la cookie no aparece en `JSON.stringify(capture)`.
@@ -98,7 +98,7 @@ D-4, D-6, D-9; ADR-003, ADR-007 §6, ADR-008 §8, ADR-017.
   `suspended_without_score` de esta spec.
 - Latencia y cobertura en una jornada real.
 
-## Enmienda E-1 (borrador, 2026-10-11, sdd-arquitecto) — pendiente del titular
+## Enmienda E-1 (2026-10-11, sdd-arquitecto) — aprobada por el titular (Alberto Fojo, 2026-10-11)
 Origen: ADR-018 (borrador), que sustituye ADR-017 §1. Con E-1 aprobada, el
 orquestador sustituye la letra de cada CA por la de abajo y deja la marca
 fechada (*Enmendado el … por decisión del titular, E-1*).

@@ -1,13 +1,15 @@
 ---
 id: ADR-018
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-10-11, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-11, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # ADR-018: Fuente rfef: el panel por POST, cuerpo vacío como error y respuesta rancia
 
-- Deciders: sdd-arquitecto propone (2026-10-11) a partir del hallazgo de campo del orquestador (2026-10-11, ~15:00Z). Aprueba **Alberto Fojo**: pendiente.
+- Deciders: sdd-arquitecto propone (2026-10-11) a partir del hallazgo de campo del orquestador (2026-10-11, ~15:00Z). Aprobado por **Alberto Fojo** el 2026-10-11, con §4 como error que corta (una repetición basta) y la condición de §5 aceptada.
 - Specs relacionadas: SPEC-031 (enmienda E-1: CA-7, CA-1, CA-5) y la spec de alta de EPIC-004 (§4). **Supersede solo ADR-017 §1** (la petición de datos) y deja en revisión la evidencia de ADR-017 §4. Evidencia: `<scratchpad>/campo-2026-10-11/` (serie GET) y `<scratchpad>/campo-2026-10-11-post/` (serie POST), fuera del repo.
 
 ## Contexto
@@ -57,7 +59,7 @@ repite bytes. Dos respuestas idénticas indican que salen de una caché.
    cero observaciones. Basta con una repetición. Sin este detector no hay alta.
 5. **Condición.** §4 se apoya en que la ofuscación no se repite nunca. Si en la
    serie POST completa (15:00Z–20:00Z) se repite algún md5 de `todos` o de
-   `enjuego`, este ADR vuelve al gate antes de aprobarse.
+   `enjuego`, este ADR vuelve al gate (aprobado con esta condición el 2026-10-11).
 
 ## Sobre ADR-017 §4 (la evidencia queda en revisión)
 - **Se mantiene:** `parpadea` ≠ en juego. No depende de la caché, porque en un
