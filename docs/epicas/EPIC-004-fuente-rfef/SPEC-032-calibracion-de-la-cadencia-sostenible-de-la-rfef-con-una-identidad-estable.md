@@ -2,11 +2,12 @@
 id: SPEC-032
 tipo: spec
 epica: EPIC-004
-estado: aprobada
+estado: en-progreso
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-11, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-10-11, por: Alberto Fojo}
+  - {estado: en-progreso, fecha: 2026-10-11, por: sdd-implementador}
 ---
 # SPEC-032 — Calibración de la cadencia sostenible de la RFEF con una identidad estable
 
