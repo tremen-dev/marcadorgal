@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 import { AliasFile } from "../../model/index.ts";
@@ -19,7 +20,9 @@ import {
   calibrate,
   exitCode,
   formatPlan,
+  inWindow,
   planRounds,
+  preconditions,
 } from "./calibration.ts";
 import { EMPTY_BODY_FILE, fixtureBytes } from "./fixture-files.ts";
 
@@ -206,7 +209,8 @@ const roundStarts = (lines: CalibrationLine[]) => {
   return [...out.values()];
 };
 const roundOf = (n: number) => planRounds(buildPlan())[n - 1];
-// The n-th POST of a run with no renewals is round n.
+// Round n of a run with no renewal is call n + 1 (call 1 is the portada).
+const callOfRound = (n: number) => n + 1;
 
 describe("CA-2 the production pattern (ADR-019 §1-§2)", () => {
   it("round 1: portada + POST todos; then one POST Sch_en_juego=1 with the same cookie; last: POST todos", async () => {
@@ -319,5 +323,257 @@ describe("CA-2 the production pattern (ADR-019 §1-§2)", () => {
       perRound.set(l.vuelta, (perRound.get(l.vuelta) ?? 0) + 1);
     expect(Math.max(...perRound.values())).toBeLessThanOrEqual(3);
     expect(Math.max(...perRound.values())).toBe(3);
+  });
+});
+
+describe("CA-3 steps and permanence", () => {
+  it("round starts are exactly the interval of their step apart, max(30 min, 10) per step, 3 h ≤ 4 h", async () => {
+    const h = harness();
+    await calibrate(h.ok, h.deps);
+    const starts = roundStarts(h.lines);
+    expect(starts).toHaveLength(175);
+    const gaps = starts.slice(1).map((s, i) => (s - starts[i]) / 1000);
+    expect(gaps).toEqual(
+      planRounds(buildPlan())
+        .slice(0, -1)
+        .map((r) => r.intervalSeconds),
+    );
+    // Per step: count and duration.
+    const perStep = new Map<number, number>();
+    for (const l of h.lines.filter((x) => x.metodo === "POST"))
+      perStep.set(l.escalon, (perStep.get(l.escalon) ?? 0) + 1);
+    expect([...perStep.entries()]).toEqual([
+      [180, 10],
+      [120, 15],
+      [90, 20],
+      [60, 30],
+      [45, 40],
+      [30, 60],
+    ]);
+    const span = (starts[174] - starts[0]) / 1000 + 30;
+    expect(span).toBe(3 * 3600);
+    expect(span).toBeLessThanOrEqual(4 * 3600);
+  });
+
+  it("a slow request does not bring the next one forward, and never earlier", async () => {
+    // Round 3 (180 s step) takes 200 s; round 12 (120 s step) takes 50 s.
+    const h = harness((c) =>
+      c.n === callOfRound(3)
+        ? { response: fresh(c) as Response, takesMs: 200_000 }
+        : c.n === callOfRound(12)
+          ? { response: fresh(c) as Response, takesMs: 50_000 }
+          : undefined,
+    );
+    await calibrate(h.ok, h.deps);
+    const starts = roundStarts(h.lines);
+    const gap = (n: number) => (starts[n] - starts[n - 1]) / 1000;
+    expect(gap(3)).toBe(200); // round 4 waits for the end of round 3
+    expect(gap(4)).toBe(180); // and then the interval again
+    expect(gap(12)).toBe(120); // a request shorter than the interval: no change
+    for (let n = 1; n < starts.length; n += 1)
+      expect(gap(n)).toBeGreaterThanOrEqual(roundOf(n).intervalSeconds);
+  });
+});
+
+describe("CA-4 stop at the first empty body", () => {
+  it("the real empty 200: 0 more requests, the threshold logged, exit ≠ 0", async () => {
+    const at = callOfRound(37); // round 37: step 90 s, 12th of the step
+    const h = harness((c) =>
+      c.n === at ? new Response(EMPTY, { status: 200 }) : undefined,
+    );
+    const outcome = await calibrate(h.ok, h.deps);
+    expect(h.calls).toHaveLength(at);
+    expect(outcome).toMatchObject({
+      kind: "parada",
+      result: "vacio",
+      line: { escalon: 90, nEscalon: 12, vuelta: 37, bytes: 0 },
+    });
+    expect(exitCode(outcome)).not.toBe(0);
+    expect(h.logs.join("\n")).toMatch(
+      /Umbral: primer vacío en el escalón de 90 s/,
+    );
+  });
+
+  it.each([
+    ["a non-2xx", () => new Response("no", { status: 503 }), "no-2xx"],
+    ["a network error", () => "network" as const, "error-red"],
+  ])("%s stops without retrying", async (_, reply, result) => {
+    const at = callOfRound(20);
+    const h = harness((c) => (c.n === at ? reply() : undefined));
+    const outcome = await calibrate(h.ok, h.deps);
+    expect(h.calls).toHaveLength(at);
+    expect(outcome).toMatchObject({ kind: "parada", result });
+    expect(exitCode(outcome)).not.toBe(0);
+  });
+
+  it("a stale body (same sha-256, ADR-018 §4) is logged and does not stop", async () => {
+    const h = harness((c) =>
+      c.n === callOfRound(30) || c.n === callOfRound(31)
+        ? panelReply(ENJUEGO)
+        : undefined,
+    );
+    const outcome = await calibrate(h.ok, h.deps);
+    expect(outcome.kind).toBe("completa");
+    const stale = h.lines.filter((l) => l.rancia);
+    expect(stale.map((l) => l.vuelta)).toEqual([31]);
+    expect(h.lines.find((l) => l.vuelta === 30)?.rancia).toBe(false);
+  });
+});
+
+describe("CA-5 a free IP without provoking a block", () => {
+  it.each([
+    ["no --ultima-peticion", { lastRequest: null }],
+    ["--ultima-peticion under 24 h", { lastRequest: "2026-10-16T15:00:01Z" }],
+    ["--ultima-peticion not an instant", { lastRequest: "ayer" }],
+    ["the last JSONL line under 24 h", { lastLogged: "2026-10-16T18:00:00Z" }],
+  ])("%s: 0 requests", async (_, override) => {
+    const h = harness();
+    const outcome = await calibrate({ ...h.ok, ...override }, h.deps);
+    expect(outcome.kind).toBe("rechazada");
+    expect(exitCode(outcome)).not.toBe(0);
+    expect(h.fetch).not.toHaveBeenCalled();
+  });
+
+  it("exactly 24 h of rest is enough (the rule is 'less than 24 h')", () => {
+    expect(
+      preconditions(
+        {
+          lastRequest: "2026-10-16T15:00:00Z",
+          lastLogged: "2026-10-16T15:00:00Z",
+        },
+        CALENDAR,
+        T0,
+      ),
+    ).toEqual([]);
+  });
+
+  it("the window of ADR-002 §2: kickoff − 10 to kickoff + 150 min", () => {
+    const at = (kickoff: string) => [{ kickoff }];
+    expect(inWindow(at("2026-10-17T15:10:00Z"), T0)).toBe(1);
+    expect(inWindow(at("2026-10-17T15:10:01Z"), T0)).toBe(0);
+    expect(inWindow(at("2026-10-17T12:30:00Z"), T0)).toBe(1);
+    expect(inWindow(at("2026-10-17T12:29:59Z"), T0)).toBe(0);
+  });
+
+  it("no match of the five competitions in window: 0 requests", async () => {
+    const h = harness();
+    h.deps.calendar = [{ ...CALENDAR[0], kickoff: "2026-10-18T10:00:00Z" }];
+    const outcome = await calibrate(h.ok, h.deps);
+    expect(outcome).toMatchObject({
+      kind: "rechazada",
+      reasons: ["ningún partido de las cinco competiciones en ventana"],
+    });
+    expect(h.fetch).not.toHaveBeenCalled();
+  });
+
+  it("the first request is the probe: empty -> bloqueada-al-inicio, and 24 h before the next try", async () => {
+    const h = harness(() => new Response(EMPTY, { status: 200 }));
+    const outcome = await calibrate(h.ok, h.deps);
+    expect(h.calls).toHaveLength(1);
+    expect(outcome).toMatchObject({
+      kind: "parada",
+      result: "bloqueada-al-inicio",
+    });
+    expect(h.lines).toHaveLength(1);
+    const again = harness();
+    const retry = await calibrate(
+      { ...again.ok, lastLogged: h.lines[0].inicio },
+      { ...again.deps, now: () => T0 + 23 * 3600_000 },
+    );
+    expect(retry.kind).toBe("rechazada");
+    expect(again.fetch).not.toHaveBeenCalled();
+  });
+
+  it("an empty panel in round 1 after a good portada is also bloqueada-al-inicio", async () => {
+    const h = harness((c) =>
+      c.n === 2 ? new Response(EMPTY, { status: 200 }) : undefined,
+    );
+    const outcome = await calibrate(h.ok, h.deps);
+    expect(outcome).toMatchObject({ result: "bloqueada-al-inicio" });
+    expect(h.calls).toHaveLength(2);
+  });
+});
+
+describe("CA-6 a log with no secrets", () => {
+  it("one line per request with every field; the body goes to the shell as received", async () => {
+    const h = harness();
+    await calibrate(h.ok, h.deps);
+    expect(h.lines).toHaveLength(h.calls.length);
+    const [portada, todos, enjuego] = h.lines;
+    expect(portada).toMatchObject({
+      vuelta: 1,
+      total: 1,
+      variante: "portada",
+      metodo: "GET",
+      status: 302,
+      resultado: "ok",
+    });
+    expect(Object.keys(todos).sort()).toEqual(
+      [
+        "inicio",
+        "escalon",
+        "nEscalon",
+        "vuelta",
+        "total",
+        "variante",
+        "metodo",
+        "status",
+        "contentLength",
+        "bytes",
+        "sha256",
+        "date",
+        "filas",
+        "observaciones",
+        "requestErrors",
+        "rancia",
+        "resultado",
+      ].sort(),
+    );
+    const body = Buffer.concat([TODOS, Buffer.from("<!-- 2 -->")]);
+    expect(todos).toMatchObject({
+      inicio: "2026-10-17T15:00:00.000Z",
+      escalon: 180,
+      nEscalon: 1,
+      vuelta: 1,
+      total: 2,
+      variante: "todos",
+      metodo: "POST",
+      status: 200,
+      bytes: body.length,
+      sha256: createHash("sha256").update(body).digest("hex"),
+      date: "Sat, 17 Oct 2026 15:00:00 GMT",
+      requestErrors: [],
+      rancia: false,
+      resultado: "ok",
+    });
+    expect(todos.inicio).toMatch(/Z$/);
+    expect(todos.filas).toBeGreaterThan(0);
+    expect(enjuego).toMatchObject({ variante: "enjuego", total: 3 });
+    expect(Buffer.from(h.bodies[1])).toEqual(body);
+  });
+
+  it("the cookie is in no line and in no log", async () => {
+    const h = harness((c) =>
+      c.n === callOfRound(9) ? new Response(LOGIN, { status: 200 }) : undefined,
+    );
+    await calibrate(h.ok, h.deps);
+    expect(h.calls.some((c) => cookieOf(c)?.includes(COOKIE))).toBe(true);
+    const out = JSON.stringify(h.lines) + h.logs.join("\n");
+    expect(out).not.toContain(COOKIE);
+    expect(out).not.toMatch(/JSESSIONID/);
+  });
+});
+
+describe("CA-9 boundaries", () => {
+  const source = readFileSync(
+    new URL("calibration.ts", import.meta.url),
+    "utf8",
+  );
+  it("calibration.ts reads no clock, network or files, and imports only model and rfef", () => {
+    expect(source).not.toMatch(/Date\.now|new Date\(\)|performance\.now/);
+    expect(source).not.toMatch(/globalThis\.fetch|[^.]\bfetch\(/);
+    expect(source).not.toMatch(/from "node:|require\(/);
+    const imports = [...source.matchAll(/from "([^"]+)"/g)].map((m) => m[1]);
+    for (const i of imports) expect(i).toMatch(/^(\.\.\/\.\.\/model\/|\.\/)/);
   });
 });
