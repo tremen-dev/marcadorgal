@@ -30,7 +30,8 @@
     "informe:latencia": "node tools/informe-latencia.mjs",
     "replay:jornada": "node tools/replay-jornada.mjs",
     "reconciliar:cierre": "node tools/reconciliar-cierre.mjs",
-    "reconciliar:sin-directo": "node tools/reconciliar-sin-directo.mjs"
+    "reconciliar:sin-directo": "node tools/reconciliar-sin-directo.mjs",
+    "rfef:calibrar": "node tools/calibrar-rfef.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.117.3",

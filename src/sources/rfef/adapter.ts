@@ -26,6 +26,35 @@ export const PANEL_URL = `${ORIGIN}/pnfg/NPcd/NFG_CMP_Paneles`;
 export const PANEL_QUERY =
   "cod_primaria=3001668&grupo_categoria=900163685,900163686&resultados=1&columna=1&extendido=1&no_paginacion=1&tipo_peticion=1&federacion=3";
 
+// The panel of matches in play (ADR-019 §2): the same body plus one field.
+export const PANEL_ENJUEGO_QUERY = `${PANEL_QUERY}&Sch_en_juego=1`;
+export const PANEL_CONTENT_TYPE = "application/x-www-form-urlencoded";
+// The declared identity (ADR-019 §6): the UA of the registry, never varied.
+export const USER_AGENT = "marcador.gal (ingesta; https://marcador.gal)";
+
+// The two requests of the source, shared with the calibration (SPEC-032 CA-2).
+// The session comes from the portada, without following redirects.
+export const portadaInit = (userAgent: string): RequestInit => ({
+  method: "GET",
+  redirect: "manual",
+  headers: { "User-Agent": userAgent },
+});
+
+export const panelInit = (
+  session: string,
+  userAgent: string,
+  body: string = PANEL_QUERY,
+): RequestInit => ({
+  method: "POST",
+  redirect: "manual",
+  headers: {
+    "Content-Type": PANEL_CONTENT_TYPE,
+    Cookie: `JSESSIONID=${session}`,
+    "User-Agent": userAgent,
+  },
+  body,
+});
+
 const RFEF = SourceId.parse("rfef");
 
 // The declared calendar the core injects (ADR-008 §8, ADR-017 §2).
@@ -52,13 +81,13 @@ const messageOf = (e: unknown): string => {
   return message.length > 0 ? message : "unreadable body";
 };
 
-function charsetOf(contentType: string | null): string {
+export function charsetOf(contentType: string | null): string {
   const m = contentType?.match(/charset\s*=\s*"?([^";\s]+)"?/i);
   // The panel always declares it; ISO-8859-15 is what it sends (ADR-017).
   return m ? m[1] : "iso-8859-15";
 }
 
-function sessionCookie(res: Response): string | null {
+export function sessionCookie(res: Response): string | null {
   const cookies =
     typeof res.headers.getSetCookie === "function"
       ? res.headers.getSetCookie()
@@ -156,27 +185,17 @@ export function createRfef({ aliases, calendar }: RfefOptions): SourceAdapter {
 
       // The session: the portada, without following redirects. Its cookie
       // never reaches the raw capture.
-      const portada = await ctx.fetch(PORTADA_URL, {
-        method: "GET",
-        redirect: "manual",
-        headers: { "User-Agent": ctx.userAgent },
-      });
+      const portada = await ctx.fetch(PORTADA_URL, portadaInit(ctx.userAgent));
       const session = sessionCookie(portada);
       if (session === null)
         throw new Error(
           `rfef: no JSESSIONID from the portada (${portada.status})`,
         );
 
-      const res = await ctx.fetch(PANEL_URL, {
-        method: "POST",
-        redirect: "manual",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Cookie: `JSESSIONID=${session}`,
-          "User-Agent": ctx.userAgent,
-        },
-        body: PANEL_QUERY,
-      });
+      const res = await ctx.fetch(
+        PANEL_URL,
+        panelInit(session, ctx.userAgent, PANEL_QUERY),
+      );
       if (res.status < 200 || res.status > 299)
         throw new Error(`rfef responded ${res.status}`);
       const contentType = res.headers.get("content-type");
