@@ -1,5 +1,18 @@
-import type { AliasFile } from "../../model/index.ts";
-import type { DeclaredMatch } from "./adapter.ts";
+import type { AliasFile, RawCapture } from "../../model/index.ts";
+import {
+  charsetOf,
+  createRfef,
+  type DeclaredMatch,
+  PANEL_ENJUEGO_QUERY,
+  PANEL_QUERY,
+  PANEL_URL,
+  PORTADA_URL,
+  panelInit,
+  portadaInit,
+  sessionCookie,
+  USER_AGENT,
+} from "./adapter.ts";
+import { readPanel } from "./panel.ts";
 
 // SPEC-032: calibration of the cadence the RFEF sustains with the production
 // pattern of ADR-019 §1-§2. Pure: the clock, the network and the files are
@@ -154,6 +167,58 @@ export const exitCode = (outcome: Outcome): number =>
       ? 2
       : 1;
 
+// CA-5: the window of ADR-002 §2, kickoff − 10 min to kickoff + 150 min.
+export const WINDOW_BEFORE_MS = 10 * 60_000;
+export const WINDOW_AFTER_MS = 150 * 60_000;
+export const REST_MS = 24 * 3600_000;
+
+export function inWindow(
+  calendar: readonly { kickoff: string }[],
+  nowMs: number,
+): number {
+  return calendar.filter((m) => {
+    const k = Date.parse(m.kickoff);
+    return nowMs >= k - WINDOW_BEFORE_MS && nowMs <= k + WINDOW_AFTER_MS;
+  }).length;
+}
+
+// CA-5: no request at all unless the IP has rested 24 h and there is a match
+// in window. There is no separate probe: the first request is the probe.
+export function preconditions(
+  options: Pick<CalibrateOptions, "lastRequest" | "lastLogged">,
+  calendar: readonly { kickoff: string }[],
+  nowMs: number,
+): string[] {
+  const reasons: string[] = [];
+  const rested = (iso: string, what: string) => {
+    const at = Date.parse(iso);
+    if (Number.isNaN(at)) reasons.push(`${what} '${iso}' no es un instante`);
+    else if (nowMs - at < REST_MS)
+      reasons.push(`${what} ${iso}: menos de 24 h de reposo`);
+  };
+  if (options.lastRequest === null)
+    reasons.push(
+      "falta --ultima-peticion <ISO> (última petición a marcadores.rfef.es desde esta IP)",
+    );
+  else rested(options.lastRequest, "--ultima-peticion");
+  if (options.lastLogged !== null)
+    rested(options.lastLogged, "última línea de _qa/calibracion");
+  if (inWindow(calendar, nowMs) === 0)
+    reasons.push("ningún partido de las cinco competiciones en ventana");
+  return reasons;
+}
+
+const NLOGIN = /No se ha aceptado el cookie/;
+
+async function sha256(bytes: Uint8Array<ArrayBuffer>): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(digest), (b) =>
+    b.toString(16).padStart(2, "0"),
+  ).join("");
+}
+
+const iso = (ms: number): string => new Date(ms).toISOString();
+
 export async function calibrate(
   options: CalibrateOptions,
   deps: CalibrateDeps,
@@ -162,7 +227,183 @@ export async function calibrate(
     for (const line of formatPlan(buildPlan())) deps.log(line);
     return { kind: "dry-run" };
   }
-  throw new Error("not yet");
+  const reasons = preconditions(options, deps.calendar, deps.now());
+  if (reasons.length > 0) return { kind: "rechazada", reasons };
+  return runSeries(deps);
+}
+
+type Sent = {
+  line: CalibrationLine;
+  bytes: Uint8Array;
+  response: Response | null;
+  text: string;
+};
+
+// The series (CA-2, CA-3, CA-4): the production pattern of ADR-019 §1-§2 on
+// the plan of CA-1, stopping at the first empty body.
+export async function runSeries(deps: CalibrateDeps): Promise<Outcome> {
+  const adapter = createRfef({
+    aliases: deps.aliases,
+    calendar: deps.calendar,
+  });
+  const rounds = planRounds(buildPlan());
+  let session: string | null = null;
+  let previousSha: string | null = null;
+  let total = 0;
+  let previous: { start: number; end: number; interval: number } | null = null;
+
+  const send = async (
+    round: Round,
+    variante: CalibrationLine["variante"],
+  ): Promise<Sent> => {
+    const post = variante !== "portada";
+    const startMs = deps.now();
+    total += 1;
+    const line: CalibrationLine = {
+      inicio: iso(startMs),
+      escalon: round.intervalSeconds,
+      nEscalon: round.nInStep,
+      vuelta: round.index,
+      total,
+      variante,
+      metodo: post ? "POST" : "GET",
+      status: null,
+      contentLength: null,
+      bytes: 0,
+      sha256: null,
+      date: null,
+      filas: null,
+      observaciones: null,
+      requestErrors: null,
+      rancia: false,
+      resultado: "ok",
+    };
+    let response: Response;
+    let bytes: Uint8Array<ArrayBuffer>;
+    try {
+      response = post
+        ? await deps.fetch(
+            PANEL_URL,
+            panelInit(
+              session ?? "",
+              USER_AGENT,
+              variante === "todos" ? PANEL_QUERY : PANEL_ENJUEGO_QUERY,
+            ),
+          )
+        : await deps.fetch(PORTADA_URL, portadaInit(USER_AGENT));
+      bytes = new Uint8Array(await response.arrayBuffer());
+    } catch (e) {
+      line.resultado = "error-red";
+      line.error = e instanceof Error ? e.message : String(e);
+      return { line, bytes: new Uint8Array(), response: null, text: "" };
+    }
+    const length = response.headers.get("content-length");
+    line.status = response.status;
+    line.contentLength = length === null ? null : Number(length);
+    line.bytes = bytes.length;
+    line.sha256 = await sha256(bytes);
+    line.date = response.headers.get("date");
+    const text = new TextDecoder(
+      charsetOf(response.headers.get("content-type")),
+    ).decode(bytes);
+    const ok = response.status >= 200 && response.status <= 299;
+    const redirect = response.status >= 300 && response.status <= 399;
+    if (ok && bytes.length === 0)
+      line.resultado = round.index === 1 ? "bloqueada-al-inicio" : "vacio";
+    else if (!post) {
+      // The portada: only its cookie matters (as in the adapter).
+      const cookie = sessionCookie(response);
+      if (cookie !== null) session = cookie;
+      else line.resultado = ok || redirect ? "sin-sesion" : "no-2xx";
+    } else if (redirect || (ok && NLOGIN.test(text))) line.resultado = "nlogin";
+    else if (!ok) line.resultado = "no-2xx";
+    else {
+      const capture = {
+        sourceId: adapter.id,
+        capturedAt: line.inicio,
+        requests: [
+          {
+            url: PANEL_URL,
+            method: "POST",
+            requestBody:
+              variante === "todos" ? PANEL_QUERY : PANEL_ENJUEGO_QUERY,
+            status: response.status,
+            contentType: response.headers.get("content-type"),
+            body: text,
+          },
+        ],
+      } as RawCapture;
+      const parsed = adapter.parse(capture);
+      line.observaciones = parsed.observations.length;
+      line.requestErrors = parsed.requestErrors.map((r) => r.error);
+      try {
+        line.filas = readPanel(text).rows.length;
+      } catch {
+        line.filas = null;
+      }
+      // ADR-018 §4: byte-for-byte equal to the previous one. Logged, not a stop.
+      line.rancia = previousSha !== null && line.sha256 === previousSha;
+      previousSha = line.sha256;
+    }
+    return { line, bytes, response, text };
+  };
+
+  const report = async (sent: Sent): Promise<Outcome | null> => {
+    await deps.record(sent.line, sent.bytes);
+    const l = sent.line;
+    deps.log(
+      `${l.inicio} vuelta ${l.vuelta} (${l.escalon} s, ${l.nEscalon}) ${l.metodo} ${l.variante}: ${l.status ?? "-"} ${l.bytes} B ${l.resultado}${l.rancia ? " rancia" : ""}`,
+    );
+    if (l.resultado === "ok" || l.resultado === "nlogin") return null;
+    if (l.resultado === "vacio")
+      deps.log(
+        `Umbral: primer vacío en el escalón de ${l.escalon} s, vuelta ${l.nEscalon} del escalón (${l.total} peticiones en la serie).`,
+      );
+    return { kind: "parada", result: l.resultado, line: l, requests: total };
+  };
+
+  for (const round of rounds) {
+    if (previous !== null) {
+      // Starts are never closer than the interval, and a slow request does
+      // not bring the next one forward (CA-3).
+      const target = Math.max(
+        previous.start + previous.interval * 1000,
+        previous.end,
+      );
+      for (let now = deps.now(); now < target; now = deps.now())
+        await deps.sleep(target - now);
+    }
+    const start = deps.now();
+    let fresh = false;
+    if (session === null) {
+      const stop = await report(await send(round, "portada"));
+      if (stop !== null) return stop;
+      fresh = true;
+    }
+    let sent = await send(round, round.variant);
+    let stop = await report(sent);
+    if (stop !== null) return stop;
+    if (sent.line.resultado === "nlogin") {
+      // ADR-019 §1: one portada and one retry; a session just opened that
+      // is refused stops the series (never more than 3 requests per round).
+      if (fresh) return nloginStop(sent.line);
+      session = null;
+      stop = await report(await send(round, "portada"));
+      if (stop !== null) return stop;
+      sent = await send(round, round.variant);
+      stop = await report(sent);
+      if (stop !== null) return stop;
+      if (sent.line.resultado === "nlogin") return nloginStop(sent.line);
+    }
+    previous = { start, end: deps.now(), interval: round.intervalSeconds };
+  }
+  deps.log(`Serie completa: ${total} peticiones, sin vacío hasta 30 s.`);
+  return { kind: "completa", requests: total };
+
+  function nloginStop(line: CalibrationLine): Outcome {
+    deps.log("Parada: la sesión no se acepta tras renovarla (NLogin).");
+    return { kind: "parada", result: "nlogin", line, requests: total };
+  }
 }
 
 // CA-7: the report, from the JSONL of one series.
