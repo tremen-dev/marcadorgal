@@ -98,7 +98,48 @@ D-4, D-6, D-9; ADR-003, ADR-007 §6, ADR-008 §8, ADR-017.
   `suspended_without_score` de esta spec.
 - Latencia y cobertura en una jornada real.
 
+## Enmienda E-1 (borrador, 2026-10-11, sdd-arquitecto) — pendiente del titular
+Origen: ADR-018 (borrador), que sustituye ADR-017 §1. Con E-1 aprobada, el
+orquestador sustituye la letra de cada CA por la de abajo y deja la marca
+fechada (*Enmendado el … por decisión del titular, E-1*).
+- **CA-7 Fetch (sustituye a (ii) y a (iv)).** (ii) Un GET a la portada con
+  `redirect: "manual"` y la `JSESSIONID` de `set-cookie`. Después, **un POST** a
+  `…/NPcd/NFG_CMP_Paneles` sin query, con la query de ADR-017 §1 en el cuerpo,
+  `Content-Type: application/x-www-form-urlencoded`, `Cookie` y el `User-Agent`
+  del contexto. `requests` tiene 1 elemento, con `url` sin `?`,
+  `method: "POST"` y `requestBody` igual a la query. La cookie no aparece en
+  `JSON.stringify(capture)`. (iv) Sin cookie, con un 3xx o con un no-2xx en la
+  petición de datos, lanza. Con un `200` de cuerpo vacío **no** lanza: la
+  captura lleva `body: ""`, y `parse` devuelve `requestErrors` con `empty body`
+  y cero observaciones (ADR-018 §3). (i) y (iii) no cambian.
+- **CA-6 (añadido al modelo).** `RawRequest` gana `method` y `requestBody`, los
+  dos opcionales (ADR-018 §2). Una captura de api-football sin esos campos sigue
+  validando, y también un `RawCapture` serializado antes del cambio.
+- **CA-4 (vi).** El cuerpo vacío da un motivo propio (`empty body`), distinto
+  del de `NLogin`.
+- **CA-1 Fixtures.** Los `.raw`/`.html` del sondeo (GET) **siguen valiendo**
+  para CA-2, CA-3 y CA-4: cada uno es un cuerpo real que el servidor generó, sea
+  o no de caché. El README marca cada uno como «GET, posible caché». Su
+  `Date` **no** prueba el momento del contenido. La serie GET del 2026-10-11
+  **no entra**: todos sus cuerpos son la foto del sábado o vacíos. Los fixtures
+  de campo salen **solo** de la serie POST (`<scratchpad>/campo-2026-10-11-post/`)
+  y llevan `requestBody` en el README. Hacen falta los mismos casos que antes,
+  más dos POST de la misma vuelta con bytes distintos (evidencia de ADR-018 §4).
+  La tabla de marcas del README sale de la serie POST y añade una columna con el
+  texto «Última actualización … (min N | Inicio | Final de partido)».
+- **CA-5 Estados.** La fila de Real Madrid–Villarreal a +167 deja de ser
+  evidencia (ADR-018, «Sobre ADR-017 §4»). Si la tabla POST mueve +100/+110 o
+  convierte «(Final de partido)» en marca de `finished`, PARA y vuelve al gate,
+  como ya dice CA-1.
+- **Fuera de alcance (añadido).** El detector de respuesta rancia (ADR-018 §4)
+  va en la spec de alta, en el núcleo, no en esta.
+
 ## Notas para el gate humano
+- **E-1 (2026-10-11).** El GET de ADR-017 §1 devuelve una caché: la foto del
+  sábado, o un cuerpo vacío. ADR-018 lo cambia a POST. Lo ya implementado en
+  `adapter.ts` vale salvo el `fetch` y los dos campos de `RawRequest`. Hay que
+  mirar ADR-018 §4 (detector en la spec de alta) y §5 (condición sobre la serie
+  POST).
 - H-1..H-4 están resueltas por el titular (ADR-017, 2026-10-10). Lo que esta spec
   necesita de la serie de campo es validar `parpadea`, la marca de acta y el
   minuto.
