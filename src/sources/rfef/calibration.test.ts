@@ -13,7 +13,9 @@ import {
   USER_AGENT,
 } from "./adapter.ts";
 import {
+  analyze,
   buildPlan,
+  buildReport,
   type CalendarMatch,
   type CalibrateDeps,
   type CalibrationLine,
@@ -575,5 +577,117 @@ describe("CA-9 boundaries", () => {
     expect(source).not.toMatch(/from "node:|require\(/);
     const imports = [...source.matchAll(/from "([^"]+)"/g)].map((m) => m[1]);
     for (const i of imports) expect(i).toMatch(/^(\.\.\/\.\.\/model\/|\.\/)/);
+  });
+});
+
+describe("CA-7 report and recommendation (pure, on fixed JSONL)", () => {
+  // A fixed JSONL: the lines a series writes, the first empty at round n.
+  async function series(
+    emptyAtRound: number | null,
+  ): Promise<CalibrationLine[]> {
+    const h = harness((c) =>
+      emptyAtRound !== null && c.n === callOfRound(emptyAtRound)
+        ? new Response(EMPTY, { status: 200 })
+        : undefined,
+    );
+    await calibrate(h.ok, h.deps);
+    return h.lines;
+  }
+  const firstOfStep = (interval: number) =>
+    planRounds(buildPlan()).find((r) => r.intervalSeconds === interval)
+      ?.index as number;
+  const marked = (md: string) =>
+    md.split("\n").filter((l) => l.startsWith("| **→**"));
+
+  it("row ≤ 45 s: no threshold up to 30 s; sustainable 30, recommended 45", async () => {
+    const lines = await series(null);
+    expect(analyze(lines)).toMatchObject({
+      kind: "medida",
+      threshold: null,
+      sustainable: 30,
+      recommended: 45,
+      row: "directo",
+    });
+    const md = buildReport(lines);
+    expect(md).toContain("sin umbral hasta 30 s");
+    expect(md).toMatch(/\*\*Recomendada \(C\\\*\): 45 s\*\*/);
+    expect(marked(md)).toEqual([expect.stringContaining("≤ 45 s")]);
+  });
+
+  it("row 60 s – 3 min: empty at the 6th round of 45 s; sustainable 60, recommended 90; counts before the empty", async () => {
+    const at = firstOfStep(45) + 5;
+    const lines = await series(at);
+    const a = analyze(lines);
+    // The 6th round of 45 s starts 60 s after the last of 60 s plus 5 × 45 s.
+    // Before it: 5 of 45 s, then the 60 s rounds at −285, −345… and the 90 s ones.
+    expect(a).toMatchObject({
+      kind: "medida",
+      threshold: {
+        step: 45,
+        nInStep: 6,
+        inStep: 5,
+        last10: 5 + 6,
+        last30: 5 + 26,
+        last60: 5 + 30 + 17,
+      },
+      sustainable: 60,
+      recommended: 90,
+      row: "sen-sinal",
+    });
+    const md = buildReport(lines);
+    expect(md).toMatch(/Umbral: escalón de 45 s/);
+    expect(marked(md)).toEqual([expect.stringContaining("60 s – 3 min")]);
+  });
+
+  it("row sin cadencia: empty within the first step (180 s)", async () => {
+    const lines = await series(4);
+    expect(analyze(lines)).toMatchObject({
+      sustainable: null,
+      recommended: null,
+      row: "sin-cadencia",
+    });
+    const md = buildReport(lines);
+    expect(md).toContain("sin cadencia sostenible");
+    expect(marked(md)).toEqual([expect.stringContaining("sin cadencia")]);
+  });
+
+  it("row sin cadencia: only 180 s held, and there is no slower step for the margin", async () => {
+    const lines = await series(firstOfStep(120) + 2);
+    expect(analyze(lines)).toMatchObject({
+      sustainable: 180,
+      recommended: null,
+      row: "sin-cadencia",
+    });
+    expect(marked(buildReport(lines))).toEqual([
+      expect.stringContaining("sin cadencia"),
+    ]);
+  });
+
+  it("bloqueada-al-inicio: no measure, no row marked, CA-8 stays open", async () => {
+    const h = harness(() => new Response(EMPTY, { status: 200 }));
+    await calibrate(h.ok, h.deps);
+    expect(analyze(h.lines)).toMatchObject({
+      kind: "bloqueada-al-inicio",
+      row: null,
+    });
+    const md = buildReport(h.lines);
+    expect(md).toContain("bloqueada-al-inicio");
+    expect(marked(md)).toEqual([]);
+  });
+
+  it("a series stopped without an empty (non-2xx) has no threshold and is not 'sin umbral hasta 30 s'", async () => {
+    const h = harness((c) =>
+      c.n === callOfRound(firstOfStep(60) + 3)
+        ? new Response("x", { status: 500 })
+        : undefined,
+    );
+    await calibrate(h.ok, h.deps);
+    expect(analyze(h.lines)).toMatchObject({
+      threshold: null,
+      sustainable: 90,
+      recommended: 120,
+      stop: "no-2xx",
+    });
+    expect(buildReport(h.lines)).not.toContain("sin umbral hasta 30 s");
   });
 });

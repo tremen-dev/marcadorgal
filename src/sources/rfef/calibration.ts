@@ -406,7 +406,193 @@ export async function runSeries(deps: CalibrateDeps): Promise<Outcome> {
   }
 }
 
-// CA-7: the report, from the JSONL of one series.
-export function buildReport(_lines: readonly CalibrationLine[]): string {
-  throw new Error("CA-7");
+// CA-7: the analysis of one series, from its JSONL alone.
+export type Row = "directo" | "sen-sinal" | "sin-cadencia";
+export type Threshold = {
+  step: number;
+  nInStep: number;
+  at: string;
+  // Requests (every line, portadas included) before the empty.
+  inStep: number;
+  last10: number;
+  last30: number;
+  last60: number;
+};
+export type Analysis = {
+  kind: "medida" | "bloqueada-al-inicio";
+  first: string;
+  last: string;
+  requests: number;
+  rounds: number;
+  stale: number;
+  stop: Exclude<Result, "ok"> | null;
+  completed: number[];
+  threshold: Threshold | null;
+  sustainable: number | null;
+  recommended: number | null;
+  row: Row | null;
+};
+
+// The decision table of SPEC-032 (notes for the human gate), on C*.
+export const rowOf = (recommended: number | null): Row =>
+  recommended === null
+    ? "sin-cadencia"
+    : recommended <= 45
+      ? "directo"
+      : "sen-sinal";
+
+export function analyze(
+  lines: readonly CalibrationLine[],
+  plan: Plan = buildPlan(),
+): Analysis {
+  if (lines.length === 0) throw new Error("a series with no lines");
+  const lastLine = lines[lines.length - 1];
+  const stopLine = lines.find(
+    (l) => l.resultado !== "ok" && l.resultado !== "nlogin",
+  );
+  const nloginStop =
+    stopLine === undefined && lastLine.resultado === "nlogin"
+      ? lastLine
+      : undefined;
+  const stop = stopLine?.resultado ?? nloginStop?.resultado ?? null;
+  const base = {
+    first: lines[0].inicio,
+    last: lastLine.inicio,
+    requests: lines.length,
+    rounds: new Set(lines.map((l) => l.vuelta)).size,
+    stale: lines.filter((l) => l.rancia).length,
+    stop: stop === "ok" ? null : stop,
+  };
+  if (stop === "bloqueada-al-inicio")
+    return {
+      kind: "bloqueada-al-inicio",
+      ...base,
+      completed: [],
+      threshold: null,
+      sustainable: null,
+      recommended: null,
+      row: null,
+    };
+
+  // A step is completed when its last round got a good panel.
+  const steps = plan.steps;
+  const completed = steps
+    .filter((s) =>
+      lines.some(
+        (l) =>
+          l.escalon === s.intervalSeconds &&
+          l.nEscalon === s.rounds &&
+          l.metodo === "POST" &&
+          l.resultado === "ok",
+      ),
+    )
+    .map((s) => s.intervalSeconds);
+
+  let threshold: Threshold | null = null;
+  const empty = lines.find((l) => l.resultado === "vacio");
+  if (empty !== undefined) {
+    const at = Date.parse(empty.inicio);
+    const before = lines.filter((l) => Date.parse(l.inicio) < at);
+    const within = (minutes: number) =>
+      before.filter((l) => at - Date.parse(l.inicio) <= minutes * 60_000)
+        .length;
+    threshold = {
+      step: empty.escalon,
+      nInStep: empty.nEscalon,
+      at: empty.inicio,
+      inStep: before.filter((l) => l.escalon === empty.escalon).length,
+      last10: within(10),
+      last30: within(30),
+      last60: within(60),
+    };
+  }
+
+  // Steps run from slow to fast: the sustainable one is the fastest held,
+  // and the recommended one is the step before it (one step of margin).
+  const held = steps.filter((s) => completed.includes(s.intervalSeconds));
+  const fastest = held.length > 0 ? held[held.length - 1] : null;
+  const i = fastest === null ? -1 : steps.indexOf(fastest);
+  const recommended = i > 0 ? steps[i - 1].intervalSeconds : null;
+  return {
+    kind: "medida",
+    ...base,
+    completed,
+    threshold,
+    sustainable: fastest?.intervalSeconds ?? null,
+    recommended,
+    row: rowOf(recommended),
+  };
+}
+
+const TABLE: { row: Row; cadence: string; option: string }[] = [
+  {
+    row: "directo",
+    cadence: "≤ 45 s",
+    option:
+      "Directo en las franjas de H-2; la latencia se comprueba en la jornada medida",
+  },
+  {
+    row: "sen-sinal",
+    cadence: "60 s – 3 min",
+    option:
+      "Solo `sen sinal` y corrección de finales (H-2 b); criterio 3 no se cumple para la RFEF",
+  },
+  {
+    row: "sin-cadencia",
+    cadence: "sin cadencia",
+    option: "No hay alta por esta vía; solo acceso autorizado",
+  },
+];
+
+export function buildReport(
+  lines: readonly CalibrationLine[],
+  plan: Plan = buildPlan(),
+): string {
+  const a = analyze(lines, plan);
+  const out = [
+    `# Calibración RFEF — ${a.first.slice(0, 10)}`,
+    "",
+    "SPEC-032, ADR-019 §1-§2. Generado por `npm run rfef:calibrar` desde el JSONL de la serie.",
+    "",
+    `- Serie: ${a.first} → ${a.last}; ${a.requests} peticiones en ${a.rounds} vueltas; ${a.stale} rancias (ADR-018 §4).`,
+    `- Final: ${a.stop === null ? "plan completo" : `parada por \`${a.stop}\``}.`,
+  ];
+  if (a.kind === "bloqueada-al-inicio") {
+    out.push(
+      "- **bloqueada-al-inicio**: la primera vuelta volvió vacía; la IP no estaba libre. Sin medida: CA-8 sigue abierto y la serie se repite otro día de partido, tras 24 h de reposo.",
+    );
+  } else {
+    const t = a.threshold;
+    out.push(
+      t === null
+        ? a.stop === null
+          ? "- Umbral: sin umbral hasta 30 s."
+          : `- Umbral: sin vacío; la serie paró por \`${a.stop}\` antes de acabar el plan.`
+        : `- Umbral: escalón de ${t.step} s, vuelta ${t.nInStep} del escalón (${t.at}); peticiones antes del vacío: ${t.inStep} en ese escalón, ${t.last10} en los 10 min previos, ${t.last30} en los 30 min, ${t.last60} en los 60 min.`,
+      `- Escalones completados sin vacío: ${a.completed.length > 0 ? a.completed.map((c) => `${c} s`).join(", ") : "ninguno"}.`,
+      a.sustainable === null
+        ? "- Sostenible: sin cadencia sostenible."
+        : `- Sostenible: ${a.sustainable} s.`,
+      a.recommended === null
+        ? a.sustainable === null
+          ? "- **Recomendada (C\\*): sin cadencia sostenible.**"
+          : `- **Recomendada (C\\*): sin cadencia** — no hay un escalón más lento que ${a.sustainable} s para dejar margen.`
+        : `- **Recomendada (C\\*): ${a.recommended} s**`,
+    );
+  }
+  out.push(
+    "",
+    "## Tabla de decisión",
+    "",
+    "Sobre la cadencia recomendada C\\*; la decide el titular. Retraso medio de detección ~C\\*/2, más la publicación de la RFEF (sin medir).",
+    "",
+    "| | C\\* | Opción |",
+    "|---|---|---|",
+    ...TABLE.map(
+      (r) =>
+        `| ${r.row === a.row ? "**→**" : ""} | ${r.cadence} | ${r.option} |`,
+    ),
+    "",
+  );
+  return out.join("\n");
 }
