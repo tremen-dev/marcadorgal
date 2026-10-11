@@ -2,10 +2,11 @@
 id: SPEC-032
 tipo: spec
 epica: EPIC-004
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-11, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-11, por: Alberto Fojo}
 ---
 # SPEC-032 — Calibración de la cadencia sostenible de la RFEF con una identidad estable
 
@@ -111,3 +112,10 @@ El retraso medio de detección es ~C\*/2, más la publicación de la RFEF (sin m
 - **H-4 Parámetros:** escalones, permanencia `max(30 min, 10)`, margen de un
   escalón y 24 h de reposo. Durante la serie, nadie navega la RFEF desde esa IP.
 - **H-5** Aprobar ADR-019 (supersede solo ADR-018 §1).
+
+**Resuelto por el titular (Alberto Fojo, 2026-10-11):** H-1 sí, la vía de
+consumo mínimo se abre en paralelo al acceso autorizado; H-2 se decide con el
+informe de la calibración (C\* ≤ 45 s → todas las franjas; ≥ 60 s → solo
+`sen sinal` + cierre); H-3 desde este Mac tras 24 h de reposo, confirmación en
+producción con la IP estática al dar de alta; H-4 parámetros tal cual; H-5
+ADR-019 aprobado.
