@@ -1,4 +1,8 @@
-import type { AliasFile, RawCapture } from "../../model/index.ts";
+import {
+  type AliasFile,
+  type RawCapture,
+  shiftInstant,
+} from "../../model/index.ts";
 import {
   charsetOf,
   createRfef,
@@ -217,7 +221,9 @@ async function sha256(bytes: Uint8Array<ArrayBuffer>): Promise<string> {
   ).join("");
 }
 
-const iso = (ms: number): string => new Date(ms).toISOString();
+// The model's formatter: an epoch millisecond as an Instant (ISO, Z).
+const iso = (ms: number): string =>
+  shiftInstant("1970-01-01T00:00:00.000Z", ms);
 
 export async function calibrate(
   options: CalibrateOptions,
@@ -308,17 +314,8 @@ export async function runSeries(deps: CalibrateDeps): Promise<Outcome> {
     ).decode(bytes);
     const ok = response.status >= 200 && response.status <= 299;
     const redirect = response.status >= 300 && response.status <= 399;
-    if (ok && bytes.length === 0)
-      line.resultado = round.index === 1 ? "bloqueada-al-inicio" : "vacio";
-    else if (!post) {
-      // The portada: only its cookie matters (as in the adapter).
-      const cookie = sessionCookie(response);
-      if (cookie !== null) session = cookie;
-      else line.resultado = ok || redirect ? "sin-sesion" : "no-2xx";
-    } else if (redirect || (ok && NLOGIN.test(text))) line.resultado = "nlogin";
-    else if (!ok) line.resultado = "no-2xx";
-    else {
-      const capture = {
+    const parse = () => {
+      const parsed = adapter.parse({
         sourceId: adapter.id,
         capturedAt: line.inicio,
         requests: [
@@ -332,10 +329,22 @@ export async function runSeries(deps: CalibrateDeps): Promise<Outcome> {
             body: text,
           },
         ],
-      } as RawCapture;
-      const parsed = adapter.parse(capture);
+      } as RawCapture);
       line.observaciones = parsed.observations.length;
       line.requestErrors = parsed.requestErrors.map((r) => r.error);
+    };
+    if (ok && bytes.length === 0) {
+      line.resultado = round.index === 1 ? "bloqueada-al-inicio" : "vacio";
+      if (post) parse(); // "empty body" (ADR-018 §3)
+    } else if (!post) {
+      // The portada: only its cookie matters (as in the adapter).
+      const cookie = sessionCookie(response);
+      if (cookie !== null) session = cookie;
+      else line.resultado = ok || redirect ? "sin-sesion" : "no-2xx";
+    } else if (redirect || (ok && NLOGIN.test(text))) line.resultado = "nlogin";
+    else if (!ok) line.resultado = "no-2xx";
+    else {
+      parse();
       try {
         line.filas = readPanel(text).rows.length;
       } catch {

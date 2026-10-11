@@ -2,7 +2,6 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 import { AliasFile } from "../../model/index.ts";
-import { sourceConfig } from "../registry.ts";
 import {
   PANEL_ENJUEGO_QUERY,
   PANEL_QUERY,
@@ -103,6 +102,8 @@ describe("CA-1 dry-run plan", () => {
 
 // ---- Harness: a fetch double and a fake clock -------------------------------
 
+// Bytes on their own ArrayBuffer, as a Response body wants them.
+const copy = (b: Uint8Array) => Uint8Array.from(b);
 const T0 = Date.parse("2026-10-17T15:00:00Z");
 const ALIASES = AliasFile.parse(
   JSON.parse(
@@ -121,12 +122,16 @@ const CALENDAR = [
   },
 ] as unknown as CalendarMatch[];
 const COOKIE = "SECRETO0123456789ABCDEF";
-const TODOS = fixtureBytes("campo-post-2026-10-11T15-00-15Z-todos.raw.gz");
-const ENJUEGO = fixtureBytes("paneles-fed3-enjuego-2026-10-10T21-33-30Z.raw");
+const TODOS = copy(
+  fixtureBytes("campo-post-2026-10-11T15-00-15Z-todos.raw.gz"),
+);
+const ENJUEGO = copy(
+  fixtureBytes("paneles-fed3-enjuego-2026-10-10T21-33-30Z.raw"),
+);
 const LOGIN = readFileSync(
   new URL("fixtures/sin-cookie-aceptada.html", import.meta.url),
 );
-const EMPTY = fixtureBytes(EMPTY_BODY_FILE);
+const EMPTY = copy(fixtureBytes(EMPTY_BODY_FILE));
 const CT = "text/html;charset=ISO-8859-15";
 
 type Call = { url: string; init: RequestInit; at: number; n: number };
@@ -137,9 +142,9 @@ const portadaReply = (cookie = COOKIE) =>
     status: 302,
     headers: { "set-cookie": `JSESSIONID=${cookie}; Path=/pnfg` },
   });
-const panelReply = (bytes: Uint8Array, salt = "") =>
+const panelReply = (bytes: Uint8Array<ArrayBuffer>, salt = "") =>
   new Response(
-    salt === "" ? bytes : Buffer.concat([bytes, Buffer.from(salt)]),
+    salt === "" ? bytes : copy(Buffer.concat([bytes, Buffer.from(salt)])),
     {
       status: 200,
       headers: {
@@ -235,7 +240,7 @@ describe("CA-2 the production pattern (ADR-019 §1-§2)", () => {
     }
   });
 
-  it("uses the constants of adapter.ts and the UA of the registry", () => {
+  it("uses the constants of adapter.ts", () => {
     expect(PANEL_ENJUEGO_QUERY).toBe(`${PANEL_QUERY}&Sch_en_juego=1`);
     expect(panelInit("X", USER_AGENT, PANEL_QUERY)).toEqual({
       method: "POST",
@@ -248,8 +253,8 @@ describe("CA-2 the production pattern (ADR-019 §1-§2)", () => {
       body: PANEL_QUERY,
     });
     expect(portadaInit(USER_AGENT)).toMatchObject({ redirect: "manual" });
-    // ADR-019 §6: the declared identity is the UA of the registry.
-    expect(USER_AGENT).toBe(sourceConfig("api-football")?.userAgent);
+    // ADR-019 §6: the declared UA equals the registry's
+    // (src/arch/rfef-identity.test.ts compares it from outside src/sources).
   });
 
   it.each([
@@ -388,7 +393,13 @@ describe("CA-4 stop at the first empty body", () => {
     expect(outcome).toMatchObject({
       kind: "parada",
       result: "vacio",
-      line: { escalon: 90, nEscalon: 12, vuelta: 37, bytes: 0 },
+      line: {
+        escalon: 90,
+        nEscalon: 12,
+        vuelta: 37,
+        bytes: 0,
+        requestErrors: ["empty body"],
+      },
     });
     expect(exitCode(outcome)).not.toBe(0);
     expect(h.logs.join("\n")).toMatch(

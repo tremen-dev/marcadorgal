@@ -142,7 +142,7 @@ async function main() {
       throw new Error("--crudo tiene que estar fuera del repo (CA-6)");
   }
 
-  const started = new Date().toISOString();
+  const started = new Date(Date.now()).toISOString();
   const fecha = started.slice(0, 10);
   const jsonl = path.join(QA_DIR, `${fecha}.jsonl`);
   const crudo = flags.crudo && path.join(path.resolve(flags.crudo), fecha);
