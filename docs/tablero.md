@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-10-10
+Actualizado: 2026-10-11
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -41,6 +41,12 @@ Actualizado: 2026-10-10
 | SPEC-027 — navegar-entre-xornadas | hecho | 2026-10-10 (sdd-verificador) |
 | SPEC-028 — mejoras-de-navegacion-lateral-logo-y-titulo-de-la-xornada | hecho | 2026-10-10 (sdd-verificador) |
 
+## EPIC-004 — fuente-rfef (aprobada)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
+| SPEC-031 — adaptador-rfef-fetch-con-sesion-parser-puro-y-decodificador-cerrado-sobre-fixtures-reales | hecho | 2026-10-11 (sdd-verificador) |
+
 ## EPIC-FIX (aprobada)
 
 | Spec | Estado | Último cambio |
@@ -78,9 +84,11 @@ Actualizado: 2026-10-10
 | ADR-014 | aprobada | entorno-de-produccion-y-acceso-publico-a-board | 2026-10-06 (Alberto Fojo) |
 | ADR-015 | aprobada | login-de-la-web-en-supabase-residuo-de-public-en-net-y-tick-firmado | 2026-10-07 (Alberto Fojo) |
 | ADR-016 | aprobada | segundo-reloj-de-medicion-instantes-sellados-por-la-base | 2026-10-09 (Alberto Fojo) |
+| ADR-017 | aprobada | fuente-rfef-panel-de-marcadores-rfef-es-decodificacion-cerrada-y-estados-por-marca-y-reloj | 2026-10-11 (Alberto Fojo) |
+| ADR-018 | aprobada | fuente-rfef-el-panel-por-post-cuerpo-vacio-como-error-y-respuesta-rancia | 2026-10-11 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 26
+- hecho: 27
 - en-revision: 3
 - borrador: 1

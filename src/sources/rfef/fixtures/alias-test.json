@@ -1,0 +1,113 @@
+{
+  "source": "rfef",
+  "season": "2026-27",
+  "competitions": {
+    "33836085": "primera-division",
+    "33836087": "segunda-division",
+    "33836089": "primera-rfef-g1",
+    "33836092": "segunda-rfef-g1",
+    "26991073": "tercera-rfef-g1"
+  },
+  "teams": [
+    {
+      "externalId": "rc deportivo fabril",
+      "externalName": "RC Deportivo Fabril",
+      "teamId": "deportivo-fabril"
+    },
+    {
+      "externalId": "racing club ferrol",
+      "externalName": "Racing Club Ferrol",
+      "teamId": "racing-ferrol"
+    },
+    {
+      "externalId": "real madrid cf",
+      "externalName": "Real Madrid CF",
+      "teamId": "real-madrid"
+    },
+    {
+      "externalId": "villarreal cf",
+      "externalName": "Villarreal CF",
+      "teamId": "villarreal"
+    },
+    {
+      "externalId": "rc celta fortuna",
+      "externalName": "RC Celta Fortuna",
+      "teamId": "celta-fortuna"
+    },
+    {
+      "externalId": "real sociedad de fútbol sad \"b\"",
+      "externalName": "Real Sociedad de Fútbol SAD \"B\"",
+      "teamId": "real-sociedad-b"
+    },
+    {
+      "externalId": "cd mirandés",
+      "externalName": "CD Mirandés",
+      "teamId": "mirandes"
+    },
+    {
+      "externalId": "zamora cf",
+      "externalName": "Zamora CF",
+      "teamId": "zamora"
+    },
+    {
+      "externalId": "málaga cf",
+      "externalName": "Málaga CF",
+      "teamId": "malaga"
+    },
+    {
+      "externalId": "rcd espanyol de barcelona",
+      "externalName": "RCD Espanyol de Barcelona",
+      "teamId": "espanyol"
+    },
+    {
+      "externalId": "rayo vallecano de madrid",
+      "externalName": "Rayo Vallecano de Madrid",
+      "teamId": "rayo-vallecano"
+    },
+    {
+      "externalId": "athletic club",
+      "externalName": "Athletic Club",
+      "teamId": "athletic-club"
+    },
+    {
+      "externalId": "pontevedra c.f. \"b\"",
+      "externalName": "pontevedra c.f. \"B\"",
+      "teamId": "pontevedra-b"
+    },
+    {
+      "externalId": "portonovo s.d.",
+      "externalName": "portonovo s.d.",
+      "teamId": "portonovo"
+    },
+    {
+      "externalId": "atletico arteixo",
+      "externalName": "atletico arteixo",
+      "teamId": "atletico-arteixo"
+    },
+    {
+      "externalId": "u.d. somozas",
+      "externalName": "u.d. somozas",
+      "teamId": "somozas"
+    },
+    {
+      "externalId": "cd coria",
+      "externalName": "CD Coria",
+      "teamId": "extremadura"
+    },
+    {
+      "externalId": "cd extremadura",
+      "externalName": "CD Extremadura",
+      "teamId": "coria"
+    },
+    {
+      "externalId": "ud ourense",
+      "externalName": "UD Ourense",
+      "teamId": "ud-ourense"
+    },
+    {
+      "externalId": "barakaldo cf",
+      "externalName": "Barakaldo CF",
+      "teamId": "celta-c"
+    }
+  ]
+}
