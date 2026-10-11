@@ -59,6 +59,14 @@ parser con fixtures; alias de equipos; registro y alta en el tick; jornada
 medida de cobertura y latencia.
 
 ## Riesgos
+- **Bloqueo por IP (medido el 2026-10-11, bloquea el alta).** Tras ~5 vueltas
+  (~10 min) de consultas automáticas, la RFEF responde 200 con cuerpo vacío a
+  todo (portada incluida) desde esa IP, con bloqueos crecientes (8 → 16 → 30 →
+  50 → 76 → 80+ min). Con la cadencia del tick (30 s) el directo es inviable.
+  Decisión del titular (2026-10-11): se cierra SPEC-031 (parser) y las specs de
+  alta y jornada medida esperan a un **acceso autorizado** (lista blanca de IP o
+  feed) que gestiona el titular. Esquivar el bloqueo (proxies, rotación de IP)
+  queda fuera: es una protección deliberada de la fuente.
 - **Ofuscación del marcador.** Los dígitos llegan ofuscados (JS, CSS
   `::after`, escapes unicode). Si la RFEF la cambia, el parser puede leer
   mal en silencio: con prioridad 50 un dígito falso manda. Es el riesgo
