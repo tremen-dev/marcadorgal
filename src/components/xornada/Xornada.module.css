@@ -242,6 +242,8 @@ a.weekArrow:focus-visible {
    display its class gives it. */
 .row[hidden],
 .competition[hidden],
+.dayGroup[hidden],
+.dayHeader[hidden],
 .empty[hidden],
 .livePill[hidden],
 .navCount[hidden],
@@ -470,6 +472,27 @@ a.weekArrow:focus-visible {
   padding: 0;
 }
 
+/* SPEC-033 CA-2: the header of a day inside a competition. The eyebrow's
+   letter (TYPE.eyebrow), muted, a compact row's height, no fill of its own. */
+.dayGroup {
+  margin: 0;
+}
+
+.dayHeader {
+  display: flex;
+  align-items: center;
+  min-height: var(--row-compact);
+  margin: 0;
+  padding: 0 14px;
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: var(--tracking-eyebrow);
+  color: var(--fg-muted);
+  border-bottom: var(--hairline) solid var(--line-row);
+}
+
 /* Margin · (team, score) × 2. The design's 50px margin grows to 72px because
    the status is a word (ADR-005 exc. 1); the star column is out of v1. Each
    team shares a grid line with its score, so a wrapped name keeps them level. */
@@ -600,6 +623,19 @@ a.weekArrow:focus-visible {
 
 .dim {
   color: var(--fg-muted);
+}
+
+/* SPEC-033 CA-5 (H-5, ADR-005: green is the brand): an Equipo galego. A
+   mark, not a state, so no label; losing or postponed, the deep green in
+   place of the dim, so it never reads as a winner. */
+.galician {
+  font-weight: 600;
+  color: var(--marca);
+}
+
+.galicianDeep {
+  font-weight: 600;
+  color: var(--marca-deep);
 }
 
 .score {
@@ -792,6 +828,10 @@ a.weekArrow:focus-visible {
 
   .arrow {
     font-size: 12px;
+  }
+
+  .dayHeader {
+    padding: 0 var(--space-16);
   }
 
   .row {

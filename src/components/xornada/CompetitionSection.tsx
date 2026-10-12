@@ -1,7 +1,7 @@
 import { type Locale, t } from "@/i18n";
-import type { XornadaCompetition } from "@/xornada/view";
+import type { XornadaCompetition, XornadaDay } from "@/xornada/view";
 import { CountLabel } from "./CountLabel";
-import { liveCountTemplates } from "./labels";
+import { dayHeaderLabel, liveCountTemplates } from "./labels";
 import { MatchRow } from "./MatchRow";
 import styles from "./Xornada.module.css";
 
@@ -10,6 +10,8 @@ type Props = {
   locale: Locale;
   // SPEC-024 CA-9: matchId → minutes since its last observation.
   ages?: ReadonlyMap<string, number>;
+  // SPEC-033 CA-2: the days of the xornada, to know which one is today.
+  days?: readonly XornadaDay[];
 };
 
 export const sectionId = (competitionId: string): string =>
@@ -19,8 +21,14 @@ export const detailsId = (competitionId: string): string =>
 
 // SPEC-023 CA-5: each competition folds with <details>, without JavaScript.
 // The fold lives in the DOM only: never in the URL, never remembered (N-2).
-export function CompetitionSection({ competition, locale, ages }: Props) {
+export function CompetitionSection({
+  competition,
+  locale,
+  ages,
+  days = [],
+}: Props) {
   const { competitionId } = competition;
+  const today = days.find((d) => d.today)?.date ?? null;
   const headingId = `competition-${competitionId}`;
   return (
     <section
@@ -74,16 +82,35 @@ export function CompetitionSection({ competition, locale, ages }: Props) {
             <span className={styles.arrowClosed}>▸</span>
           </span>
         </summary>
-        <ul className={styles.rows}>
-          {competition.rows.map((row) => (
-            <MatchRow
-              key={row.matchId}
-              row={row}
-              locale={locale}
-              age={ages?.get(row.matchId) ?? null}
-            />
-          ))}
-        </ul>
+        {/* SPEC-033 CA-2: each day of the competition under its header, an
+            <h3> below the competition's <h2>. The client hides the headers
+            with a day chosen, and a group left empty by a filter (CA-3). */}
+        {competition.dayGroups.map((group) => (
+          <div
+            key={group.date}
+            className={styles.dayGroup}
+            data-day-group={group.date}
+            data-testid="day-group"
+          >
+            <h3
+              className={styles.dayHeader}
+              data-day-header
+              data-testid="day-header"
+            >
+              {dayHeaderLabel(group, group.date === today, locale)}
+            </h3>
+            <ul className={styles.rows}>
+              {group.rows.map((row) => (
+                <MatchRow
+                  key={row.matchId}
+                  row={row}
+                  locale={locale}
+                  age={ages?.get(row.matchId) ?? null}
+                />
+              ))}
+            </ul>
+          </div>
+        ))}
       </details>
     </section>
   );

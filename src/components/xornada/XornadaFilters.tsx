@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import {
   competitionCounts,
   countFilters,
+  dayGroupView,
   EMPTY_STATE,
   formatCount,
   fragmentOf,
@@ -48,6 +49,17 @@ function apply(root: HTMLElement, state: XornadaState): void {
     day: el.dataset.day ?? "",
   }));
   for (const row of rows) row.el.hidden = !rowMatches(row, state);
+
+  // SPEC-033 CA-3: the day groups and their headers.
+  for (const group of root.querySelectorAll<HTMLElement>("[data-day-group]")) {
+    const view = dayGroupView(
+      rows.filter(({ el }) => group.contains(el)),
+      state,
+    );
+    group.hidden = view.hidden;
+    const header = group.querySelector<HTMLElement>("[data-day-header]");
+    if (header) header.hidden = view.headerHidden;
+  }
 
   let anyVisible = false;
   for (const section of root.querySelectorAll<HTMLElement>(

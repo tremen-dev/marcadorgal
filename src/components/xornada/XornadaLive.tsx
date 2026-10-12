@@ -30,6 +30,8 @@ const REALTIME_SWITCH = process.env.NEXT_PUBLIC_REALTIME;
 // CA-9: the row ages are recalculated without the network.
 const TICK_MS = 30_000;
 
+const NO_GALICIANS: readonly string[] = [];
+
 export type XornadaLiveProps = {
   locale: Locale;
   paths: Readonly<Record<Locale, string>>;
@@ -44,6 +46,9 @@ export type XornadaLiveProps = {
   etag: string | null;
   // SPEC-027 CA-6: computed when served (N-3).
   arrows?: Neighbours;
+  // SPEC-033 CA-4: the names of the Equipo galego, resolved on the server;
+  // the Realtime delta does not carry them.
+  galicians?: readonly string[];
 };
 
 function lazyOpener(config: { url: string; key: string }): OpenChannel {
@@ -118,6 +123,7 @@ export function XornadaLive({
   season,
   etag,
   arrows,
+  galicians = NO_GALICIANS,
 }: XornadaLiveProps) {
   const [snapshot, setSnapshot] = useState<LiveSnapshot>(() => ({
     board: initialBoard(matches, days),
@@ -186,7 +192,11 @@ export function XornadaLive({
   }, [snapshot.board]);
 
   const list = useMemo(() => boardMatches(snapshot.board), [snapshot.board]);
-  const competitions = useMemo(() => buildXornada(list), [list]);
+  const galicianSet = useMemo(() => new Set(galicians), [galicians]);
+  const competitions = useMemo(
+    () => buildXornada(list, galicianSet),
+    [list, galicianSet],
+  );
   const ages = new Map<string, number>();
   for (const m of list) {
     const age = rowAge(m, now);

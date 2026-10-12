@@ -1,7 +1,8 @@
 import { notFound, permanentRedirect, redirect } from "next/navigation";
-import { publicXornadaReader } from "@/board/reader";
+import { publicXornadaReader, seasonOf } from "@/board/reader";
 import { readWeekPage } from "@/board/week-read";
 import { weekParam } from "@/board/week-route";
+import { galicianNames } from "@/calendar/galicians";
 import { nowInstant } from "@/clock";
 import { SnapshotFreshness } from "@/components/xornada/SnapshotFreshness";
 import { XornadaScreen } from "@/components/xornada/XornadaScreen";
@@ -37,7 +38,12 @@ export async function WeekXornada({
   return (
     <XornadaScreen
       locale={locale}
-      competitions={matches === null ? [] : buildXornada(matches)}
+      competitions={
+        matches === null
+          ? []
+          : // SPEC-033 CA-4: the week is inside the season of now.
+            buildXornada(matches, galicianNames(seasonOf(now)))
+      }
       days={matches === null ? [] : xornadaDays(matches, now)}
       paths={{
         gl: `/xornada/${param.week}`,

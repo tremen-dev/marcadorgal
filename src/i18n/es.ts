@@ -37,6 +37,8 @@ export const es: Dictionary = {
     days: "Días",
     dayLabel: "{weekday} {day}",
     dayMonthLabel: "{weekday} {day} {month}",
+    // SPEC-033 CA-2: the header of each day inside a competition.
+    dayHeader: "{weekday} {day} {month}",
     empty: "nada aquí",
     round: "jornada {n}",
     competitions: "Competiciones",
