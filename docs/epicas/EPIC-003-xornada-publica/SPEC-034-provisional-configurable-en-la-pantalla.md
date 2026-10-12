@@ -21,19 +21,19 @@ quiere poder elegir cómo se presenta, y cambiarlo sin rediseñar.
 
 ## Criterios de aceptación
 Solo presentación: el cualificador de la Decision, `PublicMatch` y Realtime no
-cambian. Sin dependencias ni migración si H-1 = 1.
+cambian. Sin dependencias ni migración.
 - **CA-1 Modos (puro).** `src/xornada/` exporta `ProvisionalDisplay = "label" | "mark" | "hidden"` y la fila trae cómo pintar su cualificador según el modo. Solo afecta a `provisional`: `confirmado` nunca se pinta y `sen_sinal` siempre lleva su etiqueta (D-9, EPIC-003 criterio 5). Test de tabla modo × cualificador × estado permitido.
 - **CA-2 `label`.** Igual que hoy (SPEC-019 CA-3): etiqueta i18n `qualifier.provisional` en ámbar junto al margen.
 - **CA-3 `mark` (H-2, H-3).** En el sitio de la etiqueta, el glifo `*` en ámbar (`aria-hidden`) y, para lectores de pantalla, el texto `qualifier.provisional` (`srOnly`). Al pie de la lista, una sola leyenda i18n `qualifier.provisionalLegend` (gl «* provisional: dato dunha soa fonte, aínda sen confirmar»; es «* provisional: dato de una sola fuente, aún sin confirmar»), letra `TYPE.eyebrow` sin mayúsculas, `--fg-muted`. Con JS, la leyenda se oculta si ninguna fila visible (día, filtro, plegado no cuenta) es `provisional`, y vuelve al cambiar. Sin JS, se ve si alguna fila servida lo es. El glifo no es color: el significado lo da glifo + leyenda.
 - **CA-4 `hidden` (H-4).** Nada visible ni leído de `provisional` en la fila; `data-qualifier` sigue en el DOM para tests. Sin leyenda.
-- **CA-5 Dónde se elige (H-1 = 1, recomendada).** Una constante tipada `PROVISIONAL_DISPLAY` en un único módulo de configuración de la web (fuera de `src/xornada/`, que es puro), que la página pasa a la pantalla y al cliente de SPEC-024. Valor inicial según H-2. Test: el valor es uno de los tres modos. Cambiarlo es una línea y un PR. Si H-1 elige otra opción, este CA se reescribe antes de aprobar.
+- **CA-5 Dónde se elige (H-1, H-2).** Una constante tipada `PROVISIONAL_DISPLAY` en un único módulo de configuración de la web (fuera de `src/xornada/`, que es puro), que la página pasa a la pantalla y al cliente de SPEC-024. Valor inicial `mark`. Test: el valor es uno de los tres modos y el valor por defecto es `mark`. Cambiarlo es una línea y un PR; `hidden` es un valor válido, no el inicial.
 - **CA-6 Render y e2e.** Test de render de `MatchRow` y de la leyenda en los tres modos (gl y es). Playwright en `/demo/xornada` y `/es/demo/xornada` con el modo por defecto, 390 y 1440 px, con y sin JS: glifo y leyenda presentes, leyenda oculta con «Rematados» si no queda `provisional`, `sen_sinal` con etiqueta. La demo tiene `provisional` en `live` y `finished`. Nada se trunca, textos solo de `src/i18n/` (paridad), colores por tokens, ningún `font:`.
 - **CA-7 Gates.** `npm run gates`, `e2e`, `e2e:db` en verde. `git diff origin/main --stat -- src/sources src/decide src/ingest src/board src/app/api supabase` vacío.
 
 ## Entidades y reglas afectadas
 Cualificador (`dominio.md`), RN-02, RN-05. D-8, D-9. ADR-005 (ámbar =
 provisional; nunca solo color; exc. 2). SPEC-019 CA-3, SPEC-024 (cliente).
-Con `hidden` o `mark` por defecto: precisión en `dominio.md` (H-4).
+Precisa la nota de Cualificador en `dominio.md` (H-4).
 
 ## Fuera de alcance
 Cambiar cuándo una Decision es `provisional` (motor, EPIC-002); configurar
