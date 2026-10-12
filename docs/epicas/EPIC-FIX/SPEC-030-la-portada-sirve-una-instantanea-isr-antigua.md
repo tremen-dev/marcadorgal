@@ -2,10 +2,11 @@
 id: SPEC-030
 tipo: spec
 epica: EPIC-FIX
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-10, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-12, por: Alberto Fojo}
 ---
 # SPEC-030 — La portada sirve una instantánea ISR antigua
 
@@ -72,6 +73,8 @@ SPEC-025 CA-3; SPEC-026 CA-2/CA-4; SPEC-027 CA-4.
 - **Plan Free (Supabase).** La carga de lecturas no sube de forma apreciable.
   Vercel: una invocación por MISS. A la escala de hoy no cuenta. Si cambia,
   se mira en la jornada publicada.
+- **Resolución del titular (2026-10-12, Alberto Fojo):** H-1 → (a), portada
+  dinámica cacheada por la CDN. H-2 → sí, CA-3 se queda como cinturón.
 - **Confirmar en la implementación:** que la CDN de Vercel cachea la página
   dinámica con esas directivas, como se espera de `/api/board` (hoy MISS en el
   sondeo). Si no, PARA y vuelve al gate.
