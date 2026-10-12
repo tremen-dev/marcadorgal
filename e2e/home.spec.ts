@@ -60,6 +60,10 @@ for (const route of routes) {
       const response = await request.get(route.path);
       const headers = response.headers();
       expect(headers["cache-control"]).toBe(CACHE);
+      // F-SPEC-030-1: what Vercel's CDN reads over the function's header.
+      expect(headers["vercel-cdn-cache-control"]).toBe(
+        "s-maxage=10, stale-while-revalidate=30",
+      );
       expect(headers["x-nextjs-prerender"]).toBeUndefined();
       expect(headers["x-nextjs-cache"]).toBeUndefined();
     });
