@@ -315,6 +315,9 @@ const RAW: unknown[] = [
 // SPEC-023: the demonstration's «now», so its strip has a today (Saturday).
 export const DEMO_NOW = "2026-10-03T16:50:00Z";
 
+// SPEC-033 CA-4: the season of its names, for the Equipo galego.
+export const DEMO_SEASON = "2026-27";
+
 export const DEMO_MATCHES: readonly PublicMatch[] = z
   .array(PublicMatch)
   .parse(RAW);

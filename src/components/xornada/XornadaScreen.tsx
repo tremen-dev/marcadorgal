@@ -19,7 +19,10 @@ type Props = {
   unavailable?: boolean;
   // SPEC-024: / and /es keep themselves up to date in the client; the demos
   // do not (they neither subscribe nor poll).
-  live?: Pick<XornadaLiveProps, "matches" | "servedAt" | "season" | "etag">;
+  live?: Pick<
+    XornadaLiveProps,
+    "matches" | "servedAt" | "season" | "etag" | "galicians"
+  >;
   // SPEC-027: ‹ and › of the strip, and the freshness line of a week page
   // (a snapshot, never live: H-4).
   arrows?: Neighbours;

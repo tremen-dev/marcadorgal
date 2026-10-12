@@ -543,3 +543,42 @@ describe("SPEC-025 CA-3 the row carries its version", () => {
     expect(rowOf(match({ status: "live" })).version).toBe(3);
   });
 });
+
+// SPEC-033 CA-4 (H-3, H-4): the set of Equipo galego names comes as a
+// parameter (src/xornada does not read data/); each row says which side is.
+describe("SPEC-033 CA-4 buildXornada galician sides", () => {
+  const galicians = new Set(["RC Celta", "CD Lugo", "Silva SD", "UD Somozas"]);
+
+  it("by name, also when the row shows the shortName", () => {
+    const [competition] = buildXornada([match()], galicians);
+    expect(competition.rows[0]).toMatchObject({
+      home: "Celta",
+      homeGalician: true,
+      awayGalician: false,
+    });
+  });
+
+  it("both sides of an all-galician match, in any competition", () => {
+    const [competition] = buildXornada(
+      [
+        match({
+          tier: 5,
+          home: { name: "Silva SD", shortName: "Silva" },
+          away: { name: "UD Somozas", shortName: "Somozas" },
+        }),
+      ],
+      galicians,
+    );
+    expect(competition.rows[0]).toMatchObject({
+      homeGalician: true,
+      awayGalician: true,
+    });
+  });
+
+  it("without the set, no side is galician", () => {
+    expect(rowOf(match())).toMatchObject({
+      homeGalician: false,
+      awayGalician: false,
+    });
+  });
+});

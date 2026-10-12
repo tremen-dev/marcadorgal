@@ -3,6 +3,7 @@ import { boardEtag } from "@/board/http";
 import { publicXornadaReader, seasonOf } from "@/board/reader";
 import { readHome } from "@/board/week-read";
 import type { Neighbours } from "@/board/weeks";
+import { galicianNames } from "@/calendar/galicians";
 import { nowInstant } from "@/clock";
 import { XornadaScreen } from "@/components/xornada/XornadaScreen";
 import { type Locale, t } from "@/i18n";
@@ -46,10 +47,13 @@ export async function HomeXornada({ locale }: { locale: Locale }) {
   const now = nowInstant();
   const read = await snapshot(now, locale);
   const matches = read?.matches ?? null;
+  const season = seasonOf(now);
+  // SPEC-033 CA-4: resolved here, on the server; the client gets the same.
+  const galicians = galicianNames(season);
   return (
     <XornadaScreen
       locale={locale}
-      competitions={matches === null ? [] : buildXornada(matches)}
+      competitions={matches === null ? [] : buildXornada(matches, galicians)}
       days={matches === null ? [] : xornadaDays(matches, now)}
       paths={HOME_PATHS}
       unavailable={matches === null}
@@ -58,8 +62,9 @@ export async function HomeXornada({ locale }: { locale: Locale }) {
       live={{
         matches: matches ?? [],
         servedAt: now,
-        season: seasonOf(now),
+        season,
         etag: matches === null ? null : boardEtag(matches),
+        galicians: [...galicians],
       }}
     />
   );

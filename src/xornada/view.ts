@@ -28,6 +28,9 @@ export type XornadaRow = {
   qualifier: Qualifier;
   home: string;
   away: string;
+  // SPEC-033 CA-4: the side is an Equipo galego (its name is marked, CA-5).
+  homeGalician: boolean;
+  awayGalician: boolean;
   score: Score | null;
   margin: Margin;
   statusKey: StatusKey;
@@ -96,13 +99,15 @@ function winnerOf(m: PublicMatch): XornadaRow["winner"] {
   return null;
 }
 
-function rowOf(m: PublicMatch): XornadaRow {
+function toRow(m: PublicMatch, galicians: ReadonlySet<string>): XornadaRow {
   return {
     matchId: m.matchId,
     status: m.status,
     qualifier: m.qualifier,
     home: m.home.shortName ?? m.home.name,
     away: m.away.shortName ?? m.away.name,
+    homeGalician: galicians.has(m.home.name),
+    awayGalician: galicians.has(m.away.name),
     score: m.score,
     margin: marginOf(m),
     statusKey: `status.${m.status}`,
@@ -123,8 +128,16 @@ export function minuteLabel(
     : `${minute.minute}+${minute.addedMinute}'`;
 }
 
+const NO_GALICIANS: ReadonlySet<string> = new Set();
+
 // Competitions by tier ascending (H-1), then by id for a stable order.
-export function buildXornada(matches: PublicMatch[]): XornadaCompetition[] {
+// SPEC-033 CA-4: `galicians` are the names of the Equipo galego of the
+// season, resolved on the server; this module never reads data/.
+export function buildXornada(
+  matches: readonly PublicMatch[],
+  galicians: ReadonlySet<string> = NO_GALICIANS,
+): XornadaCompetition[] {
+  const rowOf = (m: PublicMatch) => toRow(m, galicians);
   const byCompetition = new Map<CompetitionId, PublicMatch[]>();
   for (const m of matches) {
     const group = byCompetition.get(m.competitionId) ?? [];
