@@ -38,6 +38,7 @@ epica: EPIC-004
 - **F-SPEC-032-3** (spec de alta): el mapa `codgrupo` → competición sale de `src/sources/rfef/fixtures/alias-test.json`; no existe `data/alias/2026-27/rfef.json`.
 - **F-SPEC-032-4** (spec de alta): `USER_AGENT` vive en `adapter.ts`, pero el adaptador sigue enviando `ctx.userAgent`; al registrar la rfef, su entrada debe declarar ese UA.
 - **F-SPEC-032-5** (operación): si la serie se corta a mano, el informe se regenera con `npm run rfef:calibrar -- --informe <jsonl>`.
+- **F-SPEC-032-6** (residual de SPEC-031, se cierra aquí por E-1): `adapter.ts` y la calibración abren sesión sin el GET a `NLogin` y en real el POST rebota (`_qa/calibracion/2026-10-12-handshake.md`, `2026-10-12.jsonl`). Los dobles aceptaban la cookie de la portada. Arreglo: ADR-020, CA-2 y CA-10 de SPEC-032. PR #63 no lo lleva.
 
 ## Cómo retomar (handoff)
 <!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->

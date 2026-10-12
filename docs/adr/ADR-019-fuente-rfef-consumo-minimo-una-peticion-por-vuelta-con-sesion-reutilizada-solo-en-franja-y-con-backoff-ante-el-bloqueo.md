@@ -22,7 +22,10 @@ serie hacía de 3 a 6 peticiones cada 2 min: portada nueva (sesión nueva), pane
 intento cada 30 s (~4/min): más que la serie que provocó el bloqueo.
 
 ## Decisión
-1. **Una petición por vuelta.** La `JSESSIONID` se reutiliza mientras valga. La
+1. **Una petición por vuelta.** *2026-10-12, supersedido en parte por ADR-020
+   (borrador, pendiente del titular):* la apertura de sesión es portada + `NLogin`,
+   la renovación es apertura + un reintento y el tope por vuelta es 3 al abrir y
+   4 al renovar. La `JSESSIONID` se reutiliza mientras valga. La
    guarda el núcleo, fuera del crudo, en un almacén privado del servidor; el
    adaptador la recibe en el contexto y devuelve la renovada fuera de la
    captura (cambio de contexto de ADR-003, en la spec de alta). Se renueva solo

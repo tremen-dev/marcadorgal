@@ -24,18 +24,22 @@ número y la recomendación al titular. No da de alta nada.
 - Espectador: nada.
 
 ## Criterios de aceptación
-- **CA-1 Plan en seco.** `npm run rfef:calibrar -- --dry-run` imprime los
+- **CA-1 Plan en seco.** *Enmendado el 2026-10-12, E-1 (pendiente del titular).*
+  `npm run rfef:calibrar -- --dry-run` imprime los
   escalones (180, 120, 90, 60, 45 y 30 s), la permanencia de cada uno, las
-  peticiones máximas (~175) y la duración máxima (~3 h). Con un `fetch` doble,
+  peticiones máximas (~177, con la apertura de sesión de ADR-020) y la duración máxima (~3 h). Con un `fetch` doble,
   0 llamadas.
-- **CA-2 Patrón de producción (ADR-019 §1-§2).** Con `fetch` doble y reloj
-  falso: la vuelta 1 hace un GET a la portada y un POST `todos`. Las siguientes
-  hacen **un** POST `Sch_en_juego=1` con la misma cookie. La última (fin de plan)
-  hace un POST `todos`. Ante un 3xx o un cuerpo `NLogin`, hace un GET a la
-  portada y **un** reintento; un segundo `NLogin` para la serie. URL, cuerpo,
-  `Content-Type`, `redirect: "manual"` y UA salen de las mismas constantes que
-  `src/sources/rfef/adapter.ts` (un test compara). Nunca más de 3 peticiones
-  por vuelta.
+- **CA-2 Patrón de producción (ADR-019 §1-§2, ADR-020).** *Enmendado el
+  2026-10-12, E-1 (pendiente del titular).* Con el doble estricto de CA-10 y
+  reloj falso: la vuelta 1 abre sesión (portada y `NLogin`, ADR-020 §1) y hace
+  un POST `todos`. Las siguientes hacen **un** POST `Sch_en_juego=1` con la
+  misma cookie. La última (fin de plan) hace un POST `todos`. Ante un 3xx o un
+  cuerpo `NLogin`, abre sesión otra vez y hace **un** reintento. Paran la serie
+  un segundo `NLogin`, el rebote del POST justo tras abrir y una apertura que
+  no cumple ADR-020 §1. URL, cuerpo, `Content-Type`, `redirect: "manual"`, UA y
+  la apertura salen de las mismas constantes y funciones que
+  `src/sources/rfef/adapter.ts` (un test compara). Peticiones por vuelta:
+  3 si abre, 4 si renueva, 1 en las demás.
 - **CA-3 Escalones y permanencia.** Con reloj falso, los inicios de petición
   salen separados exactamente por el intervalo del escalón (nunca antes). Cada
   escalón dura `max(30 min, 10 peticiones)` antes de bajar al siguiente. Una
@@ -78,10 +82,27 @@ número y la recomendación al titular. No da de alta nada.
   `src/model` y de `src/sources/rfef`. La cáscara es `tools/calibrar-rfef.mjs`.
   Sin cambios en `registry.ts` ni en `ADAPTERS`. Sin dependencias nuevas.
   `npm run gates` → 0.
+- **CA-10 Handshake real en el adaptador (ADR-020).** *Añadido el 2026-10-12,
+  E-1 (pendiente del titular).* Un doble **estricto** reproduce las cabeceras
+  de `_qa/calibracion/2026-10-12-handshake.md`: la portada sin cookie responde
+  `302` con `Set-Cookie: JSESSIONID=…; Path=/pnfg; Secure; HttpOnly` y
+  `Location: /pnfg/NLogin?NSess=1`; ese `NLogin` con la cookie responde `302`
+  con `Location: https://marcadores.rfef.es/pnfg/` y activa la cookie; el POST
+  al panel da `200` con un fixture real solo con la cookie activa, y si no,
+  `302` a `/pnfg/NLogin`. (i) Contra ese doble, `fetch` de `adapter.ts` hace
+  exactamente portada → `NLogin` → POST (método, URL con su query, cookie, UA,
+  `redirect: "manual"`) y devuelve 1 request (el panel) que `parse` lee sin
+  `requestErrors`. (ii) El doble no perdona: portada → POST sin `NLogin` recibe
+  `302` a `NLogin` (test), y quitar el paso de `adapter.ts` pone (i) en rojo.
+  (iii) Lanzan sin llegar al POST: portada sin cookie o sin `Location` a
+  `/pnfg/NLogin` del mismo origen, y `NLogin` que no da 3xx o que vuelve a
+  `NLogin`. (iv) Una portada `200` con cuerpo vacío no lanza: va al crudo como
+  la request de la captura y `parse` da `empty body` (ADR-018 §3). La cookie y
+  el `Location` de `NLogin` no aparecen en el crudo.
 
 ## Entidades y reglas afectadas
 Source, Raw capture (`dominio.md`); RN-01, RN-08; D-5, D-7; ADR-002 §2,
-ADR-013, ADR-017, ADR-018, **ADR-019** (borrador).
+ADR-013, ADR-017, ADR-018, ADR-019, **ADR-020** (borrador, E-1).
 
 ## Fuera de alcance
 - Alta, registro, almacén de sesión, backoff en el tick e IP estática de Vercel:
@@ -120,3 +141,31 @@ informe de la calibración (C\* ≤ 45 s → todas las franjas; ≥ 60 s → sol
 `sen sinal` + cierre); H-3 desde este Mac tras 24 h de reposo, confirmación en
 producción con la IP estática al dar de alta; H-4 parámetros tal cual; H-5
 ADR-019 aprobado.
+
+## Enmienda E-1 (2026-10-12, sdd-arquitecto) — pendiente del titular
+Origen: la serie del 2026-10-12T19:16:48Z paró en la vuelta 1 por `NLogin`
+(`_qa/calibracion/2026-10-12.jsonl`). La sesión de la RFEF pide portada →
+`NLogin` → panel (`2026-10-12-handshake.md`); `adapter.ts` y la calibración
+se saltan `NLogin`. Decisión en **ADR-020** (borrador). Cambia: CA-1, CA-2 y
+CA-10 (nuevo). **El arreglo del código compartido de `adapter.ts` va en esta
+spec**, porque SPEC-031 está en `hecho`. Residual de SPEC-031 que se cierra
+aquí: **F-SPEC-032-6** (ledger). PR #63 se fusiona sin el arreglo: el
+adaptador no está registrado (ninguna petición desde producción).
+
+- **Regla de 24 h (CA-5), sin cambios.** La serie del 12 no vale para CA-8 ni es
+  `bloqueada-al-inicio`; su JSONL e informe se quedan como evidencia del
+  defecto. La IP no quedó bloqueada (panel `200` a las 19:18Z). Para la
+  próxima serie, `--ultima-peticion 2026-10-12T19:19:00Z` (cubre las 6
+  peticiones de diagnóstico, cuyo segundo exacto no consta), salvo que alguien
+  navegue la RFEF desde esa IP después.
+- **Ventana para CA-8.** Sáb 17 oct, inicio **14:00Z** (16:00 en Madrid,
+  CEST): `data/calendario/` tiene partidos de las cinco competiciones de
+  14:00Z a 19:00Z, y el plan (≤ 3 h) cabe. Si sale `bloqueada-al-inicio`, el
+  domingo 18 vale (Tercera ×9 a las 16:00Z, Primera RFEF a las 18:30Z) con ≥ 24 h
+  desde la última línea del sábado. Antes: CA-2 y CA-10 en verde, verificados,
+  y `--dry-run`.
+- **H-1 Tope al renovar** (ADR-020 §3): 4 peticiones (renovación + reintento;
+  recomendado) o 3 sin reintento (la vuelta que renueva se queda sin datos).
+- **H-2 Portada vacía** (CA-10 iv): al crudo como `empty body`, para que cuente
+  en el backoff de ADR-019 §4 (recomendado), o que lance como hoy.
+- **H-3** Aprobar ADR-020 y esta enmienda.
