@@ -10,7 +10,8 @@
       "!public",
       "!src/design/tokens.css",
       "!next-env.d.ts",
-      "!.sdd.json"
+      "!.sdd.json",
+      "!src/sources/rfef/fixtures/*.html"
     ]
   },
   "formatter": { "enabled": true, "indentStyle": "space", "indentWidth": 2 },

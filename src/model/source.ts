@@ -25,8 +25,12 @@ export type FetchContext = {
 
 // One request of a capture: the body is text, never interpreted; the url
 // never carries secrets.
+// method and requestBody are optional (ADR-018 §2): GET by default; a POST
+// keeps the body it sent, as is. No request header ever goes here.
 export const RawRequest = z.strictObject({
   url: z.url(),
+  method: z.enum(["GET", "POST"]).optional(),
+  requestBody: z.string().optional(),
   status: z.int(),
   contentType: z.string().nullable(),
   body: z.string(),
@@ -85,8 +89,14 @@ export const Unresolved = z.strictObject({
 });
 export type Unresolved = z.infer<typeof Unresolved>;
 
-// Recorded, not alerted (N-2).
-export const SkippedReason = z.enum(["unsupported_status", "missing_score"]);
+// Recorded, not alerted (N-2). ambiguous_state and suspended_without_score
+// come from the rfef panel (ADR-017 §4, §8.3; SPEC-031).
+export const SkippedReason = z.enum([
+  "unsupported_status",
+  "missing_score",
+  "ambiguous_state",
+  "suspended_without_score",
+]);
 export type SkippedReason = z.infer<typeof SkippedReason>;
 
 export const Skipped = z.strictObject({
