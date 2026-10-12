@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-10-11
+Actualizado: 2026-10-12
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -54,7 +54,7 @@ Actualizado: 2026-10-11
 | SPEC-011 — peticion-live-con-una-sola-competicion-y-errores-por-peticion-que-no-tiran-el-intento | hecho | 2026-09-23 (sdd-verificador) |
 | SPEC-015 — el-calendario-declarado-llega-tarde-a-la-jornada | en-revision | 2026-09-29 (sdd-implementador) |
 | SPEC-022 — test-db-no-toca-storage-de-produccion | hecho | 2026-10-08 (sdd-verificador) |
-| SPEC-030 — la-portada-sirve-una-instantanea-isr-antigua | borrador | 2026-10-10 (sdd-arquitecto) |
+| SPEC-030 — la-portada-sirve-una-instantanea-isr-antigua | hecho | 2026-10-12 (sdd-verificador) |
 
 ## EPIC-MANT — mantenimiento (borrador)
 
@@ -89,6 +89,5 @@ Actualizado: 2026-10-11
 
 ## Resumen
 
-- hecho: 27
+- hecho: 28
 - en-revision: 3
-- borrador: 1

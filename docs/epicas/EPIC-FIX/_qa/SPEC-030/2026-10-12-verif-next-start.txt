@@ -1,0 +1,11 @@
+# verificador 2026-10-12: next start (build con lector local), curl -sI
+== /
+HTTP/1.1 200 OK
+Cache-Control: public, s-maxage=10, stale-while-revalidate=30
+Vercel-CDN-Cache-Control: s-maxage=10, stale-while-revalidate=30
+Date: Mon, 12 Oct 2026 21:07:21 GMT
+== /es
+HTTP/1.1 200 OK
+Cache-Control: public, s-maxage=10, stale-while-revalidate=30
+Vercel-CDN-Cache-Control: s-maxage=10, stale-while-revalidate=30
+Date: Mon, 12 Oct 2026 21:07:21 GMT

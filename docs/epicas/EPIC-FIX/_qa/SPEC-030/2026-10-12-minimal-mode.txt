@@ -1,0 +1,4 @@
+function / 200 cache-control: private, no-cache, no-store, max-age=0, must-revalidate | vercel-cdn-cache-control: null
+platform / [{"key":"Cache-Control","value":"public, s-maxage=10, stale-while-revalidate=30"},{"key":"Vercel-CDN-Cache-Control","value":"s-maxage=10, stale-while-revalidate=30"}]
+function /es 200 cache-control: private, no-cache, no-store, max-age=0, must-revalidate | vercel-cdn-cache-control: null
+platform /es [{"key":"Cache-Control","value":"public, s-maxage=10, stale-while-revalidate=30"},{"key":"Vercel-CDN-Cache-Control","value":"s-maxage=10, stale-while-revalidate=30"}]

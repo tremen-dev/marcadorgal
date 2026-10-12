@@ -156,6 +156,7 @@ export function XornadaLive({
         board: snapshot.board,
         season,
         etag,
+        servedAt,
         fetch: (input, init) => window.fetch(input, init),
         openChannel,
         random: Math.random,
