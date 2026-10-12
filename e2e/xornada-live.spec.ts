@@ -307,6 +307,62 @@ for (const route of [
       await expect(h1).toHaveCount(1);
     });
 
+    // SPEC-033 CA-3 (SPEC-023 N-2): a repaint keeps the day headers hidden
+    // under a chosen day; CA-4: the client marks the Equipo galego with the
+    // set it was served, the delta carries none.
+    test("SPEC-033 CA-3/CA-4: a repaint keeps headers, day and the galician mark", async ({
+      page,
+    }) => {
+      const celta = match("g1", "primera-division", 1, {
+        home: { name: "RC Celta", shortName: "Celta" },
+      });
+      const { addedMinute, halfTime, ...base } = match(
+        "c1",
+        "segunda-division",
+        1,
+        { kickoff: "2026-10-11T16:00:00.000Z" },
+      );
+      void addedMinute;
+      void halfTime;
+      const sunday = {
+        ...base,
+        status: "scheduled",
+        score: null,
+        minute: null,
+      };
+      await routeBoard(page, [
+        { status: 200, etag: '"one"', matches: [...LIST, celta] },
+        { status: 200, etag: '"two"', matches: [...LIST, celta, sunday] },
+      ]);
+      await page.clock.install({ time: NOW });
+      await page.goto(`${route.path}#d=2026-10-10`);
+      await started(page);
+      await page.clock.runFor(POLL);
+      await expect(page.getByTestId("match-row")).toHaveCount(LIST.length + 1);
+      const headers = page.getByTestId("day-header");
+      await expect(headers).toHaveCount(2);
+      for (const h of await headers.all()) await expect(h).toBeHidden();
+      const name = page
+        .locator('[data-match-id="g1"]')
+        .getByTestId("team-name")
+        .first();
+      await expect(name).toHaveText("Celta");
+      await expect(name).toHaveAttribute("data-galician", "true");
+      await expect(name).toHaveCSS("font-weight", "600");
+      await expect(name).toHaveCSS("color", "rgb(86, 219, 143)");
+
+      await page.clock.runFor(POLL);
+      await expect(page.getByTestId("match-row")).toHaveCount(LIST.length + 2);
+      await expect(headers).toHaveCount(3);
+      for (const h of await headers.all()) await expect(h).toBeHidden();
+      await expect(page.locator('[data-day-group="2026-10-11"]')).toBeHidden();
+      expect(new URL(page.url()).hash).toBe("#d=2026-10-10");
+
+      await page.getByTestId("day-link").first().click();
+      for (const h of await headers.all()) await expect(h).toBeVisible();
+      await expect(name).toHaveAttribute("data-galician", "true");
+    });
+
     for (const width of [360, 390, 1024, 1440]) {
       test(`CA-9 at ${width} px: «${route.dict.freshness.lastData}» only on the stale live row, whole, no horizontal scroll`, async ({
         page,
