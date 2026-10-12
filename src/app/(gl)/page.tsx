@@ -1,7 +1,8 @@
 import { HomeXornada, homeMetadata } from "../xornada-home";
 
-// ISR: rendered on the server at most once every 10 s (ADR-014 §6, CA-7).
-export const revalidate = 10;
+// SPEC-030 (H-1 a): rendered per request, never ISR nor prerendered at build;
+// the CDN caches it with the directives of ADR-014 §6 (next.config.ts).
+export const dynamic = "force-dynamic";
 
 export const metadata = homeMetadata("gl");
 
