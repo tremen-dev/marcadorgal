@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-10-11
+Actualizado: 2026-10-12
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -40,6 +40,8 @@ Actualizado: 2026-10-11
 | SPEC-026 — primera-pintura-en-movil-con-3g | en-revision | 2026-10-09 (sdd-implementador) |
 | SPEC-027 — navegar-entre-xornadas | hecho | 2026-10-10 (sdd-verificador) |
 | SPEC-028 — mejoras-de-navegacion-lateral-logo-y-titulo-de-la-xornada | hecho | 2026-10-10 (sdd-verificador) |
+| SPEC-033 — mejoras-de-lectura-cabecera-por-dia-equipos-gallegos-y-favicon | borrador | 2026-10-12 (sdd-arquitecto) |
+| SPEC-034 — provisional-configurable-en-la-pantalla | borrador | 2026-10-12 (sdd-arquitecto) |
 
 ## EPIC-004 — fuente-rfef (aprobada)
 
@@ -91,4 +93,4 @@ Actualizado: 2026-10-11
 
 - hecho: 27
 - en-revision: 3
-- borrador: 1
+- borrador: 3
