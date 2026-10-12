@@ -142,7 +142,7 @@ informe de la calibración (C\* ≤ 45 s → todas las franjas; ≥ 60 s → sol
 producción con la IP estática al dar de alta; H-4 parámetros tal cual; H-5
 ADR-019 aprobado.
 
-## Enmienda E-1 (2026-10-12, sdd-arquitecto) — pendiente del titular
+## Enmienda E-1 (2026-10-12, sdd-arquitecto) — aprobada por el titular (Alberto Fojo, 2026-10-12)
 Origen: la serie del 2026-10-12T19:16:48Z paró en la vuelta 1 por `NLogin`
 (`_qa/calibracion/2026-10-12.jsonl`). La sesión de la RFEF pide portada →
 `NLogin` → panel (`2026-10-12-handshake.md`); `adapter.ts` y la calibración
@@ -169,3 +169,6 @@ adaptador no está registrado (ninguna petición desde producción).
 - **H-2 Portada vacía** (CA-10 iv): al crudo como `empty body`, para que cuente
   en el backoff de ADR-019 §4 (recomendado), o que lance como hoy.
 - **H-3** Aprobar ADR-020 y esta enmienda.
+
+**Resuelto por el titular (2026-10-12):** H-1 tope 4 con reintento; H-2 portada
+vacía al crudo como `empty body`; H-3 ADR-020 y E-1 aprobados.

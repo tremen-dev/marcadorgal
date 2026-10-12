@@ -1,13 +1,15 @@
 ---
 id: ADR-020
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-10-12, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-12, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # ADR-020: Fuente rfef: la sesión se abre en dos pasos (portada y NLogin) y el tope por vuelta pasa a 3 al abrir y 4 al renovar
 
-- Deciders: sdd-arquitecto propone (2026-10-12) a encargo del orquestador, tras el defecto de campo de la serie de calibración del 2026-10-12. Pendiente de aprobación por **Alberto Fojo**.
+- Deciders: sdd-arquitecto propone (2026-10-12) a encargo del orquestador, tras el defecto de campo de la serie de calibración del 2026-10-12. Aprobado por **Alberto Fojo** el 2026-10-12: tope 4 al renovar (con reintento) y portada `200` vacía como `empty body`.
 - Specs relacionadas: SPEC-032 (enmienda E-1: arregla `adapter.ts` y la calibración), SPEC-031 (terminal; esta vía corrige su CA-7 (ii)) y la spec de alta de EPIC-004. **Supersede solo** la apertura y la renovación de sesión de **ADR-019 §1** y el «GET a la portada para la sesión» de **ADR-018 §1**. El POST, su cuerpo, el crudo y ADR-019 §2-§7 no cambian. Evidencia: `docs/epicas/EPIC-004-fuente-rfef/_qa/calibracion/2026-10-12-handshake.md` y `2026-10-12.jsonl`.
 
 ## Contexto
