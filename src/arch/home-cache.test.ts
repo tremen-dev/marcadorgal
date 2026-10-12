@@ -22,9 +22,8 @@ describe("SPEC-030 CA-1 / and /es are dynamic", () => {
   it("/ and /es carry Vercel-CDN-Cache-Control and keep Cache-Control", async () => {
     const rules = (await nextConfig.headers?.()) ?? [];
     const header = (source: string, key: string) =>
-      rules
-        .find((r) => r.source === source)
-        ?.headers.find((h) => h.key === key)?.value;
+      rules.find((r) => r.source === source)?.headers.find((h) => h.key === key)
+        ?.value;
     for (const source of ["/", "/es"]) {
       expect(header(source, "Vercel-CDN-Cache-Control")).toBe(
         "s-maxage=10, stale-while-revalidate=30",

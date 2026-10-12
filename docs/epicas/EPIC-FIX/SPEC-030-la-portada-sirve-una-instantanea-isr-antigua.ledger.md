@@ -15,12 +15,12 @@ epica: EPIC-FIX
 <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
-| CA-1 | `src/app/(gl)/page.tsx`, `src/app/(es)/es/page.tsx` (`dynamic = "force-dynamic"`); cabecera sin cambios en `next.config.ts`. **Bloqueado en Vercel: ver F-SPEC-030-1** | `src/arch/home-cache.test.ts`; `e2e/home.spec.ts` «SPEC-030 CA-1 rendered per request: no ISR headers» | | 🚧 |
-| CA-2 | idem | `e2e/home.spec.ts` «SPEC-030 CA-2 / and /es are not prerendered at build» | | 🚧 |
-| CA-3 | | | | ❌ |
-| CA-4 | | | | ❌ |
-| CA-5 | | | | ❌ |
-| CA-6 | | | | ❌ |
+| CA-1 | `src/app/(gl)/page.tsx`, `src/app/(es)/es/page.tsx` (`dynamic = "force-dynamic"`); `next.config.ts` `headers()` de `/` y `/es`: `Cache-Control` igual + `Vercel-CDN-Cache-Control: s-maxage=10, stale-while-revalidate=30` (`HOME_CDN_CACHE_CONTROL`, `src/board/http.ts`; F-SPEC-030-1). **Pendiente MISS→HIT en la CDN del preview** | `src/arch/home-cache.test.ts` (force-dynamic, sin revalidate, ambas cabeceras); `e2e/home.spec.ts` «SPEC-030 CA-1 rendered per request: no ISR headers»; `_qa/SPEC-030/2026-10-12-minimal-mode.txt` | | ❌ |
+| CA-2 | ídem | `e2e/home.spec.ts` «SPEC-030 CA-2 / and /es are not prerendered at build» | | ❌ |
+| CA-3 | `src/live/transport.ts` (`STALE_SERVED_MS = 45_000`, petición al arrancar si `servedAt` es más antiguo y la pestaña está visible); `src/components/xornada/XornadaLive.tsx` le pasa `servedAt` | `src/live/transport.test.ts` «SPEC-030 CA-3 …»: 44 s y 45 s → 0 peticiones; 46 s y 5 h → 1, con `If-None-Match` y `no-store`; después, polling normal; `servedAt` futuro → 0; oculta → espera a que se vea. Demos: `e2e/xornada-live.spec.ts` «CA-10: the demos neither subscribe nor poll» (no montan `XornadaLive`) | | ❌ |
+| CA-4 | `tools/cache-portada.mjs` (`npm run cache:portada`, node:http(s), sin `Accept-Encoding`, JSONL en `_qa/SPEC-030/`); `src/medicion/cache-portada.ts` (puro) | `src/medicion/cache-portada.test.ts` sobre `src/medicion/fixtures/cache-portada-2026-10-10.jsonl` (sondeo: PRERENDER de 5 h → falla; MISS del minuto de `date` → bien). **Pendiente: corrida en producción tras el despliegue** | | ❌ |
+| CA-5 | sin cambios en `/xornada/[fecha]`, `/api/board`, `expireTime` (40) ni ADR-014 §6 | `npm run e2e` → 139 passed; `npm run e2e:db` (Supabase local) → 47 passed, 1 skipped (capturas QA sin `QA_CAPTURE_DIR`); `src/live/transport.test.ts` SPEC-024 en verde; `src/arch/home-cache.test.ts` «CA-5: expireTime is unchanged»; `src/arch/week-cache.test.ts` | | ❌ |
+| CA-6 | — | `npm run gates` → 0 (lint 266 ficheros; 89 ficheros de test, 1532 tests; build `ƒ /`, `ƒ /es`). `git diff 0003fad --stat -- src/sources src/decide src/ingest supabase package-lock.json` vacío; `package.json`: solo el script `cache:portada` | | ❌ |
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
@@ -30,7 +30,7 @@ epica: EPIC-FIX
 
 ## Salvedades / follow-ups
 <!-- IDs F-SPEC-030-1, F-SPEC-030-2… con destino (spec futura o EPIC-MEJORA). -->
-- **F-SPEC-030-1 (PARADA, al gate humano).** En el camino de despliegue, Next pisa la cabecera de la página dinámica. Evidencia, 2026-10-12:
+- **F-SPEC-030-1 (resuelto por el titular, 2026-10-12: vía (i), `Vercel-CDN-Cache-Control` en `headers()`; spec, commit 7fbb3d7).** En el camino de despliegue, Next pisa la cabecera de la página dinámica. Evidencia, 2026-10-12:
   - `next build` (sin `DATABASE_URL_PUBLIC`): `ƒ /` y `ƒ /es`.
   - `next start`: `curl -sI /` y `curl -sI /es` → `Cache-Control: public, s-maxage=10, stale-while-revalidate=30`, sin `x-nextjs-prerender` ni `x-nextjs-cache`. Aquí el router de `next start` aplica `headers()` antes del render.
   - Modo mínimo de Next, que es como corre la función en Vercel: ahí `headers()` lo aplica la plataforma, no Next. Comando: `node _qa/SPEC-030/sonda-minimal-mode.cjs <repo>` → `/ 200 cache-control: private, no-cache, no-store, max-age=0, must-revalidate`, y lo mismo en `/es`.
@@ -38,8 +38,11 @@ epica: EPIC-FIX
   - Documentación de Vercel (`/docs/caching/cache-control-headers`, «Functions have priority over config files»): el `Cache-Control` de la función gana al de `next.config.js`, y `private` impide la caché de la CDN.
   - Consecuencia en Vercel: BYPASS, un render por visita. Es fresco, pero la CDN no lo cachea.
   - Vías posibles, sin aplicar: (i) `CDN-Cache-Control` o `Vercel-CDN-Cache-Control` en `headers()`, que según la misma página tienen prioridad sobre el `Cache-Control` de la función; (ii) `proxy.ts`. Ninguna está confirmada sin un despliegue de preview. Decide el titular.
+  - Aplicada la vía (i). Comando: `node docs/epicas/EPIC-FIX/_qa/SPEC-030/sonda-minimal-mode.cjs <repo>` → `_qa/SPEC-030/2026-10-12-minimal-mode.txt`. La función sigue dando `private, no-cache, no-store…`, y `.next/routes-manifest.json`, que es lo que aplica la plataforma, añade `Vercel-CDN-Cache-Control: s-maxage=10, stale-while-revalidate=30` en `/` y `/es`. Con `next start` la cabecera sale tal cual (e2e).
+- **F-SPEC-030-2 (evidencia pendiente, para el verificador o el preview del PR).** Que la CDN de Vercel cachea `/` y `/es`, es decir, `x-vercel-cache` MISS y luego HIT/STALE en dos GET seguidos del preview, no está comprobado: no hay despliegue sin push. Tampoco se ha corrido CA-4 en producción (`npm run cache:portada`), que debe ir tras el despliegue con su JSONL en `_qa/SPEC-030/`.
 
 ## Cómo retomar (handoff)
 <!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->
 - 2026-10-10 (sdd-arquitecto): spec en `borrador`, sin implementar. Investigación en solo lectura en `_qa/SPEC-030/sondeo-2026-10-10.md` (scripts `sonda-get.mjs` y `sonda-playwright.mjs`, salidas crudas `2026-10-10-*.txt`). Pendiente: gate del titular (H-1, H-2).
 - 2026-10-12 (sdd-implementador): spec en `en-progreso`, PARADA por F-SPEC-030-1. Hecho: CA-1 y CA-2 en local (páginas `force-dynamic`, tests en verde), y `npm run gates` → 0 (88 ficheros, 1504 tests). Falta: la resolución de F-SPEC-030-1, y CA-3, CA-4, CA-5 y CA-6, sin empezar porque se paró al confirmar la CDN, como pide la nota de la spec. Se sigue en la rama `ft/SPEC-030-…`.
+- 2026-10-12 (sdd-implementador): F-SPEC-030-1 resuelto por el titular. CA-1…CA-6 implementados con sus tests; spec a `en-revision`. Para el verificador: en el preview del PR, `curl -sI` dos veces seguidas a `/` y `/es` (MISS y luego HIT/STALE), y tras el despliegue `npm run cache:portada` contra producción (F-SPEC-030-2). Rama `ft/SPEC-030-la-portada-sirve-una-instantanea-isr-antigua`, sin push.
