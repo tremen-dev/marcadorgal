@@ -7,6 +7,14 @@ import type {
   Qualifier,
   Score,
 } from "@/model";
+import {
+  type ProvisionalDisplay,
+  type QualifierDisplay,
+  type QualifierKey,
+  qualifierDisplay,
+} from "./qualifier";
+
+export type { QualifierKey } from "./qualifier";
 
 // The pure view model of the Xornada screen (SPEC-019 CA-2): no clock, no
 // locale, no i18n. It returns i18n keys; the components resolve them.
@@ -20,7 +28,6 @@ export type Margin =
   | { kind: "status" };
 
 export type StatusKey = `status.${MatchStatus}`;
-export type QualifierKey = `qualifier.${Exclude<Qualifier, "confirmado">}`;
 
 export type XornadaRow = {
   matchId: MatchId;
@@ -35,6 +42,8 @@ export type XornadaRow = {
   margin: Margin;
   statusKey: StatusKey;
   qualifierKey: QualifierKey | null;
+  // SPEC-034 CA-1: how the row paints its qualifier in the chosen mode.
+  qualifierDisplay: QualifierDisplay;
   winner: "home" | "away" | null;
   // SPEC-023 CA-1: the Madrid date of the kickoff, YYYY-MM-DD.
   day: string;
@@ -99,7 +108,11 @@ function winnerOf(m: PublicMatch): XornadaRow["winner"] {
   return null;
 }
 
-function toRow(m: PublicMatch, galicians: ReadonlySet<string>): XornadaRow {
+function toRow(
+  m: PublicMatch,
+  galicians: ReadonlySet<string>,
+  provisional: ProvisionalDisplay,
+): XornadaRow {
   return {
     matchId: m.matchId,
     status: m.status,
@@ -113,6 +126,7 @@ function toRow(m: PublicMatch, galicians: ReadonlySet<string>): XornadaRow {
     statusKey: `status.${m.status}`,
     qualifierKey:
       m.qualifier === "confirmado" ? null : `qualifier.${m.qualifier}`,
+    qualifierDisplay: qualifierDisplay(m.qualifier, provisional),
     winner: winnerOf(m),
     day: madridDate(m.kickoff),
     version: m.version,
@@ -133,11 +147,14 @@ const NO_GALICIANS: ReadonlySet<string> = new Set();
 // Competitions by tier ascending (H-1), then by id for a stable order.
 // SPEC-033 CA-4: `galicians` are the names of the Equipo galego of the
 // season, resolved on the server; this module never reads data/.
+// SPEC-034 CA-1: `provisional` is the mode of the web's configuration (CA-5);
+// without one, the label of SPEC-019 CA-3.
 export function buildXornada(
   matches: readonly PublicMatch[],
   galicians: ReadonlySet<string> = NO_GALICIANS,
+  provisional: ProvisionalDisplay = "label",
 ): XornadaCompetition[] {
-  const rowOf = (m: PublicMatch) => toRow(m, galicians);
+  const rowOf = (m: PublicMatch) => toRow(m, galicians, provisional);
   const byCompetition = new Map<CompetitionId, PublicMatch[]>();
   for (const m of matches) {
     const group = byCompetition.get(m.competitionId) ?? [];
