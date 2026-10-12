@@ -76,6 +76,10 @@ SPEC-025 CA-3; SPEC-026 CA-2/CA-4; SPEC-027 CA-4.
   se mira en la jornada publicada.
 - **Resolución del titular (2026-10-12, Alberto Fojo):** H-1 → (a), portada
   dinámica cacheada por la CDN. H-2 → sí, CA-3 se queda como cinturón.
+- **Resolución del titular (2026-10-12, Alberto Fojo), tras F-SPEC-030-1:** en
+  Vercel la página dinámica sale `private, no-store`; la caché de CDN se pone con
+  `Vercel-CDN-Cache-Control: s-maxage=10, stale-while-revalidate=30` en
+  `headers()` para `/` y `/es`. Se confirma en el preview del PR.
 - **Confirmar en la implementación:** que la CDN de Vercel cachea la página
   dinámica con esas directivas, como se espera de `/api/board` (hoy MISS en el
   sondeo). Si no, PARA y vuelve al gate.
