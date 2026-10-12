@@ -79,6 +79,7 @@ export function XornadaBody({
               competition={competition}
               locale={locale}
               ages={ages}
+              days={days}
             />
           ))}
           {hasRows && (
