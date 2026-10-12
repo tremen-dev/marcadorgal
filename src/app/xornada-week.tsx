@@ -8,6 +8,7 @@ import { SnapshotFreshness } from "@/components/xornada/SnapshotFreshness";
 import { XornadaScreen } from "@/components/xornada/XornadaScreen";
 import type { Locale } from "@/i18n";
 import { buildXornada, xornadaDays } from "@/xornada/view";
+import { PROVISIONAL_DISPLAY } from "./config";
 
 // SPEC-027 CA-3 (H-2..H-5): /xornada/[fecha] and /es/xornada/[fecha], the
 // week of play keyed by its Saturday, rendered on the server over the
@@ -42,9 +43,14 @@ export async function WeekXornada({
         matches === null
           ? []
           : // SPEC-033 CA-4: the week is inside the season of now.
-            buildXornada(matches, galicianNames(seasonOf(now)))
+            buildXornada(
+              matches,
+              galicianNames(seasonOf(now)),
+              PROVISIONAL_DISPLAY,
+            )
       }
       days={matches === null ? [] : xornadaDays(matches, now)}
+      provisionalDisplay={PROVISIONAL_DISPLAY}
       paths={{
         gl: `/xornada/${param.week}`,
         es: `/es/xornada/${param.week}`,

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { Neighbours } from "@/board/weeks";
 import type { Locale } from "@/i18n";
+import type { ProvisionalDisplay } from "@/xornada/qualifier";
 import type { XornadaCompetition, XornadaDay } from "@/xornada/view";
 import styles from "./Xornada.module.css";
 import { XornadaBody } from "./XornadaBody";
@@ -27,6 +28,9 @@ type Props = {
   // (a snapshot, never live: H-4).
   arrows?: Neighbours;
   freshness?: ReactNode;
+  // SPEC-034 CA-5: PROVISIONAL_DISPLAY, passed by the page; the rows of
+  // `competitions` were built with the same mode.
+  provisionalDisplay: ProvisionalDisplay;
 };
 
 export function XornadaScreen({
@@ -38,6 +42,7 @@ export function XornadaScreen({
   live,
   arrows,
   freshness,
+  provisionalDisplay,
 }: Props) {
   const hasRows = competitions.some((c) => c.rows.length > 0);
   return (
@@ -51,6 +56,7 @@ export function XornadaScreen({
           unavailable={unavailable}
           arrows={arrows}
           freshness={freshness}
+          provisionalDisplay={provisionalDisplay}
         />
       ) : (
         <XornadaLive
@@ -59,6 +65,7 @@ export function XornadaScreen({
           days={days}
           unavailable={unavailable}
           arrows={arrows}
+          provisionalDisplay={provisionalDisplay}
           {...live}
         />
       )}

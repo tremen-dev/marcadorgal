@@ -13,6 +13,7 @@ import {
   transportNotice,
 } from "@/xornada/freshness";
 import { boardMatches, initialBoard } from "@/xornada/live";
+import type { ProvisionalDisplay } from "@/xornada/qualifier";
 import { buildXornada, type XornadaDay } from "@/xornada/view";
 import styles from "./Xornada.module.css";
 import { XornadaBody } from "./XornadaBody";
@@ -49,6 +50,8 @@ export type XornadaLiveProps = {
   // SPEC-033 CA-4: the names of the Equipo galego, resolved on the server;
   // the Realtime delta does not carry them.
   galicians?: readonly string[];
+  // SPEC-034 CA-5: PROVISIONAL_DISPLAY, the same mode the server painted.
+  provisionalDisplay: ProvisionalDisplay;
 };
 
 function lazyOpener(config: { url: string; key: string }): OpenChannel {
@@ -124,6 +127,7 @@ export function XornadaLive({
   etag,
   arrows,
   galicians = NO_GALICIANS,
+  provisionalDisplay,
 }: XornadaLiveProps) {
   const [snapshot, setSnapshot] = useState<LiveSnapshot>(() => ({
     board: initialBoard(matches, days),
@@ -193,8 +197,8 @@ export function XornadaLive({
   const list = useMemo(() => boardMatches(snapshot.board), [snapshot.board]);
   const galicianSet = useMemo(() => new Set(galicians), [galicians]);
   const competitions = useMemo(
-    () => buildXornada(list, galicianSet),
-    [list, galicianSet],
+    () => buildXornada(list, galicianSet, provisionalDisplay),
+    [list, galicianSet, provisionalDisplay],
   );
   const ages = new Map<string, number>();
   for (const m of list) {
@@ -211,6 +215,7 @@ export function XornadaLive({
       unavailable={unavailable && snapshot.lastSeen === null}
       ages={ages}
       arrows={arrows}
+      provisionalDisplay={provisionalDisplay}
       freshness={
         <FreshnessLine
           locale={locale}

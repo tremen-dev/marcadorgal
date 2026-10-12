@@ -2,6 +2,10 @@ import type { ReactNode } from "react";
 import type { Neighbours } from "@/board/weeks";
 import { type Locale, t } from "@/i18n";
 import { countFilters } from "@/xornada/filter";
+import {
+  type ProvisionalDisplay,
+  provisionalLegendShown,
+} from "@/xornada/qualifier";
 import type { XornadaCompetition, XornadaDay } from "@/xornada/view";
 import { CompetitionNav } from "./CompetitionNav";
 import { CompetitionSection } from "./CompetitionSection";
@@ -27,6 +31,8 @@ export type XornadaBodyProps = {
   ages?: ReadonlyMap<string, number>;
   // SPEC-027 CA-6: ‹ and › of the strip (the public pages only).
   arrows?: Neighbours;
+  // SPEC-034 CA-5: the mode of the web's configuration, for the legend.
+  provisionalDisplay: ProvisionalDisplay;
 };
 
 export function XornadaBody({
@@ -38,6 +44,7 @@ export function XornadaBody({
   freshness,
   ages,
   arrows,
+  provisionalDisplay,
 }: XornadaBodyProps) {
   const rows = competitions.flatMap((c) => c.rows);
   const hasRows = rows.length > 0;
@@ -90,6 +97,24 @@ export function XornadaBody({
               data-testid="xornada-empty"
             >
               {t(locale, "xornada.empty")}
+            </p>
+          )}
+          {/* SPEC-034 CA-3: one legend for the mark, at the foot of the list.
+              Served shown when a served row is provisional; the client keeps
+              it in step with the visible rows (XornadaFilters). */}
+          {hasRows && provisionalDisplay === "mark" && (
+            <p
+              className={styles.legend}
+              hidden={
+                !provisionalLegendShown(
+                  provisionalDisplay,
+                  rows.map((r) => r.qualifier),
+                )
+              }
+              data-provisional-legend
+              data-testid="provisional-legend"
+            >
+              {t(locale, "qualifier.provisionalLegend")}
             </p>
           )}
         </main>
