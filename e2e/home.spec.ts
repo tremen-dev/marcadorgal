@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
 import { es } from "../src/i18n/es";
 import { gl } from "../src/i18n/gl";
@@ -54,6 +54,16 @@ for (const route of routes) {
       expect(response.headers()["cache-control"]).toBe(CACHE);
     });
 
+    test("SPEC-030 CA-1 rendered per request: no ISR headers", async ({
+      request,
+    }) => {
+      const response = await request.get(route.path);
+      const headers = response.headers();
+      expect(headers["cache-control"]).toBe(CACHE);
+      expect(headers["x-nextjs-prerender"]).toBeUndefined();
+      expect(headers["x-nextjs-cache"]).toBeUndefined();
+    });
+
     test("locale switch leads to the same screen in the other language", async ({
       page,
     }) => {
@@ -105,6 +115,18 @@ for (const route of routes) {
     });
   });
 }
+
+// SPEC-030 CA-2: the webServer has just run next build; nothing of / and /es
+// comes out of it (no prerendered HTML, no prerender route).
+test("SPEC-030 CA-2 / and /es are not prerendered at build", () => {
+  const manifest = JSON.parse(
+    readFileSync(".next/prerender-manifest.json", "utf8"),
+  ) as { routes: Record<string, unknown> };
+  expect(Object.keys(manifest.routes)).not.toContain("/");
+  expect(Object.keys(manifest.routes)).not.toContain("/es");
+  expect(existsSync(".next/server/app/index.html")).toBe(false);
+  expect(existsSync(".next/server/app/es.html")).toBe(false);
+});
 
 test("CA-7 /api/board without a reader: 503 no-store", async ({ request }) => {
   const response = await request.get("/api/board");
