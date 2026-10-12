@@ -1,5 +1,8 @@
 import type { NextConfig } from "next";
-import { BOARD_CACHE_CONTROL } from "./src/board/http.ts";
+import {
+  BOARD_CACHE_CONTROL,
+  HOME_CDN_CACHE_CONTROL,
+} from "./src/board/http.ts";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -8,15 +11,21 @@ const nextConfig: NextConfig = {
   // and key it would read) is dropped from the bundle.
   env: { NEXT_PUBLIC_REALTIME: process.env.NEXT_PUBLIC_REALTIME ?? "" },
   poweredByHeader: false,
-  // ISR of / and /es with revalidate 10 (SPEC-020 CA-7, ADR-014 §6):
+  // ISR of the week pages with revalidate 10 (SPEC-027 CA-4, ADR-014 §6):
   // s-maxage=10, stale-while-revalidate=30 (expireTime minus revalidate),
   // and the same directives as /api/board, public included.
   expireTime: 40,
   async headers() {
     const cache = [{ key: "Cache-Control", value: BOARD_CACHE_CONTROL }];
+    // SPEC-030: / and /es are dynamic (never ISR, never prerendered at
+    // build); the CDN caches them through Vercel-CDN-Cache-Control.
+    const home = [
+      ...cache,
+      { key: "Vercel-CDN-Cache-Control", value: HOME_CDN_CACHE_CONTROL },
+    ];
     return [
-      { source: "/", headers: cache },
-      { source: "/es", headers: cache },
+      { source: "/", headers: home },
+      { source: "/es", headers: home },
       // SPEC-027 CA-4: the week pages, ISR of 10 s on demand, the same.
       { source: "/xornada/:fecha", headers: cache },
       { source: "/es/xornada/:fecha", headers: cache },

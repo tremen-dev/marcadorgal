@@ -40,8 +40,6 @@ Actualizado: 2026-10-12
 | SPEC-026 — primera-pintura-en-movil-con-3g | en-revision | 2026-10-09 (sdd-implementador) |
 | SPEC-027 — navegar-entre-xornadas | hecho | 2026-10-10 (sdd-verificador) |
 | SPEC-028 — mejoras-de-navegacion-lateral-logo-y-titulo-de-la-xornada | hecho | 2026-10-10 (sdd-verificador) |
-| SPEC-033 — mejoras-de-lectura-cabecera-por-dia-equipos-gallegos-y-favicon | aprobada | 2026-10-12 (Alberto Fojo) |
-| SPEC-034 — provisional-configurable-en-la-pantalla | aprobada | 2026-10-12 (Alberto Fojo) |
 
 ## EPIC-004 — fuente-rfef (aprobada)
 
@@ -56,7 +54,7 @@ Actualizado: 2026-10-12
 | SPEC-011 — peticion-live-con-una-sola-competicion-y-errores-por-peticion-que-no-tiran-el-intento | hecho | 2026-09-23 (sdd-verificador) |
 | SPEC-015 — el-calendario-declarado-llega-tarde-a-la-jornada | en-revision | 2026-09-29 (sdd-implementador) |
 | SPEC-022 — test-db-no-toca-storage-de-produccion | hecho | 2026-10-08 (sdd-verificador) |
-| SPEC-030 — la-portada-sirve-una-instantanea-isr-antigua | borrador | 2026-10-10 (sdd-arquitecto) |
+| SPEC-030 — la-portada-sirve-una-instantanea-isr-antigua | hecho | 2026-10-12 (sdd-verificador) |
 
 ## EPIC-MANT — mantenimiento (borrador)
 
@@ -91,7 +89,5 @@ Actualizado: 2026-10-12
 
 ## Resumen
 
-- hecho: 27
+- hecho: 28
 - en-revision: 3
-- aprobada: 2
-- borrador: 1
