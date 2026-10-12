@@ -3,8 +3,58 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { GalicianTeamsFile } from "@/model";
+import { DEMO_MATCHES, DEMO_SEASON } from "@/xornada/demo";
+import { buildXornada } from "@/xornada/view";
 import { readSeasons } from "./files.ts";
 import { GALICIAN_SEASONS, galicianNames } from "./galicians.ts";
+
+// SPEC-033 CA-7: the demonstration has the cases of the Equipo galego mark.
+describe("SPEC-033 CA-7 Equipo galego in the demonstration", () => {
+  const marked = buildXornada(DEMO_MATCHES, galicianNames(DEMO_SEASON));
+  const byTier = (tier: number) =>
+    marked.find((c) => c.tier === tier)?.rows ?? [];
+
+  it("Primeira: a galician that loses to a non-galician", () => {
+    const losing = byTier(1).filter(
+      (r) =>
+        r.status === "finished" &&
+        ((r.homeGalician && !r.awayGalician && r.winner === "away") ||
+          (r.awayGalician && !r.homeGalician && r.winner === "home")),
+    );
+    expect(losing.length).toBeGreaterThan(0);
+  });
+
+  it("a galician in a postponed match", () => {
+    const rows = marked.flatMap((c) => c.rows);
+    expect(
+      rows.some(
+        (r) => r.status === "postponed" && (r.homeGalician || r.awayGalician),
+      ),
+    ).toBe(true);
+  });
+
+  it("every row of Terceira marks both sides (H-4)", () => {
+    const rows = byTier(5);
+    expect(rows.length).toBeGreaterThan(0);
+    expect(rows.every((r) => r.homeGalician && r.awayGalician)).toBe(true);
+  });
+
+  it("every demo name is a team of the declared calendar", () => {
+    const [calendar] = readSeasons(path.join(root, "data"), DEMO_SEASON);
+    const names = new Set(
+      calendar.calendars.flatMap((c) => c.teams.map((t) => t.name)),
+    );
+    const missing = DEMO_MATCHES.flatMap((m) => [
+      m.home.name,
+      m.away.name,
+    ]).filter((n) => !names.has(n));
+    expect(missing).toEqual([]);
+  });
+
+  it("some competition has more than one day", () => {
+    expect(marked.some((c) => c.dayGroups.length > 1)).toBe(true);
+  });
+});
 
 // SPEC-033 CA-4 (H-3, H-4): the Equipo galego of each season, declared in
 // data/galegos/<season>.json and checked against the declared calendar.
