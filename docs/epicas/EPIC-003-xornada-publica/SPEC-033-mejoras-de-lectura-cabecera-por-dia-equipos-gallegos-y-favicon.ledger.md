@@ -6,7 +6,7 @@ epica: EPIC-003
 # Ledger — SPEC-033 Mejoras de lectura: cabecera por día, equipos gallegos y favicon
 
 ## Resumen
-- Fase: borrador <!-- refleja el estado de la spec; la fuente de verdad es el frontmatter de la spec -->
+- Fase: en-progreso <!-- refleja el estado de la spec; la fuente de verdad es el frontmatter de la spec -->
 - Rama: `ft/SPEC-033-mejoras-de-lectura`
 
 ## Matriz de criterios de aceptación
@@ -15,7 +15,7 @@ epica: EPIC-003
 <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
-| CA-1 | | | | ❌ |
+| CA-1 | `src/xornada/view.ts` (`compareMatches`, `dayGroups`) | `src/xornada/view.test.ts` «SPEC-033 CA-1 buildXornada day groups» (4 casos), «rows by kickoff whatever their state», «a half-time row stays in live, in its hour» | | 🚧 |
 | CA-2 | | | | ❌ |
 | CA-3 | | | | ❌ |
 | CA-4 | | | | ❌ |

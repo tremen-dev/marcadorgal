@@ -47,27 +47,38 @@ export type XornadaCompetition = {
   // SPEC-023 CA-1: the most frequent round of its rows; a tie, the lower.
   round: number;
   liveCount: number;
+  // Every row, in order: the day groups one after the other.
   rows: XornadaRow[];
+  // SPEC-033 CA-1: the rows grouped by their Madrid day, dates ascending.
+  dayGroups: XornadaDayGroup[];
 };
 
-// H-2: the design's order (Movil.tpl.html).
-const ROW_ORDER: Readonly<Record<MatchStatus, number>> = {
-  live: 0,
-  finished: 1,
-  suspended: 2,
-  scheduled: 3,
-  postponed: 4,
+// SPEC-033 CA-1: a day of a competition, for its header (CA-2).
+export type XornadaDayGroup = {
+  date: string;
+  weekdayKey: WeekdayKey;
+  dayOfMonth: number;
+  monthKey: MonthKey;
+  rows: XornadaRow[];
 };
 
 const compareText = (a: string, b: string): number =>
   a < b ? -1 : a > b ? 1 : 0;
 
+// SPEC-033 CA-1 (amends SPEC-019 CA-2 and H-2): chronological, then matchId.
+// The state no longer orders the rows.
 function compareMatches(a: PublicMatch, b: PublicMatch): number {
-  return (
-    ROW_ORDER[a.status] - ROW_ORDER[b.status] ||
-    compareText(a.kickoff, b.kickoff) ||
-    compareText(a.matchId, b.matchId)
-  );
+  return compareText(a.kickoff, b.kickoff) || compareText(a.matchId, b.matchId);
+}
+
+function groupByDay(rows: readonly XornadaRow[]): XornadaDayGroup[] {
+  const groups: XornadaDayGroup[] = [];
+  for (const row of rows) {
+    const last = groups.at(-1);
+    if (last?.date === row.day) last.rows.push(row);
+    else groups.push({ ...calendarDay(row.day), rows: [row] });
+  }
+  return groups;
 }
 
 function marginOf(m: PublicMatch): Margin {
@@ -123,13 +134,15 @@ export function buildXornada(matches: PublicMatch[]): XornadaCompetition[] {
   return [...byCompetition.values()]
     .map((group) => {
       const [first] = group;
+      const rows = [...group].sort(compareMatches).map(rowOf);
       return {
         competitionId: first.competitionId,
         name: first.competitionName,
         tier: first.tier,
         round: roundOf(group),
         liveCount: group.filter((m) => m.status === "live").length,
-        rows: [...group].sort(compareMatches).map(rowOf),
+        rows,
+        dayGroups: groupByDay(rows),
       };
     })
     .sort(
@@ -198,7 +211,9 @@ export type XornadaDay = {
   today: boolean;
 };
 
-function dayOf(date: string, today: string): XornadaDay {
+function calendarDay(
+  date: string,
+): Pick<XornadaDay, "date" | "weekdayKey" | "dayOfMonth" | "monthKey"> {
   const [year, month, day] = date.split("-").map(Number);
   const weekday =
     WEEKDAYS[new Date(Date.UTC(year, month - 1, day)).getUTCDay()];
@@ -207,6 +222,12 @@ function dayOf(date: string, today: string): XornadaDay {
     weekdayKey: `weekday.${weekday}`,
     dayOfMonth: day,
     monthKey: `month.${MONTHS[month - 1]}`,
+  };
+}
+
+function dayOf(date: string, today: string): XornadaDay {
+  return {
+    ...calendarDay(date),
     otherMonth: date.slice(0, 7) !== today.slice(0, 7),
     today: date === today,
   };

@@ -179,23 +179,21 @@ describe("SPEC-019 CA-2 buildXornada order", () => {
     expect(xornada[4].name).toBe("Terceira Federación · Grupo 1");
   });
 
-  it("rows in the design order: live, finished, suspended, scheduled, postponed (H-2)", () => {
-    const statuses: MatchStatus[] = [
-      "postponed",
-      "scheduled",
-      "suspended",
-      "finished",
-      "live",
-    ];
-    const [competition] = buildXornada(
-      statuses.map((status) => match({ status })),
-    );
-    expect(competition.rows.map((r) => r.status)).toEqual([
-      "live",
-      "finished",
-      "suspended",
-      "scheduled",
-      "postponed",
+  // SPEC-033 CA-1 (amends SPEC-019 CA-2 and H-2): the state no longer orders.
+  it("rows by kickoff whatever their state (SPEC-033 CA-1)", () => {
+    const [competition] = buildXornada([
+      match({ id: "p", status: "postponed", kickoff: "2026-10-03T14:00:00Z" }),
+      match({ id: "s", status: "scheduled", kickoff: "2026-10-03T18:00:00Z" }),
+      match({ id: "u", status: "suspended", kickoff: "2026-10-03T15:00:00Z" }),
+      match({ id: "f", status: "finished", kickoff: "2026-10-03T12:00:00Z" }),
+      match({ id: "l", status: "live", kickoff: "2026-10-03T16:00:00Z" }),
+    ]);
+    expect(competition.rows.map((r) => [r.matchId, r.status])).toEqual([
+      ["f", "finished"],
+      ["p", "postponed"],
+      ["u", "suspended"],
+      ["l", "live"],
+      ["s", "scheduled"],
     ]);
   });
 
@@ -258,21 +256,31 @@ describe("SPEC-021 CA-7 half-time in the view", () => {
     ).toEqual({ kind: "minute", minute: 47, addedMinute: null });
   });
 
-  it("a half-time row stays first, with live, and counts in the en xogo pill", () => {
+  it("a half-time row stays in live, in its hour, and counts in the en xogo pill", () => {
     const [competition] = buildXornada([
-      match({ status: "finished" }),
-      match({ status: "live", halfTime: true, id: "ht" }),
-      match({ status: "scheduled" }),
-      match({ status: "live", halfTime: true, qualifier: "sen_sinal" }),
+      match({ status: "finished", kickoff: "2026-10-03T14:00:00Z" }),
+      match({
+        status: "live",
+        halfTime: true,
+        id: "ht",
+        kickoff: "2026-10-03T16:00:00Z",
+      }),
+      match({ status: "scheduled", kickoff: "2026-10-03T18:00:00Z" }),
+      match({
+        status: "live",
+        halfTime: true,
+        qualifier: "sen_sinal",
+        kickoff: "2026-10-03T16:15:00Z",
+      }),
     ]);
     expect(competition.liveCount).toBe(2);
     expect(competition.rows.map((r) => r.status)).toEqual([
-      "live",
-      "live",
       "finished",
+      "live",
+      "live",
       "scheduled",
     ]);
-    expect(competition.rows.slice(0, 2).map((r) => r.margin.kind)).toEqual([
+    expect(competition.rows.slice(1, 3).map((r) => r.margin.kind)).toEqual([
       "halfTime",
       "halfTime",
     ]);
@@ -442,6 +450,89 @@ describe("SPEC-023 CA-1 buildXornada day and round", () => {
       match({ round: 8 }),
     ]);
     expect(competition.round).toBe(8);
+  });
+});
+
+// SPEC-033 CA-1: each competition groups its rows by Madrid day, ascending.
+describe("SPEC-033 CA-1 buildXornada day groups", () => {
+  const groupsOf = (c: {
+    dayGroups: { date: string; rows: { matchId: string }[] }[];
+  }) => c.dayGroups.map((g) => [g.date, g.rows.map((r) => r.matchId)]);
+
+  it("two days, ascending, each with its rows by kickoff", () => {
+    const [competition] = buildXornada([
+      match({
+        id: "sun-1",
+        status: "scheduled",
+        kickoff: "2026-10-04T16:00:00Z",
+      }),
+      match({ id: "sat-2", status: "live", kickoff: "2026-10-03T18:00:00Z" }),
+      match({
+        id: "sat-1",
+        status: "finished",
+        kickoff: "2026-10-03T14:00:00Z",
+      }),
+      match({
+        id: "sun-0",
+        status: "postponed",
+        kickoff: "2026-10-04T10:00:00Z",
+      }),
+    ]);
+    expect(groupsOf(competition)).toEqual([
+      ["2026-10-03", ["sat-1", "sat-2"]],
+      ["2026-10-04", ["sun-0", "sun-1"]],
+    ]);
+    expect(competition.dayGroups[0]).toMatchObject({
+      date: "2026-10-03",
+      weekdayKey: "weekday.sat",
+      dayOfMonth: 3,
+      monthKey: "month.oct",
+    });
+    // The flat list is the groups in order.
+    expect(competition.rows.map((r) => r.matchId)).toEqual([
+      "sat-1",
+      "sat-2",
+      "sun-0",
+      "sun-1",
+    ]);
+  });
+
+  it("one day is one group", () => {
+    const [competition] = buildXornada([
+      match({ id: "a" }),
+      match({ id: "b" }),
+    ]);
+    expect(competition.dayGroups.map((g) => g.date)).toEqual(["2026-10-03"]);
+  });
+
+  it("a live match of another round goes in its own day", () => {
+    const [competition] = buildXornada([
+      match({ id: "j8", round: 8, kickoff: "2026-10-03T16:00:00Z" }),
+      match({
+        id: "j7",
+        round: 7,
+        status: "live",
+        kickoff: "2026-10-01T18:00:00Z",
+      }),
+    ]);
+    expect(groupsOf(competition)).toEqual([
+      ["2026-10-01", ["j7"]],
+      ["2026-10-03", ["j8"]],
+    ]);
+  });
+
+  it("across the change of time (SPEC-023 CA-1): by Madrid date", () => {
+    const [competition] = buildXornada([
+      match({ id: "mon", kickoff: "2026-10-25T23:30:00Z" }),
+      match({ id: "sun-late", kickoff: "2026-10-25T22:59:00Z" }),
+      match({ id: "sun-early", kickoff: "2026-10-24T22:30:00Z" }),
+      match({ id: "sat", kickoff: "2026-10-24T16:00:00Z" }),
+    ]);
+    expect(groupsOf(competition)).toEqual([
+      ["2026-10-24", ["sat"]],
+      ["2026-10-25", ["sun-early", "sun-late"]],
+      ["2026-10-26", ["mon"]],
+    ]);
   });
 });
 
