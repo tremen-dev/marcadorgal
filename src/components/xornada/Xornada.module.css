@@ -245,6 +245,7 @@ a.weekArrow:focus-visible {
 .dayGroup[hidden],
 .dayHeader[hidden],
 .empty[hidden],
+.legend[hidden],
 .livePill[hidden],
 .navCount[hidden],
 .navLive[hidden] {
@@ -564,6 +565,29 @@ a.weekArrow:focus-visible {
   font-weight: 600;
   font-size: 10px;
   line-height: 1.2;
+}
+
+/* SPEC-034 CA-3: the glyph * in the place of the label; its meaning is the
+   legend at the foot of the list, never the colour alone. */
+.mark {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1;
+}
+
+/* SPEC-034 CA-3: the legend of the mark, the eyebrow's letter without
+   capitals, muted. A sentence that wraps on a phone, so it gets room
+   between lines (the eyebrow's leading 1 is for one-line labels). */
+.legend {
+  margin: 0;
+  padding: var(--space-16) 14px;
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: var(--tracking-eyebrow);
+  color: var(--fg-muted);
 }
 
 /* SPEC-024 CA-9 (H-4): the age of a live row's data, under the teams, dim.

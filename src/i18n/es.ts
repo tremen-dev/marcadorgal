@@ -17,6 +17,8 @@ export const es: Dictionary = {
     confirmado: "confirmado",
     provisional: "provisional",
     sen_sinal: "sin señal",
+    provisionalLegend:
+      "* provisional: dato de una sola fuente, aún sin confirmar",
   },
   freshness: {
     lastData: "último dato hace {n} min",

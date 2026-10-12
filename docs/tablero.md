@@ -41,7 +41,7 @@ Actualizado: 2026-10-12
 | SPEC-027 — navegar-entre-xornadas | hecho | 2026-10-10 (sdd-verificador) |
 | SPEC-028 — mejoras-de-navegacion-lateral-logo-y-titulo-de-la-xornada | hecho | 2026-10-10 (sdd-verificador) |
 | SPEC-033 — mejoras-de-lectura-cabecera-por-dia-equipos-gallegos-y-favicon | hecho | 2026-10-12 (sdd-verificador) |
-| SPEC-034 — provisional-configurable-en-la-pantalla | aprobada | 2026-10-12 (Alberto Fojo) |
+| SPEC-034 — provisional-configurable-en-la-pantalla | hecho | 2026-10-12 (sdd-verificador) |
 
 ## EPIC-004 — fuente-rfef (aprobada)
 
@@ -91,6 +91,5 @@ Actualizado: 2026-10-12
 
 ## Resumen
 
-- hecho: 29
+- hecho: 30
 - en-revision: 3
-- aprobada: 1

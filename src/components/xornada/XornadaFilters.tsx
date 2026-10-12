@@ -15,6 +15,7 @@ import {
   type XornadaFilter,
   type XornadaState,
 } from "@/xornada/filter";
+import { provisionalLegendShown } from "@/xornada/qualifier";
 import { detailsId, sectionId } from "./CompetitionSection";
 
 // SPEC-023 CA-6 (amended by SPEC-024 H-1): the filter component of the
@@ -113,6 +114,18 @@ function apply(root: HTMLElement, state: XornadaState): void {
 
   const empty = root.querySelector<HTMLElement>("[data-xornada-empty]");
   if (empty) empty.hidden = anyVisible;
+
+  // SPEC-034 CA-3: the legend of the mark follows the visible rows (a folded
+  // competition still counts: folding does not hide its rows). It is only
+  // rendered in `mark`.
+  const legend = root.querySelector<HTMLElement>("[data-provisional-legend]");
+  if (legend)
+    legend.hidden = !provisionalLegendShown(
+      "mark",
+      rows
+        .filter(({ el }) => !el.hidden)
+        .map(({ el }) => el.dataset.qualifier ?? ""),
+    );
 
   for (const link of root.querySelectorAll<HTMLAnchorElement>(
     "a[data-day-link]",

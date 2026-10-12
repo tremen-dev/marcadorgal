@@ -40,7 +40,7 @@ function qualifierColor(row: XornadaRow): string {
 export function MatchRow({ row, locale, age = null }: Props) {
   const isLive = row.status === "live";
   const noSignal = row.qualifier === "sen_sinal";
-  const { margin } = row;
+  const { margin, qualifierDisplay: qualifier } = row;
   const marginText =
     margin.kind === "time"
       ? formatTime(margin.kickoff, locale)
@@ -95,13 +95,26 @@ export function MatchRow({ row, locale, age = null }: Props) {
         {margin.kind !== "status" && (
           <span className={styles.srOnly}>{t(locale, row.statusKey)}</span>
         )}
-        {row.qualifierKey && (
+        {/* SPEC-034: label (CA-2), mark (CA-3) or nothing (CA-4). */}
+        {qualifier.kind === "label" && (
           <span
             className={cx(styles.qualifier, qualifierColor(row))}
             data-testid="match-qualifier"
           >
-            {t(locale, row.qualifierKey)}
+            {t(locale, qualifier.key)}
           </span>
+        )}
+        {qualifier.kind === "mark" && (
+          <>
+            <span
+              className={cx(styles.mark, styles.amber)}
+              aria-hidden="true"
+              data-testid="provisional-mark"
+            >
+              *
+            </span>
+            <span className={styles.srOnly}>{t(locale, qualifier.key)}</span>
+          </>
         )}
       </div>
       <div className={styles.sides}>

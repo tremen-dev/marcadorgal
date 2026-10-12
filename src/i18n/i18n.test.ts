@@ -45,7 +45,11 @@ describe("CA-8 dictionaries", () => {
 
   it("status and qualifier keys mirror the model enums", () => {
     expect(Object.keys(gl.status)).toEqual(MatchStatus.options);
-    expect(Object.keys(gl.qualifier)).toEqual(Qualifier.options);
+    // SPEC-034 CA-3: plus the legend of the mark, which is not a qualifier.
+    expect(Object.keys(gl.qualifier)).toEqual([
+      ...Qualifier.options,
+      "provisionalLegend",
+    ]);
   });
 
   it("keeps the current texts of the waiting page", () => {
@@ -68,11 +72,15 @@ describe("CA-8 dictionaries", () => {
       confirmado: "confirmado",
       provisional: "provisional",
       sen_sinal: "sen sinal",
+      provisionalLegend:
+        "* provisional: dato dunha soa fonte, aínda sen confirmar",
     });
     expect(es.qualifier).toEqual({
       confirmado: "confirmado",
       provisional: "provisional",
       sen_sinal: "sin señal",
+      provisionalLegend:
+        "* provisional: dato de una sola fuente, aún sin confirmar",
     });
     expect(gl.freshness.lastData).toBe("último dato hai {n} min");
     expect(es.freshness.lastData).toBe("último dato hace {n} min");
