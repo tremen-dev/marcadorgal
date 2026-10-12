@@ -2,10 +2,11 @@
 id: SPEC-034
 tipo: spec
 epica: EPIC-003
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-12, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-12, por: Alberto Fojo}
 ---
 # SPEC-034 — `provisional` configurable en la pantalla
 
@@ -54,3 +55,6 @@ Cambiar cuándo una Decision es `provisional` (motor, EPIC-002); configurar
 - **H-2 Modo por defecto.** Recomendado `mark`: limpia la fila y no esconde nada (glifo + leyenda + texto para lectores). `label` es lo de hoy; `hidden`, ver H-4.
 - **H-3 Glifo `*`.** Recomendado: se entiende como «ver nota» sin aprender nada. Alternativas: `≈` o `?` (ADR-005 exc. 2 quitó `?` como etiqueta).
 - **H-4 `hidden` contradice hoy `dominio.md`** («Siempre con etiqueta textual junto al color») y deja al público sin saber que el dato no está confirmado. Se ofrece porque se pidió; recomendado no usarlo por defecto. Si se aprueba `mark` o `hidden`, sdd-arquitecto precisa esa nota de `dominio.md` («en la pantalla pública, según el modo de SPEC-034») al aprobar.
+- **Resolución del titular (2026-10-12, Alberto Fojo):** H-1 → opción 1,
+  constante en código. H-2 → `mark` por defecto. H-3 → `*`. H-4 → `hidden`
+  queda disponible, pero no es el valor por defecto.

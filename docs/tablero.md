@@ -40,8 +40,8 @@ Actualizado: 2026-10-12
 | SPEC-026 — primera-pintura-en-movil-con-3g | en-revision | 2026-10-09 (sdd-implementador) |
 | SPEC-027 — navegar-entre-xornadas | hecho | 2026-10-10 (sdd-verificador) |
 | SPEC-028 — mejoras-de-navegacion-lateral-logo-y-titulo-de-la-xornada | hecho | 2026-10-10 (sdd-verificador) |
-| SPEC-033 — mejoras-de-lectura-cabecera-por-dia-equipos-gallegos-y-favicon | borrador | 2026-10-12 (sdd-arquitecto) |
-| SPEC-034 — provisional-configurable-en-la-pantalla | borrador | 2026-10-12 (sdd-arquitecto) |
+| SPEC-033 — mejoras-de-lectura-cabecera-por-dia-equipos-gallegos-y-favicon | aprobada | 2026-10-12 (Alberto Fojo) |
+| SPEC-034 — provisional-configurable-en-la-pantalla | aprobada | 2026-10-12 (Alberto Fojo) |
 
 ## EPIC-004 — fuente-rfef (aprobada)
 
@@ -93,4 +93,5 @@ Actualizado: 2026-10-12
 
 - hecho: 27
 - en-revision: 3
-- borrador: 3
+- aprobada: 2
+- borrador: 1

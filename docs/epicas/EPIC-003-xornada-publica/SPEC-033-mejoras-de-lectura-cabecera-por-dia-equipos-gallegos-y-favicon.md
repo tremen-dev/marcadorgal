@@ -2,10 +2,11 @@
 id: SPEC-033
 tipo: spec
 epica: EPIC-003
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-12, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-12, por: Alberto Fojo}
 ---
 # SPEC-033 — Mejoras de lectura: cabecera por día, equipos gallegos y favicon
 
@@ -49,3 +50,6 @@ significa el verde; marca de agua; caché de la portada (SPEC-030).
 - **H-4 Se marca todo equipo gallego, también en Terceira G1.** Sus 18 equipos lo son y todas sus filas irán marcadas: la regla es la lista, sin excepciones por competición. Alternativa descartada: no marcar una competición entera gallega.
 - **H-5 Gallego que pierde.** El ganador ya va en 600 y el perdedor apagado (SPEC-019): un gallego perdedor en verde y negrita parecería ganador. Recomendado: `--marca-deep` para el gallego perdedor o aplazado. Alternativa: verde siempre y que lo diga el marcador.
 - **H-6 Qué icono.** El diseño tiene tres semillas sin elegir (Marca: A «Dúas liñas», B «O bloque», C «A matriz»). Recomendado **B**: es el ▮ del logotipo y sobrevive a 16 px; C pierde los puntos apagados a 16 px (lo dice el diseño). Es decisión de marca: si se elige otra, CA-6 no cambia.
+- **Resolución del titular (2026-10-12, Alberto Fojo):** H-1, H-2, H-3 (A),
+  H-5 y H-6 (B), como se recomiendan. H-4: rechaza la exclusión por
+  competición; se marcan todos los equipos gallegos, también en Terceira G1.
