@@ -7,19 +7,21 @@ import {
   charsetOf,
   createRfef,
   type DeclaredMatch,
+  nloginInit,
   PANEL_ENJUEGO_QUERY,
   PANEL_QUERY,
   PANEL_URL,
   PORTADA_URL,
   panelInit,
   portadaInit,
-  sessionCookie,
+  readNlogin,
+  readPortada,
   USER_AGENT,
 } from "./adapter.ts";
 import { readPanel } from "./panel.ts";
 
 // SPEC-032: calibration of the cadence the RFEF sustains with the production
-// pattern of ADR-019 §1-§2. Pure: the clock, the network and the files are
+// pattern of ADR-019 §1-§2 and the session of ADR-020. Pure: the clock, the network and the files are
 // injected by the shell (tools/calibrar-rfef.mjs); nothing here reads them.
 
 // H-4 of SPEC-032 (resolved by the owner): the steps, max(30 min, 10 rounds)
@@ -57,8 +59,8 @@ export function buildPlan(steps: readonly number[] = STEPS_SECONDS): Plan {
   const seconds = out.reduce((n, s) => n + s.seconds, 0);
   if (seconds > MAX_SERIES_SECONDS)
     throw new Error(`the plan lasts ${seconds} s, over ${MAX_SERIES_SECONDS}`);
-  // One portada opens the session; then one POST per round (ADR-019 §1).
-  return { steps: out, rounds, maxRequests: rounds + 1, seconds };
+  // Portada and NLogin open the session (ADR-020 §1); then one POST per round.
+  return { steps: out, rounds, maxRequests: rounds + 2, seconds };
 }
 
 // Round 1 and the last one ask for todos; the rest, Sch_en_juego=1 (CA-2).
@@ -89,12 +91,12 @@ const hm = (seconds: number): string => {
 
 export function formatPlan(plan: Plan): string[] {
   return [
-    "Plan de calibración RFEF (SPEC-032, ADR-019 §1-§2):",
+    "Plan de calibración RFEF (SPEC-032, ADR-019 §1-§2, ADR-020):",
     ...plan.steps.map(
       (s, i) =>
         `  escalón ${i + 1}: cada ${s.intervalSeconds} s, ${s.rounds} vueltas, ${Math.round(s.seconds / 60)} min`,
     ),
-    `Peticiones máximas: ${plan.maxRequests} (${plan.rounds} vueltas + 1 portada; una renovación de sesión añade 2, nunca más de 3 por vuelta)`,
+    `Peticiones máximas: ${plan.maxRequests} (${plan.rounds} vueltas + portada y NLogin para abrir sesión; una renovación añade 3: 3 al abrir, nunca más de 4 por vuelta)`,
     `Duración máxima: ${hm(plan.seconds)}`,
   ];
 }
@@ -138,7 +140,7 @@ export type CalibrationLine = {
   nEscalon: number;
   vuelta: number;
   total: number;
-  variante: "portada" | Variant;
+  variante: "portada" | "nlogin" | Variant;
   metodo: "GET" | "POST";
   status: number | null;
   contentLength: number | null;
@@ -245,8 +247,8 @@ type Sent = {
   text: string;
 };
 
-// The series (CA-2, CA-3, CA-4): the production pattern of ADR-019 §1-§2 on
-// the plan of CA-1, stopping at the first empty body.
+// The series (CA-2, CA-3, CA-4): the production pattern of ADR-019 §1-§2 and
+// ADR-020 on the plan of CA-1, stopping at the first empty body.
 export async function runSeries(deps: CalibrateDeps): Promise<Outcome> {
   const adapter = createRfef({
     aliases: deps.aliases,
@@ -254,15 +256,35 @@ export async function runSeries(deps: CalibrateDeps): Promise<Outcome> {
   });
   const rounds = planRounds(buildPlan());
   let session: string | null = null;
+  // The portada gave its cookie and its NLogin; NLogin has not answered yet.
+  let opening: { session: string; nlogin: string } | null = null;
   let previousSha: string | null = null;
   let total = 0;
   let previous: { start: number; end: number; interval: number } | null = null;
+
+  const requestOf = (
+    variante: CalibrationLine["variante"],
+  ): [string, RequestInit] => {
+    if (variante === "portada") return [PORTADA_URL, portadaInit(USER_AGENT)];
+    if (variante === "nlogin") {
+      if (opening === null) throw new Error("NLogin without a portada");
+      return [opening.nlogin, nloginInit(opening.session, USER_AGENT)];
+    }
+    return [
+      PANEL_URL,
+      panelInit(
+        session ?? "",
+        USER_AGENT,
+        variante === "todos" ? PANEL_QUERY : PANEL_ENJUEGO_QUERY,
+      ),
+    ];
+  };
 
   const send = async (
     round: Round,
     variante: CalibrationLine["variante"],
   ): Promise<Sent> => {
-    const post = variante !== "portada";
+    const post = variante === "todos" || variante === "enjuego";
     const startMs = deps.now();
     total += 1;
     const line: CalibrationLine = {
@@ -287,16 +309,7 @@ export async function runSeries(deps: CalibrateDeps): Promise<Outcome> {
     let response: Response;
     let bytes: Uint8Array<ArrayBuffer>;
     try {
-      response = post
-        ? await deps.fetch(
-            PANEL_URL,
-            panelInit(
-              session ?? "",
-              USER_AGENT,
-              variante === "todos" ? PANEL_QUERY : PANEL_ENJUEGO_QUERY,
-            ),
-          )
-        : await deps.fetch(PORTADA_URL, portadaInit(USER_AGENT));
+      response = await deps.fetch(...requestOf(variante));
       bytes = new Uint8Array(await response.arrayBuffer());
     } catch (e) {
       line.resultado = "error-red";
@@ -333,15 +346,36 @@ export async function runSeries(deps: CalibrateDeps): Promise<Outcome> {
       line.observaciones = parsed.observations.length;
       line.requestErrors = parsed.requestErrors.map((r) => r.error);
     };
+    // The opening (ADR-020 §1), with the functions of the adapter. An answer
+    // that breaks it is a session failure, which stops the series.
+    const opens = (step: () => void) => {
+      if (!ok && !redirect) {
+        line.resultado = "no-2xx";
+        return;
+      }
+      try {
+        step();
+      } catch (e) {
+        line.resultado = "sin-sesion";
+        line.error = e instanceof Error ? e.message : String(e);
+      }
+    };
     if (ok && bytes.length === 0) {
+      // The block (ADR-018 §3), whatever the request; the first round is the
+      // probe (CA-5).
       line.resultado = round.index === 1 ? "bloqueada-al-inicio" : "vacio";
-      if (post) parse(); // "empty body" (ADR-018 §3)
-    } else if (!post) {
-      // The portada: only its cookie matters (as in the adapter).
-      const cookie = sessionCookie(response);
-      if (cookie !== null) session = cookie;
-      else line.resultado = ok || redirect ? "sin-sesion" : "no-2xx";
-    } else if (redirect || (ok && NLOGIN.test(text))) line.resultado = "nlogin";
+      if (post) parse(); // "empty body"
+    } else if (variante === "portada")
+      opens(() => {
+        opening = readPortada(response);
+      });
+    else if (variante === "nlogin")
+      opens(() => {
+        if (opening === null) throw new Error("NLogin without a portada");
+        session = readNlogin(response, opening.session);
+        opening = null;
+      });
+    else if (redirect || (ok && NLOGIN.test(text))) line.resultado = "nlogin";
     else if (!ok) line.resultado = "no-2xx";
     else {
       parse();
@@ -368,7 +402,19 @@ export async function runSeries(deps: CalibrateDeps): Promise<Outcome> {
       deps.log(
         `Umbral: primer vacío en el escalón de ${l.escalon} s, vuelta ${l.nEscalon} del escalón (${l.total} peticiones en la serie).`,
       );
+    if (l.resultado === "sin-sesion")
+      deps.log(
+        `Parada: la sesión no se abre como dice ADR-020 §1 (${l.error}).`,
+      );
     return { kind: "parada", result: l.resultado, line: l, requests: total };
+  };
+
+  // ADR-020 §1: portada, then its NLogin. Two requests.
+  const openSession = async (round: Round): Promise<Outcome | null> => {
+    session = null;
+    const stop = await report(await send(round, "portada"));
+    if (stop !== null) return stop;
+    return report(await send(round, "nlogin"));
   };
 
   for (const round of rounds) {
@@ -384,20 +430,20 @@ export async function runSeries(deps: CalibrateDeps): Promise<Outcome> {
     }
     const start = deps.now();
     let fresh = false;
+    let stop: Outcome | null;
     if (session === null) {
-      const stop = await report(await send(round, "portada"));
+      stop = await openSession(round);
       if (stop !== null) return stop;
       fresh = true;
     }
     let sent = await send(round, round.variant);
-    let stop = await report(sent);
+    stop = await report(sent);
     if (stop !== null) return stop;
     if (sent.line.resultado === "nlogin") {
-      // ADR-019 §1: one portada and one retry; a session just opened that
-      // is refused stops the series (never more than 3 requests per round).
+      // ADR-020 §2: a full opening and one retry (4 requests in the round);
+      // the POST just after an opening that is refused stops the series.
       if (fresh) return nloginStop(sent.line);
-      session = null;
-      stop = await report(await send(round, "portada"));
+      stop = await openSession(round);
       if (stop !== null) return stop;
       sent = await send(round, round.variant);
       stop = await report(sent);
@@ -410,7 +456,7 @@ export async function runSeries(deps: CalibrateDeps): Promise<Outcome> {
   return { kind: "completa", requests: total };
 
   function nloginStop(line: CalibrationLine): Outcome {
-    deps.log("Parada: la sesión no se acepta tras renovarla (NLogin).");
+    deps.log("Parada: la sesión recién abierta no se acepta (NLogin).");
     return { kind: "parada", result: "nlogin", line, requests: total };
   }
 }

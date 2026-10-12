@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 import { AliasFile } from "../../model/index.ts";
 import {
+  nloginInit,
   PANEL_ENJUEGO_QUERY,
   PANEL_QUERY,
   PANEL_URL,
@@ -26,6 +27,7 @@ import {
   preconditions,
 } from "./calibration.ts";
 import { EMPTY_BODY_FILE, fixtureBytes } from "./fixture-files.ts";
+import { DOUBLE_NLOGIN, rfefServer } from "./server-double.ts";
 
 // SPEC-032: the calibration of the RFEF cadence. Every test runs against a
 // fetch double: no request ever leaves for marcadores.rfef.es.
@@ -36,7 +38,7 @@ const noFetch = () =>
   });
 
 describe("CA-1 dry-run plan", () => {
-  it("has the six steps, max(30 min, 10 requests) each, ~175 rounds and ~3 h", () => {
+  it("has the six steps, max(30 min, 10 requests) each, ~175 rounds, ~177 requests and ~3 h", () => {
     const plan = buildPlan();
     expect(plan.steps.map((s) => s.intervalSeconds)).toEqual([
       180, 120, 90, 60, 45, 30,
@@ -44,8 +46,8 @@ describe("CA-1 dry-run plan", () => {
     expect(plan.steps.map((s) => s.rounds)).toEqual([10, 15, 20, 30, 40, 60]);
     expect(plan.steps.map((s) => s.seconds)).toEqual(Array(6).fill(1800));
     expect(plan.rounds).toBe(175);
-    // One portada for the session on top of one POST per round.
-    expect(plan.maxRequests).toBe(176);
+    // Portada and NLogin open the session (ADR-020 §1), then one POST per round.
+    expect(plan.maxRequests).toBe(177);
     expect(plan.seconds).toBe(3 * 3600);
   });
 
@@ -95,7 +97,9 @@ describe("CA-1 dry-run plan", () => {
     expect(text).toBe(formatPlan(buildPlan()).join("\n"));
     for (const s of ["180 s", "120 s", "90 s", "60 s", "45 s", "30 s"])
       expect(text).toContain(s);
-    expect(text).toMatch(/176/);
+    expect(text).toMatch(/Peticiones máximas: 177/);
+    expect(text).toMatch(/NLogin/);
+    expect(text).toMatch(/nunca más de 4 por vuelta/);
     expect(text).toMatch(/3 h/);
   });
 });
@@ -136,12 +140,6 @@ const CT = "text/html;charset=ISO-8859-15";
 
 type Call = { url: string; init: RequestInit; at: number; n: number };
 type Reply = Response | "network" | { response: Response; takesMs: number };
-
-const portadaReply = (cookie = COOKIE) =>
-  new Response(null, {
-    status: 302,
-    headers: { "set-cookie": `JSESSIONID=${cookie}; Path=/pnfg` },
-  });
 const panelReply = (bytes: Uint8Array<ArrayBuffer>, salt = "") =>
   new Response(
     salt === "" ? bytes : copy(Buffer.concat([bytes, Buffer.from(salt)])),
@@ -154,18 +152,26 @@ const panelReply = (bytes: Uint8Array<ArrayBuffer>, salt = "") =>
     },
   );
 
-// Fresh bodies by default: real fixtures with a salt, so no two repeat.
-const fresh = (call: Call): Reply =>
-  call.init.method === "GET"
-    ? portadaReply()
-    : panelReply(
-        String(call.init.body).endsWith("Sch_en_juego=1") ? ENJUEGO : TODOS,
-        `<!-- ${call.n} -->`,
-      );
+// By default the strict double of CA-10 answers (ADR-020): the session only
+// opens with portada and NLogin, and the panel gives real fixtures with a
+// salt, so no two bodies repeat. A script can answer a call instead, or call
+// `serve` to let the double answer it.
+type Serve = (call: Call) => Promise<Response>;
 
-function harness(script: (call: Call) => Reply | undefined = () => undefined) {
+function harness(
+  script: (call: Call, serve: Serve) => Reply | undefined = () => undefined,
+) {
   let t = T0;
   const calls: Call[] = [];
+  const server = rfefServer({
+    cookies: [COOKIE, "RENOVADA42", "TERCERA77"],
+    panel: (c) =>
+      panelReply(
+        String(c.body).endsWith("Sch_en_juego=1") ? ENJUEGO : TODOS,
+        `<!-- ${calls.length} -->`,
+      ),
+  });
+  const serve: Serve = (call) => server.fetch(call.url, call.init);
   const lines: CalibrationLine[] = [];
   const bodies: Uint8Array[] = [];
   const logs: string[] = [];
@@ -178,7 +184,7 @@ function harness(script: (call: Call) => Reply | undefined = () => undefined) {
         n: calls.length + 1,
       };
       calls.push(call);
-      const reply = script(call) ?? fresh(call);
+      const reply = script(call, serve) ?? (await serve(call));
       if (reply === "network") throw new TypeError("fetch failed");
       if (reply instanceof Response) return reply;
       t += reply.takesMs;
@@ -204,7 +210,17 @@ function harness(script: (call: Call) => Reply | undefined = () => undefined) {
     lastRequest: "2026-10-16T14:00:00Z",
     lastLogged: null,
   };
-  return { calls, lines, bodies, logs, fetch, deps, ok, now: () => t };
+  return {
+    calls,
+    lines,
+    bodies,
+    logs,
+    fetch,
+    deps,
+    ok,
+    server,
+    now: () => t,
+  };
 }
 
 const posts = (calls: Call[]) => calls.filter((c) => c.init.method === "POST");
@@ -216,18 +232,30 @@ const roundStarts = (lines: CalibrationLine[]) => {
   return [...out.values()];
 };
 const roundOf = (n: number) => planRounds(buildPlan())[n - 1];
-// Round n of a run with no renewal is call n + 1 (call 1 is the portada).
-const callOfRound = (n: number) => n + 1;
+// Round n of a run with no renewal is call n + 2 (portada and NLogin first).
+const callOfRound = (n: number) => n + 2;
+const perRound = (lines: CalibrationLine[]) => {
+  const out = new Map<number, string[]>();
+  for (const l of lines)
+    out.set(l.vuelta, [
+      ...(out.get(l.vuelta) ?? []),
+      `${l.metodo} ${l.variante} ${l.resultado}`,
+    ]);
+  return out;
+};
 
-describe("CA-2 the production pattern (ADR-019 §1-§2)", () => {
-  it("round 1: portada + POST todos; then one POST Sch_en_juego=1 with the same cookie; last: POST todos", async () => {
+describe("CA-2 the production pattern (ADR-019 §1-§2, ADR-020)", () => {
+  it("round 1: portada, NLogin and POST todos; then one POST Sch_en_juego=1 with the same cookie; last: POST todos", async () => {
     const h = harness();
     const outcome = await calibrate(h.ok, h.deps);
-    expect(outcome).toEqual({ kind: "completa", requests: 176 });
-    expect(h.calls).toHaveLength(176);
-    const [portada, first, ...rest] = h.calls;
+    expect(outcome).toEqual({ kind: "completa", requests: 177 });
+    expect(h.calls).toHaveLength(177);
+    const [portada, nlogin, first, ...rest] = h.calls;
     expect(portada.url).toBe(PORTADA_URL);
     expect(portada.init).toEqual(portadaInit(USER_AGENT));
+    // The Location of the portada, as the server gave it, query included.
+    expect(nlogin.url).toBe(DOUBLE_NLOGIN);
+    expect(nlogin.init).toEqual(nloginInit(COOKIE, USER_AGENT));
     expect(first.url).toBe(PANEL_URL);
     expect(first.init).toEqual(panelInit(COOKIE, USER_AGENT, PANEL_QUERY));
     const last = rest.pop() as Call;
@@ -238,9 +266,14 @@ describe("CA-2 the production pattern (ADR-019 §1-§2)", () => {
         panelInit(COOKIE, USER_AGENT, PANEL_ENJUEGO_QUERY),
       );
     }
+    expect(perRound(h.lines).get(1)).toEqual([
+      "GET portada ok",
+      "GET nlogin ok",
+      "POST todos ok",
+    ]);
   });
 
-  it("uses the constants of adapter.ts", () => {
+  it("uses the constants and functions of adapter.ts", () => {
     expect(PANEL_ENJUEGO_QUERY).toBe(`${PANEL_QUERY}&Sch_en_juego=1`);
     expect(panelInit("X", USER_AGENT, PANEL_QUERY)).toEqual({
       method: "POST",
@@ -253,61 +286,69 @@ describe("CA-2 the production pattern (ADR-019 §1-§2)", () => {
       body: PANEL_QUERY,
     });
     expect(portadaInit(USER_AGENT)).toMatchObject({ redirect: "manual" });
+    expect(nloginInit("X", USER_AGENT)).toEqual({
+      method: "GET",
+      redirect: "manual",
+      headers: {
+        Cookie: "JSESSIONID=X",
+        "User-Agent": "marcador.gal (ingesta; https://marcador.gal)",
+      },
+    });
+    // The opening is readPortada/readNlogin of adapter.ts, imported, not copied.
+    const source = readFileSync(
+      new URL("calibration.ts", import.meta.url),
+      "utf8",
+    );
+    expect(source).toMatch(/readPortada\(/);
+    expect(source).toMatch(/readNlogin\(/);
+    expect(source).not.toMatch(/NLogin\?NSess/);
     // ADR-019 §6: the declared UA equals the registry's
     // (src/arch/rfef-identity.test.ts compares it from outside src/sources).
   });
 
   it.each([
     ["an NLogin body", () => new Response(LOGIN, { status: 200 })],
-    ["a 3xx", () => new Response(null, { status: 302 })],
+    ["a 3xx (the server forgot the session)", () => undefined],
   ])(
-    "%s: one portada and one retry; the series goes on with the new cookie",
+    "%s: opens again (portada, NLogin) and retries once; 4 requests; the series goes on with the new cookie",
     async (_, refused) => {
-      let renewed = false;
       const h = harness((c) => {
-        if (c.init.method === "GET" && c.n > 1) {
-          renewed = true;
-          return portadaReply("RENOVADA42");
-        }
-        if (c.n === 6) return refused(); // the POST of round 5
-        return undefined;
+        if (c.n !== callOfRound(5)) return undefined; // the POST of round 5
+        h.server.expire();
+        return refused();
       });
       const outcome = await calibrate(h.ok, h.deps);
       expect(outcome.kind).toBe("completa");
-      expect(renewed).toBe(true);
-      expect(h.calls.slice(5, 8).map((c) => c.init.method)).toEqual([
-        "POST",
-        "GET",
-        "POST",
+      expect(perRound(h.lines).get(5)).toEqual([
+        "POST enjuego nlogin",
+        "GET portada ok",
+        "GET nlogin ok",
+        "POST enjuego ok",
       ]);
-      // Round 5: refused POST, portada, retry; nothing else in that round.
-      const round5 = h.lines.filter((l) => l.vuelta === 5);
-      expect(round5.map((l) => `${l.metodo} ${l.resultado}`)).toEqual([
-        "POST nlogin",
-        "GET ok",
-        "POST ok",
-      ]);
-      expect(cookieOf(h.calls[7])).toBe("JSESSIONID=RENOVADA42");
+      const [, portada, nlogin, retry] = h.calls.slice(6, 10);
+      expect(portada.init).toEqual(portadaInit(USER_AGENT));
+      expect(nlogin.init).toEqual(nloginInit("RENOVADA42", USER_AGENT));
+      expect(cookieOf(retry)).toBe("JSESSIONID=RENOVADA42");
       expect(cookieOf(posts(h.calls).at(-1) as Call)).toBe(
         "JSESSIONID=RENOVADA42",
       );
-      expect(h.calls).toHaveLength(178);
+      expect(h.calls).toHaveLength(180);
     },
   );
 
   it("a second NLogin stops the series", async () => {
     const h = harness((c) =>
-      c.n >= 6 && c.init.method === "POST"
+      c.n >= callOfRound(5) && c.init.method === "POST"
         ? new Response(LOGIN, { status: 200 })
         : undefined,
     );
     const outcome = await calibrate(h.ok, h.deps);
     expect(outcome).toMatchObject({ kind: "parada", result: "nlogin" });
-    expect(h.calls).toHaveLength(8);
+    expect(h.calls).toHaveLength(callOfRound(5) + 3);
     expect(exitCode(outcome)).not.toBe(0);
   });
 
-  it("a session just opened that is refused stops: never more than 3 requests per round", async () => {
+  it("the POST just after an opening is refused: stops, no renewal", async () => {
     const h = harness((c) =>
       c.init.method === "POST"
         ? new Response(null, { status: 302 })
@@ -315,21 +356,64 @@ describe("CA-2 the production pattern (ADR-019 §1-§2)", () => {
     );
     const outcome = await calibrate(h.ok, h.deps);
     expect(outcome).toMatchObject({ kind: "parada", result: "nlogin" });
-    expect(h.calls.map((c) => c.init.method)).toEqual(["GET", "POST"]);
+    expect(h.calls.map((c) => c.init.method)).toEqual(["GET", "GET", "POST"]);
   });
 
-  it("never more than 3 requests per round", async () => {
+  const r = (status: number, headers: Record<string, string>, body?: string) =>
+    new Response(body ?? null, { status, headers });
+  const SET = `JSESSIONID=${COOKIE}; Path=/pnfg; Secure; HttpOnly`;
+  it.each([
+    ["portada without Location", 1, r(302, { "set-cookie": SET })],
+    ["portada without cookie", 1, r(302, { location: "/pnfg/NLogin?NSess=1" })],
+    [
+      "portada to another origin",
+      1,
+      r(302, {
+        "set-cookie": SET,
+        location: "https://otro.example/pnfg/NLogin",
+      }),
+    ],
+    ["portada 200 with a body", 1, r(200, { "set-cookie": SET }, "<html>")],
+    ["NLogin answering 200", 2, r(200, {}, "<html>login</html>")],
+    ["NLogin back to NLogin", 2, r(302, { location: "/pnfg/NLogin" })],
+  ])(
+    "an opening that breaks ADR-020 §1 stops the series: %s",
+    async (_, at, reply) => {
+      const h = harness((c) => (c.n === at ? reply : undefined));
+      const outcome = await calibrate(h.ok, h.deps);
+      expect(h.calls).toHaveLength(at);
+      expect(outcome).toMatchObject({ kind: "parada", result: "sin-sesion" });
+      expect(exitCode(outcome)).not.toBe(0);
+      expect(h.lines.at(-1)?.error).toMatch(/rfef session/);
+    },
+  );
+
+  it("a renewal whose opening breaks ADR-020 §1 stops the series too", async () => {
+    const h = harness((c) => {
+      if (c.n === callOfRound(5)) {
+        h.server.expire();
+        return undefined;
+      }
+      if (c.n === callOfRound(5) + 2)
+        return new Response("<html>login</html>", { status: 200 });
+      return undefined;
+    });
+    const outcome = await calibrate(h.ok, h.deps);
+    expect(outcome).toMatchObject({ kind: "parada", result: "sin-sesion" });
+    expect(h.calls).toHaveLength(callOfRound(5) + 2);
+  });
+
+  it("never more than 4 requests per round: 3 when it opens, 4 when it renews, 1 otherwise", async () => {
     const h = harness((c) =>
       c.init.method === "POST" && c.n % 7 === 0
         ? new Response(LOGIN, { status: 200 })
         : undefined,
     );
     await calibrate(h.ok, h.deps);
-    const perRound = new Map<number, number>();
-    for (const l of h.lines)
-      perRound.set(l.vuelta, (perRound.get(l.vuelta) ?? 0) + 1);
-    expect(Math.max(...perRound.values())).toBeLessThanOrEqual(3);
-    expect(Math.max(...perRound.values())).toBe(3);
+    const sizes = [...perRound(h.lines).values()].map((l) => l.length);
+    expect(sizes[0]).toBe(3);
+    expect(Math.max(...sizes)).toBe(4);
+    expect(new Set(sizes.slice(1))).toEqual(new Set([1, 4]));
   });
 });
 
@@ -364,13 +448,18 @@ describe("CA-3 steps and permanence", () => {
 
   it("a slow request does not bring the next one forward, and never earlier", async () => {
     // Round 3 (180 s step) takes 200 s; round 12 (120 s step) takes 50 s.
-    const h = harness((c) =>
-      c.n === callOfRound(3)
-        ? { response: fresh(c) as Response, takesMs: 200_000 }
-        : c.n === callOfRound(12)
-          ? { response: fresh(c) as Response, takesMs: 50_000 }
-          : undefined,
-    );
+    const slow: Record<number, number> = {
+      [callOfRound(3)]: 200_000,
+      [callOfRound(12)]: 50_000,
+    };
+    const h = harness();
+    const fast = h.deps.fetch;
+    h.deps.fetch = (async (url: string, init?: RequestInit) => {
+      const n = h.calls.length + 1;
+      const res = await fast(url, init);
+      if (slow[n] !== undefined) await h.deps.sleep(slow[n]);
+      return res;
+    }) as typeof globalThis.fetch;
     await calibrate(h.ok, h.deps);
     const starts = roundStarts(h.lines);
     const gap = (n: number) => (starts[n] - starts[n - 1]) / 1000;
@@ -497,14 +586,20 @@ describe("CA-5 a free IP without provoking a block", () => {
     expect(again.fetch).not.toHaveBeenCalled();
   });
 
-  it("an empty panel in round 1 after a good portada is also bloqueada-al-inicio", async () => {
-    const h = harness((c) =>
-      c.n === 2 ? new Response(EMPTY, { status: 200 }) : undefined,
-    );
-    const outcome = await calibrate(h.ok, h.deps);
-    expect(outcome).toMatchObject({ result: "bloqueada-al-inicio" });
-    expect(h.calls).toHaveLength(2);
-  });
+  it.each([
+    ["NLogin", 2],
+    ["the panel", 3],
+  ])(
+    "an empty 200 of %s in round 1 after a good portada is also bloqueada-al-inicio",
+    async (_, at) => {
+      const h = harness((c) =>
+        c.n === at ? new Response(EMPTY, { status: 200 }) : undefined,
+      );
+      const outcome = await calibrate(h.ok, h.deps);
+      expect(outcome).toMatchObject({ result: "bloqueada-al-inicio" });
+      expect(h.calls).toHaveLength(at);
+    },
+  );
 });
 
 describe("CA-6 a log with no secrets", () => {
@@ -512,11 +607,19 @@ describe("CA-6 a log with no secrets", () => {
     const h = harness();
     await calibrate(h.ok, h.deps);
     expect(h.lines).toHaveLength(h.calls.length);
-    const [portada, todos, enjuego] = h.lines;
+    const [portada, nlogin, todos, enjuego] = h.lines;
     expect(portada).toMatchObject({
       vuelta: 1,
       total: 1,
       variante: "portada",
+      metodo: "GET",
+      status: 302,
+      resultado: "ok",
+    });
+    expect(nlogin).toMatchObject({
+      vuelta: 1,
+      total: 2,
+      variante: "nlogin",
       metodo: "GET",
       status: 302,
       resultado: "ok",
@@ -542,13 +645,13 @@ describe("CA-6 a log with no secrets", () => {
         "resultado",
       ].sort(),
     );
-    const body = Buffer.concat([TODOS, Buffer.from("<!-- 2 -->")]);
+    const body = Buffer.concat([TODOS, Buffer.from("<!-- 3 -->")]);
     expect(todos).toMatchObject({
       inicio: "2026-10-17T15:00:00.000Z",
       escalon: 180,
       nEscalon: 1,
       vuelta: 1,
-      total: 2,
+      total: 3,
       variante: "todos",
       metodo: "POST",
       status: 200,
@@ -561,11 +664,11 @@ describe("CA-6 a log with no secrets", () => {
     });
     expect(todos.inicio).toMatch(/Z$/);
     expect(todos.filas).toBeGreaterThan(0);
-    expect(enjuego).toMatchObject({ variante: "enjuego", total: 3 });
-    expect(Buffer.from(h.bodies[1])).toEqual(body);
+    expect(enjuego).toMatchObject({ variante: "enjuego", total: 4 });
+    expect(Buffer.from(h.bodies[2])).toEqual(body);
   });
 
-  it("the cookie is in no line and in no log", async () => {
+  it("neither the cookie nor the Location of NLogin is in a line or a log (ADR-020 §4)", async () => {
     const h = harness((c) =>
       c.n === callOfRound(9) ? new Response(LOGIN, { status: 200 }) : undefined,
     );
@@ -574,6 +677,8 @@ describe("CA-6 a log with no secrets", () => {
     const out = JSON.stringify(h.lines) + h.logs.join("\n");
     expect(out).not.toContain(COOKIE);
     expect(out).not.toMatch(/JSESSIONID/);
+    expect(out).not.toContain("RENOVADA42");
+    expect(out).not.toMatch(/NSess|\/pnfg\/NLogin/);
   });
 });
 
