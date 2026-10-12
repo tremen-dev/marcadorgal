@@ -625,6 +625,19 @@ a.weekArrow:focus-visible {
   color: var(--fg-muted);
 }
 
+/* SPEC-033 CA-5 (H-5, ADR-005: green is the brand): an Equipo galego. A
+   mark, not a state, so no label; losing or postponed, the deep green in
+   place of the dim, so it never reads as a winner. */
+.galician {
+  font-weight: 600;
+  color: var(--marca);
+}
+
+.galicianDeep {
+  font-weight: 600;
+  color: var(--marca-deep);
+}
+
 .score {
   text-align: right;
   font-family: var(--mono);
