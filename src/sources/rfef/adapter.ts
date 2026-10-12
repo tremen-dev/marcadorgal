@@ -32,13 +32,73 @@ export const PANEL_CONTENT_TYPE = "application/x-www-form-urlencoded";
 // The declared identity (ADR-019 §6): the UA of the registry, never varied.
 export const USER_AGENT = "marcador.gal (ingesta; https://marcador.gal)";
 
-// The two requests of the source, shared with the calibration (SPEC-032 CA-2).
-// The session comes from the portada, without following redirects.
+// The requests of the source, shared with the calibration (SPEC-032 CA-2).
+// The session opens in two steps (ADR-020 §1): the portada without cookie,
+// then the NLogin it points to, with the cookie; never following redirects.
 export const portadaInit = (userAgent: string): RequestInit => ({
   method: "GET",
   redirect: "manual",
   headers: { "User-Agent": userAgent },
 });
+
+export const nloginInit = (
+  session: string,
+  userAgent: string,
+): RequestInit => ({
+  method: "GET",
+  redirect: "manual",
+  headers: { Cookie: `JSESSIONID=${session}`, "User-Agent": userAgent },
+});
+
+const NLOGIN_PATH = "/pnfg/NLogin";
+const isRedirect = (res: Response) => res.status >= 300 && res.status <= 399;
+const locationOf = (res: Response): URL | null => {
+  const location = res.headers.get("location");
+  if (location === null) return null;
+  try {
+    return new URL(location, PORTADA_URL);
+  } catch {
+    return null;
+  }
+};
+
+// A session that does not open as ADR-020 §1 says. Its message never
+// carries the cookie or the Location of NLogin (§4).
+export class RfefSessionError extends Error {}
+
+// ADR-020 §1 (a): a 3xx with a JSESSIONID and a Location to /pnfg/NLogin of
+// the same origin. Returns the cookie and the NLogin url, query included.
+export function readPortada(res: Response): {
+  session: string;
+  nlogin: string;
+} {
+  const session = sessionCookie(res);
+  const to = locationOf(res);
+  if (!isRedirect(res))
+    throw new RfefSessionError(
+      `rfef session: the portada answered ${res.status}`,
+    );
+  if (session === null)
+    throw new RfefSessionError("rfef session: no JSESSIONID from the portada");
+  if (to === null || to.origin !== ORIGIN || to.pathname !== NLOGIN_PATH)
+    throw new RfefSessionError(
+      "rfef session: the portada does not send to NLogin",
+    );
+  return { session, nlogin: to.href };
+}
+
+// ADR-020 §1 (b): a 3xx with a Location that does not go back to NLogin. A
+// new JSESSIONID replaces the previous one.
+export function readNlogin(res: Response, session: string): string {
+  const to = locationOf(res);
+  if (!isRedirect(res))
+    throw new RfefSessionError(`rfef session: NLogin answered ${res.status}`);
+  if (to === null || to.pathname === NLOGIN_PATH)
+    throw new RfefSessionError(
+      "rfef session: NLogin does not let the session in",
+    );
+  return sessionCookie(res) ?? session;
+}
 
 export const panelInit = (
   session: string,
@@ -183,14 +243,31 @@ export function createRfef({ aliases, calendar }: RfefOptions): SourceAdapter {
       };
       if (ctx.matches.length === 0) return capture; // RN-08
 
-      // The session: the portada, without following redirects. Its cookie
-      // never reaches the raw capture.
+      // The session (ADR-020 §1): portada, then NLogin, without following
+      // redirects. Neither the cookie nor NLogin reach the raw capture.
       const portada = await ctx.fetch(PORTADA_URL, portadaInit(ctx.userAgent));
-      const session = sessionCookie(portada);
-      if (session === null)
-        throw new Error(
-          `rfef: no JSESSIONID from the portada (${portada.status})`,
-        );
+      const portadaBytes = await portada.arrayBuffer();
+      if (portada.status === 200 && portadaBytes.byteLength === 0) {
+        // The block answers an empty 200 to the portada too: it goes to the
+        // raw capture as the request of the capture, and parse turns it into
+        // "empty body" (ADR-018 §3, ADR-019 §4; H-2 of SPEC-032 E-1).
+        capture.requests.push({
+          url: PORTADA_URL,
+          method: "GET",
+          status: portada.status,
+          contentType: portada.headers.get("content-type"),
+          body: "",
+        });
+        return capture;
+      }
+      const opened = readPortada(portada);
+      const session = readNlogin(
+        await ctx.fetch(
+          opened.nlogin,
+          nloginInit(opened.session, ctx.userAgent),
+        ),
+        opened.session,
+      );
 
       const res = await ctx.fetch(
         PANEL_URL,
