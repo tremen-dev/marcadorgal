@@ -2,10 +2,11 @@
 id: SPEC-035
 tipo: spec
 epica: EPIC-MANT
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-15, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-15, por: Alberto Fojo}
 ---
 # SPEC-035 — Motor serializado por partido
 
@@ -91,3 +92,5 @@ SPEC-024 N-1.
   precisa ADR-009 §1 con H-1 y H-2 (en `borrador`).
 - **Plazo.** Antes de encender `board_delta`/Realtime (paso 2 «al pasar a Pro»
   de SPEC-024 N-1). Sin migración: basta merge y despliegue.
+- **Resolución del titular (2026-10-15, Alberto Fojo):** acepta H-1 (A, `for no key
+  update`), H-2, H-3 (detección en `informe:jornada`) y H-4 (ADR-019).

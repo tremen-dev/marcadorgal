@@ -65,7 +65,7 @@ Actualizado: 2026-10-15
 | SPEC-010 — salud-del-tick-sin-falsos-fallos-y-retirada-de-medir-directo | hecho | 2026-09-22 (sdd-verificador) |
 | SPEC-017 — mejoras-del-informe-de-jornada | hecho | 2026-10-06 (sdd-verificador) |
 | SPEC-029 — endurecer-web-reader-purgar-cron-y-v-7 | hecho | 2026-10-10 (sdd-verificador) |
-| SPEC-035 — motor-serializado-por-partido | borrador | 2026-10-15 (sdd-arquitecto) |
+| SPEC-035 — motor-serializado-por-partido | aprobada | 2026-10-15 (Alberto Fojo) |
 
 ## ADRs
 
@@ -89,10 +89,10 @@ Actualizado: 2026-10-15
 | ADR-016 | aprobada | segundo-reloj-de-medicion-instantes-sellados-por-la-base | 2026-10-09 (Alberto Fojo) |
 | ADR-017 | aprobada | fuente-rfef-panel-de-marcadores-rfef-es-decodificacion-cerrada-y-estados-por-marca-y-reloj | 2026-10-11 (Alberto Fojo) |
 | ADR-018 | aprobada | fuente-rfef-el-panel-por-post-cuerpo-vacio-como-error-y-respuesta-rancia | 2026-10-11 (Alberto Fojo) |
-| ADR-019 | borrador | motor-serializado-por-partido-cerrojo-de-fila-antes-de-leer-la-vigente | 2026-10-15 (sdd-arquitecto) |
+| ADR-019 | aprobada | motor-serializado-por-partido-cerrojo-de-fila-antes-de-leer-la-vigente | 2026-10-15 (Alberto Fojo) |
 
 ## Resumen
 
 - hecho: 31
 - en-revision: 2
-- borrador: 1
+- aprobada: 1

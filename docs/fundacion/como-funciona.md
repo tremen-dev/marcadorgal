@@ -200,8 +200,8 @@ lado. No se mezclan con los **tres relojes de la frescura** de D-9 (el del dato,
 el de la fuente y el del navegador), que son otra cosa y no se tocan aquí.
 
 Dos disparadores solapados serían dos sondeos, y eso rompe RN-08. La guarda de
-cadencia vive en `openAttempt`: una transacción con `pg_advisory_xact_lock` por
-fuente que mira el último `started_at` y **salta la fuente** si es más reciente
+cadencia vive en `openAttempt`: una transacción con `pg_try_advisory_xact_lock`
+(SPEC-029 CA-1; si el lock está ocupado, la fuente se salta) por fuente que mira el último `started_at` y **salta la fuente** si es más reciente
 que `minIntervalSeconds − 5 s`. Los cinco segundos son tolerancia al jitter de
 los dos relojes; el precio, escrito para que nadie lo redescubra, es que en el
 peor caso dos llamadas pueden ir separadas 25 s. La guarda está donde tiene que

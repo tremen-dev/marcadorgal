@@ -1,16 +1,18 @@
 ---
 id: ADR-019
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-10-15, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-15, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # ADR-019: Motor serializado por partido: cerrojo de fila antes de leer la vigente
 
 - Deciders: sdd-arquitecto propone (2026-10-15) con la medición de
   `docs/epicas/EPIC-MANT-mantenimiento/_qa/investigacion-2026-10-15/INFORME.md`
   §1. Alberto Fojo eligió el mecanismo y la semántica de `decided_at` en el gate
-  de SPEC-035 (H-1, H-2, 2026-10-15). La aprobación formal está pendiente.
+  de SPEC-035 (H-1, H-2, 2026-10-15) y lo aprobó el 2026-10-15.
 - Specs relacionadas: SPEC-035, que lo origina. EPIC-004 (operador, webhook y
   fuente RFEF) y el encendido de `board_delta` (SPEC-024 N-1) lo consumen.
   **Precisa ADR-009 §1**, sin superseder nada.

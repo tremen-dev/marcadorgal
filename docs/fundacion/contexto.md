@@ -131,6 +131,7 @@ de cada fuente la gestiona el titular fuera del repo (D-7).
 - ADR-016 Segundo reloj de medición: instantes sellados por Postgres (`clock_timestamp()`); el código no lo lee para decidir.
 - ADR-017 Fuente RFEF: panel de marcadores, decodificación cerrada y estados por marca y reloj.
 - ADR-018 Fuente RFEF: el panel por POST, el cuerpo vacío como error y la respuesta rancia (sustituye ADR-017 §1).
+- ADR-019 Motor serializado por partido: `for no key update` sobre `matches` antes de leer la vigente; todo escritor de Decisions pasa por `decideMatches`; `decided_at` es el `now` del tick y el orden lo dan `version` y `recorded_at` (precisa ADR-009 §1).
 
 ## Riesgos y preguntas abiertas
 
