@@ -1,0 +1,12 @@
+[
+ {
+  "tanda": "2026-10-10T21:00:00.000Z",
+  "intentos": "6",
+  "peticiones": "6"
+ },
+ {
+  "tanda": "2026-10-10T22:00:00.000Z",
+  "intentos": "3",
+  "peticiones": "3"
+ }
+]

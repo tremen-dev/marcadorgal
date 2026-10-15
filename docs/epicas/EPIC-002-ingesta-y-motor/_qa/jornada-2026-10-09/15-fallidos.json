@@ -1,0 +1,58 @@
+[
+ {
+  "started_at": "2026-10-10T13:01:03.656Z",
+  "ok": false,
+  "observations": 0,
+  "req": "0",
+  "rerr": null,
+  "error": "api-football responded 500"
+ },
+ {
+  "started_at": "2026-10-10T14:02:06.131Z",
+  "ok": false,
+  "observations": 0,
+  "req": "0",
+  "rerr": null,
+  "error": "api-football responded 500"
+ },
+ {
+  "started_at": "2026-10-10T14:12:06.198Z",
+  "ok": false,
+  "observations": 0,
+  "req": "2",
+  "rerr": "2",
+  "error": "api-football: 2 de 2 peticiones con error del proveedor: api-football returned errors: {\"bug\":\"This is on our side, please report us this bug on https://dashboa"
+ },
+ {
+  "started_at": "2026-10-10T14:25:06.420Z",
+  "ok": false,
+  "observations": 0,
+  "req": "0",
+  "rerr": null,
+  "error": "api-football responded 500"
+ },
+ {
+  "started_at": "2026-10-10T15:11:06.452Z",
+  "ok": false,
+  "observations": 4,
+  "req": "2",
+  "rerr": "1",
+  "error": "api-football: 1 de 2 peticiones con error del proveedor: api-football returned errors: {\"bug\":\"This is on our side, please report us this bug on https://dashboa"
+ },
+ {
+  "started_at": "2026-10-10T15:48:42.413Z",
+  "ok": false,
+  "observations": 5,
+  "req": "2",
+  "rerr": "1",
+  "error": "api-football: 1 de 2 peticiones con error del proveedor: api-football returned errors: {\"bug\":\"This is on our side, please report us this bug on https://dashboa"
+ },
+ {
+  "started_at": "2026-10-11T12:01:21.136Z",
+  "ok": false,
+  "observations": 0,
+  "req": "0",
+  "rerr": null,
+  "error": "api-football responded 500"
+ }
+]

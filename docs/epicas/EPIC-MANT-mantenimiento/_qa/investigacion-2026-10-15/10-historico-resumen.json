@@ -1,0 +1,12 @@
+[
+ {
+  "decisions": "11347",
+  "desde": "2026-09-22T22:02:38.325Z",
+  "hasta": "2026-10-12T21:03:50.522Z",
+  "decided_at_invertido": "4",
+  "tupla_repetida": "36",
+  "invertido_con_contenido_distinto": "0",
+  "mismo_now_distinta_tupla": "0",
+  "partidos_afectados": "23"
+ }
+]

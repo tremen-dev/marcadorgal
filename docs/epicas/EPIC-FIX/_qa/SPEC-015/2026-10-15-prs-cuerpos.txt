@@ -1,0 +1,199 @@
+=== PR #40
+Sincronización del calendario declarado de `2026-27` (2026-10-08).
+
+Salida de `npm run calendario:sync`:
+
+```
+
+> marcadorgal@0.1.0 calendario:sync
+> node tools/calendario-sync.mjs 2026-27
+
+== primera-division
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+== segunda-division
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+== primera-rfef-g1
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+== segunda-rfef-g1
+   newTeams: 0  added: 0  rescheduled: 2  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+   ~ segunda-rfef-g1-2026-27-j8-sestao-river-arosa: 2026-10-25T16:00:00Z -> 2026-10-24T16:30:00Z
+   ~ segunda-rfef-g1-2026-27-j8-marino-oviedo-vetusta: 2026-10-25T16:00:00Z -> 2026-10-25T15:30:00Z
+== tercera-rfef-g1
+   newTeams: 0  added: 0  rescheduled: 3  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 3
+   ~ tercera-rfef-g1-2026-27-j6-pontevedra-b-portonovo: 2026-10-11T10:00:00Z -> 2026-10-10T18:00:00Z  URGENTE
+   ~ tercera-rfef-g1-2026-27-j6-celtiga-alondras: 2026-10-11T16:00:00Z -> 2026-10-11T15:30:00Z  URGENTE
+   ~ tercera-rfef-g1-2026-27-j6-antela-barco: 2026-10-11T16:00:00Z -> 2026-10-11T15:30:00Z  URGENTE
+urgentes: 3
+auto-aplicable: si
+```
+
+URGENTE: la hora vieja o la nueva cae en los próximos 7 días. PASADO: el partido ya se jugó.
+Si solo hay reprogramaciones, el workflow fusiona y carga solo (SPEC-015 H-1). Si no, fusiona solo si los aplazamientos, los cambios de horario y los equipos son correctos (D-3).
+
+=== PR #49
+Sincronización del calendario declarado de `2026-27` (2026-10-09).
+
+Salida de `npm run calendario:sync`:
+
+```
+
+> marcadorgal@0.1.0 calendario:sync
+> node tools/calendario-sync.mjs 2026-27
+
+== primera-division
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+== segunda-division
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+== primera-rfef-g1
+   newTeams: 0  added: 0  rescheduled: 10  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+   ~ primera-rfef-g1-2026-27-j10-logrones-mirandes: 2026-11-01T16:00:00Z -> 2026-10-31T15:30:00Z
+   ~ primera-rfef-g1-2026-27-j10-racing-ferrol-ponferradina: 2026-11-01T16:00:00Z -> 2026-10-31T15:30:00Z
+   ~ primera-rfef-g1-2026-27-j10-bilbao-athletic-cacereno: 2026-11-01T16:00:00Z -> 2026-10-31T15:30:00Z
+   ~ primera-rfef-g1-2026-27-j10-real-union-aviles: 2026-11-01T16:00:00Z -> 2026-10-31T17:45:00Z
+   ~ primera-rfef-g1-2026-27-j10-barakaldo-pontevedra: 2026-11-01T16:00:00Z -> 2026-11-01T11:00:00Z
+   ~ primera-rfef-g1-2026-27-j10-ud-ourense-cultural-leonesa: 2026-11-01T16:00:00Z -> 2026-11-01T15:30:00Z
+   ~ primera-rfef-g1-2026-27-j10-coria-arenas: 2026-11-01T16:00:00Z -> 2026-11-01T15:30:00Z
+   ~ primera-rfef-g1-2026-27-j10-lugo-merida: 2026-11-01T16:00:00Z -> 2026-11-01T17:45:00Z
+   ~ primera-rfef-g1-2026-27-j10-zamora-deportivo-fabril: 2026-11-01T16:00:00Z -> 2026-11-01T17:45:00Z
+   ~ primera-rfef-g1-2026-27-j10-extremadura-unionistas: 2026-11-01T16:00:00Z -> 2026-11-01T20:00:00Z
+== segunda-rfef-g1
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+== tercera-rfef-g1
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+urgentes: 0
+auto-aplicable: si
+```
+
+URGENTE: la hora vieja o la nueva cae en los próximos 7 días. PASADO: el partido ya se jugó.
+Si solo hay reprogramaciones, el workflow fusiona y carga solo (SPEC-015 H-1). Si no, fusiona solo si los aplazamientos, los cambios de horario y los equipos son correctos (D-3).
+
+=== PR #58
+Sincronización del calendario declarado de `2026-27` (2026-10-10).
+
+Salida de `npm run calendario:sync`:
+
+```
+
+> marcadorgal@0.1.0 calendario:sync
+> node tools/calendario-sync.mjs 2026-27
+
+== primera-division
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+== segunda-division
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+== primera-rfef-g1
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+== segunda-rfef-g1
+   newTeams: 0  added: 0  rescheduled: 1  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+   ~ segunda-rfef-g1-2026-27-j8-astorga-gernika: 2026-10-25T16:00:00Z -> 2026-10-24T14:30:00Z
+== tercera-rfef-g1
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+urgentes: 0
+auto-aplicable: si
+```
+
+URGENTE: la hora vieja o la nueva cae en los próximos 7 días. PASADO: el partido ya se jugó.
+Si solo hay reprogramaciones, el workflow fusiona y carga solo (SPEC-015 H-1). Si no, fusiona solo si los aplazamientos, los cambios de horario y los equipos son correctos (D-3).
+
+=== PR #68
+Sincronización del calendario declarado de `2026-27` (2026-10-13).
+
+Salida de `npm run calendario:sync`:
+
+```
+
+> marcadorgal@0.1.0 calendario:sync
+> node tools/calendario-sync.mjs 2026-27
+
+== primera-division
+   newTeams: 0  added: 0  rescheduled: 10  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+   ~ primera-division-2026-27-j12-sevilla-alaves: 2026-11-08T16:00:00Z -> 2026-11-06T20:00:00Z
+   ~ primera-division-2026-27-j12-malaga-racing-santander: 2026-11-08T16:00:00Z -> 2026-11-07T13:00:00Z
+   ~ primera-division-2026-27-j12-espanyol-deportivo: 2026-11-08T16:00:00Z -> 2026-11-07T15:15:00Z
+   ~ primera-division-2026-27-j12-osasuna-athletic-club: 2026-11-08T16:00:00Z -> 2026-11-07T17:30:00Z
+   ~ primera-division-2026-27-j12-valencia-real-madrid: 2026-11-08T16:00:00Z -> 2026-11-07T20:00:00Z
+   ~ primera-division-2026-27-j12-elche-real-betis: 2026-11-08T16:00:00Z -> 2026-11-08T13:00:00Z
+   ~ primera-division-2026-27-j12-real-sociedad-rayo-vallecano: 2026-11-08T16:00:00Z -> 2026-11-08T15:15:00Z
+   ~ primera-division-2026-27-j12-villarreal-getafe: 2026-11-08T16:00:00Z -> 2026-11-08T17:30:00Z
+   ~ primera-division-2026-27-j12-celta-levante: 2026-11-08T16:00:00Z -> 2026-11-08T17:30:00Z
+   ~ primera-division-2026-27-j12-atletico-madrid-barcelona: 2026-11-08T16:00:00Z -> 2026-11-08T20:00:00Z
+== segunda-division
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+== primera-rfef-g1
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+== segunda-rfef-g1
+   newTeams: 0  added: 0  rescheduled: 3  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+   ~ segunda-rfef-g1-2026-27-j8-alaves-b-rayo-cantabria: 2026-10-25T16:00:00Z -> 2026-10-24T10:30:00Z
+   ~ segunda-rfef-g1-2026-27-j8-llanera-compostela: 2026-10-25T16:00:00Z -> 2026-10-24T15:30:00Z
+   ~ segunda-rfef-g1-2026-27-j8-basconia-portugalete: 2026-10-25T16:00:00Z -> 2026-10-25T16:30:00Z
+== tercera-rfef-g1
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+urgentes: 0
+auto-aplicable: si
+```
+
+URGENTE: la hora vieja o la nueva cae en los próximos 7 días. PASADO: el partido ya se jugó.
+Si solo hay reprogramaciones, el workflow fusiona y carga solo (SPEC-015 H-1). Si no, fusiona solo si los aplazamientos, los cambios de horario y los equipos son correctos (D-3).
+
+=== PR #69
+Sincronización del calendario declarado de `2026-27` (2026-10-14).
+
+Salida de `npm run calendario:sync`:
+
+```
+
+> marcadorgal@0.1.0 calendario:sync
+> node tools/calendario-sync.mjs 2026-27
+
+== primera-division
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+== segunda-division
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+== primera-rfef-g1
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+== segunda-rfef-g1
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+== tercera-rfef-g1
+   newTeams: 0  added: 0  rescheduled: 7  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 7
+   ~ tercera-rfef-g1-2026-27-j7-arenteiro-atletico-arteixo: 2026-10-18T16:00:00Z -> 2026-10-17T15:00:00Z  URGENTE
+   ~ tercera-rfef-g1-2026-27-j7-viveiro-villalbes: 2026-10-18T16:00:00Z -> 2026-10-18T10:00:00Z  URGENTE
+   ~ tercera-rfef-g1-2026-27-j7-silva-estradense: 2026-10-18T16:00:00Z -> 2026-10-18T10:30:00Z  URGENTE
+   ~ tercera-rfef-g1-2026-27-j7-alondras-boiro: 2026-10-18T16:00:00Z -> 2026-10-18T14:15:00Z  URGENTE
+   ~ tercera-rfef-g1-2026-27-j7-somozas-montaneros: 2026-10-18T16:00:00Z -> 2026-10-18T15:00:00Z  URGENTE
+   ~ tercera-rfef-g1-2026-27-j7-portonovo-antela: 2026-10-18T16:00:00Z -> 2026-10-18T15:00:00Z  URGENTE
+   ~ tercera-rfef-g1-2026-27-j7-barco-sarriana: 2026-10-18T16:00:00Z -> 2026-10-18T15:30:00Z  URGENTE
+urgentes: 7
+auto-aplicable: si
+```
+
+URGENTE: la hora vieja o la nueva cae en los próximos 7 días. PASADO: el partido ya se jugó.
+Si solo hay reprogramaciones, el workflow fusiona y carga solo (SPEC-015 H-1). Si no, fusiona solo si los aplazamientos, los cambios de horario y los equipos son correctos (D-3).
+
+=== PR #70
+Sincronización del calendario declarado de `2026-27` (2026-10-15).
+
+Salida de `npm run calendario:sync`:
+
+```
+
+> marcadorgal@0.1.0 calendario:sync
+> node tools/calendario-sync.mjs 2026-27
+
+== primera-division
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+== segunda-division
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+== primera-rfef-g1
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+== segunda-rfef-g1
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+== tercera-rfef-g1
+   newTeams: 0  added: 0  rescheduled: 1  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 1
+   ~ tercera-rfef-g1-2026-27-j7-celta-c-celtiga: 2026-10-18T16:00:00Z -> 2026-10-18T09:30:00Z  URGENTE
+urgentes: 1
+auto-aplicable: si
+```
+
+URGENTE: la hora vieja o la nueva cae en los próximos 7 días. PASADO: el partido ya se jugó.
+Si solo hay reprogramaciones, el workflow fusiona y carga solo (SPEC-015 H-1). Si no, fusiona solo si los aplazamientos, los cambios de horario y los equipos son correctos (D-3).
+

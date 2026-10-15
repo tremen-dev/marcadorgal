@@ -1,0 +1,1429 @@
+{
+ "ro": {
+  "ro": "on"
+ },
+ "matches": [
+  {
+   "id": "segunda-rfef-g1-2026-27-j6-astorga-ourense-cf",
+   "kickoff": "2026-10-10T14:30:00.000Z"
+  },
+  {
+   "id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+   "kickoff": "2026-10-11T15:30:00.000Z"
+  },
+  {
+   "id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+   "kickoff": "2026-10-11T15:30:00.000Z"
+  },
+  {
+   "id": "tercera-rfef-g1-2026-27-j6-pontevedra-b-portonovo",
+   "kickoff": "2026-10-10T18:00:00.000Z"
+  },
+  {
+   "id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "kickoff": "2026-10-11T15:00:00.000Z"
+  }
+ ],
+ "tramos": [
+  {
+   "match_id": "segunda-rfef-g1-2026-27-j6-astorga-ourense-cf",
+   "source_id": "api-football",
+   "status": "scheduled",
+   "home_score": null,
+   "away_score": null,
+   "n": "253",
+   "desde": "2026-10-10T14:20:06.335Z",
+   "hasta": "2026-10-10T16:27:14.489Z",
+   "min_minute": null,
+   "max_minute": null
+  },
+  {
+   "match_id": "segunda-rfef-g1-2026-27-j6-astorga-ourense-cf",
+   "source_id": "api-football",
+   "status": "finished",
+   "home_score": 4,
+   "away_score": 0,
+   "n": "1",
+   "desde": "2026-10-10T16:27:44.509Z",
+   "hasta": "2026-10-10T16:27:44.509Z",
+   "min_minute": null,
+   "max_minute": null
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+   "source_id": "api-football",
+   "status": "scheduled",
+   "home_score": null,
+   "away_score": null,
+   "n": "270",
+   "desde": "2026-10-11T15:20:03.753Z",
+   "hasta": "2026-10-11T17:34:40.816Z",
+   "min_minute": null,
+   "max_minute": null
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+   "source_id": "api-football",
+   "status": "finished",
+   "home_score": 1,
+   "away_score": 1,
+   "n": "1",
+   "desde": "2026-10-11T17:35:06.511Z",
+   "hasta": "2026-10-11T17:35:06.511Z",
+   "min_minute": null,
+   "max_minute": null
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+   "source_id": "api-football",
+   "status": "scheduled",
+   "home_score": null,
+   "away_score": null,
+   "n": "273",
+   "desde": "2026-10-11T15:20:03.753Z",
+   "hasta": "2026-10-11T17:36:06.486Z",
+   "min_minute": null,
+   "max_minute": null
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+   "source_id": "api-football",
+   "status": "finished",
+   "home_score": 0,
+   "away_score": 0,
+   "n": "1",
+   "desde": "2026-10-11T17:36:40.852Z",
+   "hasta": "2026-10-11T17:36:40.852Z",
+   "min_minute": null,
+   "max_minute": null
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-pontevedra-b-portonovo",
+   "source_id": "api-football",
+   "status": "scheduled",
+   "home_score": null,
+   "away_score": null,
+   "n": "339",
+   "desde": "2026-10-10T17:50:19.236Z",
+   "hasta": "2026-10-10T22:05:34.234Z",
+   "min_minute": null,
+   "max_minute": null
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-pontevedra-b-portonovo",
+   "source_id": "api-football",
+   "status": "finished",
+   "home_score": 0,
+   "away_score": 1,
+   "n": "1",
+   "desde": "2026-10-10T22:10:34.467Z",
+   "hasta": "2026-10-10T22:10:34.467Z",
+   "min_minute": null,
+   "max_minute": null
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "source_id": "api-football",
+   "status": "scheduled",
+   "home_score": null,
+   "away_score": null,
+   "n": "27",
+   "desde": "2026-10-11T14:50:01.970Z",
+   "hasta": "2026-10-11T15:03:01.576Z",
+   "min_minute": null,
+   "max_minute": null
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "source_id": "api-football",
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "n": "179",
+   "desde": "2026-10-11T15:03:31.582Z",
+   "hasta": "2026-10-11T16:32:37.113Z",
+   "min_minute": 1,
+   "max_minute": 72
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "source_id": "api-football",
+   "status": "live",
+   "home_score": 0,
+   "away_score": 1,
+   "n": "8",
+   "desde": "2026-10-11T16:33:06.153Z",
+   "hasta": "2026-10-11T16:36:37.248Z",
+   "min_minute": 73,
+   "max_minute": 76
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "source_id": "api-football",
+   "status": "live",
+   "home_score": 0,
+   "away_score": 2,
+   "n": "20",
+   "desde": "2026-10-11T16:37:06.457Z",
+   "hasta": "2026-10-11T16:46:37.862Z",
+   "min_minute": 77,
+   "max_minute": 86
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "source_id": "api-football",
+   "status": "live",
+   "home_score": 1,
+   "away_score": 2,
+   "n": "18",
+   "desde": "2026-10-11T16:47:06.395Z",
+   "hasta": "2026-10-11T16:55:38.609Z",
+   "min_minute": 87,
+   "max_minute": 90
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "source_id": "api-football",
+   "status": "finished",
+   "home_score": 1,
+   "away_score": 2,
+   "n": "1",
+   "desde": "2026-10-11T16:56:06.210Z",
+   "hasta": "2026-10-11T16:56:06.210Z",
+   "min_minute": null,
+   "max_minute": null
+  }
+ ],
+ "dec": [
+  {
+   "match_id": "segunda-rfef-g1-2026-27-j6-astorga-ourense-cf",
+   "version": 1,
+   "status": "scheduled",
+   "home_score": null,
+   "away_score": null,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-10T14:20:06.335Z"
+  },
+  {
+   "match_id": "segunda-rfef-g1-2026-27-j6-astorga-ourense-cf",
+   "version": 2,
+   "status": "scheduled",
+   "home_score": null,
+   "away_score": null,
+   "qualifier": "sen_sinal",
+   "rule": "RN-05",
+   "decided_at": "2026-10-10T14:45:08.958Z"
+  },
+  {
+   "match_id": "segunda-rfef-g1-2026-27-j6-astorga-ourense-cf",
+   "version": 3,
+   "status": "finished",
+   "home_score": 4,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-10T16:27:44.509Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+   "version": 1,
+   "status": "scheduled",
+   "home_score": null,
+   "away_score": null,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:20:03.753Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+   "version": 2,
+   "status": "scheduled",
+   "home_score": null,
+   "away_score": null,
+   "qualifier": "sen_sinal",
+   "rule": "RN-05",
+   "decided_at": "2026-10-11T15:45:06.353Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+   "version": 3,
+   "status": "scheduled",
+   "home_score": null,
+   "away_score": null,
+   "qualifier": "sen_sinal",
+   "rule": "RN-05",
+   "decided_at": "2026-10-11T15:45:04.084Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+   "version": 4,
+   "status": "finished",
+   "home_score": 1,
+   "away_score": 1,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T17:35:06.511Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+   "version": 1,
+   "status": "scheduled",
+   "home_score": null,
+   "away_score": null,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:20:03.753Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+   "version": 2,
+   "status": "scheduled",
+   "home_score": null,
+   "away_score": null,
+   "qualifier": "sen_sinal",
+   "rule": "RN-05",
+   "decided_at": "2026-10-11T15:45:06.353Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+   "version": 3,
+   "status": "scheduled",
+   "home_score": null,
+   "away_score": null,
+   "qualifier": "sen_sinal",
+   "rule": "RN-05",
+   "decided_at": "2026-10-11T15:45:04.084Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+   "version": 4,
+   "status": "finished",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T17:36:40.852Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-pontevedra-b-portonovo",
+   "version": 1,
+   "status": "scheduled",
+   "home_score": null,
+   "away_score": null,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-10T17:50:19.236Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-pontevedra-b-portonovo",
+   "version": 2,
+   "status": "scheduled",
+   "home_score": null,
+   "away_score": null,
+   "qualifier": "sen_sinal",
+   "rule": "RN-05",
+   "decided_at": "2026-10-10T18:15:06.512Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-pontevedra-b-portonovo",
+   "version": 3,
+   "status": "finished",
+   "home_score": 0,
+   "away_score": 1,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-10T22:10:34.467Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 1,
+   "status": "scheduled",
+   "home_score": null,
+   "away_score": null,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T14:50:01.970Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 2,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:03:31.582Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 3,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:04:31.650Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 4,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:05:31.690Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 5,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:06:31.737Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 6,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:08:01.772Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 7,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:08:31.814Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 8,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:09:31.820Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 9,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:10:32.166Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 10,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:11:32.087Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 11,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:12:32.142Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 12,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:13:32.156Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 13,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:15:02.791Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 14,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:15:32.234Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 15,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:16:32.301Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 16,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:17:32.343Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 17,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:18:32.358Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 18,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:19:32.373Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 19,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:20:32.456Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 20,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:21:32.508Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 21,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:22:32.527Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 22,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:23:32.535Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 23,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:25:02.791Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 24,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:25:32.733Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 25,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:26:32.782Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 26,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:27:32.812Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 27,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:29:02.851Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 28,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:29:32.861Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 29,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:30:32.894Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 30,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:31:32.931Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 31,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:32:32.999Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 32,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:33:33.468Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 33,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:34:33.511Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 34,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:35:33.598Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 35,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:36:33.651Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 36,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:37:33.662Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 37,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:38:33.742Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 38,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:39:33.734Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 39,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:40:33.951Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 40,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:41:33.814Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 41,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:42:33.871Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 42,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:44:04.098Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 43,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:44:34.057Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 44,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:45:34.108Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 45,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:46:34.182Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 46,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:47:34.182Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 47,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:48:34.279Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 48,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:49:34.259Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 49,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T15:50:04.371Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 50,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:06:05.459Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 51,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:06:35.514Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 52,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:07:35.509Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 53,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:08:35.555Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 54,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:09:35.588Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 55,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:11:05.696Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 56,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:11:35.700Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 57,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:12:35.738Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 58,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:13:35.764Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 59,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:14:36.132Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 60,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:15:36.080Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 61,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:16:36.158Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 62,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:17:36.177Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 63,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:18:36.213Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 64,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:19:36.237Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 65,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:21:06.236Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 66,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:21:36.418Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 67,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:22:36.474Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 68,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:23:06.354Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 69,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:23:36.471Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 70,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:24:06.483Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 71,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:24:36.540Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 72,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:25:36.547Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 73,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:26:36.611Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 74,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:27:36.623Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 75,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:28:36.690Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 76,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:29:36.693Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 77,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:30:36.737Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 78,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:31:37.173Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 79,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:32:06.253Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 80,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 0,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:32:37.113Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 81,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 1,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:33:06.153Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 82,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 1,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:34:06.387Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 83,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 1,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:35:06.419Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 84,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 1,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:36:06.242Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 85,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:37:06.457Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 86,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:38:06.264Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 87,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:38:37.316Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 88,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:39:06.441Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 89,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:39:37.378Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 90,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:40:06.271Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 91,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:40:37.385Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 92,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:41:37.655Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 93,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:43:06.293Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 94,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:43:37.732Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 95,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:44:06.200Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 96,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:44:37.809Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 97,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:45:06.325Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 98,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:45:37.796Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 99,
+   "status": "live",
+   "home_score": 0,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:46:06.280Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 100,
+   "status": "live",
+   "home_score": 1,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:47:06.395Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 101,
+   "status": "live",
+   "home_score": 1,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:48:06.209Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 102,
+   "status": "live",
+   "home_score": 1,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:49:06.256Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 103,
+   "status": "live",
+   "home_score": 1,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:50:06.452Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 104,
+   "status": "live",
+   "home_score": 1,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:51:06.623Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 105,
+   "status": "live",
+   "home_score": 1,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:52:06.403Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 106,
+   "status": "live",
+   "home_score": 1,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:53:06.327Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 107,
+   "status": "live",
+   "home_score": 1,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:53:38.875Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 108,
+   "status": "live",
+   "home_score": 1,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:55:06.150Z"
+  },
+  {
+   "match_id": "tercera-rfef-g1-2026-27-j6-villalbes-estradense",
+   "version": 109,
+   "status": "finished",
+   "home_score": 1,
+   "away_score": 2,
+   "qualifier": "provisional",
+   "rule": "RN-01",
+   "decided_at": "2026-10-11T16:56:06.210Z"
+  }
+ ]
+}

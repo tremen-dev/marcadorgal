@@ -1,0 +1,65 @@
+[
+ {
+  "version": 1,
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T11:50:29.229Z"
+ },
+ {
+  "version": 2,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 1,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:03:00.944Z"
+ },
+ {
+  "version": 3,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 2,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:04:00.489Z"
+ },
+ {
+  "version": 38,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 30,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:51:03.026Z"
+ },
+ {
+  "version": 39,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 31,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:52:03.057Z"
+ },
+ {
+  "version": 40,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 32,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:53:03.331Z"
+ },
+ {
+  "version": 41,
+  "status": "suspended",
+  "sc": "0-0",
+  "minute": null,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:54:03.349Z"
+ }
+]

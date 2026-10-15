@@ -1,0 +1,142 @@
+[
+ {
+  "match_id": "segunda-rfef-g1-2026-27-j6-astorga-ourense-cf",
+  "version": 1,
+  "status": "scheduled",
+  "sc": null,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T14:20:06.335Z",
+  "forced_finish": false
+ },
+ {
+  "match_id": "segunda-rfef-g1-2026-27-j6-astorga-ourense-cf",
+  "version": 2,
+  "status": "scheduled",
+  "sc": null,
+  "qualifier": "sen_sinal",
+  "rule": "RN-05",
+  "decided_at": "2026-10-10T14:45:08.958Z",
+  "forced_finish": false
+ },
+ {
+  "match_id": "segunda-rfef-g1-2026-27-j6-astorga-ourense-cf",
+  "version": 3,
+  "status": "finished",
+  "sc": "4-0",
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T16:27:44.509Z",
+  "forced_finish": false
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "version": 1,
+  "status": "scheduled",
+  "sc": null,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-11T15:20:03.753Z",
+  "forced_finish": false
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "version": 2,
+  "status": "scheduled",
+  "sc": null,
+  "qualifier": "sen_sinal",
+  "rule": "RN-05",
+  "decided_at": "2026-10-11T15:45:06.353Z",
+  "forced_finish": false
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "version": 3,
+  "status": "scheduled",
+  "sc": null,
+  "qualifier": "sen_sinal",
+  "rule": "RN-05",
+  "decided_at": "2026-10-11T15:45:04.084Z",
+  "forced_finish": false
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "version": 4,
+  "status": "finished",
+  "sc": "1-1",
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-11T17:35:06.511Z",
+  "forced_finish": false
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "version": 1,
+  "status": "scheduled",
+  "sc": null,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-11T15:20:03.753Z",
+  "forced_finish": false
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "version": 2,
+  "status": "scheduled",
+  "sc": null,
+  "qualifier": "sen_sinal",
+  "rule": "RN-05",
+  "decided_at": "2026-10-11T15:45:06.353Z",
+  "forced_finish": false
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "version": 3,
+  "status": "scheduled",
+  "sc": null,
+  "qualifier": "sen_sinal",
+  "rule": "RN-05",
+  "decided_at": "2026-10-11T15:45:04.084Z",
+  "forced_finish": false
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "version": 4,
+  "status": "finished",
+  "sc": "0-0",
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-11T17:36:40.852Z",
+  "forced_finish": false
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-pontevedra-b-portonovo",
+  "version": 1,
+  "status": "scheduled",
+  "sc": null,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T17:50:19.236Z",
+  "forced_finish": false
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-pontevedra-b-portonovo",
+  "version": 2,
+  "status": "scheduled",
+  "sc": null,
+  "qualifier": "sen_sinal",
+  "rule": "RN-05",
+  "decided_at": "2026-10-10T18:15:06.512Z",
+  "forced_finish": false
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-pontevedra-b-portonovo",
+  "version": 3,
+  "status": "finished",
+  "sc": "0-1",
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T22:10:34.467Z",
+  "forced_finish": false
+ }
+]

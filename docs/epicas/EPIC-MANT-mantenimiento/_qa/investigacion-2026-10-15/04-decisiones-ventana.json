@@ -1,0 +1,92 @@
+[
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "version": 2,
+  "status": "scheduled",
+  "qualifier": "sen_sinal",
+  "rule": "RN-05",
+  "decided_at": "2026-10-11T15:45:06.353Z",
+  "recorded_at": "2026-10-11T15:45:07.869Z"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "version": 2,
+  "status": "scheduled",
+  "qualifier": "sen_sinal",
+  "rule": "RN-05",
+  "decided_at": "2026-10-11T15:45:06.353Z",
+  "recorded_at": "2026-10-11T15:45:08.014Z"
+ },
+ {
+  "match_id": "primera-rfef-g1-2026-27-j7-ponferradina-aviles",
+  "version": 57,
+  "status": "live",
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-11T15:45:04.084Z",
+  "recorded_at": "2026-10-11T15:45:08.457Z"
+ },
+ {
+  "match_id": "primera-rfef-g1-2026-27-j7-pontevedra-merida",
+  "version": 62,
+  "status": "live",
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-11T15:45:04.084Z",
+  "recorded_at": "2026-10-11T15:45:08.598Z"
+ },
+ {
+  "match_id": "segunda-division-2026-27-j9-almeria-leganes",
+  "version": 75,
+  "status": "live",
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-11T15:45:04.084Z",
+  "recorded_at": "2026-10-11T15:45:08.739Z"
+ },
+ {
+  "match_id": "segunda-rfef-g1-2026-27-j6-arosa-bergantinos",
+  "version": 46,
+  "status": "live",
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-11T15:45:04.084Z",
+  "recorded_at": "2026-10-11T15:45:08.879Z"
+ },
+ {
+  "match_id": "segunda-rfef-g1-2026-27-j6-coruxo-compostela",
+  "version": 46,
+  "status": "live",
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-11T15:45:04.084Z",
+  "recorded_at": "2026-10-11T15:45:09.021Z"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "version": 3,
+  "status": "scheduled",
+  "qualifier": "sen_sinal",
+  "rule": "RN-05",
+  "decided_at": "2026-10-11T15:45:04.084Z",
+  "recorded_at": "2026-10-11T15:45:09.163Z"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-boiro-viveiro",
+  "version": 15,
+  "status": "live",
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-11T15:45:04.084Z",
+  "recorded_at": "2026-10-11T15:45:09.303Z"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "version": 3,
+  "status": "scheduled",
+  "qualifier": "sen_sinal",
+  "rule": "RN-05",
+  "decided_at": "2026-10-11T15:45:04.084Z",
+  "recorded_at": "2026-10-11T15:45:09.444Z"
+ }
+]

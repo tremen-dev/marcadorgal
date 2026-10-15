@@ -1042,6 +1042,8 @@ acepto todos, uno con corrección, y abro dos más.
   temporales y se borran al cerrar la spec. El workflow no toca la base y solo usa
   `secrets.API_FOOTBALL_KEY`: revisado.
 
+- **R-SPEC-009-1, cerrado (lectura del 2026-10-15 sobre la jornada 2026-10-09/12; `docs/epicas/EPIC-002-ingesta-y-motor/_qa/jornada-2026-10-09/50-*`):** los 10 partidos de `primera-division` tienen Decisions (980 sobre 2430 observaciones): 9 `finished` (6 RN-01 `provisional`, 3 RN-12 `confirmado`) y 1 `suspended` dado por la fuente (rayo-vallecano-athletic-club). Criterio 5 medido sobre las cinco competiciones.
+
 ## Cómo retomar (handoff)
 
 Hecho hoy (2026-09-22): CA-1 a CA-5 con sus tests, la parte de CA-10 que se puede

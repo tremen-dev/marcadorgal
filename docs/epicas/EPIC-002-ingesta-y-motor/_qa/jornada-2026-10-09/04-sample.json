@@ -1,0 +1,47 @@
+[
+ {
+  "started_at": "2026-10-10T22:00:33.937Z",
+  "ok": true,
+  "observations": 1,
+  "raw_ref": "raw/api-football/2026-10-10/2026-10-10T22-00-33.937Z-c8c28b9a-0b9d-42ca-b827-cf05b2dfe9a1.json.gz",
+  "details": {
+   "alerts": 0,
+   "season": "2026-27",
+   "matches": 1,
+   "skipped": 0,
+   "requests": 1,
+   "unresolved": 0,
+   "requestErrors": 0
+  }
+ },
+ {
+  "started_at": "2026-10-10T22:05:34.234Z",
+  "ok": true,
+  "observations": 1,
+  "raw_ref": "raw/api-football/2026-10-10/2026-10-10T22-05-34.234Z-5c5677ae-f94e-4f38-8f81-f2850fdfc1b3.json.gz",
+  "details": {
+   "alerts": 0,
+   "season": "2026-27",
+   "matches": 1,
+   "skipped": 0,
+   "requests": 1,
+   "unresolved": 0,
+   "requestErrors": 0
+  }
+ },
+ {
+  "started_at": "2026-10-10T22:10:34.467Z",
+  "ok": true,
+  "observations": 1,
+  "raw_ref": "raw/api-football/2026-10-10/2026-10-10T22-10-34.467Z-33685010-0b97-4bb3-9a9b-c6752e8bccc3.json.gz",
+  "details": {
+   "alerts": 0,
+   "season": "2026-27",
+   "matches": 1,
+   "skipped": 0,
+   "requests": 1,
+   "unresolved": 0,
+   "requestErrors": 0
+  }
+ }
+]
