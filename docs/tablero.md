@@ -65,7 +65,7 @@ Actualizado: 2026-10-15
 | SPEC-010 — salud-del-tick-sin-falsos-fallos-y-retirada-de-medir-directo | hecho | 2026-09-22 (sdd-verificador) |
 | SPEC-017 — mejoras-del-informe-de-jornada | hecho | 2026-10-06 (sdd-verificador) |
 | SPEC-029 — endurecer-web-reader-purgar-cron-y-v-7 | hecho | 2026-10-10 (sdd-verificador) |
-| SPEC-035 — motor-serializado-por-partido | en-progreso | 2026-10-15 (sdd-verificador) |
+| SPEC-035 — motor-serializado-por-partido | hecho | 2026-10-15 (sdd-verificador) |
 
 ## ADRs
 
@@ -93,6 +93,5 @@ Actualizado: 2026-10-15
 
 ## Resumen
 
-- hecho: 31
+- hecho: 32
 - en-revision: 2
-- en-progreso: 1
