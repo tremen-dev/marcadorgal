@@ -1,0 +1,40 @@
+== M1: src/calendar/load.ts = git show origin/main:src/calendar/load.ts; luego git checkout -- <fichero>
+     × afterInsert on m2, sweep on m1..m3 and a load in file order m3, m1, m2 all commit 1067ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected { sweep: 'ok', …(1) } to deeply equal { sweep: 'ok', load: 'ok' }
++   "load": "40P01 deadlock detected",
+      Tests  1 failed | 203 passed (204)
+exit 1
+== M2: src/ingest/replay-jornada-db.ts = git show origin/main:...; luego git checkout -- <fichero>
+     × waits for a transaction that holds the match, then corrects it 2249ms
+     × drops the correction of a match whose board changed after the read, and writes the rest 47ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+Error: backend 7399 never waited on a lock
+AssertionError: expected 2 to be 1 // Object.is equality
+      Tests  2 failed | 202 passed (204)
+exit 1
+== M3: aplicarCorrecciones sin la comprobacion sameBoard (con cerrojo); luego git checkout -- <fichero>
+     × drops the correction of a match whose board changed after the read, and writes the rest 16ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected 2 to be 1 // Object.is equality
+      Tests  1 failed | 203 passed (204)
+exit 1
+== M4: aplicarCorrecciones sin lockMatches (con relectura); luego git checkout -- <fichero>
+     × waits for a transaction that holds the match, then corrects it 2233ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+Error: backend 7469 never waited on a lock
+      Tests  1 failed | 203 passed (204)
+exit 1
+== M5: lockMatches sin "for no key update"; luego git checkout -- <fichero>
+     × waits for a transaction that holds the match, then corrects it 2240ms
+     × the second engine waits for the first and writes nothing 76ms
+     × the sweep that waited does not publish the old score over the goal 65ms
+     × an afterInsert on m2 and a sweep on m1, m2, m3 both commit 66ms
+     × the other way round: the afterInsert inserts while the sweep holds m2 71ms
+     × afterInsert on m2, sweep on m1..m3 and a load in file order m3, m1, m2 all commit 5008ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+Error: Test timed out in 5000ms.
+PostgresError: duplicate key value violates unique constraint "decisions_match_id_version_key"
+Error: backend 7522 never waited on a lock
+git status --short tras cada mutacion: vacio
+base local tras cada una: {"m":0,"t":0,"d":0,"o":0,"a":0,"ia":0,"cl":0,"c":5}

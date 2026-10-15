@@ -1,0 +1,4 @@
+$ DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:54322/postgres npm run test:db
+ Test Files  20 passed (20)
+      Tests  204 passed (204)
+exit 0

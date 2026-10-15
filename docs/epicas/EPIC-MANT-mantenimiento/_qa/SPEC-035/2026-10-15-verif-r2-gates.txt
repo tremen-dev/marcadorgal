@@ -1,0 +1,6 @@
+$ npm run gates
+Checked 295 files in 99ms. No fixes applied.
+ Test Files  101 passed (101)
+      Tests  1745 passed (1745)
+✓ Compiled successfully in 296ms
+exit 0
