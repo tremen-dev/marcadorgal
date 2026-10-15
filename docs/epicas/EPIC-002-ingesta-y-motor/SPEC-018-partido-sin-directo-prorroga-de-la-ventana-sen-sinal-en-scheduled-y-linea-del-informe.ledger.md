@@ -104,7 +104,9 @@ Contraste: ≤ 42 por tanda de rezagados (SPEC-005 N-4). `npm run informe:jornad
 
 | Jornada | Tandas | Peticiones de la prórroga | ≤ 42 / tanda |
 |---|---|---|---|
-| _pendiente_ | | | |
+| 2026-10-09/12 | 2 (21Z, 22Z); 1 partido rezagado | 9 solo de prórroga (cota inferior); 20 en total para el partido | ✅ |
+
+Lectura 2026-10-15 (orquestador, solo lectura, `statement_timeout 30s`; `docs/epicas/EPIC-002-ingesta-y-motor/_qa/jornada-2026-10-09/10-*`…`15-*`). Hubo un solo rezagado, `tercera-rfef-g1-2026-27-j6-pontevedra-b-portonovo` (kickoff 18:00Z): `sen_sinal` a las 18:15Z y `finished 0-1` por RN-01 a las 22:10:34Z (+250 min). Desde +150 hubo 20 sondeos, uno cada 300–325 s. F-SPEC-018-2 no se observó: cada sondeo trajo su observación. Los 7 intentos fallidos de la jornada son 5xx del proveedor y quedan fuera de la prórroga.
 
 ## Evidencia visual
 <!-- Tabla CA → captura en _qa/SPEC-018/. Informe HTML opcional: _qa/SPEC-018/informe.html -->
@@ -118,6 +120,8 @@ Contraste: ≤ 42 por tanda de rezagados (SPEC-005 N-4). `npm run informe:jornad
 - **F-SPEC-018-5** (verificador) — el informe se lee con `hasta` = último kickoff + 150 (SPEC-009 N-1): la prórroga de los partidos de la última franja cae fuera y no entra ni en la cobertura ni en los intentos del informe; la línea `sin directo y sin final` sí los lista. Destino: revisar con la medición de CA-8.
 - **F-SPEC-018-6** (verificador, decisión del titular/arquitecto) — ADR-013 §1 dice que la prórroga dura «hasta que la fuente dé `finished`, `postponed` o `suspended`»; CA-2 (iii) saca de ventana un `live` a +200. Si la fuente da `live` dentro de la prórroga (kickoff mal declarado, partido retrasado), por lectura del código (no hay test que lo ejercite) el barrido del mismo tick relee la vigente `live` y RN-02 (≥ +120) la cierra al instante como `finished` forzado con el marcador parcial y alerta `forced_finish`. La implementación cumple la letra de la spec; la discrepancia ADR↔spec la decide el titular. Destino: SPEC-015 / ADR-013 R nuevo. **Resuelto el 2026-10-06** por la enmienda N-4 (12c6572, 8d39191; aprobada por el titular) e implementado en d96b5bb..4f87c4c: un `live` o cierre forzoso decidido en la prórroga sigue en ventana y RN-12 reconcilia; CA-4 (vii) lo ejercita. Queda, aceptado en N-4, que se publica `finished provisional` con el marcador parcial hasta el `FT`.
 - **CA-7** ejecutada y cerrada el 2026-10-06 (arriba). La medición de **CA-8** queda como residual aceptado por el titular (2026-10-06): se rellena su tabla tras la primera jornada desplegada.
+
+- **F-SPEC-018-2 / F-SPEC-018-3, lectura del 2026-10-09/12:** el caso no se observó (muestra de 1 partido). Ritmo real: 300–325 s. CA-8 medido: ✅.
 
 ## Cómo retomar (handoff)
 <!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->

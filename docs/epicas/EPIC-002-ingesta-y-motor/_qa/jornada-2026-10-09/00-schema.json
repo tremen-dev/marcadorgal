@@ -1,0 +1,26 @@
+[
+ {
+  "table_name": "alerts",
+  "cols": "id:uuid, kind:text, match_id:text, opened_at:timestamp with time zone, resolved_at:timestamp with time zone, details:jsonb"
+ },
+ {
+  "table_name": "board",
+  "cols": "match_id:text, competition_id:text, season:text, competition_name:text, tier:smallint, round:integer, kickoff:timestamp with time zone, home_team_id:text, home_team_name:text, home_short_name:text, away_team_id:text, away_team_name:text, away_short_name:text, status:text, home_score:integer, away_score:integer, minute:integer, added_minute:integer, qualifier:text, decision_id:uuid, decision_version:integer, decided_at:timestamp with time zone, observed_at:timestamp with time zone"
+ },
+ {
+  "table_name": "decisions",
+  "cols": "id:uuid, match_id:text, version:integer, status:text, home_score:integer, away_score:integer, minute:integer, qualifier:text, rule:text, observation_ids:ARRAY, decided_at:timestamp with time zone, added_minute:integer, home_source_id:text, away_source_id:text, forced_finish:boolean, half_time:boolean, recorded_at:timestamp with time zone"
+ },
+ {
+  "table_name": "ingest_attempts",
+  "cols": "id:uuid, source_id:text, started_at:timestamp with time zone, finished_at:timestamp with time zone, ok:boolean, error:text, raw_ref:text, observations:integer, details:jsonb, opened_at:timestamp with time zone"
+ },
+ {
+  "table_name": "matches",
+  "cols": "id:text, competition_id:text, season:text, round:integer, kickoff:timestamp with time zone, home_team_id:text, away_team_id:text"
+ },
+ {
+  "table_name": "observations",
+  "cols": "id:uuid, match_id:text, source_id:text, status:text, home_score:integer, away_score:integer, minute:integer, observed_at:timestamp with time zone, received_at:timestamp with time zone, raw_ref:text, added_minute:integer, half_time:boolean"
+ }
+]

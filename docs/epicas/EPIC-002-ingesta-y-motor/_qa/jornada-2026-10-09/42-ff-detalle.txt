@@ -1,0 +1,16 @@
+┌─────────┬──────────────────────────────────────────────────┬─────────┬────────────┬───────┬───────────────┬─────────┬───────────────┬──────────────────────────┐
+│ (index) │ match_id                                         │ version │ status     │ sc    │ qualifier     │ rule    │ forced_finish │ decided_at               │
+├─────────┼──────────────────────────────────────────────────┼─────────┼────────────┼───────┼───────────────┼─────────┼───────────────┼──────────────────────────┤
+│ 0       │ 'primera-division-2026-27-j8-barcelona-getafe'   │ 102     │ 'finished' │ '3-0' │ 'provisional' │ 'RN-02' │ true          │ 2026-10-10T18:30:06.310Z │
+│ 1       │ 'primera-division-2026-27-j8-barcelona-getafe'   │ 103     │ 'finished' │ '3-0' │ 'confirmado'  │ 'RN-12' │ false         │ 2026-10-10T18:30:21.449Z │
+│ 2       │ 'primera-division-2026-27-j8-levante-sevilla'    │ 109     │ 'finished' │ '3-3' │ 'provisional' │ 'RN-02' │ true          │ 2026-10-12T21:00:06.140Z │
+│ 3       │ 'primera-division-2026-27-j8-levante-sevilla'    │ 110     │ 'finished' │ '3-3' │ 'confirmado'  │ 'RN-12' │ false         │ 2026-10-12T21:03:50.522Z │
+│ 4       │ 'primera-division-2026-27-j8-real-betis-osasuna' │ 105     │ 'finished' │ '4-2' │ 'provisional' │ 'RN-02' │ true          │ 2026-10-11T18:30:06.189Z │
+│ 5       │ 'primera-division-2026-27-j8-real-betis-osasuna' │ 106     │ 'finished' │ '5-2' │ 'confirmado'  │ 'RN-12' │ false         │ 2026-10-11T18:33:13.779Z │
+│ 6       │ 'primera-rfef-g1-2026-27-j7-lugo-logrones'       │ 108     │ 'finished' │ '3-1' │ 'provisional' │ 'RN-02' │ true          │ 2026-10-12T20:30:06.787Z │
+│ 7       │ 'primera-rfef-g1-2026-27-j7-lugo-logrones'       │ 109     │ 'finished' │ '3-1' │ 'confirmado'  │ 'RN-12' │ false         │ 2026-10-12T20:31:48.450Z │
+│ 8       │ 'primera-rfef-g1-2026-27-j7-ponferradina-aviles' │ 106     │ 'finished' │ '0-2' │ 'provisional' │ 'RN-02' │ true          │ 2026-10-11T16:30:06.749Z │
+│ 9       │ 'primera-rfef-g1-2026-27-j7-ponferradina-aviles' │ 107     │ 'finished' │ '0-2' │ 'confirmado'  │ 'RN-12' │ false         │ 2026-10-11T16:31:37.173Z │
+│ 10      │ 'tercera-rfef-g1-2026-27-j6-sarriana-arenteiro'  │ 116     │ 'finished' │ '3-3' │ 'provisional' │ 'RN-02' │ true          │ 2026-10-11T18:00:06.302Z │
+│ 11      │ 'tercera-rfef-g1-2026-27-j6-sarriana-arenteiro'  │ 117     │ 'finished' │ '3-3' │ 'confirmado'  │ 'RN-12' │ false         │ 2026-10-11T18:01:42.312Z │
+└─────────┴──────────────────────────────────────────────────┴─────────┴────────────┴───────┴───────────────┴─────────┴───────────────┴──────────────────────────┘

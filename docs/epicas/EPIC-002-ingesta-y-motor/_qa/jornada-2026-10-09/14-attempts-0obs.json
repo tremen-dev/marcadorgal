@@ -1,0 +1,11 @@
+[
+ {
+  "intentos": "3879",
+  "peticiones": "5022",
+  "fallidos": "7",
+  "cero_obs": "5",
+  "request_errors": "4",
+  "skipped": "0",
+  "unresolved": "0"
+ }
+]

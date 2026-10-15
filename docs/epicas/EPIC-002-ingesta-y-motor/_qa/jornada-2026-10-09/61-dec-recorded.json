@@ -1,0 +1,34 @@
+[
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "version": 2,
+  "qualifier": "sen_sinal",
+  "rule": "RN-05",
+  "decided_at": "2026-10-11T15:45:06.353Z",
+  "recorded_at": "2026-10-11T15:45:07.869Z"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "version": 3,
+  "qualifier": "sen_sinal",
+  "rule": "RN-05",
+  "decided_at": "2026-10-11T15:45:04.084Z",
+  "recorded_at": "2026-10-11T15:45:09.163Z"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "version": 2,
+  "qualifier": "sen_sinal",
+  "rule": "RN-05",
+  "decided_at": "2026-10-11T15:45:06.353Z",
+  "recorded_at": "2026-10-11T15:45:08.014Z"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "version": 3,
+  "qualifier": "sen_sinal",
+  "rule": "RN-05",
+  "decided_at": "2026-10-11T15:45:04.084Z",
+  "recorded_at": "2026-10-11T15:45:09.444Z"
+ }
+]

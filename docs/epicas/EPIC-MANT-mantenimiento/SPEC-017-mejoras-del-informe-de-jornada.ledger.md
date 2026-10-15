@@ -57,6 +57,12 @@ veredicto: sin veredicto
 ```
 Los cinco son los del hallazgo 1 (`_qa/SPEC-009/hallazgos-jornada.md`). Vigentes `finished` en la ventana: RN-01 27, RN-02 10, RN-12 2.
 
+## Campo de `--contrastar` (CA-1/CA-2), jornada 2026-10-09/12
+Ejecutado por el titular el 2026-10-15 con la ventana `2026-10-09T18:50:00Z 2026-10-12T21:30:00Z` (`docs/epicas/EPIC-002-ingesta-y-motor/_qa/jornada-2026-10-09/80-contrastar-1.md`, `81-contrastar-2.md`).
+- **CA-1:** 3 peticiones (20 + 20 + 9 ids), guardadas en `raw/api-football/2026-10-15/2026-10-15T17-51-38.468Z-contraste-2026-10-09T18-50-00.000Z-2026-10-12T21-30-00.000Z-2026-27.json.gz`. Coinciden 48 de 49 partidos `finished`, con 0 discrepancias y 0 partidos sin respuesta. El proveedor confirma el `suspended` de rayo-vallecano-athletic-club. Veredicto: **válida con reservas**, por la ronda incompleta. ✅
+- **CA-2:** la segunda ejecución, con la misma ventana, da «0 en esta ejecución; releído de … 3 peticiones entonces». Su salida es idéntica a la primera salvo esa línea. ✅
+- Quedan pendientes las tres declaraciones del titular que da el informe (H-2 (i), H-2 (ii), CA-4 (c)): no se derivan de la base de datos.
+
 ## Gates (implementador, 2026-10-06)
 - `npm run gates` → exit 0 (biome 156 ficheros sin cambios; vitest 51 ficheros, 814 tests; `next build` compila).
 - `npm run test:db` (contra `dev`, «Remote database is up to date») → exit 1: 79/82, 3 timeouts de 5 s en `engine.db.test.ts` (2) y `reconciliacion.db.test.ts` (1), ficheros que esta spec no toca. **Fallan igual en `origin/main` (ccd1b0a)** en un worktree aparte. Con `npx vitest run --config vitest.db.config.mts --testTimeout=30000` → 10 ficheros, **82/82**. `informe.db.test.ts` → 8/8 con el timeout por defecto.

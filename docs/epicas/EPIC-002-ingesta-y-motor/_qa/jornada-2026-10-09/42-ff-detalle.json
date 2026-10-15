@@ -1,0 +1,122 @@
+[
+ {
+  "match_id": "primera-division-2026-27-j8-barcelona-getafe",
+  "version": 102,
+  "status": "finished",
+  "sc": "3-0",
+  "qualifier": "provisional",
+  "rule": "RN-02",
+  "forced_finish": true,
+  "decided_at": "2026-10-10T18:30:06.310Z"
+ },
+ {
+  "match_id": "primera-division-2026-27-j8-barcelona-getafe",
+  "version": 103,
+  "status": "finished",
+  "sc": "3-0",
+  "qualifier": "confirmado",
+  "rule": "RN-12",
+  "forced_finish": false,
+  "decided_at": "2026-10-10T18:30:21.449Z"
+ },
+ {
+  "match_id": "primera-division-2026-27-j8-levante-sevilla",
+  "version": 109,
+  "status": "finished",
+  "sc": "3-3",
+  "qualifier": "provisional",
+  "rule": "RN-02",
+  "forced_finish": true,
+  "decided_at": "2026-10-12T21:00:06.140Z"
+ },
+ {
+  "match_id": "primera-division-2026-27-j8-levante-sevilla",
+  "version": 110,
+  "status": "finished",
+  "sc": "3-3",
+  "qualifier": "confirmado",
+  "rule": "RN-12",
+  "forced_finish": false,
+  "decided_at": "2026-10-12T21:03:50.522Z"
+ },
+ {
+  "match_id": "primera-division-2026-27-j8-real-betis-osasuna",
+  "version": 105,
+  "status": "finished",
+  "sc": "4-2",
+  "qualifier": "provisional",
+  "rule": "RN-02",
+  "forced_finish": true,
+  "decided_at": "2026-10-11T18:30:06.189Z"
+ },
+ {
+  "match_id": "primera-division-2026-27-j8-real-betis-osasuna",
+  "version": 106,
+  "status": "finished",
+  "sc": "5-2",
+  "qualifier": "confirmado",
+  "rule": "RN-12",
+  "forced_finish": false,
+  "decided_at": "2026-10-11T18:33:13.779Z"
+ },
+ {
+  "match_id": "primera-rfef-g1-2026-27-j7-lugo-logrones",
+  "version": 108,
+  "status": "finished",
+  "sc": "3-1",
+  "qualifier": "provisional",
+  "rule": "RN-02",
+  "forced_finish": true,
+  "decided_at": "2026-10-12T20:30:06.787Z"
+ },
+ {
+  "match_id": "primera-rfef-g1-2026-27-j7-lugo-logrones",
+  "version": 109,
+  "status": "finished",
+  "sc": "3-1",
+  "qualifier": "confirmado",
+  "rule": "RN-12",
+  "forced_finish": false,
+  "decided_at": "2026-10-12T20:31:48.450Z"
+ },
+ {
+  "match_id": "primera-rfef-g1-2026-27-j7-ponferradina-aviles",
+  "version": 106,
+  "status": "finished",
+  "sc": "0-2",
+  "qualifier": "provisional",
+  "rule": "RN-02",
+  "forced_finish": true,
+  "decided_at": "2026-10-11T16:30:06.749Z"
+ },
+ {
+  "match_id": "primera-rfef-g1-2026-27-j7-ponferradina-aviles",
+  "version": 107,
+  "status": "finished",
+  "sc": "0-2",
+  "qualifier": "confirmado",
+  "rule": "RN-12",
+  "forced_finish": false,
+  "decided_at": "2026-10-11T16:31:37.173Z"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-sarriana-arenteiro",
+  "version": 116,
+  "status": "finished",
+  "sc": "3-3",
+  "qualifier": "provisional",
+  "rule": "RN-02",
+  "forced_finish": true,
+  "decided_at": "2026-10-11T18:00:06.302Z"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-sarriana-arenteiro",
+  "version": 117,
+  "status": "finished",
+  "sc": "3-3",
+  "qualifier": "confirmado",
+  "rule": "RN-12",
+  "forced_finish": false,
+  "decided_at": "2026-10-11T18:01:42.312Z"
+ }
+]

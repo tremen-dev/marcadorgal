@@ -1,0 +1,1 @@
+select match_id, version, qualifier, rule, decided_at, recorded_at from decisions where match_id in ('tercera-rfef-g1-2026-27-j6-antela-barco','tercera-rfef-g1-2026-27-j6-celtiga-alondras') and version in (2,3) order by 1,2
