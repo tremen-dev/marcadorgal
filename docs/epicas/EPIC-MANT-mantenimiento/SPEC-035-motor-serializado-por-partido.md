@@ -92,31 +92,12 @@ SPEC-024 N-1.
 - Cambiar `decided_at` o `src/decide/` (ADR-019 §3). Encender `board_delta`.
 
 ## Notas para el gate humano
-- **H-1 Mecanismo.** (A) `for no key update` sobre `matches`: no choca con el
-  `key share` de las FK de `observations`/`decisions`, así que no frena la
-  ingesta ni interbloquea con el `afterInsert`. `web_reader` no puede tomarlo
-  porque no tiene privilegios sobre `matches`. (B) `for update`: choca con esas
-  FK y el hook interbloquearía con el barrido (CA-3). (C)
-  `pg_advisory_xact_lock(hashtext('decide:'||id))`: `web_reader` podría
-  retenerlo y congelar el motor, es el residuo de ADR-015 §1. (D) «No barrer si
-  la cadencia saltó el intento»: RN-05 y el cierre forzoso quedarían a merced
-  del otro disparador, y no cubre dos `afterInsert` de fuentes distintas
-  (RFEF). **Recomendado: A.**
-- **H-2 `decided_at` sigue siendo el `now` del tick** (ADR-008 §7). Serializar
-  quita las gemelas, pero un tick con `now` anterior que confirma después puede
-  escribir una versión distinta con `decided_at` menor. El orden lo dan
-  `version` y `recorded_at` (ADR-016). Cambiarlo toca `src/decide`.
-  **Recomendado: aceptarlo** (ADR-019 §3).
-- **H-3 Detección.** En `informe:jornada` (CA-5) y no en `tick:salud`, que
-  mira 10 min y no ve pares de versiones. **Recomendado: informe** (CA-5).
-- **H-4 ADR.** No contradice ADR-008/009. Precisa la premisa de ADR-009 §1
-  («sale `null` por idempotencia»), que solo vale serializada, y obliga a todo
-  escritor futuro (operador, webhook, RFEF). **Recomendado: ADR-019**, que
-  precisa ADR-009 §1 con H-1 y H-2 (en `borrador`).
+- **H-1 Mecanismo** → A, `for no key update` (ADR-019 §1; rechazadas `for update`, advisory lock y «no barrer»: ADR-019 Alternativas). Aceptado, titular 2026-10-15.
+- **H-2 `decided_at`** sigue siendo el `now` del tick (ADR-008 §7, ADR-019 §3; orden por `version`/`recorded_at`, ADR-016). Aceptado, titular 2026-10-15.
+- **H-3 Detección** en `informe:jornada` (CA-5), no en `tick:salud`. Aceptado, titular 2026-10-15.
+- **H-4 ADR** → ADR-019, que precisa ADR-009 §1 sin superseder. Aceptado, titular 2026-10-15.
 - **Plazo.** Antes de encender `board_delta`/Realtime (paso 2 «al pasar a Pro»
   de SPEC-024 N-1). Sin migración: basta merge y despliegue.
-- **Resolución del titular (2026-10-15, Alberto Fojo):** acepta H-1 (A, `for no key
-  update`), H-2, H-3 (detección en `informe:jornada`) y H-4 (ADR-019).
 - **H-5 (V-1) Otros escritores de `matches`.** Hoy solo `loadSeason`
   (grep de `insert into`/`update`/`delete from matches` en `src/`, `tools/`,
   `supabase/`; `tools/medir-board-delta.mjs` es local y con rollback). Su
