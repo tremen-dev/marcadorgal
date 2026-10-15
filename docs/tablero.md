@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-10-12
+Actualizado: 2026-10-15
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -54,7 +54,7 @@ Actualizado: 2026-10-12
 | Spec | Estado | Último cambio |
 |---|---|---|
 | SPEC-011 — peticion-live-con-una-sola-competicion-y-errores-por-peticion-que-no-tiran-el-intento | hecho | 2026-09-23 (sdd-verificador) |
-| SPEC-015 — el-calendario-declarado-llega-tarde-a-la-jornada | en-revision | 2026-09-29 (sdd-implementador) |
+| SPEC-015 — el-calendario-declarado-llega-tarde-a-la-jornada | hecho | 2026-10-15 (sdd-verificador) |
 | SPEC-022 — test-db-no-toca-storage-de-produccion | hecho | 2026-10-08 (sdd-verificador) |
 | SPEC-030 — la-portada-sirve-una-instantanea-isr-antigua | hecho | 2026-10-12 (sdd-verificador) |
 
@@ -65,6 +65,7 @@ Actualizado: 2026-10-12
 | SPEC-010 — salud-del-tick-sin-falsos-fallos-y-retirada-de-medir-directo | hecho | 2026-09-22 (sdd-verificador) |
 | SPEC-017 — mejoras-del-informe-de-jornada | hecho | 2026-10-06 (sdd-verificador) |
 | SPEC-029 — endurecer-web-reader-purgar-cron-y-v-7 | hecho | 2026-10-10 (sdd-verificador) |
+| SPEC-035 — motor-serializado-por-partido | borrador | 2026-10-15 (sdd-arquitecto) |
 
 ## ADRs
 
@@ -91,5 +92,6 @@ Actualizado: 2026-10-12
 
 ## Resumen
 
-- hecho: 30
-- en-revision: 3
+- hecho: 31
+- en-revision: 2
+- borrador: 1

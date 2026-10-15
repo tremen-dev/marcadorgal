@@ -117,6 +117,8 @@ Pendientes de especificar, con su procedencia:
   no barrer cuando la cadencia salta el intento. Importa a SPEC-014 (el dueño
   de cada lado se calcula sobre el estado vigente). Procedencia: F-SPEC-012-4,
   diagnóstico `docs/epicas/EPIC-FIX/_qa/diagnostico-2026-09-29.md`, 2026-09-29.
+  **→ especificado en SPEC-035 (2026-10-15), con la medición de
+  `_qa/investigacion-2026-10-15/INFORME.md` §1: ya no está pendiente.**
 - **M-10 — `informe:jornada --salida` sobrescribe sin avisar.** El informe de
   jornada lleva explicaciones escritas a mano encima (F-SPEC-009-2); regenerar
   sobre el mismo fichero las borra sin rastro. Arreglo: negarse a sobrescribir
