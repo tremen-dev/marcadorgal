@@ -56,9 +56,29 @@ Público (marcador correcto con Realtime). Titular (informe de jornada).
   «SPEC-035 CA-5»: el fixture con un par gemelo da 1 y el limpio da 0. Verif.:
   en la primera jornada tras desplegar, las dos líneas dan 0.
 - **CA-6 Fronteras y gates.** Bajo `src/`, solo `ingest/engine.ts`,
-  `ingest/informe*.ts` y sus tests. `git diff main -- src/decide src/model
+  `ingest/informe*.ts`, `ingest/replay-jornada-db.ts`, `calendar/load.ts` y
+  sus tests (incluido `db/calendar.db.test.ts`; enmienda 2026-10-15). `git diff main -- src/decide src/model
   src/sources supabase/migrations` vacío. Sin grants ni dependencias nuevas.
   `npm run gates` → 0 y `npm run test:db` en verde. Nada contra producción.
+- **CA-7 Carga del calendario sin interbloqueo (V-1, ADR-019 §5).**
+  `loadSeason`, antes de su primera escritura en `matches`, toma en **una**
+  sentencia SQL propia `select id from matches where season = … and
+  competition_id = any(…) order by id for no key update` (todas las
+  competiciones de la carga; sin importar de `src/ingest`). Test
+  (`db/calendar.db.test.ts` «SPEC-035 CA-7»), conexiones reales: A
+  (`afterInsert` de m2) abierta; B (barrido m1..m3, de dos competiciones)
+  esperando; C (`loadSeason` de las dos, con el fichero en orden m3, m1, m2).
+  Al confirmar A, las tres confirman, ningún 40P01 y los `kickoff` quedan
+  cargados. En rojo (40P01) con el `load.ts` de `main`, como
+  `_qa/SPEC-035/repro-calendario-load.mjs`.
+- **CA-8 Correcciones del replay bajo el cerrojo (V-2, ADR-019 §6).**
+  `aplicarCorrecciones` toma el cerrojo de ADR-019 §1 sobre los partidos con
+  corrección (la misma sentencia de `engine.ts`, exportada), relee `board`
+  bajo el cerrojo y omite la corrección del partido cuyo estado o marcador ya
+  no es el `row.board` leído. Test (`replay-jornada.db.test.ts` «SPEC-035
+  CA-8»): con otra tx reteniendo m, espera (`wait_event_type = 'Lock'`); si
+  entre la lectura y `--aplicar` se confirma otra Decision de m, la de m no
+  se escribe y las demás sí. En rojo sin el arreglo.
 
 ## Entidades y reglas afectadas
 Decision, Tick (`dominio.md`). RN-03, RN-05, RN-07 (`reglas.md`). ADR-006 §3,
@@ -97,3 +117,18 @@ SPEC-024 N-1.
   de SPEC-024 N-1). Sin migración: basta merge y despliegue.
 - **Resolución del titular (2026-10-15, Alberto Fojo):** acepta H-1 (A, `for no key
   update`), H-2, H-3 (detección en `informe:jornada`) y H-4 (ADR-019).
+- **H-5 (V-1) Otros escritores de `matches`.** Hoy solo `loadSeason`
+  (grep de `insert into`/`update`/`delete from matches` en `src/`, `tools/`,
+  `supabase/`; `tools/medir-board-delta.mjs` es local y con rollback). Su
+  upsert toma `no key update` en orden de fichero y por competiciones. (A)
+  Cerrojo previo en una sentencia y `order by id` (CA-7). (B) Ordenar `rows`
+  en JS: el `.sort()` no tiene por qué coincidir con la collation de
+  `order by id`, y en tandas por competición sigue el ciclo con un barrido que
+  las cruza. (C) `lock_timeout` y reintento: la víctima seguiría pudiendo ser
+  un `afterInsert`. Coste de A: el motor espera lo que dure la carga (un push).
+  **Recomendado: A**, con la enmienda §5 de ADR-019.
+- **H-6 (V-2) `replay:jornada --aplicar`.** (A) Dentro: cerrojo y relectura
+  (CA-8) y la enmienda §6, que la nombra como única excepción a §2. (B)
+  Fuera, como follow-up: deja §2 recién aprobado incumplido y sin dueño. Por
+  `decideMatches` no: decide con la ventana de RN-01, no con la jornada, y
+  cambiaría lo que corrige SPEC-012 CA-4. **Recomendado: A.**

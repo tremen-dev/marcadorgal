@@ -82,4 +82,26 @@ existen se quedan, porque las Decisions son append-only (RN-07).
 - **`decided_at = max(now, vigente)`**: toca `src/decide` y falsea el reloj
   del dato (D-9).
 
+## Enmienda 2026-10-15 (SPEC-035, findings V-1 y V-2)
+
+Propuesta por sdd-arquitecto tras el RED del verificador; **pendiente de
+aprobación del titular** (gates H-5 y H-6 de SPEC-035). Añade §5 y §6; no
+cambia §1-§4.
+
+5. **Todo escritor de `matches` toma el cerrojo de §1 en orden de id.** Antes
+   de su primera escritura en `matches`, y en **una** sola sentencia, toma
+   `for no key update` con `order by id` sobre todas las filas existentes que
+   pueda tocar en esa transacción. Nunca en tandas ni en el orden de un
+   fichero o de un `sort` de JS. Hoy el único es `loadSeason`
+   (`src/calendar/load.ts`): su `on conflict (id) do update` bloqueaba en
+   orden de fichero y daba 40P01 con el barrido (V-1). Las herramientas
+   locales contra loopback (`tools/medir-board-delta.mjs`) quedan fuera.
+6. **Única excepción a §2.** `replay:jornada --aplicar`
+   (`aplicarCorrecciones`) escribe una Decision que calcula el motor puro sobre
+   la jornada y no sobre la ventana de RN-01, así que no pasa por
+   `decideMatches`. Toma el cerrojo de §1 en su transacción, relee la vigente
+   bajo él y descarta la corrección si cambió (V-2). Otra excepción necesita
+   otro ADR. Las semillas locales de tests (`tools/e2e-db-seed.mjs`) no son
+   escritores a efectos de §2.
+
 <!-- REGLA: un ADR aceptado es INMUTABLE. Para cambiar la decisión, escribe otro ADR que lo supersede (estado del viejo -> bloqueada + nota "superseded por ADR-NNN"). -->
