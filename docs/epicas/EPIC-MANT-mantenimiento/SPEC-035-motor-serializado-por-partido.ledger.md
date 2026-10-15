@@ -6,7 +6,7 @@ epica: EPIC-MANT
 # Ledger — SPEC-035 Motor serializado por partido
 
 ## Resumen
-- Fase: en-progreso <!-- refleja el estado de la spec; la fuente de verdad es el frontmatter de la spec -->
+- Fase: en-revision <!-- refleja el estado de la spec; la fuente de verdad es el frontmatter de la spec -->
 - Rama: `ft/SPEC-035-motor-serializado-por-partido`
 
 ## Matriz de criterios de aceptación
@@ -17,10 +17,12 @@ epica: EPIC-MANT
 |---|---|---|---|---|
 | CA-1 | `src/ingest/engine.ts` (`decideMatches`: primera consulta `… order by id for no key update`) | `src/ingest/engine.db.test.ts` «SPEC-035 CA-1 …» (conexiones A/B reales; B espera en `pg_stat_activity.wait_event_type = 'Lock'`; sin el arreglo: 23505) | `npm run test:db` 201/201 (`_qa/SPEC-035/2026-10-15-verif-test-db.txt`). Sin `for no key update` (mutación temporal, restaurada): 4 SPEC-035 en rojo, 23505 `decisions_match_id_version_key` (`2026-10-15-verif-sin-cerrojo.txt`). El test comprueba espera real (`wait_event_type='Lock'`), `decisions: 0` y 1 fila | ✅ |
 | CA-2 | `src/ingest/engine.ts` (mismo cerrojo) | `engine.db.test.ts` «SPEC-035 CA-2 …» (sin el arreglo: 23505) | En verde con el cerrojo; en rojo sin él (23505, mismo fichero). La última versión es 1-0 min 12 y no hay versión >1 con 0-0 | ✅ |
-| CA-3 | `src/ingest/engine.ts` (`no key update`, `order by id`) | `engine.db.test.ts` «SPEC-035 CA-3 …»: tres casos (afterInsert m2 ∥ barrido m1-m3; al revés, con `lock_timeout 2s`; `insertObservations` de m1 con `lock_timeout 2s`). Con `for update` fallan los dos últimos por `lock timeout` | Los 3 casos del test pasan; con `for update` fallan los 2 últimos por `lock timeout` (`2026-10-15-verif-for-update.txt`). **Pero** el cerrojo nuevo choca con el upsert de `src/calendar/load.ts` (`on conflict (id) do update set kickoff`, `no key update` en orden de fichero): 40P01 reproducido 3/3 con `decideMatches` real (`repro-calendario-load.mjs`, `2026-10-15-verif-repro-calendario-load.txt`). Ver V-1 | ❌ |
+| CA-3 | `src/ingest/engine.ts` (`no key update`, `order by id`, ahora en `lockMatches`); ronda 2: el choque con `calendar/load.ts` (V-1) se cierra en CA-7 | `engine.db.test.ts` «SPEC-035 CA-3 …»: tres casos (afterInsert m2 ∥ barrido m1-m3; al revés, con `lock_timeout 2s`; `insertObservations` de m1 con `lock_timeout 2s`). Con `for update` fallan los dos últimos por `lock timeout`. V-1: ver CA-7 | Los 3 casos del test pasan; con `for update` fallan los 2 últimos por `lock timeout` (`2026-10-15-verif-for-update.txt`). **Pero** el cerrojo nuevo choca con el upsert de `src/calendar/load.ts` (`on conflict (id) do update set kickoff`, `no key update` en orden de fichero): 40P01 reproducido 3/3 con `decideMatches` real (`repro-calendario-load.mjs`, `2026-10-15-verif-repro-calendario-load.txt`). Ver V-1 | ❌ |
 | CA-4 | sin cambios de aserciones (`git diff 7b130b0 -- src` solo añade, salvo 2 imports de `engine.db.test.ts`) | `npm run test` 1745/1745; `npm run test:db` 201/201 (incluye `engine*.db`, `reconciliacion*.db`, `replay-jornada.db`) | `npm run gates` exit 0, 101 ficheros/1745 tests (`2026-10-15-verif-gates.txt`); `test:db` 20/201. `git diff origin/main...HEAD -- src` solo quita 2 imports, la consulta cambiada y el `rango:` movido (F-1). Replay: `replay-jornada*.ts` no llama a `decideMatches` (motor puro), así que el cerrojo no puede cambiar sus Decisions; tests en verde (F-3) | ✅ |
 | CA-5 | `src/ingest/informe.ts` (`motorDe`, `tuplaPublicada`, `Informe.motor`, línea en bloque 3); `src/ingest/informe-db.ts` (minute, added_minute, half_time, qualifier) | `informe.test.ts` «SPEC-035 CA-5 …» (3 casos); `informe.db.test.ts` «SPEC-035 CA-5 …» | 3 casos de `informe.test.ts` y 1 de `informe.db.test.ts` en verde; la tupla de `informe.ts` es la de `src/decide/engine.ts:67`. Formato en una línea (F-1, aceptado). Residual: la Verif. tras desplegar (primera jornada, 0 · 0) queda pendiente | ⚠️ |
-| CA-6 | solo `src/ingest/{engine,informe,informe-db}.ts` y tests | `git diff main -- src/decide src/model src/sources supabase/migrations` vacío; `npm run gates` exit 0 | `git diff origin/main...HEAD --name-only` fuera de `docs/`: solo los 6 ficheros de `src/ingest/` permitidos; `-- src/decide src/model src/sources supabase/migrations` vacío (0 líneas); sin grants ni cambios en `package*.json`. Solo Supabase local | ✅ |
+| CA-6 | ronda 2: `src/ingest/{engine,informe,informe-db,replay-jornada-db}.ts`, `src/calendar/load.ts` y tests (incl. `src/db/calendar.db.test.ts`); nada más bajo `src/`, `tools/`, `supabase/`, `package*.json` | `git diff main -- src/decide src/model src/sources supabase/migrations \| wc -l` → 0; `npm run gates` exit 0, 101 ficheros/1745 tests (`_qa/SPEC-035/2026-10-15-impl-r2-gates.txt`); `test:db` 20/204 dos veces (`2026-10-15-impl-r2-test-db.txt`); solo Supabase local | `git diff origin/main...HEAD --name-only` fuera de `docs/`: solo los 6 ficheros de `src/ingest/` permitidos; `-- src/decide src/model src/sources supabase/migrations` vacío (0 líneas); sin grants ni cambios en `package*.json`. Solo Supabase local | ✅ |
+| CA-7 | `src/calendar/load.ts` (`loadSeason`: antes del bucle, una sentencia `select id from matches where season = … and competition_id = any(…) order by id for no key update` con todas las competiciones de la carga; no importa de `src/ingest`) | `src/db/calendar.db.test.ts` «SPEC-035 CA-7 …»: conexiones reales A (`decideMatches([m2])` abierta), B (barrido m1..m3 de `test-c35a`/`test-c35b`, espera en `wait_event_type='Lock'`), C (`loadSeason` [Y(m3), X(m1, m2)], espera en `Lock`); al confirmar A: B y C `ok` y los 3 `kickoff` movidos. Con el `load.ts` de `main`: `"load": "40P01 deadlock detected"` (`2026-10-15-impl-r2-rojo-sin-arreglo.txt`) | | |
+| CA-8 | `src/ingest/engine.ts` (exporta `lockMatches`, la sentencia de ADR-019 §1; `decideMatches` la usa); `src/ingest/replay-jornada-db.ts` (`aplicarCorrecciones`: `lockMatches` sobre los partidos con corrección, relee `board` bajo el cerrojo y omite el partido cuyo `status`/marcador ya no es `row.board`) | `src/ingest/replay-jornada.db.test.ts` «SPEC-035 CA-8 …» (filas confirmadas): (1) otra tx retiene m con `lockMatches` → `aplicarCorrecciones` espera (`wait_event_type='Lock'`) y al soltar escribe v2 2-0; (2) dos partidos, tras la lectura se confirma otra Decision de uno (3-1) → devuelve 1, ese queda en v2 3-1 y el otro recibe v2 2-0. Sin el arreglo: (1) `never waited on a lock`, (2) `expected 2 to be 1` (mismo fichero de rojo) | | |
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
@@ -76,6 +78,15 @@ n-a (sin UI). Salidas de comando en `_qa/SPEC-035/2026-10-15-verif-*.txt`.
   se cubre con `replay-jornada.test.ts` / `replay-jornada.db.test.ts` en
   verde; no se ejecutó `npm run replay:jornada` contra datos reales porque
   lee producción (CA-6: nada contra producción). Destino: verificador.
+- F-SPEC-035-4 (CA-7, coste): con el cerrojo previo, el motor de los
+  partidos de las competiciones de la carga espera lo que dure la
+  transacción de `calendario:load` (un push); aceptado en H-5. El script del
+  verificador `_qa/SPEC-035/repro-calendario-load.mjs` reproduce la sentencia
+  de `main` a mano, no llama a `loadSeason`, así que sigue dando 40P01: el
+  rojo/verde de CA-7 lo da el test. Destino: verificador.
+- F-SPEC-035-5 (CA-8): `aplicarCorrecciones` compara `status` y marcador del
+  `board` (lo que dice CA-8), no la `version`; una Decision nueva con el mismo
+  estado y marcador no descarta la corrección. Destino: verificador.
 - Nota de tests: los de SPEC-035 confirman filas (una transacción que espera
   solo ve lo confirmado); el `afterAll` las borra con
   `session_replication_role = replica` y retira los equipos `test-home` /
@@ -84,13 +95,15 @@ n-a (sin UI). Salidas de comando en `_qa/SPEC-035/2026-10-15-verif-*.txt`.
 
 ## Cómo retomar (handoff)
 <!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->
-- Hecho CA-1..CA-6 en `ft/SPEC-035-motor-serializado-por-partido` (commits
-  `03befbc` CA-1..3, `e8661d3` CA-5, más el del ledger). Sin push.
-- Evidencia: `npm run gates` exit 0 (1745 tests, build OK);
-  `DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:54322/postgres npm run test:db`
-  → 20 ficheros, 201 tests en verde.
-- Rojo comprobado: sin el cerrojo, CA-1/CA-2/CA-3(1-2) fallan con 23505
-  `decisions_match_id_version_key`; con `for update`, CA-3(2-3) fallan con
-  `lock timeout`.
+- Hecho CA-1..CA-8 en `ft/SPEC-035-motor-serializado-por-partido`. Ronda 1:
+  `03befbc` (CA-1..3), `e8661d3` (CA-5), `f1e820e`. Ronda 2 (tras el RED):
+  `53519b6` (CA-7, `calendar/load.ts`), `8a595d6` (CA-8, `lockMatches` +
+  `aplicarCorrecciones`), más el commit de este ledger. Sin push.
+- Evidencia ronda 2: `npm run gates` exit 0 (101 ficheros, 1745 tests, build
+  OK); `DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:54322/postgres npm run test:db`
+  → 20 ficheros, 204 tests, dos veces seguidas. Rojo sin el arreglo en
+  `_qa/SPEC-035/2026-10-15-impl-r2-rojo-sin-arreglo.txt`.
+- Base local al terminar: 0 matches/teams/decisions/observations/alerts,
+  0 `calendar_loads`, las 5 competitions de la semilla.
 - Falta: verificación (sdd-verificador) y, tras desplegar, la línea de CA-5
   en la primera jornada (debe dar 0 gemelas).

@@ -1,0 +1,10 @@
+# Rojo sin el arreglo: load.ts y replay-jornada-db.ts de main (temporal, restaurado con git checkout)
+     × afterInsert on m2, sweep on m1..m3 and a load in file order m3, m1, m2 all commit 1068ms
+     × waits for a transaction that holds the match, then corrects it 2238ms
+     × drops the correction of a match whose board changed after the read, and writes the rest 58ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
++   "load": "40P01 deadlock detected",
+Error: backend 7090 never waited on a lock
+    236|   throw new Error(`backend ${pid} never waited on a lock`);
+AssertionError: expected 2 to be 1 // Object.is equality
+      Tests  3 failed | 8 passed (11)
