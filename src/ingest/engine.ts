@@ -223,6 +223,22 @@ const group = <T>(rows: T[], key: (row: T) => string): Map<string, T[]> => {
   return map;
 };
 
+// The statement of ADR-019 §1, the only one that locks matches for the
+// engine: every row of the batch, "for no key update", in order of id. It is
+// exported for the one exception of ADR-019 §6, the corrections of
+// replay:jornada --aplicar, which must take the very same lock.
+export async function lockMatches(
+  sql: TransactionSql,
+  matchIds: readonly string[],
+): Promise<MatchRow[]> {
+  const ids = [...new Set(matchIds)].sort();
+  if (ids.length === 0) return [];
+  return sql<MatchRow[]>`
+    select id, competition_id, kickoff from matches
+    where id = any(${sql.array(ids)})
+    order by id for no key update`;
+}
+
 // Runs the engine over a set of matches inside a transaction that is already
 // open: the caller owns it (afterInsert) or opens it (the sweep).
 //
@@ -258,9 +274,7 @@ export async function decideMatches(
   // brakes ingestion nor deadlocks with an afterInsert. "order by id" fixes
   // the order in which the rows are locked. web_reader cannot take it: it
   // has no privileges on matches (ADR-015 §1).
-  const matches = await sql<MatchRow[]>`
-    select id, competition_id, kickoff from matches where id = any(${any})
-    order by id for no key update`;
+  const matches = await lockMatches(sql, ids);
   if (matches.length === 0) return counts;
 
   // The current Decision of each match: the highest version (ADR-006 §3).
