@@ -1,0 +1,101 @@
+[
+ {
+  "dia": "2026-09-25T00:00:00.000Z",
+  "prev_con_attempt": true,
+  "cur_con_attempt": false,
+  "invertida": false,
+  "filas": "1",
+  "partidos": "1",
+  "delta_now_s": "1.52"
+ },
+ {
+  "dia": "2026-09-26T00:00:00.000Z",
+  "prev_con_attempt": false,
+  "cur_con_attempt": true,
+  "invertida": true,
+  "filas": "2",
+  "partidos": "2",
+  "delta_now_s": "-1.88"
+ },
+ {
+  "dia": "2026-09-26T00:00:00.000Z",
+  "prev_con_attempt": true,
+  "cur_con_attempt": false,
+  "invertida": false,
+  "filas": "11",
+  "partidos": "5",
+  "delta_now_s": "2.02"
+ },
+ {
+  "dia": "2026-09-27T00:00:00.000Z",
+  "prev_con_attempt": true,
+  "cur_con_attempt": false,
+  "invertida": false,
+  "filas": "7",
+  "partidos": "5",
+  "delta_now_s": "1.65"
+ },
+ {
+  "dia": "2026-10-02T00:00:00.000Z",
+  "prev_con_attempt": true,
+  "cur_con_attempt": false,
+  "invertida": false,
+  "filas": "2",
+  "partidos": "1",
+  "delta_now_s": "1.07"
+ },
+ {
+  "dia": "2026-10-03T00:00:00.000Z",
+  "prev_con_attempt": true,
+  "cur_con_attempt": false,
+  "invertida": false,
+  "filas": "1",
+  "partidos": "1",
+  "delta_now_s": "1.04"
+ },
+ {
+  "dia": "2026-10-04T00:00:00.000Z",
+  "prev_con_attempt": true,
+  "cur_con_attempt": false,
+  "invertida": false,
+  "filas": "1",
+  "partidos": "1",
+  "delta_now_s": "1.36"
+ },
+ {
+  "dia": "2026-10-10T00:00:00.000Z",
+  "prev_con_attempt": true,
+  "cur_con_attempt": false,
+  "invertida": false,
+  "filas": "3",
+  "partidos": "3",
+  "delta_now_s": "3.73"
+ },
+ {
+  "dia": "2026-10-11T00:00:00.000Z",
+  "prev_con_attempt": false,
+  "cur_con_attempt": true,
+  "invertida": true,
+  "filas": "2",
+  "partidos": "2",
+  "delta_now_s": "-2.27"
+ },
+ {
+  "dia": "2026-10-11T00:00:00.000Z",
+  "prev_con_attempt": true,
+  "cur_con_attempt": false,
+  "invertida": false,
+  "filas": "2",
+  "partidos": "2",
+  "delta_now_s": "2.03"
+ },
+ {
+  "dia": "2026-10-12T00:00:00.000Z",
+  "prev_con_attempt": true,
+  "cur_con_attempt": false,
+  "invertida": false,
+  "filas": "4",
+  "partidos": "1",
+  "delta_now_s": "1.36"
+ }
+]

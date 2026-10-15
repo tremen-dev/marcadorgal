@@ -1,0 +1,1 @@
+select id, source_id, started_at, opened_at, finished_at, ok, observations, error, details from ingest_attempts where started_at between '2026-10-11T15:43:00Z' and '2026-10-11T15:47:00Z' order by started_at

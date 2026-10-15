@@ -1,0 +1,317 @@
+[
+ {
+  "con_attempt": false,
+  "segundo": 6,
+  "count": "7"
+ },
+ {
+  "con_attempt": false,
+  "segundo": 7,
+  "count": "4"
+ },
+ {
+  "con_attempt": false,
+  "segundo": 8,
+  "count": "2"
+ },
+ {
+  "con_attempt": false,
+  "segundo": 9,
+  "count": "1"
+ },
+ {
+  "con_attempt": false,
+  "segundo": 10,
+  "count": "1"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 0,
+  "count": "6"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 1,
+  "count": "58"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 2,
+  "count": "51"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 3,
+  "count": "28"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 4,
+  "count": "39"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 5,
+  "count": "25"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 6,
+  "count": "200"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 7,
+  "count": "14"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 11,
+  "count": "5"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 12,
+  "count": "35"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 13,
+  "count": "41"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 14,
+  "count": "30"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 15,
+  "count": "38"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 16,
+  "count": "72"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 17,
+  "count": "72"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 18,
+  "count": "44"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 19,
+  "count": "63"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 20,
+  "count": "65"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 21,
+  "count": "59"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 22,
+  "count": "50"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 23,
+  "count": "33"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 24,
+  "count": "35"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 25,
+  "count": "65"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 26,
+  "count": "52"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 27,
+  "count": "41"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 28,
+  "count": "40"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 29,
+  "count": "45"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 30,
+  "count": "46"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 31,
+  "count": "55"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 32,
+  "count": "24"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 33,
+  "count": "15"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 34,
+  "count": "23"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 35,
+  "count": "16"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 36,
+  "count": "19"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 37,
+  "count": "19"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 38,
+  "count": "37"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 39,
+  "count": "46"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 40,
+  "count": "38"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 41,
+  "count": "46"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 42,
+  "count": "45"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 43,
+  "count": "49"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 44,
+  "count": "33"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 45,
+  "count": "39"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 46,
+  "count": "81"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 47,
+  "count": "76"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 48,
+  "count": "73"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 49,
+  "count": "88"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 50,
+  "count": "83"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 51,
+  "count": "51"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 52,
+  "count": "47"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 53,
+  "count": "47"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 54,
+  "count": "46"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 55,
+  "count": "34"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 56,
+  "count": "29"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 57,
+  "count": "25"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 58,
+  "count": "14"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 59,
+  "count": "21"
+ },
+ {
+  "con_attempt": true,
+  "segundo": 60,
+  "count": "18"
+ }
+]

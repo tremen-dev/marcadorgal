@@ -1,0 +1,18 @@
+[
+ {
+  "tgname": "board_delta",
+  "tgenabled": "D"
+ },
+ {
+  "tgname": "decisions_append_only",
+  "tgenabled": "O"
+ },
+ {
+  "tgname": "decisions_assign_version",
+  "tgenabled": "O"
+ },
+ {
+  "tgname": "decisions_no_truncate",
+  "tgenabled": "O"
+ }
+]

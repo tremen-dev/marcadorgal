@@ -27,6 +27,6 @@ Todas las consultas: `begin read only` + `set local statement_timeout = '30s'` (
 - Veredicto: **cumple**.
 
 ## Observaciones fuera de alcance
-- rayo-athletic: el proveedor alterna `suspended`/`live` desde 12:30Z (`53-rayo-mezcla`). La Decision `suspended` no llega hasta 12:54Z.
+- rayo-athletic: el proveedor alterna `suspended`/`live` desde 12:30Z (`53-rayo-mezcla`). *Corregido el 2026-10-15:* la primera Decision `suspended` (v30) se publicó a las 12:30:03Z, en el mismo tick que la observación. La consulta `51-rayo.sql` ocultaba v4–v37. Las 12:54Z son la segunda suspensión (v41). Es correcto según ADR-012 §1 y §3 (`../../../EPIC-MANT-mantenimiento/_qa/investigacion-2026-10-15/INFORME.md` §2).
 - antela-barco y celtiga-alondras: dos RN-05 `sen_sinal` seguidas (v2 decidida a 15:45:06.353Z, v3 a 15:45:04.084Z). Los `decided_at` no son monótonos con la versión: hubo dos caminos concurrentes y solo uno tiene `ingest_attempt` (`60-`, `61-`).
 - La línea de salvedad del informe sigue imprimiendo «su comprobación queda como R-SPEC-009-1» aunque hayan jugado las cinco competiciones.

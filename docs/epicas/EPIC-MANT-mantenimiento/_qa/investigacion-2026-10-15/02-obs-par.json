@@ -1,0 +1,642 @@
+[
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:30:03.457Z",
+  "received_at": "2026-10-11T15:30:03.457Z",
+  "id": "61a65f38-63e6-48ff-bbc1-8d5bcdedaffc"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:30:32.894Z",
+  "received_at": "2026-10-11T15:30:32.894Z",
+  "id": "ac48bee0-4ca8-40b4-8855-5aae08b0f9b9"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:31:02.912Z",
+  "received_at": "2026-10-11T15:31:02.912Z",
+  "id": "e351834c-a05a-4b7a-a8f0-07be43abea8d"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:31:32.931Z",
+  "received_at": "2026-10-11T15:31:32.931Z",
+  "id": "4e0dab1d-aeec-4b8b-87d8-255622f11994"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:32:02.945Z",
+  "received_at": "2026-10-11T15:32:02.945Z",
+  "id": "d0731826-a525-403c-bfa1-bb4432f4aac5"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:32:32.999Z",
+  "received_at": "2026-10-11T15:32:32.999Z",
+  "id": "facac8b2-f371-45b7-9232-4cb92916d5b3"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:33:02.990Z",
+  "received_at": "2026-10-11T15:33:02.990Z",
+  "id": "34013abf-1b0d-475b-8659-890e160025aa"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:33:33.468Z",
+  "received_at": "2026-10-11T15:33:33.468Z",
+  "id": "19c35153-945a-45e0-adb8-91a993872c63"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:34:03.459Z",
+  "received_at": "2026-10-11T15:34:03.459Z",
+  "id": "9546116d-0485-407d-a136-167d570ed7e9"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:34:33.511Z",
+  "received_at": "2026-10-11T15:34:33.511Z",
+  "id": "f4e47bcd-af1b-477c-aeb2-5a0f4e632505"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:35:03.584Z",
+  "received_at": "2026-10-11T15:35:03.584Z",
+  "id": "53b806a4-48bf-4714-8e84-e6879db72ef2"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:35:33.598Z",
+  "received_at": "2026-10-11T15:35:33.598Z",
+  "id": "dd4a21d1-0381-4e8f-af54-3750cc944ea1"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:36:03.621Z",
+  "received_at": "2026-10-11T15:36:03.621Z",
+  "id": "48c59e01-220e-4942-8598-dcefe5123abf"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:36:33.651Z",
+  "received_at": "2026-10-11T15:36:33.651Z",
+  "id": "d28037f5-6dac-461d-bf2a-0acdd502e2ee"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:37:03.643Z",
+  "received_at": "2026-10-11T15:37:03.643Z",
+  "id": "c6f80445-cf06-4c14-b9de-6577ae0a18ef"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:37:33.662Z",
+  "received_at": "2026-10-11T15:37:33.662Z",
+  "id": "a144b7ff-bc80-4c58-a941-b7ce96c48f67"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:38:03.676Z",
+  "received_at": "2026-10-11T15:38:03.676Z",
+  "id": "0ae65a8d-7667-41ba-a09d-32f475e4a5f7"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:38:33.742Z",
+  "received_at": "2026-10-11T15:38:33.742Z",
+  "id": "c7307a76-e5ed-4037-8b32-85f4d6289d18"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:39:03.717Z",
+  "received_at": "2026-10-11T15:39:03.717Z",
+  "id": "066a177a-9deb-48e1-a069-50c895981281"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:39:33.734Z",
+  "received_at": "2026-10-11T15:39:33.734Z",
+  "id": "1832b38f-1f64-4b02-bffc-a661dc83fbd2"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:40:04.329Z",
+  "received_at": "2026-10-11T15:40:04.329Z",
+  "id": "fd37cab8-e91d-4bab-a62c-9a0f5fdccbe7"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:40:33.951Z",
+  "received_at": "2026-10-11T15:40:33.951Z",
+  "id": "5df82e92-ee27-44df-9ffc-51b01e1cb631"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:41:03.810Z",
+  "received_at": "2026-10-11T15:41:03.810Z",
+  "id": "1cae629b-8eec-40a2-a2e6-dc337fb6b0f8"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:41:33.814Z",
+  "received_at": "2026-10-11T15:41:33.814Z",
+  "id": "1a158658-223c-41cd-a9c1-d4df71c6070d"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:42:03.838Z",
+  "received_at": "2026-10-11T15:42:03.838Z",
+  "id": "02336fc6-8e49-4a64-a202-e7410b742570"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:42:33.871Z",
+  "received_at": "2026-10-11T15:42:33.871Z",
+  "id": "bf8eb91d-8d33-4370-88a3-23bd3816a1a1"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:43:03.864Z",
+  "received_at": "2026-10-11T15:43:03.864Z",
+  "id": "1f97b56b-38ae-4e33-a544-689e9e109fba"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:43:33.902Z",
+  "received_at": "2026-10-11T15:43:33.902Z",
+  "id": "9bed7a9b-633c-4d69-bdb5-0aae2ecc74b2"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:44:04.098Z",
+  "received_at": "2026-10-11T15:44:04.098Z",
+  "id": "f3bebfd9-d12c-49ee-9fcc-4ba6df5c5f2b"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:44:34.057Z",
+  "received_at": "2026-10-11T15:44:34.057Z",
+  "id": "86d14e5d-e4c8-4a7c-a9af-998eb48b743f"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:45:04.084Z",
+  "received_at": "2026-10-11T15:45:04.084Z",
+  "id": "26a09c1b-fc38-4eb9-b9e2-348c0de69cac"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:45:34.108Z",
+  "received_at": "2026-10-11T15:45:34.108Z",
+  "id": "40c432dc-ea46-4af3-953f-8ba17551eb0d"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:46:04.119Z",
+  "received_at": "2026-10-11T15:46:04.119Z",
+  "id": "b0b1aa41-2664-4485-94e3-2c51c6bed5f0"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:46:34.182Z",
+  "received_at": "2026-10-11T15:46:34.182Z",
+  "id": "5c1e4cc8-27e2-4cf5-9e46-44a6889902fe"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:47:04.175Z",
+  "received_at": "2026-10-11T15:47:04.175Z",
+  "id": "e1e541e1-13c7-490b-9aec-78f961420d00"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:47:34.182Z",
+  "received_at": "2026-10-11T15:47:34.182Z",
+  "id": "13015545-0df9-4f5b-a02a-06e6fc5db731"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:48:04.199Z",
+  "received_at": "2026-10-11T15:48:04.199Z",
+  "id": "4d2ecfdd-3e88-4a3a-a65e-c3b1277b87b8"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:48:34.279Z",
+  "received_at": "2026-10-11T15:48:34.279Z",
+  "id": "ac63c063-ec41-40a0-a151-541980894cbf"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:49:04.241Z",
+  "received_at": "2026-10-11T15:49:04.241Z",
+  "id": "a39af5c2-15b2-4485-ad5a-03262f7f944a"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:49:34.259Z",
+  "received_at": "2026-10-11T15:49:34.259Z",
+  "id": "c5662006-e254-4837-97f7-14c58dc0bbe7"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:30:03.457Z",
+  "received_at": "2026-10-11T15:30:03.457Z",
+  "id": "5201c8ed-0758-4d8b-8919-35448414e946"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:30:32.894Z",
+  "received_at": "2026-10-11T15:30:32.894Z",
+  "id": "761c658a-5fe5-4055-809e-78c98516536a"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:31:02.912Z",
+  "received_at": "2026-10-11T15:31:02.912Z",
+  "id": "b4a111cb-c9a8-4efb-b016-05dbe6854a12"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:31:32.931Z",
+  "received_at": "2026-10-11T15:31:32.931Z",
+  "id": "69eb9812-d38d-4088-9de1-226b23496c22"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:32:02.945Z",
+  "received_at": "2026-10-11T15:32:02.945Z",
+  "id": "201a78aa-360f-41c5-983c-22dd4ea2a434"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:32:32.999Z",
+  "received_at": "2026-10-11T15:32:32.999Z",
+  "id": "210ae799-d88a-4bff-9136-1faf16fba4f5"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:33:02.990Z",
+  "received_at": "2026-10-11T15:33:02.990Z",
+  "id": "4bcfee10-a04a-4f62-9004-ceb34ecaa1f5"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:33:33.468Z",
+  "received_at": "2026-10-11T15:33:33.468Z",
+  "id": "73c60765-3df6-4945-baf5-84816450fa8d"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:34:03.459Z",
+  "received_at": "2026-10-11T15:34:03.459Z",
+  "id": "cea622c1-5913-4486-a532-3b63a9cc33bb"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:34:33.511Z",
+  "received_at": "2026-10-11T15:34:33.511Z",
+  "id": "561402a7-99fd-4100-a988-41714f1a9131"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:35:03.584Z",
+  "received_at": "2026-10-11T15:35:03.584Z",
+  "id": "56a6dbe3-5b07-4505-a804-9fff79dd2ada"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:35:33.598Z",
+  "received_at": "2026-10-11T15:35:33.598Z",
+  "id": "d9d94053-7f57-40d5-b754-8351ea890bfc"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:36:03.621Z",
+  "received_at": "2026-10-11T15:36:03.621Z",
+  "id": "61ff5580-b07c-446f-97ed-ef768b7e7af1"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:36:33.651Z",
+  "received_at": "2026-10-11T15:36:33.651Z",
+  "id": "1eb564b3-a74e-472b-b5d0-8c2507aec890"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:37:03.643Z",
+  "received_at": "2026-10-11T15:37:03.643Z",
+  "id": "bf59fb02-d8bb-46a0-bcf0-d0684a8ae563"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:37:33.662Z",
+  "received_at": "2026-10-11T15:37:33.662Z",
+  "id": "3b96cd7a-6c32-4310-94ae-58b7376afa60"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:38:03.676Z",
+  "received_at": "2026-10-11T15:38:03.676Z",
+  "id": "6466b06d-7c73-4ccc-bb0a-0976769ec5ab"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:38:33.742Z",
+  "received_at": "2026-10-11T15:38:33.742Z",
+  "id": "05906ad4-6f40-48f1-bbfc-6d76f4259016"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:39:03.717Z",
+  "received_at": "2026-10-11T15:39:03.717Z",
+  "id": "eed4044f-af89-4c08-88b6-a446cf926ebe"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:39:33.734Z",
+  "received_at": "2026-10-11T15:39:33.734Z",
+  "id": "1b0b27d2-2e67-4171-8f1f-ecbe4bbefaa8"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:40:04.329Z",
+  "received_at": "2026-10-11T15:40:04.329Z",
+  "id": "8aae7c36-25e4-4252-b233-2ef9a952bd12"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:40:33.951Z",
+  "received_at": "2026-10-11T15:40:33.951Z",
+  "id": "b67275c9-874b-474c-b71e-32bc0ecdfe35"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:41:03.810Z",
+  "received_at": "2026-10-11T15:41:03.810Z",
+  "id": "35163601-8b09-43e1-8ddf-e36e2e94ac02"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:41:33.814Z",
+  "received_at": "2026-10-11T15:41:33.814Z",
+  "id": "1507c201-9af1-4e74-acf3-8f7e8c71f40c"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:42:03.838Z",
+  "received_at": "2026-10-11T15:42:03.838Z",
+  "id": "7255ba1b-8702-4ced-9cfd-207b5524830b"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:42:33.871Z",
+  "received_at": "2026-10-11T15:42:33.871Z",
+  "id": "c85a9c88-199a-435e-83b3-7f061d5be333"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:43:03.864Z",
+  "received_at": "2026-10-11T15:43:03.864Z",
+  "id": "33341e93-9ccb-4b53-b05e-1030410a64aa"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:43:33.902Z",
+  "received_at": "2026-10-11T15:43:33.902Z",
+  "id": "2e88e859-4ac5-440d-a8d7-df17847084ff"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:44:04.098Z",
+  "received_at": "2026-10-11T15:44:04.098Z",
+  "id": "67beeb84-ed7d-41e3-8155-74e9d1685137"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:44:34.057Z",
+  "received_at": "2026-10-11T15:44:34.057Z",
+  "id": "477fe306-105e-4dc8-a10f-b47e3fcc7803"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:45:04.084Z",
+  "received_at": "2026-10-11T15:45:04.084Z",
+  "id": "19d9a504-edb8-49ce-a6cd-5d3262650dd3"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:45:34.108Z",
+  "received_at": "2026-10-11T15:45:34.108Z",
+  "id": "5224bd9d-be86-415c-84cf-2892c6bbfca0"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:46:04.119Z",
+  "received_at": "2026-10-11T15:46:04.119Z",
+  "id": "7ec2f786-8132-48d6-b3d5-908c8f5a4803"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:46:34.182Z",
+  "received_at": "2026-10-11T15:46:34.182Z",
+  "id": "c27a9b69-7a51-4512-8cdc-d54c7cf030b9"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:47:04.175Z",
+  "received_at": "2026-10-11T15:47:04.175Z",
+  "id": "c80d3041-d69e-4a85-ad94-ee6513a2d6da"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:47:34.182Z",
+  "received_at": "2026-10-11T15:47:34.182Z",
+  "id": "8b1f7f30-d9a4-4259-9daf-da78d1001fa1"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:48:04.199Z",
+  "received_at": "2026-10-11T15:48:04.199Z",
+  "id": "00ec7d11-5c83-4a00-b356-03c72f1bb69b"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:48:34.279Z",
+  "received_at": "2026-10-11T15:48:34.279Z",
+  "id": "3232d95c-5546-40fe-a5fd-64128f3e2345"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:49:04.241Z",
+  "received_at": "2026-10-11T15:49:04.241Z",
+  "id": "eaa9811c-2e9c-4ec2-8fbc-f6de7f229f4e"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "source_id": "api-football",
+  "status": "scheduled",
+  "observed_at": "2026-10-11T15:49:34.259Z",
+  "received_at": "2026-10-11T15:49:34.259Z",
+  "id": "38893e4f-b3ee-49f3-b6ad-59956bdcf2b0"
+ }
+]

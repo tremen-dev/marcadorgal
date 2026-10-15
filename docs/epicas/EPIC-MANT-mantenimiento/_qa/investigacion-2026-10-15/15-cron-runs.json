@@ -1,0 +1,16 @@
+[
+ {
+  "jobid": "2",
+  "status": "succeeded",
+  "start_time": "2026-10-11T15:45:04.010Z",
+  "end_time": "2026-10-11T15:45:04.022Z",
+  "msg": "1 row"
+ },
+ {
+  "jobid": "2",
+  "status": "succeeded",
+  "start_time": "2026-10-11T15:45:34.026Z",
+  "end_time": "2026-10-11T15:45:34.030Z",
+  "msg": "1 row"
+ }
+]
