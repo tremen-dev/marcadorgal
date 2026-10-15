@@ -84,8 +84,8 @@ existen se quedan, porque las Decisions son append-only (RN-07).
 
 ## Enmienda 2026-10-15 (SPEC-035, findings V-1 y V-2)
 
-Propuesta por sdd-arquitecto tras el RED del verificador; **pendiente de
-aprobación del titular** (gates H-5 y H-6 de SPEC-035). Añade §5 y §6; no
+Propuesta por sdd-arquitecto tras el RED del verificador; **aprobada por el
+titular el 2026-10-15** (gates H-5 y H-6 de SPEC-035). Añade §5 y §6; no
 cambia §1-§4.
 
 5. **Todo escritor de `matches` toma el cerrojo de §1 en orden de id.** Antes

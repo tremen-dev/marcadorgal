@@ -113,3 +113,5 @@ SPEC-024 N-1.
   Fuera, como follow-up: deja §2 recién aprobado incumplido y sin dueño. Por
   `decideMatches` no: decide con la ventana de RN-01, no con la jornada, y
   cambiaría lo que corrige SPEC-012 CA-4. **Recomendado: A.**
+- **Reaprobación del titular (2026-10-15, Alberto Fojo), tras el RED del
+  verificador:** H-5 → A (CA-7, ADR-019 §5) y H-6 → A (CA-8, ADR-019 §6).
