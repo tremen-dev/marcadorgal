@@ -579,6 +579,10 @@ afterAll(async () => {
       await tx`delete from alerts where match_id = any(${ids})`;
       await tx`delete from observations where match_id = any(${ids})`;
       await tx`delete from matches where id = any(${ids})`;
+      // seedMatch's teams too: other suites insert them without on conflict.
+      await tx`delete from teams t where t.id in ('test-home', 'test-away')
+        and not exists (select 1 from matches m
+          where t.id in (m.home_team_id, m.away_team_id))`;
     });
   await Promise.all([sqlA.end(), sqlB.end(), sqlC.end()]);
 });
