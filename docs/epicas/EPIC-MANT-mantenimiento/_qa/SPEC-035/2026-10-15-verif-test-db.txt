@@ -1,0 +1,27 @@
+
+> marcadorgal@0.1.0 test:db
+> node tools/test-db.mjs
+
+(node:17553) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/albertofojo/src/marcadorgal/.claude/worktrees/agent-a90a4ee4a88bc8c1d/src/db/env.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/albertofojo/src/marcadorgal/.claude/worktrees/agent-a90a4ee4a88bc8c1d/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Connecting to local database...
+{"upToDate":true,"dryRun":false,"migrations":[],"seeds":[],"roles":[],"message":"Local database is up to date."}
+A new version of Supabase CLI is available: v2.121.0 (currently installed v2.117.0)
+We recommend updating regularly for new features and bug fixes: https://supabase.com/docs/guides/cli/getting-started#updating-the-supabase-cli
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (src/db/env.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.1 /Users/albertofojo/src/marcadorgal/.claude/worktrees/agent-a90a4ee4a88bc8c1d
+
+
+ Test Files  20 passed (20)
+      Tests  201 passed (201)
+   Start at  22:48:57
+   Duration  3.29s (tests 65%, import 22%, transform 9%, setup 2%, worker 1%)
+
+    Isolate  20 workers spawned · ~49ms startup each (spawn + environment, per file)
+             at least ~927ms faster with isolate: false — reuses workers across files instead of one per file
+
