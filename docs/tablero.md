@@ -89,6 +89,7 @@ Actualizado: 2026-10-15
 | ADR-016 | aprobada | segundo-reloj-de-medicion-instantes-sellados-por-la-base | 2026-10-09 (Alberto Fojo) |
 | ADR-017 | aprobada | fuente-rfef-panel-de-marcadores-rfef-es-decodificacion-cerrada-y-estados-por-marca-y-reloj | 2026-10-11 (Alberto Fojo) |
 | ADR-018 | aprobada | fuente-rfef-el-panel-por-post-cuerpo-vacio-como-error-y-respuesta-rancia | 2026-10-11 (Alberto Fojo) |
+| ADR-019 | borrador | motor-serializado-por-partido-cerrojo-de-fila-antes-de-leer-la-vigente | 2026-10-15 (sdd-arquitecto) |
 
 ## Resumen
 
