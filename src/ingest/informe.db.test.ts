@@ -443,3 +443,35 @@ describe("SPEC-017 CA-5 pg_cron", () => {
       );
     }));
 });
+
+describe("SPEC-035 CA-5 gemelas contra la base de datos", () => {
+  it("informeFilas trae la tupla publicada entera: el par gemelo da 1 y el cambio de minuto 0", () =>
+    rollback(async (tx) => {
+      const gemelo = await seedMatch(tx);
+      const limpio = await seedMatch(tx);
+      const o1 = await observe(tx, gemelo, 0, 0, seg(0));
+      const o2 = await observe(tx, limpio, 0, 0, seg(0));
+      // La misma tupla dos veces, la segunda con un decided_at anterior: lo
+      // que dejaban pg_cron y Vercel Cron antes del cerrojo de ADR-019 §1.
+      await decide(tx, gemelo, 0, 0, seg(6), [o1]);
+      await decide(tx, gemelo, 0, 0, seg(4), [o1]);
+      await decide(tx, limpio, 0, 0, seg(4), [o2]);
+      await tx`insert into decisions (match_id, status, home_score, away_score, minute,
+          qualifier, rule, observation_ids, decided_at)
+        values (${limpio}, 'live', 0, 0, 21, 'provisional', 'RN-01', ${[o2]}, ${seg(34)})`;
+
+      const filas = await informeFilas(tx, DESDE, HASTA);
+      expect(filas.decisions.find((d) => d.matchId === limpio)).toMatchObject({
+        minute: 20,
+        addedMinute: null,
+        halfTime: false,
+        qualifier: "provisional",
+      });
+      const { texto, informe } = genera(filas);
+      expect(informe.motor).toEqual({
+        gemelas: [{ matchId: gemelo, version: 2 }],
+        decididasInvertidas: [{ matchId: gemelo, version: 2 }],
+      });
+      expect(texto).toContain(`Decisiones gemelas: 1 — ${gemelo} v2`);
+    }));
+});

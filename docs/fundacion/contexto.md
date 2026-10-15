@@ -2,7 +2,7 @@
 
 > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.
 > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.
-> Última actualización: 2026-10-12 (EPIC-003 a falta de SPEC-025/026; EPIC-004 fuente RFEF abierta; SPEC-030, 033 y 034 en producción).
+> Última actualización: 2026-10-15 (jornada 2026-10-09/12 leída; SPEC-015 y SPEC-035 hechas; EPIC-003 a falta de SPEC-025/026).
 
 ## Qué es y en qué punto está
 
@@ -61,14 +61,11 @@ Las mediciones de SPEC-025 (latencia gol→pantalla con el segundo reloj de ADR-
 
 **EPIC-FIX (correcciones urgentes):** SPEC-011 hecho. Arregla dos defectos de la ingesta: sin peticiones `live=` con un solo id de liga, y `ParseResult` gana cuarto canal `requestErrors` para guardar observaciones buenas aun si una petición falla. Entrada prioritaria para fallos que dañan medición en vivo. **SPEC-022 completa:** `test:db` ya no toca Storage de producción. **SPEC-030 completa (PR #64, 2026-10-12):** `/` y `/es` dejan ISR y pasan a `force-dynamic`. La CDN las cachea con `Vercel-CDN-Cache-Control: s-maxage=10, stale-while-revalidate=30`, porque en Vercel la página dinámica sale `private, no-store` y el `Cache-Control` de `next.config` no basta. El cliente pide `/api/board` al hidratar si `servedAt` tiene más de 45 s. Medido en producción con `npm run cache:portada`: 10 de 10, sin HTML del build.
 
-**EPIC-FIX — SPEC-015 en revisión (falta CA-5 de campo):** el calendario declarado se sincroniza de martes a sábado y las reprogramaciones puras se aplican solas; corrigió las horas de relleno de Segunda J8 y Tercera J5 antes de jugarse.
+**EPIC-FIX — SPEC-015 completa (2026-10-15):** el calendario declarado se sincroniza de martes a sábado y las reprogramaciones puras se aplican solas. Corrigió las horas de relleno de Segunda J8 y Tercera J5 antes de jugarse. CA-5 se midió en la jornada 2026-10-09/12: 49 partidos y ninguna hora cambiada después del sábado a las 05:00Z.
 
-**Pendiente de la jornada 2026-10-09/12** (la primera con las cinco competiciones):
-- Residual CA-8 de SPEC-018: medir las peticiones de la prórroga (≤ 42 por tanda; F-SPEC-018-2).
-- Prueba de campo de `--contrastar` de SPEC-017 (CA-1/CA-2).
-- CA-5 de SPEC-015.
-- F-SPEC-013-6: repetir la lectura de RN-12 tras el cierre forzoso.
-- R-SPEC-009-1: comprobar que Primera produce Decisions.
+**Jornada 2026-10-09/12 leída (2026-10-15), la primera con las cinco competiciones:** válida con reservas, solo por el `suspended` de Rayo–Athletic (lanzamiento de objetos). `--contrastar` de SPEC-017: 48/49 coinciden, 0 discrepancias. Prórroga de SPEC-018: 20 peticiones (≤ 42). RN-12: 6/6 en ≤ 224 s (F-SPEC-013-6 resuelto). Primera produce Decisions (R-SPEC-009-1 cerrado). Cuatro partidos sin directo del proveedor; los cubrirá EPIC-004.
+
+**EPIC-MANT — SPEC-035 completa (2026-10-15, ADR-019):** el motor serializado por partido. pg_cron y Vercel Cron decidían a la vez y escribían versiones gemelas: 36 filas del 22-09 al 12-10, sin daño visible. Ahora `decideMatches`, `loadSeason` y `replay:jornada --aplicar` toman `for no key update` sobre `matches` en orden de id antes de leer o escribir. `informe:jornada` cuenta las gemelas y los `decided_at` invertidos, y tras desplegar las dos cuentas deben dar 0. Las cuatro specs de EPIC-MANT están en `hecho`.
 
 ### Herencia
 
@@ -131,6 +128,7 @@ de cada fuente la gestiona el titular fuera del repo (D-7).
 - ADR-016 Segundo reloj de medición: instantes sellados por Postgres (`clock_timestamp()`); el código no lo lee para decidir.
 - ADR-017 Fuente RFEF: panel de marcadores, decodificación cerrada y estados por marca y reloj.
 - ADR-018 Fuente RFEF: el panel por POST, el cuerpo vacío como error y la respuesta rancia (sustituye ADR-017 §1).
+- ADR-019 Motor serializado por partido: `for no key update` sobre `matches` antes de leer la vigente; todo escritor de Decisions pasa por `decideMatches`; `decided_at` es el `now` del tick y el orden lo dan `version` y `recorded_at` (precisa ADR-009 §1).
 
 ## Riesgos y preguntas abiertas
 

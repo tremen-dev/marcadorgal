@@ -1,7 +1,11 @@
-import type { TransactionSql } from "postgres";
+import type { Sql, TransactionSql } from "postgres";
 import { afterAll, describe, expect, it } from "vitest";
+import type { Instant } from "@/model";
 import { loadSeason } from "../calendar/load.ts";
 import { AliasFile, CalendarFile } from "../calendar/schema.ts";
+import { createIngestDb } from "../ingest/db.ts";
+import { decideMatches } from "../ingest/engine.ts";
+import { SOURCES } from "../sources/registry.ts";
 import { createSql } from "./connect.ts";
 
 const sql = createSql(process.env);
@@ -200,4 +204,175 @@ describe("CA-10 loadSeason", () => {
         await tx`select count(*)::int as count from calendar_loads`;
       expect(count).toBe(0);
     }));
+});
+
+// SPEC-035 CA-7 (ADR-019 §5): the load of the calendar against two real
+// engines, each on its own connection. These rows are committed, because a
+// transaction that waits for another one only sees what that one commits;
+// the afterAll removes them as replica, past the append-only triggers.
+const sqlA = createSql(process.env);
+const sqlB = createSql(process.env);
+const sqlC = createSql(process.env);
+const sqlW = createSql(process.env);
+const lockSeason = "2026-27";
+const lockKickoff = "2026-09-25T18:00:00.000Z" as Instant;
+const movedKickoff = "2026-09-26T19:00:00.000Z";
+const compX = "test-c35a";
+const compY = "test-c35b";
+const lockTeams = [
+  { id: "test-c35-x", name: "X" },
+  { id: "test-c35-y", name: "Y" },
+];
+const calendarOf = (
+  id: string,
+  matches: { round: number; home: string; away: string }[],
+  kickoff: string,
+) =>
+  CalendarFile.parse({
+    competition: { id, season: lockSeason, name: `Test ${id}`, tier: 5 },
+    teams: lockTeams,
+    matches: matches.map((m) => ({ ...m, kickoff })),
+  });
+// m1 and m2 in one competition, m3 in the other; the ids sort m1 < m2 < m3.
+const xy = { home: "test-c35-x", away: "test-c35-y" };
+const yx = { home: "test-c35-y", away: "test-c35-x" };
+const m1 = `${compX}-${lockSeason}-j1-test-c35-x-test-c35-y`;
+const m2 = `${compX}-${lockSeason}-j2-test-c35-y-test-c35-x`;
+const m3 = `${compY}-${lockSeason}-j1-test-c35-x-test-c35-y`;
+
+afterAll(async () => {
+  await sqlW.begin(async (tx) => {
+    await tx`set local session_replication_role = replica`;
+    const ids = tx.array([m1, m2, m3]);
+    await tx`delete from decisions where match_id = any(${ids})`;
+    await tx`delete from alerts where match_id = any(${ids})`;
+    await tx`delete from observations where match_id = any(${ids})`;
+    await tx`delete from matches where id = any(${ids})`;
+    await tx`delete from calendar_loads
+      where summary -> 'competitions' ?| ${tx.array([compX, compY])}`;
+    await tx`delete from competitions where id = any(${tx.array([compX, compY])})`;
+    await tx`delete from teams where id = any(${tx.array(lockTeams.map((t) => t.id))})`;
+  });
+  await Promise.all([sqlA.end(), sqlB.end(), sqlC.end(), sqlW.end()]);
+});
+
+const pidOf = async (s: Sql | Tx) => {
+  const [row] = await s<{ pid: number }[]>`select pg_backend_pid() as pid`;
+  return row.pid;
+};
+
+// Waits until the backend is waiting on a lock, without a sleep standing in
+// for the proof.
+async function waitUntilBlocked(pid: number): Promise<void> {
+  for (let i = 0; i < 100; i += 1) {
+    const [row] = await sqlW<{ n: number }[]>`
+      select count(*)::int as n from pg_stat_activity
+      where pid = ${pid} and wait_event_type = 'Lock'`;
+    if (row.n > 0) return;
+    await new Promise((r) => setTimeout(r, 50));
+  }
+  throw new Error(`backend ${pid} never waited on a lock`);
+}
+
+const outcome = (p: Promise<unknown>) =>
+  p.then(
+    () => "ok",
+    (e: { code?: string; message?: string }) => `${e.code} ${e.message}`,
+  );
+
+describe("SPEC-035 CA-7 the calendar load does not deadlock with the engine", () => {
+  it("afterInsert on m2, sweep on m1..m3 and a load in file order m3, m1, m2 all commit", async () => {
+    // The season as it stands before the push, committed.
+    await sqlW.begin((tx) =>
+      loadSeason(tx, {
+        season: lockSeason,
+        calendars: [
+          calendarOf(
+            compX,
+            [
+              { round: 1, ...xy },
+              { round: 2, ...yx },
+            ],
+            lockKickoff,
+          ),
+          calendarOf(compY, [{ round: 1, ...xy }], lockKickoff),
+        ],
+        aliases: [],
+      }),
+    );
+
+    // A: an afterInsert on m2, left open.
+    let releaseA!: () => void;
+    const released = new Promise<void>((r) => {
+      releaseA = r;
+    });
+    let ranA!: () => void;
+    const aRan = new Promise<void>((r) => {
+      ranA = r;
+    });
+    const aDone = createIngestDb(sqlA).transaction(async (tx) => {
+      await decideMatches(tx, [m2], lockKickoff, SOURCES);
+      ranA();
+      await released;
+    });
+    let b: Promise<string> = Promise.resolve("ok");
+    let c: Promise<string> = Promise.resolve("ok");
+    try {
+      await aRan;
+      // B: the sweep over m1..m3, two competitions: holds m1, waits on m2.
+      let pidB!: (pid: number) => void;
+      const bPid = new Promise<number>((r) => {
+        pidB = r;
+      });
+      b = outcome(
+        createIngestDb(sqlB).transaction(async (tx) => {
+          pidB(await pidOf(tx.sql));
+          return decideMatches(tx, [m1, m2, m3], lockKickoff, SOURCES);
+        }),
+      );
+      await waitUntilBlocked(await bPid);
+
+      // C: the push, competition Y first, then X: m3, m1, m2.
+      let pidC!: (pid: number) => void;
+      const cPid = new Promise<number>((r) => {
+        pidC = r;
+      });
+      c = outcome(
+        sqlC.begin(async (tx) => {
+          pidC(await pidOf(tx));
+          await loadSeason(tx, {
+            season: lockSeason,
+            calendars: [
+              calendarOf(compY, [{ round: 1, ...xy }], movedKickoff),
+              calendarOf(
+                compX,
+                [
+                  { round: 1, ...xy },
+                  { round: 2, ...yx },
+                ],
+                movedKickoff,
+              ),
+            ],
+            aliases: [],
+          });
+        }),
+      );
+      await waitUntilBlocked(await cPid);
+    } finally {
+      releaseA();
+      await aDone;
+    }
+    expect({ sweep: await b, load: await c }).toEqual({
+      sweep: "ok",
+      load: "ok",
+    });
+    const rows = await sqlW<{ id: string; kickoff: Date }[]>`
+      select id, kickoff from matches where id in ${sqlW([m1, m2, m3])}
+      order by id`;
+    expect(rows.map((r) => r.kickoff.toISOString())).toEqual([
+      "2026-09-26T19:00:00.000Z",
+      "2026-09-26T19:00:00.000Z",
+      "2026-09-26T19:00:00.000Z",
+    ]);
+  });
 });

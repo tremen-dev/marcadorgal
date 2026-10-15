@@ -1,9 +1,14 @@
 import type { TransactionSql } from "postgres";
 import { afterAll, describe, expect, it } from "vitest";
-import { type Instant, MINUTE_MS, shiftInstant } from "@/model";
+import {
+  type Instant,
+  MINUTE_MS,
+  type Observation,
+  shiftInstant,
+} from "@/model";
 import { createSql } from "../db/connect.ts";
 import { SOURCES } from "../sources/registry.ts";
-import type { IngestTx } from "./db.ts";
+import { createIngestDb, type IngestTx } from "./db.ts";
 import { decideMatches } from "./engine.ts";
 
 // CA-11: the engine against the real schema, always rolled back.
@@ -551,4 +556,254 @@ describe("SPEC-021 CA-5 half_time round trip", () => {
         }),
       ]);
     }));
+});
+
+// SPEC-035 (ADR-019 §1): two engines over the same match, each on its own
+// real connection. These rows are committed, because a transaction that waits
+// for another one only sees what that one commits; the afterAll removes them
+// as replica, the only way past the append-only triggers of RN-07.
+const sqlA = createSql(process.env);
+const sqlB = createSql(process.env);
+const sqlC = createSql(process.env);
+const dbA = createIngestDb(sqlA);
+const dbB = createIngestDb(sqlB);
+const dbC = createIngestDb(sqlC);
+const committed: string[] = [];
+
+afterAll(async () => {
+  if (committed.length > 0)
+    await sqlC.begin(async (tx) => {
+      await tx`set local session_replication_role = replica`;
+      const ids = tx.array(committed);
+      await tx`delete from decisions where match_id = any(${ids})`;
+      await tx`delete from alerts where match_id = any(${ids})`;
+      await tx`delete from observations where match_id = any(${ids})`;
+      await tx`delete from matches where id = any(${ids})`;
+      // seedMatch's teams too: other suites insert them without on conflict.
+      await tx`delete from teams t where t.id in ('test-home', 'test-away')
+        and not exists (select 1 from matches m
+          where t.id in (m.home_team_id, m.away_team_id))`;
+    });
+  await Promise.all([sqlA.end(), sqlB.end(), sqlC.end()]);
+});
+
+const deferred = <T = void>() => {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>((r) => {
+    resolve = r;
+  });
+  return { promise, resolve };
+};
+
+// Seeds and commits n matches, ordered by id.
+async function seedCommitted(n: number): Promise<string[]> {
+  const ids: string[] = [];
+  await sqlC.begin(async (tx) => {
+    for (let i = 0; i < n; i += 1) ids.push(await seedMatch(tx));
+  });
+  ids.sort();
+  committed.push(...ids);
+  return ids;
+}
+
+const observeCommitted = (
+  matchId: string,
+  home: number,
+  away: number,
+  minute: number,
+  observedAt: Instant,
+) => sqlC.begin((tx) => observe(tx, matchId, home, away, minute, observedAt));
+
+const pidOf = async (tx: IngestTx): Promise<number> => {
+  const [row] = await tx.sql<{ pid: number }[]>`select pg_backend_pid() as pid`;
+  return row.pid;
+};
+
+// Waits until the backend is waiting on a lock: the proof that it does not
+// finish while the other transaction is open, without a sleep.
+async function waitUntilBlocked(pid: number): Promise<void> {
+  for (let i = 0; i < 100; i += 1) {
+    const [row] = await sqlC<{ n: number }[]>`
+      select count(*)::int as n from pg_stat_activity
+      where pid = ${pid} and wait_event_type = 'Lock'`;
+    if (row.n > 0) return;
+    await new Promise((r) => setTimeout(r, 50));
+  }
+  throw new Error(`backend ${pid} never waited on a lock`);
+}
+
+// Runs fn in a transaction and keeps it open until release is called.
+function holdOpen<T>(
+  db: ReturnType<typeof createIngestDb>,
+  fn: (tx: IngestTx) => Promise<T>,
+) {
+  const ran = deferred<T>();
+  const release = deferred();
+  const done = db.transaction(async (tx) => {
+    ran.resolve(await fn(tx));
+    await release.promise;
+  });
+  return { ran: ran.promise, release: release.resolve, done };
+}
+
+const committedDecisions = (matchId: string) =>
+  sqlC<{ version: number; home_score: number | null; minute: number | null }[]>`
+    select version, home_score, minute from decisions
+    where match_id = ${matchId} order by version`;
+
+describe("SPEC-035 CA-1 one lock per match before reading", () => {
+  it("the second engine waits for the first and writes nothing", async () => {
+    const [m] = await seedCommitted(1);
+    await observeCommitted(m, 1, 0, 20, at(-1));
+
+    const a = holdOpen(dbA, (tx) => decideMatches(tx, [m], at(0), SOURCES));
+    let b: Promise<unknown> = Promise.resolve();
+    try {
+      expect(await a.ran).toMatchObject({ decisions: 1 });
+      const pid = deferred<number>();
+      let bDone = false;
+      b = dbB
+        .transaction(async (tx) => {
+          pid.resolve(await pidOf(tx));
+          return decideMatches(tx, [m], at(0), SOURCES);
+        })
+        .finally(() => {
+          bDone = true;
+        });
+      await waitUntilBlocked(await pid.promise);
+      expect(bDone).toBe(false);
+    } finally {
+      a.release();
+      await a.done;
+    }
+    // No 23505: B resolves, and it read A's version.
+    expect(await b).toMatchObject({ decisions: 0 });
+    const rows = await committedDecisions(m);
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({ version: 1, home_score: 1 });
+  });
+});
+
+describe("SPEC-035 CA-2 no stale version (damage a)", () => {
+  it("the sweep that waited does not publish the old score over the goal", async () => {
+    const [m] = await seedCommitted(1);
+    await observeCommitted(m, 0, 0, 10, at(10));
+    await dbC.transaction((tx) => decideMatches(tx, [m], at(10), SOURCES));
+    // A newer minute, still undecided: the sweep has something to write.
+    await observeCommitted(m, 0, 0, 11, at(11));
+
+    const a = holdOpen(dbA, async (tx) => {
+      await observe(tx.sql, m, 1, 0, 12, at(12));
+      return decideMatches(tx, [m], at(12), SOURCES);
+    });
+    let b: Promise<unknown> = Promise.resolve();
+    try {
+      expect(await a.ran).toMatchObject({ decisions: 1 });
+      const pid = deferred<number>();
+      b = dbB.transaction(async (tx) => {
+        pid.resolve(await pidOf(tx));
+        return decideMatches(tx, [m], shiftInstant(at(12), 3000), SOURCES);
+      });
+      await waitUntilBlocked(await pid.promise);
+    } finally {
+      a.release();
+      await a.done;
+    }
+    await b;
+    const rows = await committedDecisions(m);
+    expect(rows[rows.length - 1]).toMatchObject({ home_score: 1, minute: 12 });
+    expect(rows.filter((r) => r.version > 1 && r.home_score === 0)).toEqual([]);
+  });
+});
+
+describe("SPEC-035 CA-3 no deadlock and no brake on ingest", () => {
+  it("an afterInsert on m2 and a sweep on m1, m2, m3 both commit", async () => {
+    const [m1, m2, m3] = await seedCommitted(3);
+    for (const m of [m1, m2, m3]) await observeCommitted(m, 0, 0, 5, at(5));
+
+    const a = holdOpen(dbA, async (tx) => {
+      await observe(tx.sql, m2, 1, 0, 6, at(6));
+      return decideMatches(tx, [m2], at(6), SOURCES);
+    });
+    let b: Promise<unknown> = Promise.resolve();
+    try {
+      await a.ran;
+      const pid = deferred<number>();
+      b = dbB.transaction(async (tx) => {
+        pid.resolve(await pidOf(tx));
+        return decideMatches(tx, [m1, m2, m3], at(7), SOURCES);
+      });
+      await waitUntilBlocked(await pid.promise);
+    } finally {
+      a.release();
+      await a.done;
+    }
+    expect(await b).toMatchObject({ matches: 3 });
+  });
+
+  it("the other way round: the afterInsert inserts while the sweep holds m2", async () => {
+    const [m1, m2, m3] = await seedCommitted(3);
+    for (const m of [m1, m2, m3]) await observeCommitted(m, 0, 0, 5, at(5));
+
+    const b = holdOpen(dbB, (tx) =>
+      decideMatches(tx, [m1, m2, m3], at(6), SOURCES),
+    );
+    let a: Promise<unknown> = Promise.resolve();
+    try {
+      await b.ran;
+      const pid = deferred<number>();
+      const inserted = deferred();
+      a = dbA.transaction(async (tx) => {
+        pid.resolve(await pidOf(tx));
+        await tx.sql`set local lock_timeout = '2s'`;
+        await observe(tx.sql, m2, 1, 0, 6, at(6));
+        inserted.resolve();
+        return decideMatches(tx, [m2], at(6), SOURCES);
+      });
+      // The observation goes in at once; only the engine waits.
+      // (With "for update" it would fail here on the lock_timeout.)
+      await Promise.race([inserted.promise, a]);
+      await waitUntilBlocked(await pid.promise);
+    } finally {
+      b.release();
+      await b.done;
+    }
+    expect(await a).toMatchObject({ decisions: 1 });
+    const rows = await committedDecisions(m2);
+    expect(rows[rows.length - 1]).toMatchObject({ home_score: 1 });
+  });
+
+  it("an insertObservations of m1 does not wait for the lock on m1", async () => {
+    const [m1] = await seedCommitted(1);
+    await observeCommitted(m1, 0, 0, 5, at(5));
+
+    const a = holdOpen(dbA, (tx) => decideMatches(tx, [m1], at(5), SOURCES));
+    try {
+      await a.ran;
+      await dbC.transaction(async (tx) => {
+        await tx.sql`set local lock_timeout = '2s'`;
+        await tx.insertObservations([
+          {
+            id: crypto.randomUUID(),
+            matchId: m1,
+            sourceId: "api-football",
+            status: "live",
+            score: { home: 1, away: 0 },
+            minute: 6,
+            addedMinute: null,
+            halfTime: false,
+            observedAt: at(6),
+            receivedAt: at(6),
+            rawRef: "raw/2026-09-25/api-football/x.json.gz",
+          } as unknown as Observation,
+        ]);
+      });
+    } finally {
+      a.release();
+      await a.done;
+    }
+    const [row] = await sqlC<{ n: number }[]>`
+      select count(*)::int as n from observations where match_id = ${m1}`;
+    expect(row.n).toBe(2);
+  });
 });

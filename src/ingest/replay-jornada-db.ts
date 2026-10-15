@@ -8,6 +8,7 @@ import type {
 } from "../model/index.ts";
 import {
   insertDecision,
+  lockMatches,
   type ObservationRow,
   priorityLookup,
   toObservation,
@@ -21,7 +22,7 @@ import type {
 // SPEC-012 CA-4, the database half. Reads what replayJornada needs and, only
 // when asked (--aplicar), adds the corrective Decisions. Nothing is updated
 // and nothing is deleted (RN-07): the only statement that writes is the
-// insert of engine.ts, the same the tick uses.
+// insert of engine.ts, the same the tick uses, under its lock (ADR-019 §6).
 
 type BoardRow = {
   match_id: string;
@@ -82,15 +83,39 @@ export const replayPriority =
 
 // One Decision per divergent finished match, never a log. The caller owns the
 // transaction: all of them or none.
+//
+// ADR-019 §6, the one exception to §2: the correction comes from the pure
+// engine over the matchday, not from decideMatches, so it takes the lock of
+// §1 itself (the same statement), rereads the board under it and drops the
+// correction of any match whose status or score is no longer the one the
+// replay read: another Decision committed in between, and writing over it
+// would publish a stale board.
 export async function aplicarCorrecciones(
   tx: TransactionSql,
   rows: readonly ReplayJornadaRow[],
 ): Promise<number> {
+  const ids = rows
+    .filter((row) => row.correction !== null)
+    .map((row) => row.matchId as string);
+  if (ids.length === 0) return 0;
+  await lockMatches(tx, ids);
+  const boards = await tx<BoardRow[]>`
+    select match_id, competition_id, kickoff, status, home_score, away_score
+    from board where match_id = any(${tx.array(ids)})`;
+  const now = new Map(boards.map((b) => [b.match_id, boardState(b)]));
   let added = 0;
   for (const row of rows) {
     if (row.correction === null) continue;
+    const current = now.get(row.matchId);
+    if (current === undefined || !sameBoard(current, row.board)) continue;
     await insertDecision(tx, row.correction);
     added += 1;
   }
   return added;
 }
+
+const sameBoard = (a: BoardState, b: BoardState): boolean =>
+  a.status === b.status &&
+  (a.score === null || b.score === null
+    ? a.score === b.score
+    : a.score.home === b.score.home && a.score.away === b.score.away);

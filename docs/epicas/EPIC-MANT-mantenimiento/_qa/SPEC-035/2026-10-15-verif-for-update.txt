@@ -1,0 +1,55 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (src/db/env.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.1 /Users/albertofojo/src/marcadorgal/.claude/worktrees/agent-a90a4ee4a88bc8c1d
+
+ ❯ src/ingest/engine.db.test.ts (18 tests | 2 failed) 4214ms
+   ❯ SPEC-035 CA-3 no deadlock and no brake on ingest (3)
+     × the other way round: the afterInsert inserts while the sweep holds m2 2016ms
+     × an insertObservations of m1 does not wait for the lock on m1 2024ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/ingest/engine.db.test.ts > SPEC-035 CA-3 no deadlock and no brake on ingest > the other way round: the afterInsert inserts while the sweep holds m2
+PostgresError: canceling statement due to lock timeout
+ ❯ ErrorResponse node_modules/postgres/src/connection.js:815:30
+ ❯ handle node_modules/postgres/src/connection.js:489:6
+ ❯ Socket.data node_modules/postgres/src/connection.js:324:9
+ ❯ cachedError node_modules/postgres/src/query.js:170:23
+ ❯ new Query node_modules/postgres/src/query.js:36:24
+ ❯ sql node_modules/postgres/src/index.js:112:11
+ ❯ observe src/ingest/engine.db.test.ts:68:43
+     66|   observedAt: Instant,
+     67| ): Promise<string> => {
+     68|   const [row] = await tx<{ id: string }[]>`
+       |                                           ^
+     69|     insert into observations (match_id, source_id, status, home_score,…
+     70|       minute, observed_at, received_at, raw_ref)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/ingest/engine.db.test.ts > SPEC-035 CA-3 no deadlock and no brake on ingest > an insertObservations of m1 does not wait for the lock on m1
+PostgresError: canceling statement due to lock timeout
+ ❯ ErrorResponse node_modules/postgres/src/connection.js:815:30
+ ❯ handle node_modules/postgres/src/connection.js:489:6
+ ❯ Socket.data node_modules/postgres/src/connection.js:324:9
+ ❯ cachedError node_modules/postgres/src/query.js:170:23
+ ❯ new Query node_modules/postgres/src/query.js:36:24
+ ❯ sql node_modules/postgres/src/index.js:112:11
+ ❯ Object.insertObservations src/ingest/db.ts:118:15
+    116|       if (observations.length === 0) return;
+    117|       const rows = observations.map(observationRow);
+    118|       await tx`insert into observations ${tx(rows)}`;
+       |               ^
+    119|     },
+    120|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 16 passed (18)
+   Start at  22:49:28
+   Duration  4.36s (tests 98%, transform 1%, import 1%)
+
