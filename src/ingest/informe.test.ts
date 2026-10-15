@@ -2892,3 +2892,80 @@ describe("SPEC-018 CA-6 sin directo y sin final", () => {
     expect(con.informe.veredicto).toEqual(sin.informe.veredicto);
   });
 });
+
+// SPEC-035 CA-5 (ADR-019 §4): the twins that the lock of ADR-019 §1 rules out,
+// and the decided_at that goes backwards between consecutive versions.
+describe("SPEC-035 CA-5 gemelas y decided_at invertido", () => {
+  const vivo = (over: Partial<DecLike>): DecLike =>
+    dec({
+      minute: 20,
+      addedMinute: null,
+      halfTime: false,
+      qualifier: "provisional",
+      ...over,
+    });
+
+  it("un par gemelo con decided_at invertido da 1 y 1, y nombra el partido", () => {
+    const { texto, informe } = informeJornada(
+      vacio({
+        matches: [partido({ status: "live" })],
+        decisions: [
+          vivo({ id: "d1", version: 1, decidedAt: seg(6) }),
+          vivo({ id: "d2", version: 2, decidedAt: seg(4) }),
+        ],
+      }),
+    );
+    expect(informe.motor.gemelas).toEqual([{ matchId: MATCH, version: 2 }]);
+    expect(informe.motor.decididasInvertidas).toEqual([
+      { matchId: MATCH, version: 2 },
+    ]);
+    expect(texto).toContain(
+      `Decisiones gemelas: 1 — ${MATCH} v2 · \`decided_at\` invertido: 1 — ${MATCH} v2\n`,
+    );
+  });
+
+  it("el limpio da 0 y 0: cambia el minuto, el calificador o el descanso, y el reloj avanza", () => {
+    const { texto, informe } = informeJornada(
+      vacio({
+        matches: [partido({ status: "live" })],
+        decisions: [
+          vivo({ id: "d1", version: 1, decidedAt: seg(0) }),
+          vivo({ id: "d2", version: 2, minute: 21, decidedAt: seg(30) }),
+          vivo({
+            id: "d3",
+            version: 3,
+            minute: 21,
+            qualifier: "sen_sinal",
+            decidedAt: seg(60),
+          }),
+          vivo({
+            id: "d4",
+            version: 4,
+            minute: 21,
+            qualifier: "sen_sinal",
+            halfTime: true,
+            decidedAt: seg(90),
+          }),
+        ],
+      }),
+    );
+    expect(informe.motor).toEqual({ gemelas: [], decididasInvertidas: [] });
+    expect(texto).toContain(
+      "Decisiones gemelas: 0 · `decided_at` invertido: 0\n",
+    );
+  });
+
+  it("una regla distinta con la misma tupla sigue siendo gemela (ADR-009 §2)", () => {
+    const { informe } = informeJornada(
+      vacio({
+        matches: [partido({ status: "live" })],
+        decisions: [
+          vivo({ id: "d1", version: 1, decidedAt: seg(0) }),
+          vivo({ id: "d2", version: 2, rule: "RN-03", decidedAt: seg(30) }),
+        ],
+      }),
+    );
+    expect(informe.motor.gemelas).toHaveLength(1);
+    expect(informe.motor.decididasInvertidas).toHaveLength(0);
+  });
+});

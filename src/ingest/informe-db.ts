@@ -92,9 +92,14 @@ export async function informeFilas(
             decided_at: Date;
             observation_ids: string[];
             forced_finish: boolean | null;
+            minute: number | null;
+            added_minute: number | null;
+            half_time: boolean;
+            qualifier: string;
           }[]
         >`select id, match_id, version, status, home_score, away_score, rule,
-            decided_at, observation_ids, forced_finish
+            decided_at, observation_ids, forced_finish,
+            minute, added_minute, half_time, qualifier
           from decisions
           where match_id = any (${sql.array(ids)})
             and decided_at >= ${desde} and decided_at <= ${hasta}
@@ -167,6 +172,11 @@ export async function informeFilas(
       decidedAt: instant(d.decided_at),
       observationIds: d.observation_ids,
       forcedFinish: d.forced_finish,
+      // The rest of the published tuple of ADR-009 §2 (SPEC-035 CA-5).
+      minute: d.minute,
+      addedMinute: d.added_minute,
+      halfTime: d.half_time,
+      qualifier: d.qualifier,
     })),
     // A finished attempt with no 'requests' key counts as zero requests, not
     // as a missing number: the tick always writes it when it got that far.
