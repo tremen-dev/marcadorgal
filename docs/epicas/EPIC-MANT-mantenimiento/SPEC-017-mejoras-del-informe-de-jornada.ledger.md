@@ -61,7 +61,11 @@ Los cinco son los del hallazgo 1 (`_qa/SPEC-009/hallazgos-jornada.md`). Vigentes
 Ejecutado por el titular el 2026-10-15 con la ventana `2026-10-09T18:50:00Z 2026-10-12T21:30:00Z` (`docs/epicas/EPIC-002-ingesta-y-motor/_qa/jornada-2026-10-09/80-contrastar-1.md`, `81-contrastar-2.md`).
 - **CA-1:** 3 peticiones (20 + 20 + 9 ids), guardadas en `raw/api-football/2026-10-15/2026-10-15T17-51-38.468Z-contraste-2026-10-09T18-50-00.000Z-2026-10-12T21-30-00.000Z-2026-27.json.gz`. Coinciden 48 de 49 partidos `finished`, con 0 discrepancias y 0 partidos sin respuesta. El proveedor confirma el `suspended` de rayo-vallecano-athletic-club. Veredicto: **válida con reservas**, por la ronda incompleta. ✅
 - **CA-2:** la segunda ejecución, con la misma ventana, da «0 en esta ejecución; releído de … 3 peticiones entonces». Su salida es idéntica a la primera salvo esa línea. ✅
-- Quedan pendientes las tres declaraciones del titular que da el informe (H-2 (i), H-2 (ii), CA-4 (c)): no se derivan de la base de datos.
+- **Declaraciones del titular (2026-10-15, Alberto Fojo):**
+  - H-2 (i): no hubo intervención sobre el dato.
+  - H-2 (ii): no hubo intervención sobre la plataforma.
+  - CA-4 (c): la alerta de rayo-vallecano-athletic-club es correcta. El partido se suspendió por lanzamiento de objetos al campo, un hecho extraordinario.
+  - **Veredicto final de la jornada 2026-10-09/12: válida con reservas.** La reserva es solo la ronda incompleta por el `suspended` (CA-7). No hay intervención que la invalide ni que la rebaje, y la única alerta abierta está explicada.
 
 ## Gates (implementador, 2026-10-06)
 - `npm run gates` → exit 0 (biome 156 ficheros sin cambios; vitest 51 ficheros, 814 tests; `next build` compila).
