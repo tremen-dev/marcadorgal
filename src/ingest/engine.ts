@@ -249,8 +249,18 @@ export async function decideMatches(
   const sql = tx.sql;
   const any = sql.array(ids as string[]);
 
+  // The lock of ADR-019 §1, before anything is read: two engines over the
+  // same match (pg_cron and Vercel Cron, an afterInsert and a sweep) take
+  // turns, and the one that waited reads, under READ COMMITTED, the version
+  // the other committed, so the idempotence of ADR-009 §2 holds again.
+  // "no key update" and not "update": it does not clash with the key share
+  // that the foreign keys of observations and decisions take, so it neither
+  // brakes ingestion nor deadlocks with an afterInsert. "order by id" fixes
+  // the order in which the rows are locked. web_reader cannot take it: it
+  // has no privileges on matches (ADR-015 §1).
   const matches = await sql<MatchRow[]>`
-    select id, competition_id, kickoff from matches where id = any(${any})`;
+    select id, competition_id, kickoff from matches where id = any(${any})
+    order by id for no key update`;
   if (matches.length === 0) return counts;
 
   // The current Decision of each match: the highest version (ADR-006 §3).
