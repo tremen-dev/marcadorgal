@@ -31,12 +31,33 @@ export const STEP_MIN_SECONDS = 30 * 60;
 export const STEP_MIN_ROUNDS = 10;
 export const MAX_SERIES_SECONDS = 4 * 3600;
 
+// E-2 (approved 2026-10-17): the plan `lento`, 300 → 240 → 180 s, 60 min
+// each, never under 180 s, and an additive jitter of 0-J s per interval
+// (J = 5 in `lento`, 0 in `original`). The original plan is the default.
+export type PlanName = "original" | "lento";
+export const PLANS: Record<
+  PlanName,
+  { steps: readonly number[]; stepMinSeconds: number; jitterSeconds: number }
+> = {
+  original: {
+    steps: STEPS_SECONDS,
+    stepMinSeconds: STEP_MIN_SECONDS,
+    jitterSeconds: 0,
+  },
+  lento: { steps: [300, 240, 180], stepMinSeconds: 60 * 60, jitterSeconds: 5 },
+};
+export const MAX_JITTER_SECONDS = 5;
+
 export type Step = { intervalSeconds: number; rounds: number; seconds: number };
 export type Plan = {
+  name: PlanName;
   steps: Step[];
   rounds: number;
   maxRequests: number;
+  // Without jitter, and with the most jitter of every interval (CA-3).
   seconds: number;
+  jitterSeconds: number;
+  maxSeconds: number;
 };
 export type Variant = "todos" | "enjuego";
 export type Round = {
@@ -47,20 +68,67 @@ export type Round = {
   variant: Variant;
 };
 
-export function buildPlan(steps: readonly number[] = STEPS_SECONDS): Plan {
+export function buildPlan(
+  name: PlanName = "original",
+  jitterSeconds: number = PLANS[name].jitterSeconds,
+): Plan {
+  const { steps, stepMinSeconds } = PLANS[name];
   const out = steps.map((intervalSeconds) => {
     const rounds = Math.max(
       STEP_MIN_ROUNDS,
-      Math.ceil(STEP_MIN_SECONDS / intervalSeconds),
+      Math.ceil(stepMinSeconds / intervalSeconds),
     );
     return { intervalSeconds, rounds, seconds: rounds * intervalSeconds };
   });
   const rounds = out.reduce((n, s) => n + s.rounds, 0);
   const seconds = out.reduce((n, s) => n + s.seconds, 0);
-  if (seconds > MAX_SERIES_SECONDS)
-    throw new Error(`the plan lasts ${seconds} s, over ${MAX_SERIES_SECONDS}`);
+  const maxSeconds = seconds + rounds * jitterSeconds;
+  if (maxSeconds > MAX_SERIES_SECONDS)
+    throw new Error(
+      `the plan lasts ${maxSeconds} s, over ${MAX_SERIES_SECONDS}`,
+    );
   // Portada and NLogin open the session (ADR-020 §1); then one POST per round.
-  return { steps: out, rounds, maxRequests: rounds + 2, seconds };
+  return {
+    name,
+    steps: out,
+    rounds,
+    maxRequests: rounds + 2,
+    seconds,
+    jitterSeconds,
+    maxSeconds,
+  };
+}
+
+// CA-1 (E-2): --plan and --jitter, checked before anything else. An unknown
+// plan or a jitter outside [0, 5] s is refused.
+export function resolvePlan(
+  name: string | undefined,
+  jitterSeconds: number | undefined,
+): { plan: Plan } | { reasons: string[] } {
+  const reasons: string[] = [];
+  const known = name === undefined || Object.hasOwn(PLANS, name);
+  if (!known)
+    reasons.push(
+      `plan desconocido '${name}' (planes: ${Object.keys(PLANS).join(", ")})`,
+    );
+  if (
+    jitterSeconds !== undefined &&
+    !(jitterSeconds >= 0 && jitterSeconds <= MAX_JITTER_SECONDS)
+  )
+    reasons.push(
+      `--jitter ${jitterSeconds} fuera de [0, ${MAX_JITTER_SECONDS}] s`,
+    );
+  if (reasons.length > 0) return { reasons };
+  return { plan: buildPlan((name ?? "original") as PlanName, jitterSeconds) };
+}
+
+// The plan of a JSONL with no plan given (--informe): `original` when every
+// step of it is one of the original plan, `lento` otherwise.
+export function planOfLines(lines: readonly CalibrationLine[]): Plan {
+  const original = PLANS.original.steps;
+  return lines.every((l) => original.includes(l.escalon))
+    ? buildPlan("original")
+    : buildPlan("lento");
 }
 
 // Round 1 and the last one ask for todos; the rest, Sch_en_juego=1 (CA-2).
@@ -90,14 +158,19 @@ const hm = (seconds: number): string => {
 };
 
 export function formatPlan(plan: Plan): string[] {
+  const j = plan.jitterSeconds;
   return [
     "Plan de calibración RFEF (SPEC-032, ADR-019 §1-§2, ADR-020):",
+    `Plan: ${plan.name}${plan.name === "original" ? " (por defecto)" : ""}`,
     ...plan.steps.map(
       (s, i) =>
         `  escalón ${i + 1}: cada ${s.intervalSeconds} s, ${s.rounds} vueltas, ${Math.round(s.seconds / 60)} min`,
     ),
     `Peticiones máximas: ${plan.maxRequests} (${plan.rounds} vueltas + portada y NLogin para abrir sesión; una renovación añade 3: 3 al abrir, nunca más de 4 por vuelta)`,
-    `Duración máxima: ${hm(plan.seconds)}`,
+    j === 0
+      ? "Jitter: 0 s"
+      : `Jitter: 0-${j} s por intervalo (solo suma; nunca antes del intervalo)`,
+    `Duración máxima: ${hm(plan.maxSeconds)}${j === 0 ? "" : ` (${hm(plan.seconds)} + ${plan.rounds} × ${j} s de jitter)`}`,
   ];
 }
 
@@ -108,6 +181,9 @@ export type CalibrateOptions = {
   lastRequest: string | null;
   // The newest `inicio` of _qa/calibracion/*.jsonl, read by the shell (CA-5 ii).
   lastLogged: string | null;
+  // --plan and --jitter (E-2); without them, the original plan and its jitter.
+  plan?: string;
+  jitterSeconds?: number;
 };
 
 export type CalendarMatch = DeclaredMatch & { kickoff: string };
@@ -116,6 +192,8 @@ export type CalibrateDeps = {
   fetch: typeof fetch;
   now: () => number;
   sleep: (ms: number) => Promise<void>;
+  // The rng of the jitter, in [0, 1) (E-2). Only needed when the jitter > 0.
+  random?: () => number;
   // One JSONL line and the body as received; the shell writes both (CA-6).
   record: (line: CalibrationLine, body: Uint8Array) => Promise<void> | void;
   log: (message: string) => void;
@@ -150,6 +228,9 @@ export type CalibrationLine = {
   filas: number | null;
   observaciones: number | null;
   requestErrors: string[] | null;
+  // The jitter added to the wait just before this request; 0 when there was
+  // no wait before it (round 1, an opening or a retry). E-2.
+  jitterMs: number;
   rancia: boolean;
   resultado: Result;
   error?: string;
@@ -231,13 +312,19 @@ export async function calibrate(
   options: CalibrateOptions,
   deps: CalibrateDeps,
 ): Promise<Outcome> {
+  const resolved = resolvePlan(options.plan, options.jitterSeconds);
+  if ("reasons" in resolved)
+    return { kind: "rechazada", reasons: resolved.reasons };
+  const { plan } = resolved;
   if (options.dryRun) {
-    for (const line of formatPlan(buildPlan())) deps.log(line);
+    for (const line of formatPlan(plan)) deps.log(line);
     return { kind: "dry-run" };
   }
   const reasons = preconditions(options, deps.calendar, deps.now());
+  if (plan.jitterSeconds > 0 && deps.random === undefined)
+    reasons.push("jitter > 0 sin generador aleatorio");
   if (reasons.length > 0) return { kind: "rechazada", reasons };
-  return runSeries(deps);
+  return runSeries(deps, plan);
 }
 
 type Sent = {
@@ -249,12 +336,23 @@ type Sent = {
 
 // The series (CA-2, CA-3, CA-4): the production pattern of ADR-019 §1-§2 and
 // ADR-020 on the plan of CA-1, stopping at the first empty body.
-export async function runSeries(deps: CalibrateDeps): Promise<Outcome> {
+export async function runSeries(
+  deps: CalibrateDeps,
+  plan: Plan = buildPlan(),
+): Promise<Outcome> {
   const adapter = createRfef({
     aliases: deps.aliases,
     calendar: deps.calendar,
   });
-  const rounds = planRounds(buildPlan());
+  const rounds = planRounds(plan);
+  // The jitter of the wait before the next request; consumed by it.
+  let jitterMs = 0;
+  const drawJitter = (): number => {
+    const max = plan.jitterSeconds * 1000;
+    if (max === 0 || deps.random === undefined) return 0;
+    const r = Math.min(1, Math.max(0, deps.random()));
+    return Math.round(r * max);
+  };
   let session: string | null = null;
   // The portada gave its cookie and its NLogin; NLogin has not answered yet.
   let opening: { session: string; nlogin: string } | null = null;
@@ -303,9 +401,11 @@ export async function runSeries(deps: CalibrateDeps): Promise<Outcome> {
       filas: null,
       observaciones: null,
       requestErrors: null,
+      jitterMs,
       rancia: false,
       resultado: "ok",
     };
+    jitterMs = 0;
     let response: Response;
     let bytes: Uint8Array<ArrayBuffer>;
     try {
@@ -419,10 +519,12 @@ export async function runSeries(deps: CalibrateDeps): Promise<Outcome> {
 
   for (const round of rounds) {
     if (previous !== null) {
-      // Starts are never closer than the interval, and a slow request does
-      // not bring the next one forward (CA-3).
+      // Starts are never closer than the interval (plus the jitter, which
+      // only adds), and a slow request does not bring the next one forward
+      // (CA-3, E-2).
+      jitterMs = drawJitter();
       const target = Math.max(
-        previous.start + previous.interval * 1000,
+        previous.start + previous.interval * 1000 + jitterMs,
         previous.end,
       );
       for (let now = deps.now(); now < target; now = deps.now())
@@ -452,7 +554,9 @@ export async function runSeries(deps: CalibrateDeps): Promise<Outcome> {
     }
     previous = { start, end: deps.now(), interval: round.intervalSeconds };
   }
-  deps.log(`Serie completa: ${total} peticiones, sin vacío hasta 30 s.`);
+  deps.log(
+    `Serie completa: ${total} peticiones, sin vacío hasta ${lastStep(plan)} s.`,
+  );
   return { kind: "completa", requests: total };
 
   function nloginStop(line: CalibrationLine): Outcome {
@@ -460,6 +564,9 @@ export async function runSeries(deps: CalibrateDeps): Promise<Outcome> {
     return { kind: "parada", result: "nlogin", line, requests: total };
   }
 }
+
+const lastStep = (plan: Plan): number =>
+  plan.steps[plan.steps.length - 1].intervalSeconds;
 
 // CA-7: the analysis of one series, from its JSONL alone.
 export type Row = "directo" | "sen-sinal" | "sin-cadencia";
@@ -472,9 +579,14 @@ export type Threshold = {
   last10: number;
   last30: number;
   last60: number;
+  // E-2: every request before the empty since the first of the series, and
+  // the minutes from that first one, on the real starts (jitter included).
+  cumulative: number;
+  minutes: number;
 };
 export type Analysis = {
   kind: "medida" | "bloqueada-al-inicio";
+  plan: PlanName;
   first: string;
   last: string;
   requests: number;
@@ -511,6 +623,7 @@ export function analyze(
       : undefined;
   const stop = stopLine?.resultado ?? nloginStop?.resultado ?? null;
   const base = {
+    plan: plan.name,
     first: lines[0].inicio,
     last: lastLine.inicio,
     requests: lines.length,
@@ -559,11 +672,16 @@ export function analyze(
       last10: within(10),
       last30: within(30),
       last60: within(60),
+      cumulative: before.length,
+      minutes: (at - Date.parse(lines[0].inicio)) / 60_000,
     };
   }
 
   // Steps run from slow to fast: the sustainable one is the fastest held,
-  // and the recommended one is the step before it (one step of margin).
+  // and the recommended one is the step before it (one step of margin). If
+  // the sustainable one is the slowest of the plan there is no margin, and
+  // C* = sin cadencia (E-2, closes F-SPEC-032-1): in `lento`, 180 → 240,
+  // 240 → 300, 300 or none → sin cadencia.
   const held = steps.filter((s) => completed.includes(s.intervalSeconds));
   const fastest = held.length > 0 ? held[held.length - 1] : null;
   const i = fastest === null ? -1 : steps.indexOf(fastest);
@@ -588,7 +706,7 @@ const TABLE: { row: Row; cadence: string; option: string }[] = [
   },
   {
     row: "sen-sinal",
-    cadence: "60 s – 3 min",
+    cadence: "60 s – 5 min",
     option:
       "Solo `sen sinal` y corrección de finales (H-2 b); criterio 3 no se cumple para la RFEF",
   },
@@ -609,6 +727,7 @@ export function buildReport(
     "",
     "SPEC-032, ADR-019 §1-§2. Generado por `npm run rfef:calibrar` desde el JSONL de la serie.",
     "",
+    `- Plan: \`${plan.name}\` (escalones ${plan.steps.map((s) => s.intervalSeconds).join(", ")} s; ${plan.jitterSeconds === 0 ? "sin jitter" : `jitter 0-${plan.jitterSeconds} s por intervalo`}).`,
     `- Serie: ${a.first} → ${a.last}; ${a.requests} peticiones en ${a.rounds} vueltas; ${a.stale} rancias (ADR-018 §4).`,
     `- Final: ${a.stop === null ? "plan completo" : `parada por \`${a.stop}\``}.`,
   ];
@@ -621,9 +740,9 @@ export function buildReport(
     out.push(
       t === null
         ? a.stop === null
-          ? "- Umbral: sin umbral hasta 30 s."
+          ? `- Umbral: sin umbral hasta ${lastStep(plan)} s.`
           : `- Umbral: sin vacío; la serie paró por \`${a.stop}\` antes de acabar el plan.`
-        : `- Umbral: escalón de ${t.step} s, vuelta ${t.nInStep} del escalón (${t.at}); peticiones antes del vacío: ${t.inStep} en ese escalón, ${t.last10} en los 10 min previos, ${t.last30} en los 30 min, ${t.last60} en los 60 min.`,
+        : `- Umbral: escalón de ${t.step} s, vuelta ${t.nInStep} del escalón (${t.at}); peticiones antes del vacío: ${t.inStep} en ese escalón, ${t.last10} en los 10 min previos, ${t.last30} en los 30 min, ${t.last60} en los 60 min; ${t.cumulative} acumuladas desde la primera de la serie, a ${t.minutes.toFixed(1).replace(".", ",")} min desde la primera.`,
       `- Escalones completados sin vacío: ${a.completed.length > 0 ? a.completed.map((c) => `${c} s`).join(", ") : "ninguno"}.`,
       a.sustainable === null
         ? "- Sostenible: sin cadencia sostenible."

@@ -6,10 +6,14 @@
 // src/sources/rfef/calibration.ts. The source is not registered.
 //
 // Usage:
-//   npm run rfef:calibrar -- --dry-run
-//   npm run rfef:calibrar -- --ultima-peticion <ISO> --crudo <dir fuera del repo>
-//   npm run rfef:calibrar -- --informe <fichero.jsonl>
+//   npm run rfef:calibrar -- --dry-run [--plan lento] [--jitter <s>]
+//   npm run rfef:calibrar -- [--plan lento] [--jitter <s>] --ultima-peticion <ISO> --crudo <dir fuera del repo>
+//   npm run rfef:calibrar -- --informe <fichero.jsonl> [--plan <plan>]
 //
+//   --plan <plan>            original (by default) or lento (E-2: 300/240/180 s,
+//                            60 min each).
+//   --jitter <s>             additive jitter per interval, in [0, 5] s; by
+//                            default 5 in lento and 0 in original.
 //   --ultima-peticion <ISO>  last known request to marcadores.rfef.es from
 //                            this IP, manual browsing included (CA-5 i).
 //   --crudo <dir>            where the bodies go as .raw.gz, outside the repo.
@@ -33,6 +37,8 @@ import {
   buildReport,
   calibrate,
   exitCode,
+  planOfLines,
+  resolvePlan,
 } from "../src/sources/rfef/calibration.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
@@ -51,7 +57,7 @@ const FIVE = [
 // The only codgrupo -> competition map of the rfef (SPEC-031 CA-6).
 const ALIASES = "src/sources/rfef/fixtures/alias-test.json";
 const USAGE =
-  "Uso: npm run rfef:calibrar -- --dry-run | --ultima-peticion <ISO> --crudo <dir> | --informe <jsonl>";
+  "Uso: npm run rfef:calibrar -- [--plan original|lento] [--jitter <s>] --dry-run | --ultima-peticion <ISO> --crudo <dir> | --informe <jsonl>";
 
 function parseArgs(argv) {
   const flags = {
@@ -59,6 +65,8 @@ function parseArgs(argv) {
     lastRequest: null,
     crudo: null,
     informe: null,
+    plan: undefined,
+    jitter: undefined,
   };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -66,12 +74,16 @@ function parseArgs(argv) {
     else if (
       arg === "--ultima-peticion" ||
       arg === "--crudo" ||
-      arg === "--informe"
+      arg === "--informe" ||
+      arg === "--plan" ||
+      arg === "--jitter"
     ) {
       const value = argv[i + 1];
       if (value === undefined || value.startsWith("--"))
         throw new Error(`${arg} necesita un valor`);
       if (arg === "--ultima-peticion") flags.lastRequest = value;
+      else if (arg === "--jitter")
+        flags.jitter = value.trim() === "" ? Number.NaN : Number(value);
       else flags[arg.slice(2)] = value;
       i += 1;
     } else throw new Error(`opción desconocida: ${arg}`);
@@ -118,10 +130,10 @@ function loadCalendar() {
   });
 }
 
-function writeReport(jsonl) {
+function writeReport(jsonl, plan) {
   const lines = readLines(jsonl);
   const out = jsonl.replace(/\.jsonl$/, "-informe.md");
-  writeFileSync(out, buildReport(lines));
+  writeFileSync(out, buildReport(lines, plan ?? planOfLines(lines)));
   console.log(`Informe: ${path.relative(ROOT, out)}`);
 }
 
@@ -134,7 +146,19 @@ function insideRepo(dir) {
 
 async function main() {
   const flags = parseArgs(process.argv.slice(2));
-  if (flags.informe !== null) return writeReport(path.resolve(flags.informe));
+  if (flags.informe !== null) {
+    let plan;
+    if (flags.plan !== undefined) {
+      const resolved = resolvePlan(flags.plan, flags.jitter);
+      if ("reasons" in resolved) throw new Error(resolved.reasons.join("; "));
+      plan = resolved.plan;
+    }
+    return writeReport(path.resolve(flags.informe), plan);
+  }
+  // E-2: an unknown --plan or a --jitter out of [0, 5] stops here, with
+  // nothing written and no request.
+  const resolved = resolvePlan(flags.plan, flags.jitter);
+  if ("reasons" in resolved) throw new Error(resolved.reasons.join("; "));
 
   if (!flags.dryRun) {
     if (flags.crudo === null) throw new Error("falta --crudo <dir>");
@@ -153,11 +177,14 @@ async function main() {
       dryRun: flags.dryRun,
       lastRequest: flags.lastRequest,
       lastLogged: flags.dryRun ? null : lastLogged(),
+      plan: flags.plan,
+      jitterSeconds: flags.jitter,
     },
     {
       fetch: globalThis.fetch,
       now: () => Date.now(),
       sleep: (ms) => delay(ms),
+      random: () => Math.random(),
       log: (message) => console.log(message),
       calendar: loadCalendar(),
       aliases: AliasFile.parse(
@@ -177,7 +204,7 @@ async function main() {
   );
   if (outcome.kind === "rechazada")
     for (const reason of outcome.reasons) console.error(`No se calibra: ${reason}`);
-  if (written) writeReport(jsonl);
+  if (written) writeReport(jsonl, resolved.plan);
   process.exitCode = exitCode(outcome);
 }
 
