@@ -506,7 +506,7 @@
     },
     {
       "round": 8,
-      "kickoff": "2026-10-24T15:30:00Z",
+      "kickoff": "2026-10-24T15:00:00Z",
       "home": "llanera",
       "away": "compostela"
     },
@@ -560,7 +560,7 @@
     },
     {
       "round": 9,
-      "kickoff": "2026-11-01T16:00:00Z",
+      "kickoff": "2026-10-31T17:00:00Z",
       "home": "gernika",
       "away": "marino"
     },
@@ -572,7 +572,7 @@
     },
     {
       "round": 9,
-      "kickoff": "2026-11-01T16:00:00Z",
+      "kickoff": "2026-11-01T10:30:00Z",
       "home": "portugalete",
       "away": "arosa"
     },
@@ -596,13 +596,13 @@
     },
     {
       "round": 10,
-      "kickoff": "2026-11-08T16:00:00Z",
+      "kickoff": "2026-11-07T15:30:00Z",
       "home": "eibar-b",
       "away": "astorga"
     },
     {
       "round": 10,
-      "kickoff": "2026-11-08T16:00:00Z",
+      "kickoff": "2026-11-08T11:00:00Z",
       "home": "gimnastica",
       "away": "gernika"
     },
