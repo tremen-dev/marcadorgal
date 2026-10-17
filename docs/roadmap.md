@@ -14,7 +14,8 @@ tipo: roadmap
   publicando una jornada real.
   *Entradas de la jornada medida (2026-09-29):* **R-SPEC-009-6** — latencia
   mediana +53 s contra 45 s de `vision.md`, con n = 15 y referencia a minuto:
-  se vuelve a medir con mejor referencia en Primera (2026-10-09/12) y aquí se
+  se vuelve a medir con mejor referencia (SPEC-025, segundo reloj de ADR-016,
+  campo en la jornada 2026-10-16/19, informe antes del 14-nov) y aquí se
   decide si cambia el objetivo, la cadencia o la fuente. **R-SPEC-009-7** —
   medir la latencia interna exige un segundo reloj (ADR-008 §7); se trae de
   EPIC-002 porque no afecta a que el marcador sea correcto, solo a desglosar
@@ -22,9 +23,13 @@ tipo: roadmap
   *Por qué ahora (titular, 2026-10-06):* el dato ya es correcto sin operador
   (EPIC-002, SPEC-018) y tres de las cinco métricas norte de `vision.md`
   (latencia mediana y p95, primera pintura) solo se miden con pantalla.
-  EPIC-004 no arregla rápido el directo de Tercera: la segunda fuente no está
-  identificada y el operador choca con «sin nadie detrás un sábado normal».
-  La pantalla muestra `sen sinal` donde la fuente no da directo.
+  La pantalla muestra `sen sinal` donde la fuente no da directo. *(Superado el
+  2026-10-10: el razonamiento de entonces, «la segunda fuente no está
+  identificada», dejó de valer al aparecer la RFEF; ver EPIC-004.)*
+  *Estado (2026-10-15):* la pantalla está en producción con las mejoras de
+  lectura (SPEC-030, 033, 034). Para cerrar faltan las mediciones de campo de
+  SPEC-025 (latencia) y SPEC-026 (primera pintura con 3G), en la jornada
+  2026-10-16/19.
 
 - **EPIC-004 — Fuente RFEF.** Segunda fuente automática: `marcadores.rfef.es`,
   oficial, prioridad 50 sobre API-Football, las cinco competiciones. Cierra
