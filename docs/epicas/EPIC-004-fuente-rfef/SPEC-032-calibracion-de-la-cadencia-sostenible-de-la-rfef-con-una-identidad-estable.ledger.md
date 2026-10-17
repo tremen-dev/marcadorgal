@@ -40,7 +40,7 @@ epica: EPIC-004
 
 ## Salvedades / follow-ups
 <!-- IDs F-SPEC-032-1, F-SPEC-032-2… con destino (spec futura o EPIC-MEJORA). -->
-- **F-SPEC-032-1** (gate humano): si solo se sostiene 180 s no hay escalón más lento para el margen; el informe lo trata como «sin cadencia» (fila 3). La spec no cubre ese caso. *Lo cierra E-2 (pendiente del titular): si la sostenible es el escalón más lento del plan, C\* = sin cadencia; CA-8 pide la serie `--plan lento`.*
+- **F-SPEC-032-1** (gate humano): si solo se sostiene 180 s no hay escalón más lento para el margen; el informe lo trata como «sin cadencia» (fila 3). La spec no cubre ese caso. *Lo cierra E-2 (aprobada 2026-10-17): si la sostenible es el escalón más lento del plan, C\* = sin cadencia; CA-8 pide la serie `--plan lento`.*
 - **F-SPEC-032-2** (interpretación): un vacío en cualquier petición de la vuelta 1 (portada o POST `todos`) es `bloqueada-al-inicio`; la spec dice «la primera petición». Sin medida, el CA-8 sigue abierto.
 - **F-SPEC-032-3** (spec de alta): el mapa `codgrupo` → competición sale de `src/sources/rfef/fixtures/alias-test.json`; no existe `data/alias/2026-27/rfef.json`.
 - **F-SPEC-032-4** (spec de alta): `USER_AGENT` vive en `adapter.ts`, pero el adaptador sigue enviando `ctx.userAgent`; al registrar la rfef, su entrada debe declarar ese UA.
