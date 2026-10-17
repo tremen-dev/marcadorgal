@@ -28,7 +28,10 @@ número y la recomendación al titular. No da de alta nada.
   `npm run rfef:calibrar -- --dry-run` imprime los
   escalones (180, 120, 90, 60, 45 y 30 s), la permanencia de cada uno, las
   peticiones máximas (~177, con la apertura de sesión de ADR-020) y la duración máxima (~3 h). Con un `fetch` doble,
-  0 llamadas.
+  0 llamadas. *E-2 (2026-10-17, pendiente del titular):* con `--plan lento`
+  imprime 300, 240 y 180 s, 60 min cada uno, peticiones máximas **49** y
+  duración máxima **3 h**; sin `--plan` (o `--plan original`), lo de arriba.
+  Un `--plan` desconocido sale con código ≠ 0 y 0 llamadas.
 - **CA-2 Patrón de producción (ADR-019 §1-§2, ADR-020).** *Enmendado el
   2026-10-12, E-1 (pendiente del titular).* Con el doble estricto de CA-10 y
   reloj falso: la vuelta 1 abre sesión (portada y `NLogin`, ADR-020 §1) y hace
@@ -43,7 +46,9 @@ número y la recomendación al titular. No da de alta nada.
 - **CA-3 Escalones y permanencia.** Con reloj falso, los inicios de petición
   salen separados exactamente por el intervalo del escalón (nunca antes). Cada
   escalón dura `max(30 min, 10 peticiones)` antes de bajar al siguiente. Una
-  petición lenta no adelanta la siguiente. Duración total ≤ 4 h.
+  petición lenta no adelanta la siguiente. Duración total ≤ 4 h. *E-2:* en el
+  plan `lento`, cada escalón dura 60 min (12, 15 y 20 POST) y el plan acaba al
+  completar 180 s; nunca baja de 180 s.
 - **CA-4 Parada al primer vacío.** Ante el primer `200` con cuerpo vacío
   (fixture real `…-todos-vacio.raw`), la herramienta hace **0** peticiones más,
   registra el umbral y sale con código ≠ 0. También para, sin reintentar, ante
@@ -72,8 +77,15 @@ número y la recomendación al titular. No da de alta nada.
   la recomendada es 45 s); si no se completa ninguno, «sin cadencia sostenible».
   Debajo va la tabla de decisión de las notas, con la fila que corresponde
   marcada. Test sobre JSONL fijos: un caso por fila de la tabla, más
-  `bloqueada-al-inicio`.
-- **CA-8 Serie real.** Una serie corrida en una franja con partidos y con los
+  `bloqueada-al-inicio`. *E-2:* el informe nombra el plan y, en el umbral,
+  añade las peticiones acumuladas desde la primera de la serie y los minutos
+  transcurridos. La regla es por plan: si la sostenible es el escalón más
+  lento del plan (180 s en `original`, 300 s en `lento`), C\* = «sin cadencia»
+  (cierra F-SPEC-032-1). En `lento`: sostenible 180 s → C\* = 240 s;
+  240 s → 300 s; 300 s o ninguna → sin cadencia. Un caso por cada una.
+- **CA-8 Serie real.** *Reformulado por E-2 (pendiente del titular):* exige
+  una serie con `--plan lento`; la del 2026-10-17 queda como evidencia y no
+  basta. Una serie corrida en una franja con partidos y con los
   JSONL e informe en `_qa/calibracion/`. El ledger cita el comando, la
   `--ultima-peticion` declarada y la cadencia recomendada. Si la serie acaba en
   `bloqueada-al-inicio`, el CA sigue abierto y se repite otro día de partido.
@@ -119,7 +131,7 @@ El retraso medio de detección es ~C\*/2, más la publicación de la RFEF (sin m
 | C\* | Opción |
 |---|---|
 | ≤ 45 s | Directo en las franjas de H-2; la latencia se comprueba en la jornada medida |
-| 60 s – 3 min | Solo `sen sinal` y corrección de finales (H-2 b); criterio 3 no se cumple para la RFEF |
+| 60 s – 5 min *(E-2: antes 3 min)* | Solo `sen sinal` y corrección de finales (H-2 b); criterio 3 no se cumple para la RFEF |
 | sin cadencia | No hay alta por esta vía; solo acceso autorizado |
 
 - **H-1 Reabrir la vía.** `_epica.md` (Riesgos) dejó el alta a la espera de un
@@ -172,3 +184,38 @@ adaptador no está registrado (ninguna petición desde producción).
 
 **Resuelto por el titular (2026-10-12):** H-1 tope 4 con reintento; H-2 portada
 vacía al crudo como `empty body`; H-3 ADR-020 y E-1 aprobados.
+
+## Enmienda E-2 (2026-10-17, sdd-arquitecto) — pendiente del titular
+Origen: serie real del 2026-10-17 (`_qa/calibracion/2026-10-17.jsonl` e
+informe): handshake OK, 180 s aguantó 10 vueltas (30 min), primer vacío en la
+2.ª vuelta de 120 s; 14 peticiones, 13 en los 60 min previos. Sostenible 180 s,
+C\* = sin cadencia (F-SPEC-032-1). El 11-oct el bloqueo saltó también tras
+~15-30 peticiones: no sabemos si la RFEF corta por **ritmo** o por **cupo**
+acumulado. Decisión del titular (2026-10-17, opción B): medir más lento.
+Cambian CA-1, CA-3, CA-7, CA-8 y la tabla de decisión. ADR-019 no cambia
+(§5 ya remite la cadencia a esta spec; §7 sigue: nada de rotar IP ni proxies).
+
+- **Plan `lento`.** 300 → 240 → 180 s, 60 min cada uno: 47 vueltas + 2 de
+  apertura = 49 peticiones (cada renovación añade 3), 3 h (≤ 4 h de CA-3). No
+  repite 120 s ni más rápido: ya falló. 60 min en vez de 30 para que 180 s se
+  mida más allá de lo que aguantó el 17 (20 POST/h frente a 13). El plan
+  original sigue por defecto (tests existentes intactos).
+- **Ritmo o cupo** (lectura del informe, no CA): vacío a 300 s con ~14-15
+  acumuladas → apunta a cupo (como el 17 y el 11); 300 y 240 s completos
+  (≥ 29 acumuladas) → no hay cupo fijo de ~15; vacío a 180 s tras 60 min de
+  240 s → ritmo o cupo horario de 15-20/h, y C\* = 300 s.
+- **Ventana para CA-8.** Dom 18 oct, desde **15:36Z** (24 h tras la última
+  línea del 17) y arranque **como tarde 17:30Z**: hay partidos en ventana
+  (ADR-002 §2) de 14:50Z a 21:30Z y el plan dura 3 h, con margen para
+  retrasos. `--ultima-peticion 2026-10-17T15:35:51Z` salvo navegación posterior.
+  Si no se llega o sale `bloqueada-al-inicio`: otro día de partido, ≥ 24 h.
+  Comando: `caffeinate -i npm run rfef:calibrar -- --plan lento
+  --ultima-peticion <ISO> --crudo ~/rfef-calibracion-crudo`. Antes, CA-1 y
+  CA-3 (E-2) verdes y `--dry-run --plan lento`.
+- **H-1 Fila 2 hasta 5 min** (recomendado): con C\* 240-300 s el retraso medio
+  es 2-2,5 min, útil para `sen sinal` y finales. Alternativa: fila nueva o
+  tratar > 3 min como sin cadencia.
+- **H-2 300 s sostenible → sin cadencia** (recomendado, sin margen medido), o
+  aceptar 300 s sin margen con el backoff de ADR-019 §4 como red.
+- **H-3** Aprobar E-2.
+
