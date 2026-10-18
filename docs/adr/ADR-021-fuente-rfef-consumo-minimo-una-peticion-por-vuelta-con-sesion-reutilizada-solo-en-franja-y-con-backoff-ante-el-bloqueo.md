@@ -1,5 +1,5 @@
 ---
-id: ADR-019
+id: ADR-021
 tipo: adr
 estado: aprobada
 historial:
@@ -7,7 +7,9 @@ historial:
   - {estado: aprobada, fecha: 2026-10-11, por: Alberto Fojo}
 aprobada-por: Alberto Fojo
 ---
-# ADR-019: Fuente rfef: consumo mínimo, una petición por vuelta con sesión reutilizada, solo en franja y con backoff ante el bloqueo
+# ADR-021: Fuente rfef: consumo mínimo, una petición por vuelta con sesión reutilizada, solo en franja y con backoff ante el bloqueo
+
+> Renumerado el 2026-10-18 (antes ADR-019 en la rama de SPEC-032): main ya tenía ADR-019 (motor serializado por partido, SPEC-035).
 
 - Deciders: sdd-arquitecto propone (2026-10-11) a encargo del orquestador, tras el bloqueo por IP de la serie de campo (F-SPEC-031-9). Aprobado por **Alberto Fojo** el 2026-10-11, con H-1..H-4 de SPEC-032 resueltas allí.
 - Specs relacionadas: SPEC-032 (calibración: mide la cadencia de §5 con el patrón de §1-§2) y la spec de alta de EPIC-004 (lo implementa). **Supersede solo ADR-018 §1** en el número y la variante de las peticiones por intento. El POST, su cuerpo y el crudo (ADR-018 §1-§2) no cambian; ADR-018 §3-§5 siguen en vigor.

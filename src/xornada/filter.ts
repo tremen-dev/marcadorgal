@@ -60,6 +60,18 @@ export function rowMatches(row: FilterableRow, state: XornadaState): boolean {
   return true;
 }
 
+// SPEC-033 CA-3 (H-1): a day group of a competition. With a day chosen the
+// strip already says it, so no header; a group with no row left is hidden.
+export function dayGroupView(
+  rows: readonly FilterableRow[],
+  state: XornadaState,
+): { hidden: boolean; headerHidden: boolean } {
+  return {
+    hidden: !rows.some((row) => rowMatches(row, state)),
+    headerHidden: state.day !== null,
+  };
+}
+
 export type FilterCounts = { all: number; live: number; finished: number };
 
 // The number of each pill, over the chosen day or the whole xornada (CA-3).

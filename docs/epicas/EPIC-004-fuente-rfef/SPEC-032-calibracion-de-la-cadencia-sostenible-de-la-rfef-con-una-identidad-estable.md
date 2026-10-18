@@ -16,7 +16,7 @@ historial:
 ## Problema
 La RFEF bloquea por IP tras unas 5 vueltas de 3-6 peticiones cada 2 min
 (F-SPEC-031-9). Ese ritmo lo pisamos, no lo medimos: no sabemos qué cadencia
-aguanta un consumo mínimo (ADR-019: una petición por vuelta, sesión reutilizada).
+aguanta un consumo mínimo (ADR-021: una petición por vuelta, sesión reutilizada).
 Sin ese número, ni el alta ni el criterio 3 de la épica (mediana < 45 s) se pueden
 decidir. Esta spec construye la herramienta, corre **una** serie y deja el
 número y la recomendación al titular. No da de alta nada.
@@ -26,7 +26,7 @@ número y la recomendación al titular. No da de alta nada.
 - Espectador: nada.
 
 ## Criterios de aceptación
-- **CA-1 Plan en seco.** *Enmendado el 2026-10-12, E-1 (pendiente del titular).*
+- **CA-1 Plan en seco.** *Enmendado el 2026-10-12, E-1 (aprobada por el titular el 2026-10-12).*
   `npm run rfef:calibrar -- --dry-run` imprime los
   escalones (180, 120, 90, 60, 45 y 30 s), la permanencia de cada uno, las
   peticiones máximas (~177, con la apertura de sesión de ADR-020) y la duración máxima (~3 h). Con un `fetch` doble,
@@ -35,8 +35,8 @@ número y la recomendación al titular. No da de alta nada.
   **49** y duración máxima **3 h 4 min** (3 h + 47 × 5 s); sin `--plan` (o
   `--plan original`), lo de arriba, con jitter 0. Un `--plan` desconocido o un
   `--jitter` fuera de [0, 5] salen con código ≠ 0 y 0 llamadas.
-- **CA-2 Patrón de producción (ADR-019 §1-§2, ADR-020).** *Enmendado el
-  2026-10-12, E-1 (pendiente del titular).* Con el doble estricto de CA-10 y
+- **CA-2 Patrón de producción (ADR-021 §1-§2, ADR-020).** *Enmendado el
+  2026-10-12, E-1 (aprobada por el titular el 2026-10-12).* Con el doble estricto de CA-10 y
   reloj falso: la vuelta 1 abre sesión (portada y `NLogin`, ADR-020 §1) y hace
   un POST `todos`. Las siguientes hacen **un** POST `Sch_en_juego=1` con la
   misma cookie. La última (fin de plan) hace un POST `todos`. Ante un 3xx o un
@@ -102,7 +102,7 @@ número y la recomendación al titular. No da de alta nada.
   Sin cambios en `registry.ts` ni en `ADAPTERS`. Sin dependencias nuevas.
   `npm run gates` → 0.
 - **CA-10 Handshake real en el adaptador (ADR-020).** *Añadido el 2026-10-12,
-  E-1 (pendiente del titular).* Un doble **estricto** reproduce las cabeceras
+  E-1 (aprobada por el titular el 2026-10-12).* Un doble **estricto** reproduce las cabeceras
   de `_qa/calibracion/2026-10-12-handshake.md`: la portada sin cookie responde
   `302` con `Set-Cookie: JSESSIONID=…; Path=/pnfg; Secure; HttpOnly` y
   `Location: /pnfg/NLogin?NSess=1`; ese `NLogin` con la cookie responde `302`
@@ -121,15 +121,15 @@ número y la recomendación al titular. No da de alta nada.
 
 ## Entidades y reglas afectadas
 Source, Raw capture (`dominio.md`); RN-01, RN-08; D-5, D-7; ADR-002 §2,
-ADR-013, ADR-017, ADR-018, ADR-019, **ADR-020** (borrador, E-1).
+ADR-013, ADR-017, ADR-018, ADR-021, **ADR-020** (borrador, E-1).
 
 ## Fuera de alcance
 - Alta, registro, almacén de sesión, backoff en el tick e IP estática de Vercel:
-  spec de alta (ADR-019 §1, §4-§6).
+  spec de alta (ADR-021 §1, §4-§6).
 - La ficha (minuto, F-SPEC-031-2). Si interesa, se mide aparte con la cadencia
   ya conocida.
 - **Rotación o renovación de IP, proxies, varios orígenes o cualquier técnica
-  para no ser identificados o eludir el bloqueo** (ADR-019 §7). Si la serie
+  para no ser identificados o eludir el bloqueo** (ADR-021 §7). Si la serie
   falla, no se reintenta con otra IP.
 
 ## Notas para el gate humano
@@ -144,7 +144,7 @@ El retraso medio de detección es ~C\*/2, más la publicación de la RFEF (sin m
 - **H-1 Reabrir la vía.** `_epica.md` (Riesgos) dejó el alta a la espera de un
   acceso autorizado. Esta spec abre en paralelo una vía de consumo mínimo. Si se
   acepta, sdd-producto enmienda los Riesgos.
-- **H-2 Alcance** (ADR-019 §3): (a) todas las franjas o (b) solo `sen sinal` más
+- **H-2 Alcance** (ADR-021 §3): (a) todas las franjas o (b) solo `sen sinal` más
   el cierre. Recomiendo decidirlo con el informe. Con C\* ≥ 60 s, (b) es forzosa.
 - **H-3 Desde dónde se calibra.** Desde la IP del titular (la ya bloqueada,
   tras 24 h de reposo), o esperar a la IP estática de Vercel. La IP de un
@@ -152,14 +152,14 @@ El retraso medio de detección es ~C\*/2, más la publicación de la RFEF (sin m
   spec de alta arranque en producción con C\* y con backoff, como confirmación.
 - **H-4 Parámetros:** escalones, permanencia `max(30 min, 10)`, margen de un
   escalón y 24 h de reposo. Durante la serie, nadie navega la RFEF desde esa IP.
-- **H-5** Aprobar ADR-019 (supersede solo ADR-018 §1).
+- **H-5** Aprobar ADR-021 (supersede solo ADR-018 §1).
 
 **Resuelto por el titular (Alberto Fojo, 2026-10-11):** H-1 sí, la vía de
 consumo mínimo se abre en paralelo al acceso autorizado; H-2 se decide con el
 informe de la calibración (C\* ≤ 45 s → todas las franjas; ≥ 60 s → solo
 `sen sinal` + cierre); H-3 desde este Mac tras 24 h de reposo, confirmación en
 producción con la IP estática al dar de alta; H-4 parámetros tal cual; H-5
-ADR-019 aprobado.
+ADR-021 aprobado.
 
 ## Enmienda E-1 (2026-10-12, sdd-arquitecto) — aprobada por el titular (Alberto Fojo, 2026-10-12)
 Origen: la serie del 2026-10-12T19:16:48Z paró en la vuelta 1 por `NLogin`
@@ -186,7 +186,7 @@ adaptador no está registrado (ninguna petición desde producción).
 - **H-1 Tope al renovar** (ADR-020 §3): 4 peticiones (renovación + reintento;
   recomendado) o 3 sin reintento (la vuelta que renueva se queda sin datos).
 - **H-2 Portada vacía** (CA-10 iv): al crudo como `empty body`, para que cuente
-  en el backoff de ADR-019 §4 (recomendado), o que lance como hoy.
+  en el backoff de ADR-021 §4 (recomendado), o que lance como hoy.
 - **H-3** Aprobar ADR-020 y esta enmienda.
 
 **Resuelto por el titular (2026-10-12):** H-1 tope 4 con reintento; H-2 portada
@@ -199,7 +199,7 @@ informe): handshake OK, 180 s aguantó 10 vueltas (30 min), primer vacío en la
 C\* = sin cadencia (F-SPEC-032-1). El 11-oct el bloqueo saltó también tras
 ~15-30 peticiones: no sabemos si la RFEF corta por **ritmo** o por **cupo**
 acumulado. Decisión del titular (2026-10-17, opción B): medir más lento.
-Cambian CA-1, CA-3, CA-7, CA-8 y la tabla de decisión. ADR-019 no cambia
+Cambian CA-1, CA-3, CA-7, CA-8 y la tabla de decisión. ADR-021 no cambia
 (§5 ya remite la cadencia a esta spec; §7 sigue: nada de rotar IP ni proxies).
 
 - **Plan `lento`.** 300 → 240 → 180 s, 60 min cada uno: 47 vueltas + 2 de
@@ -212,7 +212,7 @@ Cambian CA-1, CA-3, CA-7, CA-8 y la tabla de decisión. ADR-019 no cambia
   del intervalo. Si producción adopta C\*, el alta lleva el mismo jitter
   (patrón de producción, CA-2). La identidad no cambia: misma IP, UA declarado
   y misma sesión. El jitter no es ocultación ni abre la puerta a rotar IP o
-  disfrazarse (ADR-019 §7).
+  disfrazarse (ADR-021 §7).
 - **Ritmo o cupo** (lectura del informe, no CA): vacío a 300 s con ~14-15
   acumuladas → apunta a cupo (como el 17 y el 11); 300 y 240 s completos
   (≥ 29 acumuladas) → no hay cupo fijo de ~15; vacío a 180 s tras 60 min de
@@ -229,7 +229,7 @@ Cambian CA-1, CA-3, CA-7, CA-8 y la tabla de decisión. ADR-019 no cambia
   es 2-2,5 min, útil para `sen sinal` y finales. Alternativa: fila nueva o
   tratar > 3 min como sin cadencia.
 - **H-2 300 s sostenible → sin cadencia** (recomendado, sin margen medido), o
-  aceptar 300 s sin margen con el backoff de ADR-019 §4 como red.
+  aceptar 300 s sin margen con el backoff de ADR-021 §4 como red.
 - **H-3** Aprobar E-2.
 
 **Resuelto por el titular (Alberto Fojo, 2026-10-17):** H-1 la fila 2 se

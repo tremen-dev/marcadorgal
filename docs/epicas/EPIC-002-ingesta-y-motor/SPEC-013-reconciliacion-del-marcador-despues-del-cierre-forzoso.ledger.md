@@ -100,6 +100,8 @@ n-a: SPEC-013 no tiene UI.
 
 - **F-SPEC-013-6 — CA-5 con 8 casos (destino: lectura de la jornada 2026-10-09/12, no condición).** Muestra pequeña y un máximo de 1186 s (66 % del margen de 30 min). Repetir la misma consulta por partido con la jornada siguiente; si algún RN-12 llega tarde o no llega, entonces subir `WINDOW_AFTER_MINUTES` con su número.
 
+- **F-SPEC-013-6, resuelto (lectura del 2026-10-15 sobre la jornada 2026-10-09/12; `docs/epicas/EPIC-002-ingesta-y-motor/_qa/jornada-2026-10-09/40-*`…`42-*`):** 6 de 6 cierres forzosos reconciliados por RN-12 en ≤ 30 min, mediana 98 s, máximo 224 s (betis-osasuna corregido de 4-2 a 5-2). Acumulado: 14 de 14, máximo 1186 s. No procede subir `WINDOW_AFTER_MINUTES`.
+
 ## Cómo retomar (handoff)
 <!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->
 - Hecho: CA-1 (titular, 74c11b2), CA-2, CA-3, CA-4, CA-6 (código, tests y ejecución: 3.er intento, 39/39). `npm run gates` exit 0 (también sin env), `npm run test:db` exit 0.

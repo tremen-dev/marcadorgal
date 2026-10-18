@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { galicianNames } from "@/calendar/galicians";
 import { XornadaScreen } from "@/components/xornada/XornadaScreen";
 import { type Locale, t } from "@/i18n";
-import { DEMO_MATCHES, DEMO_NOW, isDemoAvailable } from "@/xornada/demo";
+import {
+  DEMO_MATCHES,
+  DEMO_NOW,
+  DEMO_SEASON,
+  isDemoAvailable,
+} from "@/xornada/demo";
 import { buildXornada, xornadaDays } from "@/xornada/view";
+import { PROVISIONAL_DISPLAY } from "./config";
 
 // /demo/xornada and /es/demo/xornada (SPEC-019 CA-5): server content only,
 // never in production, never indexed.
@@ -24,9 +31,14 @@ export function DemoXornada({ locale }: { locale: Locale }) {
   return (
     <XornadaScreen
       locale={locale}
-      competitions={buildXornada([...DEMO_MATCHES])}
+      competitions={buildXornada(
+        DEMO_MATCHES,
+        galicianNames(DEMO_SEASON),
+        PROVISIONAL_DISPLAY,
+      )}
       days={xornadaDays(DEMO_MATCHES, DEMO_NOW)}
       paths={DEMO_PATHS}
+      provisionalDisplay={PROVISIONAL_DISPLAY}
     />
   );
 }

@@ -1,0 +1,32 @@
+[
+ {
+  "competition_id": "primera-division",
+  "n": "10",
+  "primer_kickoff": "2026-10-09T19:00:00.000Z",
+  "ultimo_kickoff": "2026-10-12T19:00:00.000Z"
+ },
+ {
+  "competition_id": "primera-rfef-g1",
+  "n": "10",
+  "primer_kickoff": "2026-10-10T14:30:00.000Z",
+  "ultimo_kickoff": "2026-10-12T18:30:00.000Z"
+ },
+ {
+  "competition_id": "segunda-division",
+  "n": "11",
+  "primer_kickoff": "2026-10-10T14:15:00.000Z",
+  "ultimo_kickoff": "2026-10-12T19:00:00.000Z"
+ },
+ {
+  "competition_id": "segunda-rfef-g1",
+  "n": "9",
+  "primer_kickoff": "2026-10-10T10:30:00.000Z",
+  "ultimo_kickoff": "2026-10-11T15:00:00.000Z"
+ },
+ {
+  "competition_id": "tercera-rfef-g1",
+  "n": "9",
+  "primer_kickoff": "2026-10-10T15:00:00.000Z",
+  "ultimo_kickoff": "2026-10-11T16:00:00.000Z"
+ }
+]

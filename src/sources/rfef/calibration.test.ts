@@ -245,7 +245,7 @@ const perRound = (lines: CalibrationLine[]) => {
   return out;
 };
 
-describe("CA-2 the production pattern (ADR-019 §1-§2, ADR-020)", () => {
+describe("CA-2 the production pattern (ADR-021 §1-§2, ADR-020)", () => {
   it("round 1: portada, NLogin and POST todos; then one POST Sch_en_juego=1 with the same cookie; last: POST todos", async () => {
     const h = harness();
     const outcome = await calibrate(h.ok, h.deps);
@@ -303,7 +303,7 @@ describe("CA-2 the production pattern (ADR-019 §1-§2, ADR-020)", () => {
     expect(source).toMatch(/readPortada\(/);
     expect(source).toMatch(/readNlogin\(/);
     expect(source).not.toMatch(/NLogin\?NSess/);
-    // ADR-019 §6: the declared UA equals the registry's
+    // ADR-021 §6: the declared UA equals the registry's
     // (src/arch/rfef-identity.test.ts compares it from outside src/sources).
   });
 

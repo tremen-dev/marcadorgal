@@ -73,4 +73,4 @@ epica: EPIC-004
 
   Antes: `npm run rfef:calibrar -- --dry-run --plan lento` (debe decir «Peticiones máximas: 49» y «Duración máxima: 3 h 4 min»). Si alguien navega la RFEF desde esta IP después del 17-oct 15:35:51Z, `--ultima-peticion` es esa hora. Si sale `bloqueada-al-inicio` o no se llega a la ventana: otro día de partido, ≥ 24 h. Deja `_qa/calibracion/2026-10-18.jsonl` y `-informe.md`; copiar aquí el comando, la `--ultima-peticion` y la C\* del informe (y la lectura ritmo/cupo de E-2).
 - **Cuidado:** cualquier ejecución sin `--dry-run` en este worktree escribe `_qa/calibracion/<hoy>.jsonl` aunque `fetch` esté bloqueado, y esa línea veta la serie 24 h (CA-5 ii). Las pruebas de la cáscara de E-2 fueron todas rechazos previos a escribir (exit 2) o dry-run: ningún fichero nuevo.
-- La spec sigue `en-progreso` hasta que exista CA-8.
+- Cerrada: CA-8 con la serie lenta del 2026-10-18 (C* = sin cadencia sostenible); spec en `hecho` (2026-10-18).

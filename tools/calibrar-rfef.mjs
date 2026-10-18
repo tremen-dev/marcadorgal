@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// The calibration of the RFEF cadence (SPEC-032, ADR-019). The shell and
+// The calibration of the RFEF cadence (SPEC-032, ADR-021). The shell and
 // nothing more: it reads the clock, the calendar and the previous JSONL,
 // passes the real fetch, and writes the JSONL, the raw bodies and the report.
 // Every decision (plan, preconditions, stop, report) is the pure

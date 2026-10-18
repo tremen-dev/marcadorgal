@@ -1,0 +1,332 @@
+[
+ {
+  "version": 20,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 18,
+  "added_minute": null,
+  "half_time": false,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:20:02.593Z",
+  "recorded_at": "2026-10-10T12:20:05.907Z",
+  "observation_ids": [
+   "d9cfd494-5faf-49d6-b25d-9996d2725d5e"
+  ]
+ },
+ {
+  "version": 21,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 19,
+  "added_minute": null,
+  "half_time": false,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:21:01.336Z",
+  "recorded_at": "2026-10-10T12:21:04.319Z",
+  "observation_ids": [
+   "7697938f-a5b6-4577-888e-aae54b6444f0"
+  ]
+ },
+ {
+  "version": 22,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 20,
+  "added_minute": null,
+  "half_time": false,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:22:01.369Z",
+  "recorded_at": "2026-10-10T12:22:03.923Z",
+  "observation_ids": [
+   "0ab163dc-11df-4c91-bf04-392439f9cb53"
+  ]
+ },
+ {
+  "version": 23,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 21,
+  "added_minute": null,
+  "half_time": false,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:22:31.387Z",
+  "recorded_at": "2026-10-10T12:22:34.424Z",
+  "observation_ids": [
+   "66eb4a43-c664-4216-a49d-bd3416a20697"
+  ]
+ },
+ {
+  "version": 24,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 22,
+  "added_minute": null,
+  "half_time": false,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:24:01.468Z",
+  "recorded_at": "2026-10-10T12:24:03.738Z",
+  "observation_ids": [
+   "b4562fa6-4f49-4592-921b-8f2c05eb14e2"
+  ]
+ },
+ {
+  "version": 25,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 23,
+  "added_minute": null,
+  "half_time": false,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:25:02.092Z",
+  "recorded_at": "2026-10-10T12:25:05.202Z",
+  "observation_ids": [
+   "6641f759-18ae-4db4-81fa-0840d4d673b0"
+  ]
+ },
+ {
+  "version": 26,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 24,
+  "added_minute": null,
+  "half_time": false,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:26:01.632Z",
+  "recorded_at": "2026-10-10T12:26:03.747Z",
+  "observation_ids": [
+   "2b78fb9c-e20e-4c19-a366-0e688ca89605"
+  ]
+ },
+ {
+  "version": 27,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 25,
+  "added_minute": null,
+  "half_time": false,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:27:01.693Z",
+  "recorded_at": "2026-10-10T12:27:04.179Z",
+  "observation_ids": [
+   "762cfd5e-3582-428f-a64e-b915882efb6c"
+  ]
+ },
+ {
+  "version": 28,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 26,
+  "added_minute": null,
+  "half_time": false,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:28:01.728Z",
+  "recorded_at": "2026-10-10T12:28:04.846Z",
+  "observation_ids": [
+   "ba484b99-f249-4df1-9237-a088b81a258f"
+  ]
+ },
+ {
+  "version": 29,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 27,
+  "added_minute": null,
+  "half_time": false,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:29:01.786Z",
+  "recorded_at": "2026-10-10T12:29:03.825Z",
+  "observation_ids": [
+   "9f4ebc00-2ca2-464d-ba94-350a37cbe2ed"
+  ]
+ },
+ {
+  "version": 30,
+  "status": "suspended",
+  "sc": "0-0",
+  "minute": null,
+  "added_minute": null,
+  "half_time": false,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:30:03.601Z",
+  "recorded_at": "2026-10-10T12:30:07.593Z",
+  "observation_ids": [
+   "56840355-0a96-497f-8231-42fec5222343"
+  ]
+ },
+ {
+  "version": 31,
+  "status": "live",
+  "sc": "0-0",
+  "minute": null,
+  "added_minute": null,
+  "half_time": false,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:30:31.930Z",
+  "recorded_at": "2026-10-10T12:30:35.843Z",
+  "observation_ids": [
+   "eaf85d17-6686-4778-a489-9942f55a179a"
+  ]
+ },
+ {
+  "version": 32,
+  "status": "suspended",
+  "sc": "0-0",
+  "minute": null,
+  "added_minute": null,
+  "half_time": false,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:31:02.103Z",
+  "recorded_at": "2026-10-10T12:31:04.814Z",
+  "observation_ids": [
+   "59992613-f789-4396-baf7-a5ccc257429a"
+  ]
+ },
+ {
+  "version": 33,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 25,
+  "added_minute": null,
+  "half_time": false,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:46:32.871Z",
+  "recorded_at": "2026-10-10T12:46:35.044Z",
+  "observation_ids": [
+   "54faa046-f180-4344-9807-fb3f7333311b"
+  ]
+ },
+ {
+  "version": 34,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 26,
+  "added_minute": null,
+  "half_time": false,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:47:02.879Z",
+  "recorded_at": "2026-10-10T12:47:05.387Z",
+  "observation_ids": [
+   "8834b5c7-6858-40b4-9984-32b4af0eff96"
+  ]
+ },
+ {
+  "version": 35,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 27,
+  "added_minute": null,
+  "half_time": false,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:48:02.950Z",
+  "recorded_at": "2026-10-10T12:48:06.309Z",
+  "observation_ids": [
+   "a5608923-7e3d-4632-b130-6c3a69ddb07c"
+  ]
+ },
+ {
+  "version": 36,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 28,
+  "added_minute": null,
+  "half_time": false,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:49:02.934Z",
+  "recorded_at": "2026-10-10T12:49:05.024Z",
+  "observation_ids": [
+   "46d00a95-b1d6-4c67-b12c-9c014a08577a"
+  ]
+ },
+ {
+  "version": 37,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 29,
+  "added_minute": null,
+  "half_time": false,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:50:03.014Z",
+  "recorded_at": "2026-10-10T12:50:05.641Z",
+  "observation_ids": [
+   "034bf5d6-9bcd-4f5f-bfe5-f0d25a0602b5"
+  ]
+ },
+ {
+  "version": 38,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 30,
+  "added_minute": null,
+  "half_time": false,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:51:03.026Z",
+  "recorded_at": "2026-10-10T12:51:07.353Z",
+  "observation_ids": [
+   "9a575ea1-8c49-4628-a514-1f61d4a97503"
+  ]
+ },
+ {
+  "version": 39,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 31,
+  "added_minute": null,
+  "half_time": false,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:52:03.057Z",
+  "recorded_at": "2026-10-10T12:52:05.512Z",
+  "observation_ids": [
+   "5fde233c-60f7-48aa-a578-874fef2d1352"
+  ]
+ },
+ {
+  "version": 40,
+  "status": "live",
+  "sc": "0-0",
+  "minute": 32,
+  "added_minute": null,
+  "half_time": false,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:53:03.331Z",
+  "recorded_at": "2026-10-10T12:53:06.079Z",
+  "observation_ids": [
+   "e0f92cc9-60ca-4b5c-93c9-d6720b282b75"
+  ]
+ },
+ {
+  "version": 41,
+  "status": "suspended",
+  "sc": "0-0",
+  "minute": null,
+  "added_minute": null,
+  "half_time": false,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "decided_at": "2026-10-10T12:54:03.349Z",
+  "recorded_at": "2026-10-10T12:54:06.798Z",
+  "observation_ids": [
+   "581d4b12-0759-4652-ad8d-4334e2ec41d2"
+  ]
+ }
+]

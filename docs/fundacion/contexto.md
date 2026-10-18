@@ -2,7 +2,7 @@
 
 > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.
 > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.
-> Última actualización: 2026-10-08 (EPIC-003 en curso; SPEC-019 y SPEC-020 hecho; `/` sirve datos reales).
+> Última actualización: 2026-10-15 (jornada 2026-10-09/12 leída; SPEC-015 y SPEC-035 hechas; EPIC-003 a falta de SPEC-025/026).
 
 ## Qué es y en qué punto está
 
@@ -42,20 +42,30 @@ Migraciones de SPEC-014 y SPEC-018 aplicadas en `dev`.
 
 **EPIC-002 (ingesta y motor) cerrada el 2026-10-06 (`hecho`)** con sus 10 specs (005-009, 012-014, 016, 018).
 
-**EPIC-003 (xornada pública) en curso, aprobada el 2026-10-06.** SPEC-019 completa (PR #36): contrato `PublicMatch`, modelo de vista `buildXornada` y pantalla Xornada móvil sobre datos de demostración en `/demo/xornada` (404 en producción). SPEC-020 completa (PRs #38 y #39, desplegada el 2026-10-08): vista `web.xornada` y rol `web_reader`, sin lectura anónima de las tablas, `/` y `/es` sirven la xornada actual real con `noindex` y `/api/board` con ETag y caché de 10 s; pg_cron firma el tick (ADR-015). Pendiente: credenciales de producción en el entorno Preview de Vercel (F-SPEC-020-12, EPIC-FIX); blindar el advisory lock de `openAttempt` y `reset all` al rotar `web_reader` (EPIC-MANT).
+**EPIC-003 (xornada pública) en curso, aprobada el 2026-10-06.** Quedan SPEC-025 y SPEC-026 en revisión. Ya están hechas:
+- **SPEC-019:** contrato `PublicMatch`, `buildXornada` y la pantalla móvil sobre la demo `/demo/xornada`, que da 404 en producción.
+- **SPEC-020:** `web.xornada` y el rol `web_reader`. `/` y `/es` sirven la xornada actual con `noindex`, y `/api/board` sale con ETag y 10 s de caché (ADR-015: pg_cron firma el tick).
+- **SPEC-021:** el descanso como `halfTime` dentro de `live`, desde el adaptador hasta la fila.
+- **SPEC-023:** escritorio con tira de días, filtros y plegado por competición.
+- **SPEC-024:** Realtime por Broadcast con fallback a polling y línea de frescura. Un fallo de transporte nunca se pinta como estado del partido.
+- **SPEC-027:** navegación entre xornadas en `/xornada/[fecha]`, con flechas ‹ ›.
+- **SPEC-028:** el lateral lleva a su competición, el logo vuelve al inicio y la xornada mirada tiene título visible.
+- **SPEC-033:** orden cronológico puro (el `live` ya no sube arriba) y cabecera discreta por día, oculta al elegir un día en la tira. Los equipos gallegos se declaran en `data/galegos/<temporada>.json`, uno por línea en `GALICIAN_SEASONS` cada temporada, y se marcan con 600 y `--marca`. También añade favicon e iconos.
+- **SPEC-034:** `provisional` se pinta según `PROVISIONAL_DISPLAY`, en `src/app/config.ts`. Hay tres modos: `label`, `mark` (el `*` más una leyenda al pie, el modo por defecto) y `hidden`. `sen_sinal` conserva siempre su etiqueta.
 
-**EPIC-MANT — SPEC-017 completa (PR #31):** mejoras del informe de jornada, entre ellas el contraste con crudo propio (`--contrastar`).
+Las mediciones de SPEC-025 (latencia gol→pantalla con el segundo reloj de ADR-016) y SPEC-026 (primera pintura con 3G) son de campo, del 16 al 19 de octubre. Pendiente: credenciales de producción en el entorno Preview de Vercel (F-SPEC-020-12).
 
-**EPIC-FIX (correcciones urgentes):** SPEC-011 hecho. Arregla dos defectos de la ingesta: sin peticiones `live=` con un solo id de liga, y `ParseResult` gana cuarto canal `requestErrors` para guardar observaciones buenas aun si una petición falla. Entrada prioritaria para fallos que dañan medición en vivo.
+**EPIC-004 (fuente RFEF), aprobada el 2026-10-10:** `marcadores.rfef.es` entra como segunda fuente con prioridad 50 para dar directo donde hoy hay `sen sinal`. La rigen ADR-017 (decodificación cerrada del marcador ofuscado, estados por marca y reloj) y ADR-018 (petición por POST, cuerpo vacío como error, respuesta rancia). SPEC-031 está hecha: adaptador en `src/sources/rfef/` sobre fixtures reales, todavía sin registrar. SPEC-032 (calibración con series de campo) está en su rama.
 
-**EPIC-FIX — SPEC-015 en revisión (falta CA-5 de campo):** el calendario declarado se sincroniza de martes a sábado y las reprogramaciones puras se aplican solas; corrigió las horas de relleno de Segunda J8 y Tercera J5 antes de jugarse.
+**EPIC-MANT — SPEC-017 completa (PR #31):** mejoras del informe de jornada, entre ellas el contraste con crudo propio (`--contrastar`). **SPEC-029 completa:** endurece `web_reader`, purga el cron y pasa a v7.
 
-**Pendiente de la jornada 2026-10-09/12** (la primera con las cinco competiciones):
-- Residual CA-8 de SPEC-018: medir las peticiones de la prórroga (≤ 42 por tanda; F-SPEC-018-2).
-- Prueba de campo de `--contrastar` de SPEC-017 (CA-1/CA-2).
-- CA-5 de SPEC-015.
-- F-SPEC-013-6: repetir la lectura de RN-12 tras el cierre forzoso.
-- R-SPEC-009-1: comprobar que Primera produce Decisions.
+**EPIC-FIX (correcciones urgentes):** SPEC-011 hecho. Arregla dos defectos de la ingesta: sin peticiones `live=` con un solo id de liga, y `ParseResult` gana cuarto canal `requestErrors` para guardar observaciones buenas aun si una petición falla. Entrada prioritaria para fallos que dañan medición en vivo. **SPEC-022 completa:** `test:db` ya no toca Storage de producción. **SPEC-030 completa (PR #64, 2026-10-12):** `/` y `/es` dejan ISR y pasan a `force-dynamic`. La CDN las cachea con `Vercel-CDN-Cache-Control: s-maxage=10, stale-while-revalidate=30`, porque en Vercel la página dinámica sale `private, no-store` y el `Cache-Control` de `next.config` no basta. El cliente pide `/api/board` al hidratar si `servedAt` tiene más de 45 s. Medido en producción con `npm run cache:portada`: 10 de 10, sin HTML del build.
+
+**EPIC-FIX — SPEC-015 completa (2026-10-15):** el calendario declarado se sincroniza de martes a sábado y las reprogramaciones puras se aplican solas. Corrigió las horas de relleno de Segunda J8 y Tercera J5 antes de jugarse. CA-5 se midió en la jornada 2026-10-09/12: 49 partidos y ninguna hora cambiada después del sábado a las 05:00Z.
+
+**Jornada 2026-10-09/12 leída (2026-10-15), la primera con las cinco competiciones:** válida con reservas, solo por el `suspended` de Rayo–Athletic (lanzamiento de objetos). `--contrastar` de SPEC-017: 48/49 coinciden, 0 discrepancias. Prórroga de SPEC-018: 20 peticiones (≤ 42). RN-12: 6/6 en ≤ 224 s (F-SPEC-013-6 resuelto). Primera produce Decisions (R-SPEC-009-1 cerrado). Cuatro partidos sin directo del proveedor; los cubrirá EPIC-004.
+
+**EPIC-MANT — SPEC-035 completa (2026-10-15, ADR-019):** el motor serializado por partido. pg_cron y Vercel Cron decidían a la vez y escribían versiones gemelas: 36 filas del 22-09 al 12-10, sin daño visible. Ahora `decideMatches`, `loadSeason` y `replay:jornada --aplicar` toman `for no key update` sobre `matches` en orden de id antes de leer o escribir. `informe:jornada` cuenta las gemelas y los `decided_at` invertidos, y tras desplegar las dos cuentas deben dar 0. Las cuatro specs de EPIC-MANT están en `hecho`.
 
 ### Herencia
 
@@ -82,7 +92,7 @@ el motor, luego la pantalla.
   ventana. Webhooks en `/api/sources/[id]/webhook`. Operador en `/operador`.
 - Motor puro en `src/decide/`, ejecutado en el mismo request que inserta las
   observaciones.
-- Navegador: primera pintura servida desde la vista `board`; después
+- Navegador: primera pintura renderizada por petición desde `web.xornada` y cacheada 10 s por la CDN (SPEC-030); después
   suscripción a Supabase Realtime Broadcast por jornada, con fallback a
   polling de `/api/board` cada 30 s. Sin SSE, sin colas.
 - Calidad: Vitest, Playwright, Biome, GitHub Actions en cada PR.
@@ -115,6 +125,10 @@ de cada fuente la gestiona el titular fuera del repo (D-7).
 - ADR-013 Partido sin directo de la fuente: prórroga de la ventana hasta +6 h y `sen_sinal` en `scheduled`.
 - ADR-014 Entorno y acceso público: el proyecto Supabase actual pasa a producción (desarrollo y `test:db` en local), el navegador no lee Postgres, el público ve solo `PublicMatch` vía `web.xornada` y rol `web_reader`, Realtime por Broadcast privado. Supersede ADR-006 §6. Por decisión del titular (2026-10-07) Supabase sigue en Free hasta la jornada publicada.
 - ADR-015 Login de la web en Supabase: `web_reader` conserva un residuo no revocable de PUBLIC (pg_net en `net`, funciones de `pg_catalog`), sin datos ni escritura en tablas; el disparador de pg_cron firma el tick con HMAC (±60 s) y la llave no sale de Vault.
+- ADR-016 Segundo reloj de medición: instantes sellados por Postgres (`clock_timestamp()`); el código no lo lee para decidir.
+- ADR-017 Fuente RFEF: panel de marcadores, decodificación cerrada y estados por marca y reloj.
+- ADR-018 Fuente RFEF: el panel por POST, el cuerpo vacío como error y la respuesta rancia (sustituye ADR-017 §1).
+- ADR-019 Motor serializado por partido: `for no key update` sobre `matches` antes de leer la vigente; todo escritor de Decisions pasa por `decideMatches`; `decided_at` es el `now` del tick y el orden lo dan `version` y `recorded_at` (precisa ADR-009 §1).
 
 ## Riesgos y preguntas abiertas
 

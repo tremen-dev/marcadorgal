@@ -26,10 +26,10 @@ export const PANEL_URL = `${ORIGIN}/pnfg/NPcd/NFG_CMP_Paneles`;
 export const PANEL_QUERY =
   "cod_primaria=3001668&grupo_categoria=900163685,900163686&resultados=1&columna=1&extendido=1&no_paginacion=1&tipo_peticion=1&federacion=3";
 
-// The panel of matches in play (ADR-019 §2): the same body plus one field.
+// The panel of matches in play (ADR-021 §2): the same body plus one field.
 export const PANEL_ENJUEGO_QUERY = `${PANEL_QUERY}&Sch_en_juego=1`;
 export const PANEL_CONTENT_TYPE = "application/x-www-form-urlencoded";
-// The declared identity (ADR-019 §6): the UA of the registry, never varied.
+// The declared identity (ADR-021 §6): the UA of the registry, never varied.
 export const USER_AGENT = "marcador.gal (ingesta; https://marcador.gal)";
 
 // The requests of the source, shared with the calibration (SPEC-032 CA-2).
@@ -250,7 +250,7 @@ export function createRfef({ aliases, calendar }: RfefOptions): SourceAdapter {
       if (portada.status === 200 && portadaBytes.byteLength === 0) {
         // The block answers an empty 200 to the portada too: it goes to the
         // raw capture as the request of the capture, and parse turns it into
-        // "empty body" (ADR-018 §3, ADR-019 §4; H-2 of SPEC-032 E-1).
+        // "empty body" (ADR-018 §3, ADR-021 §4; H-2 of SPEC-032 E-1).
         capture.requests.push({
           url: PORTADA_URL,
           method: "GET",

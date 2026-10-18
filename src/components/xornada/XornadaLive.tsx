@@ -13,6 +13,7 @@ import {
   transportNotice,
 } from "@/xornada/freshness";
 import { boardMatches, initialBoard } from "@/xornada/live";
+import type { ProvisionalDisplay } from "@/xornada/qualifier";
 import { buildXornada, type XornadaDay } from "@/xornada/view";
 import styles from "./Xornada.module.css";
 import { XornadaBody } from "./XornadaBody";
@@ -30,6 +31,8 @@ const REALTIME_SWITCH = process.env.NEXT_PUBLIC_REALTIME;
 // CA-9: the row ages are recalculated without the network.
 const TICK_MS = 30_000;
 
+const NO_GALICIANS: readonly string[] = [];
+
 export type XornadaLiveProps = {
   locale: Locale;
   paths: Readonly<Record<Locale, string>>;
@@ -44,6 +47,11 @@ export type XornadaLiveProps = {
   etag: string | null;
   // SPEC-027 CA-6: computed when served (N-3).
   arrows?: Neighbours;
+  // SPEC-033 CA-4: the names of the Equipo galego, resolved on the server;
+  // the Realtime delta does not carry them.
+  galicians?: readonly string[];
+  // SPEC-034 CA-5: PROVISIONAL_DISPLAY, the same mode the server painted.
+  provisionalDisplay: ProvisionalDisplay;
 };
 
 function lazyOpener(config: { url: string; key: string }): OpenChannel {
@@ -118,6 +126,8 @@ export function XornadaLive({
   season,
   etag,
   arrows,
+  galicians = NO_GALICIANS,
+  provisionalDisplay,
 }: XornadaLiveProps) {
   const [snapshot, setSnapshot] = useState<LiveSnapshot>(() => ({
     board: initialBoard(matches, days),
@@ -156,6 +166,7 @@ export function XornadaLive({
         board: snapshot.board,
         season,
         etag,
+        servedAt,
         fetch: (input, init) => window.fetch(input, init),
         openChannel,
         random: Math.random,
@@ -185,7 +196,11 @@ export function XornadaLive({
   }, [snapshot.board]);
 
   const list = useMemo(() => boardMatches(snapshot.board), [snapshot.board]);
-  const competitions = useMemo(() => buildXornada(list), [list]);
+  const galicianSet = useMemo(() => new Set(galicians), [galicians]);
+  const competitions = useMemo(
+    () => buildXornada(list, galicianSet, provisionalDisplay),
+    [list, galicianSet, provisionalDisplay],
+  );
   const ages = new Map<string, number>();
   for (const m of list) {
     const age = rowAge(m, now);
@@ -201,6 +216,7 @@ export function XornadaLive({
       unavailable={unavailable && snapshot.lastSeen === null}
       ages={ages}
       arrows={arrows}
+      provisionalDisplay={provisionalDisplay}
       freshness={
         <FreshnessLine
           locale={locale}

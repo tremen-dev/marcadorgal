@@ -184,17 +184,18 @@ const RAW: unknown[] = [
   demoMatch(
     PRIMERA,
     "2026-10-03T16:00:00Z",
-    team("RC Deportivo", "Deportivo"),
     team("Sevilla FC", "Sevilla"),
+    team("Getafe CF", "Getafe"),
     live(2, 1, 46),
     "provisional",
   ),
+  // SPEC-033 CA-7: an Equipo galego that loses to a non-galician.
   demoMatch(
     PRIMERA,
     "2026-10-04T10:00:00Z",
     team("Real Betis", "Betis"),
-    team("Villarreal CF", "Villarreal"),
-    finished(2, 2),
+    team("RC Deportivo", "Deportivo"),
+    finished(2, 1),
   ),
   demoMatch(
     PRIMERA,
@@ -314,6 +315,9 @@ const RAW: unknown[] = [
 
 // SPEC-023: the demonstration's «now», so its strip has a today (Saturday).
 export const DEMO_NOW = "2026-10-03T16:50:00Z";
+
+// SPEC-033 CA-4: the season of its names, for the Equipo galego.
+export const DEMO_SEASON = "2026-27";
 
 export const DEMO_MATCHES: readonly PublicMatch[] = z
   .array(PublicMatch)

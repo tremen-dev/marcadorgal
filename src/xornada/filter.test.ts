@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   competitionCounts,
   countFilters,
+  dayGroupView,
   EMPTY_STATE,
   formatCount,
   fragmentOf,
@@ -183,4 +184,42 @@ describe("SPEC-028 CA-2 parseFragment ignores #xornada-<id>", () => {
       expect(parseFragment(hash, DAYS)).toEqual(EMPTY_STATE);
     },
   );
+});
+
+// SPEC-033 CA-3 (H-1): a day's header goes with a chosen day; a group the
+// filter leaves empty goes with its header.
+describe("SPEC-033 CA-3 dayGroupView", () => {
+  const sat = [
+    { status: "finished", day: "2026-10-03" },
+    { status: "scheduled", day: "2026-10-03" },
+  ];
+  const sun = [{ status: "scheduled", day: "2026-10-04" }];
+
+  it("whole xornada, Todos: every group and header shown", () => {
+    expect(dayGroupView(sat, EMPTY_STATE)).toEqual({
+      hidden: false,
+      headerHidden: false,
+    });
+  });
+
+  it("a day chosen: no header; the other days' groups hidden", () => {
+    const state = { day: "2026-10-03", filter: null };
+    expect(dayGroupView(sat, state)).toEqual({
+      hidden: false,
+      headerHidden: true,
+    });
+    expect(dayGroupView(sun, state).hidden).toBe(true);
+  });
+
+  it("a filter that empties a day hides its group, header included", () => {
+    const state = { day: null, filter: "finished" as const };
+    expect(dayGroupView(sat, state)).toEqual({
+      hidden: false,
+      headerHidden: false,
+    });
+    expect(dayGroupView(sun, state)).toEqual({
+      hidden: true,
+      headerHidden: false,
+    });
+  });
 });

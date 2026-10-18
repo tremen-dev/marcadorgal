@@ -1,0 +1,122 @@
+[
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "version": 1,
+  "status": "scheduled",
+  "home_score": null,
+  "away_score": null,
+  "minute": null,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "observation_ids": [
+   "5f457372-bec4-4ed8-9adc-21901d54ab97"
+  ],
+  "decided_at": "2026-10-11T15:20:03.753Z",
+  "recorded_at": "2026-10-11T15:20:09.233Z"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "version": 2,
+  "status": "scheduled",
+  "home_score": null,
+  "away_score": null,
+  "minute": null,
+  "qualifier": "sen_sinal",
+  "rule": "RN-05",
+  "observation_ids": [
+   "5f457372-bec4-4ed8-9adc-21901d54ab97"
+  ],
+  "decided_at": "2026-10-11T15:45:06.353Z",
+  "recorded_at": "2026-10-11T15:45:07.869Z"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "version": 3,
+  "status": "scheduled",
+  "home_score": null,
+  "away_score": null,
+  "minute": null,
+  "qualifier": "sen_sinal",
+  "rule": "RN-05",
+  "observation_ids": [
+   "5f457372-bec4-4ed8-9adc-21901d54ab97"
+  ],
+  "decided_at": "2026-10-11T15:45:04.084Z",
+  "recorded_at": "2026-10-11T15:45:09.163Z"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-antela-barco",
+  "version": 4,
+  "status": "finished",
+  "home_score": 1,
+  "away_score": 1,
+  "minute": null,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "observation_ids": [
+   "3b72172c-128c-45fb-b051-cf660ac5b9fb"
+  ],
+  "decided_at": "2026-10-11T17:35:06.511Z",
+  "recorded_at": "2026-10-11T17:35:08.893Z"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "version": 1,
+  "status": "scheduled",
+  "home_score": null,
+  "away_score": null,
+  "minute": null,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "observation_ids": [
+   "d8a5ea41-1c27-4fe2-ac12-6f1a4162d6cf"
+  ],
+  "decided_at": "2026-10-11T15:20:03.753Z",
+  "recorded_at": "2026-10-11T15:20:09.518Z"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "version": 2,
+  "status": "scheduled",
+  "home_score": null,
+  "away_score": null,
+  "minute": null,
+  "qualifier": "sen_sinal",
+  "rule": "RN-05",
+  "observation_ids": [
+   "d8a5ea41-1c27-4fe2-ac12-6f1a4162d6cf"
+  ],
+  "decided_at": "2026-10-11T15:45:06.353Z",
+  "recorded_at": "2026-10-11T15:45:08.014Z"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "version": 3,
+  "status": "scheduled",
+  "home_score": null,
+  "away_score": null,
+  "minute": null,
+  "qualifier": "sen_sinal",
+  "rule": "RN-05",
+  "observation_ids": [
+   "d8a5ea41-1c27-4fe2-ac12-6f1a4162d6cf"
+  ],
+  "decided_at": "2026-10-11T15:45:04.084Z",
+  "recorded_at": "2026-10-11T15:45:09.444Z"
+ },
+ {
+  "match_id": "tercera-rfef-g1-2026-27-j6-celtiga-alondras",
+  "version": 4,
+  "status": "finished",
+  "home_score": 0,
+  "away_score": 0,
+  "minute": null,
+  "qualifier": "provisional",
+  "rule": "RN-01",
+  "observation_ids": [
+   "1a978505-4da6-4df1-9b41-25040c4a7c64"
+  ],
+  "decided_at": "2026-10-11T17:36:40.852Z",
+  "recorded_at": "2026-10-11T17:36:43.096Z"
+ }
+]

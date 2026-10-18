@@ -10,6 +10,7 @@ import {
   RECONCILE_MS,
   RETRY_MAX_MS,
   RETRY_MIN_MS,
+  STALE_SERVED_MS,
   SUBSCRIBE_TIMEOUT_MS,
   startLiveXornada,
 } from "./transport";
@@ -141,12 +142,15 @@ function start(options: {
   open?: ReturnType<typeof fakeChannel>["open"] | null;
   random?: () => number;
   visibility?: ReturnType<typeof fakeVisibility>;
+  // The instant of the render; by default, now (a fresh page).
+  servedAt?: string;
 }) {
   const snapshots: LiveSnapshot[] = [];
   const live = startLiveXornada({
     board: initialBoard(START, xornadaDays(START, new Date(T0).toISOString())),
     season: SEASON,
     etag: ETAG,
+    servedAt: options.servedAt ?? new Date(T0).toISOString(),
     fetch: options.fetch,
     openChannel: options.open ?? null,
     random: options.random ?? (() => 0.5),
@@ -508,6 +512,63 @@ describe("SPEC-024 CA-6 Realtime (switch on)", () => {
     await vi.advanceTimersByTimeAsync(0);
     expect(notice(last())).toBeNull();
     expect(last().mode).toBe("realtime");
+    live.stop();
+  });
+});
+
+describe("SPEC-030 CA-3 catch-up on hydration (H-2)", () => {
+  const ago = (s: number) => new Date(T0 - s * 1000).toISOString();
+
+  it.each([
+    [44, 0],
+    [45, 0],
+    [46, 1],
+    [5 * 3600, 1],
+  ])("served %i s ago → %i immediate request(s)", async (seconds, calls) => {
+    const f = fakeFetch([]);
+    const { live } = start({ fetch: f.fn, servedAt: ago(seconds) });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(f.calls).toHaveLength(calls);
+    for (const call of f.calls) {
+      expect(call.url).toBe("/api/board");
+      expect(call.init.cache).toBe("no-store");
+      expect(new Headers(call.init.headers).get("If-None-Match")).toBe(ETAG);
+    }
+    expect(STALE_SERVED_MS).toBe(45_000);
+    live.stop();
+  });
+
+  it("a stale page then polls as usual", async () => {
+    const f = fakeFetch([]);
+    const { live } = start({ fetch: f.fn, servedAt: ago(46) });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(f.calls).toHaveLength(1);
+    await vi.advanceTimersByTimeAsync(POLL_MS);
+    expect(f.calls).toHaveLength(2);
+    live.stop();
+  });
+
+  it("a servedAt ahead of the browser clock is not stale", async () => {
+    const f = fakeFetch([]);
+    const { live } = start({
+      fetch: f.fn,
+      servedAt: new Date(T0 + 3600_000).toISOString(),
+    });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(f.calls).toHaveLength(0);
+    live.stop();
+  });
+
+  it("with the tab hidden it waits until it is shown", async () => {
+    const f = fakeFetch([]);
+    const visibility = fakeVisibility();
+    visibility.set(true);
+    const { live } = start({ fetch: f.fn, servedAt: ago(46), visibility });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(f.calls).toHaveLength(0);
+    visibility.set(false);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(f.calls).toHaveLength(1);
     live.stop();
   });
 });

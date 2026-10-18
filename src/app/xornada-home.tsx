@@ -3,11 +3,13 @@ import { boardEtag } from "@/board/http";
 import { publicXornadaReader, seasonOf } from "@/board/reader";
 import { readHome } from "@/board/week-read";
 import type { Neighbours } from "@/board/weeks";
+import { galicianNames } from "@/calendar/galicians";
 import { nowInstant } from "@/clock";
 import { XornadaScreen } from "@/components/xornada/XornadaScreen";
 import { type Locale, t } from "@/i18n";
 import type { Instant, PublicMatch } from "@/model";
 import { buildXornada, xornadaDays } from "@/xornada/view";
+import { PROVISIONAL_DISPLAY } from "./config";
 
 // / and /es (SPEC-020 CA-6): the snapshot of the current xornada, rendered on
 // the server from web.xornada through the public reader only. Not indexed
@@ -46,20 +48,30 @@ export async function HomeXornada({ locale }: { locale: Locale }) {
   const now = nowInstant();
   const read = await snapshot(now, locale);
   const matches = read?.matches ?? null;
+  const season = seasonOf(now);
+  // SPEC-033 CA-4: resolved here, on the server; the client gets the same.
+  const galicians = galicianNames(season);
   return (
     <XornadaScreen
       locale={locale}
-      competitions={matches === null ? [] : buildXornada(matches)}
+      competitions={
+        matches === null
+          ? []
+          : buildXornada(matches, galicians, PROVISIONAL_DISPLAY)
+      }
       days={matches === null ? [] : xornadaDays(matches, now)}
       paths={HOME_PATHS}
+      // SPEC-034 CA-5: to the screen and to the client of SPEC-024.
+      provisionalDisplay={PROVISIONAL_DISPLAY}
       unavailable={matches === null}
       arrows={read?.arrows}
       // SPEC-024: the client keeps it up to date from the served state.
       live={{
         matches: matches ?? [],
         servedAt: now,
-        season: seasonOf(now),
+        season,
         etag: matches === null ? null : boardEtag(matches),
+        galicians: [...galicians],
       }}
     />
   );

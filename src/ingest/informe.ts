@@ -75,6 +75,13 @@ export type InformeDecision = {
   // forced finish of RN-02. It tells when the extension ends (SPEC-018 CA-6,
   // N-4). informe-db.ts always fills it; absent reads as null.
   forcedFinish?: boolean | null;
+  // The rest of the published tuple of ADR-009 §2, for the twins of SPEC-035
+  // CA-5. informe-db.ts always fills them; absent reads as null (halfTime as
+  // false, as in the model).
+  minute?: number | null;
+  addedMinute?: number | null;
+  halfTime?: boolean;
+  qualifier?: string | null;
 };
 
 // requests comes from ingest_attempts.details->>'requests' and never from
@@ -192,6 +199,8 @@ export type HuecoLargo = {
   final?: true;
 };
 
+export type VersionDe = { matchId: string; version: number };
+
 export type Veredicto = {
   valor: "válida" | "válida con reservas" | "no válida" | "sin veredicto";
   rama: "c1" | "c2" | null;
@@ -224,6 +233,11 @@ export type Informe = {
   cadencia: Estadisticos & { huecosLargos: readonly HuecoLargo[] };
   latenciaInterna: Estadisticos;
   techoPropio: number | null;
+  // SPEC-035 CA-5 (ADR-019 §4): each one is the later version of the pair.
+  motor: {
+    gemelas: readonly VersionDe[];
+    decididasInvertidas: readonly VersionDe[];
+  };
   latenciaExterna: Estadisticos & { noCasadas: readonly NoCasada[] };
   peticiones: {
     total: number;
@@ -556,6 +570,49 @@ function cadenciaDe(input: InformeInput) {
 // observations carry it, the earliest counts: that is when the provider first
 // had it. Since observed_at = capturedAt (SPEC-006 CA-7), this is capture ->
 // publication, never end to end.
+// The published tuple of ADR-009 §2, the same one src/decide/engine.ts
+// compares for idempotence: rule and citations stay out of it.
+const tuplaPublicada = (d: InformeDecision): string =>
+  [
+    d.status,
+    marcadorDe(d.score),
+    d.minute ?? "-",
+    (d.status === "live" ? d.addedMinute : null) ?? "-",
+    d.status === "live" && d.halfTime === true ? "HT" : "-",
+    d.qualifier ?? "-",
+  ].join("|");
+
+// SPEC-035 CA-5 (ADR-019 §4): over consecutive versions of each match, the
+// later one of a pair with the same published tuple (a twin, which the lock of
+// ADR-019 §1 rules out) and the later one whose decided_at is earlier (still
+// possible, ADR-019 §3). A version whose predecessor fell outside the window
+// is not compared.
+function motorDe(input: InformeInput): Informe["motor"] {
+  const gemelas: VersionDe[] = [];
+  const decididasInvertidas: VersionDe[] = [];
+  const porPartido = new Map<string, InformeDecision[]>();
+  for (const d of input.decisions) {
+    const list = porPartido.get(d.matchId);
+    if (list === undefined) porPartido.set(d.matchId, [d]);
+    else list.push(d);
+  }
+  for (const [matchId, list] of [...porPartido].toSorted(([a], [b]) =>
+    a.localeCompare(b),
+  )) {
+    const ordenadas = list.toSorted((a, b) => a.version - b.version);
+    for (let i = 1; i < ordenadas.length; i += 1) {
+      const antes = ordenadas[i - 1];
+      const d = ordenadas[i];
+      if (d.version !== antes.version + 1) continue;
+      if (tuplaPublicada(d) === tuplaPublicada(antes))
+        gemelas.push({ matchId, version: d.version });
+      if (Date.parse(d.decidedAt) < Date.parse(antes.decidedAt))
+        decididasInvertidas.push({ matchId, version: d.version });
+    }
+  }
+  return { gemelas, decididasInvertidas };
+}
+
 function latenciaInternaDe(input: InformeInput): number[] {
   const observed = new Map(input.observations.map((o) => [o.id, o]));
   const porPartido = new Map<string, InformeDecision[]>();
@@ -1117,6 +1174,16 @@ export function informeJornada(input: InformeInput): {
             ? ` — ${etiquetaP95(cad.stats.n)}`
             : ""),
   );
+  // SPEC-035 CA-5 (ADR-019 §4): with the lock of §1 in place, twins are 0.
+  // One line for both, each with its sample: the two pages of CA-10 had none
+  // to spare (V-7).
+  const motor = motorDe(input);
+  const versiones = (vs: readonly VersionDe[]) =>
+    enLinea(vs.map((v) => `${v.matchId} v${v.version}`));
+  push(
+    `Decisiones gemelas: ${motor.gemelas.length}${versiones(motor.gemelas)}` +
+      ` · \`decided_at\` invertido: ${motor.decididasInvertidas.length}${versiones(motor.decididasInvertidas)}`,
+  );
 
   // ---- 4. Latencia extremo a extremo -----------------------------------
   const externa = latenciaExternaDe(input);
@@ -1131,9 +1198,11 @@ export function informeJornada(input: InformeInput): {
     push(sinDatos("ninguna fila de referencias.csv casó con una Decision"));
   else {
     const e = externa.stats;
+    // El rango va en la línea de los estadísticos: es la línea que pagó la
+    // de las gemelas de SPEC-035 CA-5 en las dos páginas de CA-10 (V-7).
     push(
-      `${conN("mediana", e.mediana, e.n)} · ${conN(etiquetaP95(e.n), e.p95, e.n)} · ${conN("máximo", e.maximo, e.n)}`,
-      `rango: [${segundos(e.minimo ?? 0)}, ${segundos(e.maximo ?? 0)}]`,
+      `${conN("mediana", e.mediana, e.n)} · ${conN(etiquetaP95(e.n), e.p95, e.n)} · ${conN("máximo", e.maximo, e.n)}` +
+        ` · rango: [${segundos(e.minimo ?? 0)}, ${segundos(e.maximo ?? 0)}]`,
       `objetivo de vision.md: mediana < ${INFORME_MEDIAN_TARGET_SECONDS} s → ${cumple(e.mediana, INFORME_MEDIAN_TARGET_SECONDS)}` +
         (e.n >= INFORME_P95_MIN_SAMPLES
           ? ` · p95 < ${INFORME_P95_TARGET_SECONDS} s → ${cumple(e.p95, INFORME_P95_TARGET_SECONDS)}`
@@ -1529,6 +1598,7 @@ export function informeJornada(input: InformeInput): {
     cadencia: { ...cad.stats, huecosLargos: cad.largos },
     latenciaInterna: interna,
     techoPropio,
+    motor,
     latenciaExterna: { ...externa.stats, noCasadas: externa.noCasadas },
     peticiones: {
       total: totalPeticiones,

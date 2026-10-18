@@ -1,0 +1,10 @@
+{"ronda":1,"ruta":"/","inicio":"2026-10-12T21:38:27.570Z","status":200,"xVercelCache":"MISS","age":"0","date":"Mon, 12 Oct 2026 21:38:29 GMT","frescura":"23:38"}
+{"ronda":1,"ruta":"/es","inicio":"2026-10-12T21:38:29.882Z","status":200,"xVercelCache":"MISS","age":"0","date":"Mon, 12 Oct 2026 21:38:30 GMT","frescura":"23:38"}
+{"ronda":2,"ruta":"/","inicio":"2026-10-12T21:39:35.775Z","status":200,"xVercelCache":"MISS","age":"0","date":"Mon, 12 Oct 2026 21:39:37 GMT","frescura":"23:39"}
+{"ronda":2,"ruta":"/es","inicio":"2026-10-12T21:39:37.659Z","status":200,"xVercelCache":"MISS","age":"0","date":"Mon, 12 Oct 2026 21:39:38 GMT","frescura":"23:39"}
+{"ronda":3,"ruta":"/","inicio":"2026-10-12T21:40:43.484Z","status":200,"xVercelCache":"MISS","age":"0","date":"Mon, 12 Oct 2026 21:40:45 GMT","frescura":"23:40"}
+{"ronda":3,"ruta":"/es","inicio":"2026-10-12T21:40:45.741Z","status":200,"xVercelCache":"MISS","age":"0","date":"Mon, 12 Oct 2026 21:40:46 GMT","frescura":"23:40"}
+{"ronda":4,"ruta":"/","inicio":"2026-10-12T21:41:51.652Z","status":200,"xVercelCache":"MISS","age":"0","date":"Mon, 12 Oct 2026 21:41:53 GMT","frescura":"23:41"}
+{"ronda":4,"ruta":"/es","inicio":"2026-10-12T21:41:53.964Z","status":200,"xVercelCache":"MISS","age":"0","date":"Mon, 12 Oct 2026 21:41:54 GMT","frescura":"23:41"}
+{"ronda":5,"ruta":"/","inicio":"2026-10-12T21:42:59.910Z","status":200,"xVercelCache":"MISS","age":"0","date":"Mon, 12 Oct 2026 21:43:01 GMT","frescura":"23:43"}
+{"ronda":5,"ruta":"/es","inicio":"2026-10-12T21:43:02.811Z","status":200,"xVercelCache":"MISS","age":"0","date":"Mon, 12 Oct 2026 21:43:03 GMT","frescura":"23:43"}

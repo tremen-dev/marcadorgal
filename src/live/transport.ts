@@ -19,6 +19,9 @@ export const RECONCILE_MS = 5 * 60_000;
 export const RETRY_MIN_MS = 60_000;
 export const RETRY_MAX_MS = 5 * 60_000;
 export const BOARD_URL = "/api/board";
+// SPEC-030 CA-3 (H-2): a page served more than this long ago (browser clock)
+// asks /api/board as soon as it hydrates, without waiting for the first poll.
+export const STALE_SERVED_MS = 45_000;
 
 export type ChannelHandlers = {
   // SUBSCRIBED, CHANNEL_ERROR, TIMED_OUT or CLOSED (supabase-js).
@@ -53,6 +56,8 @@ export type LiveDeps = {
   season: string;
   // The ETag of the served xornada, so the first request can be a 304.
   etag: string | null;
+  // The instant of the render (SPEC-024 CA-8), for the catch-up of CA-3.
+  servedAt: string;
   fetch: typeof fetch;
   // null: the switch is off (or misconfigured), polling only.
   openChannel: OpenChannel | null;
@@ -243,6 +248,13 @@ export function startLiveXornada(deps: LiveDeps): {
     }
   });
 
+  // SPEC-030 CA-3: an old copy (a stale CDN node, a restored tab, bfcache)
+  // catches up now. Hidden, it waits: the visibility listener asks on show.
+  if (
+    Date.now() - Date.parse(deps.servedAt) > STALE_SERVED_MS &&
+    !deps.visibility.hidden()
+  )
+    void request();
   schedulePoll();
   connect();
 

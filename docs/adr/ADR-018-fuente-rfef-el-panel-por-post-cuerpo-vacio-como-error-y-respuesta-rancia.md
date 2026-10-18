@@ -38,7 +38,7 @@ repite bytes. Dos respuestas idénticas indican que salen de una caché.
 
 ## Decisión
 1. **Petición** (sustituye ADR-017 §1). *2026-10-11, supersedido en parte por
-   ADR-019:* número y variante de peticiones por intento; el POST no cambia.
+   ADR-021:* número y variante de peticiones por intento; el POST no cambia.
    *2026-10-12, ADR-020 (borrador, pendiente del titular):* la sesión no sale
    solo de la portada; hace falta además un GET a `NLogin` con la cookie. Por intento: el GET a la portada para la
    sesión, igual que antes, y **un POST** a `…/NPcd/NFG_CMP_Paneles`, sin query en la

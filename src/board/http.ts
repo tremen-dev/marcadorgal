@@ -9,6 +9,12 @@ import type { Instant, PublicMatch } from "../model/index.ts";
 export const BOARD_CACHE_CONTROL =
   "public, s-maxage=10, stale-while-revalidate=30";
 
+// SPEC-030 (F-SPEC-030-1): / and /es are dynamic, and on Vercel their function
+// answers private, no-store, which beats the Cache-Control of next.config.
+// This header beats both, only Vercel's CDN reads it, and it is never sent
+// to the browser. Same directives as above (ADR-014 §6).
+export const HOME_CDN_CACHE_CONTROL = "s-maxage=10, stale-while-revalidate=30";
+
 // null: there is no reader (DATABASE_URL_PUBLIC missing).
 export type ReadXornada = (now: Instant) => Promise<PublicMatch[] | null>;
 

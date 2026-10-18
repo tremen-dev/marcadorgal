@@ -18,6 +18,9 @@ export const gl = {
     confirmado: "confirmado",
     provisional: "provisional",
     sen_sinal: "sen sinal",
+    // SPEC-034 CA-3: the legend of the mark `*`, at the foot of the list.
+    provisionalLegend:
+      "* provisional: dato dunha soa fonte, aínda sen confirmar",
   },
   // SPEC-024 CA-8, CA-9 (D-9, RN-11): the row (source clock) and the line
   // of the screen (browser clock), never mixed.
@@ -40,6 +43,8 @@ export const gl = {
     days: "Días",
     dayLabel: "{weekday} {day}",
     dayMonthLabel: "{weekday} {day} {month}",
+    // SPEC-033 CA-2: the header of each day inside a competition.
+    dayHeader: "{weekday} {day} {month}",
     empty: "nada aquí",
     round: "xornada {n}",
     competitions: "Competicións",
@@ -89,7 +94,7 @@ export const gl = {
 } as const satisfies {
   [group: string]: unknown;
   status: Record<MatchStatus, string>;
-  qualifier: Record<Qualifier, string>;
+  qualifier: Record<Qualifier, string> & { provisionalLegend: string };
 };
 
 type Shape<T> = {

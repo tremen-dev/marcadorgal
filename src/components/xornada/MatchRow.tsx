@@ -1,5 +1,6 @@
 import { formatTime, type Locale, t } from "@/i18n";
 import { minuteLabel, type XornadaRow } from "@/xornada/view";
+import { type TeamNameTone, teamNameTone } from "./team-name";
 import styles from "./Xornada.module.css";
 
 type Props = {
@@ -12,6 +13,15 @@ type Props = {
 
 const cx = (...names: (string | false | null | undefined)[]): string =>
   names.filter(Boolean).join(" ");
+
+const TONE_CLASS: Readonly<Record<TeamNameTone, string | undefined>> = {
+  plain: undefined,
+  winner: styles.winner,
+  loser: styles.loser,
+  dim: styles.dim,
+  galician: styles.galician,
+  galicianDeep: styles.galicianDeep,
+};
 
 // ADR-005: ember only for live; amber for what awaits a person (postponed,
 // suspended, provisional); red for sen sinal. Every colour has its label.
@@ -30,7 +40,7 @@ function qualifierColor(row: XornadaRow): string {
 export function MatchRow({ row, locale, age = null }: Props) {
   const isLive = row.status === "live";
   const noSignal = row.qualifier === "sen_sinal";
-  const { margin } = row;
+  const { margin, qualifierDisplay: qualifier } = row;
   const marginText =
     margin.kind === "time"
       ? formatTime(margin.kickoff, locale)
@@ -42,14 +52,10 @@ export function MatchRow({ row, locale, age = null }: Props) {
   // SPEC-021 H-2: at half-time there is no minute to run, so no live dot;
   // the ember inset still says the match is in play.
   const showDot = isLive && !noSignal && margin.kind !== "halfTime";
-  const dimNames = row.status === "postponed";
   const nameClass = (side: "home" | "away") =>
-    cx(
-      styles.team,
-      row.winner === side && styles.winner,
-      row.winner !== null && row.winner !== side && styles.loser,
-      dimNames && styles.dim,
-    );
+    cx(styles.team, TONE_CLASS[teamNameTone(row, side)]);
+  const galician = (side: "home" | "away") =>
+    (side === "home" ? row.homeGalician : row.awayGalician) || undefined;
   const scoreClass = (side: "home" | "away") =>
     cx(
       styles.score,
@@ -89,23 +95,44 @@ export function MatchRow({ row, locale, age = null }: Props) {
         {margin.kind !== "status" && (
           <span className={styles.srOnly}>{t(locale, row.statusKey)}</span>
         )}
-        {row.qualifierKey && (
+        {/* SPEC-034: label (CA-2), mark (CA-3) or nothing (CA-4). */}
+        {qualifier.kind === "label" && (
           <span
             className={cx(styles.qualifier, qualifierColor(row))}
             data-testid="match-qualifier"
           >
-            {t(locale, row.qualifierKey)}
+            {t(locale, qualifier.key)}
           </span>
+        )}
+        {qualifier.kind === "mark" && (
+          <>
+            <span
+              className={cx(styles.mark, styles.amber)}
+              aria-hidden="true"
+              data-testid="provisional-mark"
+            >
+              *
+            </span>
+            <span className={styles.srOnly}>{t(locale, qualifier.key)}</span>
+          </>
         )}
       </div>
       <div className={styles.sides}>
-        <span className={nameClass("home")} data-testid="team-name">
+        <span
+          className={nameClass("home")}
+          data-testid="team-name"
+          data-galician={galician("home")}
+        >
           {row.home}
         </span>
         <span className={scoreClass("home")} data-testid="score">
           {scoreText("home")}
         </span>
-        <span className={nameClass("away")} data-testid="team-name">
+        <span
+          className={nameClass("away")}
+          data-testid="team-name"
+          data-galician={galician("away")}
+        >
           {row.away}
         </span>
         <span className={scoreClass("away")} data-testid="score">

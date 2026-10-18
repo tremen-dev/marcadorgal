@@ -21,7 +21,7 @@ import {
 import { readPanel } from "./panel.ts";
 
 // SPEC-032: calibration of the cadence the RFEF sustains with the production
-// pattern of ADR-019 §1-§2 and the session of ADR-020. Pure: the clock, the network and the files are
+// pattern of ADR-021 §1-§2 and the session of ADR-020. Pure: the clock, the network and the files are
 // injected by the shell (tools/calibrar-rfef.mjs); nothing here reads them.
 
 // H-4 of SPEC-032 (resolved by the owner): the steps, max(30 min, 10 rounds)
@@ -160,7 +160,7 @@ const hm = (seconds: number): string => {
 export function formatPlan(plan: Plan): string[] {
   const j = plan.jitterSeconds;
   return [
-    "Plan de calibración RFEF (SPEC-032, ADR-019 §1-§2, ADR-020):",
+    "Plan de calibración RFEF (SPEC-032, ADR-021 §1-§2, ADR-020):",
     `Plan: ${plan.name}${plan.name === "original" ? " (por defecto)" : ""}`,
     ...plan.steps.map(
       (s, i) =>
@@ -334,7 +334,7 @@ type Sent = {
   text: string;
 };
 
-// The series (CA-2, CA-3, CA-4): the production pattern of ADR-019 §1-§2 and
+// The series (CA-2, CA-3, CA-4): the production pattern of ADR-021 §1-§2 and
 // ADR-020 on the plan of CA-1, stopping at the first empty body.
 export async function runSeries(
   deps: CalibrateDeps,
@@ -725,7 +725,7 @@ export function buildReport(
   const out = [
     `# Calibración RFEF — ${a.first.slice(0, 10)}`,
     "",
-    "SPEC-032, ADR-019 §1-§2. Generado por `npm run rfef:calibrar` desde el JSONL de la serie.",
+    "SPEC-032, ADR-021 §1-§2. Generado por `npm run rfef:calibrar` desde el JSONL de la serie.",
     "",
     `- Plan: \`${plan.name}\` (escalones ${plan.steps.map((s) => s.intervalSeconds).join(", ")} s; ${plan.jitterSeconds === 0 ? "sin jitter" : `jitter 0-${plan.jitterSeconds} s por intervalo`}).`,
     `- Serie: ${a.first} → ${a.last}; ${a.requests} peticiones en ${a.rounds} vueltas; ${a.stale} rancias (ADR-018 §4).`,

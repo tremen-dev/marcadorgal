@@ -1,0 +1,44 @@
+┌─────────┬──────────────────────────┬─────────────┬───────┬────────┬────────────────┬───────┐
+│ (index) │ received_at              │ status      │ sc    │ minute │ source_id      │ gap_s │
+├─────────┼──────────────────────────┼─────────────┼───────┼────────┼────────────────┼───────┤
+│ 0       │ 2026-10-10T20:20:27.592Z │ 'scheduled' │ null  │ null   │ 'api-football' │ null  │
+│ 1       │ 2026-10-10T20:20:57.843Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 30    │
+│ 2       │ 2026-10-10T20:21:27.774Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 30    │
+│ 3       │ 2026-10-10T20:21:57.803Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 30    │
+│ 4       │ 2026-10-10T20:22:27.810Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 30    │
+│ 5       │ 2026-10-10T20:22:57.986Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 30    │
+│ 6       │ 2026-10-10T20:23:27.943Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 30    │
+│ 7       │ 2026-10-10T20:23:57.966Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 30    │
+│ 8       │ 2026-10-10T20:24:27.978Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 30    │
+│ 9       │ 2026-10-10T20:24:58.136Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 30    │
+│ 10      │ 2026-10-10T20:25:28.115Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 30    │
+│ 11      │ 2026-10-10T20:25:58.146Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 30    │
+│ 12      │ 2026-10-10T20:26:28.151Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 30    │
+│ 13      │ 2026-10-10T20:26:58.326Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 30    │
+│ 14      │ 2026-10-10T20:27:28.309Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 30    │
+│ 15      │ 2026-10-10T20:27:58.311Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 30    │
+│ 16      │ 2026-10-10T20:28:28.317Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 30    │
+│ 17      │ 2026-10-10T20:28:58.419Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 30    │
+│ 18      │ 2026-10-10T20:29:28.421Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 30    │
+│ 19      │ 2026-10-10T20:29:58.444Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 30    │
+│ 20      │ 2026-10-10T20:34:58.864Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 300   │
+│ 21      │ 2026-10-10T20:39:59.314Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 300   │
+│ 22      │ 2026-10-10T20:44:59.837Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 301   │
+│ 23      │ 2026-10-10T20:50:00.096Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 300   │
+│ 24      │ 2026-10-10T20:55:01.260Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 301   │
+│ 25      │ 2026-10-10T21:00:02.058Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 301   │
+│ 26      │ 2026-10-10T21:05:06.280Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 304   │
+│ 27      │ 2026-10-10T21:10:06.353Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 300   │
+│ 28      │ 2026-10-10T21:15:31.493Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 325   │
+│ 29      │ 2026-10-10T21:20:31.706Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 300   │
+│ 30      │ 2026-10-10T21:25:31.975Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 300   │
+│ 31      │ 2026-10-10T21:30:32.155Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 300   │
+│ 32      │ 2026-10-10T21:35:32.506Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 300   │
+│ 33      │ 2026-10-10T21:40:32.643Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 300   │
+│ 34      │ 2026-10-10T21:45:33.248Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 301   │
+│ 35      │ 2026-10-10T21:50:33.436Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 300   │
+│ 36      │ 2026-10-10T21:55:33.779Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 300   │
+│ 37      │ 2026-10-10T22:00:33.937Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 300   │
+│ 38      │ 2026-10-10T22:05:34.234Z │ 'scheduled' │ null  │ null   │ 'api-football' │ 300   │
+│ 39      │ 2026-10-10T22:10:34.467Z │ 'finished'  │ '0-1' │ null   │ 'api-football' │ 300   │
+└─────────┴──────────────────────────┴─────────────┴───────┴────────┴────────────────┴───────┘

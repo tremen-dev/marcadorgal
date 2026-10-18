@@ -1,0 +1,322 @@
+[
+ {
+  "received_at": "2026-10-10T20:20:27.592Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": null
+ },
+ {
+  "received_at": "2026-10-10T20:20:57.843Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 30
+ },
+ {
+  "received_at": "2026-10-10T20:21:27.774Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 30
+ },
+ {
+  "received_at": "2026-10-10T20:21:57.803Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 30
+ },
+ {
+  "received_at": "2026-10-10T20:22:27.810Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 30
+ },
+ {
+  "received_at": "2026-10-10T20:22:57.986Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 30
+ },
+ {
+  "received_at": "2026-10-10T20:23:27.943Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 30
+ },
+ {
+  "received_at": "2026-10-10T20:23:57.966Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 30
+ },
+ {
+  "received_at": "2026-10-10T20:24:27.978Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 30
+ },
+ {
+  "received_at": "2026-10-10T20:24:58.136Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 30
+ },
+ {
+  "received_at": "2026-10-10T20:25:28.115Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 30
+ },
+ {
+  "received_at": "2026-10-10T20:25:58.146Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 30
+ },
+ {
+  "received_at": "2026-10-10T20:26:28.151Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 30
+ },
+ {
+  "received_at": "2026-10-10T20:26:58.326Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 30
+ },
+ {
+  "received_at": "2026-10-10T20:27:28.309Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 30
+ },
+ {
+  "received_at": "2026-10-10T20:27:58.311Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 30
+ },
+ {
+  "received_at": "2026-10-10T20:28:28.317Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 30
+ },
+ {
+  "received_at": "2026-10-10T20:28:58.419Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 30
+ },
+ {
+  "received_at": "2026-10-10T20:29:28.421Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 30
+ },
+ {
+  "received_at": "2026-10-10T20:29:58.444Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 30
+ },
+ {
+  "received_at": "2026-10-10T20:34:58.864Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 300
+ },
+ {
+  "received_at": "2026-10-10T20:39:59.314Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 300
+ },
+ {
+  "received_at": "2026-10-10T20:44:59.837Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 301
+ },
+ {
+  "received_at": "2026-10-10T20:50:00.096Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 300
+ },
+ {
+  "received_at": "2026-10-10T20:55:01.260Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 301
+ },
+ {
+  "received_at": "2026-10-10T21:00:02.058Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 301
+ },
+ {
+  "received_at": "2026-10-10T21:05:06.280Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 304
+ },
+ {
+  "received_at": "2026-10-10T21:10:06.353Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 300
+ },
+ {
+  "received_at": "2026-10-10T21:15:31.493Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 325
+ },
+ {
+  "received_at": "2026-10-10T21:20:31.706Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 300
+ },
+ {
+  "received_at": "2026-10-10T21:25:31.975Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 300
+ },
+ {
+  "received_at": "2026-10-10T21:30:32.155Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 300
+ },
+ {
+  "received_at": "2026-10-10T21:35:32.506Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 300
+ },
+ {
+  "received_at": "2026-10-10T21:40:32.643Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 300
+ },
+ {
+  "received_at": "2026-10-10T21:45:33.248Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 301
+ },
+ {
+  "received_at": "2026-10-10T21:50:33.436Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 300
+ },
+ {
+  "received_at": "2026-10-10T21:55:33.779Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 300
+ },
+ {
+  "received_at": "2026-10-10T22:00:33.937Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 300
+ },
+ {
+  "received_at": "2026-10-10T22:05:34.234Z",
+  "status": "scheduled",
+  "sc": null,
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 300
+ },
+ {
+  "received_at": "2026-10-10T22:10:34.467Z",
+  "status": "finished",
+  "sc": "0-1",
+  "minute": null,
+  "source_id": "api-football",
+  "gap_s": 300
+ }
+]

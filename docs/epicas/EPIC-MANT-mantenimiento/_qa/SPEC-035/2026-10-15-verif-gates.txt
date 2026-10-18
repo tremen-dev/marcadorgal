@@ -1,0 +1,76 @@
+
+> marcadorgal@0.1.0 gates
+> npm run typecheck && npm run lint && npm run test && npm run build
+
+
+> marcadorgal@0.1.0 typecheck
+> tsc --noEmit
+
+
+> marcadorgal@0.1.0 lint
+> biome check .
+
+src/arch/deploy.test.ts:336:8 lint/suspicious/noTemplateCurlyInString ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected template string placeholder.
+  
+    334 │     const step = stepNamed("sync", "Abrir o actualizar el PR");
+    335 │     expect(str(obj(step?.env).URGENTES)).toBe(
+  > 336 │       "${{ steps.sync.outputs.urgentes }}",
+        │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    337 │     );
+    338 │     const run = prRun();
+  
+  i Turn the string into a template string.
+  
+
+Checked 295 files in 96ms. No fixes applied.
+Found 1 warning.
+
+> marcadorgal@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.1 /Users/albertofojo/src/marcadorgal/.claude/worktrees/agent-a90a4ee4a88bc8c1d
+
+
+ Test Files  101 passed (101)
+      Tests  1745 passed (1745)
+   Start at  22:48:40
+   Duration  9.94s (tests 65%, import 23%, transform 11%, worker 1%)
+
+
+> marcadorgal@0.1.0 build
+> next build
+
+▲ Next.js 16.3.5 (Turbopack)
+✓ Running next.config.ts took 56ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 318ms
+  Running TypeScript ...
+  Finished TypeScript in 1138ms ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/4) ...
+  Generating static pages using 11 workers (1/4) 
+  Generating static pages using 11 workers (2/4) 
+  Generating static pages using 11 workers (3/4) 
+✓ Generating static pages using 11 workers (4/4) in 232ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ƒ /api/board
+├ ƒ /api/ingest/tick
+├ ○ /demo/xornada
+├ ƒ /es
+├ ○ /es/demo/xornada
+├ ● /es/xornada/[fecha]
+└ ● /xornada/[fecha]
+
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+

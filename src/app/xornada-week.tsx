@@ -1,12 +1,14 @@
 import { notFound, permanentRedirect, redirect } from "next/navigation";
-import { publicXornadaReader } from "@/board/reader";
+import { publicXornadaReader, seasonOf } from "@/board/reader";
 import { readWeekPage } from "@/board/week-read";
 import { weekParam } from "@/board/week-route";
+import { galicianNames } from "@/calendar/galicians";
 import { nowInstant } from "@/clock";
 import { SnapshotFreshness } from "@/components/xornada/SnapshotFreshness";
 import { XornadaScreen } from "@/components/xornada/XornadaScreen";
 import type { Locale } from "@/i18n";
 import { buildXornada, xornadaDays } from "@/xornada/view";
+import { PROVISIONAL_DISPLAY } from "./config";
 
 // SPEC-027 CA-3 (H-2..H-5): /xornada/[fecha] and /es/xornada/[fecha], the
 // week of play keyed by its Saturday, rendered on the server over the
@@ -37,8 +39,18 @@ export async function WeekXornada({
   return (
     <XornadaScreen
       locale={locale}
-      competitions={matches === null ? [] : buildXornada(matches)}
+      competitions={
+        matches === null
+          ? []
+          : // SPEC-033 CA-4: the week is inside the season of now.
+            buildXornada(
+              matches,
+              galicianNames(seasonOf(now)),
+              PROVISIONAL_DISPLAY,
+            )
+      }
       days={matches === null ? [] : xornadaDays(matches, now)}
+      provisionalDisplay={PROVISIONAL_DISPLAY}
       paths={{
         gl: `/xornada/${param.week}`,
         es: `/es/xornada/${param.week}`,

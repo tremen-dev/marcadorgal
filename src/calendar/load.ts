@@ -31,6 +31,18 @@ export async function loadSeason(
 ): Promise<LoadSummary> {
   const summary: LoadSummary = { season, competitions: {}, aliases: {} };
 
+  // ADR-019 §5: before the first write to matches, and in one statement, the
+  // lock the engine takes (§1), in the same order by id, over every existing
+  // row this load may touch. The upsert below would otherwise lock them in
+  // file order, competition by competition, and deadlock (40P01) with a
+  // sweep that holds one of them and waits on another. The cost: the engine
+  // waits for as long as the load lasts, one push.
+  const competitionIds = [...new Set(calendars.map((c) => c.competition.id))];
+  if (competitionIds.length > 0)
+    await tx`select id from matches
+      where season = ${season} and competition_id = any(${tx.array(competitionIds)})
+      order by id for no key update`;
+
   for (const { competition, teams, matches } of calendars) {
     await tx`insert into competitions (id, season, name, tier)
       values (${competition.id}, ${season}, ${competition.name}, ${competition.tier})

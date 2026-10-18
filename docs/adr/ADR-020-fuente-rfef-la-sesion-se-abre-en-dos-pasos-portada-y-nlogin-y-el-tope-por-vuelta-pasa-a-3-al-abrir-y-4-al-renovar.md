@@ -10,7 +10,7 @@ aprobada-por: Alberto Fojo
 # ADR-020: Fuente rfef: la sesión se abre en dos pasos (portada y NLogin) y el tope por vuelta pasa a 3 al abrir y 4 al renovar
 
 - Deciders: sdd-arquitecto propone (2026-10-12) a encargo del orquestador, tras el defecto de campo de la serie de calibración del 2026-10-12. Aprobado por **Alberto Fojo** el 2026-10-12: tope 4 al renovar (con reintento) y portada `200` vacía como `empty body`.
-- Specs relacionadas: SPEC-032 (enmienda E-1: arregla `adapter.ts` y la calibración), SPEC-031 (terminal; esta vía corrige su CA-7 (ii)) y la spec de alta de EPIC-004. **Supersede solo** la apertura y la renovación de sesión de **ADR-019 §1** y el «GET a la portada para la sesión» de **ADR-018 §1**. El POST, su cuerpo, el crudo y ADR-019 §2-§7 no cambian. Evidencia: `docs/epicas/EPIC-004-fuente-rfef/_qa/calibracion/2026-10-12-handshake.md` y `2026-10-12.jsonl`.
+- Specs relacionadas: SPEC-032 (enmienda E-1: arregla `adapter.ts` y la calibración), SPEC-031 (terminal; esta vía corrige su CA-7 (ii)) y la spec de alta de EPIC-004. **Supersede solo** la apertura y la renovación de sesión de **ADR-021 §1** y el «GET a la portada para la sesión» de **ADR-018 §1**. El POST, su cuerpo, el crudo y ADR-021 §2-§7 no cambian. Evidencia: `docs/epicas/EPIC-004-fuente-rfef/_qa/calibracion/2026-10-12-handshake.md` y `2026-10-12.jsonl`.
 
 ## Contexto
 La serie de calibración del 2026-10-12T19:16:48Z paró en la vuelta 1: la
@@ -24,7 +24,7 @@ muestra que la sesión necesita **tres** pasos:
    La sesión queda activa.
 3. `POST` al panel con la cookie → `200`, 18.771 B.
 
-ADR-018 y ADR-019 daban por hecho que la cookie de la portada ya valía. Las
+ADR-018 y ADR-021 daban por hecho que la cookie de la portada ya valía. Las
 series del 2026-10-11 se hicieron con curl siguiendo redirecciones, así que
 el paso 2 quedaba oculto. Los dobles de los tests aceptaban la cookie
 directamente.
@@ -39,12 +39,12 @@ directamente.
    sigue la redirección final a la portada. Cualquier otra respuesta es un
    **fallo de sesión** (`fetch` lanza; la calibración para), salvo un `200`
    con cuerpo vacío, que es el bloqueo (ADR-018 §3) y cuenta para el backoff
-   (ADR-019 §4).
-2. **Renovación** (sustituye la «portada + un reintento» de ADR-019 §1). Si el
+   (ADR-021 §4).
+2. **Renovación** (sustituye la «portada + un reintento» de ADR-021 §1). Si el
    POST responde 3xx o `NLogin`: apertura completa (§1, 2 peticiones) y **un**
    reintento del POST. Si rebota el POST que sigue a una apertura recién
    hecha, no se renueva: es un fallo de sesión.
-3. **Tope por vuelta** (sustituye «nunca más de 3» de ADR-019 §1):
+3. **Tope por vuelta** (sustituye «nunca más de 3» de ADR-021 §1):
 
    | Vuelta | Peticiones |
    |---|---|

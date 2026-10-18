@@ -1,0 +1,18 @@
+┌─────────┬─────────────────────────────────────────────────────┬─────────┬─────────────┬───────┬───────────────┬─────────┬──────────────────────────┬───────────────┐
+│ (index) │ match_id                                            │ version │ status      │ sc    │ qualifier     │ rule    │ decided_at               │ forced_finish │
+├─────────┼─────────────────────────────────────────────────────┼─────────┼─────────────┼───────┼───────────────┼─────────┼──────────────────────────┼───────────────┤
+│ 0       │ 'segunda-rfef-g1-2026-27-j6-astorga-ourense-cf'     │ 1       │ 'scheduled' │ null  │ 'provisional' │ 'RN-01' │ 2026-10-10T14:20:06.335Z │ false         │
+│ 1       │ 'segunda-rfef-g1-2026-27-j6-astorga-ourense-cf'     │ 2       │ 'scheduled' │ null  │ 'sen_sinal'   │ 'RN-05' │ 2026-10-10T14:45:08.958Z │ false         │
+│ 2       │ 'segunda-rfef-g1-2026-27-j6-astorga-ourense-cf'     │ 3       │ 'finished'  │ '4-0' │ 'provisional' │ 'RN-01' │ 2026-10-10T16:27:44.509Z │ false         │
+│ 3       │ 'tercera-rfef-g1-2026-27-j6-antela-barco'           │ 1       │ 'scheduled' │ null  │ 'provisional' │ 'RN-01' │ 2026-10-11T15:20:03.753Z │ false         │
+│ 4       │ 'tercera-rfef-g1-2026-27-j6-antela-barco'           │ 2       │ 'scheduled' │ null  │ 'sen_sinal'   │ 'RN-05' │ 2026-10-11T15:45:06.353Z │ false         │
+│ 5       │ 'tercera-rfef-g1-2026-27-j6-antela-barco'           │ 3       │ 'scheduled' │ null  │ 'sen_sinal'   │ 'RN-05' │ 2026-10-11T15:45:04.084Z │ false         │
+│ 6       │ 'tercera-rfef-g1-2026-27-j6-antela-barco'           │ 4       │ 'finished'  │ '1-1' │ 'provisional' │ 'RN-01' │ 2026-10-11T17:35:06.511Z │ false         │
+│ 7       │ 'tercera-rfef-g1-2026-27-j6-celtiga-alondras'       │ 1       │ 'scheduled' │ null  │ 'provisional' │ 'RN-01' │ 2026-10-11T15:20:03.753Z │ false         │
+│ 8       │ 'tercera-rfef-g1-2026-27-j6-celtiga-alondras'       │ 2       │ 'scheduled' │ null  │ 'sen_sinal'   │ 'RN-05' │ 2026-10-11T15:45:06.353Z │ false         │
+│ 9       │ 'tercera-rfef-g1-2026-27-j6-celtiga-alondras'       │ 3       │ 'scheduled' │ null  │ 'sen_sinal'   │ 'RN-05' │ 2026-10-11T15:45:04.084Z │ false         │
+│ 10      │ 'tercera-rfef-g1-2026-27-j6-celtiga-alondras'       │ 4       │ 'finished'  │ '0-0' │ 'provisional' │ 'RN-01' │ 2026-10-11T17:36:40.852Z │ false         │
+│ 11      │ 'tercera-rfef-g1-2026-27-j6-pontevedra-b-portonovo' │ 1       │ 'scheduled' │ null  │ 'provisional' │ 'RN-01' │ 2026-10-10T17:50:19.236Z │ false         │
+│ 12      │ 'tercera-rfef-g1-2026-27-j6-pontevedra-b-portonovo' │ 2       │ 'scheduled' │ null  │ 'sen_sinal'   │ 'RN-05' │ 2026-10-10T18:15:06.512Z │ false         │
+│ 13      │ 'tercera-rfef-g1-2026-27-j6-pontevedra-b-portonovo' │ 3       │ 'finished'  │ '0-1' │ 'provisional' │ 'RN-01' │ 2026-10-10T22:10:34.467Z │ false         │
+└─────────┴─────────────────────────────────────────────────────┴─────────┴─────────────┴───────┴───────────────┴─────────┴──────────────────────────┴───────────────┘

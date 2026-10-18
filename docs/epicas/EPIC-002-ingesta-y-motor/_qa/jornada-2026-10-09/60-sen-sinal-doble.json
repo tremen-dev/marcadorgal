@@ -1,0 +1,18 @@
+[
+ {
+  "id": "8a60b24f-80c4-40e7-9bcd-44966bbbcd07",
+  "started_at": "2026-10-11T15:45:04.084Z",
+  "finished_at": "2026-10-11T15:45:04.084Z",
+  "ok": true,
+  "observations": 10,
+  "details": {
+   "alerts": 0,
+   "season": "2026-27",
+   "matches": 10,
+   "skipped": 0,
+   "requests": 2,
+   "unresolved": 0,
+   "requestErrors": 0
+  }
+ }
+]

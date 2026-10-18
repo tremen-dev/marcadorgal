@@ -1,0 +1,47 @@
+## segunda-rfef-g1-2026-27-j6-astorga-ourense-cf scheduled 2026-10-10T15:15:06.290Z raw/api-football/2026-10-10/2026-10-10T15-15-06.290Z-8a0c4360-d242-471b-9daa-95d88e5343bd.json.gz
+GET 200
+capturedAt 2026-10-10T15:15:06.290Z requests 2
+   https://v3.football.api-sports.io/fixtures?live=140-141-435-439-875 200 results: 4 errors: []
+      1570780 435 Deportivo La Coruña II - Racing Ferrol 2026-10-10T14:30:00+00:00 1H 43 0-0
+      1612750 439 Atlético Arteixo - Somozas 2026-10-10T15:00:00+00:00 1H 13 1-1
+      1569964 141 AD Ceuta FC - Sabadell 2026-10-10T14:15:00+00:00 HT 45 1-1
+      1570403 140 Alaves - Atletico Madrid 2026-10-10T14:15:00+00:00 HT 45 1-1
+   https://v3.football.api-sports.io/fixtures?ids=1572077 200 results: 1 errors: []
+      1572077 875 Atlético Astorga - Ourense CF 2026-10-10T14:30:00+00:00 NS null null-null
+## tercera-rfef-g1-2026-27-j6-pontevedra-b-portonovo scheduled 2026-10-10T18:45:22.286Z raw/api-football/2026-10-10/2026-10-10T18-45-22.286Z-99bdc8f9-4265-4767-b907-26b51b935062.json.gz
+GET 200
+capturedAt 2026-10-10T18:45:22.286Z requests 2
+   https://v3.football.api-sports.io/fixtures?live=435-439 200 results: 1 errors: []
+      1570778 435 CD Coria - Extremadura 1924 2026-10-10T18:00:00+00:00 1H 45 2-0
+   https://v3.football.api-sports.io/fixtures?ids=1612748 200 results: 1 errors: []
+      1612748 439 Pontevedra II - Portonovo SD 2026-10-10T18:00:00+00:00 NS null null-null
+## tercera-rfef-g1-2026-27-j6-antela-barco scheduled 2026-10-11T16:15:06.073Z raw/api-football/2026-10-11/2026-10-11T16-15-06.073Z-01c482db-5aae-46b2-8dd9-12950fd820d3.json.gz
+GET 200
+capturedAt 2026-10-11T16:15:06.073Z requests 2
+   https://v3.football.api-sports.io/fixtures?live=435-439-875 200 results: 8 errors: []
+      1612751 439 Boiro - Viveiro 2026-10-11T15:30:00+00:00 1H 44 0-0
+      1612753 439 Lalin - Silva 2026-10-11T16:00:00+00:00 1H 14 0-0
+      1612756 439 Sarriana - Arenteiro 2026-10-11T16:00:00+00:00 1H 12 1-1
+      1570783 435 Ponferradina - Real Avilés 2026-10-11T14:30:00+00:00 2H 80 0-1
+      1570784 435 Pontevedra - Mérida AD 2026-10-11T14:30:00+00:00 2H 82 0-1
+      1572078 875 Arosa - Bergantiños 2026-10-11T15:00:00+00:00 2H 59 0-0
+      1572079 875 Coruxo - Compostela 2026-10-11T15:00:00+00:00 2H 58 0-1
+      1612755 439 Villalbés - Estradense 2026-10-11T15:00:00+00:00 2H 55 0-0
+   https://v3.football.api-sports.io/fixtures?ids=1612749-1612752 200 results: 2 errors: []
+      1612749 439 Antela - Barco 2026-10-11T15:30:00+00:00 NS null null-null
+      1612752 439 Celtiga - Alondras 2026-10-11T15:30:00+00:00 NS null null-null
+## tercera-rfef-g1-2026-27-j6-celtiga-alondras scheduled 2026-10-11T16:15:06.073Z raw/api-football/2026-10-11/2026-10-11T16-15-06.073Z-01c482db-5aae-46b2-8dd9-12950fd820d3.json.gz
+GET 200
+capturedAt 2026-10-11T16:15:06.073Z requests 2
+   https://v3.football.api-sports.io/fixtures?live=435-439-875 200 results: 8 errors: []
+      1612751 439 Boiro - Viveiro 2026-10-11T15:30:00+00:00 1H 44 0-0
+      1612753 439 Lalin - Silva 2026-10-11T16:00:00+00:00 1H 14 0-0
+      1612756 439 Sarriana - Arenteiro 2026-10-11T16:00:00+00:00 1H 12 1-1
+      1570783 435 Ponferradina - Real Avilés 2026-10-11T14:30:00+00:00 2H 80 0-1
+      1570784 435 Pontevedra - Mérida AD 2026-10-11T14:30:00+00:00 2H 82 0-1
+      1572078 875 Arosa - Bergantiños 2026-10-11T15:00:00+00:00 2H 59 0-0
+      1572079 875 Coruxo - Compostela 2026-10-11T15:00:00+00:00 2H 58 0-1
+      1612755 439 Villalbés - Estradense 2026-10-11T15:00:00+00:00 2H 55 0-0
+   https://v3.football.api-sports.io/fixtures?ids=1612749-1612752 200 results: 2 errors: []
+      1612749 439 Antela - Barco 2026-10-11T15:30:00+00:00 NS null null-null
+      1612752 439 Celtiga - Alondras 2026-10-11T15:30:00+00:00 NS null null-null

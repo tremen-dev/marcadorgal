@@ -1,0 +1,3 @@
+# verificador 2026-10-12: node verif-ca3-reloj.mjs contra next start :3300 (lector local)
+fresh: /api/board requests within 3760 ms of load: 0 []
+browser clock +60 s: /api/board requests within 3678 ms of load: 1 [{"ms":133,"ifNoneMatch":"\"JbAadwElsfeAyMnXd_Qw3Kd8QZf9tQBa_fc9-BKigfo\""}]
