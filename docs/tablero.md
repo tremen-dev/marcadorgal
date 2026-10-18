@@ -48,6 +48,7 @@ Actualizado: 2026-10-18
 | Spec | Estado | Último cambio |
 |---|---|---|
 | SPEC-031 — adaptador-rfef-fetch-con-sesion-parser-puro-y-decodificador-cerrado-sobre-fixtures-reales | hecho | 2026-10-11 (sdd-verificador) |
+| SPEC-036 — vias-legitimas-de-acceso-a-los-datos-de-la-rfef | hecho | 2026-10-18 (sdd-verificador) |
 | SPEC-032 — calibracion-de-la-cadencia-sostenible-de-la-rfef-con-una-identidad-estable | hecho | 2026-10-18 (sdd-verificador) |
 
 ## EPIC-FIX (aprobada)
