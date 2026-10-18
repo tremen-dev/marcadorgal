@@ -14,6 +14,7 @@ import {
   type DeclaredMatch,
   PANEL_QUERY,
   PANEL_URL,
+  PORTADA_URL,
 } from "./adapter.ts";
 import {
   EMPTY_BODY_FILE,
@@ -21,6 +22,12 @@ import {
   fixtureBytes,
   fixtureText,
 } from "./fixture-files.ts";
+import {
+  DOUBLE_NLOGIN,
+  DOUBLE_PANEL,
+  DOUBLE_PORTADA,
+  rfefServer,
+} from "./server-double.ts";
 
 const root = new URL("../../../", import.meta.url);
 const readJson = (rel: string): unknown =>
@@ -356,10 +363,18 @@ describe("CA-7 fetch", () => {
     fetch,
     userAgent: UA,
   });
+  // The portada and NLogin as the handshake recorded them (ADR-020 §1).
   const portada = (cookie: string | null, status = 302) =>
     new Response(null, {
       status,
-      headers: cookie ? { "set-cookie": cookie, location: "/pnfg/x" } : {},
+      headers: cookie
+        ? { "set-cookie": cookie, location: "/pnfg/NLogin?NSess=1" }
+        : {},
+    });
+  const nlogin = () =>
+    new Response(null, {
+      status: 302,
+      headers: { location: "https://marcadores.rfef.es/pnfg/" },
     });
   // Málaga, SÁB. in ISO-8859-15 bytes.
   const LATIN9 = Uint8Array.from([
@@ -378,13 +393,19 @@ describe("CA-7 fetch", () => {
     expect(result?.requests).toEqual([]);
   });
 
-  it("(ii) portada without redirects, then one POST with the query in the body (E-1)", async () => {
+  it("(ii) portada and NLogin without redirects, then one POST with the query in the body (E-1, ADR-020)", async () => {
     const { calls, fetch } = fake([
       portada("JSESSIONID=96339C96; Path=/pnfg; HttpOnly"),
+      nlogin(),
       panel(),
     ]);
     const result = await adapter.fetch?.(ctx(fetch));
-    expect(calls.map((c) => c.url)).toEqual([PORTADA, PANEL_URL]);
+    expect(calls.map((c) => c.url)).toEqual([
+      PORTADA,
+      "https://marcadores.rfef.es/pnfg/NLogin?NSess=1",
+      PANEL_URL,
+    ]);
+    calls.splice(1, 1);
     expect(calls[0].init?.method ?? "GET").toBe("GET");
     expect(calls[0].init?.redirect).toBe("manual");
     expect(new Headers(calls[0].init?.headers).get("user-agent")).toBe(UA);
@@ -414,7 +435,11 @@ describe("CA-7 fetch", () => {
   });
 
   it("(iii) decodes ISO-8859-15 bytes by the charset", async () => {
-    const { fetch } = fake([portada("JSESSIONID=abc; Path=/pnfg"), panel()]);
+    const { fetch } = fake([
+      portada("JSESSIONID=abc; Path=/pnfg"),
+      nlogin(),
+      panel(),
+    ]);
     const result = await adapter.fetch?.(ctx(fetch));
     expect(result?.requests[0].body).toBe("Málaga SÁB.");
     expect(result?.requests[0].contentType).toBe(
@@ -423,7 +448,7 @@ describe("CA-7 fetch", () => {
   });
 
   it("(iv) throws without a cookie", async () => {
-    const { fetch } = fake([portada(null, 200)]);
+    const { fetch } = fake([portada(null)]);
     await expect(adapter.fetch?.(ctx(fetch))).rejects.toThrow(/JSESSIONID/);
   });
 
@@ -432,6 +457,7 @@ describe("CA-7 fetch", () => {
     async (status) => {
       const { fetch } = fake([
         portada("JSESSIONID=abc; Path=/pnfg"),
+        nlogin(),
         panel(status),
       ]);
       await expect(adapter.fetch?.(ctx(fetch))).rejects.toThrow(
@@ -443,6 +469,7 @@ describe("CA-7 fetch", () => {
   it("(iv) a 200 with an empty body does not throw: it goes to the raw capture, and parse says empty body", async () => {
     const { fetch } = fake([
       portada("JSESSIONID=abc; Path=/pnfg"),
+      nlogin(),
       // As the real block answers: 200, Content-Length: 0, no Content-Type.
       new Response(Buffer.from(fixtureBytes(EMPTY_BODY_FILE)), {
         status: 200,
@@ -462,6 +489,213 @@ describe("CA-7 fetch", () => {
     expect(result.observations).toEqual([]);
     expect(result.requestErrors).toEqual([
       { url: PANEL_URL, error: "empty body" },
+    ]);
+  });
+});
+
+// SPEC-032 CA-10 (ADR-020 §1): the real handshake against a strict double of
+// the server, with the headers of _qa/calibracion/2026-10-12-handshake.md.
+describe("CA-10 the real handshake in the adapter (ADR-020)", () => {
+  const UA = "marcador.gal (ingesta; https://marcador.gal)";
+  const NOW = "2026-10-10T21:25:36Z" as Instant;
+  const MATCH = {
+    id: "tercera-rfef-g1-2026-27-j6-antela-barco",
+    competitionId: "tercera-rfef-g1",
+    season: "2026-27",
+    kickoff: "2026-10-10T21:00:00Z",
+    homeTeamId: "antela",
+    awayTeamId: "barco",
+  } as WindowMatch;
+  const ctx = (fetch: typeof globalThis.fetch): FetchContext => ({
+    now: NOW,
+    competitions: ["tercera-rfef-g1" as CompetitionId],
+    matches: [MATCH],
+    fetch,
+    userAgent: UA,
+  });
+  const realPanel = () =>
+    new Response(Uint8Array.from(fixtureBytes(`${FED3}.raw`)), {
+      status: 200,
+      headers: { "content-type": "text/html;charset=ISO-8859-15" },
+    });
+  const server = () =>
+    rfefServer({ cookies: ["C0FFEE1234"], panel: realPanel });
+
+  it("(i) portada -> NLogin -> POST, and 1 request that parse reads without requestErrors", async () => {
+    const s = server();
+    const capture = await adapter.fetch?.(ctx(s.fetch));
+    expect(
+      s.calls.map((c) => ({
+        method: c.method,
+        url: c.url,
+        cookie: c.cookie,
+        userAgent: c.userAgent,
+        redirect: c.redirect,
+      })),
+    ).toEqual([
+      {
+        method: "GET",
+        url: DOUBLE_PORTADA,
+        cookie: null,
+        userAgent: UA,
+        redirect: "manual",
+      },
+      {
+        method: "GET",
+        url: DOUBLE_NLOGIN,
+        cookie: "JSESSIONID=C0FFEE1234",
+        userAgent: UA,
+        redirect: "manual",
+      },
+      {
+        method: "POST",
+        url: DOUBLE_PANEL,
+        cookie: "JSESSIONID=C0FFEE1234",
+        userAgent: UA,
+        redirect: "manual",
+      },
+    ]);
+    expect(s.calls[2].body).toBe(PANEL_QUERY);
+    expect(s.calls[2].contentType).toBe("application/x-www-form-urlencoded");
+    if (capture === undefined) throw new Error("no fetch");
+    expect(capture.requests).toHaveLength(1);
+    expect(capture.requests[0]).toMatchObject({
+      url: PANEL_URL,
+      method: "POST",
+      status: 200,
+    });
+    const result = ParseResult.parse(adapter.parse(capture));
+    expect(result.requestErrors).toEqual([]);
+    expect(result.observations.length).toBeGreaterThan(0);
+    // ADR-020 §4: neither the cookie nor the Location of NLogin.
+    const raw = JSON.stringify(capture);
+    expect(raw).not.toContain("C0FFEE1234");
+    expect(raw).not.toContain("JSESSIONID");
+    expect(raw).not.toMatch(/NLogin|NSess/);
+  });
+
+  it("(ii) the double does not forgive: portada -> POST without NLogin gets a 302 to NLogin", async () => {
+    const s = server();
+    const portada = await s.fetch(DOUBLE_PORTADA, {
+      redirect: "manual",
+      headers: { "User-Agent": UA },
+    });
+    const cookie = portada.headers.get("set-cookie")?.split(";")[0] ?? "";
+    expect(cookie).toBe("JSESSIONID=C0FFEE1234");
+    expect(portada.headers.get("set-cookie")).toMatch(
+      /Path=\/pnfg; Secure; HttpOnly/,
+    );
+    const post = await s.fetch(DOUBLE_PANEL, {
+      method: "POST",
+      redirect: "manual",
+      headers: { Cookie: cookie, "User-Agent": UA },
+      body: PANEL_QUERY,
+    });
+    expect(post.status).toBe(302);
+    expect(post.headers.get("location")).toBe("/pnfg/NLogin");
+  });
+
+  // A double with one answer per step; the POST must never be reached.
+  const steps = (portada: Response, nlogin?: Response) => {
+    const calls: string[] = [];
+    const fetch = (async (input: string | URL | Request) => {
+      calls.push(String(input));
+      if (calls.length === 1) return portada;
+      if (calls.length === 2 && nlogin !== undefined) return nlogin;
+      throw new Error(`unexpected call to ${String(input)}`);
+    }) as typeof globalThis.fetch;
+    return { calls, fetch };
+  };
+  const r = (status: number, headers: Record<string, string>, body?: string) =>
+    new Response(body ?? null, { status, headers });
+  const COOKIE = "JSESSIONID=C0FFEE1234; Path=/pnfg; Secure; HttpOnly";
+  const TO_NLOGIN = { "set-cookie": COOKIE, location: "/pnfg/NLogin?NSess=1" };
+  const BACK = { location: "https://marcadores.rfef.es/pnfg/" };
+
+  it.each([
+    ["portada without cookie", r(302, { location: "/pnfg/NLogin?NSess=1" })],
+    ["portada without Location", r(302, { "set-cookie": COOKIE })],
+    [
+      "portada with a Location to another origin",
+      r(302, {
+        "set-cookie": COOKIE,
+        location: "https://otro.example/pnfg/NLogin?NSess=1",
+      }),
+    ],
+    [
+      "portada with a Location that is not /pnfg/NLogin",
+      r(302, { "set-cookie": COOKIE, location: "/pnfg/NOtra" }),
+    ],
+    ["portada 200 with a body", r(200, { "set-cookie": COOKIE }, "<html>")],
+    ["portada 500", r(500, TO_NLOGIN)],
+  ])("(iii) %s: throws without reaching NLogin", async (_, portada) => {
+    const s = steps(portada);
+    await expect(adapter.fetch?.(ctx(s.fetch))).rejects.toThrow(/rfef/);
+    expect(s.calls).toEqual([DOUBLE_PORTADA]);
+  });
+
+  it.each([
+    ["NLogin answering 200", r(200, {}, "<html>login</html>")],
+    [
+      "NLogin answering 302 back to NLogin",
+      r(302, { location: "/pnfg/NLogin" }),
+    ],
+    [
+      "NLogin answering 302 back to NLogin, absolute",
+      r(302, {
+        location: "https://marcadores.rfef.es/pnfg/NLogin?NSess=1",
+      }),
+    ],
+    ["NLogin 302 without Location", r(302, {})],
+  ])("(iii) %s: throws without reaching the POST", async (_, nlogin) => {
+    const s = steps(r(302, TO_NLOGIN), nlogin);
+    await expect(adapter.fetch?.(ctx(s.fetch))).rejects.toThrow(/rfef/);
+    expect(s.calls).toEqual([DOUBLE_PORTADA, DOUBLE_NLOGIN]);
+  });
+
+  it("a new JSESSIONID from NLogin replaces the one of the portada (ADR-020 §1)", async () => {
+    const calls: { url: string; init?: RequestInit }[] = [];
+    const replies = [
+      r(302, TO_NLOGIN),
+      r(302, { ...BACK, "set-cookie": "JSESSIONID=NUEVA99; Path=/pnfg" }),
+      realPanel(),
+    ];
+    const fetch = (async (
+      input: string | URL | Request,
+      init?: RequestInit,
+    ) => {
+      calls.push({ url: String(input), init });
+      return replies.shift() as Response;
+    }) as typeof globalThis.fetch;
+    await adapter.fetch?.(ctx(fetch));
+    expect(new Headers(calls[2].init?.headers).get("cookie")).toBe(
+      "JSESSIONID=NUEVA99",
+    );
+  });
+
+  it("(iv) a portada 200 with an empty body does not throw: it is the request of the capture, and parse says empty body", async () => {
+    const s = steps(
+      new Response(Uint8Array.from(fixtureBytes(EMPTY_BODY_FILE)), {
+        status: 200,
+        headers: { "content-length": "0" },
+      }),
+    );
+    const capture = await adapter.fetch?.(ctx(s.fetch));
+    expect(s.calls).toEqual([DOUBLE_PORTADA]);
+    if (capture === undefined) throw new Error("no fetch");
+    expect(capture.requests).toEqual([
+      {
+        url: PORTADA_URL,
+        method: "GET",
+        status: 200,
+        contentType: null,
+        body: "",
+      },
+    ]);
+    const result = ParseResult.parse(adapter.parse(capture));
+    expect(result.observations).toEqual([]);
+    expect(result.requestErrors).toEqual([
+      { url: PORTADA_URL, error: "empty body" },
     ]);
   });
 });

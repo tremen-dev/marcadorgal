@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-10-15
+Actualizado: 2026-10-18
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -48,6 +48,7 @@ Actualizado: 2026-10-15
 | Spec | Estado | Último cambio |
 |---|---|---|
 | SPEC-031 — adaptador-rfef-fetch-con-sesion-parser-puro-y-decodificador-cerrado-sobre-fixtures-reales | hecho | 2026-10-11 (sdd-verificador) |
+| SPEC-032 — calibracion-de-la-cadencia-sostenible-de-la-rfef-con-una-identidad-estable | hecho | 2026-10-18 (sdd-verificador) |
 
 ## EPIC-FIX (aprobada)
 
@@ -90,8 +91,10 @@ Actualizado: 2026-10-15
 | ADR-017 | aprobada | fuente-rfef-panel-de-marcadores-rfef-es-decodificacion-cerrada-y-estados-por-marca-y-reloj | 2026-10-11 (Alberto Fojo) |
 | ADR-018 | aprobada | fuente-rfef-el-panel-por-post-cuerpo-vacio-como-error-y-respuesta-rancia | 2026-10-11 (Alberto Fojo) |
 | ADR-019 | aprobada | motor-serializado-por-partido-cerrojo-de-fila-antes-de-leer-la-vigente | 2026-10-15 (Alberto Fojo) |
+| ADR-020 | aprobada | fuente-rfef-la-sesion-se-abre-en-dos-pasos-portada-y-nlogin-y-el-tope-por-vuelta-pasa-a-3-al-abrir-y-4-al-renovar | 2026-10-12 (Alberto Fojo) |
+| ADR-021 | aprobada | fuente-rfef-consumo-minimo-una-peticion-por-vuelta-con-sesion-reutilizada-solo-en-franja-y-con-backoff-ante-el-bloqueo | 2026-10-11 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 32
+- hecho: 33
 - en-revision: 2

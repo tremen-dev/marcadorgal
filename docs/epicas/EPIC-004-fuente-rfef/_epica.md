@@ -67,6 +67,9 @@ medida de cobertura y latencia.
   alta y jornada medida esperan a un **acceso autorizado** (lista blanca de IP o
   feed) que gestiona el titular. Esquivar el bloqueo (proxies, rotación de IP)
   queda fuera: es una protección deliberada de la fuente.
+  *Enmendado el 2026-10-11 (titular):* se abre en paralelo la vía de consumo
+  mínimo desde una identidad estable (ADR-021, SPEC-032): el alta espera a la
+  calibración de la cadencia sostenible, no solo al acceso autorizado.
 - **Ofuscación del marcador.** Los dígitos llegan ofuscados (JS, CSS
   `::after`, escapes unicode). Si la RFEF la cambia, el parser puede leer
   mal en silencio: con prioridad 50 un dígito falso manda. Es el riesgo
