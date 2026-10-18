@@ -51,6 +51,12 @@ Actualizado: 2026-10-18
 | SPEC-032 — calibracion-de-la-cadencia-sostenible-de-la-rfef-con-una-identidad-estable | hecho | 2026-10-18 (sdd-verificador) |
 | SPEC-036 — vias-legitimas-de-acceso-a-los-datos-de-la-rfef | hecho | 2026-10-18 (sdd-verificador) |
 
+## EPIC-006 — patrocinio (aprobada)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
+| SPEC-037 — estudio-de-mercado-del-patrocinio-por-jornada | hecho | 2026-10-18 (sdd-verificador) |
+
 ## EPIC-FIX (aprobada)
 
 | Spec | Estado | Último cambio |
@@ -97,5 +103,5 @@ Actualizado: 2026-10-18
 
 ## Resumen
 
-- hecho: 34
+- hecho: 35
 - en-revision: 2
