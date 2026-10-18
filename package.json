@@ -31,7 +31,8 @@
     "replay:jornada": "node tools/replay-jornada.mjs",
     "reconciliar:cierre": "node tools/reconciliar-cierre.mjs",
     "reconciliar:sin-directo": "node tools/reconciliar-sin-directo.mjs",
-    "cache:portada": "node tools/cache-portada.mjs"
+    "cache:portada": "node tools/cache-portada.mjs",
+    "rfef:calibrar": "node tools/calibrar-rfef.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.117.3",
