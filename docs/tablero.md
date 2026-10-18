@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-10-15
+Actualizado: 2026-10-18
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -48,6 +48,7 @@ Actualizado: 2026-10-15
 | Spec | Estado | Último cambio |
 |---|---|---|
 | SPEC-031 — adaptador-rfef-fetch-con-sesion-parser-puro-y-decodificador-cerrado-sobre-fixtures-reales | hecho | 2026-10-11 (sdd-verificador) |
+| SPEC-036 — vias-legitimas-de-acceso-a-los-datos-de-la-rfef | hecho | 2026-10-18 (sdd-verificador) |
 
 ## EPIC-FIX (aprobada)
 
@@ -93,5 +94,5 @@ Actualizado: 2026-10-15
 
 ## Resumen
 
-- hecho: 32
+- hecho: 33
 - en-revision: 2
