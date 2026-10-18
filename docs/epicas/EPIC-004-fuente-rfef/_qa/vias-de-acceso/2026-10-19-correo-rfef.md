@@ -28,6 +28,6 @@ Muchas gracias,
 Alberto Fojo — marcador.gal — [teléfono]
 
 ## Seguimiento
-- Enviado: _(fecha por confirmar)_
-- Sin respuesta en 10 días hábiles: llamar a la centralita (914 959 800).
+- Enviado: 2026-10-18 (confirmado por el titular).
+- Sin respuesta el 2026-10-30 (10 días hábiles): llamar a la centralita (914 959 800).
 - Sin respuesta tras la llamada: solicitud al CSD (H-8, último recurso).
