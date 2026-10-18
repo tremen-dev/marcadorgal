@@ -63,7 +63,7 @@ competiciones o supera el coste de H-2.
   Ninguno es `marcadores.rfef.es` ni un endpoint PNFG de otra federación; si
   `rfef.es` presenta reto de Cloudflare, la celda queda `no comprobable` y se
   cita una fuente secundaria. Cero peticiones automatizadas, proxies o
-  navegadores sin cabeza para pasar el reto (ADR-019 de la rama SPEC-032, §7).
+  navegadores sin cabeza para pasar el reto (ADR-021 §7).
 - **CA-6 Recomendación ordenada.** El informe ordena las vías por: da directo >
   fiabilidad oficial > plazo > coste, y para cada una da la siguiente acción, su
   dueño (titular) y la spec que abriría si sirve (alta con feed, corrección de
@@ -75,15 +75,15 @@ competiciones o supera el coste de H-2.
   ni `tools/` (`git diff --stat origin/main`).
 
 ## Entidades y reglas afectadas
-Source (`dominio.md`); D-3, D-7; ADR-017, ADR-018, ADR-019 (consumo mínimo, rama
-SPEC-032) §5-§7, ADR-020; SPEC-032 (resultado); EPIC-004 Riesgos (acceso
+Source (`dominio.md`); D-3, D-7; ADR-017, ADR-018, ADR-021 (consumo mínimo)
+§5-§7, ADR-020; SPEC-032 (resultado); EPIC-004 Riesgos (acceso
 autorizado).
 
 ## Fuera de alcance
 - Opinión jurídica, redactar o presentar solicitudes de acceso (D-7, titular).
 - Enviar correos o llamar: lo hace el titular.
 - Esperar las respuestas: la spec cierra con `pendiente de respuesta` donde toque.
-- Rotar IP o sesión, proxies, disfraces o eludir Cloudflare (ADR-019 §7).
+- Rotar IP o sesión, proxies, disfraces o eludir Cloudflare (ADR-021 §7).
 - Alta de cualquier vía: spec aparte si una sirve.
 
 ## Notas para el gate humano
@@ -97,8 +97,7 @@ autorizado).
   nada de la vía 4?
 - **H-4 Navegación manual.** ¿Puedes tú abrir `marcadores.rfef.es` o `rfef.es` a
   mano durante el spike? Reinicia las 24 h de reposo de SPEC-032 (CA-5).
-- **H-5 Colisión de numeración.** Hay dos ADR-019: el de main (motor
-  serializado, SPEC-035) y el de la rama SPEC-032 (consumo mínimo). Hay que
-  renumerar el de la RFEF antes de fusionar esa rama; esta spec cita el segundo.
-- **H-6 SPEC-032.** Con «sin cadencia» en las dos series, ¿se cierra con ese
-  resultado y el alta de EPIC-004 queda a la espera de esta spec?
+- **H-5 Colisión de numeración.** *Resuelta 2026-10-18 (orquestador):* el ADR de
+  consumo mínimo RFEF pasa a ADR-021 en la rama SPEC-032 (PR #76).
+- **H-6 SPEC-032.** *Resuelta por el titular (Alberto Fojo, 2026-10-18):* se cierra
+  con «sin cadencia» y el alta de EPIC-004 espera a esta spec.
