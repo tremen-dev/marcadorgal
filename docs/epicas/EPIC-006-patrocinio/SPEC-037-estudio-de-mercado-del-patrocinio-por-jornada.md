@@ -2,10 +2,11 @@
 id: SPEC-037
 tipo: spec
 epica: EPIC-006
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-18, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-18, por: Alberto Fojo}
 ---
 # SPEC-037 — Estudio de mercado del patrocinio por jornada
 
@@ -93,12 +94,12 @@ SPEC-030 (caché de portada); SPEC-036 H-2 (techo de coste); EPIC-006 H-1..H-6.
   incluyen API-Football (20 + 25 + 19 $), que además se cobra en USD
   (SPEC-036 S13). Un cuarto de 64 $ ≈ 15 €; un cuarto de 19 + 64 ≈ 19 €.
   *Recomendación:* mantener 20 € como suelo (redondeo prudente) y que el
-  informe enseñe las dos cuentas.
+  informe enseñe las dos cuentas. *Resuelta por el titular (Alberto Fojo, 2026-10-18):* 20 €, con margen.
 - **H-2 «Un cuarto» y el calendario.** Hay meses con 5 jornadas y parones.
   *Recomendación:* suelo = coste anual / jornadas de la temporada, y el
-  informe da las dos cifras.
+  informe da las dos cifras. *Resuelta por el titular (Alberto Fojo, 2026-10-18):* coste anual entre jornadas.
 - **H-3 Acceso a los logs.** ¿Hay `vercel` CLI enlazada con permiso para leer
   logs o métricas en el spike? La retención del plan puede no cubrir la
-  última jornada. *Recomendación:* si no, CA-2 sale por la vía del plan.
+  última jornada. *Recomendación:* si no, CA-2 sale por la vía del plan. *Resuelta por el titular (Alberto Fojo, 2026-10-18):* vía del plan de medición.
 - **H-4 Idioma de la ficha.** *Recomendación:* galego, con versión en
-  castellano en el mismo fichero si cabe en 40 líneas.
+  castellano en el mismo fichero si cabe en 40 líneas. *Resuelta por el titular (Alberto Fojo, 2026-10-18):* galego + castellano.
