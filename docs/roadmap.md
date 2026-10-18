@@ -58,6 +58,20 @@ tipo: roadmap
   resultado final sin operador; el directo sigue necesitando operador o
   segunda fuente.
 
+- **EPIC-006 — Modelo de ingresos: patrocinio.** *(Borrador, propuesto el
+  2026-10-18; pendiente de aprobación del titular.)* Estudio de mercado,
+  spike sin código: cuánto pagaría un patrocinador gallego por una jornada o
+  una competición, y de ahí el techo de coste mensual para datos. Cierra
+  cuando el titular acepta un techo en € con fórmula reproducible.
+  *Por qué en «Después» y no en «Más adelante»:* SPEC-036 puede acabar en un
+  proveedor de pago y sin techo no se puede decidir. Eso ata la épica a
+  EPIC-004, que está en «Ahora».
+  *Por qué no en «Ahora»:* no desbloquea por sí misma ninguna métrica norte y
+  la audiencia aún no está medida. Al no tener código, no compite con
+  EPIC-005 por implementación: puede adelantarse si SPEC-036 lo necesita
+  (H-6). Pintar el patrocinio en pantalla queda fuera hasta que haya un
+  acuerdo firmado (criterio de corte).
+
 ## Hecho
 
 - **EPIC-001 — Cimientos.** Repo con CI, esqueleto Next.js, modelo zod,
