@@ -74,17 +74,24 @@ audiencia compatible con el no-negociable.
 ## Preguntas para el titular
 - **H-1. Audiencia.** ¿Hay datos (Vercel Analytics, logs de Vercel)?
   ¿Cuentas Vercel Analytics como «analítica de terceros» del no-negociable?
-  Si la cuentas, la audiencia sale solo de peticiones agregadas.
+  Si la cuentas, la audiencia sale solo de peticiones agregadas. *Resuelta por el titular (Alberto Fojo, 2026-10-18):* sí cuenta; la
+  audiencia sale solo de peticiones agregadas (logs de Vercel), sin Vercel Analytics.
 - **H-2. Identidad.** ¿Encaja el patrocinio con «No un medio»? ¿Lo quieres
-  dentro de la pantalla Xornada o solo en un pie o una página aparte?
+  dentro de la pantalla Xornada o solo en un pie o una página aparte? *Resuelta por el titular (Alberto Fojo, 2026-10-18):* sitio
+  importante dentro de Xornada, tras unos ajustes previos de la pantalla (spec aparte).
 - **H-3. Categorías.** Recomiendo **excluir las apuestas**: `vision.md` dice
   «No una app de apuestas», FOUNDATION las deja fuera y su publicidad está
   muy restringida. ¿Aceptas el alcohol? ¿Solo cerveza (Estrella Galicia) o
-  ninguno?
+  ninguno? *Resuelta por el titular (Alberto Fojo, 2026-10-18):* apuestas fuera;
+  se admite cualquier alcohol legal (la base legal, D-7, la lleva el titular).
 - **H-4. Marca en pantalla.** D-8 prohíbe escudos. ¿El patrocinador sale
   como texto en galego («Xornada con…») o admites su logotipo como excepción
-  de ADR-005?
+  de ADR-005? *Resuelta por el titular (Alberto Fojo, 2026-10-18):* se admite
+  cualquier logotipo; «sin escudos» (ADR-005) se refiere solo a los de los equipos.
 - **H-5. Qué cubre el techo.** ¿Cubre solo datos o también la plataforma
-  (≈ 64 $/mes)? ¿Qué déficit mensual aceptas mientras no haya ingresos?
+  (≈ 64 $/mes)? ¿Qué déficit mensual aceptas mientras no haya ingresos? *Resuelta por el titular (Alberto Fojo, 2026-10-18):* patrocinio
+  por jornada; el suelo es un cuarto del coste mensual de datos y plataforma
+  (≈ 20 €/jornada). Más adelante, precio mayor para jornadas finales, playoff, etc.
 - **H-6. Momento.** ¿El estudio debe estar antes de que cierre SPEC-036 (y
-  entonces se adelanta al código de EPIC-005) o puede esperar?
+  entonces se adelanta al código de EPIC-005) o puede esperar? *Resuelta por el titular (Alberto Fojo, 2026-10-18):* ahora, sin
+  código, mientras se espera la respuesta de la RFEF.
