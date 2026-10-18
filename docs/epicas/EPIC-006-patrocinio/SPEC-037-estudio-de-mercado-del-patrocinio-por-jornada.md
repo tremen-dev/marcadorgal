@@ -2,7 +2,7 @@
 id: SPEC-037
 tipo: spec
 epica: EPIC-006
-estado: en-revision
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-18, por: sdd-arquitecto}
@@ -11,6 +11,7 @@ historial:
   - {estado: en-revision, fecha: 2026-10-18, por: sdd-implementador}
   - {estado: en-progreso, fecha: 2026-10-18, por: sdd-verificador}
   - {estado: en-revision, fecha: 2026-10-18, por: sdd-implementador}
+  - {estado: hecho, fecha: 2026-10-18, por: sdd-verificador}
 ---
 # SPEC-037 — Estudio de mercado del patrocinio por jornada
 
