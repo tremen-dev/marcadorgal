@@ -55,7 +55,7 @@ Actualizado: 2026-10-18
 
 | Spec | Estado | Último cambio |
 |---|---|---|
-| SPEC-037 — estudio-de-mercado-del-patrocinio-por-jornada | aprobada | 2026-10-18 (Alberto Fojo) |
+| SPEC-037 — estudio-de-mercado-del-patrocinio-por-jornada | en-revision | 2026-10-18 (sdd-implementador) |
 
 ## EPIC-FIX (aprobada)
 
@@ -104,5 +104,4 @@ Actualizado: 2026-10-18
 ## Resumen
 
 - hecho: 34
-- en-revision: 2
-- aprobada: 1
+- en-revision: 3
