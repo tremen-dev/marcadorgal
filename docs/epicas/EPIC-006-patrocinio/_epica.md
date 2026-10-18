@@ -1,9 +1,11 @@
 ---
 id: EPIC-006
 tipo: epica
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-10-18, por: sdd-producto}
+  - {estado: aprobada, fecha: 2026-10-18, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # EPIC-006 — Modelo de ingresos: patrocinio
 
