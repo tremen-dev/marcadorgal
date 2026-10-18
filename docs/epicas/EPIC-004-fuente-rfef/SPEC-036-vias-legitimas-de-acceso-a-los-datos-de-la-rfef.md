@@ -2,10 +2,11 @@
 id: SPEC-036
 tipo: spec
 epica: EPIC-004
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-18, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-18, por: Alberto Fojo}
 ---
 # SPEC-036 — Vías legítimas de acceso a los datos de la RFEF
 
@@ -87,16 +88,18 @@ autorizado).
 - Alta de cualquier vía: spec aparte si una sirve.
 
 ## Notas para el gate humano
-- **H-1 Correo a la RFEF.** ¿Lo envías ya con tus preguntas, o esperas a las de
-  CA-3? Recomiendo enviarlo ya: el plazo de respuesta es lo más lento.
-- **H-2 Techo de coste** para la vía 6 (€/mes). Sin cifra, el informe no puede
-  marcar `no sirve` por coste.
+- **H-1 Correo a la RFEF.** *Resuelta por el titular (Alberto Fojo, 2026-10-18):* lo envía el 2026-10-19, sin
+  esperar a CA-3, a prensa@rfef.es con CC competiciones@rfef.es; en paralelo, la RFGF.
+- **H-2 Techo de coste.** *Resuelta por el titular (Alberto Fojo, 2026-10-18):* sin techo fijo por ahora. El
+  informe da el coste orientativo de cada vía y no marca `no sirve` por coste; el
+  techo saldrá del estudio de ingresos por patrocinio (fuera de esta spec, sdd-producto).
 - **H-3 Obligación de la RFEF.** Según el CTBG, las federaciones están en
   publicidad activa pero no en el derecho de acceso de la Ley 19/2013. La spec no
   la da por hecha. ¿Quieres que el informe solo identifique vías (recomendado), o
-  nada de la vía 4?
+  nada de la vía 4? *Resuelta por el titular (Alberto Fojo, 2026-10-18):* solo identificar vías y precedentes.
 - **H-4 Navegación manual.** ¿Puedes tú abrir `marcadores.rfef.es` o `rfef.es` a
-  mano durante el spike? Reinicia las 24 h de reposo de SPEC-032 (CA-5).
+  mano durante el spike? Reinicia las 24 h de reposo de SPEC-032 (CA-5). *Resuelta por el titular (Alberto Fojo, 2026-10-18):* `rfef.es`
+  sí, a mano (otra infraestructura); `marcadores.rfef.es` no, salvo necesidad citada.
 - **H-5 Colisión de numeración.** *Resuelta 2026-10-18 (orquestador):* el ADR de
   consumo mínimo RFEF pasa a ADR-021 en la rama SPEC-032 (PR #76).
 - **H-6 SPEC-032.** *Resuelta por el titular (Alberto Fojo, 2026-10-18):* se cierra
