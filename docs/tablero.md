@@ -55,7 +55,7 @@ Actualizado: 2026-10-18
 
 | Spec | Estado | Último cambio |
 |---|---|---|
-| SPEC-037 — estudio-de-mercado-del-patrocinio-por-jornada | en-revision | 2026-10-18 (sdd-implementador) |
+| SPEC-037 — estudio-de-mercado-del-patrocinio-por-jornada | en-progreso | 2026-10-18 (sdd-verificador) |
 
 ## EPIC-FIX (aprobada)
 
@@ -104,4 +104,5 @@ Actualizado: 2026-10-18
 ## Resumen
 
 - hecho: 34
-- en-revision: 3
+- en-revision: 2
+- en-progreso: 1
