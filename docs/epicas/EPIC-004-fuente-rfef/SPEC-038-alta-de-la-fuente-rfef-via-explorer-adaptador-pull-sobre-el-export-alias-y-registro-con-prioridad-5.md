@@ -2,10 +2,11 @@
 id: SPEC-038
 tipo: spec
 epica: EPIC-004
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-01, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-11-01, por: Alberto Fojo}
 ---
 # SPEC-038 — Alta de la fuente rfef vía explorer: adaptador pull sobre el export, alias y registro con prioridad 5
 
@@ -117,9 +118,9 @@ ADR-004, ADR-007, ADR-008, ADR-011, ADR-013, ADR-017 §2-§4, **ADR-023**.
 - `codEquipo` y `codActa` como identidad (ADR-023 §Alternativas).
 
 ## Notas para el gate humano
-- **H-1 Carpeta.** ADR-023 §6 pone el adaptador nuevo en `src/sources/rfef/explorer.ts` junto al directo, que queda intacto y en reserva. El orquestador recomendó carpeta nueva (`src/sources/rfef-explorer/`). ¿Misma carpeta (recomendado) o nueva?
-- **H-2 Adaptador directo.** Queda **en reserva** (sin registrar; ADR-018/020/021 siguen rigiéndolo) por si la RFEF contesta (SPEC-036 vía 1). Alternativa: marcarlo no vigente y cerrar la vía directa.
-- **H-3 `legalBasis`.** Texto del titular para el registro (D-7). Propuesta: «Datos de marcadores.rfef.es obtenidos por el servicio propio explorer con las reglas de acceso del titular (ADR-023 §2); correo a la RFEF del 2026-10-19 sin respuesta; gestión fuera del repo (D-7)».
-- **H-4 Contrato.** Confirmar con explorer los añadidos de ADR-023 §4: `SUSPENDED` aparte, `discardedReadings` + registro del descarte, `no-store`, `200` nunca vacío, lectura de Postgres. POST solo como recomendación.
-- **H-5 `SCHEDULED` → nada** y el filtro de fuera de ventana en el núcleo (CA-6): tocan `tick.ts` para todas las fuentes, sin efecto en API-Football.
-- **H-6 Orden.** CA-9 antes que CA-1 (los fixtures son del endpoint real) y CA-10 antes de SPEC-039. Propuesta: alta en la semana del 2026-11-03 y observación el fin de semana 2026-11-07/08.
+- **H-1 Carpeta.** ADR-023 §6 pone el adaptador nuevo en `src/sources/rfef/explorer.ts` junto al directo, que queda intacto y en reserva. El orquestador recomendó carpeta nueva (`src/sources/rfef-explorer/`). ¿Misma carpeta (recomendado) o nueva? *Resuelta por el titular (Alberto Fojo, 2026-11-01):* misma carpeta.
+- **H-2 Adaptador directo.** Queda **en reserva** (sin registrar; ADR-018/020/021 siguen rigiéndolo) por si la RFEF contesta (SPEC-036 vía 1). Alternativa: marcarlo no vigente y cerrar la vía directa. *Resuelta por el titular (2026-11-01):* en reserva.
+- **H-3 `legalBasis`.** Texto del titular para el registro (D-7). Propuesta: «Datos de marcadores.rfef.es obtenidos por el servicio propio explorer con las reglas de acceso del titular (ADR-023 §2); correo a la RFEF del 2026-10-19 sin respuesta; gestión fuera del repo (D-7)». *Resuelta por el titular (2026-11-01):* el texto del registro es exactamente «Datos de rfef.es», nada más: no se dan pistas de cómo se obtienen. CA-7 usa ese texto.
+- **H-4 Contrato.** Confirmar con explorer los añadidos de ADR-023 §4: `SUSPENDED` aparte, `discardedReadings` + registro del descarte, `no-store`, `200` nunca vacío, lectura de Postgres. POST solo como recomendación. *Resuelta (orquestador, 2026-11-01, como implementador de explorer):* confirmados todos; `SUSPENDED` ya separado en explorer (commit 9756194), el resto entra con el export.
+- **H-5 `SCHEDULED` → nada** y el filtro de fuera de ventana en el núcleo (CA-6): tocan `tick.ts` para todas las fuentes, sin efecto en API-Football. *Resuelta por el titular (2026-11-01):* sí.
+- **H-6 Orden.** CA-9 antes que CA-1 (los fixtures son del endpoint real) y CA-10 antes de SPEC-039. Propuesta: alta en la semana del 2026-11-03 y observación el fin de semana 2026-11-07/08. *Resuelta por el titular (2026-11-01):* sí; el despliegue de explorer en Vercel lo hace el titular.

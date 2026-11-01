@@ -74,6 +74,7 @@ con la serie de campo.
    | «Suspendido», con o sin marcador | `suspended` (§8.3) |
    | otro texto | `skipped: unsupported_status` |
 5. **Prioridad 50** en las cinco competiciones. Con ella, `settle` ya da `confirmado`.
+   *2026-11-01, supersedido por ADR-023 §1:* prioridad 5 temporal mientras dure la observación de la vía explorer.
 6. **Crudo antes que parseo** (ADR-007 §6): ~11 MB/día en gzip a 1.000 ticks.
 7. **Fixtures y oráculo.** Capturas reales. Playwright pinta cada fixture sin red,
    con `.fa-N` en línea, y el texto visible de cada marcador tiene que ser el del

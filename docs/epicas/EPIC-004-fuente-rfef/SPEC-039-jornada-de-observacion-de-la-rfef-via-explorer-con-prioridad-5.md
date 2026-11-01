@@ -2,10 +2,11 @@
 id: SPEC-039
 tipo: spec
 epica: EPIC-004
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-01, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-11-01, por: Alberto Fojo}
 ---
 # SPEC-039 — Jornada de observación de la rfef vía explorer con prioridad 5
 
@@ -87,14 +88,14 @@ RN-03, RN-04, RN-05, RN-11; D-9; ADR-004, ADR-011, ADR-016, ADR-017 §5,
 - **H-1 Umbrales de CA-4.** Mediana Δ ≤ 0 y p95 ≤ 45 s es exigente: pide que la
   rfef no vaya por detrás de API-Football. Alternativa más laxa: mediana ≤ 15 s.
   Los ≥ 6 partidos y ≥ 5 goles evitan decidir con una muestra vacía (Tercera
-  juega 9 por jornada; Primera puede no jugar).
+  juega 9 por jornada; Primera puede no jugar). *Resuelta por el titular (Alberto Fojo, 2026-11-01):* umbral estricto (mediana Δ ≤ 0 s, p95 ≤ 45 s).
 - **H-2 Alertas esperadas.** Con 5 y 10 adyacentes habrá `conflict` y RN-03 con
   la rfef (ADR-023 §1). Se aceptan como evidencia y se explican en el informe de
   SPEC-017; el operador no actúa sobre ellas. Si molestan, la alternativa es la
-  spec del motor de ADR-017 §8.1 con bandas más finas, no silenciarlas.
+  spec del motor de ADR-017 §8.1 con bandas más finas, no silenciarlas. *Resuelta por el titular (2026-11-01):* se aceptan como evidencia.
 - **H-3 Herramienta aparte.** `informe:rfef` nuevo en vez de ampliar
   `informe:jornada` (1.500 líneas con el veredicto de SPEC-017): la comparación
-  entre fuentes es otra pregunta. `--contrastar` se reutiliza tal cual.
+  entre fuentes es otra pregunta. `--contrastar` se reutiliza tal cual. *Resuelta por el titular (2026-11-01):* herramienta aparte.
 - **H-4 Fecha.** Primer fin de semana con SPEC-038 en producción
   (propuesta: 2026-11-07/08). Si explorer entra en cooldown largo o cambia la
-  ofuscación a mitad, la jornada vale igual: el informe lo cuenta.
+  ofuscación a mitad, la jornada vale igual: el informe lo cuenta. *Resuelta por el titular (2026-11-01):* 2026-11-07/08.

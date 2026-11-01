@@ -54,11 +54,13 @@ intento cada 30 s (~4/min): más que la serie que provocó el bloqueo.
    backoff hasta <instante>».
 5. **Cadencia.** `minIntervalSeconds` de la rfef = cadencia recomendada por
    SPEC-032, no 30 s. Sin calibración, no hay alta.
-6. **Identidad estable y declarada.** En producción, una **IP de salida
+6. *2026-11-01, supersedido por ADR-023 §2 para la vía explorer:* la identidad y las reglas de acceso son las de explorer. Sigue rigiendo el adaptador directo.
+   **Identidad estable y declarada.** En producción, una **IP de salida
    estática de Vercel** (función fijada a su región) y el UA del registro,
    `marcador.gal (ingesta; https://marcador.gal)`. Plan, región y coste los
    decide la spec de alta.
-7. **Fuera, sin excepción:** rotar o renovar IP, proxies, varios orígenes,
+7. *2026-11-01, supersedido por ADR-023 §2 para la vía explorer:* explorer usa pool de sesiones, perfiles rotatorios y proxies con sus propias reglas, por decisión del titular. Sigue rigiendo el adaptador directo.
+   **Fuera, sin excepción:** rotar o renovar IP, proxies, varios orígenes,
    variar el UA o cualquier técnica para no ser identificados o eludir el
    bloqueo. Si la cadencia no basta, el camino es el acceso autorizado
    (`_epica.md`, Riesgos).

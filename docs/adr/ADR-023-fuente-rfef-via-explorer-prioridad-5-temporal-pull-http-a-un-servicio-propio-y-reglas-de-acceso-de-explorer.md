@@ -1,13 +1,15 @@
 ---
 id: ADR-023
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-11-01, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-11-01, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # ADR-023: Fuente rfef vía explorer: prioridad 5 temporal, pull HTTP a un servicio propio y reglas de acceso de explorer
 
-- Deciders: sdd-arquitecto propone (2026-11-01) a encargo del orquestador. Registra las decisiones 1-5 que **Alberto Fojo (titular)** tomó el 2026-11-01 (prioridad 5 temporal, reglas de explorer tal cual, arquitectura pull sobre la misma Supabase, correo RFEF sin respuesta) y decide lo que dejó abierto (§4-§6). Pendiente de aprobación formal.
+- Deciders: sdd-arquitecto propone (2026-11-01) a encargo del orquestador. Registra las decisiones 1-5 que **Alberto Fojo (titular)** tomó el 2026-11-01 (prioridad 5 temporal, reglas de explorer tal cual, arquitectura pull sobre la misma Supabase, correo RFEF sin respuesta) y decide lo que dejó abierto (§4-§6). **Aprobado por Alberto Fojo el 2026-11-01.**
 - Specs relacionadas: SPEC-038 (alta), SPEC-039 (jornada de observación), SPEC-031 (adaptador directo, queda en reserva), SPEC-036 (vía 1 sigue abierta). **Supersede:** ADR-017 §5 (prioridad 50 → 5 mientras dure la observación); ADR-021 §6-§7 (identidad declarada y prohibición de proxies: la vía explorer sigue sus propias reglas); ADR-018 §4-§5 solo como condición de alta («sin este detector no hay alta» no aplica a esta vía). **No aplican a esta vía, y siguen rigiendo el adaptador directo:** ADR-018 §1-§3, ADR-020, ADR-021 §1-§5. ADR-017 §2, §3 (en el código de marcadorgal), §4 y §8 siguen en vigor.
 
 ## Contexto
