@@ -79,6 +79,7 @@ export const REMOTE_SECRETS = [
   "SUPABASE_ACCESS_TOKEN",
   "DATABASE_PASSWORD",
   "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+  "RFEF_EXPLORER_TOKEN",
 ] as const;
 
 // Empty, not deleted: an empty variable is not overwritten by
