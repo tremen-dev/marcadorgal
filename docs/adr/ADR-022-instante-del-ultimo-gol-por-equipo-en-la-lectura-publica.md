@@ -50,4 +50,13 @@ y ahora mismo no se pueden tocar `src/sources`, `src/ingest` ni el motor
 - **Detectarlo en el cliente comparando pintados**: no funciona sin JS, en la primera carga ni tras recargar. Rechazada.
 - **Publicar el historial de marcadores**: amplía mucho ADR-014 §3 para usar solo un instante. Rechazada.
 
+## Anexo A — Retirada del lateral de escritorio (SPEC-040), frente a ADR-005
+
+Se anota aquí porque SPEC-023 H-6 pedía registrar en un ADR cualquier retirada del lateral, y ADR-023 en adelante los tiene reservados otra sesión. No tiene que ver con el instante del gol.
+
+- **Decisión (Alberto Fojo, 2026-11-01):** en escritorio desaparece el lateral «Competicións» de 236 px (`Escritorio.tpl.html`, SPEC-023 CA-7, SPEC-028 CA-1/CA-3). Las competiciones van una por columna de 360 px (SPEC-040 CA-4).
+- **Motivo:** cada cabecera de columna ya lleva su contador («N en xogo» o el total) y su plegado. El lateral se comía casi una columna; sin él, a 1920 px caben las cinco competiciones.
+- **Relación con ADR-005:** es una desviación más de la letra de `docs/diseno/` (D-8), del mismo tipo que las de la exc. 4: la pantalla prescinde de una pieza del diseño. La semántica de color no cambia. Ningún contador depende solo del color.
+- **Consecuencia:** desaparece la navegación de un clic hasta una competición. Con cinco columnas a la vista no hace falta; por debajo de ~1520 px las columnas siguen con scroll y los anclajes `#xornada-<id>` siguen funcionando.
+
 <!-- REGLA: un ADR aceptado es INMUTABLE. Para cambiar la decisión, escribe otro ADR que lo supersede (estado del viejo -> bloqueada + nota "superseded por ADR-NNN"). -->
