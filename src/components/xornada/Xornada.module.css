@@ -482,7 +482,10 @@ a.weekArrow:focus-visible {
   font-weight: 600;
   font-size: 11px;
   line-height: 1.2;
-  letter-spacing: 0.03em;
+  /* SPEC-040 CA-6: no tracking, so a ten-letter state («Suspendido»,
+     «Finalizado») fits the 72 px also where the glyph advances round up
+     (Linux: 73 px with 0.03em). */
+  letter-spacing: 0;
   color: var(--fg-muted);
 }
 
