@@ -104,7 +104,7 @@ export function MatchRow({ row, locale, age = null, today = false }: Props) {
       data-version={row.version}
     >
       <div className={styles.margin}>
-        <span className={styles.marginLines}>
+        <span className={styles.marginLines} data-testid="match-margin-lines">
           <span
             className={cx(
               styles.marginMain,

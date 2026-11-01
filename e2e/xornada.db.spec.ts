@@ -193,8 +193,10 @@ test("SPEC-021 /api/board carries halfTime and / and /es say Descanso", async ({
       `[data-testid="match-row"][data-match-id="${atHalfTime[0].matchId}"]`,
     );
     await expect(row).toHaveAttribute("data-status", "live");
-    await expect(row.getByTestId("match-margin")).toHaveText(
-      dict.xornada.halfTime,
+    // SPEC-040 CA-2: «En xogo» and, under it, «DESCANSO».
+    await expect(row.getByTestId("match-margin")).toHaveText(dict.status.live);
+    await expect(row.getByTestId("match-margin-sub")).toHaveText(
+      dict.xornada.halfTime.toLocaleUpperCase(path === "/" ? "gl" : "es"),
     );
     expect(await row.textContent()).not.toMatch(/\d+(\+\d+)?'/);
   }

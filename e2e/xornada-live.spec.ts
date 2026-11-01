@@ -307,10 +307,11 @@ for (const route of [
       await expect(h1).toHaveCount(1);
     });
 
-    // SPEC-033 CA-3 (SPEC-023 N-2): a repaint keeps the day headers hidden
-    // under a chosen day; CA-4: the client marks the Equipo galego with the
-    // set it was served, the delta carries none.
-    test("SPEC-033 CA-3/CA-4: a repaint keeps headers, day and the galician mark", async ({
+    // SPEC-040 CA-3 (replaces SPEC-033 CA-3; SPEC-023 N-2): no day headers;
+    // a repaint keeps the chosen day hiding the other days' rows, the fold
+    // and the fragment. SPEC-033 CA-4: the client marks the Equipo galego
+    // with the set it was served, the delta carries none.
+    test("SPEC-040 CA-3/SPEC-033 CA-4: a repaint keeps day, fold, fragment and the galician mark", async ({
       page,
     }) => {
       const celta = match("g1", "primera-division", 1, {
@@ -339,9 +340,15 @@ for (const route of [
       await started(page);
       await page.clock.runFor(POLL);
       await expect(page.getByTestId("match-row")).toHaveCount(LIST.length + 1);
-      const headers = page.getByTestId("day-header");
-      await expect(headers).toHaveCount(2);
-      for (const h of await headers.all()) await expect(h).toBeHidden();
+      await expect(
+        page.locator("[data-day-header], [data-day-group]"),
+      ).toHaveCount(0);
+      // Fold the first competition before the next repaint.
+      const firstHead = page.getByTestId("competition-head").first();
+      await firstHead.click();
+      await expect(
+        page.getByTestId("competition-details").first(),
+      ).not.toHaveAttribute("open", "");
       const name = page
         .locator('[data-match-id="g1"]')
         .getByTestId("team-name")
@@ -353,13 +360,18 @@ for (const route of [
 
       await page.clock.runFor(POLL);
       await expect(page.getByTestId("match-row")).toHaveCount(LIST.length + 2);
-      await expect(headers).toHaveCount(3);
-      for (const h of await headers.all()) await expect(h).toBeHidden();
-      await expect(page.locator('[data-day-group="2026-10-11"]')).toBeHidden();
+      await expect(
+        page.locator("[data-day-header], [data-day-group]"),
+      ).toHaveCount(0);
+      // The Sunday row is there, hidden by the chosen Saturday.
+      await expect(page.locator('[data-match-id="c1"]')).toBeHidden();
+      await expect(
+        page.getByTestId("competition-details").first(),
+      ).not.toHaveAttribute("open", "");
       expect(new URL(page.url()).hash).toBe("#d=2026-10-10");
 
       await page.getByTestId("day-link").first().click();
-      for (const h of await headers.all()) await expect(h).toBeVisible();
+      await expect(page.locator('[data-match-id="c1"]')).toBeVisible();
       await expect(name).toHaveAttribute("data-galician", "true");
     });
 

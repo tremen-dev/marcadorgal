@@ -454,7 +454,10 @@ a.weekArrow:focus-visible {
   box-shadow: var(--live-edge) var(--alerta);
 }
 
+/* SPEC-040 CA-6: at the top of the row, so the two lines of every margin
+   sit at the same height whatever the teams' wrapping or the qualifier. */
 .margin {
+  align-self: start;
   display: flex;
   flex-direction: column;
   gap: 3px;
