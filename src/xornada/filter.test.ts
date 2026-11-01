@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
+import * as filterModule from "./filter";
 import {
   competitionCounts,
   countFilters,
-  dayGroupView,
   EMPTY_STATE,
   formatCount,
   fragmentOf,
@@ -186,40 +186,24 @@ describe("SPEC-028 CA-2 parseFragment ignores #xornada-<id>", () => {
   );
 });
 
-// SPEC-033 CA-3 (H-1): a day's header goes with a chosen day; a group the
-// filter leaves empty goes with its header.
-describe("SPEC-033 CA-3 dayGroupView", () => {
-  const sat = [
-    { status: "finished", day: "2026-10-03" },
-    { status: "scheduled", day: "2026-10-03" },
-  ];
-  const sun = [{ status: "scheduled", day: "2026-10-04" }];
-
-  it("whole xornada, Todos: every group and header shown", () => {
-    expect(dayGroupView(sat, EMPTY_STATE)).toEqual({
-      hidden: false,
-      headerHidden: false,
-    });
+// SPEC-040 CA-3 (replaces SPEC-033 CA-3's headers): there are no day groups
+// left to show or hide; the rows and the competitions are all there is.
+describe("SPEC-040 CA-3 no day groups", () => {
+  it("dayGroupView is gone", () => {
+    expect(filterModule).not.toHaveProperty("dayGroupView");
   });
 
-  it("a day chosen: no header; the other days' groups hidden", () => {
-    const state = { day: "2026-10-03", filter: null };
-    expect(dayGroupView(sat, state)).toEqual({
-      hidden: false,
-      headerHidden: true,
-    });
-    expect(dayGroupView(sun, state).hidden).toBe(true);
-  });
-
-  it("a filter that empties a day hides its group, header included", () => {
-    const state = { day: null, filter: "finished" as const };
-    expect(dayGroupView(sat, state)).toEqual({
-      hidden: false,
-      headerHidden: false,
-    });
-    expect(dayGroupView(sun, state)).toEqual({
-      hidden: true,
-      headerHidden: false,
-    });
+  it("a day and a filter still decide every row on its own", () => {
+    const rows = [
+      { status: "finished", day: "2026-10-03" },
+      { status: "scheduled", day: "2026-10-03" },
+      { status: "scheduled", day: "2026-10-04" },
+    ];
+    const state = { day: "2026-10-03", filter: "finished" as const };
+    expect(rows.map((row) => rowMatches(row, state))).toEqual([
+      true,
+      false,
+      false,
+    ]);
   });
 });
