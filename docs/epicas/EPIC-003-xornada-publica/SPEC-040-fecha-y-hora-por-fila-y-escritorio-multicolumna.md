@@ -2,10 +2,11 @@
 id: SPEC-040
 tipo: spec
 epica: EPIC-003
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-01, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-11-01, por: Alberto Fojo}
 ---
 # SPEC-040 — Fecha y hora por fila y escritorio multicolumna
 
