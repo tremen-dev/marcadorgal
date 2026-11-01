@@ -19,14 +19,14 @@ export function dayLabel(day: XornadaDay, locale: Locale): string {
   return day.today ? label.toLocaleUpperCase(locale) : label;
 }
 
-// SPEC-033 CA-2: «sáb 11 out», always with the month; today in capitals,
-// as in the strip.
-export function dayHeaderLabel(
+// SPEC-040 CA-2 (was SPEC-033's day header): the date of a row, «sáb 11
+// out», always with the month; today in capitals, as in the strip (H-4).
+export function rowDateLabel(
   day: Pick<XornadaDay, "weekdayKey" | "dayOfMonth" | "monthKey">,
   today: boolean,
   locale: Locale,
 ): string {
-  const label = t(locale, "xornada.dayHeader", {
+  const label = t(locale, "xornada.rowDate", {
     weekday: t(locale, day.weekdayKey),
     day: day.dayOfMonth,
     month: t(locale, day.monthKey),

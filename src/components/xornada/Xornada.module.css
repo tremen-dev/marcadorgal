@@ -242,8 +242,6 @@ a.weekArrow:focus-visible {
    display its class gives it. */
 .row[hidden],
 .competition[hidden],
-.dayGroup[hidden],
-.dayHeader[hidden],
 .empty[hidden],
 .legend[hidden],
 .livePill[hidden],
@@ -473,27 +471,6 @@ a.weekArrow:focus-visible {
   padding: 0;
 }
 
-/* SPEC-033 CA-2: the header of a day inside a competition. The eyebrow's
-   letter (TYPE.eyebrow), muted, a compact row's height, no fill of its own. */
-.dayGroup {
-  margin: 0;
-}
-
-.dayHeader {
-  display: flex;
-  align-items: center;
-  min-height: var(--row-compact);
-  margin: 0;
-  padding: 0 14px;
-  font-family: var(--mono);
-  font-weight: 600;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: var(--tracking-eyebrow);
-  color: var(--fg-muted);
-  border-bottom: var(--hairline) solid var(--line-row);
-}
-
 /* Margin · (team, score) × 2. The design's 50px margin grows to 72px because
    the status is a word (ADR-005 exc. 1); the star column is out of v1. Each
    team shares a grid line with its score, so a wrapped name keeps them level. */
@@ -523,7 +500,17 @@ a.weekArrow:focus-visible {
   min-width: 0;
 }
 
+/* SPEC-040 CA-2 (H-1): always two lines of fixed height, whatever the
+   state, so every row's margin measures the same and its lines sit level.
+   The qualifier stays below them. */
+.marginLines {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
 .marginMain {
+  height: 15px;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -537,6 +524,18 @@ a.weekArrow:focus-visible {
 
 .marginMinute {
   font-size: 12px;
+}
+
+/* The date or the part: mono 500 10 px, leading 1.2, dim. Empty (live
+   without a minute), it keeps its height. */
+.marginSub {
+  height: 12px;
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 1.2;
+  color: var(--fg-dim);
+  white-space: nowrap;
 }
 
 .dot {
@@ -852,10 +851,6 @@ a.weekArrow:focus-visible {
 
   .arrow {
     font-size: 12px;
-  }
-
-  .dayHeader {
-    padding: 0 var(--space-16);
   }
 
   .row {

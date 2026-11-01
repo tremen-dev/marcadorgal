@@ -1,5 +1,6 @@
 import { formatTime, type Locale, t } from "@/i18n";
 import { minuteLabel, type XornadaRow } from "@/xornada/view";
+import { rowDateLabel } from "./labels";
 import { type TeamNameTone, teamNameTone } from "./team-name";
 import styles from "./Xornada.module.css";
 
@@ -9,6 +10,8 @@ type Props = {
   // SPEC-024 CA-9 (RN-11, H-4): minutes since the last observation of a live
   // row, only from 2 min (rowAge); the source clock, never the browser's.
   age?: number | null;
+  // SPEC-040 CA-2 (H-4): the row's date is today, so it goes in capitals.
+  today?: boolean;
 };
 
 const cx = (...names: (string | false | null | undefined)[]): string =>
@@ -37,21 +40,41 @@ function qualifierColor(row: XornadaRow): string {
   return row.qualifier === "sen_sinal" ? styles.red : styles.amber;
 }
 
-export function MatchRow({ row, locale, age = null }: Props) {
+// SPEC-040 CA-2: the date (never live), the part (live) or nothing, with
+// its height kept.
+function secondLine(row: XornadaRow, today: boolean, locale: Locale) {
+  if (row.date !== null) return rowDateLabel(row.date, today, locale);
+  if (row.part === "halfTime")
+    return t(locale, "xornada.halfTime").toLocaleUpperCase(locale);
+  if (row.part === null) return null;
+  const [short, long] =
+    row.part === "first"
+      ? (["xornada.firstPart", "xornada.firstPartLong"] as const)
+      : (["xornada.secondPart", "xornada.secondPartLong"] as const);
+  return (
+    <>
+      <span aria-hidden="true">{t(locale, short)}</span>
+      <span className={styles.srOnly}>{t(locale, long)}</span>
+    </>
+  );
+}
+
+export function MatchRow({ row, locale, age = null, today = false }: Props) {
   const isLive = row.status === "live";
   const noSignal = row.qualifier === "sen_sinal";
   const { margin, qualifierDisplay: qualifier } = row;
+  // SPEC-040 CA-2 (H-1): the first line is the time, the minute or the state
+  // word (at half-time, «En xogo»); the second, the date or the part.
   const marginText =
     margin.kind === "time"
       ? formatTime(margin.kickoff, locale)
       : margin.kind === "minute"
         ? minuteLabel(margin)
-        : margin.kind === "halfTime"
-          ? t(locale, "xornada.halfTime")
-          : t(locale, row.statusKey);
+        : t(locale, row.statusKey);
   // SPEC-021 H-2: at half-time there is no minute to run, so no live dot;
   // the ember inset still says the match is in play.
   const showDot = isLive && !noSignal && margin.kind !== "halfTime";
+  const saysStatus = margin.kind === "status" || margin.kind === "halfTime";
   const nameClass = (side: "home" | "away") =>
     cx(styles.team, TONE_CLASS[teamNameTone(row, side)]);
   const galician = (side: "home" | "away") =>
@@ -81,20 +104,25 @@ export function MatchRow({ row, locale, age = null }: Props) {
       data-version={row.version}
     >
       <div className={styles.margin}>
-        <span
-          className={cx(
-            styles.marginMain,
-            margin.kind === "minute" && styles.marginMinute,
-            marginColor(row),
+        <span className={styles.marginLines}>
+          <span
+            className={cx(
+              styles.marginMain,
+              margin.kind === "minute" && styles.marginMinute,
+              marginColor(row),
+            )}
+            data-testid="match-margin"
+          >
+            {showDot && <span className={styles.dot} aria-hidden="true" />}
+            {marginText}
+          </span>
+          {!saysStatus && (
+            <span className={styles.srOnly}>{t(locale, row.statusKey)}</span>
           )}
-          data-testid="match-margin"
-        >
-          {showDot && <span className={styles.dot} aria-hidden="true" />}
-          {marginText}
+          <span className={styles.marginSub} data-testid="match-margin-sub">
+            {secondLine(row, today, locale)}
+          </span>
         </span>
-        {margin.kind !== "status" && (
-          <span className={styles.srOnly}>{t(locale, row.statusKey)}</span>
-        )}
         {/* SPEC-034: label (CA-2), mark (CA-3) or nothing (CA-4). */}
         {qualifier.kind === "label" && (
           <span

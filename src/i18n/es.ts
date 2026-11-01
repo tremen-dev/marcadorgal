@@ -39,8 +39,14 @@ export const es: Dictionary = {
     days: "Días",
     dayLabel: "{weekday} {day}",
     dayMonthLabel: "{weekday} {day} {month}",
-    // SPEC-033 CA-2: the header of each day inside a competition.
-    dayHeader: "{weekday} {day} {month}",
+    // SPEC-040 CA-2 (was SPEC-033's day header): the date of a row.
+    rowDate: "{weekday} {day} {month}",
+    // SPEC-040 CA-2: the part of a live match, under its minute; the long
+    // words are for screen readers.
+    firstPart: "1ª P",
+    secondPart: "2ª P",
+    firstPartLong: "primera parte",
+    secondPartLong: "segunda parte",
     empty: "nada aquí",
     round: "jornada {n}",
     competitions: "Competiciones",
