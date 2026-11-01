@@ -39,7 +39,7 @@ export const gl = {
     unavailable: "Os resultados non están dispoñibles agora mesmo.",
     // SPEC-021: half-time, a moment inside live (never an abbreviation).
     halfTime: "Descanso",
-    // SPEC-023: the strip of days, the filters, the sidebar.
+    // SPEC-023: the strip of days, the filters, the counts.
     days: "Días",
     dayLabel: "{weekday} {day}",
     dayMonthLabel: "{weekday} {day} {month}",
@@ -53,7 +53,6 @@ export const gl = {
     secondPartLong: "segunda parte",
     empty: "nada aquí",
     round: "xornada {n}",
-    competitions: "Competicións",
     matchCountOne: "{n} partido",
     matchCount: "{n} partidos",
     // SPEC-027 CA-6: the arrows of the strip, to the neighbour weeks.

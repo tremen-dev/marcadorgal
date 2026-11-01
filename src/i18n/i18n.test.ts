@@ -213,11 +213,12 @@ describe("SPEC-023 Xornada controls", () => {
     expect(t("es", "xornada.empty")).toBe("nada aquí");
   });
 
-  it("CA-5/CA-7 round and sidebar: «xornada N», «Competicións»", () => {
+  // SPEC-040 CA-4 (H-5): no sidebar, so no «Competicións» title.
+  it("CA-5/CA-7 round and counts: «xornada N», «N partidos»", () => {
     expect(t("gl", "xornada.round", { n: 8 })).toBe("xornada 8");
     expect(t("es", "xornada.round", { n: 8 })).toBe("jornada 8");
-    expect(t("gl", "xornada.competitions")).toBe("Competicións");
-    expect(t("es", "xornada.competitions")).toBe("Competiciones");
+    expect(gl.xornada).not.toHaveProperty("competitions");
+    expect(es.xornada).not.toHaveProperty("competitions");
     expect(t("gl", "xornada.matchCount", { n: 4 })).toBe("4 partidos");
     expect(t("es", "xornada.matchCount", { n: 4 })).toBe("4 partidos");
     expect(t("gl", "xornada.matchCountOne", { n: 1 })).toBe("1 partido");

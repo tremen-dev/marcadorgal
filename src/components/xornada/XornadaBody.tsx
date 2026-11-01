@@ -7,14 +7,13 @@ import {
   provisionalLegendShown,
 } from "@/xornada/qualifier";
 import type { XornadaCompetition, XornadaDay } from "@/xornada/view";
-import { CompetitionNav } from "./CompetitionNav";
 import { CompetitionSection } from "./CompetitionSection";
 import { xornadaHeading } from "./labels";
 import styles from "./Xornada.module.css";
 import { DayStrip, FilterPills } from "./XornadaControls";
 import { XornadaHeader } from "./XornadaHeader";
 
-// The controls, the sidebar and the sections of the screen. Rendered on the
+// The controls and the sections of the screen. Rendered on the
 // server for the demos and by XornadaLive (SPEC-024 H-1) for / and /es, with
 // the same components either way.
 
@@ -69,17 +68,17 @@ export function XornadaBody({
           />
         </div>
       )}
-      <div className={styles.body}>
-        {hasRows && (
-          <CompetitionNav competitions={competitions} locale={locale} />
+      {/* SPEC-040 CA-4 (H-5): no sidebar; the page's width is the main's. */}
+      <main className={styles.main}>
+        {freshness}
+        {unavailable && (
+          <p className={styles.unavailable} data-testid="xornada-unavailable">
+            {t(locale, "xornada.unavailable")}
+          </p>
         )}
-        <main className={styles.main}>
-          {freshness}
-          {unavailable && (
-            <p className={styles.unavailable} data-testid="xornada-unavailable">
-              {t(locale, "xornada.unavailable")}
-            </p>
-          )}
+        {/* SPEC-040 CA-4 (H-2, H-3): on desktop, one column per
+              competition, in tier order, aligned left; on mobile, a list. */}
+        <div className={styles.columns} data-testid="xornada-columns">
           {competitions.map((competition) => (
             <CompetitionSection
               key={competition.competitionId}
@@ -89,36 +88,36 @@ export function XornadaBody({
               days={days}
             />
           ))}
-          {hasRows && (
-            <p
-              className={styles.empty}
-              hidden
-              data-xornada-empty
-              data-testid="xornada-empty"
-            >
-              {t(locale, "xornada.empty")}
-            </p>
-          )}
-          {/* SPEC-034 CA-3: one legend for the mark, at the foot of the list.
+        </div>
+        {hasRows && (
+          <p
+            className={styles.empty}
+            hidden
+            data-xornada-empty
+            data-testid="xornada-empty"
+          >
+            {t(locale, "xornada.empty")}
+          </p>
+        )}
+        {/* SPEC-034 CA-3: one legend for the mark, at the foot of the list.
               Served shown when a served row is provisional; the client keeps
               it in step with the visible rows (XornadaFilters). */}
-          {hasRows && provisionalDisplay === "mark" && (
-            <p
-              className={styles.legend}
-              hidden={
-                !provisionalLegendShown(
-                  provisionalDisplay,
-                  rows.map((r) => r.qualifier),
-                )
-              }
-              data-provisional-legend
-              data-testid="provisional-legend"
-            >
-              {t(locale, "qualifier.provisionalLegend")}
-            </p>
-          )}
-        </main>
-      </div>
+        {hasRows && provisionalDisplay === "mark" && (
+          <p
+            className={styles.legend}
+            hidden={
+              !provisionalLegendShown(
+                provisionalDisplay,
+                rows.map((r) => r.qualifier),
+              )
+            }
+            data-provisional-legend
+            data-testid="provisional-legend"
+          >
+            {t(locale, "qualifier.provisionalLegend")}
+          </p>
+        )}
+      </main>
     </>
   );
 }

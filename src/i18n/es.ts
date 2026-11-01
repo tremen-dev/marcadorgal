@@ -35,7 +35,7 @@ export const es: Dictionary = {
     unavailable: "Los resultados no están disponibles en este momento.",
     // SPEC-021: half-time, a moment inside live (never an abbreviation).
     halfTime: "Descanso",
-    // SPEC-023: the strip of days, the filters, the sidebar.
+    // SPEC-023: the strip of days, the filters, the counts.
     days: "Días",
     dayLabel: "{weekday} {day}",
     dayMonthLabel: "{weekday} {day} {month}",
@@ -49,7 +49,6 @@ export const es: Dictionary = {
     secondPartLong: "segunda parte",
     empty: "nada aquí",
     round: "jornada {n}",
-    competitions: "Competiciones",
     matchCountOne: "{n} partido",
     matchCount: "{n} partidos",
     // SPEC-027 CA-6: the arrows of the strip, to the neighbour weeks.

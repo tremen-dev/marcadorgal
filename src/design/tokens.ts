@@ -95,11 +95,14 @@ export const MEASURE = {
   barMobileBottom: 60,
   rowWide: 52,
   rowCompact: 30,
-  sidebar: 236,
   panel: 372,
   // SPEC-023 CA-7: from here up, the desktop layout (ADR-005 leaves it to the
   // screen's spec).
   breakpointDesktop: 1024,
+  // SPEC-040 CA-4 (H-2, N-2): the width of a competition's column on desktop,
+  // the narrowest phone D-2 already proves. The sidebar's 236 is gone (H-5,
+  // ADR-022 Anexo A).
+  competitionColumn: 360,
 } as const;
 
 export const GRID = {

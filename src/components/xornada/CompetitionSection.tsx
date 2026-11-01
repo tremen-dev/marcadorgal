@@ -1,7 +1,7 @@
 import { type Locale, t } from "@/i18n";
 import type { XornadaCompetition, XornadaDay } from "@/xornada/view";
 import { CountLabel } from "./CountLabel";
-import { liveCountTemplates } from "./labels";
+import { liveCountTemplates, matchCountTemplates } from "./labels";
 import { MatchRow } from "./MatchRow";
 import styles from "./Xornada.module.css";
 
@@ -56,9 +56,11 @@ export function CompetitionSection({
             {t(locale, "xornada.round", { n: competition.round })}
           </span>
           <span className={styles.spacer} />
-          {/* F-4: the client keeps it in step with the day and the filter
-              (hidden when none of the rows left is live). Filtering only
-              lowers the count, so it is served only with live matches. */}
+          {/* F-4: the client keeps both in step with the day and the
+              filter: the live count while a row left is live, else the
+              total. Filtering only lowers the live count, so it is served
+              only with live matches. SPEC-040 CA-4: the sidebar's count, in
+              words on desktop (V-1); mobile keeps today's bare pill. */}
           {competition.liveCount > 0 && (
             <span
               className={styles.livePill}
@@ -66,10 +68,10 @@ export function CompetitionSection({
               data-show="live"
               data-testid="live-pill"
             >
-              <span aria-hidden="true" data-n>
+              <span className={styles.pillNumber} aria-hidden="true" data-n>
                 {competition.liveCount}
               </span>
-              <span className={styles.srOnly}>
+              <span className={styles.pillWords}>
                 <CountLabel
                   templates={liveCountTemplates(locale)}
                   n={competition.liveCount}
@@ -77,6 +79,18 @@ export function CompetitionSection({
               </span>
             </span>
           )}
+          <span
+            className={styles.headTotal}
+            hidden={competition.liveCount > 0}
+            data-competition-count={competitionId}
+            data-show="matching"
+            data-testid="competition-total"
+          >
+            <CountLabel
+              templates={matchCountTemplates(locale)}
+              n={competition.rows.length}
+            />
+          </span>
           <span className={styles.arrow} aria-hidden="true">
             <span className={styles.arrowOpen}>▾</span>
             <span className={styles.arrowClosed}>▸</span>
