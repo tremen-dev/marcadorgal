@@ -783,10 +783,6 @@ a.weekArrow:focus-visible {
     border: var(--hairline) solid var(--line);
   }
 
-  .competition .head {
-    border-top: 0;
-  }
-
   .freshness {
     padding: var(--space-8) 0;
   }
@@ -798,9 +794,11 @@ a.weekArrow:focus-visible {
     padding-right: 0;
   }
 
+  /* The column's border is the header's top edge. */
   .head {
     gap: 9px;
     padding: 9px var(--space-16);
+    border-top: 0;
   }
 
   .competitionName {
