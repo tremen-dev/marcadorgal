@@ -1,0 +1,10 @@
+HTTP/1.1 200 OK
+Cache-Control: no-store
+Content-Length: 16137
+Content-Type: application/json; charset=utf-8
+Date: Sun, 01 Nov 2026 23:15:03 GMT
+Server: Vercel
+Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+X-Vercel-Cache: BYPASS
+X-Vercel-Id: cdg1::cdg1::z6sz6-1793574903424-bd340b8195d1
+

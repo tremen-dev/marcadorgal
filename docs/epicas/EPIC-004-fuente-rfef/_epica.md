@@ -20,6 +20,14 @@ fuente automática con **prioridad 50** (la reservada a federación en
 ambas digan. El titular decidió abrirla ya, en paralelo a EPIC-003
 (2026-10-10): la segunda fuente existe y el operador no es necesario para
 cubrir el hueco.
+*Enmendado el 2026-11-01 (titular):* la RFEF entra con **prioridad 5**,
+temporal, para observar el comportamiento del proveedor antes de decidir si
+sube; mientras tanto API-Football (10) sigue mandando y la RFEF confirma,
+cubre el `sen sinal` y hace de reserva. La lectura de `marcadores.rfef.es` la
+hace el servicio externo **explorer** (`marcadorgal-explorer`, fuera de este
+repo y de tremen-sdd), con sus propias reglas de sesión, pacing, cooldown y
+pool de proxies; marcadorgal lo consume por pull. ADR-021 §7 queda
+supersedido por ADR-023. El correo a la RFEF (SPEC-036) sigue sin respuesta.
 
 ## Criterios de éxito
 1. **Directo donde faltaba**: en una jornada medida, ningún partido de las
@@ -32,6 +40,10 @@ cubrir el hueco.
    latencia gol → pantalla cumple `vision.md` (mediana < 45 s, p95 < 90 s),
    medida con el segundo reloj de ADR-016. *Hipótesis a validar*: la
    latencia de publicación de la RFEF no está medida.
+   *Enmendado el 2026-11-01 (titular):* con prioridad 5 la RFEF no manda, así
+   que este criterio no se le exige; en su lugar, la jornada de observación
+   mide su desfase frente a API-Football por competición, para decidir la
+   prioridad definitiva.
 4. **Cero intervenciones manuales** en esa jornada por culpa de la fuente
    nueva (alias, parseo, ofuscación).
 
@@ -42,7 +54,14 @@ cubrir el hueco.
   suspendido; detección de que el formato u ofuscación cambió (la fuente
   falla de forma visible, nunca con un dígito equivocado); medición de
   cobertura y latencia en una jornada real.
+  *Enmendado el 2026-11-01 (titular):* registro con prioridad 5; el
+  adaptador consume el export de explorer, no la web de la RFEF; los fixtures
+  son respuestas reales de ese export. Los cambios en explorer (esquema
+  propio en la base compartida, export, despliegue) se hacen fuera de
+  tremen-sdd y la spec los trata como prerrequisito externo.
 - Fuera (aparcado a propósito, no por descuido):
+  - La cadencia, la identidad y el bloqueo frente a la RFEF: viven en explorer
+    (*2026-11-01*).
   - Operador, panel y webhooks push: pasan a EPIC-005.
   - Ligas territoriales gallegas vía Federación Galega (`federacion=3`):
     «Más adelante»; abre calendario y equipos nuevos.
@@ -70,10 +89,18 @@ medida de cobertura y latencia.
   *Enmendado el 2026-10-11 (titular):* se abre en paralelo la vía de consumo
   mínimo desde una identidad estable (ADR-021, SPEC-032): el alta espera a la
   calibración de la cadencia sostenible, no solo al acceso autorizado.
+  *Enmendado el 2026-11-01 (titular):* la calibración dio «sin cadencia»
+  (SPEC-032: corte tras 13 peticiones válidas) y la RFEF no ha contestado.
+  El alta va por explorer, que sostiene la lectura con pool de sesiones,
+  cooldown progresivo y proxies (ADR-023 supersede ADR-021 §7). Riesgo que
+  queda: el bloqueo no desaparece, se gestiona; explorer registró 84
+  soft-blocks el 2026-11-01. Se observa en la jornada medida.
 - **Ofuscación del marcador.** Los dígitos llegan ofuscados (JS, CSS
   `::after`, escapes unicode). Si la RFEF la cambia, el parser puede leer
   mal en silencio: con prioridad 50 un dígito falso manda. Es el riesgo
-  principal.
+  principal. *2026-11-01:* con prioridad 5 un dígito falso nunca se publica
+  por encima de API-Football; por eso la prioridad baja es la red mientras se
+  observa a explorer.
 - **Sin API.** HTML con sesión por cookie: frágil ante rediseños.
 - **Latencia desconocida** de la RFEF en directo (criterio 3).
 - **Datos provisionales** hasta el cierre del acta: el directo puede

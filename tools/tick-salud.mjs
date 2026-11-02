@@ -29,6 +29,7 @@ const secrets = [
   process.env.INGEST_TICK_TOKEN,
   process.env.CRON_SECRET,
   process.env.API_FOOTBALL_KEY,
+  process.env.RFEF_EXPLORER_TOKEN,
   process.env.SUPABASE_SERVICE_ROLE_KEY,
   process.env.DATABASE_URL,
 ].filter((v) => typeof v === "string" && v.length > 0);
