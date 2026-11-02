@@ -58,6 +58,8 @@ function match(o: Overrides = {}): PublicMatch {
     version: 3,
     observedAt: "2026-10-03T16:30:00Z",
     decidedAt: "2026-10-03T16:30:02Z",
+    homeScoredAt: null,
+    awayScoredAt: null,
   });
 }
 
@@ -574,6 +576,20 @@ describe("SPEC-033 CA-4 buildXornada galician sides", () => {
     expect(rowOf(match())).toMatchObject({
       homeGalician: false,
       awayGalician: false,
+    });
+  });
+});
+
+// SPEC-041 CA-3: the row carries the two instants of its PublicMatch.
+describe("SPEC-041 CA-3 the row carries homeScoredAt and awayScoredAt", () => {
+  it("as they come, null or an instant", () => {
+    const m = PublicMatch.parse({
+      ...match({ status: "live" }),
+      homeScoredAt: "2026-10-03T16:29:02Z",
+    });
+    expect(rowOf(m)).toMatchObject({
+      homeScoredAt: "2026-10-03T16:29:02Z",
+      awayScoredAt: null,
     });
   });
 });

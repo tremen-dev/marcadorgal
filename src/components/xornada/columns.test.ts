@@ -34,6 +34,8 @@ function match(
     version: 3,
     observedAt: "2026-10-03T16:30:00Z",
     decidedAt: "2026-10-03T16:30:02Z",
+    homeScoredAt: null,
+    awayScoredAt: null,
   });
 }
 

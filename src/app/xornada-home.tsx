@@ -9,7 +9,11 @@ import { XornadaScreen } from "@/components/xornada/XornadaScreen";
 import { type Locale, t } from "@/i18n";
 import type { Instant, PublicMatch } from "@/model";
 import { buildXornada, xornadaDays } from "@/xornada/view";
-import { PROVISIONAL_DISPLAY } from "./config";
+import {
+  PROVISIONAL_DISPLAY,
+  RECENT_GOAL_MINUTES,
+  recentGoalMark,
+} from "./config";
 
 // / and /es (SPEC-020 CA-6): the snapshot of the current xornada, rendered on
 // the server from web.xornada through the public reader only. Not indexed
@@ -63,6 +67,12 @@ export async function HomeXornada({ locale }: { locale: Locale }) {
       paths={HOME_PATHS}
       // SPEC-034 CA-5: to the screen and to the client of SPEC-024.
       provisionalDisplay={PROVISIONAL_DISPLAY}
+      // SPEC-041 CA-3: to the screen and to the client of SPEC-024.
+      recentGoal={{
+        now,
+        minutes: RECENT_GOAL_MINUTES,
+        mark: recentGoalMark(process.env),
+      }}
       unavailable={matches === null}
       arrows={read?.arrows}
       // SPEC-024: the client keeps it up to date from the served state.

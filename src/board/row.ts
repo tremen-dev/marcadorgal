@@ -36,6 +36,9 @@ export type XornadaDbRow = {
   decided_at: XornadaInstant | null;
   // SPEC-021 CA-4: the last column of web.xornada.
   half_time: boolean;
+  // SPEC-041 CA-1 (ADR-022): the last columns of web.xornada.
+  home_scored_at: XornadaInstant | null;
+  away_scored_at: XornadaInstant | null;
 };
 
 // What the selection of the current xornada needs of every match (CA-5).
@@ -88,6 +91,8 @@ function candidate(row: XornadaDbRow): unknown {
     version: row.version,
     observedAt: iso(row.observed_at),
     decidedAt: iso(row.decided_at),
+    homeScoredAt: iso(row.home_scored_at),
+    awayScoredAt: iso(row.away_scored_at),
   };
 }
 

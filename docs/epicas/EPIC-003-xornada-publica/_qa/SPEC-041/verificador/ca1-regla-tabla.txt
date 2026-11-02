@@ -1,0 +1,19 @@
+ match_id |  status   | sc  |  hs   |  aws  
+----------+-----------+-----+-------+-------
+ a        | live      | 1-0 | 16:02 | 
+ c        | live      | 2-0 | 16:03 | 
+ d        | live      | 1-0 |       | 
+ e        | live      | 1-0 | 16:04 | 
+ f        | live      | 1-0 |       | 
+ g        | finished  | 2-1 | 16:02 | 16:02
+ h        | finished  | 2-0 |       | 
+ i        | scheduled |     |       | 
+ ip       | postponed |     |       | 
+ j        | live      | 0-1 |       | 16:03
+ k        | live      | 1-0 |       | 
+ l        | suspended | 1-0 | 16:02 | 
+ m        | live      | 2-0 | 16:02 | 
+ n        | live      | 1-0 | 16:02 | 
+ q        | live      | 1-1 | 16:02 | 16:03
+(15 rows)
+

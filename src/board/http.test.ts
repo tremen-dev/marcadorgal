@@ -24,6 +24,8 @@ const match = {
   version: 4,
   observedAt: "2026-10-10T16:47:00.000Z",
   decidedAt: "2026-10-10T16:47:05.000Z",
+  homeScoredAt: null,
+  awayScoredAt: null,
 } as PublicMatch;
 
 const read = (matches: PublicMatch[] | null) =>

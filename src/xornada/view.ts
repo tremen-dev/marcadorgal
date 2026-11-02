@@ -54,6 +54,10 @@ export type XornadaRow = {
   // SPEC-025 CA-3: the version of the Decision on screen (0 without one), so
   // the probe knows which Decision a paint shows.
   version: number;
+  // SPEC-041 CA-3 (ADR-022): when each side last scored, seen live; whether
+  // it is recent is the components' call, with their clock (recentGoals).
+  homeScoredAt: Instant | null;
+  awayScoredAt: Instant | null;
 };
 
 export type XornadaCompetition = {
@@ -142,6 +146,8 @@ function toRow(
     date: dateOf(m, day),
     part: partOf(m),
     version: m.version,
+    homeScoredAt: m.homeScoredAt,
+    awayScoredAt: m.awayScoredAt,
   };
 }
 

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PublicMatch } from "@/model";
+import { type Instant, PublicMatch } from "@/model";
 
 // Demonstration data for /demo/xornada (SPEC-019 CA-5): the five competitions
 // of D-3 with the real names of the declared calendar (data/calendario/2026-27)
@@ -138,6 +138,8 @@ function demoMatch(
     version: undecided ? 0 : 3,
     observedAt: undecided ? null : OBSERVED,
     decidedAt: undecided ? null : DECIDED,
+    homeScoredAt: null,
+    awayScoredAt: null,
   };
 }
 
@@ -287,7 +289,8 @@ const RAW: unknown[] = [
     "2026-10-03T16:00:00Z",
     team("Bilbao Athletic"),
     team("UD Ourense"),
-    live(0, 0, 67),
+    // SPEC-041 CA-6: the longest name, on the side that just scored.
+    live(1, 0, 67),
     "sen_sinal",
   ),
   demoMatch(
@@ -322,6 +325,34 @@ export const DEMO_SEASON = "2026-27";
 export const DEMO_MATCHES: readonly PublicMatch[] = z
   .array(PublicMatch)
   .parse(RAW);
+
+// SPEC-041 CA-6: the goals of the demonstration, relative to the instant of
+// its render (the page is rendered per request): a home goal of 1 min ago in
+// a live (Bilbao Athletic, the longest name), an away goal of 1 min ago in a
+// finished (H-6) and a home goal of 6 min ago, no longer marked.
+const RECENT_GOALS: readonly [
+  matchId: string,
+  side: "home" | "away",
+  minutesAgo: number,
+][] = [
+  ["primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense", "home", 1],
+  ["segunda-division-2026-27-j9-real-oviedo-real-sporting", "away", 1],
+  ["segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf", "home", 6],
+];
+
+export function demoMatches(now: Instant): PublicMatch[] {
+  const at = (minutesAgo: number) =>
+    new Date(Date.parse(now) - minutesAgo * 60_000).toISOString();
+  return DEMO_MATCHES.map((m) => {
+    const goal = RECENT_GOALS.find(([id]) => id === m.matchId);
+    if (goal === undefined) return m;
+    const [, side, minutesAgo] = goal;
+    return PublicMatch.parse({
+      ...m,
+      [side === "home" ? "homeScoredAt" : "awayScoredAt"]: at(minutesAgo),
+    });
+  });
+}
 
 // The demonstration route never exists in production (SPEC-019 CA-5).
 export function isDemoAvailable(env: { VERCEL_ENV?: string }): boolean {

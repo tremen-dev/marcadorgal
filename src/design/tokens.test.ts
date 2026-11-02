@@ -186,7 +186,11 @@ describe("SPEC-023 CA-7 breakpointDesktop", () => {
       "src/components/xornada/Xornada.module.css",
       "utf8",
     );
-    const queries = [...css.matchAll(/@media[^{]*/g)].map((m) => m[0].trim());
+    // SPEC-041 CA-4: prefers-reduced-motion is no width; every width
+    // query is the breakpoint.
+    const queries = [...css.matchAll(/@media[^{]*/g)]
+      .map((m) => m[0].trim())
+      .filter((q) => q.includes("width"));
     expect(queries.length).toBeGreaterThan(0);
     for (const query of queries) {
       expect(query).toBe(`@media (min-width: ${MEASURE.breakpointDesktop}px)`);

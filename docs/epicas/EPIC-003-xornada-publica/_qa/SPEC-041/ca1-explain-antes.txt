@@ -1,0 +1,78 @@
+                                                                                 QUERY PLAN                                                                                  
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=56.03..56.05 rows=9 width=221) (actual time=0.953..0.957 rows=60 loops=1)
+   Sort Key: m.kickoff, m.id
+   Sort Method: quicksort  Memory: 33kB
+   Buffers: shared hit=244
+   InitPlan 2
+     ->  Function Scan on generate_series i  (cost=0.00..1.05 rows=60 width=32) (actual time=0.006..0.012 rows=60 loops=1)
+   ->  Nested Loop Left Join  (cost=5.60..54.83 rows=9 width=221) (actual time=0.150..0.891 rows=60 loops=1)
+         Buffers: shared hit=244
+         ->  Nested Loop  (cost=5.31..9.20 rows=9 width=120) (actual time=0.125..0.164 rows=60 loops=1)
+               Join Filter: ((m.competition_id = c.id) AND (m.season = c.season))
+               Buffers: shared hit=4
+               ->  Seq Scan on competitions c  (cost=0.00..1.01 rows=1 width=20) (actual time=0.003..0.003 rows=1 loops=1)
+                     Buffers: shared hit=1
+               ->  Hash Join  (cost=5.31..8.05 rows=9 width=113) (actual time=0.121..0.149 rows=60 loops=1)
+                     Hash Cond: (a.id = m.away_team_id)
+                     Buffers: shared hit=3
+                     ->  Seq Scan on teams a  (cost=0.00..2.20 rows=120 width=49) (actual time=0.002..0.007 rows=120 loops=1)
+                           Buffers: shared hit=1
+                     ->  Hash  (cost=5.20..5.20 rows=9 width=82) (actual time=0.111..0.112 rows=60 loops=1)
+                           Buckets: 1024  Batches: 1  Memory Usage: 14kB
+                           Buffers: shared hit=2
+                           ->  Hash Join  (cost=2.46..5.20 rows=9 width=82) (actual time=0.071..0.094 rows=60 loops=1)
+                                 Hash Cond: (h.id = m.home_team_id)
+                                 Buffers: shared hit=2
+                                 ->  Seq Scan on teams h  (cost=0.00..2.20 rows=120 width=49) (actual time=0.002..0.006 rows=120 loops=1)
+                                       Buffers: shared hit=1
+                                 ->  Hash  (cost=2.35..2.35 rows=9 width=51) (actual time=0.063..0.063 rows=60 loops=1)
+                                       Buckets: 1024  Batches: 1  Memory Usage: 14kB
+                                       Buffers: shared hit=1
+                                       ->  Seq Scan on matches m  (cost=0.00..2.35 rows=9 width=51) (actual time=0.018..0.052 rows=60 loops=1)
+                                             Filter: (id = ANY ((InitPlan 2).col1))
+                                             Buffers: shared hit=1
+         ->  Limit  (cost=0.29..2.68 rows=1 width=82) (actual time=0.006..0.006 rows=1 loops=60)
+               Buffers: shared hit=180
+               ->  Index Scan Backward using decisions_match_id_version_key on decisions d  (cost=0.29..359.20 rows=150 width=82) (actual time=0.006..0.006 rows=1 loops=60)
+                     Index Cond: (match_id = m.id)
+                     Buffers: shared hit=180
+         SubPlan 1
+           ->  Aggregate  (cost=2.37..2.38 rows=1 width=8) (actual time=0.005..0.005 rows=1 loops=60)
+                 Buffers: shared hit=60
+                 ->  Seq Scan on observations o  (cost=0.00..2.35 rows=9 width=8) (actual time=0.003..0.005 rows=1 loops=60)
+                       Filter: (id = ANY (d.observation_ids))
+                       Rows Removed by Filter: 59
+                       Buffers: shared hit=60
+ Planning:
+   Buffers: shared hit=8
+ Planning Time: 0.308 ms
+ Execution Time: 0.984 ms
+(48 rows)
+
+                                                                              QUERY PLAN                                                                               
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Nested Loop Left Join  (cost=7.69..173.09 rows=60 width=65) (actual time=0.069..0.473 rows=60 loops=1)
+   ->  Hash Join  (cost=7.40..11.23 rows=60 width=33) (actual time=0.057..0.092 rows=60 loops=1)
+         Hash Cond: (m.away_team_id = a.id)
+         ->  Hash Join  (cost=3.70..7.37 rows=60 width=42) (actual time=0.028..0.053 rows=60 loops=1)
+               Hash Cond: (m.home_team_id = h.id)
+               ->  Nested Loop  (cost=0.00..3.51 rows=60 width=51) (actual time=0.004..0.018 rows=60 loops=1)
+                     Join Filter: (m.competition_id = c.id)
+                     ->  Seq Scan on competitions c  (cost=0.00..1.01 rows=1 width=13) (actual time=0.002..0.002 rows=1 loops=1)
+                           Filter: (season = '2026-27'::text)
+                     ->  Seq Scan on matches m  (cost=0.00..1.75 rows=60 width=51) (actual time=0.002..0.007 rows=60 loops=1)
+                           Filter: (season = '2026-27'::text)
+               ->  Hash  (cost=2.20..2.20 rows=120 width=9) (actual time=0.020..0.020 rows=120 loops=1)
+                     Buckets: 1024  Batches: 1  Memory Usage: 13kB
+                     ->  Seq Scan on teams h  (cost=0.00..2.20 rows=120 width=9) (actual time=0.002..0.008 rows=120 loops=1)
+         ->  Hash  (cost=2.20..2.20 rows=120 width=9) (actual time=0.023..0.023 rows=120 loops=1)
+               Buckets: 1024  Batches: 1  Memory Usage: 13kB
+               ->  Seq Scan on teams a  (cost=0.00..2.20 rows=120 width=9) (actual time=0.004..0.010 rows=120 loops=1)
+   ->  Limit  (cost=0.29..2.68 rows=1 width=98) (actual time=0.006..0.006 rows=1 loops=60)
+         ->  Index Scan Backward using decisions_match_id_version_key on decisions d  (cost=0.29..359.20 rows=150 width=98) (actual time=0.006..0.006 rows=1 loops=60)
+               Index Cond: (match_id = m.id)
+ Planning Time: 0.224 ms
+ Execution Time: 0.493 ms
+(22 rows)
+

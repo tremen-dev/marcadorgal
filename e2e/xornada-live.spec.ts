@@ -43,6 +43,8 @@ function match(
     version,
     observedAt: new Date(NOW - 30_000).toISOString(),
     decidedAt: new Date(NOW - 25_000).toISOString(),
+    homeScoredAt: null,
+    awayScoredAt: null,
     ...extra,
   };
 }
