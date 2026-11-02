@@ -2,7 +2,7 @@
 id: SPEC-038
 tipo: spec
 epica: EPIC-004
-estado: en-progreso
+estado: en-revision
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-01, por: sdd-arquitecto}
@@ -10,6 +10,7 @@ historial:
   - {estado: en-progreso, fecha: 2026-11-01, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-11-01, por: sdd-implementador}
   - {estado: en-progreso, fecha: 2026-11-01, por: sdd-verificador}
+  - {estado: en-revision, fecha: 2026-11-02, por: sdd-implementador}
 ---
 # SPEC-038 — Alta de la fuente rfef vía explorer: adaptador pull sobre el export, alias y registro con prioridad 5
 
