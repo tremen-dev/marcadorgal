@@ -1,0 +1,78 @@
+# Migraciones de la base al fusionar (SPEC-043, ADR-024).
+# Aplica supabase/migrations a producción (el único entorno remoto, ADR-014
+# §1) en cada push a main, haya o no migraciones nuevas: el check de este job
+# es el Deployment Check de Vercel que retiene la promoción a producción hasta
+# que la base esté al día (ADR-024 §2). `supabase db push` es idempotente: sin
+# pendientes no hace nada. `npm run db:push` queda como vía de emergencia.
+name: migraciones
+on:
+  push:
+    # Sin filtro de rutas: todo commit de main necesita su check.
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      modo:
+        description: "dry-run: solo dice qué está pendiente; aplicar: aplica (solo en main)"
+        type: choice
+        options:
+          - dry-run
+          - aplicar
+        default: dry-run
+
+# Una migración a la vez y nunca a medias (ADR-024 §4).
+concurrency:
+  group: migraciones-prod
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  # Vercel identifica el Deployment Check por el nombre de este job.
+  migraciones:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        # "bash --noprofile --norc -eo pipefail {0}": un fallo de la CLI
+        # deja el check en rojo (CA-6).
+        shell: bash
+    env:
+      MODO: ${{ github.event_name == 'push' && 'aplicar' || inputs.modo }}
+      REF: ${{ github.ref }}
+    steps:
+      - name: Guardia — solo se aplica desde main
+        # Antes de cualquier paso que vea el secreto o conecte (CA-2).
+        run: |
+          case "$MODO" in
+            dry-run|aplicar) ;;
+            *) echo "modo desconocido: $MODO" >&2; exit 1 ;;
+          esac
+          if [ "$MODO" = aplicar ] && [ "$REF" != refs/heads/main ]; then
+            echo "modo=aplicar solo desde refs/heads/main (pedido: $REF)." >&2
+            exit 1
+          fi
+          echo "modo=$MODO ref=$REF"
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.122.0
+      - name: Enmascarar host, usuario y contraseña
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: node tools/mascara-db-url.mjs
+      - name: supabase db push
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          if [ "$MODO" = aplicar ]; then
+            supabase db push --yes --db-url "$DATABASE_URL"
+          else
+            supabase db push --yes --dry-run --db-url "$DATABASE_URL"
+          fi
+      - name: supabase migration list
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: supabase migration list --db-url "$DATABASE_URL"
