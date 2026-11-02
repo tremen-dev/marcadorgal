@@ -41,15 +41,27 @@ if (config === undefined) throw new Error("rfef is not registered");
 const date = (value: string) => new Date(value);
 const CLOSED_DECISION = "dddddddd-dddd-4ddd-8ddd-000000000001";
 
-function explorerDouble() {
+// lastSeenAt may be shifted to simulate explorer rereading the rows (CA-7).
+function explorerDouble(shiftSeconds = 0) {
   const urls: string[] = [];
   const fetch = (async (input: string | URL | Request) => {
     const url = String(input);
     urls.push(url);
-    const body = readFileSync(
+    let body = readFileSync(
       new URL(`${EXPORT_DIR}/export-${url.slice(-10)}.json`, root),
       "utf8",
     );
+    if (shiftSeconds !== 0) {
+      const parsed = JSON.parse(body) as {
+        matches: { lastSeenAt: string }[];
+      };
+      for (const row of parsed.matches)
+        row.lastSeenAt = shiftInstant(
+          row.lastSeenAt as Instant,
+          shiftSeconds * 1000,
+        );
+      body = JSON.stringify(parsed);
+    }
     return new Response(body, {
       status: 200,
       headers: { "content-type": "application/json" },
@@ -58,20 +70,48 @@ function explorerDouble() {
   return { urls, fetch };
 }
 
+// The values of `insert into decisions` (engine.ts insertDecision), in order.
+type DecisionValues = unknown[];
+const CLOSED_VALUES: DecisionValues = [
+  CLOSED,
+  "finished",
+  9,
+  9,
+  null,
+  null,
+  "provisional",
+  "RN-01",
+  [],
+  "2026-10-31T15:00:00.000Z",
+  null,
+  null,
+  false,
+  false,
+];
+
 // The world: five declared matches of the matchday, one closed 9-9 by
 // api-football. The sql double answers the board, the counts and the four
-// statements of the engine out of the memory db, and records the writes.
+// statements of the engine out of the memory db, and records the writes;
+// the board and the current Decisions answer what was written, as the
+// database would (CA-7: a second run sees the first one's Decisions).
 function world() {
   const db = createMemoryIngestDb();
-  const decisions: unknown[][] = [];
+  const decisions: DecisionValues[] = [];
   const alerts = new Set<string>();
   const statements: string[] = [];
+  const ids = new Map<DecisionValues, string>([
+    [CLOSED_VALUES, CLOSED_DECISION],
+  ]);
+  const versionOf = (v: DecisionValues) =>
+    [CLOSED_VALUES, ...decisions].filter((d) => d[0] === v[0]).indexOf(v) + 1;
+  const current = (matchId: string): DecisionValues | undefined =>
+    [CLOSED_VALUES, ...decisions].filter((d) => d[0] === matchId).at(-1);
   const rows = (text: string, values: unknown[]): unknown[] => {
     if (text.includes("from board"))
       return SEEDED.map((id) => {
         const m = calendar.find((c) => c.id === id);
         if (m === undefined) throw new Error(`${id} not in the calendar`);
-        const closed = id === CLOSED;
+        const d = current(id);
         return {
           match_id: id,
           competition_id: m.competitionId,
@@ -79,12 +119,12 @@ function world() {
           kickoff: date(m.kickoff),
           home_team_id: m.homeTeamId,
           away_team_id: m.awayTeamId,
-          status: closed ? "finished" : "scheduled",
-          home_score: closed ? 9 : null,
-          away_score: closed ? 9 : null,
-          decision_id: closed ? CLOSED_DECISION : null,
-          forced_finish: closed ? false : null,
-          decided_at: closed ? date("2026-10-31T15:00:00Z") : null,
+          status: d === undefined ? "scheduled" : d[1],
+          home_score: d === undefined ? null : d[2],
+          away_score: d === undefined ? null : d[3],
+          decision_id: d === undefined ? null : ids.get(d),
+          forced_finish: d === undefined ? null : d[12],
+          decided_at: d === undefined ? null : date(d[9] as string),
         };
       });
     if (text.includes("count(*)::int from decisions) as decisions"))
@@ -102,7 +142,31 @@ function world() {
         competition_id: calendar.find((c) => c.id === id)?.competitionId,
         kickoff: date(calendar.find((c) => c.id === id)?.kickoff ?? NOW),
       }));
-    if (text.includes("from decisions")) return [];
+    if (text.includes("from decisions"))
+      return (values[0] as string[]).flatMap((id) => {
+        const d = current(id);
+        if (d === undefined) return [];
+        return [
+          {
+            id: ids.get(d),
+            match_id: d[0],
+            version: versionOf(d),
+            status: d[1],
+            home_score: d[2],
+            away_score: d[3],
+            minute: d[4],
+            added_minute: d[5],
+            half_time: d[13],
+            qualifier: d[6],
+            rule: d[7],
+            observation_ids: d[8],
+            decided_at: date(d[9] as string),
+            home_source_id: d[10],
+            away_source_id: d[11],
+            forced_finish: d[12],
+          },
+        ];
+      });
     if (text.includes("distinct on (match_id) match_id, observed_at, status"))
       return [];
     if (text.includes("from observations")) {
@@ -127,6 +191,7 @@ function world() {
     }
     if (text.startsWith("insert into decisions")) {
       decisions.push(values);
+      ids.set(values, crypto.randomUUID());
       return [];
     }
     if (text.startsWith("insert into alerts")) {
@@ -318,6 +383,41 @@ describe("SPEC-044 CA-6 recuperarRfef over doubles", () => {
     expect(w.db.observations).toHaveLength(5);
     expect(w.decisions).toHaveLength(4);
     expect(w.db.attempts).toHaveLength(2);
+  });
+
+  it("if explorer reread the rows (CA-7): new observations, the three decided ones closed and agreeing, only the postponed one through the engine, 0 Decisions", async () => {
+    const w = world();
+    await run(w, explorerDouble().fetch, false);
+    const later = shiftInstant(NOW, 5 * MINUTE_MS);
+    const second = await run(w, explorerDouble(120).fetch, false, {
+      clock: () => later,
+    });
+    expect(second.outcome).toBe("aplicado");
+    if (second.outcome !== "aplicado") return;
+    expect(second.plan.insert).toHaveLength(5);
+    expect(second.plan.groups.flatMap((g) => g.matchIds)).toEqual([POSTPONED]);
+    expect(
+      [...second.plan.closed].sort((a, b) =>
+        a.matchId.localeCompare(b.matchId),
+      ),
+    ).toEqual(
+      SEEDED.filter((id) => id !== POSTPONED)
+        .sort()
+        .map((matchId) =>
+          matchId === CLOSED
+            ? { matchId, agrees: false, alert: expect.any(Object) }
+            : { matchId, agrees: true },
+        ),
+    );
+    expect(second.decided).toEqual({
+      matches: 1,
+      decisions: 0,
+      alerts: 0,
+      resolved: 0,
+    });
+    expect(second.alertsOpened).toBe(0);
+    expect(w.db.observations).toHaveLength(10);
+    expect(w.decisions).toHaveLength(4);
   });
 
   it("with the cadence busy it retries up to the deadline and aborts without a GET or an attempt", async () => {

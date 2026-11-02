@@ -409,7 +409,26 @@ describe("SPEC-044 CA-7 idempotence of rfef:recuperar", () => {
       expect(second.outcome).toBe("aplicado");
       if (second.outcome !== "aplicado") return;
       expect(second.plan.insert).toHaveLength(5);
-      expect(second.decided).toMatchObject({ matches: 4, decisions: 0 });
+      // The three the first run decided are finished without the mark now:
+      // closed, agreeing, never through the engine (ADR-025 §2/§6). Only
+      // the postponed one goes to the engine, and it decides nothing.
+      expect(second.decided).toMatchObject({ matches: 1, decisions: 0 });
+      expect(
+        second.plan.groups.flatMap((g) => g.matchIds),
+      ).toEqual([POSTPONED]);
+      expect(
+        [...second.plan.closed].sort((a, b) =>
+          a.matchId.localeCompare(b.matchId),
+        ),
+      ).toEqual(
+        SEEDED.filter((id) => id !== POSTPONED)
+          .sort()
+          .map((matchId) =>
+            matchId === CLOSED
+              ? { matchId, agrees: false, alert: expect.any(Object) }
+              : { matchId, agrees: true },
+          ),
+      );
       // The conflict of the closed one is already open: deduplicated.
       expect(second.alertsOpened).toBe(0);
       const after = await recoveryCounts(tx);
