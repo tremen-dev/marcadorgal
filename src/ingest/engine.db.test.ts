@@ -897,7 +897,8 @@ describe("SPEC-044 CA-4 decideRecovered through the database", () => {
           qualifier, rule, observation_ids, decided_at, home_source_id,
           away_source_id, forced_finish
         from decisions where match_id = ${matchId} order by version`;
-      expect(rows.at(-1)).toMatchObject({
+      const last = rows[rows.length - 1];
+      expect(last).toMatchObject({
         status: "finished",
         home_score: 2,
         away_score: 1,
@@ -908,7 +909,7 @@ describe("SPEC-044 CA-4 decideRecovered through the database", () => {
         away_source_id: "rfef",
         forced_finish: false,
       });
-      expect((rows.at(-1)?.decided_at as Date).toISOString()).toBe(SEEN);
+      expect((last.decided_at as Date).toISOString()).toBe(SEEN);
       // The board shows it, dated by the Sunday observation (RN-11).
       const [board] = await tx`select status, observed_at from board
         where match_id = ${matchId}`;
