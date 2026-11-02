@@ -387,6 +387,12 @@ a.weekArrow:focus-visible {
   overflow-wrap: break-word;
 }
 
+/* SPEC-045 CA-3 (H-1): the name breaks only between segments, before « · »,
+   so «· Grupo 1» never leaves its number alone on another line. */
+.nameSegment {
+  white-space: nowrap;
+}
+
 /* SPEC-040 CA-4: mobile keeps today's pill, the number with its words for
    screen readers; desktop shows the words (V-1). */
 .livePill {
@@ -873,16 +879,32 @@ a.weekArrow:focus-visible {
     padding-right: 0;
   }
 
-  /* The column's border is the header's top edge. */
+  /* The column's border is the header's top edge. SPEC-045 CA-3: the name
+     is as wide as its widest segment, so a long one takes two lines, broken
+     before « · », and the rest still fits the 360 px: 6 px apart and no
+     spacer (the counter's auto margin pushes it right). Should it ever not
+     fit, the counter wraps below instead of being cut. */
   .head {
-    gap: 9px;
+    flex-wrap: wrap;
+    gap: 6px;
     padding: 9px var(--space-16);
     border-top: 0;
   }
 
+  .head .spacer {
+    display: none;
+  }
+
   .competitionName {
+    flex: none;
+    width: min-content;
     font-size: 11px;
     letter-spacing: 0.11em;
+  }
+
+  .livePill,
+  .headTotal {
+    margin-left: auto;
   }
 
   .round {
