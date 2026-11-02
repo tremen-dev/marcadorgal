@@ -872,13 +872,19 @@ describe("SPEC-039 CA-1 npm run informe:rfef", () => {
     expect(r.stderr).toContain("npm run informe:rfef -- <desde> <hasta>");
   });
 
-  it("rejects a non ISO-8601 instant, a reversed window, an unknown option and a flag without files", () => {
+  it("rejects a non ISO-8601 instant", () => {
     expect(run("ayer", "hoy").stderr).toContain(
       "'ayer' no es un instante ISO-8601",
     );
+  });
+
+  it("rejects a reversed window", () => {
     expect(run("2026-11-09T22:00Z", "2026-11-06T17:00Z").stderr).toContain(
       "<desde> tiene que ser anterior a <hasta>",
     );
+  });
+
+  it("rejects an unknown option and --acta without files", () => {
     expect(
       run("2026-11-06T17:00Z", "2026-11-09T22:00Z", "--todo").stderr,
     ).toContain("opción desconocida: --todo");
