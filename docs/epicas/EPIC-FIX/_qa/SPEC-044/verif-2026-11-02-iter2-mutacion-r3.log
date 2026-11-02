@@ -1,0 +1,30 @@
+## mutación R-3 en la copia LF (worktree detached, no la rama): se quita la línea del catch de runAttempt que añade recuperacion
+407:        ...(recovery === undefined ? {} : { recuperacion: recovery }),
+436:        ...(recovery === undefined ? {} : { recuperacion: recovery }),
+warning: in the working copy of 'src/ingest/tick.ts', LF will be replaced by CRLF the next time Git touches it
+ src/ingest/tick.ts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+warning: in the working copy of 'src/ingest/tick.ts', LF will be replaced by CRLF the next time Git touches it
+diff --git a/src/ingest/tick.ts b/src/ingest/tick.ts
+index 3c19ca4..2e8ba11 100644
+--- a/src/ingest/tick.ts
++++ b/src/ingest/tick.ts
+@@ -433,7 +433,7 @@ async function runAttempt(
+         season,
+         matches: base.matches,
+         requests,
+-        ...(recovery === undefined ? {} : { recuperacion: recovery }),
++
+       },
+     });
+     return { ...base, attemptId, error, rawRef, requests };
+## npx vitest run src/ingest/tick.test.ts (mutado)
+     × (iii) a failed attempt that carried the recovery set counts for the pace: two minutes later the set stays out (ADR-025 §5, H-8) 12ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected { …(6) } to match object { ok: false, details: { …(1) } }
+ Test Files  1 failed (1)
+      Tests  1 failed | 41 passed (42)
+## restaurado: git status
+## npx vitest run src/ingest/tick.test.ts (sin mutar)
+ Test Files  1 passed (1)
+      Tests  42 passed (42)

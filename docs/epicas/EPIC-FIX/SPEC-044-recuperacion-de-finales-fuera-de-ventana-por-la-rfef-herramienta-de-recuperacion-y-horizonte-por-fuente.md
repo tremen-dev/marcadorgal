@@ -2,7 +2,7 @@
 id: SPEC-044
 tipo: spec
 epica: EPIC-FIX
-estado: en-revision
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-02, por: sdd-arquitecto}
@@ -11,6 +11,7 @@ historial:
   - {estado: en-revision, fecha: 2026-11-02, por: sdd-implementador}
   - {estado: en-progreso, fecha: 2026-11-02, por: sdd-verificador}
   - {estado: en-revision, fecha: 2026-11-02, por: sdd-implementador}
+  - {estado: hecho, fecha: 2026-11-02, por: sdd-verificador}
 ---
 # SPEC-044 — Recuperación de finales fuera de ventana por la rfef: herramienta de recuperación y horizonte por fuente
 
