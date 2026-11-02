@@ -413,9 +413,9 @@ describe("SPEC-044 CA-7 idempotence of rfef:recuperar", () => {
       // closed, agreeing, never through the engine (ADR-025 §2/§6). Only
       // the postponed one goes to the engine, and it decides nothing.
       expect(second.decided).toMatchObject({ matches: 1, decisions: 0 });
-      expect(
-        second.plan.groups.flatMap((g) => g.matchIds),
-      ).toEqual([POSTPONED]);
+      expect(second.plan.groups.flatMap((g) => g.matchIds)).toEqual([
+        POSTPONED,
+      ]);
       expect(
         [...second.plan.closed].sort((a, b) =>
           a.matchId.localeCompare(b.matchId),
