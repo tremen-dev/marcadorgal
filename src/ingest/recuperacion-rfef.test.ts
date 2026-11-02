@@ -11,9 +11,12 @@ import {
 import { createRfefExplorer, madridDateOf } from "../sources/rfef/explorer.ts";
 import { loadDeclaredCalendar } from "./calendar.ts";
 import {
+  parseRecoveryArgs,
+  planLines,
   planRecovery,
   type RecoveryCurrent,
   type RecoveryLastOwn,
+  recoveryDates,
 } from "./recuperacion-rfef.ts";
 
 // SPEC-044 CA-3 (ADR-025 §2-§6): the pure plan of a recovery, over the real
@@ -238,5 +241,83 @@ describe("SPEC-044 CA-3 planRecovery over the exports of 2026-10-31 and 2026-11-
     // The closed ones are still inserted: the observation is kept (§6).
     for (const id of closedIds)
       expect(result.insert.map((o) => o.matchId)).toContain(id);
+  });
+});
+
+// SPEC-044 CA-6: the pure side of npm run rfef:recuperar. Dates are
+// Europe/Madrid days, inclusive, at most seven; the plan is printed one
+// line per match (match, current, proposed, action).
+describe("SPEC-044 CA-6 parseRecoveryArgs and recoveryDates", () => {
+  it("reads --desde, --hasta and --dry-run", () => {
+    expect(
+      parseRecoveryArgs(["--desde", "2026-10-30", "--hasta", "2026-11-02"]),
+    ).toEqual({ desde: "2026-10-30", hasta: "2026-11-02", dryRun: false });
+    expect(
+      parseRecoveryArgs([
+        "--dry-run",
+        "--desde",
+        "2026-10-30",
+        "--hasta",
+        "2026-10-30",
+      ]),
+    ).toEqual({ desde: "2026-10-30", hasta: "2026-10-30", dryRun: true });
+  });
+
+  it.each([
+    [[], /--desde/],
+    [["--desde", "2026-10-30"], /--hasta/],
+    [["--desde", "30/10/2026", "--hasta", "2026-11-02"], /YYYY-MM-DD/],
+    [["--desde", "2026-11-02", "--hasta", "2026-10-30"], /anterior/],
+    [["--desde", "2026-10-27", "--hasta", "2026-11-03"], /7 días/],
+    [["--desde", "2026-10-30", "--hasta", "2026-11-02", "--todo"], /--todo/],
+    [["--desde", "2026-10-30", "--hasta", "2026-11-02", "extra"], /extra/],
+  ])("rejects %j", (argv, reason) => {
+    expect(() => parseRecoveryArgs(argv)).toThrow(reason);
+  });
+
+  it("seven days inclusive is the most it takes", () => {
+    expect(
+      parseRecoveryArgs(["--desde", "2026-10-27", "--hasta", "2026-11-02"]),
+    ).toMatchObject({ desde: "2026-10-27", hasta: "2026-11-02" });
+    expect(recoveryDates("2026-10-30", "2026-11-02")).toEqual([
+      "2026-10-30",
+      "2026-10-31",
+      "2026-11-01",
+      "2026-11-02",
+    ]);
+    expect(recoveryDates("2026-11-02", "2026-11-02")).toEqual(["2026-11-02"]);
+  });
+});
+
+describe("SPEC-044 CA-6 planLines prints match, current, proposed and action", () => {
+  it("one line per observation of the plan, and the dropped ones with their reason", () => {
+    const first = plan();
+    const lines = planLines(first, board, deployed);
+    expect(lines).toHaveLength(44);
+    const forced = lines.find((l) => l.startsWith(forcedId));
+    expect(forced).toMatch(/finished 0-0 \(cierre forzoso\)/);
+    expect(forced).toMatch(/decidir a \d{4}-\d{2}-\d{2}T/);
+    const discrepant = lines.find((l) => l.startsWith(discrepantId));
+    expect(discrepant).toMatch(/alerta conflict/);
+    const agreeing = lines.find((l) => l.startsWith(closedIds[0]));
+    expect(agreeing).toMatch(/cerrado, coincide/);
+    const scheduled = lines.find((l) => l.startsWith(observed[20]));
+    expect(scheduled).toMatch(/scheduled —/);
+    expect(scheduled).toMatch(/insertar y decidir/);
+    const postponed = lines.find((l) =>
+      l.startsWith("segunda-division-2026-27-j12-tenerife-andorra"),
+    );
+    expect(postponed).toMatch(/postponed —/);
+  });
+
+  it("names the duplicates and the live it dropped", () => {
+    const first = plan();
+    const again = plan({
+      lastOwn: asLastOwn(first.insert),
+      observations: [...deployed, localLive[0]],
+    });
+    const lines = planLines(again, board, [...deployed, localLive[0]]);
+    expect(lines.filter((l) => l.includes("duplicada"))).toHaveLength(44);
+    expect(lines.filter((l) => l.includes("live descartado"))).toHaveLength(1);
   });
 });

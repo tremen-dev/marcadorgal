@@ -178,7 +178,9 @@ export async function insertDecision(
 // One open alert per (kind, match) while nobody resolves it, the four kinds
 // alike (N-3): a match that keeps retreating opens one alert, not one every
 // thirty seconds. Same shape as openUnresolvedAlerts (SPEC-006 N-8).
-async function openAlert(
+// Exported for rfef:recuperar (SPEC-044 CA-6, H-7), which opens a conflict
+// over a closed match with the same deduplication and without the engine.
+export async function openAlert(
   sql: TransactionSql,
   alert: AlertDraft,
 ): Promise<number> {

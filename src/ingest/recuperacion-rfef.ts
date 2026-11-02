@@ -154,3 +154,98 @@ export function planRecovery({
     .map(([now, ids]) => ({ now, matchIds: [...ids].sort() }));
   return plan;
 }
+
+// --- SPEC-044 CA-6: the pure side of npm run rfef:recuperar -----------------
+
+export type RecoveryArgs = { desde: string; hasta: string; dryRun: boolean };
+
+const DATE = /^\d{4}-\d{2}-\d{2}$/;
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+// At most a week, inclusive (ADR-025 §6): the tool is a path for a matchday
+// a source missed, not a bulk import.
+export const RECOVERY_MAX_DAYS = 7;
+
+export const RECOVERY_USAGE =
+  "Uso: npm run rfef:recuperar -- --desde <YYYY-MM-DD> --hasta <YYYY-MM-DD> [--dry-run]";
+
+const dayNumber = (date: string): number => Date.parse(`${date}T00:00:00Z`);
+
+export function parseRecoveryArgs(argv: readonly string[]): RecoveryArgs {
+  let desde: string | undefined;
+  let hasta: string | undefined;
+  let dryRun = false;
+  for (let i = 0; i < argv.length; i += 1) {
+    const arg = argv[i];
+    if (arg === "--dry-run") dryRun = true;
+    else if (arg === "--desde" || arg === "--hasta") {
+      const value = argv[i + 1];
+      if (
+        value === undefined ||
+        !DATE.test(value) ||
+        Number.isNaN(dayNumber(value))
+      )
+        throw new Error(`${arg} necesita una fecha YYYY-MM-DD`);
+      if (arg === "--desde") desde = value;
+      else hasta = value;
+      i += 1;
+    } else throw new Error(`argumento desconocido: ${arg}`);
+  }
+  if (desde === undefined) throw new Error("falta --desde");
+  if (hasta === undefined) throw new Error("falta --hasta");
+  const days = (dayNumber(hasta) - dayNumber(desde)) / DAY_MS + 1;
+  if (days < 1)
+    throw new Error("--desde tiene que ser anterior o igual a --hasta");
+  if (days > RECOVERY_MAX_DAYS)
+    throw new Error(`el rango no puede pasar de ${RECOVERY_MAX_DAYS} días`);
+  return { desde, hasta, dryRun };
+}
+
+// Every Europe/Madrid date of the range, inclusive.
+export function recoveryDates(desde: string, hasta: string): string[] {
+  const dates: string[] = [];
+  for (let day = dayNumber(desde); day <= dayNumber(hasta); day += DAY_MS)
+    dates.push(new Date(day).toISOString().slice(0, 10));
+  return dates;
+}
+
+const scoreText = (score: Score | null) =>
+  score === null ? "—" : `${score.home}-${score.away}`;
+
+const stateText = (status: MatchStatus, score: Score | null) =>
+  `${status} ${scoreText(score)}`;
+
+// One line per observation the source gave, in the order they came:
+// match, current Decision, proposed state and what the plan does with it.
+export function planLines(
+  plan: RecoveryPlan,
+  currents: readonly RecoveryCurrent[],
+  observations: readonly Observation[],
+): string[] {
+  const currentOf = new Map(currents.map((c) => [c.matchId, c]));
+  const inserted = new Set(plan.insert.map((o) => o.id));
+  const grouped = new Set(plan.groups.flatMap((g) => g.matchIds));
+  const closedOf = new Map(plan.closed.map((c) => [c.matchId, c]));
+  return observations.map((o) => {
+    const current = currentOf.get(o.matchId);
+    const vigente =
+      current === undefined
+        ? "sin vigente"
+        : `${stateText(current.status, current.score)}${current.forcedFinish === true ? " (cierre forzoso)" : ""}`;
+    const propuesto = stateText(o.status, o.score);
+    let accion: string;
+    if (!inserted.has(o.id)) {
+      if (!FINAL.has(o.status)) accion = "live descartado";
+      else if (grouped.has(o.matchId) || closedOf.has(o.matchId))
+        accion = "duplicada";
+      else accion = "duplicada o en ventana";
+    } else if (closedOf.has(o.matchId)) {
+      const closed = closedOf.get(o.matchId);
+      accion =
+        closed?.agrees === true
+          ? "insertar; cerrado, coincide"
+          : "insertar; cerrado, discrepa: alerta conflict";
+    } else accion = `insertar y decidir a ${o.observedAt}`;
+    return `${o.matchId}  ${vigente}  →  ${propuesto}  ·  ${accion}`;
+  });
+}
