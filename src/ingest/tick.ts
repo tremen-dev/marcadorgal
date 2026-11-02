@@ -410,13 +410,31 @@ async function runAttempt(
     return result;
   } catch (e) {
     const error = errorMessage(e);
+    // A failed attempt that took the recovery set still counts for the pace
+    // of ADR-025 §5 (H-8): with explorer down, the set is asked every five
+    // minutes, not every tick. Nothing of it was inserted.
+    const recovery: RecoverySummary | undefined =
+      recovered.length === 0
+        ? undefined
+        : {
+            partidos: recovered.length,
+            fechas: new Set(recovered.map((m) => madridDateOf(m.kickoff))).size,
+            insertadas: 0,
+            duplicadas: 0,
+            descartadasLive: 0,
+          };
     await db.closeAttempt(attemptId, {
       finishedAt: now,
       ok: false,
       error,
       rawRef,
       observations: 0,
-      details: { season, matches: base.matches, requests },
+      details: {
+        season,
+        matches: base.matches,
+        requests,
+        ...(recovery === undefined ? {} : { recuperacion: recovery }),
+      },
     });
     return { ...base, attemptId, error, rawRef, requests };
   }

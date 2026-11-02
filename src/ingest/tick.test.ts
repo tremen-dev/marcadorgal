@@ -1483,6 +1483,73 @@ describe("SPEC-044 CA-5 the tick with recovery", () => {
     );
   });
 
+  it("(iii) a failed attempt that carried the recovery set counts for the pace: two minutes later the set stays out (ADR-025 §5, H-8)", async () => {
+    const { db, store } = harness();
+    db.matches = [match("m1", "primera-division")];
+    db.recoverable = [
+      recoverable("m-rec", SEEN),
+      {
+        ...recoverable("m-rec2", SEEN),
+        kickoff: "2026-10-31T16:00:00.000Z" as Instant,
+      },
+    ];
+    let asked: string[] = [];
+    const tick = (now: Instant, fetchError?: Error) =>
+      runTick({
+        db,
+        store,
+        sources: [RFEF],
+        adapterFor: () =>
+          stubAdapter({
+            id: "rfef",
+            fetchError,
+            onFetch: (ctx) => {
+              asked = ctx.matches.map((m) => m.id);
+            },
+          }),
+        fetch: forbiddenFetch,
+        now,
+      });
+    // explorer down: the attempt that took the set fails.
+    const first = await tick(MONDAY, new Error("rfef explorer responded 503"));
+    expect(asked).toEqual(["m1", "m-rec", "m-rec2"]);
+    expect(first.attempts[0]).toMatchObject({
+      error: "rfef explorer responded 503",
+    });
+    expect(db.attempts[0].close).toMatchObject({
+      ok: false,
+      details: {
+        recuperacion: {
+          partidos: 2,
+          fechas: 2,
+          insertadas: 0,
+          duplicadas: 0,
+          descartadasLive: 0,
+        },
+      },
+    });
+    // Two minutes later the window is asked, the recovery set is not.
+    await tick(shiftInstant(MONDAY, 2 * MINUTE_MS));
+    expect(asked).toEqual(["m1"]);
+    expect(db.attempts[1].close?.details).not.toHaveProperty("recuperacion");
+  });
+
+  it("(iii) a failed attempt without a recovery set leaves no recuperacion in its details", async () => {
+    const { db, store } = harness();
+    db.matches = [match("m1", "primera-division")];
+    await runTick({
+      db,
+      store,
+      sources: [RFEF],
+      adapterFor: () =>
+        stubAdapter({ id: "rfef", fetchError: new Error("down") }),
+      fetch: forbiddenFetch,
+      now: MONDAY,
+    });
+    expect(db.attempts[0].close).toMatchObject({ ok: false, error: "down" });
+    expect(db.attempts[0].close?.details).not.toHaveProperty("recuperacion");
+  });
+
   it("(iv) a second tick with the same export inserts nothing: duplicadas = n (ADR-025 §5)", async () => {
     const { db, store } = harness();
     db.recoverable = [recoverable("m-a", SEEN), recoverable("m-b", SEEN)];
