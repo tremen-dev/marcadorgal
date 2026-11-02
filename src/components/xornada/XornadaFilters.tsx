@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import {
   competitionCounts,
   countFilters,
-  dayGroupView,
   EMPTY_STATE,
   formatCount,
   fragmentOf,
@@ -16,13 +15,12 @@ import {
   type XornadaState,
 } from "@/xornada/filter";
 import { provisionalLegendShown } from "@/xornada/qualifier";
-import { detailsId, sectionId } from "./CompetitionSection";
 
 // SPEC-023 CA-6 (amended by SPEC-024 H-1): the filter component of the
 // screen, next to XornadaLive. It renders nothing: it reads the fragment and
-// hides rows and sections with `hidden` over the rendered HTML, keeps the
-// links' fragments in step and takes the sidebar to its competition
-// (SPEC-028 CA-1). Without JavaScript the HTML is the whole xornada.
+// hides rows and sections with `hidden` over the rendered HTML and keeps the
+// links' fragments in step. SPEC-040 CA-4 (H-5): no sidebar left to follow
+// or to jump from. Without JavaScript the HTML is the whole xornada.
 
 // SPEC-024 CA-5: XornadaLive fires it after every repaint; the fragment is
 // applied again and stays as it is.
@@ -51,17 +49,6 @@ function apply(root: HTMLElement, state: XornadaState): void {
   }));
   for (const row of rows) row.el.hidden = !rowMatches(row, state);
 
-  // SPEC-033 CA-3: the day groups and their headers.
-  for (const group of root.querySelectorAll<HTMLElement>("[data-day-group]")) {
-    const view = dayGroupView(
-      rows.filter(({ el }) => group.contains(el)),
-      state,
-    );
-    group.hidden = view.hidden;
-    const header = group.querySelector<HTMLElement>("[data-day-header]");
-    if (header) header.hidden = view.headerHidden;
-  }
-
   let anyVisible = false;
   for (const section of root.querySelectorAll<HTMLElement>(
     "section[data-competition]",
@@ -72,7 +59,7 @@ function apply(root: HTMLElement, state: XornadaState): void {
     section.hidden = !visible;
     anyVisible ||= visible;
   }
-  // F-4: the sidebar numbers and each header's live pill follow the state.
+  // F-4: each header's count (SPEC-040 CA-4) follows the state.
   for (const section of root.querySelectorAll<HTMLElement>(
     "section[data-competition]",
   )) {
@@ -99,17 +86,6 @@ function apply(root: HTMLElement, state: XornadaState): void {
           n,
         );
     }
-  }
-
-  // SPEC-028 CA-3 (H-3): a sidebar entry goes with its section.
-  for (const entry of root.querySelectorAll<HTMLElement>(
-    "a[data-competition-link]",
-  )) {
-    const section = document.getElementById(
-      sectionId(entry.dataset.competitionLink ?? ""),
-    );
-    const item = entry.closest("li");
-    if (item) item.hidden = section?.hidden ?? false;
   }
 
   const empty = root.querySelector<HTMLElement>("[data-xornada-empty]");
@@ -156,22 +132,6 @@ function apply(root: HTMLElement, state: XornadaState): void {
   }
 }
 
-// SPEC-028 CA-1 (H-1, H-2): open the competition (never fold it), scroll to
-// it and focus its header. The URL stays as it is: no anchor in the
-// fragment, no history entry; day and filter stay applied.
-function goTo(competitionId: string): void {
-  const section = document.getElementById(sectionId(competitionId));
-  const details = document.getElementById(detailsId(competitionId));
-  if (!section) return;
-  if (details instanceof HTMLDetailsElement) details.open = true;
-  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  section.scrollIntoView({
-    behavior: reduce ? "instant" : "smooth",
-    block: "start",
-  });
-  section.querySelector<HTMLElement>("summary")?.focus({ preventScroll: true });
-}
-
 export function XornadaFilters() {
   useEffect(() => {
     const root = document.querySelector<HTMLElement>("[data-xornada]");
@@ -198,14 +158,10 @@ export function XornadaFilters() {
       )
         return;
       const link = (event.target as Element | null)?.closest<HTMLElement>(
-        "a[data-day-link], a[data-filter-link], a[data-competition-link]",
+        "a[data-day-link], a[data-filter-link]",
       );
       if (!link || !root.contains(link)) return;
       event.preventDefault();
-      if (link.dataset.competitionLink !== undefined) {
-        goTo(link.dataset.competitionLink);
-        return;
-      }
       const next =
         link.dataset.dayLink !== undefined
           ? toggleDay(state, link.dataset.dayLink)

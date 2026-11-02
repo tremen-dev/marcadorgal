@@ -47,6 +47,10 @@ export type XornadaRow = {
   winner: "home" | "away" | null;
   // SPEC-023 CA-1: the Madrid date of the kickoff, YYYY-MM-DD.
   day: string;
+  // SPEC-040 CA-1 (H-1): the two lines of the margin. The Madrid date of the
+  // kickoff, never shown live; and, only live, the part of the match.
+  date: RowDate | null;
+  part: MatchPart | null;
   // SPEC-025 CA-3: the version of the Decision on screen (0 without one), so
   // the probe knows which Decision a paint shows.
   version: number;
@@ -59,20 +63,19 @@ export type XornadaCompetition = {
   // SPEC-023 CA-1: the most frequent round of its rows; a tie, the lower.
   round: number;
   liveCount: number;
-  // Every row, in order: the day groups one after the other.
+  // Every row, by kickoff (SPEC-033 CA-1). SPEC-040 CA-1: no day groups.
   rows: XornadaRow[];
-  // SPEC-033 CA-1: the rows grouped by their Madrid day, dates ascending.
-  dayGroups: XornadaDayGroup[];
 };
 
-// SPEC-033 CA-1: a day of a competition, for its header (CA-2).
-export type XornadaDayGroup = {
-  date: string;
-  weekdayKey: WeekdayKey;
-  dayOfMonth: number;
-  monthKey: MonthKey;
-  rows: XornadaRow[];
-};
+// SPEC-040 CA-1: «sáb 11 out», resolved by the components.
+export type RowDate = Pick<
+  XornadaDay,
+  "weekdayKey" | "dayOfMonth" | "monthKey"
+>;
+
+// SPEC-040 CA-1 (N-3): from the minute of the board; the leagues of D-3 have
+// no extra time.
+export type MatchPart = "first" | "second" | "halfTime";
 
 const compareText = (a: string, b: string): number =>
   a < b ? -1 : a > b ? 1 : 0;
@@ -83,14 +86,20 @@ function compareMatches(a: PublicMatch, b: PublicMatch): number {
   return compareText(a.kickoff, b.kickoff) || compareText(a.matchId, b.matchId);
 }
 
-function groupByDay(rows: readonly XornadaRow[]): XornadaDayGroup[] {
-  const groups: XornadaDayGroup[] = [];
-  for (const row of rows) {
-    const last = groups.at(-1);
-    if (last?.date === row.day) last.rows.push(row);
-    else groups.push({ ...calendarDay(row.day), rows: [row] });
-  }
-  return groups;
+// 45+n is still the first part; 46 opens the second.
+const FIRST_PART_LAST_MINUTE = 45;
+
+function partOf(m: PublicMatch): MatchPart | null {
+  if (m.status !== "live") return null;
+  if (m.halfTime) return "halfTime";
+  if (m.minute === null) return null;
+  return m.minute <= FIRST_PART_LAST_MINUTE ? "first" : "second";
+}
+
+function dateOf(m: PublicMatch, day: string): RowDate | null {
+  if (m.status === "live") return null;
+  const { weekdayKey, dayOfMonth, monthKey } = calendarDay(day);
+  return { weekdayKey, dayOfMonth, monthKey };
 }
 
 function marginOf(m: PublicMatch): Margin {
@@ -113,6 +122,7 @@ function toRow(
   galicians: ReadonlySet<string>,
   provisional: ProvisionalDisplay,
 ): XornadaRow {
+  const day = madridDate(m.kickoff);
   return {
     matchId: m.matchId,
     status: m.status,
@@ -128,7 +138,9 @@ function toRow(
       m.qualifier === "confirmado" ? null : `qualifier.${m.qualifier}`,
     qualifierDisplay: qualifierDisplay(m.qualifier, provisional),
     winner: winnerOf(m),
-    day: madridDate(m.kickoff),
+    day,
+    date: dateOf(m, day),
+    part: partOf(m),
     version: m.version,
   };
 }
@@ -172,7 +184,6 @@ export function buildXornada(
         round: roundOf(group),
         liveCount: group.filter((m) => m.status === "live").length,
         rows,
-        dayGroups: groupByDay(rows),
       };
     })
     .sort(

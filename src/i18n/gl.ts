@@ -39,15 +39,20 @@ export const gl = {
     unavailable: "Os resultados non están dispoñibles agora mesmo.",
     // SPEC-021: half-time, a moment inside live (never an abbreviation).
     halfTime: "Descanso",
-    // SPEC-023: the strip of days, the filters, the sidebar.
+    // SPEC-023: the strip of days, the filters, the counts.
     days: "Días",
     dayLabel: "{weekday} {day}",
     dayMonthLabel: "{weekday} {day} {month}",
-    // SPEC-033 CA-2: the header of each day inside a competition.
-    dayHeader: "{weekday} {day} {month}",
+    // SPEC-040 CA-2 (was SPEC-033's day header): the date of a row.
+    rowDate: "{weekday} {day} {month}",
+    // SPEC-040 CA-2: the part of a live match, under its minute; the long
+    // words are for screen readers.
+    firstPart: "1ª P",
+    secondPart: "2ª P",
+    firstPartLong: "primeira parte",
+    secondPartLong: "segunda parte",
     empty: "nada aquí",
     round: "xornada {n}",
-    competitions: "Competicións",
     matchCountOne: "{n} partido",
     matchCount: "{n} partidos",
     // SPEC-027 CA-6: the arrows of the strip, to the neighbour weeks.

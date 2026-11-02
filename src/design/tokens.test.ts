@@ -150,9 +150,9 @@ describe("CA-4 scales and measures", () => {
       barMobileBottom: 60,
       rowWide: 52,
       rowCompact: 30,
-      sidebar: 236,
       panel: 372,
       breakpointDesktop: 1024,
+      competitionColumn: 360,
     });
   });
   it("GRID", () => {
@@ -191,5 +191,42 @@ describe("SPEC-023 CA-7 breakpointDesktop", () => {
     for (const query of queries) {
       expect(query).toBe(`@media (min-width: ${MEASURE.breakpointDesktop}px)`);
     }
+  });
+});
+
+// SPEC-040 CA-4 (H-2, H-3, H-5): from breakpointDesktop, no sidebar; one
+// competition per 360 px column, 16 px apart, inside 16 px of padding.
+describe("SPEC-040 CA-4 desktop columns", () => {
+  const css = readFileSync("src/components/xornada/Xornada.module.css", "utf8");
+  const column = MEASURE.competitionColumn;
+  const gap = SPACE[3];
+
+  it("the token is 360 and the sidebar's is gone", () => {
+    expect(column).toBe(360);
+    expect(MEASURE).not.toHaveProperty("sidebar");
+  });
+
+  it("n columns need 360·n + 16·(n − 1) + 32 px", () => {
+    const columnsAt = (width: number) =>
+      Math.floor((width - 2 * gap + gap) / (column + gap));
+    expect(
+      [1024, 1143, 1144, 1519, 1520, 1895, 1896, 2200].map(columnsAt),
+    ).toEqual([2, 2, 3, 3, 4, 4, 5, 5]);
+  });
+
+  it("the grid fills 360 px columns with the token, aligned left", () => {
+    const columns = /\.columns \{[^}]*\}/g;
+    const rules = css.match(columns) ?? [];
+    const grid = rules.find((r) => r.includes("grid-template-columns")) ?? "";
+    expect(grid).toContain(
+      "grid-template-columns: repeat(auto-fill, var(--competition-column));",
+    );
+    expect(grid).toContain("gap: var(--space-16);");
+    expect(grid).toContain("justify-content: start;");
+    expect(grid).toContain("align-items: start;");
+  });
+
+  it("no sidebar left in the CSS", () => {
+    expect(css).not.toMatch(/\.sidebar|\.nav[A-Z]|sticky|--sidebar|832px/);
   });
 });

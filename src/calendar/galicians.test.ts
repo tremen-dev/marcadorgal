@@ -52,7 +52,9 @@ describe("SPEC-033 CA-7 Equipo galego in the demonstration", () => {
   });
 
   it("some competition has more than one day", () => {
-    expect(marked.some((c) => c.dayGroups.length > 1)).toBe(true);
+    expect(marked.some((c) => new Set(c.rows.map((r) => r.day)).size > 1)).toBe(
+      true,
+    );
   });
 });
 

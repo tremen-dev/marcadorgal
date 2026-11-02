@@ -453,19 +453,62 @@ describe("SPEC-023 CA-1 buildXornada day and round", () => {
   });
 });
 
-// SPEC-033 CA-1: each competition groups its rows by Madrid day, ascending.
-describe("SPEC-033 CA-1 buildXornada day groups", () => {
-  const groupsOf = (c: {
-    dayGroups: { date: string; rows: { matchId: string }[] }[];
-  }) => c.dayGroups.map((g) => [g.date, g.rows.map((r) => r.matchId)]);
+// SPEC-040 CA-1 (H-1, replaces SPEC-033 CA-1's day groups): each row carries
+// the Madrid date of its kickoff (null when live) and, when live, its part.
+describe("SPEC-040 CA-1 the two-line margin of a row", () => {
+  const sat3 = {
+    weekdayKey: "weekday.sat",
+    dayOfMonth: 3,
+    monthKey: "month.oct",
+  };
+  it.each([
+    ["scheduled", {}, sat3, null],
+    ["finished", {}, sat3, null],
+    ["postponed", {}, sat3, null],
+    ["suspended", {}, sat3, null],
+    ["live 30'", { status: "live", minute: 30 }, null, "first"],
+    ["live 45'", { status: "live", minute: 45 }, null, "first"],
+    [
+      "live 45+3'",
+      { status: "live", minute: 45, addedMinute: 3 },
+      null,
+      "first",
+    ],
+    ["live 46'", { status: "live", minute: 46 }, null, "second"],
+    [
+      "live 90+2'",
+      { status: "live", minute: 90, addedMinute: 2 },
+      null,
+      "second",
+    ],
+    [
+      "live at half-time",
+      { status: "live", minute: 45, halfTime: true },
+      null,
+      "halfTime",
+    ],
+    ["live without minute", { status: "live", minute: null }, null, null],
+  ] as const)("%s", (label, overrides, date, part) => {
+    const status = label.split(" ")[0] as MatchStatus;
+    const row = rowOf(match({ status, ...overrides }));
+    expect(row.date).toEqual(date);
+    expect(row.part).toBe(part);
+  });
 
-  it("two days, ascending, each with its rows by kickoff", () => {
+  it.each([
+    ["2026-10-24T22:30:00Z", "weekday.sun", 25],
+    ["2026-10-25T23:30:00Z", "weekday.mon", 26],
+  ] as const)("%s is %s %i out (Madrid)", (kickoff, weekdayKey, day) => {
+    expect(rowOf(match({ kickoff })).date).toEqual({
+      weekdayKey,
+      dayOfMonth: day,
+      monthKey: "month.oct",
+    });
+  });
+
+  it("the competition has no day groups and keeps SPEC-033's order", () => {
     const [competition] = buildXornada([
-      match({
-        id: "sun-1",
-        status: "scheduled",
-        kickoff: "2026-10-04T16:00:00Z",
-      }),
+      match({ id: "sun-1", kickoff: "2026-10-04T16:00:00Z" }),
       match({ id: "sat-2", status: "live", kickoff: "2026-10-03T18:00:00Z" }),
       match({
         id: "sat-1",
@@ -478,60 +521,12 @@ describe("SPEC-033 CA-1 buildXornada day groups", () => {
         kickoff: "2026-10-04T10:00:00Z",
       }),
     ]);
-    expect(groupsOf(competition)).toEqual([
-      ["2026-10-03", ["sat-1", "sat-2"]],
-      ["2026-10-04", ["sun-0", "sun-1"]],
-    ]);
-    expect(competition.dayGroups[0]).toMatchObject({
-      date: "2026-10-03",
-      weekdayKey: "weekday.sat",
-      dayOfMonth: 3,
-      monthKey: "month.oct",
-    });
-    // The flat list is the groups in order.
+    expect(competition).not.toHaveProperty("dayGroups");
     expect(competition.rows.map((r) => r.matchId)).toEqual([
       "sat-1",
       "sat-2",
       "sun-0",
       "sun-1",
-    ]);
-  });
-
-  it("one day is one group", () => {
-    const [competition] = buildXornada([
-      match({ id: "a" }),
-      match({ id: "b" }),
-    ]);
-    expect(competition.dayGroups.map((g) => g.date)).toEqual(["2026-10-03"]);
-  });
-
-  it("a live match of another round goes in its own day", () => {
-    const [competition] = buildXornada([
-      match({ id: "j8", round: 8, kickoff: "2026-10-03T16:00:00Z" }),
-      match({
-        id: "j7",
-        round: 7,
-        status: "live",
-        kickoff: "2026-10-01T18:00:00Z",
-      }),
-    ]);
-    expect(groupsOf(competition)).toEqual([
-      ["2026-10-01", ["j7"]],
-      ["2026-10-03", ["j8"]],
-    ]);
-  });
-
-  it("across the change of time (SPEC-023 CA-1): by Madrid date", () => {
-    const [competition] = buildXornada([
-      match({ id: "mon", kickoff: "2026-10-25T23:30:00Z" }),
-      match({ id: "sun-late", kickoff: "2026-10-25T22:59:00Z" }),
-      match({ id: "sun-early", kickoff: "2026-10-24T22:30:00Z" }),
-      match({ id: "sat", kickoff: "2026-10-24T16:00:00Z" }),
-    ]);
-    expect(groupsOf(competition)).toEqual([
-      ["2026-10-24", ["sat"]],
-      ["2026-10-25", ["sun-early", "sun-late"]],
-      ["2026-10-26", ["mon"]],
     ]);
   });
 });

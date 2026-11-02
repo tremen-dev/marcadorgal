@@ -56,3 +56,4 @@ significa el verde; marca de agua; caché de la portada (SPEC-030).
 - **Resolución del titular (2026-10-12, Alberto Fojo):** H-1, H-2, H-3 (A),
   H-5 y H-6 (B), como se recomiendan. H-4: rechaza la exclusión por
   competición; se marcan todos los equipos gallegos, también en Terceira G1.
+- **Sustituido en parte por SPEC-040 (2026-11-01, decisión del titular Alberto Fojo):** CA-2 (cabecera por día) queda sustituido: cada fila lleva su fecha en el margen (SPEC-040 CA-1/CA-2). De CA-3 caen las cabeceras y los grupos por día; el resto sigue. También H-1 en lo de la cabecera. CA-1 (orden cronológico) sigue en pie. El estado de esta spec no cambia.

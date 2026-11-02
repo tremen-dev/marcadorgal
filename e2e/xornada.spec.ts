@@ -166,20 +166,28 @@ for (const route of routes) {
 
     // SPEC-021 CA-7: half-time is a moment inside live. The row stays live,
     // says «Descanso» and no minute, keeps the ember inset, has no dot, and
-    // its margin does not overflow.
+    // its margin does not overflow. SPEC-040 CA-2 (H-1): «En xogo» on the
+    // first line of the margin and «DESCANSO» under it.
     for (const width of [360, 390]) {
       test(`SPEC-021 CA-7 half-time row at ${width}px`, async ({ page }) => {
         await page.setViewportSize({ width, height: 844 });
         await page.goto(route.path);
-        const halfTime = route.dict.xornada.halfTime;
+        const halfTime = route.dict.xornada.halfTime.toLocaleUpperCase(
+          route.lang,
+        );
         const rows = page.getByTestId("match-row").filter({
-          has: page.getByTestId("match-margin").getByText(halfTime),
+          has: page.getByTestId("match-margin-sub").getByText(halfTime),
         });
         await expect(rows).toHaveCount(2);
         for (let i = 0; i < 2; i++) {
           const row = rows.nth(i);
           await expect(row).toHaveAttribute("data-status", "live");
-          await expect(row.getByTestId("match-margin")).toHaveText(halfTime);
+          await expect(row.getByTestId("match-margin")).toHaveText(
+            route.dict.status.live,
+          );
+          await expect(row.getByTestId("match-margin-sub")).toHaveText(
+            halfTime,
+          );
           await expect(row).toContainText(route.dict.status.live);
           expect(await row.textContent()).not.toMatch(/\d+(\+\d+)?'/);
           const fits = await row
