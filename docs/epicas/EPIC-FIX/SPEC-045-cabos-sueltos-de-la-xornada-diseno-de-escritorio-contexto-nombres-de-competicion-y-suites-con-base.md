@@ -2,10 +2,11 @@
 id: SPEC-045
 tipo: spec
 epica: EPIC-FIX
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-02, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-11-02, por: Alberto Fojo}
 ---
 # SPEC-045 — Cabos sueltos de la xornada: diseño de escritorio, contexto, nombres de competición y suites con base
 

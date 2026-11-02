@@ -71,7 +71,7 @@ Actualizado: 2026-11-02
 | SPEC-022 — test-db-no-toca-storage-de-produccion | hecho | 2026-10-08 (sdd-verificador) |
 | SPEC-030 — la-portada-sirve-una-instantanea-isr-antigua | hecho | 2026-10-12 (sdd-verificador) |
 | SPEC-044 — recuperacion-de-finales-fuera-de-ventana-por-la-rfef-herramienta-de-recuperacion-y-horizonte-por-fuente | hecho | 2026-11-02 (sdd-verificador) |
-| SPEC-045 — cabos-sueltos-de-la-xornada-diseno-de-escritorio-contexto-nombres-de-competicion-y-suites-con-base | borrador | 2026-11-02 (sdd-arquitecto) |
+| SPEC-045 — cabos-sueltos-de-la-xornada-diseno-de-escritorio-contexto-nombres-de-competicion-y-suites-con-base | aprobada | 2026-11-02 (Alberto Fojo) |
 
 ## EPIC-MANT — mantenimiento (borrador)
 
@@ -117,5 +117,4 @@ Actualizado: 2026-11-02
 
 - hecho: 40
 - en-revision: 3
-- aprobada: 1
-- borrador: 1
+- aprobada: 2
