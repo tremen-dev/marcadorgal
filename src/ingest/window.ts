@@ -1,4 +1,5 @@
 import {
+  HOUR_MS,
   type Instant,
   type MatchStatus,
   MINUTE_MS,
@@ -100,4 +101,33 @@ export function windowKickoffRange(now: Instant): {
     from: shiftInstant(now, -EXTENSION_AFTER_MINUTES * MINUTE_MS),
     to: shiftInstant(now, WINDOW_BEFORE_MINUTES * MINUTE_MS),
   };
+}
+
+// The recovery set of a source (ADR-025 §2, SPEC-044 CA-2): not in the
+// common window, kickoff <= now < kickoff + horizon, and a current Decision
+// that does not close the match. "Closes" is the same test isInWindow makes
+// —a finished without the mark of the forced finish— and nothing else: a
+// finished with the mark enters (H-3) and RN-12 reconciles it, a postponed
+// or a suspended enters and may be undone, no Decision enters (the board
+// reads it as scheduled). A horizon of 0 recovers nothing.
+export function isInRecovery(
+  input: WindowInput,
+  now: Instant,
+  horizonHours: number,
+): boolean {
+  if (horizonHours <= 0) return false;
+  if (input.status === "finished" && input.forcedFinish !== true) return false;
+  if (isInWindow(input, now)) return false;
+  const kickoffMs = Date.parse(input.kickoff);
+  const nowMs = Date.parse(now);
+  return kickoffMs <= nowMs && nowMs < kickoffMs + horizonHours * HOUR_MS;
+}
+
+// The recovery set read as bounds on kickoff, to narrow the board query
+// before isInRecovery filters it: from now minus the horizon up to now.
+export function recoveryKickoffRange(
+  now: Instant,
+  horizonHours: number,
+): { from: Instant; to: Instant } {
+  return { from: shiftInstant(now, -horizonHours * HOUR_MS), to: now };
 }
