@@ -2,10 +2,11 @@
 id: SPEC-044
 tipo: spec
 epica: EPIC-FIX
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-02, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-11-02, por: Alberto Fojo}
 ---
 # SPEC-044 — Recuperación de finales fuera de ventana por la rfef: herramienta de recuperación y horizonte por fuente
 
@@ -56,11 +57,11 @@ Ventana, Tick, Observation, Decision, Alert, Frescura (`dominio.md`); RN-01, RN-
 - Resolver las alertas `conflict` que abra CA-8: operador (EPIC-004).
 
 ## Notas para el gate humano
-- **H-1 Horizonte 72 h.** Cubre viernes → lunes y la tarde del martes. 48 h dejaría fuera un viernes caído hasta el lunes; 96 h solo añade GET. ¿72?
-- **H-2 `decided_at` del domingo.** Las Decisions recuperadas se deciden a la hora de la observación (ADR-025 §4): honesto en los tres relojes y sin tocar el motor puro, pero `decided_at` queda anterior a `recorded_at` y a Decisions ya escritas. ADR-019 §3 lo permite. ¿Aceptado frente a declarar `observedAt` = `exportedAt` (rechazado en el ADR)?
-- **H-3 Cierres forzosos.** Un `finished` con marca entra en el conjunto recuperable y RN-12 lo reconcilia con la rfef (`confirmado`, con prioridad 5: consecuencia ya aceptada en ADR-023). Alternativa: excluirlos y dejar solo `scheduled` y sin Decision. Recomendado: entran, y CA-8 los lista.
-- **H-4 Camino, no excepción.** `rfef:recuperar` queda como herramienta permanente más allá de las 72 h (ADR-025 §6), con intento y crudo; RN-08 gana una nota. Las dos reconciliaciones anteriores fueron «únicas». ¿De acuerdo?
-- **H-5 Dónde vive el horizonte.** Constante en `src/ingest/constants.ts` por la restricción de rutas de esta sesión; el sitio natural es el registro (RN-08: «dato del registro, no constante»). Recomendado: constante ahora, entrada de EPIC-MANT después.
-- **H-6 Ejecución de CA-8.** Quién (titular, con secretos de producción en local), cuándo (en cuanto se fusione, antes del 2026-11-06), rango `--desde 2026-10-30 --hasta 2026-11-02` (el partido de Primera del 11-02 está en ventana y es del tick: la herramienta lo salta). Dry-run primero, salida al ledger, y aplicar solo si el plan cuadra con los 39.
-- **H-7 Alerta por discrepancia.** La herramienta abre `conflict` sin pasar por el motor (una alerta no es una Decision: D-5 intacta; misma deduplicación que `openAlert`). ¿`conflict` o un detalle distinto?
-- **H-8 Ritmo.** 5 min por intento con recuperación, medido sobre `ingest_attempts` de la última hora (una consulta por fuente con horizonte por tick). Alternativa sin consulta: por última observación, que con filas `SCHEDULED` de explorer preguntaría cada tick 72 h. Recomendado: por intento.
+- **H-1 Horizonte 72 h.** Cubre viernes → lunes y la tarde del martes. 48 h dejaría fuera un viernes caído hasta el lunes; 96 h solo añade GET. ¿72? *Resuelta por el titular (Alberto Fojo, 2026-11-02):* 72 h.
+- **H-2 `decided_at` del domingo.** Las Decisions recuperadas se deciden a la hora de la observación (ADR-025 §4): honesto en los tres relojes y sin tocar el motor puro, pero `decided_at` queda anterior a `recorded_at` y a Decisions ya escritas. ADR-019 §3 lo permite. ¿Aceptado frente a declarar `observedAt` = `exportedAt` (rechazado en el ADR)? *Resuelta por el titular (Alberto Fojo, 2026-11-02):* aceptado: `decided_at` a la hora de la observación, como el replay.
+- **H-3 Cierres forzosos.** Un `finished` con marca entra en el conjunto recuperable y RN-12 lo reconcilia con la rfef (`confirmado`, con prioridad 5: consecuencia ya aceptada en ADR-023). Alternativa: excluirlos y dejar solo `scheduled` y sin Decision. Recomendado: entran, y CA-8 los lista. *Resuelta por el titular (Alberto Fojo, 2026-11-02):* entran.
+- **H-4 Camino, no excepción.** `rfef:recuperar` queda como herramienta permanente más allá de las 72 h (ADR-025 §6), con intento y crudo; RN-08 gana una nota. Las dos reconciliaciones anteriores fueron «únicas». ¿De acuerdo? *Resuelta por el titular (Alberto Fojo, 2026-11-02):* sí, camino permanente con nota en RN-08.
+- **H-5 Dónde vive el horizonte.** Constante en `src/ingest/constants.ts` por la restricción de rutas de esta sesión; el sitio natural es el registro (RN-08: «dato del registro, no constante»). Recomendado: constante ahora, entrada de EPIC-MANT después. *Resuelta por el titular (Alberto Fojo, 2026-11-02):* constante ahora; traslado al registro por EPIC-MANT.
+- **H-6 Ejecución de CA-8.** Quién (titular, con secretos de producción en local), cuándo (en cuanto se fusione, antes del 2026-11-06), rango `--desde 2026-10-30 --hasta 2026-11-02` (el partido de Primera del 11-02 está en ventana y es del tick: la herramienta lo salta). Dry-run primero, salida al ledger, y aplicar solo si el plan cuadra con los 39. *Resuelta por el titular (Alberto Fojo, 2026-11-02):* lo ejecuta el orquestador con el titular presente, hoy en cuanto se fusione; dry-run al ledger primero y aplicar solo si el plan cuadra, listando con motivo los que falten (3 de Segunda son del lunes y 1 es aplazado real).
+- **H-7 Alerta por discrepancia.** La herramienta abre `conflict` sin pasar por el motor (una alerta no es una Decision: D-5 intacta; misma deduplicación que `openAlert`). ¿`conflict` o un detalle distinto? *Resuelta por el titular (Alberto Fojo, 2026-11-02):* `conflict`, abierta por la herramienta sin pasar por el motor.
+- **H-8 Ritmo.** 5 min por intento con recuperación, medido sobre `ingest_attempts` de la última hora (una consulta por fuente con horizonte por tick). Alternativa sin consulta: por última observación, que con filas `SCHEDULED` de explorer preguntaría cada tick 72 h. Recomendado: por intento. *Resuelta por el titular (Alberto Fojo, 2026-11-02):* por intento.

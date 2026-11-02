@@ -1,9 +1,11 @@
 ---
 id: ADR-025
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-11-02, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-11-02, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # ADR-025: Horizonte de recuperación por fuente y motor a la hora de la observación fuera de la ventana común
 
