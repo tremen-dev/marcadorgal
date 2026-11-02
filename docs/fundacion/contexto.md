@@ -91,7 +91,9 @@ el motor, luego la pantalla.
 - Las migraciones se aplican al fusionar en `main`: el workflow `migraciones`
   hace `supabase db push` contra producción y su check es Deployment Check de
   Vercel, que no promueve el despliegue hasta que sale verde (ADR-024,
-  SPEC-043). `npm run db:push` queda como vía de emergencia. Toda migración
+  SPEC-043). `npm run db:push` queda como vía de emergencia, y solo se lanza
+  desde `main`. Para desbloquear producción con el check en rojo, ver la
+  precisión de ADR-024 («desbloqueo con el check en rojo»). Toda migración
   debe ser compatible con el código ya desplegado (expandir antes de usar).
 - Vercel Pro: un proyecto, dominio marcador.gal, previews por PR.
 - Ingesta: pg_cron llama cada 30 s a `POST /api/ingest/tick` vía pg_net; Vercel

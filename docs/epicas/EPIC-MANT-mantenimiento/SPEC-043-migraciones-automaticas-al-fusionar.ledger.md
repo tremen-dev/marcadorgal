@@ -19,8 +19,8 @@ epica: EPIC-MANT
 | CA-2 | `.github/workflows/migraciones.yml` (paso «Guardia», env `MODO`) | `src/arch/migraciones-workflow.test.ts` › «SPEC-043 CA-2 …» (9 casos). Run rojo de la guardia: tras el merge (handoff, paso 3) | Estático: 20/20 tests verdes; YAML leído (push main sin `paths`, dispatch `modo` choice/dry-run, concurrency, `contents: read`, timeout 10, CLI 2.122.0). Guardia ejecutada en bash `-eo pipefail`: aplicar+`refs/heads/ft/…`→1, aplicar+tag→1, modo vacío/desconocido→1, aplicar+main→0, dry-run+rama→0. Run rojo real: pendiente tras el merge | 🚧 |
 | CA-3 | `migraciones.yml` (paso «Enmascarar…»), `tools/mascara-db-url.mjs` | `src/arch/migraciones-workflow.test.ts` › «CA-3 one secret, never printed» (3) y «CA-3 tools/mascara-db-url.mjs» (2). `grep -cF` de los logs: tras el merge (handoff, paso 5) | Estático: único secreto, por `env`, sin `${{` en `run:`. CLI 2.122.0 real con URL errónea (auth, TLS, DNS): imprime `host=… user=…` (host 1-2, usuario 1-2 apariciones); tras aplicar las máscaras de `mascara-db-url.mjs` → url/host/user/pass/pass codificada = 0. `grep -cF` de logs reales: pendiente tras el merge | 🚧 |
 | CA-4 | `migraciones.yml` (rama `--dry-run`) | Sondeo local (Postgres 17 en Docker, CLI 2.122.0): dry-run «Would push these migrations: • 20261102120000_…», exit 0. Real: tras el merge (handoff, paso 2) | Local (Postgres 17 efímero con el historial de `origin/main`, 26 versiones): `db push --dry-run` exit 0, «Would push … 20261102120000»; `migration list` antes/después idéntico (`diff` vacío). Real: pendiente tras el merge | 🚧 |
-| CA-5 | `supabase/migrations/20261102120000_spec043_harmless_comment.sql` | `src/arch/migraciones-workflow.test.ts` › «CA-5 the harmless migration». Sondeo local: aplica y la 2.ª pasada dice «Remote database is up to date.», exit 0. Real: tras el merge (handoff, paso 4) | Local: aplica 20261102120000 (exit 0, comentario del esquema `web` escrito); 2.ª pasada «Remote database is up to date.» exit 0. Orden Vercel/check real: pendiente y mal preparado (V-1) | 🚧 |
-| CA-6 | `migraciones.yml` (`defaults.run.shell: bash`, sin `continue-on-error` ni `\|\| true`) | `src/arch/migraciones-workflow.test.ts` › «CA-6 …» (2). Deployment Check en Vercel y captura `_qa/SPEC-043/`: tras el merge (handoff, paso 1) | YAML: sin `continue-on-error` ni `\|\| true`, `defaults.run.shell: bash`. Local: `db push` con SQL roto → exit 1. Falta la cita de la documentación de Vercel que exige el CA (V-3); captura del Deployment Check pendiente tras el merge | ❌ |
+| CA-5 | `supabase/migrations/20261102120000_spec043_harmless_comment.sql` | `src/arch/migraciones-workflow.test.ts` › «CA-5 the harmless migration». Sondeo local: aplica y la 2.ª pasada dice «Remote database is up to date.», exit 0. Real, según la enmienda: (a) handoff paso 2, (b) paso 3, (c) paso 7 | Local: aplica 20261102120000 (exit 0, comentario del esquema `web` escrito); 2.ª pasada «Remote database is up to date.» exit 0. Orden Vercel/check real: pendiente y mal preparado (V-1) | 🚧 |
+| CA-6 | `migraciones.yml` (`defaults.run.shell: bash`, sin `continue-on-error` ni `\|\| true`) | `src/arch/migraciones-workflow.test.ts` › «CA-6 …» (2). Documentación de Vercel citada en «Evidencia del implementador». Deployment Check en Vercel y captura `_qa/SPEC-043/`: tras el merge (handoff, paso 6) | YAML: sin `continue-on-error` ni `\|\| true`, `defaults.run.shell: bash`. Local: `db push` con SQL roto → exit 1. Falta la cita de la documentación de Vercel que exige el CA (V-3); captura del Deployment Check pendiente tras el merge | ❌ |
 | CA-7 | `.github/workflows/calendario-semanal.yml` (paso «Fusionar y cargar…») | `src/arch/migraciones-workflow.test.ts` › «CA-7 …»; actionlint (CA-1) | Diff de `calendario-semanal.yml`: el dispatch va tras `gh pr merge`, job con `actions: write` y `GH_TOKEN`; actionlint exit 0 | ✅ |
 | CA-8 | `docs/fundacion/contexto.md` (Stack), `package.json` `db:push` intacto | `src/arch/migraciones-workflow.test.ts` › «CA-8 …» (2); `npm run gates` exit 0 en Linux (abajo) | `npm run gates` en `playwright:v1.63.0-noble` sobre el export LF de `ae99d44`: tsc ok, biome 316 ficheros 1 aviso previo, 112 ficheros / 2061 tests pasan (3 omitidos), `next build` ok, exit 0. `db:push` intacto; `contexto.md` lo dice | ✅ |
 
@@ -77,6 +77,25 @@ permite verificar CA-5 tal y como está escrito. Nada de código que corregir.
   remota que no está en local → exit 1, `DbPushMissingLocalError: Remote
   migration versions not found in local migrations directory.` (ver F-1). Un
   error de conexión imprime `host=… user=…` en claro: de ahí el enmascarado.
+- Documentación de Vercel (CA-6, V-3), leída el 2026-11-02 en
+  https://vercel.com/docs/deployment-checks (last_updated 2026-08-11):
+  - «When you add Deployment Checks to a project, Vercel will hold each
+    production deployment until all required checks pass before assigning it
+    to your custom production domains.»
+  - «Production deployments will still be created, but will not be
+    automatically assigned to your custom domains until all Deployment Checks
+    are met.»
+  - «Once all of the Deployment Checks have passed, the deployment is aliased
+    to your production domain(s) automatically.»
+  - Configuración: Project → Settings → Build and Deployment → Deployment
+    Checks → «Add Checks» → proveedor **GitHub**. Requisitos: proyecto
+    enlazado con Vercel for GitHub y «automatic aliasing for production»
+    activado en Settings → Environments → Production.
+  - Identificación: «GitHub uses the names of jobs to identify which checks are
+    the same across instances»: el check es el job `migraciones`; renombrarlo
+    obliga a actualizar el Deployment Check.
+  - Escape: «You can bypass Deployment Checks by selecting Force Promote from
+    the deployment details page» (ADR-024, precisión).
 
 ## Evidencia visual
 <!-- Tabla CA → captura en _qa/SPEC-043/. Informe HTML opcional: _qa/SPEC-043/informe.html -->
@@ -96,27 +115,45 @@ permite verificar CA-5 tal y como está escrito. Nada de código que corregir.
 ## Cómo retomar (handoff)
 <!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->
 Hecho y commiteado en la rama (sin push): workflow, enmascarado, dispatch del
-calendario, migración inocua, contexto, tests estáticos. Falta la
-verificación real, solo posible tras fusionar (y tras la #85, F-1):
-1. **Antes del merge (titular):** en Vercel, Project → Settings → Build and
-   Deployment → Deployment Checks, marcar `migraciones` como obligatorio de
-   producción (solo aparece tras un primer run; si no aparece, marcar justo
-   después del run del paso 4 y antes de dar CA-5 por buena). Captura a
-   `_qa/SPEC-043/deployment-check.png`.
-2. **CA-4:** `supabase migration list --db-url "$DATABASE_URL"` local >
-   `antes.txt`; `gh workflow run migraciones.yml --ref main -f modo=dry-run`;
-   `gh run watch <id>`; repetir `migration list` > `despues.txt`;
-   `diff antes.txt despues.txt` vacío; el log dice qué está pendiente.
-3. **CA-2 (run rojo):** `gh workflow run migraciones.yml --ref
-   ft/SPEC-043-migraciones-automaticas-al-fusionar -f modo=aplicar` → rojo en
-   «Guardia», sin pasos posteriores ejecutados (`gh run view <id>`).
-4. **CA-5:** el run de `push` del merge aplica `20261102120000`; `migration
-   list` la muestra; comparar la hora de fin del job (`gh run view <id> --json
-   jobs`) con la de *Current* del despliegue de ese SHA (`vercel inspect`).
-   Luego `gh workflow run migraciones.yml --ref main -f modo=aplicar` → verde
-   con «Remote database is up to date.».
-5. **CA-3:** para cada run de 2–4, `gh run view <id> --log > run.log` y contar
-   sin imprimir: `node -e 'process.loadEnvFile();const u=new
+calendario, migración inocua, contexto (con la regla «`db:push` solo desde
+`main`» y remisión a la precisión de ADR-024), tests estáticos, cita de Vercel
+(CA-6). Falta la verificación real, solo posible tras fusionar. Orden según el
+CA-5 enmendado; `$SHA` es el SHA del merge de esta PR en `main`.
+1. **Antes del merge (titular).** #85 ya en `main` (F-1). En Vercel: proyecto
+   enlazado con Vercel for GitHub y Settings → Environments → Production con
+   «automatic aliasing» activo. El check `migraciones` aún no existe: no se
+   marca ahora (paso 6).
+2. **CA-5 (a).** Fusionar. `gh run list --workflow migraciones.yml --event
+   push --commit $SHA` → id; `gh run watch <id>` verde; el log de «supabase
+   db push» aplica `20261102120000`; `supabase migration list --db-url
+   "$DATABASE_URL"` (local, `.env`) la muestra en remoto.
+3. **CA-5 (b).** Sin otro commit en `main` entre medias:
+   `gh workflow run migraciones.yml --ref main -f modo=aplicar`; `gh run view
+   <id> --json headSha,conclusion` → `headSha` = `$SHA`, `success`; el log dice
+   «Remote database is up to date.».
+4. **CA-4.** `supabase migration list --db-url "$DATABASE_URL" > antes.txt`;
+   `gh workflow run migraciones.yml --ref main -f modo=dry-run`; `gh run watch
+   <id>` verde, el log dice que está al día; `… > despues.txt`; `diff antes.txt
+   despues.txt` vacío.
+5. **CA-2 (run rojo), ref efímera.** Con ningún run de `migraciones` en curso
+   ni pendiente (V-5):
+   `git fetch origin main && git push origin origin/main:refs/heads/qa/spec-043-guardia`;
+   `gh workflow run migraciones.yml --ref qa/spec-043-guardia -f modo=aplicar`;
+   `gh run list --workflow migraciones.yml --branch qa/spec-043-guardia` → id;
+   `gh run view <id>` → rojo en «Guardia — solo se aplica desde main», checkout
+   y pasos siguientes sin ejecutar; después
+   `git push origin --delete qa/spec-043-guardia`.
+6. **Deployment Check (CA-6).** Project → Settings → Build and Deployment →
+   Deployment Checks → Add Checks → GitHub → `migraciones` (nombre del job),
+   obligatorio en producción. Captura a `_qa/SPEC-043/deployment-check.png`.
+7. **CA-5 (c).** Siguiente commit de `main` (p. ej. la PR de evidencia), SHA
+   `$SHA2`. Mientras el run de `push` corre: captura del despliegue de
+   producción de `$SHA2` retenido (`_qa/SPEC-043/retenido.png`) y `vercel
+   inspect <url>`. Al terminar: `gh run view <id> --json jobs` (`completedAt`
+   del job `migraciones`, verde) frente a la hora en que el despliegue pasa a
+   *Current* (panel o `vercel inspect`): *Current* posterior a `completedAt`.
+8. **CA-3.** Para cada run de 2, 3, 4, 5 y 7: `gh run view <id> --log >
+   run.log` y contar sin imprimir: `node -e 'process.loadEnvFile();const u=new
    URL(process.env.DATABASE_URL),l=require("fs").readFileSync("run.log","utf8");
    for(const[k,v]of Object.entries({url:process.env.DATABASE_URL,host:u.hostname,
    user:u.username,pass:decodeURIComponent(u.password)}))console.log(k,l.split(v).length-1)'`
