@@ -28,6 +28,8 @@ const base: XornadaDbRow = {
   observed_at: null,
   decided_at: null,
   half_time: false,
+  home_scored_at: null,
+  away_scored_at: null,
 };
 
 const decided = {
@@ -57,6 +59,8 @@ describe("SPEC-020 CA-4 toPublicMatches", () => {
         version: 0,
         observedAt: null,
         decidedAt: null,
+        homeScoredAt: null,
+        awayScoredAt: null,
       },
     ]);
   });
@@ -252,4 +256,68 @@ describe("SPEC-024 CA-3 one conversion", () => {
       expect(error).toHaveBeenCalledTimes(1);
     },
   );
+});
+
+// SPEC-041 CA-2: the two instants of ADR-022, converted like the others.
+describe("SPEC-041 CA-2 home_scored_at and away_scored_at", () => {
+  const live = {
+    ...base,
+    ...decided,
+    status: "live",
+    home_score: 2,
+    away_score: 1,
+    minute: 60,
+    home_scored_at: new Date("2026-10-10T16:45:05Z"),
+    away_scored_at: null,
+  };
+
+  it("become homeScoredAt and awayScoredAt in Z", () => {
+    const [m] = toPublicMatches([live]);
+    expect(m).toMatchObject({
+      homeScoredAt: "2026-10-10T16:45:05.000Z",
+      awayScoredAt: null,
+    });
+  });
+
+  it("the reader and the payload (offset, microseconds) give the same object", () => {
+    const [byReader] = toPublicMatches([live]);
+    const byPayload = toPublicMatch({
+      ...live,
+      kickoff: "2026-10-10T16:00:00+00:00",
+      observed_at: "2026-10-10T16:47:00+00:00",
+      decided_at: "2026-10-10T18:47:05+02:00",
+      home_scored_at: "2026-10-10T18:45:05.000000+02:00",
+      id: "6d1f2a52-6c1e-4a51-9f3f-1d8c2b0f8a10",
+    });
+    expect(byPayload).toEqual(byReader);
+  });
+
+  it("an instant on a postponed row is left out and named", () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    const out = toPublicMatches([
+      {
+        ...base,
+        ...decided,
+        status: "postponed",
+        match_id: "bad-postponed",
+        away_scored_at: new Date("2026-10-10T16:45:05Z"),
+      },
+    ]);
+    expect(out).toEqual([]);
+    expect(String(error.mock.calls[0].join(" "))).toContain("bad-postponed");
+  });
+
+  it("a row without the columns (the view before the migration) is left out", () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    const {
+      home_scored_at: _,
+      away_scored_at: __,
+      ...old
+    } = {
+      ...live,
+      match_id: "old-view",
+    };
+    expect(toPublicMatches([old as XornadaDbRow])).toEqual([]);
+    expect(String(error.mock.calls[0].join(" "))).toContain("homeScoredAt");
+  });
 });

@@ -29,7 +29,14 @@ const fields = {
   version: z.int().min(0),
   observedAt: Instant.nullable(),
   decidedAt: Instant.nullable(),
+  // SPEC-041 CA-2 (ADR-022 §1-§3): the decidedAt of the Decision that last
+  // raised each side's score while live, seen live; null otherwise.
+  homeScoredAt: Instant.nullable(),
+  awayScoredAt: Instant.nullable(),
 };
+
+// SPEC-041 CA-2: only a match with a score can have scored.
+const SCORING: ReadonlySet<string> = new Set(["live", "finished", "suspended"]);
 
 const [scheduled, live, finished, postponed, suspended] = MatchState.options;
 
@@ -48,6 +55,16 @@ export const PublicMatch = z
     message: "version is 0 exactly when there is no Decision (decidedAt null)",
     path: ["version"],
   })
+  .refine(
+    (m) =>
+      SCORING.has(m.status) ||
+      (m.homeScoredAt === null && m.awayScoredAt === null),
+    {
+      message:
+        "homeScoredAt and awayScoredAt only in live, finished or suspended",
+      path: ["homeScoredAt"],
+    },
+  )
   // sen_sinal: in live, or in scheduled with the kickoff past (RN-05, ADR-013 §2).
   .refine(
     (m) =>

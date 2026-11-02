@@ -1,16 +1,21 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { galicianNames } from "@/calendar/galicians";
+import { nowInstant } from "@/clock";
 import { XornadaScreen } from "@/components/xornada/XornadaScreen";
 import { type Locale, t } from "@/i18n";
 import {
-  DEMO_MATCHES,
   DEMO_NOW,
   DEMO_SEASON,
+  demoMatches,
   isDemoAvailable,
 } from "@/xornada/demo";
 import { buildXornada, xornadaDays } from "@/xornada/view";
-import { PROVISIONAL_DISPLAY } from "./config";
+import {
+  PROVISIONAL_DISPLAY,
+  RECENT_GOAL_MINUTES,
+  recentGoalMark,
+} from "./config";
 
 // /demo/xornada and /es/demo/xornada (SPEC-019 CA-5): server content only,
 // never in production, never indexed.
@@ -28,17 +33,25 @@ export function demoMetadata(locale: Locale): Metadata {
 
 export function DemoXornada({ locale }: { locale: Locale }) {
   if (!isDemoAvailable({ VERCEL_ENV: process.env.VERCEL_ENV })) notFound();
+  // SPEC-041 CA-6: rendered per request, its goals relative to this instant.
+  const now = nowInstant();
+  const matches = demoMatches(now);
   return (
     <XornadaScreen
       locale={locale}
       competitions={buildXornada(
-        DEMO_MATCHES,
+        matches,
         galicianNames(DEMO_SEASON),
         PROVISIONAL_DISPLAY,
       )}
-      days={xornadaDays(DEMO_MATCHES, DEMO_NOW)}
+      days={xornadaDays(matches, DEMO_NOW)}
       paths={DEMO_PATHS}
       provisionalDisplay={PROVISIONAL_DISPLAY}
+      recentGoal={{
+        now,
+        minutes: RECENT_GOAL_MINUTES,
+        mark: recentGoalMark(process.env),
+      }}
     />
   );
 }

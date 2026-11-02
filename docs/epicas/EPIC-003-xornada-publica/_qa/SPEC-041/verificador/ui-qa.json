@@ -1,0 +1,6582 @@
+[
+ {
+  "mark": "box",
+  "path": "/demo/xornada",
+  "scheme": "light",
+  "width": 360,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol recente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol recente"
+   }
+  ],
+  "tags": [],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "box",
+  "path": "/demo/xornada",
+  "scheme": "light",
+  "width": 390,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol recente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol recente"
+   }
+  ],
+  "tags": [],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "box",
+  "path": "/demo/xornada",
+  "scheme": "light",
+  "width": 1024,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol recente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol recente"
+   }
+  ],
+  "tags": [],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "box",
+  "path": "/demo/xornada",
+  "scheme": "light",
+  "width": 1440,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol recente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol recente"
+   }
+  ],
+  "tags": [],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "box",
+  "path": "/demo/xornada",
+  "scheme": "light",
+  "width": 1920,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol recente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol recente"
+   }
+  ],
+  "tags": [],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "box",
+  "path": "/demo/xornada",
+  "scheme": "dark",
+  "width": 360,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol recente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol recente"
+   }
+  ],
+  "tags": [],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "box",
+  "path": "/demo/xornada",
+  "scheme": "dark",
+  "width": 390,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol recente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol recente"
+   }
+  ],
+  "tags": [],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "box",
+  "path": "/demo/xornada",
+  "scheme": "dark",
+  "width": 1024,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol recente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol recente"
+   }
+  ],
+  "tags": [],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "box",
+  "path": "/demo/xornada",
+  "scheme": "dark",
+  "width": 1440,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol recente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol recente"
+   }
+  ],
+  "tags": [],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "box",
+  "path": "/demo/xornada",
+  "scheme": "dark",
+  "width": 1920,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol recente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol recente"
+   }
+  ],
+  "tags": [],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "box",
+  "path": "/es/demo/xornada",
+  "scheme": "light",
+  "width": 360,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol reciente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol reciente"
+   }
+  ],
+  "tags": [],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "box",
+  "path": "/es/demo/xornada",
+  "scheme": "light",
+  "width": 390,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol reciente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol reciente"
+   }
+  ],
+  "tags": [],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "box",
+  "path": "/es/demo/xornada",
+  "scheme": "light",
+  "width": 1024,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol reciente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol reciente"
+   }
+  ],
+  "tags": [],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "box",
+  "path": "/es/demo/xornada",
+  "scheme": "light",
+  "width": 1440,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol reciente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol reciente"
+   }
+  ],
+  "tags": [],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "box",
+  "path": "/es/demo/xornada",
+  "scheme": "light",
+  "width": 1920,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol reciente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol reciente"
+   }
+  ],
+  "tags": [],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "box",
+  "path": "/es/demo/xornada",
+  "scheme": "dark",
+  "width": 360,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol reciente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol reciente"
+   }
+  ],
+  "tags": [],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "box",
+  "path": "/es/demo/xornada",
+  "scheme": "dark",
+  "width": 390,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol reciente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol reciente"
+   }
+  ],
+  "tags": [],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "box",
+  "path": "/es/demo/xornada",
+  "scheme": "dark",
+  "width": 1024,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol reciente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol reciente"
+   }
+  ],
+  "tags": [],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "box",
+  "path": "/es/demo/xornada",
+  "scheme": "dark",
+  "width": 1440,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol reciente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol reciente"
+   }
+  ],
+  "tags": [],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "box",
+  "path": "/es/demo/xornada",
+  "scheme": "dark",
+  "width": 1920,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol reciente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgb(34, 31, 26)",
+    "shadow": "rgb(61, 54, 44) 0px 0px 0px 1px",
+    "radius": "8px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol reciente"
+   }
+  ],
+  "tags": [],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "label",
+  "path": "/demo/xornada",
+  "scheme": "light",
+  "width": 360,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol recente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol recente"
+   }
+  ],
+  "tags": [
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   },
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   }
+  ],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53.3,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "label",
+  "path": "/demo/xornada",
+  "scheme": "light",
+  "width": 390,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol recente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol recente"
+   }
+  ],
+  "tags": [
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   },
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   }
+  ],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53.3,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "label",
+  "path": "/demo/xornada",
+  "scheme": "light",
+  "width": 1024,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol recente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol recente"
+   }
+  ],
+  "tags": [
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   },
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   }
+  ],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53.3,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "label",
+  "path": "/demo/xornada",
+  "scheme": "light",
+  "width": 1440,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol recente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol recente"
+   }
+  ],
+  "tags": [
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   },
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   }
+  ],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53.3,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "label",
+  "path": "/demo/xornada",
+  "scheme": "light",
+  "width": 1920,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol recente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol recente"
+   }
+  ],
+  "tags": [
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   },
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   }
+  ],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53.3,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "label",
+  "path": "/demo/xornada",
+  "scheme": "dark",
+  "width": 360,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol recente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol recente"
+   }
+  ],
+  "tags": [
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   },
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   }
+  ],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53.3,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "label",
+  "path": "/demo/xornada",
+  "scheme": "dark",
+  "width": 390,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol recente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol recente"
+   }
+  ],
+  "tags": [
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   },
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   }
+  ],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53.3,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "label",
+  "path": "/demo/xornada",
+  "scheme": "dark",
+  "width": 1024,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol recente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol recente"
+   }
+  ],
+  "tags": [
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   },
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   }
+  ],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53.3,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "label",
+  "path": "/demo/xornada",
+  "scheme": "dark",
+  "width": 1440,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol recente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol recente"
+   }
+  ],
+  "tags": [
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   },
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   }
+  ],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53.3,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "label",
+  "path": "/demo/xornada",
+  "scheme": "dark",
+  "width": 1920,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol recente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol recente"
+   }
+  ],
+  "tags": [
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   },
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   }
+  ],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53.3,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "label",
+  "path": "/es/demo/xornada",
+  "scheme": "light",
+  "width": 360,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol reciente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol reciente"
+   }
+  ],
+  "tags": [
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   },
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   }
+  ],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53.3,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "label",
+  "path": "/es/demo/xornada",
+  "scheme": "light",
+  "width": 390,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol reciente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol reciente"
+   }
+  ],
+  "tags": [
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   },
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   }
+  ],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53.3,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "label",
+  "path": "/es/demo/xornada",
+  "scheme": "light",
+  "width": 1024,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol reciente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol reciente"
+   }
+  ],
+  "tags": [
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   },
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   }
+  ],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53.3,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "label",
+  "path": "/es/demo/xornada",
+  "scheme": "light",
+  "width": 1440,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol reciente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol reciente"
+   }
+  ],
+  "tags": [
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   },
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   }
+  ],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53.3,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "label",
+  "path": "/es/demo/xornada",
+  "scheme": "light",
+  "width": 1920,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol reciente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol reciente"
+   }
+  ],
+  "tags": [
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   },
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   }
+  ],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53.3,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "label",
+  "path": "/es/demo/xornada",
+  "scheme": "dark",
+  "width": 360,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol reciente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol reciente"
+   }
+  ],
+  "tags": [
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   },
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   }
+  ],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53.3,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "label",
+  "path": "/es/demo/xornada",
+  "scheme": "dark",
+  "width": 390,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol reciente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol reciente"
+   }
+  ],
+  "tags": [
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   },
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   }
+  ],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53.3,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "label",
+  "path": "/es/demo/xornada",
+  "scheme": "dark",
+  "width": 1024,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol reciente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol reciente"
+   }
+  ],
+  "tags": [
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   },
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   }
+  ],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53.3,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "label",
+  "path": "/es/demo/xornada",
+  "scheme": "dark",
+  "width": 1440,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol reciente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol reciente"
+   }
+  ],
+  "tags": [
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   },
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   }
+  ],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53.3,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ },
+ {
+  "mark": "label",
+  "path": "/es/demo/xornada",
+  "scheme": "dark",
+  "width": 1920,
+  "errs": [],
+  "trunc": [],
+  "marked": [
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(245, 241, 234)",
+    "inside": true,
+    "sr": "gol reciente"
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "text": "1",
+    "anim": "Xornada-module__RF58Pa__recent-goal-pulse",
+    "dur": "1s",
+    "iter": "240",
+    "bg": "rgba(0, 0, 0, 0)",
+    "shadow": "none",
+    "radius": "0px",
+    "color": "rgb(255, 101, 90)",
+    "inside": true,
+    "sr": "gol reciente"
+   }
+  ],
+  "tags": [
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   },
+   {
+    "text": "GOL",
+    "vis": "GOL",
+    "ff": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "fw": "600",
+    "fs": "9px",
+    "tt": "uppercase",
+    "border": "1px solid rgb(61, 54, 44)",
+    "radius": "999px",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(167, 165, 160)",
+    "inside": true,
+    "w": 27
+   }
+  ],
+  "hscroll": false,
+  "heights": [
+   {
+    "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+    "h": 53.3,
+    "marked": true
+   },
+   {
+    "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    "h": 60,
+    "marked": true
+   },
+   {
+    "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+    "h": 60,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+    "h": 53,
+    "marked": false
+   },
+   {
+    "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+    "h": 53,
+    "marked": false
+   }
+  ]
+ }
+]

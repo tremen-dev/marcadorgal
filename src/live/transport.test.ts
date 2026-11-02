@@ -41,6 +41,8 @@ function match(id: string, version: number, extra = {}): PublicMatch {
     version,
     observedAt: "2026-10-10T16:55:00.000Z",
     decidedAt: "2026-10-10T16:55:05.000Z",
+    homeScoredAt: null,
+    awayScoredAt: null,
     ...extra,
   } as PublicMatch;
 }
@@ -69,6 +71,8 @@ function payload(id: string, version: number, extra = {}) {
     observed_at: "2026-10-10T16:55:00+00:00",
     decided_at: "2026-10-10T16:55:05+00:00",
     half_time: false,
+    home_scored_at: null,
+    away_scored_at: null,
     id: "message-id",
     ...extra,
   };

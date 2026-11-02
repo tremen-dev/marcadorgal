@@ -15,6 +15,8 @@ const base = {
   version: 4,
   observedAt: "2026-10-03T17:01:00Z",
   decidedAt: "2026-10-03T17:01:05Z",
+  homeScoredAt: null,
+  awayScoredAt: null,
 };
 
 const score = { home: 1, away: 0 };
@@ -134,6 +136,42 @@ describe("SPEC-021 CA-6 PublicMatch carries halfTime only in live", () => {
     (status) => {
       expect(ok({ ...examples[status], halfTime: false })).toBe(false);
       expect(ok({ ...examples[status], halfTime: true })).toBe(false);
+    },
+  );
+});
+
+// SPEC-041 CA-2 (ADR-022 §1): the instant each side last scored, seen live.
+describe("SPEC-041 CA-2 PublicMatch carries homeScoredAt and awayScoredAt", () => {
+  const at = "2026-10-03T17:00:05Z";
+
+  it("both are required, as nullable Instants, never missing", () => {
+    const { homeScoredAt: _, ...noHome } = examples.live;
+    expect(ok(noHome)).toBe(false);
+    const { awayScoredAt: __, ...noAway } = examples.finished;
+    expect(ok(noAway)).toBe(false);
+    expect(
+      ok({ ...examples.live, homeScoredAt: "2026-10-03T19:00:05+02:00" }),
+    ).toBe(false);
+    expect(ok({ ...examples.live, awayScoredAt: "mañá" })).toBe(false);
+  });
+
+  it.each(["live", "finished", "suspended"] as const)(
+    "%s accepts an instant on either side, or both",
+    (status) => {
+      expect(ok({ ...examples[status], homeScoredAt: at })).toBe(true);
+      expect(ok({ ...examples[status], awayScoredAt: at })).toBe(true);
+      expect(
+        ok({ ...examples[status], homeScoredAt: at, awayScoredAt: at }),
+      ).toBe(true);
+    },
+  );
+
+  it.each(["scheduled", "postponed"] as const)(
+    "%s rejects an instant on either side, accepts both null",
+    (status) => {
+      expect(ok(examples[status])).toBe(true);
+      expect(ok({ ...examples[status], homeScoredAt: at })).toBe(false);
+      expect(ok({ ...examples[status], awayScoredAt: at })).toBe(false);
     },
   );
 });
