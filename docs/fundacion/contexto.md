@@ -88,6 +88,11 @@ el motor, luego la pantalla.
 - Supabase: Postgres (migraciones SQL con la CLI), Realtime Broadcast, Auth
   para el operador, Storage para el crudo. Un proyecto remoto (producción,
   Pro antes de la jornada publicada) y Supabase local para desarrollo (ADR-014). `postgres.js` sin ORM en el servidor; `supabase-js` solo en cliente.
+- Las migraciones se aplican al fusionar en `main`: el workflow `migraciones`
+  hace `supabase db push` contra producción y su check es Deployment Check de
+  Vercel, que no promueve el despliegue hasta que sale verde (ADR-024,
+  SPEC-043). `npm run db:push` queda como vía de emergencia. Toda migración
+  debe ser compatible con el código ya desplegado (expandir antes de usar).
 - Vercel Pro: un proyecto, dominio marcador.gal, previews por PR.
 - Ingesta: pg_cron llama cada 30 s a `POST /api/ingest/tick` vía pg_net; Vercel
   Cron cada minuto como respaldo. El tick solo sondea fuentes con partidos en
