@@ -579,3 +579,17 @@ describe("SPEC-033 CA-4 buildXornada galician sides", () => {
     });
   });
 });
+
+// SPEC-041 CA-3: the row carries the two instants of its PublicMatch.
+describe("SPEC-041 CA-3 the row carries homeScoredAt and awayScoredAt", () => {
+  it("as they come, null or an instant", () => {
+    const m = PublicMatch.parse({
+      ...match({ status: "live" }),
+      homeScoredAt: "2026-10-03T16:29:02Z",
+    });
+    expect(rowOf(m)).toMatchObject({
+      homeScoredAt: "2026-10-03T16:29:02Z",
+      awayScoredAt: null,
+    });
+  });
+});
