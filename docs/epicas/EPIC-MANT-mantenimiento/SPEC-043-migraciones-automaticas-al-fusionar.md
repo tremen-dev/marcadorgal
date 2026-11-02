@@ -45,15 +45,15 @@ rota); sdd-implementador y sdd-verificador (regla de compatibilidad, ADR-024 §3
   dispatch `modo=dry-run`, entonces el run sale verde, el log dice qué está
   pendiente (o que está al día) y `supabase migration list` contra producción
   es idéntico antes y después.
-- **CA-5 Ejecución real y orden.** Dada la PR de esta spec con una migración
+- **CA-5 Ejecución real y orden.** _(Histórico, sustituido por la enmienda de abajo.)_ Dada la PR de esta spec con una migración
   inocua (`comment on schema web is …`), cuando se fusiona, entonces el run de
   `push` la aplica, `migration list` la muestra aplicada y el despliegue de
   producción de ese SHA pasa a *Current* en Vercel **después** de que el check
   `migraciones` termine (marcas de tiempo de `gh run view` y del panel o
   `vercel inspect`). Un dispatch `aplicar` posterior sobre el mismo SHA sale
   verde sin aplicar nada (idempotencia).
-  - **Enmienda propuesta (2026-11-02, V-1; pendiente de aceptación del
-    titular).** El check `migraciones` no existe en Vercel hasta que el
+  - **Enmienda aceptada por el titular el 2026-11-02 (V-1);
+    es el CA-5 vigente.** El check `migraciones` no existe en Vercel hasta que el
     workflow corre una vez en `main`, así que no puede retener el SHA del
     merge. CA-5 pasa a: dada la PR de esta spec con la migración inocua,
     cuando se fusiona, entonces (a) el run de `push` del SHA del merge la

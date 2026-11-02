@@ -57,7 +57,7 @@ ninguna máquina; la revisa el verificador de cada spec con migración.
 
 ## Precisión (2026-11-02): desbloqueo con el check en rojo
 
-Sin alterar lo decidido (SPEC-043 V-2, V-5; fallos reproducidos con la CLI
+Aceptada por el titular (Alberto Fojo) el 2026-11-02. Sin alterar lo decidido (SPEC-043 V-2, V-5; fallos reproducidos con la CLI
 2.122.0). Producción sigue en el despliegue anterior mientras tanto.
 - **(a) SQL roto** (`DbPushApplyError`): las migraciones anteriores del lote
   quedan aplicadas; se arregla hacia delante con una PR nueva.
