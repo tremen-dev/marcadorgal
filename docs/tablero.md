@@ -79,6 +79,7 @@ Actualizado: 2026-11-02
 | SPEC-017 — mejoras-del-informe-de-jornada | hecho | 2026-10-06 (sdd-verificador) |
 | SPEC-029 — endurecer-web-reader-purgar-cron-y-v-7 | hecho | 2026-10-10 (sdd-verificador) |
 | SPEC-035 — motor-serializado-por-partido | hecho | 2026-10-15 (sdd-verificador) |
+| SPEC-043 — migraciones-automaticas-al-fusionar | en-revision | 2026-11-02 (sdd-implementador) |
 
 ## ADRs
 
@@ -107,9 +108,10 @@ Actualizado: 2026-11-02
 | ADR-021 | aprobada | fuente-rfef-consumo-minimo-una-peticion-por-vuelta-con-sesion-reutilizada-solo-en-franja-y-con-backoff-ante-el-bloqueo | 2026-10-11 (Alberto Fojo) |
 | ADR-022 | aprobada | instante-del-ultimo-gol-por-equipo-en-la-lectura-publica | 2026-11-01 (Alberto Fojo) |
 | ADR-023 | aprobada | fuente-rfef-via-explorer-prioridad-5-temporal-pull-http-a-un-servicio-propio-y-reglas-de-acceso-de-explorer | 2026-11-01 (Alberto Fojo) |
+| ADR-024 | aprobada | migraciones-de-la-base-aplicadas-por-github-actions-antes-de-promover-el-despliegue | 2026-11-02 (Alberto Fojo) |
 
 ## Resumen
 
 - hecho: 39
-- en-revision: 2
+- en-revision: 3
 - aprobada: 1
