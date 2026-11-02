@@ -146,6 +146,11 @@ for (const variant of VARIANTS) {
       test(`CA-6 ${variant.mark} ${route.path} at ${width} px: marked, pulsing, gone after 5 min without the network`, async ({
         page,
       }) => {
+        const errors: string[] = [];
+        page.on("console", (m) => {
+          if (m.type() === "error") errors.push(m.text());
+        });
+        page.on("pageerror", (e) => errors.push(e.message));
         await page.clock.install();
         await page.setViewportSize({ width, height: 900 });
         await page.goto(url);
@@ -156,8 +161,21 @@ for (const variant of VARIANTS) {
         await capture(page, `${name}-${width}`, live);
         const requests: string[] = [];
         page.on("request", (r) => requests.push(r.url()));
-        await page.clock.fastForward("05:00");
+        // CA-5: 1 s before its end the mark is there; at its end, gone.
+        const until = Date.parse(
+          (await marked(page).first().getAttribute("data-recent-goal-until")) ??
+            "",
+        );
+        const left = until - (await page.evaluate(() => Date.now()));
+        expect(left).toBeGreaterThan(3 * 60_000);
+        await page.clock.fastForward(left - 1_000);
+        await expect(marked(page)).toHaveCount(2);
+        await page.clock.fastForward(1_000);
         await expect(marked(page)).toHaveCount(0, { timeout: 1_000 });
+        // And 5 min after the render, nothing left.
+        await page.clock.fastForward(5 * 60_000 - left);
+        await expect(marked(page)).toHaveCount(0);
+        expect(errors.filter((e) => /hydrat/i.test(e))).toEqual([]);
         await expect(page.getByTestId("recent-goal-tag")).toHaveCount(0);
         for (const id of [LIVE, FINISHED])
           expect(await row(page, id).ariaSnapshot()).not.toContain(
