@@ -1,7 +1,9 @@
 import type { ReactNode } from "react";
 import type { Neighbours } from "@/board/weeks";
 import type { Locale } from "@/i18n";
+import type { Instant } from "@/model";
 import type { ProvisionalDisplay } from "@/xornada/qualifier";
+import type { RecentGoalMark } from "@/xornada/recent-goal";
 import type { XornadaCompetition, XornadaDay } from "@/xornada/view";
 import styles from "./Xornada.module.css";
 import { XornadaBody } from "./XornadaBody";
@@ -31,6 +33,9 @@ type Props = {
   // SPEC-034 CA-5: PROVISIONAL_DISPLAY, passed by the page; the rows of
   // `competitions` were built with the same mode.
   provisionalDisplay: ProvisionalDisplay;
+  // SPEC-041 CA-3: RECENT_GOAL_MINUTES and RECENT_GOAL_MARK, passed by the
+  // page with the instant of its render, to the screen and to the client.
+  recentGoal: { now: Instant; minutes: number; mark: RecentGoalMark };
 };
 
 export function XornadaScreen({
@@ -43,6 +48,7 @@ export function XornadaScreen({
   arrows,
   freshness,
   provisionalDisplay,
+  recentGoal,
 }: Props) {
   const hasRows = competitions.some((c) => c.rows.length > 0);
   return (
@@ -57,6 +63,11 @@ export function XornadaScreen({
           arrows={arrows}
           freshness={freshness}
           provisionalDisplay={provisionalDisplay}
+          recentGoal={{
+            now: Date.parse(recentGoal.now),
+            minutes: recentGoal.minutes,
+            mark: recentGoal.mark,
+          }}
         />
       ) : (
         <XornadaLive
@@ -66,6 +77,8 @@ export function XornadaScreen({
           unavailable={unavailable}
           arrows={arrows}
           provisionalDisplay={provisionalDisplay}
+          recentGoalMinutes={recentGoal.minutes}
+          recentGoalMark={recentGoal.mark}
           {...live}
         />
       )}

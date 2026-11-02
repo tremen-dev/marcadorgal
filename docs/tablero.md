@@ -43,7 +43,7 @@ Actualizado: 2026-11-02
 | SPEC-033 — mejoras-de-lectura-cabecera-por-dia-equipos-gallegos-y-favicon | hecho | 2026-10-12 (sdd-verificador) |
 | SPEC-034 — provisional-configurable-en-la-pantalla | hecho | 2026-10-12 (sdd-verificador) |
 | SPEC-040 — fecha-y-hora-por-fila-y-escritorio-multicolumna | hecho | 2026-11-01 (sdd-verificador) |
-| SPEC-041 — gol-reciente-que-pulsa | aprobada | 2026-11-01 (Alberto Fojo) |
+| SPEC-041 — gol-reciente-que-pulsa | hecho | 2026-11-02 (sdd-verificador) |
 
 ## EPIC-004 — fuente-rfef (aprobada)
 
@@ -111,6 +111,6 @@ Actualizado: 2026-11-02
 
 ## Resumen
 
-- hecho: 37
+- hecho: 38
 - en-revision: 3
-- aprobada: 2
+- aprobada: 1

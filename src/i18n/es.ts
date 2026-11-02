@@ -61,6 +61,10 @@ export const es: Dictionary = {
     rangeOneDay: "{day} {month}",
     rangeSameMonth: "{from}–{to} {month}",
     rangeTwoMonths: "{from} {fromMonth} – {to} {toMonth}",
+    // SPEC-041 CA-4: the recent number, for screen readers; the pill of
+    // the «label» variant (aria-hidden: the words above say it).
+    recentGoal: "gol reciente",
+    recentGoalLabel: "GOL",
   },
   weekday: {
     mon: "lun",

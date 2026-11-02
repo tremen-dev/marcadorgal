@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { PublicMatch } from "@/model";
-import { DEMO_MATCHES, DEMO_NOW, isDemoAvailable } from "./demo";
+import { DEMO_MATCHES, DEMO_NOW, demoMatches, isDemoAvailable } from "./demo";
+import { recentGoals } from "./recent-goal";
 import { buildXornada, xornadaDays } from "./view";
 
 const xornada = buildXornada([...DEMO_MATCHES]);
@@ -110,5 +111,67 @@ describe("SPEC-023 CA-8 demonstration days", () => {
       return ["live", "finished", "scheduled"].every((s) => statuses.has(s));
     });
     expect(full.length).toBeGreaterThanOrEqual(2);
+  });
+});
+
+// SPEC-041 CA-6: relative to the render, a home goal of 1 min ago in a live,
+// an away goal of 1 min ago in a finished and one of 6 min ago (no mark),
+// the demo's longest name on a marked side.
+describe("SPEC-041 CA-6 recent goals in the demonstration", () => {
+  const NOW = "2026-11-02T18:00:00.000Z";
+  const now = Date.parse(NOW);
+  const matches = demoMatches(NOW);
+  const marked = matches.flatMap((m) => {
+    const r = recentGoals(m, now, 5);
+    return [
+      ...(r.home === null ? [] : [{ m, side: m.home }]),
+      ...(r.away === null ? [] : [{ m, side: m.away }]),
+    ];
+  });
+
+  it("every match still validates, and only three have an instant", () => {
+    for (const m of matches)
+      expect(PublicMatch.safeParse(m).error).toBeUndefined();
+    const scored = matches.filter(
+      (m) => m.homeScoredAt !== null || m.awayScoredAt !== null,
+    );
+    expect(scored).toHaveLength(3);
+  });
+
+  it("a home goal of 1 min ago in a live and an away goal of 1 min ago in a finished are marked", () => {
+    expect(
+      marked.map(({ m, side }) => [
+        m.status,
+        side === m.home ? "home" : "away",
+      ]),
+    ).toEqual(
+      expect.arrayContaining([
+        ["live", "home"],
+        ["finished", "away"],
+      ]),
+    );
+    expect(marked).toHaveLength(2);
+    const ago = matches
+      .flatMap((m) => [m.homeScoredAt, m.awayScoredAt])
+      .filter((x) => x !== null)
+      .map((x) => (now - Date.parse(x)) / 60_000)
+      .sort();
+    expect(ago).toEqual([1, 1, 6]);
+  });
+
+  it("the longest name of the demonstration is on a marked side", () => {
+    const shown = (t: { name: string; shortName: string | null }) =>
+      t.shortName ?? t.name;
+    const longest = Math.max(
+      ...matches.flatMap((m) => [shown(m.home).length, shown(m.away).length]),
+    );
+    expect(marked.map(({ side }) => shown(side).length)).toContain(longest);
+    expect(marked.map(({ side }) => side.name)).toContain("Bilbao Athletic");
+  });
+
+  it("DEMO_MATCHES keeps no instant (the days and the other tests)", () => {
+    for (const m of DEMO_MATCHES) {
+      expect([m.homeScoredAt, m.awayScoredAt]).toEqual([null, null]);
+    }
   });
 });

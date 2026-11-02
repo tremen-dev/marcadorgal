@@ -62,6 +62,8 @@ function live(extra: Partial<PublicMatch> = {}): PublicMatch {
     version: 2,
     observedAt: new Date(NOW - 3 * MIN - 1).toISOString(),
     decidedAt: "2026-10-10T16:55:05.000Z",
+    homeScoredAt: null,
+    awayScoredAt: null,
     ...extra,
   } as PublicMatch;
 }
