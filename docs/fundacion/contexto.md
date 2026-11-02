@@ -2,7 +2,7 @@
 
 > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.
 > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.
-> Última actualización: 2026-11-02 (SPEC-038 hecha: fuente rfef vía explorer con prioridad 5 temporal; SPEC-039 aprobada, observación prevista el 2026-11-07/08).
+> Última actualización: 2026-11-02 (SPEC-038 y SPEC-044 hechas: fuente rfef vía explorer con prioridad 5 temporal y recuperación de finales fuera de ventana; SPEC-039 aprobada, observación prevista el 2026-11-07/08).
 
 ## Qué es y en qué punto está
 
@@ -57,7 +57,7 @@ Las mediciones de SPEC-025 (latencia gol→pantalla con el segundo reloj de ADR-
 
 **EPIC-004 (fuente RFEF), aprobada el 2026-10-10:** `marcadores.rfef.es` entra como segunda fuente con prioridad 50 para dar directo donde hoy hay `sen sinal`. La rigen ADR-017 (decodificación cerrada del marcador ofuscado, estados por marca y reloj) y ADR-018 (petición por POST, cuerpo vacío como error, respuesta rancia). SPEC-031 está hecha: adaptador en `src/sources/rfef/` sobre fixtures reales, todavía sin registrar. SPEC-032 (calibración con series de campo) está en su rama.
 
-**EPIC-004, giro del 2026-11-01 (titular):** la vía directa se agotó (SPEC-032: la RFEF corta tras 13 peticiones válidas, «sin cadencia») y el correo a la RFEF (SPEC-036) sigue sin respuesta. ADR-023 supersede ADR-021 §7 y ADR-017 §5: la RFEF entra con **prioridad 5 temporal** a través de **explorer**, un servicio propio fuera de este repo (`marcadorgal-explorer`, sin tremen-sdd) que lee `marcadores.rfef.es` con sus propias reglas de sesión, pacing, cooldown y proxies, desplegado en Vercel el 2026-11-01 sobre la misma base Supabase en un esquema `explorer` propio. **SPEC-038 hecha (2026-11-02):** adaptador pull `src/sources/rfef/explorer.ts` sobre el export de explorer, alias de las cinco competiciones (`data/alias/2026-27/rfef.json`), registro `rfef` con prioridad 5, filtro de fuera de ventana en el tick. Pendiente: CA-10 (alta en producción de marcadorgal en una ventana con partidos, con `RFEF_EXPLORER_URL` y `RFEF_EXPLORER_TOKEN` ya en Vercel). **SPEC-039 aprobada:** jornada de observación el 2026-11-07/08 con el criterio para subir la prioridad por competición.
+**EPIC-004, giro del 2026-11-01 (titular):** la vía directa se agotó (SPEC-032: la RFEF corta tras 13 peticiones válidas, «sin cadencia») y el correo a la RFEF (SPEC-036) sigue sin respuesta. ADR-023 supersede ADR-021 §7 y ADR-017 §5: la RFEF entra con **prioridad 5 temporal** a través de **explorer**, un servicio propio fuera de este repo (`marcadorgal-explorer`, sin tremen-sdd) que lee `marcadores.rfef.es` con sus propias reglas de sesión, pacing, cooldown y proxies, desplegado en Vercel el 2026-11-01 sobre la misma base Supabase en un esquema `explorer` propio. **SPEC-038 hecha (2026-11-02):** adaptador pull `src/sources/rfef/explorer.ts` sobre el export de explorer, alias de las cinco competiciones (`data/alias/2026-27/rfef.json`), registro `rfef` con prioridad 5, filtro de fuera de ventana en el tick. Pendiente: CA-10 (alta en producción de marcadorgal en una ventana con partidos, con `RFEF_EXPLORER_URL` y `RFEF_EXPLORER_TOKEN` ya en Vercel). **SPEC-039 aprobada:** jornada de observación el 2026-11-07/08 con el criterio para subir la prioridad por competición. **SPEC-044 hecha (EPIC-FIX, 2026-11-02, ADR-025):** API-Football estuvo sin plan la jornada 2026-10-30/11-02 y 39 partidos quedaron en `scheduled`. La rfef gana un horizonte de recuperación de 72 h: el tick sigue consultando, cada 5 min y solo para estados finales, los partidos que su Decision no cierra, y el motor decide a la hora de la observación (`now = observedAt`). `npm run rfef:recuperar -- --desde --hasta [--dry-run]` es el camino manual. Pendiente: CA-8 (recuperación real de esa jornada en producción) y CA-9 (primera jornada con horizonte).
 
 **EPIC-MANT — SPEC-017 completa (PR #31):** mejoras del informe de jornada, entre ellas el contraste con crudo propio (`--contrastar`). **SPEC-029 completa:** endurece `web_reader`, purga el cron y pasa a v7.
 
@@ -143,6 +143,7 @@ directo de SPEC-031 queda en reserva, sin registrar.
 - ADR-020 Fuente RFEF: la sesión se abre en dos pasos (portada y NLogin); tope por vuelta 3 al abrir y 4 al renovar.
 - ADR-021 Fuente RFEF: consumo mínimo, una petición por vuelta con sesión reutilizada, solo en franja y con backoff; §6-§7 supersedidos por ADR-023 para la vía explorer.
 - ADR-023 Fuente RFEF vía explorer: prioridad 5 temporal, pull HTTP a un servicio propio y reglas de acceso de explorer (supersede ADR-017 §5 y ADR-021 §6-§7; retira la condición de alta de ADR-018 §4).
+- ADR-025 Horizonte de recuperación por fuente (72 h la rfef) y motor a la hora de la observación fuera de la ventana común; `rfef:recuperar` como camino permanente (precisa ADR-002 §2, ADR-013 §1 y RN-08).
 
 ## Riesgos y preguntas abiertas
 

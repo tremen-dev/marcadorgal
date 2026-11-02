@@ -1,12 +1,19 @@
 import type { TransactionSql } from "postgres";
 import { describe, expect, it } from "vitest";
-import { type Instant, MINUTE_MS, shiftInstant } from "@/model";
+import {
+  type Instant,
+  type MatchId,
+  MINUTE_MS,
+  type Observation,
+  shiftInstant,
+} from "@/model";
 import { SOURCES } from "../sources/registry.ts";
 import type { IngestDb, IngestTx, WindowRow } from "./db.ts";
 import {
   createEngineHook,
   createEngineSweep,
   decideMatches,
+  decideRecovered,
   priorityLookup,
 } from "./engine.ts";
 
@@ -32,6 +39,7 @@ function fakeTx(rows: (text: string) => unknown[] = () => []) {
     sql: sql as unknown as TransactionSql,
     insertObservations: async () => {},
     openUnresolvedAlerts: async () => 0,
+    lastOwnObservations: async () => [],
   };
   return { tx, calls };
 }
@@ -526,5 +534,118 @@ describe("SPEC-014 CA-4 CA-8 the adapter reads and writes owners and mark", () =
     // forced_finish, then half_time (SPEC-021 CA-5): a finished is never
     // at half-time.
     expect(insert?.values.slice(-2)).toEqual([true, false]);
+  });
+});
+
+// SPEC-044 CA-4 (ADR-025 §4): the engine at the hour of the observation for
+// what arrives outside the common window. One lock over every id, in order
+// of id, and then one run of the engine per distinct observedAt, ascending,
+// with now = that observedAt. Proved here on the shape of the SQL; the
+// Decisions it writes are proved in engine.db.test.ts.
+describe("SPEC-044 CA-4 decideRecovered and the hook with recovered", () => {
+  const SUNDAY = "2026-11-01T22:58:41.000Z" as Instant;
+  const LATER = "2026-11-01T22:58:43.000Z" as Instant;
+  const MONDAY = "2026-11-02T10:00:00.000Z" as Instant;
+  const OTHER = "primera-division-2026-27-j6-alaves-barcelona";
+  const recovered = (
+    matchId: string,
+    observedAt: Instant,
+    id = crypto.randomUUID(),
+  ): Observation =>
+    ({
+      id,
+      matchId,
+      sourceId: "rfef",
+      status: "finished",
+      score: { home: 2, away: 1 },
+      minute: null,
+      observedAt,
+      receivedAt: MONDAY,
+      rawRef: "raw/rfef/2026-11-02/x.json.gz",
+    }) as Observation;
+  const locks = (calls: Call[]) =>
+    calls.filter((c) => c.text.includes("for no key update"));
+  const reads = (calls: Call[]) =>
+    calls.filter((c) => c.text.includes("from decisions"));
+
+  it("takes ONE lock with every id in order of id and runs the engine once per instant, ascending, with now = observedAt", async () => {
+    const { tx, calls } = fakeTx(
+      answering({
+        matches: [
+          { ...matchRow, id: OTHER },
+          { ...matchRow, kickoff: timestamptz(at(-300)) },
+        ],
+      }),
+    );
+    // Given later first: the order of the groups is the instants', not the
+    // input's.
+    await decideRecovered(
+      tx,
+      [recovered(MATCH, LATER), recovered(OTHER, SUNDAY)],
+      SOURCES,
+    );
+    expect(locks(calls)).toHaveLength(1);
+    expect(locks(calls)[0].values[0]).toEqual([OTHER, MATCH]);
+    expect(locks(calls)[0].text).toContain("order by id for no key update");
+
+    expect(reads(calls).map((c) => c.values[0])).toEqual([[OTHER], [MATCH]]);
+    // The fifteen minutes of RN-05 are measured from each instant.
+    const windows = calls.filter(
+      (c) =>
+        c.text.includes("from observations") &&
+        c.text.includes("observed_at >= ?"),
+    );
+    expect(windows.map((c) => c.values[1])).toEqual([
+      shiftInstant(SUNDAY, -15 * MINUTE_MS),
+      shiftInstant(LATER, -15 * MINUTE_MS),
+    ]);
+  });
+
+  it("asks nothing with no observations", async () => {
+    const { tx, calls } = fakeTx(answering());
+    expect(await decideRecovered(tx, [], SOURCES)).toEqual({
+      matches: 0,
+      decisions: 0,
+      alerts: 0,
+      resolved: 0,
+    });
+    expect(calls).toEqual([]);
+  });
+
+  it("the hook sends the window to the now of the tick and the recovered to their observedAt", async () => {
+    const { tx, calls } = fakeTx(
+      answering({ matches: [matchRow, { ...matchRow, id: OTHER }] }),
+    );
+    const hook = createEngineHook(SOURCES, MONDAY);
+    await hook(tx, [recovered(MATCH, MONDAY), recovered(OTHER, SUNDAY)], {
+      recovered: new Set([OTHER as MatchId]),
+    });
+    expect(locks(calls).map((c) => c.values[0])).toEqual([[MATCH], [OTHER]]);
+    const windows = calls.filter(
+      (c) =>
+        c.text.includes("from observations") &&
+        c.text.includes("observed_at >= ?"),
+    );
+    expect(windows.map((c) => c.values[1])).toEqual([
+      shiftInstant(MONDAY, -15 * MINUTE_MS),
+      shiftInstant(SUNDAY, -15 * MINUTE_MS),
+    ]);
+  });
+
+  it("the hook without the third parameter behaves as before: everything at the now of the tick", async () => {
+    const { tx, calls } = fakeTx(
+      answering({ matches: [{ ...matchRow, id: OTHER }] }),
+    );
+    await createEngineHook(SOURCES, MONDAY)(tx, [recovered(OTHER, SUNDAY)]);
+    expect(locks(calls)).toHaveLength(1);
+    expect(locks(calls)[0].values[0]).toEqual([OTHER]);
+    const windows = calls.filter(
+      (c) =>
+        c.text.includes("from observations") &&
+        c.text.includes("observed_at >= ?"),
+    );
+    expect(windows.map((c) => c.values[1])).toEqual([
+      shiftInstant(MONDAY, -15 * MINUTE_MS),
+    ]);
   });
 });

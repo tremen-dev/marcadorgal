@@ -1,0 +1,55 @@
+== supabase db push (equivalente a tools/test-db.mjs, supabase no está en PATH: npx)
+Connecting to local database...
+{"upToDate":true,"dryRun":false,"migrations":[],"seeds":[],"roles":[],"message":"Local database is up to date."}
+EXIT push 0
+== vitest db
+[33m(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (src/db/env.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.[39m
+
+ RUN  v5.0.1 D:/src/tremen-dev/marcadorgal
+
+ ❯ src/ingest/recuperacion-rfef.db.test.ts (6 tests | 1 failed) 567ms
+   ❯ SPEC-044 CA-7 idempotence of rfef:recuperar (2)
+     × if explorer reread the rows (a new lastSeenAt): new observations and 0 Decisions, the same tuple (ADR-009 §2) 100ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/ingest/recuperacion-rfef.db.test.ts > SPEC-044 CA-7 idempotence of rfef:recuperar > if explorer reread the rows (a new lastSeenAt): new observations and 0 Decisions, the same tuple (ADR-009 §2)
+AssertionError: expected { matches: 1, decisions: +0, …(2) } to match object { matches: 4, decisions: +0 }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "decisions": 0,
+-   "matches": 4,
++   "matches": 1,
+  }
+
+ ❯ src/ingest/recuperacion-rfef.db.test.ts:412:30
+    410|       if (second.outcome !== "aplicado") return;
+    411|       expect(second.plan.insert).toHaveLength(5);
+    412|       expect(second.decided).toMatchObject({ matches: 4, decisions: 0 …
+       |                              ^
+    413|       // The conflict of the closed one is already open: deduplicated.
+    414|       expect(second.alertsOpened).toBe(0);
+ ❯ src/ingest/recuperacion-rfef.db.test.ts:49:7
+ ❯ scope node_modules/postgres/src/index.js:260:18
+ ❯ Function.begin node_modules/postgres/src/index.js:243:14
+ ❯ rollback src/ingest/recuperacion-rfef.db.test.ts:47:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 20 passed (21)
+      Tests  1 failed | 216 passed (217)
+   Start at  10:41:25
+   Duration  14.97s (tests 60%, import 28%, transform 9%, setup 2%, worker 1%)
+
+     Import  92 modules were evaluated 401 times · 3.13s total, 28% of tracked time
+             ~2.41s faster with isolate: false — shared modules are evaluated once per worker instead of once per file
+             learn more: https://vitest.dev/guide/improving-performance#test-isolation
+
+EXIT vitest-db 1

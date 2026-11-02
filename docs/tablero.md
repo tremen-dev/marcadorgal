@@ -70,6 +70,7 @@ Actualizado: 2026-11-02
 | SPEC-015 — el-calendario-declarado-llega-tarde-a-la-jornada | hecho | 2026-10-15 (sdd-verificador) |
 | SPEC-022 — test-db-no-toca-storage-de-produccion | hecho | 2026-10-08 (sdd-verificador) |
 | SPEC-030 — la-portada-sirve-una-instantanea-isr-antigua | hecho | 2026-10-12 (sdd-verificador) |
+| SPEC-044 — recuperacion-de-finales-fuera-de-ventana-por-la-rfef-herramienta-de-recuperacion-y-horizonte-por-fuente | hecho | 2026-11-02 (sdd-verificador) |
 
 ## EPIC-MANT — mantenimiento (borrador)
 
@@ -109,9 +110,10 @@ Actualizado: 2026-11-02
 | ADR-022 | aprobada | instante-del-ultimo-gol-por-equipo-en-la-lectura-publica | 2026-11-01 (Alberto Fojo) |
 | ADR-023 | aprobada | fuente-rfef-via-explorer-prioridad-5-temporal-pull-http-a-un-servicio-propio-y-reglas-de-acceso-de-explorer | 2026-11-01 (Alberto Fojo) |
 | ADR-024 | aprobada | migraciones-de-la-base-aplicadas-por-github-actions-antes-de-promover-el-despliegue | 2026-11-02 (Alberto Fojo) |
+| ADR-025 | aprobada | horizonte-de-recuperacion-por-fuente-y-motor-a-la-hora-de-la-observacion-fuera-de-la-ventana-comun | 2026-11-02 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 39
+- hecho: 40
 - en-revision: 3
 - aprobada: 1

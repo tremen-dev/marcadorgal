@@ -1,0 +1,61 @@
+## worktree LF D:/src/tremen-dev/wt-verif044b-lf HEAD 4e162bb
+## npx tsc --noEmit
+exit=0
+## npx biome check .
+
+  ! Unexpected template string placeholder.
+  
+    334 │     const step = stepNamed("sync", "Abrir o actualizar el PR");
+    335 │     expect(str(obj(step?.env).URGENTES)).toBe(
+  > 336 │       "${{ steps.sync.outputs.urgentes }}",
+        │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    337 │     );
+    338 │     const run = prRun();
+  
+  i Turn the string into a template string.
+  
+
+Checked 317 files in 836ms. No fixes applied.
+Found 1 warning.
+exit=0
+## npx vitest run
+     × a clean run says so: no urgent lines, nothing to merge 183ms
+     × CA-3 the tool puts the clock and sums the urgent lines 221ms
+     × CA-4 only reschedules: auto=si 192ms
+     × CA-4 a reschedule plus a rename at the provider: auto=no 250ms
+     × on loopback applies the migrations with the Supabase CLI first 547ms
+     × passes API_URL and SERVICE_ROLE_KEY of supabase status to vitest 387ms
+     × wins over a .env file in the cwd too 436ms
+     × blanks the remote secrets for vitest (CA-4) 374ms
+     × supabase status fails: exit 1 before db push and vitest, nothing leaked 360ms
+     × API_URL is remote: exit 1 before db push and vitest, nothing leaked 418ms
+     × no CSS under src/ uses the font shorthand 64ms
+     × scans a non-trivial tree 81ms
+     × no file other than tokens.ts/tokens.css contains a hex colour 150ms
+⎯⎯⎯⎯⎯⎯ Failed Tests 13 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  src/calendar/cli.test.ts > SPEC-015 calendario:sync against the fake provider > a clean run says so: no urgent lines, nothing to merge
+ FAIL  src/calendar/cli.test.ts > SPEC-015 calendario:sync against the fake provider > CA-3 the tool puts the clock and sums the urgent lines
+ FAIL  src/calendar/cli.test.ts > SPEC-015 calendario:sync against the fake provider > CA-4 only reschedules: auto=si
+ FAIL  src/calendar/cli.test.ts > SPEC-015 calendario:sync against the fake provider > CA-4 a reschedule plus a rename at the provider: auto=no
+ FAIL  src/db/test-db.test.ts > SPEC-020 CA-1 npm run test:db guard > on loopback applies the migrations with the Supabase CLI first
+ FAIL  src/db/test-db.test.ts > SPEC-022 CA-1 local Storage forced over the .env > passes API_URL and SERVICE_ROLE_KEY of supabase status to vitest
+ FAIL  src/db/test-db.test.ts > SPEC-022 CA-1 local Storage forced over the .env > wins over a .env file in the cwd too
+ FAIL  src/db/test-db.test.ts > SPEC-022 CA-1 local Storage forced over the .env > blanks the remote secrets for vitest (CA-4)
+ FAIL  src/db/test-db.test.ts > SPEC-022 CA-2 refuses without a local Storage > supabase status fails: exit 1 before db push and vitest, nothing leaked
+ FAIL  src/db/test-db.test.ts > SPEC-022 CA-2 refuses without a local Storage > API_URL is remote: exit 1 before db push and vitest, nothing leaked
+ FAIL  src/design/fonts.test.ts > CA-7 fonts and digits > no CSS under src/ uses the font shorthand
+ FAIL  src/design/no-hex.test.ts > CA-12 no hex outside the tokens > scans a non-trivial tree
+ FAIL  src/design/no-hex.test.ts > CA-12 no hex outside the tokens > no file other than tokens.ts/tokens.css contains a hex colour
+ Test Files  4 failed | 110 passed (114)
+      Tests  13 failed | 2019 passed | 3 skipped (2035)
+## npx next build (worktree LF)
+✓ Running next.config.ts took 39ms
+[1m[31mFATAL[39m[0m: An unexpected Turbopack error occurred. A panic log has been written to C:\Users\Albert\AppData\Local\Temp\next-panic-9af07b0871bafd02746dfd6d294b43a4.log.
+To help make Turbopack better, report this error by clicking here: https://bugs.nextjs.org/search?category=turbopack-error-report&title=Turbopack%20Error%3A%20Symlink%20%5Bproject%5D%2Fnode_modules%20is%20invalid%2C%20it%20points%20out%20of%20the%20filesystem%20root&body=Turbopack%20version%3A%20%60ca2c75eb%60%0ANext.js%20version%3A%20%600.0.0%60%0A%0AError%20message%3A%0A%60%60%60%0ASymlink%20%5Bproject%5D%2Fnode_modules%20is%20invalid%2C%20it%20points%20out%20of%20the%20filesystem%20root%0A%0ADebug%20info%3A%0A-%20Execution%20of%20get_all_written_entrypoints_with_issues_operation%20failed%0A-%20Execution%20of%20EntrypointsOperation%3A%3Anew%20failed%0A-%20Execution%20of%20all_entrypoints_write_to_disk_operation%20failed%0A-%20Execution%20of%20output_assets_operation%20failed%0A-%20Execution%20of%20Project%3A%3Aget_all_endpoint_groups_with_app_route_filter%20failed%0A-%20Execution%20of%20Project%3A%3Aentrypoints_with_app_route_filter%20failed%0A-%20Execution%20of%20AppProject%3A%3Aroutes_with_filter%20failed%0A-%20Execution%20of%20directory_tree_to_entrypoints_internal%20failed%0A-%20Execution%20of%20try_get_next_package%20failed%0A-%20Execution%20of%20resolve%20failed%0A-%20Execution%20of%20resolve_internal%20failed%0A-%20Execution%20of%20find_package%20failed%0A-%20Symlink%20%5Bproject%5D%2Fnode_modules%20is%20invalid%2C%20it%20points%20out%20of%20the%20filesystem%20root%0A%60%60%60&labels=Turbopack,Turbopack%20Panic%20Backtrace
+> Build error occurred
+Error [TurbopackInternalError]: Symlink [project]/node_modules is invalid, it points out of the filesystem root
+  type: 'TurbopackInternalError',
+exit=1
+## (la build en el worktree LF falla por la junction de node_modules: Turbopack rechaza el symlink fuera de la raíz; entorno, no código) -> npx next build en el árbol principal, HEAD 4e162bb, árbol limpio
+✓ Compiled successfully in 871ms
+exit=0

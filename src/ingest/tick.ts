@@ -1,16 +1,34 @@
 import {
+  HOUR_MS,
   type Instant,
+  type MatchId,
+  MINUTE_MS,
   Observation,
   type SourceAdapter,
   type SourceConfig,
+  shiftInstant,
   type WindowMatch,
 } from "../model/index.ts";
 import { storeCapture } from "../raw/capture.ts";
 import type { RawStore } from "../raw/store.ts";
+import { madridDateOf } from "../sources/rfef/explorer.ts";
+import { RECOVERY_HORIZON_HOURS, RECOVERY_POLL_MINUTES } from "./constants.ts";
 import type { IngestDb, IngestTx, WindowRow } from "./db.ts";
 import type { EngineCounts } from "./engine.ts";
 import { errorMessage, type PurgeOutcome, purgeRaw } from "./purge.ts";
+import { planRecovery } from "./recuperacion-rfef.ts";
 import { isDueForPoll, isInExtension } from "./window.ts";
+
+// The counters of a recovery inside an attempt (SPEC-044 CA-5, ADR-025 §5):
+// ingest_attempts.details.recuperacion, and AttemptSummary.recovered. An
+// attempt without the set has neither.
+export type RecoverySummary = {
+  partidos: number;
+  fechas: number;
+  insertadas: number;
+  duplicadas: number;
+  descartadasLive: number;
+};
 
 export type AttemptSummary = {
   sourceId: string;
@@ -37,6 +55,8 @@ export type AttemptSummary = {
   // source that brings the whole day (the export of explorer) only feeds the
   // window. Also in ingest_attempts.details.fueraDeVentana.
   outOfWindow: number;
+  // The recovery set this attempt carried (SPEC-044 CA-5), if any.
+  recovered?: RecoverySummary;
 };
 
 export type TickSummary = {
@@ -49,10 +69,13 @@ export type TickSummary = {
 };
 
 // Where the engine plugs in (ADR-008 §6, N-11): inside the same transaction
-// as the observations, and never without observations.
+// as the observations, and never without observations. The third parameter
+// (SPEC-044 CA-4, ADR-025 §4) names the matches in recovery among them: the
+// engine runs for those at the hour of their observation.
 export type AfterInsert = (
   tx: IngestTx,
   observations: Observation[],
+  options?: { recovered: ReadonlySet<MatchId> },
 ) => Promise<void>;
 
 // The second hook of the engine (H-2): once per tick, over every match in
@@ -122,7 +145,31 @@ export async function runTick(input: TickInput): Promise<TickSummary> {
     purge,
     attempts: [],
   };
-  if (matches.length === 0) return summary;
+
+  // The recovery set of each source with a horizon (ADR-025 §2, §5), when
+  // it is its turn: a tick without a window but with something to recover
+  // still runs. The sweep never sees these matches.
+  const recoverable = new Map<string, WindowRow[]>();
+  for (const config of sources) {
+    if (config.kind !== "pull") continue;
+    const horizon = RECOVERY_HORIZON_HOURS[config.id] ?? 0;
+    if (horizon <= 0) continue;
+    const last = await db.lastRecoveryAttemptAt(
+      config.id,
+      shiftInstant(now, -HOUR_MS),
+    );
+    if (
+      last !== null &&
+      Date.parse(now) - Date.parse(last) < RECOVERY_POLL_MINUTES * MINUTE_MS
+    )
+      continue;
+    const covered = new Set<string>(config.competitions);
+    const own = (await db.recoveryMatches(now, horizon)).filter((m) =>
+      covered.has(m.competitionId),
+    );
+    if (own.length > 0) recoverable.set(config.id, own);
+  }
+  if (matches.length === 0 && recoverable.size === 0) return summary;
 
   // The extension of the window is asked for at its own pace (ADR-013 §1,
   // SPEC-018 CA-3): a match there that is not due is left out of every
@@ -150,19 +197,25 @@ export async function runTick(input: TickInput): Promise<TickSummary> {
   for (const config of sources) {
     if (config.kind !== "pull") continue;
     const covered = new Set<string>(config.competitions);
-    for (const season of seasons) {
+    // The seasons of this source: its window plus its recovery set.
+    const recovering = recoverable.get(config.id) ?? [];
+    const ownSeasons = [
+      ...new Set([...seasons, ...recovering.map((m) => m.season)]),
+    ].sort();
+    for (const season of ownSeasons) {
       const own = (bySeason.get(season) ?? []).filter((m) =>
         covered.has(m.competitionId),
       );
-      if (own.length === 0) continue;
+      const recovered = recovering.filter((m) => m.season === season);
+      if (own.length === 0 && recovered.length === 0) continue;
       try {
         summary.attempts.push(
-          await runAttempt(input, config, season, own, windowIds),
+          await runAttempt(input, config, season, own, windowIds, recovered),
         );
       } catch (e) {
         // A source that falls never touches the others (ADR-003).
         summary.attempts.push({
-          ...emptySummary(config.id, season, own.length),
+          ...emptySummary(config.id, season, own.length + recovered.length),
           error: errorMessage(e),
         });
       }
@@ -171,8 +224,9 @@ export async function runTick(input: TickInput): Promise<TickSummary> {
 
   // After every attempt and outside their transaction: what the sweep writes
   // is born of the absence of observations (H-2). A failure of its own never
-  // brings the tick down.
-  if (sweep !== undefined) {
+  // brings the tick down. It sees the window and only the window (ADR-025
+  // §5): nothing in recovery is closed by RN-05 or RN-02.
+  if (sweep !== undefined && matches.length > 0) {
     try {
       summary.engine = await sweep(matches);
     } catch (e) {
@@ -188,8 +242,12 @@ async function runAttempt(
   season: string,
   own: WindowRow[],
   windowIds: ReadonlySet<string>,
+  recovered: WindowRow[],
 ): Promise<AttemptSummary> {
-  const base = emptySummary(config.id, season, own.length);
+  const base = emptySummary(config.id, season, own.length + recovered.length);
+  const recoveredIds: ReadonlySet<MatchId> = new Set(
+    recovered.map((m) => m.id),
+  );
 
   const opened = await db.openAttempt(
     config.id,
@@ -210,14 +268,16 @@ async function runAttempt(
       throw new Error(`pull source ${config.id} has no fetch`);
 
     // A match in the extension never adds its competition to live=: the
-    // source does not give it live, and ids= is what brings it (CA-3).
+    // source does not give it live, and ids= is what brings it (CA-3). Nor
+    // does a match in recovery: the window and the recovery set go in one
+    // capture (ADR-025 §5).
     const present = new Set(
       own.filter((m) => !isInExtension(m, now)).map((m) => m.competitionId),
     );
     const capture = await pull.call(adapter, {
       now,
       competitions: config.competitions.filter((c) => present.has(c)),
-      matches: own.map(toWindowMatch),
+      matches: [...own, ...recovered].map(toWindowMatch),
       fetch,
       userAgent: config.userAgent,
     });
@@ -228,16 +288,17 @@ async function runAttempt(
     rawRef = ref;
 
     const parsed = adapter.parse(capture);
-    // Only the window of this tick (CA-6, ADR-023 §5): the raw capture keeps
-    // the whole day, the log of observations does not, and the engine never
-    // hears of a match it is not listening to.
-    const inWindow = parsed.observations.filter((o) =>
-      windowIds.has(o.matchId),
+    // Only the window of this tick and its recovery set (SPEC-038 CA-6,
+    // ADR-023 §5, ADR-025 §2): the raw capture keeps the whole day, the log
+    // of observations does not, and the engine never hears of a match it is
+    // not listening to.
+    const accepted = parsed.observations.filter(
+      (o) => windowIds.has(o.matchId) || recoveredIds.has(o.matchId),
     );
-    const outOfWindow = parsed.observations.length - inWindow.length;
+    const outOfWindow = parsed.observations.length - accepted.length;
     // The core owns id, sourceId, receivedAt and rawRef (SPEC-005 N-1);
     // observed_at is the source's clock (RN-11).
-    const observations = inWindow.map((o) =>
+    const toObservation = (o: (typeof accepted)[number]) =>
       Observation.parse({
         ...o,
         id: crypto.randomUUID(),
@@ -245,19 +306,61 @@ async function runAttempt(
         observedAt: o.observedAt ?? capture.capturedAt,
         receivedAt: now,
         rawRef: ref,
-      }),
-    );
+      });
+    const inWindow = accepted
+      .filter((o) => !recoveredIds.has(o.matchId))
+      .map(toObservation);
+    const inRecovery = accepted
+      .filter((o) => recoveredIds.has(o.matchId))
+      .map(toObservation);
 
-    const alerts = await db.transaction(async (tx) => {
+    const { alerts, recovery } = await db.transaction(async (tx) => {
+      // The plan of the recovery (CA-3) is made inside the transaction,
+      // against the last observation this source left for each match.
+      const plan =
+        recovered.length === 0
+          ? null
+          : planRecovery({
+              observations: inRecovery,
+              currents: recovered.map((m) => ({
+                matchId: m.id,
+                decisionId: null,
+                status: m.status,
+                score: null,
+                forcedFinish: m.forcedFinish,
+              })),
+              lastOwn: await tx.lastOwnObservations(config.id, [
+                ...recoveredIds,
+              ]),
+              inCommonWindow: windowIds,
+            });
+      const observations = [...inWindow, ...(plan?.insert ?? [])];
       await tx.insertObservations(observations);
       const count = await tx.openUnresolvedAlerts(
         config.id,
         ref,
         parsed.unresolved,
       );
-      if (observations.length > 0) await afterInsert?.(tx, observations);
-      return count;
+      if (observations.length > 0)
+        await afterInsert?.(
+          tx,
+          observations,
+          plan === null ? undefined : { recovered: recoveredIds },
+        );
+      const summary: RecoverySummary | undefined =
+        plan === null
+          ? undefined
+          : {
+              partidos: recovered.length,
+              fechas: new Set(recovered.map((m) => madridDateOf(m.kickoff)))
+                .size,
+              insertadas: plan.insert.length,
+              duplicadas: plan.dropped.duplicate,
+              descartadasLive: plan.dropped.live,
+            };
+      return { alerts: count, recovery: summary, inserted: observations };
     });
+    const observations = inWindow.length + (recovery?.insertadas ?? 0);
 
     // A request the adapter could not interpret does not undo the attempt: the
     // observations of the others are already in. It does keep it off green,
@@ -278,19 +381,20 @@ async function runAttempt(
       error,
       rawRef: ref,
       requests,
-      observations: observations.length,
+      observations,
       unresolved: parsed.unresolved.length,
       skippedItems: parsed.skipped.length,
       alerts,
       requestErrors: broken.length,
       outOfWindow,
+      ...(recovery === undefined ? {} : { recovered: recovery }),
     };
     await db.closeAttempt(attemptId, {
       finishedAt: now,
       ok,
       error,
       rawRef: ref,
-      observations: observations.length,
+      observations,
       details: {
         season,
         matches: base.matches,
@@ -300,18 +404,37 @@ async function runAttempt(
         alerts,
         requestErrors: broken.length,
         fueraDeVentana: outOfWindow,
+        ...(recovery === undefined ? {} : { recuperacion: recovery }),
       },
     });
     return result;
   } catch (e) {
     const error = errorMessage(e);
+    // A failed attempt that took the recovery set still counts for the pace
+    // of ADR-025 §5 (H-8): with explorer down, the set is asked every five
+    // minutes, not every tick. Nothing of it was inserted.
+    const recovery: RecoverySummary | undefined =
+      recovered.length === 0
+        ? undefined
+        : {
+            partidos: recovered.length,
+            fechas: new Set(recovered.map((m) => madridDateOf(m.kickoff))).size,
+            insertadas: 0,
+            duplicadas: 0,
+            descartadasLive: 0,
+          };
     await db.closeAttempt(attemptId, {
       finishedAt: now,
       ok: false,
       error,
       rawRef,
       observations: 0,
-      details: { season, matches: base.matches, requests },
+      details: {
+        season,
+        matches: base.matches,
+        requests,
+        ...(recovery === undefined ? {} : { recuperacion: recovery }),
+      },
     });
     return { ...base, attemptId, error, rawRef, requests };
   }

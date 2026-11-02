@@ -1,0 +1,23 @@
+## HEAD 4e162bb, Supabase local (loopback 127.0.0.1:54322/54321), entorno de tools/test-db.mjs: DATABASE_URL loopback, URL y service role de supabase status, REMOTE_SECRETS vacíos
+## npx supabase db push --db-url $DATABASE_URL
+WARN: auth.sms.enable_signup is deprecated and will be removed in v4, use auth.sms.enabled instead.
+Target: custom Postgres (127.0.0.1:54322)
+{"upToDate":true,"dryRun":false,"migrations":[],"seeds":[],"roles":[],"message":"Local database is up to date.","target":{"kind":"db-url","host":"127.0.0.1","port":54322}}
+## npx vitest run --config vitest.db.config.mts
+ Test Files  21 passed (21)
+      Tests  217 passed (217)
+## npx vitest run --config vitest.db.config.mts src/ingest/recuperacion-rfef.db.test.ts src/ingest/engine.db.test.ts src/ingest/db.db.test.ts --reporter=verbose (solo SPEC-044)
+ ✓ src/ingest/engine.db.test.ts > SPEC-044 CA-4 decideRecovered through the database > publishes the Sunday final on Monday: finished provisional RN-01 by the rfef, decided_at = observedAt; again, nothing 67ms
+ ✓ src/ingest/engine.db.test.ts > SPEC-044 CA-4 decideRecovered through the database > a postponed without a score comes out postponed provisional 42ms
+ ✓ src/ingest/engine.db.test.ts > SPEC-044 CA-4 decideRecovered through the database > two matches with distinct instants: two runs of the engine under a single lock 68ms
+ ✓ src/ingest/recuperacion-rfef.db.test.ts > SPEC-044 CA-6 rfef:recuperar through the database > --dry-run: two GET to explorer, the raw kept, one attempt with dryRun, and no other row 104ms
+ ✓ src/ingest/recuperacion-rfef.db.test.ts > SPEC-044 CA-6 rfef:recuperar through the database > applied: the four scheduled get their Decision at the Sunday instant, the closed one keeps its score and opens ONE conflict, all in one transaction 87ms
+ ✓ src/ingest/recuperacion-rfef.db.test.ts > SPEC-044 CA-6 rfef:recuperar through the database > with the cadence of the rfef busy it retries until the deadline and aborts without a single GET 91ms
+ ✓ src/ingest/recuperacion-rfef.db.test.ts > SPEC-044 CA-6 rfef:recuperar through the database > with no declared match in the range it asks nothing and opens no attempt 5ms
+ ✓ src/ingest/recuperacion-rfef.db.test.ts > SPEC-044 CA-7 idempotence of rfef:recuperar > a second run right after: 0 observations, 0 Decisions, 0 alerts, one more attempt 129ms
+ ✓ src/ingest/recuperacion-rfef.db.test.ts > SPEC-044 CA-7 idempotence of rfef:recuperar > if explorer reread the rows (a new lastSeenAt): new observations and 0 Decisions, the same tuple (ADR-009 §2) 124ms
+ ✓ src/ingest/db.db.test.ts > SPEC-044 CA-5 recoveryMatches, lastRecoveryAttemptAt and lastOwnObservations > recoveryMatches gives a scheduled match 7 h gone and leaves out one 73 h gone, one in window and one closed by the source 22ms
+ ✓ src/ingest/db.db.test.ts > SPEC-044 CA-5 recoveryMatches, lastRecoveryAttemptAt and lastOwnObservations > lastRecoveryAttemptAt reads only the attempts whose details carry recuperacion, at or after since 9ms
+ ✓ src/ingest/db.db.test.ts > SPEC-044 CA-5 recoveryMatches, lastRecoveryAttemptAt and lastOwnObservations > lastOwnObservations gives the newest observation of that source per match, and none of another source 16ms
+ Test Files  3 passed (3)
+      Tests  59 passed (59)

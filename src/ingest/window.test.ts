@@ -14,7 +14,9 @@ import {
 import {
   isDueForPoll,
   isInExtension,
+  isInRecovery,
   isInWindow,
+  recoveryKickoffRange,
   windowKickoffRange,
 } from "./window.ts";
 
@@ -264,6 +266,89 @@ describe("SPEC-018 CA-2 the extension of the window", () => {
     expect(windowKickoffRange("2026-09-25T18:30:00.000Z" as Instant)).toEqual({
       from: "2026-09-25T12:30:00.000Z",
       to: "2026-09-25T18:40:00.000Z",
+    });
+  });
+});
+
+// SPEC-044 CA-2 (ADR-025 §2): the recovery set of a source. A match is in
+// recovery at now when it is not in the common window, its kickoff is at
+// most the horizon behind now, and its current Decision does not close it:
+// the half "by Decision" of isInWindow, identical, with no status added.
+// isInWindow does not change: the cases above stay as they are.
+describe("SPEC-044 CA-2 isInRecovery and recoveryKickoffRange", () => {
+  const HOURS = 60;
+  const recovery = (
+    minutes: number,
+    status: MatchStatus = "scheduled",
+    forcedFinish: boolean | null = null,
+    horizonHours = 72,
+    decidedMinutes: number | null = null,
+  ) =>
+    isInRecovery(
+      {
+        kickoff: KICKOFF,
+        status,
+        forcedFinish,
+        decidedAt:
+          decidedMinutes === null
+            ? null
+            : shiftInstant(KICKOFF, decidedMinutes * MINUTE_MS),
+      },
+      shiftInstant(KICKOFF, minutes * MINUTE_MS),
+      horizonHours,
+    );
+
+  it("(i) a scheduled at +7 h with a 72 h horizon is in recovery", () => {
+    expect(recovery(7 * HOURS)).toBe(true);
+  });
+
+  it("(ii) at +72 h it is out; at +71 h 59 it is in", () => {
+    expect(recovery(72 * HOURS)).toBe(false);
+    expect(recovery(72 * HOURS - 1)).toBe(true);
+  });
+
+  it("(iii) a finished without the mark at +7 h is out; with the mark, in; a postponed, in; without a Decision, in", () => {
+    expect(recovery(7 * HOURS, "finished", false, 72, 130)).toBe(false);
+    expect(recovery(7 * HOURS, "finished", null, 72, 130)).toBe(false);
+    expect(recovery(7 * HOURS, "finished", true, 72, 130)).toBe(true);
+    expect(recovery(7 * HOURS, "postponed", false, 72, 130)).toBe(true);
+    expect(recovery(7 * HOURS, "suspended", false, 72, 130)).toBe(true);
+    expect(recovery(7 * HOURS, "scheduled", null, 72, null)).toBe(true);
+  });
+
+  it("(iv) a scheduled at +200 min is in the extension of the window, not in recovery", () => {
+    expect(
+      isInWindow(
+        {
+          kickoff: KICKOFF,
+          status: "scheduled",
+          forcedFinish: null,
+          decidedAt: null,
+        },
+        shiftInstant(KICKOFF, 200 * MINUTE_MS),
+      ),
+    ).toBe(true);
+    expect(recovery(200)).toBe(false);
+    // Nor before kickoff, nor inside the regular window.
+    expect(recovery(-5)).toBe(false);
+    expect(recovery(30, "live")).toBe(false);
+  });
+
+  it("(v) a horizon of 0 never recovers anything", () => {
+    expect(recovery(7 * HOURS, "scheduled", null, 0)).toBe(false);
+    expect(recovery(361, "scheduled", null, 0)).toBe(false);
+  });
+
+  it("(vi) a scheduled right after the extension, at +6 h, is in recovery", () => {
+    expect(recovery(360)).toBe(true);
+  });
+
+  it("recoveryKickoffRange reaches back horizon hours and up to now", () => {
+    expect(
+      recoveryKickoffRange("2026-11-02T10:00:00.000Z" as Instant, 72),
+    ).toEqual({
+      from: "2026-10-30T10:00:00.000Z",
+      to: "2026-11-02T10:00:00.000Z",
     });
   });
 });

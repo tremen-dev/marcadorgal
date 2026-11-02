@@ -1,0 +1,25 @@
+
+> marcadorgal@0.1.0 test:db
+> node tools/test-db.mjs
+
+Connecting to local database...
+{"upToDate":true,"dryRun":false,"migrations":[],"seeds":[],"roles":[],"message":"Local database is up to date."}
+spawnSync npx ENOENT
+== npm run test:db: supabase db push OK (local up to date); el paso vitest falla en Windows con 'spawnSync npx ENOENT' (sin shell); se ejecuta el mismo paso a mano con el mismo entorno:
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (src/db/env.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.1 D:/src/tremen-dev/marcadorgal
+
+
+ Test Files  21 passed (21)
+      Tests  217 passed (217)
+   Start at  15:01:35
+   Duration  15.29s (tests 61%, import 28%, transform 8%, worker 2%, setup 1%)
+
+     Import  92 modules were evaluated 401 times · 3.18s total, 28% of tracked time
+             ~2.45s faster with isolate: false — shared modules are evaluated once per worker instead of once per file
+             learn more: https://vitest.dev/guide/improving-performance#test-isolation
+
+EXIT vitest 0

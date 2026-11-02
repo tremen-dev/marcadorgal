@@ -12,6 +12,24 @@ export const WINDOW_AFTER_MINUTES = 150;
 export const EXTENSION_AFTER_MINUTES = 360;
 export const EXTENSION_POLL_MINUTES = 5;
 
+// Recovery horizon per source (ADR-025 §1, SPEC-044 CA-2), in hours from
+// kickoff: a source with a horizon keeps asking, outside the common window
+// and only for final states, about the matches its Decision does not close.
+// The rfef via explorer gets 72 h (H-1: Friday to Monday and the Tuesday
+// afternoon); API-Football has none, because it would pay ids= requests of
+// three days and its silence is covered by the forced finish. It lives here
+// and not in the registry (H-5) until EPIC-MANT moves it to SourceConfig:
+// constants.test.ts demands that every key is a registered source.
+export const RECOVERY_HORIZON_HOURS: Readonly<Record<string, number>> = {
+  rfef: 72,
+};
+
+// An attempt with recovery is opened at most every five minutes (ADR-025 §5,
+// H-8), measured over the attempts of the last hour that carried
+// details.recuperacion: the export of explorer repeats the same lastSeenAt
+// until it rereads the row, so asking every 30 s would bring nothing new.
+export const RECOVERY_POLL_MINUTES = 5;
+
 // Cadence (RN-08, ADR-008 §3): the registry declares 30 s, and the guard
 // tolerates the jitter of the two triggers. Worst case: two calls 25 s apart.
 export const CADENCE_JITTER_SECONDS = 5;

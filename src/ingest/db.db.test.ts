@@ -506,3 +506,91 @@ describe("CA-6 purges and stale keys", () => {
       expect(keys).toHaveLength(2);
     }));
 });
+
+// SPEC-044 CA-5 (ADR-025 §2, §5): the three queries the recovery adds to the
+// port, against the real schema and always rolled back.
+describe("SPEC-044 CA-5 recoveryMatches, lastRecoveryAttemptAt and lastOwnObservations", () => {
+  const MONDAY = "2026-11-02T10:00:00.000Z" as Instant;
+  const hoursBefore = (hours: number): Instant =>
+    shiftInstant(MONDAY, -hours * 60 * MINUTE_MS);
+
+  it("recoveryMatches gives a scheduled match 7 h gone and leaves out one 73 h gone, one in window and one closed by the source", () =>
+    rollback(async (tx) => {
+      const sunday = await seedMatch(tx, hoursBefore(7));
+      const thursday = await seedMatch(tx, hoursBefore(73));
+      const inWindow = await seedMatch(tx, hoursBefore(1));
+      const closed = await seedMatch(tx, hoursBefore(8));
+      const [{ id: oid }] = await tx`insert into observations
+        (match_id, source_id, status, home_score, away_score, observed_at, raw_ref)
+        values (${closed}, 'test', 'finished', 1, 0, ${hoursBefore(6)}, 'raw/x')
+        returning id`;
+      await tx`insert into decisions
+        (match_id, status, home_score, away_score, qualifier, rule, observation_ids,
+          decided_at, forced_finish)
+        values (${closed}, 'finished', 1, 0, 'provisional', 'RN-01', ${[oid]},
+          ${hoursBefore(6)}, false)`;
+      const ids = (await dbIn(tx).recoveryMatches(MONDAY, 72)).map((r) => r.id);
+      expect(ids).toContain(sunday);
+      expect(ids).not.toContain(thursday);
+      expect(ids).not.toContain(inWindow);
+      expect(ids).not.toContain(closed);
+      // The window still has its own.
+      expect((await dbIn(tx).windowMatches(MONDAY)).map((r) => r.id)).toContain(
+        inWindow,
+      );
+      // A horizon of 0 asks for nothing.
+      expect(await dbIn(tx).recoveryMatches(MONDAY, 0)).toEqual([]);
+    }));
+
+  it("lastRecoveryAttemptAt reads only the attempts whose details carry recuperacion, at or after since", () =>
+    rollback(async (tx) => {
+      const source = `test-${crypto.randomUUID().slice(0, 8)}`;
+      const insert = (startedAt: Instant, details: unknown) =>
+        tx`insert into ingest_attempts (source_id, started_at, finished_at, ok, details)
+          values (${source}, ${startedAt}, ${startedAt}, true, ${tx.json(details as never)})`;
+      await insert(hoursBefore(2), { recuperacion: { partidos: 1 } });
+      await insert(shiftInstant(MONDAY, -3 * MINUTE_MS), { matches: 1 });
+      expect(
+        await dbIn(tx).lastRecoveryAttemptAt(source, hoursBefore(1)),
+      ).toBeNull();
+      await insert(shiftInstant(MONDAY, -7 * MINUTE_MS), {
+        recuperacion: { partidos: 2 },
+      });
+      expect(await dbIn(tx).lastRecoveryAttemptAt(source, hoursBefore(1))).toBe(
+        shiftInstant(MONDAY, -7 * MINUTE_MS),
+      );
+    }));
+
+  it("lastOwnObservations gives the newest observation of that source per match, and none of another source", () =>
+    rollback(async (tx) => {
+      const a = await seedMatch(tx, hoursBefore(7));
+      const b = await seedMatch(tx, hoursBefore(7));
+      const observe = (
+        matchId: string,
+        sourceId: string,
+        observedAt: Instant,
+        home: number,
+      ) =>
+        tx`insert into observations
+          (match_id, source_id, status, home_score, away_score, observed_at, raw_ref)
+          values (${matchId}, ${sourceId}, 'finished', ${home}, 0, ${observedAt}, 'raw/x')`;
+      await observe(a, "rfef", hoursBefore(6), 1);
+      await observe(a, "rfef", hoursBefore(5), 2);
+      await observe(a, "api-football", hoursBefore(4), 3);
+      await observe(b, "api-football", hoursBefore(4), 4);
+      const rows = await dbIn(tx).transaction((t) =>
+        t.lastOwnObservations("rfef", [a, b]),
+      );
+      expect(rows).toEqual([
+        {
+          matchId: a,
+          observedAt: hoursBefore(5),
+          status: "finished",
+          score: { home: 2, away: 0 },
+        },
+      ]);
+      expect(
+        await dbIn(tx).transaction((t) => t.lastOwnObservations("rfef", [])),
+      ).toEqual([]);
+    }));
+});

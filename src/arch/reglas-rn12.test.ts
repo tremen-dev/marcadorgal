@@ -38,7 +38,8 @@ function bullet(id: string): { text: string; notes: string[] } | null {
   const notes: string[] = [];
   for (const line of lines.slice(start + 1)) {
     if (!line.startsWith("  ")) break;
-    if (/^\s+\*(Añadida|Enmendada)/.test(line)) notes.push(line.trim());
+    if (/^\s+\*(Añadida|Enmendada|Precisada)/.test(line))
+      notes.push(line.trim());
     else body.push(line);
   }
   return { text: words(body.join(" ")), notes };
@@ -76,13 +77,14 @@ describe("SPEC-013 CA-1 RN-12 in reglas.md", () => {
     for (const rule of deciding) expect(motor).toContain(rule);
   });
 
-  it("leaves RN-08 exactly as it was", () => {
-    expect(bullet("RN-08")).toEqual({
-      text: words(`**RN-08 — Cortesía y cadencia.** Ninguna fuente \`pull\` se consulta más a
+  // The letter only: since SPEC-044 CA-1 (ADR-025 §7) RN-08 carries a dated
+  // *Precisada* note, which reglas-rn08.test.ts checks.
+  it("leaves the letter of RN-08 exactly as it was", () => {
+    expect(bullet("RN-08")?.text).toBe(
+      words(`**RN-08 — Cortesía y cadencia.** Ninguna fuente \`pull\` se consulta más a
   menudo que la cadencia declarada en su registro, ni fuera de ventana. Toda
   petición lleva el user-agent identificado del proyecto. La cadencia es un
   dato del registro, no una constante del adaptador.`),
-      notes: [],
-    });
+    );
   });
 });

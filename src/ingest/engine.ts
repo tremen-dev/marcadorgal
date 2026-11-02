@@ -178,7 +178,9 @@ export async function insertDecision(
 // One open alert per (kind, match) while nobody resolves it, the four kinds
 // alike (N-3): a match that keeps retreating opens one alert, not one every
 // thirty seconds. Same shape as openUnresolvedAlerts (SPEC-006 N-8).
-async function openAlert(
+// Exported for rfef:recuperar (SPEC-044 CA-6, H-7), which opens a conflict
+// over a closed match with the same deduplication and without the engine.
+export async function openAlert(
   sql: TransactionSql,
   alert: AlertDraft,
 ): Promise<number> {
@@ -259,11 +261,8 @@ export async function decideMatches(
   now: Instant,
   sources: readonly SourceConfig[],
 ): Promise<EngineCounts> {
-  const counts = empty();
   const ids = [...new Set(matchIds)].sort();
-  if (ids.length === 0) return counts;
-  const sql = tx.sql;
-  const any = sql.array(ids as string[]);
+  if (ids.length === 0) return empty();
 
   // The lock of ADR-019 §1, before anything is read: two engines over the
   // same match (pg_cron and Vercel Cron, an afterInsert and a sweep) take
@@ -274,8 +273,25 @@ export async function decideMatches(
   // brakes ingestion nor deadlocks with an afterInsert. "order by id" fixes
   // the order in which the rows are locked. web_reader cannot take it: it
   // has no privileges on matches (ADR-015 §1).
-  const matches = await lockMatches(sql, ids);
+  const matches = await lockMatches(tx.sql, ids);
+  return decideLocked(tx, ids, matches, now, sources);
+}
+
+// The engine over rows already locked by this transaction (ADR-019 §1): the
+// three reads and the writes, at now, for ids (sorted, unique). decideMatches
+// takes the lock and calls it once; decideRecovered takes it once and calls
+// it per instant with the rows of that instant.
+async function decideLocked(
+  tx: IngestTx,
+  ids: readonly string[],
+  matches: readonly MatchRow[],
+  now: Instant,
+  sources: readonly SourceConfig[],
+): Promise<EngineCounts> {
+  const counts = empty();
   if (matches.length === 0) return counts;
+  const sql = tx.sql;
+  const any = sql.array(ids as string[]);
 
   // The current Decision of each match: the highest version (ADR-006 §3).
   const currents = await sql<DecisionRow[]>`
@@ -339,17 +355,73 @@ export async function decideMatches(
   return counts;
 }
 
+// The engine at the hour of the observation (ADR-025 §4, SPEC-044 CA-4) for
+// what arrives outside the common window: the observations of the matches
+// in recovery, already inserted in this transaction. One lock over every
+// id, in order of id (ADR-019 §1, §5), and then one run of the engine per
+// distinct observedAt, ascending, with now = that observedAt: what the
+// replay does (SPEC-012), so RN-01 is measured with the clock of the source
+// and decided_at is that instant (ADR-019 §3). The engine of src/decide/
+// does not know any of this.
+export async function decideRecovered(
+  tx: IngestTx,
+  observations: readonly Observation[],
+  sources: readonly SourceConfig[],
+): Promise<EngineCounts> {
+  const counts = empty();
+  if (observations.length === 0) return counts;
+  const locked = await lockMatches(
+    tx.sql,
+    observations.map((o) => o.matchId),
+  );
+  const rowOf = new Map(locked.map((row) => [row.id, row]));
+  const byInstant = new Map<Instant, Set<string>>();
+  for (const o of observations) {
+    const ids = byInstant.get(o.observedAt) ?? new Set<string>();
+    ids.add(o.matchId);
+    byInstant.set(o.observedAt, ids);
+  }
+  const instants = [...byInstant.keys()].sort(
+    (a, b) => Date.parse(a) - Date.parse(b),
+  );
+  for (const now of instants) {
+    const ids = [...(byInstant.get(now) ?? [])].sort();
+    const rows = ids
+      .map((id) => rowOf.get(id))
+      .filter((row): row is MatchRow => row !== undefined);
+    const step = await decideLocked(tx, ids, rows, now, sources);
+    counts.matches += step.matches;
+    counts.decisions += step.decisions;
+    counts.alerts += step.alerts;
+    counts.resolved += step.resolved;
+  }
+  return counts;
+}
+
 // The hook of ADR-008 §6: inside the same transaction that inserted the
-// observations, and only when there are any (SPEC-006 N-11).
+// observations, and only when there are any (SPEC-006 N-11). Since SPEC-044
+// CA-5 the tick says which matches were recovered: those run at the hour of
+// their observation (decideRecovered); the window keeps the now of the tick.
 export const createEngineHook =
   (sources: readonly SourceConfig[], now: Instant): AfterInsert =>
-  async (tx, observations) => {
+  async (tx, observations, options) => {
+    const recovered = options?.recovered;
+    const inWindow =
+      recovered === undefined
+        ? observations
+        : observations.filter((o) => !recovered.has(o.matchId));
     await decideMatches(
       tx,
-      observations.map((o) => o.matchId),
+      inWindow.map((o) => o.matchId),
       now,
       sources,
     );
+    if (recovered !== undefined)
+      await decideRecovered(
+        tx,
+        observations.filter((o) => recovered.has(o.matchId)),
+        sources,
+      );
   };
 
 // The second hook (H-2): once per tick, over every match in window, in its

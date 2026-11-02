@@ -16,6 +16,8 @@ import {
 } from "@/model";
 import { createMemoryRawStore } from "../raw/memory.ts";
 import { createApiFootballResults } from "../sources/api-football/results.ts";
+import { SOURCES } from "../sources/registry.ts";
+import { adapterFor } from "./adapters.ts";
 import type { WindowRow } from "./db.ts";
 import { createMemoryIngestDb } from "./memory.ts";
 import { runTick } from "./tick.ts";
@@ -1224,5 +1226,438 @@ describe("SPEC-038 CA-6 observations outside the window", () => {
     });
     expect(db.observations[0]).toMatchObject({ matchId: MATCH });
     expect(db.attempts[0].close?.details).toMatchObject({ fueraDeVentana: 0 });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// SPEC-044 CA-5 (ADR-025 §2-§5): the tick with recovery. A pull source with a
+// horizon takes, when it is its turn (every RECOVERY_POLL_MINUTES, measured
+// over its attempts of the last hour that carried details.recuperacion), the
+// matches in recovery along with those in window: one attempt, one capture.
+// Their observations go through planRecovery and reach the hook as
+// recovered; the sweep never sees them.
+
+describe("SPEC-044 CA-5 the tick with recovery", () => {
+  const FIVE = [
+    "primera-division",
+    "segunda-division",
+    "primera-rfef-g1",
+    "segunda-rfef-g1",
+    "tercera-rfef-g1",
+  ];
+  const EXPLORER_URL = "https://explorer.test";
+  const ENV = {
+    API_FOOTBALL_KEY: "not-a-real-key",
+    RFEF_EXPLORER_URL: EXPLORER_URL,
+    RFEF_EXPLORER_TOKEN: "tok",
+  };
+  // The rfef of the registry with a stub adapter: the horizon is keyed by
+  // the id of the source (constants.ts), so the stub wears it.
+  const RFEF = config("rfef", FIVE);
+  const MONDAY = "2026-11-02T10:00:00.000Z" as Instant;
+  const SEEN = "2026-11-01T22:58:41.000Z" as Instant;
+
+  const recoverable = (
+    id: string,
+    kickoff: Instant,
+    competitionId = "segunda-division",
+  ): WindowRow =>
+    ({
+      id,
+      competitionId,
+      season: "2026-27",
+      kickoff,
+      homeTeamId: "a",
+      awayTeamId: "b",
+      status: "scheduled",
+      forcedFinish: null,
+      lastObservationAt: null,
+    }) as WindowRow;
+
+  const final = (matchId: string, observedAt: Instant = SEEN) =>
+    ParseResult.parse({
+      observations: [
+        {
+          matchId,
+          status: "finished",
+          score: { home: 2, away: 1 },
+          minute: null,
+          observedAt,
+        },
+      ],
+      unresolved: [],
+      skipped: [],
+      requestErrors: [],
+    }).observations[0];
+
+  const parsed = (observations: unknown[]): ParseResult =>
+    ParseResult.parse({
+      observations,
+      unresolved: [],
+      skipped: [],
+      requestErrors: [],
+    });
+
+  const recovered = (
+    sourceId: string,
+    startedAt: Instant,
+    db: ReturnType<typeof createMemoryIngestDb>,
+  ) =>
+    db.attempts.push({
+      id: crypto.randomUUID(),
+      sourceId,
+      startedAt,
+      close: {
+        finishedAt: startedAt,
+        ok: true,
+        observations: 0,
+        details: {
+          recuperacion: {
+            partidos: 1,
+            fechas: 1,
+            insertadas: 0,
+            duplicadas: 0,
+            descartadasLive: 0,
+          },
+        },
+      },
+    });
+
+  it("(i) with an empty window and 60 matches in recovery over three dates: one rfef attempt with three GET, one per ?date=, and no api-football attempt", async () => {
+    const { db, store } = harness();
+    const dates = ["2026-10-30", "2026-10-31", "2026-11-01"];
+    db.recoverable = Array.from({ length: 60 }, (_, i) =>
+      recoverable(
+        `rec-${i}`,
+        `${dates[i % 3]}T12:00:00.000Z` as Instant,
+        FIVE[i % 5],
+      ),
+    );
+    const urls: string[] = [];
+    const fetch = (async (input: string | URL | Request) => {
+      const url = String(input);
+      urls.push(url);
+      const date = url.slice(-10);
+      return new Response(
+        `{"exportedAt":"2026-11-02T10:00:00Z","date":"${date}","matches":[]}`,
+        { status: 200, headers: { "content-type": "application/json" } },
+      );
+    }) as unknown as typeof globalThis.fetch;
+    const sweep = vi.fn(async (_m: WindowRow[]) => ({}) as never);
+    const summary = await runTick({
+      db,
+      store,
+      sources: SOURCES,
+      adapterFor: (c, season) => adapterFor(c, season, ENV),
+      fetch,
+      now: MONDAY,
+      sweep,
+    });
+    expect(summary.inWindow).toBe(0);
+    expect(summary.attempts.map((a) => a.sourceId)).toEqual(["rfef"]);
+    expect(urls).toEqual(
+      dates.map((d) => `${EXPLORER_URL}/api/export/matches?date=${d}`),
+    );
+    expect(summary.attempts[0]).toMatchObject({
+      ok: true,
+      matches: 60,
+      requests: 3,
+      observations: 0,
+      recovered: {
+        partidos: 60,
+        fechas: 3,
+        insertadas: 0,
+        duplicadas: 0,
+        descartadasLive: 0,
+      },
+    });
+    expect(db.attempts).toHaveLength(1);
+    expect(db.attempts[0].close?.details).toMatchObject({
+      matches: 60,
+      recuperacion: {
+        partidos: 60,
+        fechas: 3,
+        insertadas: 0,
+        duplicadas: 0,
+        descartadasLive: 0,
+      },
+    });
+    expect(db.log).toContain("recoveryMatches:72");
+    expect(db.log).not.toContain("recoveryMatches:0");
+    // The sweep is born of the window, and there is none.
+    expect(sweep).not.toHaveBeenCalled();
+  });
+
+  it("(ii) the hook receives recovered = the ids in recovery, and an observation of a match neither in window nor in recovery is counted out", async () => {
+    const { db, store } = harness();
+    db.matches = [match("m1", "primera-division")];
+    db.recoverable = [recoverable("m-rec", SEEN)];
+    const result = parsed([
+      { ...final("m1"), observedAt: MONDAY },
+      final("m-rec"),
+      final("m-other"),
+    ]);
+    const seen: { ids: string[]; recovered: string[] | undefined }[] = [];
+    const summary = await runTick({
+      db,
+      store,
+      sources: [RFEF],
+      adapterFor: () => stubAdapter({ id: "rfef", result }),
+      fetch: forbiddenFetch,
+      now: MONDAY,
+      afterInsert: async (_tx, observations, options) => {
+        seen.push({
+          ids: observations.map((o) => o.matchId),
+          recovered: options?.recovered && [...options.recovered].map(String),
+        });
+      },
+    });
+    expect(seen).toEqual([{ ids: ["m1", "m-rec"], recovered: ["m-rec"] }]);
+    expect(db.observations.map((o) => o.matchId)).toEqual(["m1", "m-rec"]);
+    expect(summary.attempts[0]).toMatchObject({
+      matches: 2,
+      observations: 2,
+      outOfWindow: 1,
+      recovered: { partidos: 1, fechas: 1, insertadas: 1, duplicadas: 0 },
+    });
+    expect(db.attempts[0].close?.details).toMatchObject({
+      fueraDeVentana: 1,
+      recuperacion: { partidos: 1, insertadas: 1 },
+    });
+  });
+
+  it("(iii) with an attempt with recovery two minutes ago the recovery set stays out and the window is asked as always; five minutes ago, it is in", async () => {
+    const run = async (minutesAgo: number) => {
+      const { db, store } = harness();
+      db.matches = [match("m1", "primera-division")];
+      db.recoverable = [recoverable("m-rec", SEEN)];
+      recovered("rfef", shiftInstant(MONDAY, -minutesAgo * MINUTE_MS), db);
+      let asked: string[] = [];
+      const summary = await runTick({
+        db,
+        store,
+        sources: [RFEF],
+        adapterFor: () =>
+          stubAdapter({
+            id: "rfef",
+            onFetch: (ctx) => {
+              asked = ctx.matches.map((m) => m.id);
+            },
+          }),
+        fetch: forbiddenFetch,
+        now: MONDAY,
+      });
+      return { asked, attempt: summary.attempts[0], db };
+    };
+    const recent = await run(2);
+    expect(recent.asked).toEqual(["m1"]);
+    expect(recent.attempt).toMatchObject({ matches: 1 });
+    expect(recent.attempt.recovered).toBeUndefined();
+    expect(recent.db.attempts.at(-1)?.close?.details).not.toHaveProperty(
+      "recuperacion",
+    );
+
+    const due = await run(5);
+    expect(due.asked).toEqual(["m1", "m-rec"]);
+    expect(due.attempt).toMatchObject({
+      matches: 2,
+      recovered: { partidos: 1 },
+    });
+  });
+
+  it("(iii) an attempt with recovery older than an hour does not count: the set is in", async () => {
+    const { db, store } = harness();
+    db.recoverable = [recoverable("m-rec", SEEN)];
+    recovered("rfef", shiftInstant(MONDAY, -61 * MINUTE_MS), db);
+    const summary = await runTick({
+      db,
+      store,
+      sources: [RFEF],
+      adapterFor: () => stubAdapter({ id: "rfef" }),
+      fetch: forbiddenFetch,
+      now: MONDAY,
+    });
+    expect(summary.attempts[0]).toMatchObject({ recovered: { partidos: 1 } });
+    expect(db.log).toContain(
+      `lastRecoveryAttemptAt:rfef:${shiftInstant(MONDAY, -60 * MINUTE_MS)}`,
+    );
+  });
+
+  it("(iii) a failed attempt that carried the recovery set counts for the pace: two minutes later the set stays out (ADR-025 §5, H-8)", async () => {
+    const { db, store } = harness();
+    db.matches = [match("m1", "primera-division")];
+    db.recoverable = [
+      recoverable("m-rec", SEEN),
+      {
+        ...recoverable("m-rec2", SEEN),
+        kickoff: "2026-10-31T16:00:00.000Z" as Instant,
+      },
+    ];
+    let asked: string[] = [];
+    const tick = (now: Instant, fetchError?: Error) =>
+      runTick({
+        db,
+        store,
+        sources: [RFEF],
+        adapterFor: () =>
+          stubAdapter({
+            id: "rfef",
+            fetchError,
+            onFetch: (ctx) => {
+              asked = ctx.matches.map((m) => m.id);
+            },
+          }),
+        fetch: forbiddenFetch,
+        now,
+      });
+    // explorer down: the attempt that took the set fails.
+    const first = await tick(MONDAY, new Error("rfef explorer responded 503"));
+    expect(asked).toEqual(["m1", "m-rec", "m-rec2"]);
+    expect(first.attempts[0]).toMatchObject({
+      error: "rfef explorer responded 503",
+    });
+    expect(db.attempts[0].close).toMatchObject({
+      ok: false,
+      details: {
+        recuperacion: {
+          partidos: 2,
+          fechas: 2,
+          insertadas: 0,
+          duplicadas: 0,
+          descartadasLive: 0,
+        },
+      },
+    });
+    // Two minutes later the window is asked, the recovery set is not.
+    await tick(shiftInstant(MONDAY, 2 * MINUTE_MS));
+    expect(asked).toEqual(["m1"]);
+    expect(db.attempts[1].close?.details).not.toHaveProperty("recuperacion");
+  });
+
+  it("(iii) a failed attempt without a recovery set leaves no recuperacion in its details", async () => {
+    const { db, store } = harness();
+    db.matches = [match("m1", "primera-division")];
+    await runTick({
+      db,
+      store,
+      sources: [RFEF],
+      adapterFor: () =>
+        stubAdapter({ id: "rfef", fetchError: new Error("down") }),
+      fetch: forbiddenFetch,
+      now: MONDAY,
+    });
+    expect(db.attempts[0].close).toMatchObject({ ok: false, error: "down" });
+    expect(db.attempts[0].close?.details).not.toHaveProperty("recuperacion");
+  });
+
+  it("(iv) a second tick with the same export inserts nothing: duplicadas = n (ADR-025 §5)", async () => {
+    const { db, store } = harness();
+    db.recoverable = [recoverable("m-a", SEEN), recoverable("m-b", SEEN)];
+    const result = parsed([final("m-a"), final("m-b")]);
+    const tick = (now: Instant) =>
+      runTick({
+        db,
+        store,
+        sources: [RFEF],
+        adapterFor: () => stubAdapter({ id: "rfef", result }),
+        fetch: forbiddenFetch,
+        now,
+      });
+    const first = await tick(MONDAY);
+    expect(first.attempts[0]).toMatchObject({
+      observations: 2,
+      recovered: { insertadas: 2, duplicadas: 0 },
+    });
+    expect(db.observations).toHaveLength(2);
+    // Five minutes later, its turn again: the same lastSeenAt, status and
+    // score are already there.
+    const second = await tick(shiftInstant(MONDAY, 5 * MINUTE_MS));
+    expect(second.attempts[0]).toMatchObject({
+      ok: true,
+      observations: 0,
+      recovered: { partidos: 2, insertadas: 0, duplicadas: 2 },
+    });
+    expect(db.observations).toHaveLength(2);
+    expect(db.attempts).toHaveLength(2);
+  });
+
+  it("(v) a live of a match in recovery is dropped and counted, never inserted (ADR-025 §3)", async () => {
+    const { db, store } = harness();
+    db.recoverable = [recoverable("m-rec", SEEN)];
+    const result = parsed([
+      {
+        matchId: "m-rec",
+        status: "live",
+        score: { home: 1, away: 0 },
+        minute: null,
+        addedMinute: null,
+        observedAt: SEEN,
+      },
+    ]);
+    const afterInsert = vi.fn(async () => {});
+    const summary = await runTick({
+      db,
+      store,
+      sources: [RFEF],
+      adapterFor: () => stubAdapter({ id: "rfef", result }),
+      fetch: forbiddenFetch,
+      now: MONDAY,
+      afterInsert,
+    });
+    expect(db.observations).toEqual([]);
+    expect(afterInsert).not.toHaveBeenCalled();
+    expect(summary.attempts[0]).toMatchObject({
+      observations: 0,
+      recovered: { partidos: 1, insertadas: 0, descartadasLive: 1 },
+    });
+    expect(db.attempts[0].close?.details).toMatchObject({
+      recuperacion: { descartadasLive: 1 },
+    });
+  });
+
+  it("(vi) the sweep receives only the window", async () => {
+    const { db, store } = harness();
+    db.matches = [match("m1", "primera-division")];
+    db.recoverable = [recoverable("m-rec", SEEN)];
+    const sweep = vi.fn(async (_m: WindowRow[]) => ({
+      matches: 1,
+      decisions: 0,
+      alerts: 0,
+      resolved: 0,
+    }));
+    await runTick({
+      db,
+      store,
+      sources: [RFEF],
+      adapterFor: () => stubAdapter({ id: "rfef" }),
+      fetch: forbiddenFetch,
+      now: MONDAY,
+      sweep,
+    });
+    expect(sweep).toHaveBeenCalledTimes(1);
+    expect(sweep.mock.calls[0][0].map((m) => m.id)).toEqual(["m1"]);
+  });
+
+  it("a source without a horizon never asks for the recovery set", async () => {
+    const { db, store } = harness();
+    db.matches = [match("m1", "primera-division")];
+    db.recoverable = [recoverable("m-rec", SEEN, "primera-division")];
+    let asked: string[] = [];
+    const summary = await runTick({
+      db,
+      store,
+      sources: [PRIMERA],
+      adapterFor: () =>
+        stubAdapter({
+          onFetch: (ctx) => {
+            asked = ctx.matches.map((m) => m.id);
+          },
+        }),
+      fetch: forbiddenFetch,
+      now: MONDAY,
+    });
+    expect(asked).toEqual(["m1"]);
+    expect(summary.attempts[0].recovered).toBeUndefined();
+    expect(db.log.filter((l) => l.startsWith("recoveryMatches"))).toEqual([]);
   });
 });
