@@ -138,6 +138,8 @@ function demoMatch(
     version: undecided ? 0 : 3,
     observedAt: undecided ? null : OBSERVED,
     decidedAt: undecided ? null : DECIDED,
+    homeScoredAt: null,
+    awayScoredAt: null,
   };
 }
 

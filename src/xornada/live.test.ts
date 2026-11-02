@@ -37,6 +37,8 @@ function match(
     version,
     observedAt: "2026-10-10T16:55:00.000Z",
     decidedAt: "2026-10-10T16:55:05.000Z",
+    homeScoredAt: null,
+    awayScoredAt: null,
     ...extra,
   } as PublicMatch;
 }
