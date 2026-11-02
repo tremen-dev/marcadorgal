@@ -12,6 +12,7 @@ describe("SPEC-022 CA-4 no remote secrets inside test:db", () => {
     "SUPABASE_ACCESS_TOKEN",
     "DATABASE_PASSWORD",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+    "RFEF_EXPLORER_TOKEN",
   ])("%s is absent or empty", (name) => {
     expect(process.env[name] ?? "").toBe("");
   });

@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-11-01
+Actualizado: 2026-11-02
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -52,6 +52,8 @@ Actualizado: 2026-11-01
 | SPEC-031 — adaptador-rfef-fetch-con-sesion-parser-puro-y-decodificador-cerrado-sobre-fixtures-reales | hecho | 2026-10-11 (sdd-verificador) |
 | SPEC-032 — calibracion-de-la-cadencia-sostenible-de-la-rfef-con-una-identidad-estable | hecho | 2026-10-18 (sdd-verificador) |
 | SPEC-036 — vias-legitimas-de-acceso-a-los-datos-de-la-rfef | hecho | 2026-10-18 (sdd-verificador) |
+| SPEC-038 — alta-de-la-fuente-rfef-via-explorer-adaptador-pull-sobre-el-export-alias-y-registro-con-prioridad-5 | hecho | 2026-11-02 (sdd-verificador) |
+| SPEC-039 — jornada-de-observacion-de-la-rfef-via-explorer-con-prioridad-5 | aprobada | 2026-11-01 (Alberto Fojo) |
 
 ## EPIC-006 — patrocinio (aprobada)
 
@@ -103,9 +105,10 @@ Actualizado: 2026-11-01
 | ADR-020 | aprobada | fuente-rfef-la-sesion-se-abre-en-dos-pasos-portada-y-nlogin-y-el-tope-por-vuelta-pasa-a-3-al-abrir-y-4-al-renovar | 2026-10-12 (Alberto Fojo) |
 | ADR-021 | aprobada | fuente-rfef-consumo-minimo-una-peticion-por-vuelta-con-sesion-reutilizada-solo-en-franja-y-con-backoff-ante-el-bloqueo | 2026-10-11 (Alberto Fojo) |
 | ADR-022 | aprobada | instante-del-ultimo-gol-por-equipo-en-la-lectura-publica | 2026-11-01 (Alberto Fojo) |
+| ADR-023 | aprobada | fuente-rfef-via-explorer-prioridad-5-temporal-pull-http-a-un-servicio-propio-y-reglas-de-acceso-de-explorer | 2026-11-01 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 36
+- hecho: 37
 - en-revision: 2
-- aprobada: 1
+- aprobada: 2
