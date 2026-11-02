@@ -124,10 +124,12 @@ describe("SPEC-043 CA-3 one secret, never printed", () => {
 
 describe("SPEC-043 CA-3 tools/mascara-db-url.mjs", () => {
   const script = path.join(root, "tools/mascara-db-url.mjs");
-  const run = (env: Record<string, string | undefined>) =>
+  const base = { ...process.env };
+  delete base.DATABASE_URL;
+  const run = (env: Record<string, string>) =>
     spawnSync(process.execPath, [script], {
       encoding: "utf8",
-      env: { PATH: process.env.PATH, ...env },
+      env: { ...base, ...env },
     });
 
   const user = "postgres.abcdefghijklmnop";
@@ -154,7 +156,8 @@ describe("SPEC-043 CA-3 tools/mascara-db-url.mjs", () => {
   });
 
   it("fails without printing anything when DATABASE_URL is missing or unparsable", () => {
-    for (const env of [{}, { DATABASE_URL: "not a url" }]) {
+    const envs: Record<string, string>[] = [{}, { DATABASE_URL: "not a url" }];
+    for (const env of envs) {
       const r = run(env);
       expect(r.status).toBe(1);
       expect(r.stdout).toBe("");
