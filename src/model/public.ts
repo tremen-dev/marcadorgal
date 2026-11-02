@@ -60,7 +60,8 @@ export const PublicMatch = z
       SCORING.has(m.status) ||
       (m.homeScoredAt === null && m.awayScoredAt === null),
     {
-      message: "homeScoredAt and awayScoredAt only in live, finished or suspended",
+      message:
+        "homeScoredAt and awayScoredAt only in live, finished or suspended",
       path: ["homeScoredAt"],
     },
   )

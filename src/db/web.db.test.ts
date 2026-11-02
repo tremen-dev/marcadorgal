@@ -656,72 +656,136 @@ async function scoredAt(
 describe("SPEC-041 CA-1 web.xornada carries home_scored_at and away_scored_at", () => {
   // [case, Decisions in order, index of the Decision expected home, away]
   const cases: [string, Step[], number | null, number | null][] = [
-    ["0-0 → 1-0: that Decision", [["live", 0, 0], ["live", 1, 0]], 1, null],
+    [
+      "0-0 → 1-0: that Decision",
+      [
+        ["live", 0, 0],
+        ["live", 1, 0],
+      ],
+      1,
+      null,
+    ],
     [
       "Decisions of the minute keep it",
-      [["live", 0, 0], ["live", 1, 0], ["live", 1, 0], ["live", 1, 0]],
+      [
+        ["live", 0, 0],
+        ["live", 1, 0],
+        ["live", 1, 0],
+        ["live", 1, 0],
+      ],
       1,
       null,
     ],
     [
       "1-0 → 2-0 moves it",
-      [["live", 0, 0], ["live", 1, 0], ["live", 1, 0], ["live", 2, 0]],
+      [
+        ["live", 0, 0],
+        ["live", 1, 0],
+        ["live", 1, 0],
+        ["live", 2, 0],
+      ],
       3,
       null,
     ],
     [
       "2-0 → 1-0 (disallowed): null",
-      [["live", 1, 0], ["live", 2, 0], ["live", 1, 0]],
+      [
+        ["live", 1, 0],
+        ["live", 2, 0],
+        ["live", 1, 0],
+      ],
       null,
       null,
     ],
     [
       "1-0 → 0-0 → 1-0: the second rise",
-      [["live", 0, 0], ["live", 1, 0], ["live", 0, 0], ["live", 1, 0]],
+      [
+        ["live", 0, 0],
+        ["live", 1, 0],
+        ["live", 0, 0],
+        ["live", 1, 0],
+      ],
       3,
       null,
     ],
     ["first Decision live already 1-0: null", [["live", 1, 0]], null, null],
     [
       "first Decision live 1-0, then minutes: null",
-      [["live", 1, 0], ["live", 1, 0]],
+      [
+        ["live", 1, 0],
+        ["live", 1, 0],
+      ],
       null,
       null,
     ],
     [
       "live 2-1 → finished 2-1 keeps it",
-      [["live", 1, 1], ["live", 2, 1], ["finished", 2, 1]],
+      [
+        ["live", 1, 1],
+        ["live", 2, 1],
+        ["finished", 2, 1],
+      ],
       1,
       null,
     ],
     [
       "live 1-0 → finished 2-0: null",
-      [["live", 0, 0], ["live", 1, 0], ["finished", 2, 0]],
+      [
+        ["live", 0, 0],
+        ["live", 1, 0],
+        ["finished", 2, 0],
+      ],
       null,
       null,
     ],
     [
       "scheduled → live 0-0 → live 1-0: the rise",
-      [["scheduled", null, null], ["live", 0, 0], ["live", 1, 0]],
+      [
+        ["scheduled", null, null],
+        ["live", 0, 0],
+        ["live", 1, 0],
+      ],
       2,
       null,
     ],
-    ["postponed: null", [["scheduled", null, null], ["postponed", null, null]], null, null],
+    [
+      "postponed: null",
+      [
+        ["scheduled", null, null],
+        ["postponed", null, null],
+      ],
+      null,
+      null,
+    ],
     [
       "the other side, independent",
-      [["live", 0, 0], ["live", 0, 1], ["live", 1, 1], ["live", 1, 1]],
+      [
+        ["live", 0, 0],
+        ["live", 0, 1],
+        ["live", 1, 1],
+        ["live", 1, 1],
+      ],
       2,
       1,
     ],
     [
       "the other side disallowed, this one kept",
-      [["live", 0, 0], ["live", 1, 0], ["live", 1, 1], ["live", 1, 0]],
+      [
+        ["live", 0, 0],
+        ["live", 1, 0],
+        ["live", 1, 1],
+        ["live", 1, 0],
+      ],
       1,
       null,
     ],
     [
       "live 1-0 → suspended 1-0 keeps it",
-      [["live", 0, 0], ["live", 1, 0], ["suspended", 1, 0]],
+      [
+        ["live", 0, 0],
+        ["live", 1, 0],
+        ["suspended", 1, 0],
+      ],
       1,
       null,
     ],

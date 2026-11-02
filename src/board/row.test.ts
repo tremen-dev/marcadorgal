@@ -309,7 +309,11 @@ describe("SPEC-041 CA-2 home_scored_at and away_scored_at", () => {
 
   it("a row without the columns (the view before the migration) is left out", () => {
     const error = vi.spyOn(console, "error").mockImplementation(() => {});
-    const { home_scored_at: _, away_scored_at: __, ...old } = {
+    const {
+      home_scored_at: _,
+      away_scored_at: __,
+      ...old
+    } = {
       ...live,
       match_id: "old-view",
     };

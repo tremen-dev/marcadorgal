@@ -149,7 +149,9 @@ describe("SPEC-041 CA-2 PublicMatch carries homeScoredAt and awayScoredAt", () =
     expect(ok(noHome)).toBe(false);
     const { awayScoredAt: __, ...noAway } = examples.finished;
     expect(ok(noAway)).toBe(false);
-    expect(ok({ ...examples.live, homeScoredAt: "2026-10-03T19:00:05+02:00" })).toBe(false);
+    expect(
+      ok({ ...examples.live, homeScoredAt: "2026-10-03T19:00:05+02:00" }),
+    ).toBe(false);
     expect(ok({ ...examples.live, awayScoredAt: "mañá" })).toBe(false);
   });
 
