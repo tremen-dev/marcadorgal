@@ -27,7 +27,7 @@ epica: EPIC-003
   - `CI=1 npm run e2e` → `233 passed (1.8m)`, `1 skipped` · `E2E=0`
 - `git grep -n E2E_RECENT_GOAL_MARK -- . ':!docs'` → sin salida (exit 1).
 - CA-5 fronteras: `git diff origin/ft/SPEC-041-gol-reciente-que-pulsa --stat -- src/sources src/decide src/ingest src/model supabase` → vacío (SPEC-041 aún no está en `origin/main`). Mismo diff sobre `src/i18n` → vacío; líneas añadidas en `src/` sin hex ni `font:`.
-- CA-4 `vercel env ls` (desde `D:\src	remen-dev\marcadorgal`):
+- CA-4 `vercel env ls` (desde `D:/src/tremen-dev/marcadorgal`):
   ```
    RECENT_GOAL_MARK                   Hidden                      Secret    Preview                     1h ago
    RECENT_GOAL_MARK                   Hidden                      Secret    Production                  1h ago
