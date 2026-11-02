@@ -9,7 +9,7 @@ aprobada-por: Alberto Fojo
 ---
 # ADR-024: Migraciones de la base aplicadas por GitHub Actions antes de promover el despliegue
 
-- Deciders: sdd-arquitecto propone (2026-11-02) a petición de Alberto Fojo («que las migraciones se apliquen solas al fusionar en main»). Pendiente de su aprobación (SPEC-043 H-1..H-5).
+- Deciders: sdd-arquitecto propone (2026-11-02) a petición de Alberto Fojo («que las migraciones se apliquen solas al fusionar en main»). Aprobado por Alberto Fojo el 2026-11-02 (SPEC-043 H-1..H-5), con la precisión aceptada el mismo día (procedimiento de desbloqueo, regla de timestamps, `db:push` solo desde `main`, Force Promote solo si la BD es compatible).
 - Specs relacionadas: SPEC-043 lo implementa. **Precisa ADR-014 §1**: «las migraciones se siguen aplicando antes del merge» pasa a «se aplican al fusionar, antes de promover»; el resto de §1 (un solo entorno remoto, `test:db` en local, migraciones compatibles con el código desplegado) sigue en pie.
 
 ## Contexto
