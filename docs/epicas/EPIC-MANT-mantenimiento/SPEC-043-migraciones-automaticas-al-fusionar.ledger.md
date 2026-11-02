@@ -15,17 +15,51 @@ epica: EPIC-MANT
 <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
-| CA-1 | `.github/workflows/migraciones.yml` | actionlint 1.7.7 (Docker `rhysd/actionlint:1.7.7`, shellcheck 0.10.0) sobre los 4 YAML del export LF de `39c77d4`: exit 0, sin salida | actionlint 1.7.7 (shellcheck 0.10.0) sobre los 4 YAML del export LF de `ae99d44` y sobre el worktree: exit 0, sin salida | ✅ |
+| CA-1 | `.github/workflows/migraciones.yml` | actionlint 1.7.7 (Docker `rhysd/actionlint:1.7.7`, shellcheck 0.10.0) sobre los 4 YAML del export LF de `39c77d4`: exit 0, sin salida | actionlint 1.7.7 (shellcheck 0.10.0) sobre los 4 YAML del export LF de `ae99d44` y sobre el worktree: exit 0, sin salida. Iter. 2, export LF de `599206c`: exit 0, sin salida | ✅ |
 | CA-2 | `.github/workflows/migraciones.yml` (paso «Guardia», env `MODO`) | `src/arch/migraciones-workflow.test.ts` › «SPEC-043 CA-2 …» (9 casos). Run rojo de la guardia: tras el merge (handoff, paso 3) | Estático: 20/20 tests verdes; YAML leído (push main sin `paths`, dispatch `modo` choice/dry-run, concurrency, `contents: read`, timeout 10, CLI 2.122.0). Guardia ejecutada en bash `-eo pipefail`: aplicar+`refs/heads/ft/…`→1, aplicar+tag→1, modo vacío/desconocido→1, aplicar+main→0, dry-run+rama→0. Run rojo real: pendiente tras el merge | 🚧 |
 | CA-3 | `migraciones.yml` (paso «Enmascarar…»), `tools/mascara-db-url.mjs` | `src/arch/migraciones-workflow.test.ts` › «CA-3 one secret, never printed» (3) y «CA-3 tools/mascara-db-url.mjs» (2). `grep -cF` de los logs: tras el merge (handoff, paso 5) | Estático: único secreto, por `env`, sin `${{` en `run:`. CLI 2.122.0 real con URL errónea (auth, TLS, DNS): imprime `host=… user=…` (host 1-2, usuario 1-2 apariciones); tras aplicar las máscaras de `mascara-db-url.mjs` → url/host/user/pass/pass codificada = 0. `grep -cF` de logs reales: pendiente tras el merge | 🚧 |
 | CA-4 | `migraciones.yml` (rama `--dry-run`) | Sondeo local (Postgres 17 en Docker, CLI 2.122.0): dry-run «Would push these migrations: • 20261102120000_…», exit 0. Real: tras el merge (handoff, paso 2) | Local (Postgres 17 efímero con el historial de `origin/main`, 26 versiones): `db push --dry-run` exit 0, «Would push … 20261102120000»; `migration list` antes/después idéntico (`diff` vacío). Real: pendiente tras el merge | 🚧 |
-| CA-5 | `supabase/migrations/20261102120000_spec043_harmless_comment.sql` | `src/arch/migraciones-workflow.test.ts` › «CA-5 the harmless migration». Sondeo local: aplica y la 2.ª pasada dice «Remote database is up to date.», exit 0. Real, según la enmienda: (a) handoff paso 2, (b) paso 3, (c) paso 7 | Local: aplica 20261102120000 (exit 0, comentario del esquema `web` escrito); 2.ª pasada «Remote database is up to date.» exit 0. Orden Vercel/check real: pendiente y mal preparado (V-1) | 🚧 |
-| CA-6 | `migraciones.yml` (`defaults.run.shell: bash`, sin `continue-on-error` ni `\|\| true`) | `src/arch/migraciones-workflow.test.ts` › «CA-6 …» (2). Documentación de Vercel citada en «Evidencia del implementador». Deployment Check en Vercel y captura `_qa/SPEC-043/`: tras el merge (handoff, paso 6) | YAML: sin `continue-on-error` ni `\|\| true`, `defaults.run.shell: bash`. Local: `db push` con SQL roto → exit 1. Falta la cita de la documentación de Vercel que exige el CA (V-3); captura del Deployment Check pendiente tras el merge | ❌ |
+| CA-5 | `supabase/migrations/20261102120000_spec043_harmless_comment.sql` | `src/arch/migraciones-workflow.test.ts` › «CA-5 the harmless migration». Sondeo local: aplica y la 2.ª pasada dice «Remote database is up to date.», exit 0. Real, según la enmienda: (a) handoff paso 2, (b) paso 3, (c) paso 7 | Local: aplica 20261102120000 (exit 0, comentario del esquema `web` escrito); 2.ª pasada «Remote database is up to date.» exit 0. Iter. 2: CA-5 enmendado (V-1) y handoff (a) paso 2, (b) paso 3, (c) pasos 6-7 coherentes con él. Real: pendiente tras el merge | 🚧 |
+| CA-6 | `migraciones.yml` (`defaults.run.shell: bash`, sin `continue-on-error` ni `\|\| true`) | `src/arch/migraciones-workflow.test.ts` › «CA-6 …» (2). Documentación de Vercel citada en «Evidencia del implementador». Deployment Check en Vercel y captura `_qa/SPEC-043/`: tras el merge (handoff, paso 6) | YAML: sin `continue-on-error` ni `\|\| true`, `defaults.run.shell: bash`. Local: `db push` con SQL roto → exit 1. Iter. 2: las 6 citas de Vercel del ledger coinciden literalmente con https://vercel.com/docs/deployment-checks (leída 2026-11-02, last_updated 2026-08-11). Captura del Deployment Check: pendiente tras el merge (paso 6) | 🚧 |
 | CA-7 | `.github/workflows/calendario-semanal.yml` (paso «Fusionar y cargar…») | `src/arch/migraciones-workflow.test.ts` › «CA-7 …»; actionlint (CA-1) | Diff de `calendario-semanal.yml`: el dispatch va tras `gh pr merge`, job con `actions: write` y `GH_TOKEN`; actionlint exit 0 | ✅ |
-| CA-8 | `docs/fundacion/contexto.md` (Stack), `package.json` `db:push` intacto | `src/arch/migraciones-workflow.test.ts` › «CA-8 …» (2); `npm run gates` exit 0 en Linux (abajo) | `npm run gates` en `playwright:v1.63.0-noble` sobre el export LF de `ae99d44`: tsc ok, biome 316 ficheros 1 aviso previo, 112 ficheros / 2061 tests pasan (3 omitidos), `next build` ok, exit 0. `db:push` intacto; `contexto.md` lo dice | ✅ |
+| CA-8 | `docs/fundacion/contexto.md` (Stack), `package.json` `db:push` intacto | `src/arch/migraciones-workflow.test.ts` › «CA-8 …» (2); `npm run gates` exit 0 en Linux (abajo) | `npm run gates` en `playwright:v1.63.0-noble` sobre el export LF de `ae99d44`: tsc ok, biome 316 ficheros 1 aviso previo, 112 ficheros / 2061 tests pasan (3 omitidos), `next build` ok, exit 0. `db:push` intacto; `contexto.md` lo dice. Iter. 2, export LF de `599206c` en el mismo contenedor: `npm run gates` (typecheck && lint && test && build) exit 0 | ✅ |
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
+**GREEN previo al merge — 2026-11-02, iteración 2 (sdd-verificador).** Todo
+lo verificable antes del merge cumple y lo posterior está bien preparado. La
+spec sigue `en-revision` hasta la verificación posterior al merge (no pasa a
+`hecho`). Solo cambiaron docs desde `497b68c`; workflow y código idénticos.
+- **V-1 resuelto:** CA-5 enmendado (aceptado por el titular) y handoff (a)
+  paso 2, (b) paso 3, (c) pasos 6-7 sobre el siguiente commit de `main`.
+- **V-2 resuelto:** precisión fechada de ADR-024 (casos a/b/c, reglas de
+  timestamp y de `db:push` solo desde `main`, escape Force Promote con la
+  condición §3); `contexto.md` remite a ella.
+- **V-3 resuelto:** las 6 citas coinciden literalmente con
+  https://vercel.com/docs/deployment-checks (last_updated 2026-08-11), incluidos
+  requisitos (Vercel for GitHub, automatic aliasing), ruta Settings → Build and
+  Deployment → Deployment Checks, identificación por nombre de job y Force
+  Promote.
+- **V-4 resuelto:** rama efímera `qa/spec-043-guardia` desde `origin/main` (el
+  fichero existe en esa ref; `push` solo dispara en `main`, así que crearla no
+  lanza `migraciones` ni `calendario-semanal`), borrada al final.
+- **V-5 resuelto:** anotado en ADR-024 (remedio: re-run o dispatch `aplicar`)
+  y precondición explícita en el paso 5.
+- **Handoff revisado:** orden correcto (2 → 3 sin commits intermedios → 4 con
+  la base al día → 5 → 6 → 7 → 8); `gh run list --commit/--event/--branch`,
+  `gh run view --json headSha,conclusion,jobs` y `--log` existen (gh 2.83.1).
+  El orden 5 antes de 6 es necesario: el run rojo de la guardia deja un check
+  `migraciones` rojo sobre el SHA de cabeza de `main`; antes de marcar el
+  Deployment Check no retiene nada y ese SHA ya es *Current*. No invertirlo.
+- **Observaciones (no bloquean):** O-1: ADR-024 «Deciders» aún dice
+  «Pendiente de su aprobación» con `estado: aprobada` (al arquitecto). O-2:
+  las capturas de `$SHA2` (paso 7) y los recuentos del paso 8 no pueden ir en
+  el propio commit `$SHA2`: la evidencia entra en un commit posterior. O-3: la
+  rama efímera generará un preview de Vercel (inocuo).
+- Evidencia: actionlint 1.7.7 sobre los 4 YAML del export LF de `599206c`
+  exit 0 sin salida; `npm run gates` en `playwright:v1.63.0-noble` exit 0.
+
+**Iteración 1 (histórico):**
 **RED — 2026-11-02 (verificación previa al merge, sdd-verificador).** El código
 cumple todo lo verificable en local (CA-1, CA-7, CA-8 ✅; partes estáticas de
 CA-2..CA-6 en verde), pero CA-6 no tiene la cita que exige y el handoff no
