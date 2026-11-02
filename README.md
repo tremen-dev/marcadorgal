@@ -32,6 +32,7 @@ npm run test:db      # Tests de integración (requiere `.env` con `DATABASE_URL`
 npm run calendario:sync     # Relee el proveedor y muestra el diff (requiere `API_FOOTBALL_KEY` en `.env`)
 npm run calendario:load     # Carga idempotente del calendario en la base
 npm run calendario:xornada  # Muestra la jornada en curso de las cinco competiciones
+npm run alias:rfef          # Regenera data/alias/<temporada>/rfef.json; con --export <json> lista los nombres sin resolver
 npx playwright install chromium && npm run e2e  # Tests e2e (Playwright)
 ```
 

@@ -32,6 +32,11 @@ export type AttemptSummary = {
   // requests brought: the report of the matchday can then tell an attempt with
   // an incident from a lost one.
   requestErrors: number;
+  // Observations of matches outside the window of this tick, dropped before
+  // the insert and never seen by the engine (SPEC-038 CA-6, ADR-023 §5): a
+  // source that brings the whole day (the export of explorer) only feeds the
+  // window. Also in ingest_attempts.details.fueraDeVentana.
+  outOfWindow: number;
 };
 
 export type TickSummary = {
@@ -97,6 +102,7 @@ const emptySummary = (
   skippedItems: 0,
   alerts: 0,
   requestErrors: 0,
+  outOfWindow: 0,
 });
 
 // The error of an attempt is one line: tick:salud prints it inline and the
@@ -137,6 +143,10 @@ export async function runTick(input: TickInput): Promise<TickSummary> {
   }
   const seasons = [...bySeason.keys()].sort();
 
+  // The whole window of the tick, extension included, whether or not every
+  // match is due this time: what an observation may be about (CA-6).
+  const windowIds = new Set(matches.map((m) => m.id));
+
   for (const config of sources) {
     if (config.kind !== "pull") continue;
     const covered = new Set<string>(config.competitions);
@@ -146,7 +156,9 @@ export async function runTick(input: TickInput): Promise<TickSummary> {
       );
       if (own.length === 0) continue;
       try {
-        summary.attempts.push(await runAttempt(input, config, season, own));
+        summary.attempts.push(
+          await runAttempt(input, config, season, own, windowIds),
+        );
       } catch (e) {
         // A source that falls never touches the others (ADR-003).
         summary.attempts.push({
@@ -175,6 +187,7 @@ async function runAttempt(
   config: SourceConfig,
   season: string,
   own: WindowRow[],
+  windowIds: ReadonlySet<string>,
 ): Promise<AttemptSummary> {
   const base = emptySummary(config.id, season, own.length);
 
@@ -215,9 +228,16 @@ async function runAttempt(
     rawRef = ref;
 
     const parsed = adapter.parse(capture);
+    // Only the window of this tick (CA-6, ADR-023 §5): the raw capture keeps
+    // the whole day, the log of observations does not, and the engine never
+    // hears of a match it is not listening to.
+    const inWindow = parsed.observations.filter((o) =>
+      windowIds.has(o.matchId),
+    );
+    const outOfWindow = parsed.observations.length - inWindow.length;
     // The core owns id, sourceId, receivedAt and rawRef (SPEC-005 N-1);
     // observed_at is the source's clock (RN-11).
-    const observations = parsed.observations.map((o) =>
+    const observations = inWindow.map((o) =>
       Observation.parse({
         ...o,
         id: crypto.randomUUID(),
@@ -263,6 +283,7 @@ async function runAttempt(
       skippedItems: parsed.skipped.length,
       alerts,
       requestErrors: broken.length,
+      outOfWindow,
     };
     await db.closeAttempt(attemptId, {
       finishedAt: now,
@@ -278,6 +299,7 @@ async function runAttempt(
         skipped: result.skippedItems,
         alerts,
         requestErrors: broken.length,
+        fueraDeVentana: outOfWindow,
       },
     });
     return result;

@@ -39,6 +39,12 @@ tipo: roadmap
   del 2026-10-10: pública con cookie de sesión, cubre las cinco
   competiciones, marcador ofuscado) y es la salida al directo de Tercera sin
   esperar al operador. Corre en paralelo a EPIC-003.
+  *Estado (2026-11-01, titular):* la vía directa se agotó (SPEC-032, sin
+  cadencia) y la RFEF no contesta (SPEC-036). El alta entra por el servicio
+  externo explorer con **prioridad 5 temporal** (ADR-023 supersede ADR-021
+  §7): primero observar al proveedor en una jornada medida, después decidir
+  la prioridad definitiva por competición. El criterio de latencia no se le
+  exige mientras no mande.
 
 ## Después (comprometido, sin empezar)
 

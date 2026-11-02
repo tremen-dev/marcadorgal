@@ -135,20 +135,42 @@ describe.each(aliasFiles.map((a) => [`${a.season}/${a.sourceId}`, a] as const))(
       ).toEqual([]);
     });
 
-    it("maps every match of the season exactly once and nothing else (SPEC-005 CA-4)", () => {
-      const values = Object.values(data.matches ?? {});
-      expect(new Set(values).size).toBe(values.length);
-      const aliased = new Set(values);
-      expect([...matchIds].filter((id) => !aliased.has(id))).toEqual([]);
-      expect([...aliased].filter((id) => !matchIds.has(id))).toEqual([]);
-      expect(values.length).toBe(matchIds.size);
-    });
+    // A provider alias carries its match ids and one id per team
+    // (api-football, SPEC-005 CA-4). A source that identifies by name (rfef,
+    // ADR-017 §2, SPEC-038 CA-5) carries a competitions map, several
+    // spellings per team and no match map.
+    const byMatchId = data.matches !== undefined;
 
-    it("maps every team of the season exactly once and nothing else", () => {
-      const aliased = new Set(data.teams.map((t) => t.teamId));
-      expect(aliased.size).toBe(data.teams.length);
-      expect([...teamIds].filter((id) => !aliased.has(id))).toEqual([]);
-      expect([...aliased].filter((id) => !teamIds.has(id))).toEqual([]);
-    });
+    it.runIf(byMatchId)(
+      "maps every match of the season exactly once and nothing else (SPEC-005 CA-4)",
+      () => {
+        const values = Object.values(data.matches ?? {});
+        expect(new Set(values).size).toBe(values.length);
+        const aliased = new Set(values);
+        expect([...matchIds].filter((id) => !aliased.has(id))).toEqual([]);
+        expect([...aliased].filter((id) => !matchIds.has(id))).toEqual([]);
+        expect(values.length).toBe(matchIds.size);
+      },
+    );
+
+    it.runIf(byMatchId)(
+      "maps every team of the season exactly once and nothing else",
+      () => {
+        const aliased = new Set(data.teams.map((t) => t.teamId));
+        expect(aliased.size).toBe(data.teams.length);
+        expect([...teamIds].filter((id) => !aliased.has(id))).toEqual([]);
+        expect([...aliased].filter((id) => !teamIds.has(id))).toEqual([]);
+      },
+    );
+
+    it.runIf(!byMatchId)(
+      "maps every team of the season at least once and nothing else, by name (SPEC-038 CA-5)",
+      () => {
+        expect(data.competitions).toBeDefined();
+        const aliased = new Set(data.teams.map((t) => t.teamId));
+        expect([...teamIds].filter((id) => !aliased.has(id))).toEqual([]);
+        expect([...aliased].filter((id) => !teamIds.has(id))).toEqual([]);
+      },
+    );
   },
 );

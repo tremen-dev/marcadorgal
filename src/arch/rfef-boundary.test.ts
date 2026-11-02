@@ -69,6 +69,8 @@ describe("SPEC-031 CA-8 fronteras de src/sources/rfef", () => {
   it("has code to check", () => {
     expect(code).toContain(`${DIR}/adapter.ts`);
     expect(code).toContain(`${DIR}/decode.ts`);
+    // SPEC-038 CA-11: the adapter of the export is covered by the same rules.
+    expect(code).toContain(`${DIR}/explorer.ts`);
   });
 
   it.each(files)("%s only imports the model, zod, node: or its folder", (f) => {
@@ -97,12 +99,13 @@ describe("SPEC-031 CA-8 fronteras de src/sources/rfef", () => {
     ).toEqual([]);
   });
 
-  it("is in neither the registry nor ADAPTERS", () => {
-    expect(SOURCES.map((s) => s.id)).not.toContain("rfef");
-    expect(Object.keys(ADAPTERS)).not.toContain("rfef");
-    expect(read("src/sources/registry.ts")).not.toMatch(/["']rfef["']/);
-    expect(read("src/ingest/adapters.ts")).not.toMatch(
-      /sources\/rfef|["']rfef["']/,
-    );
+  // SPEC-038 CA-7 (ADR-023 §6): the rfef is registered through the export of
+  // explorer; the direct adapter (adapter.ts) stays unregistered, in reserve.
+  it("is registered via explorer.ts, and adapter.ts stays out of ADAPTERS", () => {
+    expect(SOURCES.map((s) => s.id)).toContain("rfef");
+    expect(Object.keys(ADAPTERS)).toContain("rfef");
+    const adapters = read("src/ingest/adapters.ts");
+    expect(adapters).toMatch(/sources\/rfef\/explorer\.ts/);
+    expect(adapters).not.toMatch(/sources\/rfef\/adapter\.ts|createRfef\b/);
   });
 });

@@ -55,7 +55,8 @@ repite bytes. Dos respuestas idénticas indican que salen de una caché.
    devuelve en `requestErrors` con el motivo `empty body`. El intento sale con
    `ok = false`, cero observaciones y `tick:salud` en FALLO. A los 5 min manda
    API-Football (RN-01), como en ADR-017 §3.
-4. **Respuesta rancia** (la implementa la spec de alta, en el núcleo, porque
+4. *2026-11-01, ADR-023:* la condición «sin este detector no hay alta» no aplica a la vía explorer; sigue rigiendo el adaptador directo.
+   **Respuesta rancia** (la implementa la spec de alta, en el núcleo, porque
    `parse` es puro y solo ve una captura). Si el cuerpo de la petición de datos
    es **byte a byte igual** al del intento anterior de la rfef (sha-256 en
    `ingest_attempts.details`), se trata como `requestErrors: stale body`, con

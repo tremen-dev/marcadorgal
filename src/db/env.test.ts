@@ -122,6 +122,7 @@ describe("SPEC-022 local Storage env from supabase status", () => {
         "INGEST_TICK_TOKEN",
         "INGEST_TICK_URL",
         "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+        "RFEF_EXPLORER_TOKEN",
         "SUPABASE_ACCESS_TOKEN",
       ].sort(),
     );
