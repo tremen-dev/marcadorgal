@@ -276,7 +276,7 @@ const PUBLIC_TABLES = [
 afterAll(() => sql.end());
 
 describe("SPEC-020 CA-2 web.xornada", () => {
-  it("has exactly the columns of ADR-014 §3 plus season, and half_time last (SPEC-021 CA-4)", async () => {
+  it("has exactly the columns of ADR-014 §3 plus season, half_time (SPEC-021 CA-4) and the two instants of ADR-022 last (SPEC-041 CA-1)", async () => {
     const cols = await sql`select column_name from information_schema.columns
       where table_schema = 'web' and table_name = 'xornada' order by ordinal_position`;
     expect(cols.map((c) => c.column_name)).toEqual([
@@ -301,6 +301,8 @@ describe("SPEC-020 CA-2 web.xornada", () => {
       "observed_at",
       "decided_at",
       "half_time",
+      "home_scored_at",
+      "away_scored_at",
     ]);
   });
 
@@ -340,6 +342,8 @@ describe("SPEC-020 CA-2 web.xornada", () => {
         observed_at: null,
         decided_at: null,
         half_time: false,
+        home_scored_at: null,
+        away_scored_at: null,
       });
     }));
 
@@ -606,5 +610,148 @@ describe("SPEC-021 CA-4 web.xornada carries half_time", () => {
         half_time: true,
         version: 2,
       });
+    }));
+});
+
+// SPEC-041 CA-1 (ADR-022 §2-§3): per side, the decided_at of the last
+// Decision that raised its score while it and the previous one were live.
+type Step = [status: string, home: number | null, away: number | null];
+
+async function decide(tx: Tx, matchId: string, steps: Step[]): Promise<Date[]> {
+  const [{ id }] = await tx`insert into observations ${tx({
+    match_id: matchId,
+    source_id: "test",
+    observed_at: "2026-09-20T16:00:00Z",
+    raw_ref: "raw/test.json",
+    status: "scheduled",
+  })} returning id`;
+  const at: Date[] = [];
+  for (const [i, [status, home, away]] of steps.entries()) {
+    const decidedAt = new Date(Date.UTC(2026, 8, 20, 16, i, 7));
+    at.push(decidedAt);
+    await tx`insert into decisions ${tx({
+      match_id: matchId,
+      status,
+      home_score: home,
+      away_score: away,
+      minute: status === "live" ? i : null,
+      qualifier: "confirmado",
+      rule: "RN-01",
+      observation_ids: [id],
+      decided_at: decidedAt.toISOString(),
+    })}`;
+  }
+  return at;
+}
+
+async function scoredAt(
+  tx: Tx,
+  matchId: string,
+): Promise<{ home: Date | null; away: Date | null }> {
+  const [row] = await tx`select home_scored_at, away_scored_at
+    from web.xornada where match_id = ${matchId}`;
+  return { home: row.home_scored_at, away: row.away_scored_at };
+}
+
+describe("SPEC-041 CA-1 web.xornada carries home_scored_at and away_scored_at", () => {
+  // [case, Decisions in order, index of the Decision expected home, away]
+  const cases: [string, Step[], number | null, number | null][] = [
+    ["0-0 → 1-0: that Decision", [["live", 0, 0], ["live", 1, 0]], 1, null],
+    [
+      "Decisions of the minute keep it",
+      [["live", 0, 0], ["live", 1, 0], ["live", 1, 0], ["live", 1, 0]],
+      1,
+      null,
+    ],
+    [
+      "1-0 → 2-0 moves it",
+      [["live", 0, 0], ["live", 1, 0], ["live", 1, 0], ["live", 2, 0]],
+      3,
+      null,
+    ],
+    [
+      "2-0 → 1-0 (disallowed): null",
+      [["live", 1, 0], ["live", 2, 0], ["live", 1, 0]],
+      null,
+      null,
+    ],
+    [
+      "1-0 → 0-0 → 1-0: the second rise",
+      [["live", 0, 0], ["live", 1, 0], ["live", 0, 0], ["live", 1, 0]],
+      3,
+      null,
+    ],
+    ["first Decision live already 1-0: null", [["live", 1, 0]], null, null],
+    [
+      "first Decision live 1-0, then minutes: null",
+      [["live", 1, 0], ["live", 1, 0]],
+      null,
+      null,
+    ],
+    [
+      "live 2-1 → finished 2-1 keeps it",
+      [["live", 1, 1], ["live", 2, 1], ["finished", 2, 1]],
+      1,
+      null,
+    ],
+    [
+      "live 1-0 → finished 2-0: null",
+      [["live", 0, 0], ["live", 1, 0], ["finished", 2, 0]],
+      null,
+      null,
+    ],
+    [
+      "scheduled → live 0-0 → live 1-0: the rise",
+      [["scheduled", null, null], ["live", 0, 0], ["live", 1, 0]],
+      2,
+      null,
+    ],
+    ["postponed: null", [["scheduled", null, null], ["postponed", null, null]], null, null],
+    [
+      "the other side, independent",
+      [["live", 0, 0], ["live", 0, 1], ["live", 1, 1], ["live", 1, 1]],
+      2,
+      1,
+    ],
+    [
+      "the other side disallowed, this one kept",
+      [["live", 0, 0], ["live", 1, 0], ["live", 1, 1], ["live", 1, 0]],
+      1,
+      null,
+    ],
+    [
+      "live 1-0 → suspended 1-0 keeps it",
+      [["live", 0, 0], ["live", 1, 0], ["suspended", 1, 0]],
+      1,
+      null,
+    ],
+  ];
+
+  it.each(cases)("%s", (_name, steps, home, away) =>
+    rollback(async (tx) => {
+      const m = await seedMatch(tx);
+      const at = await decide(tx, m, steps);
+      expect(await scoredAt(tx, m)).toEqual({
+        home: home === null ? null : at[home],
+        away: away === null ? null : at[away],
+      });
+    }),
+  );
+
+  it("without Decision: null", () =>
+    rollback(async (tx) => {
+      const m = await seedMatch(tx);
+      expect(await scoredAt(tx, m)).toEqual({ home: null, away: null });
+    }));
+
+  it("web_reader reads them, and its grants are unchanged (ADR-015 §3)", () =>
+    rollback(async (tx) => {
+      const m = await seedMatch(tx);
+      const at = await decide(tx, m, [
+        ["live", 0, 0],
+        ["live", 0, 1],
+      ]);
+      await asRole(tx, "web_reader");
+      expect(await scoredAt(tx, m)).toEqual({ home: null, away: at[1] });
     }));
 });
