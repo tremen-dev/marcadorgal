@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { PROVISIONAL_DISPLAYS } from "@/xornada/qualifier";
 import { RECENT_GOAL_MARKS } from "@/xornada/recent-goal";
@@ -20,24 +22,50 @@ describe("SPEC-034 CA-5 PROVISIONAL_DISPLAY", () => {
 });
 
 // SPEC-041 CA-3 (H-4): global to the web, never per competition.
-describe("SPEC-041 CA-3 RECENT_GOAL_MINUTES and RECENT_GOAL_MARK", () => {
+describe("SPEC-041 CA-3 RECENT_GOAL_MINUTES", () => {
   it("the window is a positive whole number of minutes, 5 by default", () => {
     expect(Number.isInteger(RECENT_GOAL_MINUTES)).toBe(true);
     expect(RECENT_GOAL_MINUTES).toBeGreaterThan(0);
     expect(RECENT_GOAL_MINUTES).toBe(5);
   });
+});
 
-  it("the mark is one of the two variants, box by default", () => {
+// SPEC-042 CA-1: the «GOL» pill by default.
+describe("SPEC-042 CA-1 RECENT_GOAL_MARK", () => {
+  it("is one of the two variants, label by default", () => {
     expect(RECENT_GOAL_MARKS).toContain(RECENT_GOAL_MARK);
-    expect(RECENT_GOAL_MARK).toBe("box");
+    expect(RECENT_GOAL_MARK).toBe("label");
   });
+});
 
-  // CA-6: the test build switches the variant; nothing else does.
-  it("only the test build's variable changes it, and only to a valid variant", () => {
-    expect(recentGoalMark({})).toBe("box");
-    expect(recentGoalMark({ E2E_RECENT_GOAL_MARK: "label" })).toBe("label");
-    expect(recentGoalMark({ E2E_RECENT_GOAL_MARK: "box" })).toBe("box");
-    expect(recentGoalMark({ E2E_RECENT_GOAL_MARK: "pulse" })).toBe("box");
-    expect(recentGoalMark({ E2E_RECENT_GOAL_MARK: "" })).toBe("box");
+// SPEC-042 CA-2: the variable RECENT_GOAL_MARK, exact comparison. The old
+// name, built so that `git grep` does not find it, no longer counts.
+const OLD_NAME = ["E2E", "RECENT_GOAL_MARK"].join("_");
+
+describe("SPEC-042 CA-2 recentGoalMark(env)", () => {
+  it.each([
+    [{ RECENT_GOAL_MARK: "box" }, "box"],
+    [{ RECENT_GOAL_MARK: "label" }, "label"],
+    [{}, "label"],
+    [{ RECENT_GOAL_MARK: undefined }, "label"],
+    [{ RECENT_GOAL_MARK: "" }, "label"],
+    [{ RECENT_GOAL_MARK: "pulse" }, "label"],
+    [{ RECENT_GOAL_MARK: "Box" }, "label"],
+    [{ RECENT_GOAL_MARK: " box" }, "label"],
+    [{ [OLD_NAME]: "box" }, "label"],
+  ])("%j -> %s", (env, expected) => {
+    expect(recentGoalMark(env)).toBe(expected);
+  });
+});
+
+// SPEC-042 CA-4 (pattern of SPEC-020 CA-3): documented, with no value.
+describe("SPEC-042 CA-4 .env.example", () => {
+  it("names RECENT_GOAL_MARK with no value, and not the old name", () => {
+    const example = readFileSync(
+      fileURLToPath(new URL("../../.env.example", import.meta.url)),
+      "utf8",
+    );
+    expect(example).toMatch(/^RECENT_GOAL_MARK=$/m);
+    expect(example).not.toContain(OLD_NAME);
   });
 });

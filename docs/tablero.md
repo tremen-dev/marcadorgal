@@ -44,6 +44,7 @@ Actualizado: 2026-11-02
 | SPEC-034 — provisional-configurable-en-la-pantalla | hecho | 2026-10-12 (sdd-verificador) |
 | SPEC-040 — fecha-y-hora-por-fila-y-escritorio-multicolumna | hecho | 2026-11-01 (sdd-verificador) |
 | SPEC-041 — gol-reciente-que-pulsa | hecho | 2026-11-02 (sdd-verificador) |
+| SPEC-042 — gol-por-defecto-y-variable-recent-goal-mark | hecho | 2026-11-02 (sdd-verificador) |
 
 ## EPIC-004 — fuente-rfef (aprobada)
 
@@ -111,6 +112,6 @@ Actualizado: 2026-11-02
 
 ## Resumen
 
-- hecho: 38
+- hecho: 39
 - en-revision: 3
 - aprobada: 1

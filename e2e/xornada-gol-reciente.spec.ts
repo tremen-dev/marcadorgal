@@ -1,6 +1,6 @@
 import { mkdirSync } from "node:fs";
 import { expect, type Locator, type Page, test } from "@playwright/test";
-import { labelPort } from "../playwright.config";
+import { boxPort } from "../playwright.config";
 import { COLORS } from "../src/design/tokens";
 import { es } from "../src/i18n/es";
 import { gl } from "../src/i18n/gl";
@@ -8,15 +8,16 @@ import { gl } from "../src/i18n/gl";
 // SPEC-041 CA-6 over the demonstration, rendered per request: Bilbao
 // Athletic (the longest name) scored 1 min ago at home in a live, Real
 // Sporting 1 min ago away in a finished, SD Compostela 6 min ago (no mark).
-// The «box» variant is the build's default (port 3100); «label» is the same
-// build served with E2E_RECENT_GOAL_MARK=label (playwright.config.ts).
+// SPEC-042 CA-3: «label» is the default variant (port 3100, RECENT_GOAL_MARK
+// empty); «box» is the same build served with RECENT_GOAL_MARK=box
+// (playwright.config.ts).
 const routes = [
   { path: "/demo/xornada", lang: "gl", dict: gl },
   { path: "/es/demo/xornada", lang: "es", dict: es },
 ] as const;
 const VARIANTS = [
-  { mark: "box", origin: "" },
-  { mark: "label", origin: `http://localhost:${labelPort}` },
+  { mark: "label", origin: "" },
+  { mark: "box", origin: `http://localhost:${boxPort}` },
 ] as const;
 
 const LIVE = "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense";
