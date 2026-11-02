@@ -2,10 +2,11 @@
 id: SPEC-042
 tipo: spec
 epica: EPIC-003
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-02, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-11-02, por: Alberto Fojo}
 ---
 # SPEC-042 — Gol por defecto y variable RECENT_GOAL_MARK
 
