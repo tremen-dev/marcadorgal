@@ -16,9 +16,9 @@ export const RECENT_GOAL_MARK: RecentGoalMark = "box";
 
 // SPEC-041 CA-6: the e2e build serves the other variant on a second server
 // (playwright.config.ts). Unset, or not a variant, it is RECENT_GOAL_MARK.
-export function recentGoalMark(env: {
-  E2E_RECENT_GOAL_MARK?: string;
-}): RecentGoalMark {
+export function recentGoalMark(
+  env: Readonly<Record<string, string | undefined>>,
+): RecentGoalMark {
   const wanted = env.E2E_RECENT_GOAL_MARK;
   return RECENT_GOAL_MARKS.find((m) => m === wanted) ?? RECENT_GOAL_MARK;
 }

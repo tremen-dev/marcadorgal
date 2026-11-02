@@ -9,6 +9,7 @@ import {
 import type { XornadaCompetition, XornadaDay } from "@/xornada/view";
 import { CompetitionSection } from "./CompetitionSection";
 import { xornadaHeading } from "./labels";
+import type { RecentGoalView } from "./MatchRow";
 import styles from "./Xornada.module.css";
 import { DayStrip, FilterPills } from "./XornadaControls";
 import { XornadaHeader } from "./XornadaHeader";
@@ -32,6 +33,9 @@ export type XornadaBodyProps = {
   arrows?: Neighbours;
   // SPEC-034 CA-5: the mode of the web's configuration, for the legend.
   provisionalDisplay: ProvisionalDisplay;
+  // SPEC-041 CA-3, CA-4: the render's instant (the server's, or the
+  // client's clock of SPEC-024) and RECENT_GOAL_MINUTES/RECENT_GOAL_MARK.
+  recentGoal?: RecentGoalView;
 };
 
 export function XornadaBody({
@@ -44,6 +48,7 @@ export function XornadaBody({
   ages,
   arrows,
   provisionalDisplay,
+  recentGoal,
 }: XornadaBodyProps) {
   const rows = competitions.flatMap((c) => c.rows);
   const hasRows = rows.length > 0;
@@ -86,6 +91,7 @@ export function XornadaBody({
               locale={locale}
               ages={ages}
               days={days}
+              recentGoal={recentGoal}
             />
           ))}
         </div>

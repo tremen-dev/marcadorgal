@@ -14,6 +14,7 @@ import {
 } from "@/xornada/freshness";
 import { boardMatches, initialBoard } from "@/xornada/live";
 import type { ProvisionalDisplay } from "@/xornada/qualifier";
+import type { RecentGoalMark } from "@/xornada/recent-goal";
 import { buildXornada, type XornadaDay } from "@/xornada/view";
 import styles from "./Xornada.module.css";
 import { XornadaBody } from "./XornadaBody";
@@ -52,6 +53,11 @@ export type XornadaLiveProps = {
   galicians?: readonly string[];
   // SPEC-034 CA-5: PROVISIONAL_DISPLAY, the same mode the server painted.
   provisionalDisplay: ProvisionalDisplay;
+  // SPEC-041 CA-3: RECENT_GOAL_MINUTES and RECENT_GOAL_MARK; the instant is
+  // this client's (servedAt first, so the hydration agrees, then the
+  // browser's). Each mark keeps its own timer (RecentGoalScore, CA-5).
+  recentGoalMinutes: number;
+  recentGoalMark: RecentGoalMark;
 };
 
 function lazyOpener(config: { url: string; key: string }): OpenChannel {
@@ -128,6 +134,8 @@ export function XornadaLive({
   arrows,
   galicians = NO_GALICIANS,
   provisionalDisplay,
+  recentGoalMinutes,
+  recentGoalMark,
 }: XornadaLiveProps) {
   const [snapshot, setSnapshot] = useState<LiveSnapshot>(() => ({
     board: initialBoard(matches, days),
@@ -217,6 +225,11 @@ export function XornadaLive({
       ages={ages}
       arrows={arrows}
       provisionalDisplay={provisionalDisplay}
+      recentGoal={{
+        now,
+        minutes: recentGoalMinutes,
+        mark: recentGoalMark,
+      }}
       freshness={
         <FreshnessLine
           locale={locale}

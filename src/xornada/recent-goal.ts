@@ -38,3 +38,44 @@ export function recentGoals(
     away: until(row.awayScoredAt, now, minutes),
   };
 }
+
+// Whether a mark that ends at `until` still shows at `now`.
+export const isRecent = (until: Instant, now: number): boolean =>
+  now < Date.parse(until);
+
+// CA-4: one 1 s pulse per second left (rounded up), so the animation stops
+// on its own at the end of the window, also without JavaScript.
+export function pulseIterations(until: Instant, now: number): number {
+  return Math.max(0, Math.ceil((Date.parse(until) - now) / 1000));
+}
+
+// The browser's clock and timers, given so the watch is testable.
+export type RecentGoalClock = {
+  now(): number;
+  setTimeout(fn: () => void, ms: number): unknown;
+  clearTimeout(id: unknown): void;
+};
+
+// CA-5 (H-5): reads the browser's clock at once (the render's may be
+// another's) and once more when the mark ends, without the network; a timer
+// fired early arms another for what is left. Returns the stop.
+export function watchRecentGoal(
+  until: Instant,
+  clock: RecentGoalClock,
+  onNow: (now: number) => void,
+): () => void {
+  const end = Date.parse(until);
+  let timer: unknown;
+  let armed = false;
+  const arm = () => {
+    const now = clock.now();
+    onNow(now);
+    armed = now < end;
+    if (armed) timer = clock.setTimeout(arm, end - now);
+  };
+  arm();
+  return () => {
+    if (armed) clock.clearTimeout(timer);
+    armed = false;
+  };
+}

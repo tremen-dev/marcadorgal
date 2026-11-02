@@ -2,7 +2,7 @@ import { type Locale, t } from "@/i18n";
 import type { XornadaCompetition, XornadaDay } from "@/xornada/view";
 import { CountLabel } from "./CountLabel";
 import { liveCountTemplates, matchCountTemplates } from "./labels";
-import { MatchRow } from "./MatchRow";
+import { MatchRow, type RecentGoalView } from "./MatchRow";
 import styles from "./Xornada.module.css";
 
 type Props = {
@@ -12,6 +12,8 @@ type Props = {
   ages?: ReadonlyMap<string, number>;
   // SPEC-040 CA-2: the days of the xornada, to know which one is today.
   days?: readonly XornadaDay[];
+  // SPEC-041 CA-4: the render's instant and the web's window and variant.
+  recentGoal?: RecentGoalView;
 };
 
 export const sectionId = (competitionId: string): string =>
@@ -26,6 +28,7 @@ export function CompetitionSection({
   locale,
   ages,
   days = [],
+  recentGoal,
 }: Props) {
   const { competitionId } = competition;
   const today = days.find((d) => d.today)?.date ?? null;
@@ -106,6 +109,7 @@ export function CompetitionSection({
               locale={locale}
               age={ages?.get(row.matchId) ?? null}
               today={row.day === today}
+              recentGoal={recentGoal}
             />
           ))}
         </ul>

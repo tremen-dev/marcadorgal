@@ -8,7 +8,11 @@ import { SnapshotFreshness } from "@/components/xornada/SnapshotFreshness";
 import { XornadaScreen } from "@/components/xornada/XornadaScreen";
 import type { Locale } from "@/i18n";
 import { buildXornada, xornadaDays } from "@/xornada/view";
-import { PROVISIONAL_DISPLAY } from "./config";
+import {
+  PROVISIONAL_DISPLAY,
+  RECENT_GOAL_MINUTES,
+  recentGoalMark,
+} from "./config";
 
 // SPEC-027 CA-3 (H-2..H-5): /xornada/[fecha] and /es/xornada/[fecha], the
 // week of play keyed by its Saturday, rendered on the server over the
@@ -51,6 +55,12 @@ export async function WeekXornada({
       }
       days={matches === null ? [] : xornadaDays(matches, now)}
       provisionalDisplay={PROVISIONAL_DISPLAY}
+      // SPEC-041 CA-3: a snapshot, marked at its render (H-4 of SPEC-027).
+      recentGoal={{
+        now,
+        minutes: RECENT_GOAL_MINUTES,
+        mark: recentGoalMark(process.env),
+      }}
       paths={{
         gl: `/xornada/${param.week}`,
         es: `/es/xornada/${param.week}`,

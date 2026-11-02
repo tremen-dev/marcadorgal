@@ -1,6 +1,8 @@
 import { formatTime, type Locale, t } from "@/i18n";
+import { type RecentGoalMark, recentGoals } from "@/xornada/recent-goal";
 import { minuteLabel, type XornadaRow } from "@/xornada/view";
 import { rowDateLabel } from "./labels";
+import { RecentGoalScore } from "./RecentGoalScore";
 import { type TeamNameTone, teamNameTone } from "./team-name";
 import styles from "./Xornada.module.css";
 
@@ -12,7 +14,18 @@ type Props = {
   age?: number | null;
   // SPEC-040 CA-2 (H-4): the row's date is today, so it goes in capitals.
   today?: boolean;
+  // SPEC-041 CA-3, CA-4: the render's instant (ms) and the web's
+  // RECENT_GOAL_MINUTES and RECENT_GOAL_MARK. Without it, no mark.
+  recentGoal?: RecentGoalView;
 };
+
+export type RecentGoalView = {
+  now: number;
+  minutes: number;
+  mark: RecentGoalMark;
+};
+
+const NO_RECENT_GOALS = { home: null, away: null } as const;
 
 const cx = (...names: (string | false | null | undefined)[]): string =>
   names.filter(Boolean).join(" ");
@@ -59,7 +72,13 @@ function secondLine(row: XornadaRow, today: boolean, locale: Locale) {
   );
 }
 
-export function MatchRow({ row, locale, age = null, today = false }: Props) {
+export function MatchRow({
+  row,
+  locale,
+  age = null,
+  today = false,
+  recentGoal,
+}: Props) {
   const isLive = row.status === "live";
   const noSignal = row.qualifier === "sen_sinal";
   const { margin, qualifierDisplay: qualifier } = row;
@@ -88,6 +107,33 @@ export function MatchRow({ row, locale, age = null, today = false }: Props) {
     );
   const scoreText = (side: "home" | "away") =>
     row.score === null ? "–" : String(row.score[side]);
+  // SPEC-041 CA-4: the recent number, decided at the render's instant; the
+  // browser's clock takes over in RecentGoalScore (CA-5).
+  const recent =
+    recentGoal === undefined
+      ? NO_RECENT_GOALS
+      : recentGoals(row, recentGoal.now, recentGoal.minutes);
+  const score = (side: "home" | "away") => {
+    const until = recent[side];
+    if (recentGoal === undefined || until === null)
+      return (
+        <span className={scoreClass(side)} data-testid="score">
+          {scoreText(side)}
+        </span>
+      );
+    return (
+      <RecentGoalScore
+        key={`${side}-${until}`}
+        until={until}
+        now={recentGoal.now}
+        mark={recentGoal.mark}
+        className={scoreClass(side)}
+        text={scoreText(side)}
+        words={t(locale, "xornada.recentGoal")}
+        label={t(locale, "xornada.recentGoalLabel")}
+      />
+    );
+  };
 
   return (
     <li
@@ -145,7 +191,14 @@ export function MatchRow({ row, locale, age = null, today = false }: Props) {
           </>
         )}
       </div>
-      <div className={styles.sides}>
+      {/* SPEC-041 CA-4: the «label» variant gives the pill its own track,
+          as wide as the pill when there is one, none otherwise. */}
+      <div
+        className={cx(
+          styles.sides,
+          recentGoal?.mark === "label" && styles.sidesTag,
+        )}
+      >
         <span
           className={nameClass("home")}
           data-testid="team-name"
@@ -153,9 +206,7 @@ export function MatchRow({ row, locale, age = null, today = false }: Props) {
         >
           {row.home}
         </span>
-        <span className={scoreClass("home")} data-testid="score">
-          {scoreText("home")}
-        </span>
+        {score("home")}
         <span
           className={nameClass("away")}
           data-testid="team-name"
@@ -163,9 +214,7 @@ export function MatchRow({ row, locale, age = null, today = false }: Props) {
         >
           {row.away}
         </span>
-        <span className={scoreClass("away")} data-testid="score">
-          {scoreText("away")}
-        </span>
+        {score("away")}
       </div>
       {age !== null && (
         <span className={styles.rowAge} data-testid="row-age">
