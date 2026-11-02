@@ -9,8 +9,8 @@ aprobada-por: Alberto Fojo
 ---
 # ADR-022: Instante del último gol por equipo en la lectura pública
 
-- Deciders: sdd-arquitecto propone (2026-11-01) para SPEC-041, a petición del titular. **Alberto Fojo elige el 2026-11-01, en las H de SPEC-041:** calcular al leer en la vista (H-1, §4), `decided_at` (H-2, §3) y solo goles vistos en directo (H-3, §2). El ADR sigue en borrador hasta el gate de SPEC-041.
-- Specs relacionadas: SPEC-041 lo implementa. **Precisa ADR-014 §3** (añade dos campos a lo que ve el anónimo). No toca ADR-014 §2, §4-§6 ni ADR-015.
+- Deciders: sdd-arquitecto propone (2026-11-01) para SPEC-041, a petición del titular. **Alberto Fojo elige el 2026-11-01, en las H de SPEC-041:** calcular al leer en la vista (H-1, §4), `decided_at` (H-2, §3) y solo goles vistos en directo (H-3, §2). Aprobado por el titular el 2026-11-01 en el gate de SPEC-041.
+- Specs relacionadas: SPEC-041 lo implementa; SPEC-042 (2026-11-02) cambia solo la variante visual por defecto a `label`, que este ADR no fija. **Precisa ADR-014 §3** (añade dos campos a lo que ve el anónimo). No toca ADR-014 §2, §4-§6 ni ADR-015.
 
 ## Contexto
 
