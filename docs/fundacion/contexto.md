@@ -2,7 +2,7 @@
 
 > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.
 > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.
-> Última actualización: 2026-10-15 (jornada 2026-10-09/12 leída; SPEC-015 y SPEC-035 hechas; EPIC-003 a falta de SPEC-025/026).
+> Última actualización: 2026-11-02 (SPEC-038 hecha: fuente rfef vía explorer con prioridad 5 temporal; SPEC-039 aprobada, observación prevista el 2026-11-07/08).
 
 ## Qué es y en qué punto está
 
@@ -57,6 +57,8 @@ Las mediciones de SPEC-025 (latencia gol→pantalla con el segundo reloj de ADR-
 
 **EPIC-004 (fuente RFEF), aprobada el 2026-10-10:** `marcadores.rfef.es` entra como segunda fuente con prioridad 50 para dar directo donde hoy hay `sen sinal`. La rigen ADR-017 (decodificación cerrada del marcador ofuscado, estados por marca y reloj) y ADR-018 (petición por POST, cuerpo vacío como error, respuesta rancia). SPEC-031 está hecha: adaptador en `src/sources/rfef/` sobre fixtures reales, todavía sin registrar. SPEC-032 (calibración con series de campo) está en su rama.
 
+**EPIC-004, giro del 2026-11-01 (titular):** la vía directa se agotó (SPEC-032: la RFEF corta tras 13 peticiones válidas, «sin cadencia») y el correo a la RFEF (SPEC-036) sigue sin respuesta. ADR-023 supersede ADR-021 §7 y ADR-017 §5: la RFEF entra con **prioridad 5 temporal** a través de **explorer**, un servicio propio fuera de este repo (`marcadorgal-explorer`, sin tremen-sdd) que lee `marcadores.rfef.es` con sus propias reglas de sesión, pacing, cooldown y proxies, desplegado en Vercel el 2026-11-01 sobre la misma base Supabase en un esquema `explorer` propio. **SPEC-038 hecha (2026-11-02):** adaptador pull `src/sources/rfef/explorer.ts` sobre el export de explorer, alias de las cinco competiciones (`data/alias/2026-27/rfef.json`), registro `rfef` con prioridad 5, filtro de fuera de ventana en el tick. Pendiente: CA-10 (alta en producción de marcadorgal en una ventana con partidos, con `RFEF_EXPLORER_URL` y `RFEF_EXPLORER_TOKEN` ya en Vercel). **SPEC-039 aprobada:** jornada de observación el 2026-11-07/08 con el criterio para subir la prioridad por competición.
+
 **EPIC-MANT — SPEC-017 completa (PR #31):** mejoras del informe de jornada, entre ellas el contraste con crudo propio (`--contrastar`). **SPEC-029 completa:** endurece `web_reader`, purga el cron y pasa a v7.
 
 **EPIC-FIX (correcciones urgentes):** SPEC-011 hecho. Arregla dos defectos de la ingesta: sin peticiones `live=` con un solo id de liga, y `ParseResult` gana cuarto canal `requestErrors` para guardar observaciones buenas aun si una petición falla. Entrada prioritaria para fallos que dañan medición en vivo. **SPEC-022 completa:** `test:db` ya no toca Storage de producción. **SPEC-030 completa (PR #64, 2026-10-12):** `/` y `/es` dejan ISR y pasan a `force-dynamic`. La CDN las cachea con `Vercel-CDN-Cache-Control: s-maxage=10, stale-while-revalidate=30`, porque en Vercel la página dinámica sale `private, no-store` y el `Cache-Control` de `next.config` no basta. El cliente pide `/api/board` al hidratar si `servedAt` tiene más de 45 s. Medido en producción con `npm run cache:portada`: 10 de 10, sin HTML del build.
@@ -105,7 +107,9 @@ API-Football Pro está contratado desde 2026-09-21 y ya es el importador de
 calendario. La verificación de cobertura de Tercera G1 (306 partidos, 34
 jornadas, eventos con minuto) está hecha. Alternativas sin directo: Sportmonks
 (sin directo en Segunda RFEF), BeSoccer API (sin precio público). La base legal
-de cada fuente la gestiona el titular fuera del repo (D-7).
+de cada fuente la gestiona el titular fuera del repo (D-7). La fuente `rfef`
+está registrada con prioridad 5 vía explorer (ADR-023, SPEC-038); el adaptador
+directo de SPEC-031 queda en reserva, sin registrar.
 
 ## Decisiones clave hasta hoy
 
@@ -129,6 +133,9 @@ de cada fuente la gestiona el titular fuera del repo (D-7).
 - ADR-017 Fuente RFEF: panel de marcadores, decodificación cerrada y estados por marca y reloj.
 - ADR-018 Fuente RFEF: el panel por POST, el cuerpo vacío como error y la respuesta rancia (sustituye ADR-017 §1).
 - ADR-019 Motor serializado por partido: `for no key update` sobre `matches` antes de leer la vigente; todo escritor de Decisions pasa por `decideMatches`; `decided_at` es el `now` del tick y el orden lo dan `version` y `recorded_at` (precisa ADR-009 §1).
+- ADR-020 Fuente RFEF: la sesión se abre en dos pasos (portada y NLogin); tope por vuelta 3 al abrir y 4 al renovar.
+- ADR-021 Fuente RFEF: consumo mínimo, una petición por vuelta con sesión reutilizada, solo en franja y con backoff; §6-§7 supersedidos por ADR-023 para la vía explorer.
+- ADR-023 Fuente RFEF vía explorer: prioridad 5 temporal, pull HTTP a un servicio propio y reglas de acceso de explorer (supersede ADR-017 §5 y ADR-021 §6-§7; retira la condición de alta de ADR-018 §4).
 
 ## Riesgos y preguntas abiertas
 
