@@ -45,6 +45,32 @@ tipo: roadmap
   §7): primero observar al proveedor en una jornada medida, después decidir
   la prioridad definitiva por competición. El criterio de latencia no se le
   exige mientras no mande.
+  *2026-11-02:* SPEC-038 y SPEC-044 hechas. Con API-Football sin plan esa
+  semana, la rfef recuperó los finales de la jornada 2026-10-30/11-02.
+
+- **Propuesta (2026-11-02, titular): calendario desde la RFEF.** Que la RFEF,
+  vía explorer, sea la fuente del calendario declarado (D-3) en lugar de
+  API-Football. Arregla dos fallos medidos: nombres no federativos (D-2;
+  «RC Celta C» es Gran Peña FC) y horas de relleno que no siguen las
+  reprogramaciones (4 partidos de Segunda J12 jugados el lunes 2026-11-02 con
+  kickoff declarado el domingo). Hoy está fuera de alcance de EPIC-004: entra
+  como épica propia o como enmienda de EPIC-004. Mantiene `TeamId` y `MatchId`;
+  cambian `name` y `kickoff`. Necesita ADR (qué fuente manda si discrepan,
+  horas por confirmar, validar que una sincronización no crea ni borra
+  partidos). *Hipótesis a validar:* si la página de calendario de la RFEF trae
+  la hora o solo la fecha, porque eso fija cuántas peticiones cuesta.
+  **Pregunta abierta: qué papel le queda a API-Football.** Hoy da calendario,
+  directo con prioridad 10, el minuto de juego (la RFEF no lo da) y los
+  goleadores con minuto. Opciones: (A) respaldo de pago, 19 $/mes, dos fuentes
+  independientes; (B) solo RFEF, 0 $, sin minuto, sin goleadores y con una sola
+  cadena (RFEF → explorer → proxies); (C) RFEF más el plan gratuito de
+  API-Football como reserva mínima, con límite de peticiones por confirmar.
+  Objetivo del titular a medio plazo: dejar de pagar API-Football (H-9 de
+  SPEC-036). **Se decide con el informe de SPEC-039** (jornada 2026-11-06/09:
+  latencia de la RFEF, bloqueos de explorer, contraste con acta). Si la RFEF
+  cumple, B o C, con parte del ahorro en proxies residenciales de pago (unos
+  2-3 $/mes) para no depender de los gratuitos. El minuto aproximado desde el
+  kickoff y los goleadores desde la ficha de la RFEF se valoran aparte.
 
 ## Después (comprometido, sin empezar)
 
