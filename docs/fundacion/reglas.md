@@ -52,6 +52,7 @@
   menudo que la cadencia declarada en su registro, ni fuera de ventana. Toda
   petición lleva el user-agent identificado del proyecto. La cadencia es un
   dato del registro, no una constante del adaptador.
+  *Precisada el 2026-11-02 por ADR-025: la ventana de una fuente es la común más su horizonte de recuperación; la recuperación manual contra un servicio propio deja intento y crudo.*
 - **RN-09 — Crudo antes que parseo.** Todo adaptador guarda la respuesta cruda
   antes de interpretarla y toda Observation referencia su captura.
 - **RN-10 — Identidad todo-o-nada.** Una observación solo se acepta si su
