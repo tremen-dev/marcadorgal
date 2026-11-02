@@ -8,8 +8,9 @@ import { DEMO_MATCHES } from "../src/xornada/demo";
 import { madridDate } from "../src/xornada/view";
 
 // SPEC-033 over the demonstration (Friday 2 to Monday 5 of October 2026;
-// «now» is Saturday 3): chronological rows, the header of each day, the
-// Equipo galego mark and the icons.
+// «now» is Saturday 3): chronological rows, the Equipo galego mark and the
+// icons. SPEC-040 CA-2/CA-3 rewrite its CA-2/CA-3: no day header; every row
+// that is not live says the date of its kickoff.
 const routes = [
   { path: "/demo/xornada", lang: "gl", dict: gl },
   { path: "/es/demo/xornada", lang: "es", dict: es },
@@ -63,13 +64,14 @@ function expected(dict: typeof gl | typeof es) {
           a.kickoff.localeCompare(b.kickoff) ||
           a.matchId.localeCompare(b.matchId),
       );
-      const days = [...new Set(sorted.map((m) => madridDate(m.kickoff)))];
       return [
         id,
         {
           ids: sorted.map((m) => m.matchId),
-          headers: days.map(header),
-          days,
+          // SPEC-040 CA-2: the date, or "" for a live row (no date).
+          dates: sorted.map((m) =>
+            m.status === "live" ? null : header(madridDate(m.kickoff)),
+          ),
         },
       ];
     }),
@@ -78,39 +80,32 @@ function expected(dict: typeof gl | typeof es) {
 
 type Seen = {
   ids: string[];
-  headers: { text: string; level: string; visible: boolean }[];
-  // Each row's day group starts with its header.
-  groupsOk: boolean;
+  // The second line of each row's margin: its date, or the part when live.
+  subs: string[];
+  statuses: string[];
+  headers: number;
+  lists: number;
 };
 
 const screen = (page: Page): Promise<Record<string, Seen>> =>
   page.locator("section[data-competition]").evaluateAll((sections) =>
     Object.fromEntries(
       sections.map((s) => {
-        const groups = [...s.querySelectorAll("[data-day-group]")];
+        const rows = [...s.querySelectorAll("li[data-match-id]")];
         return [
           s.getAttribute("data-competition") ?? "",
           {
-            ids: [...s.querySelectorAll("li[data-match-id]")].map(
-              (r) => r.getAttribute("data-match-id") ?? "",
+            ids: rows.map((r) => r.getAttribute("data-match-id") ?? ""),
+            subs: rows.map(
+              (r) =>
+                r.querySelector('[data-testid="match-margin-sub"]')
+                  ?.textContent ?? "",
             ),
-            headers: [...s.querySelectorAll('[data-testid="day-header"]')].map(
-              (h) => ({
-                text: h.textContent ?? "",
-                level: h.tagName,
-                visible: (h as HTMLElement).checkVisibility(),
-              }),
-            ),
-            groupsOk: groups.every(
-              (g) =>
-                g.firstElementChild?.getAttribute("data-testid") ===
-                  "day-header" &&
-                [...g.querySelectorAll("li[data-day]")].every(
-                  (li) =>
-                    li.getAttribute("data-day") ===
-                    g.getAttribute("data-day-group"),
-                ),
-            ),
+            statuses: rows.map((r) => r.getAttribute("data-status") ?? ""),
+            headers: s.querySelectorAll(
+              '[data-testid="day-header"], [data-day-group], h3',
+            ).length,
+            lists: s.querySelectorAll("ul").length,
           },
         ];
       }),
@@ -127,7 +122,7 @@ const noPageScroll = (page: Page) =>
 const truncated = (page: Page) =>
   page
     .locator(
-      '[data-testid="team-name"], [data-testid="competition-name"], [data-testid="day-header"]',
+      '[data-testid="team-name"], [data-testid="competition-name"], [data-testid="match-margin"], [data-testid="match-margin-sub"]',
     )
     .evaluateAll((els) =>
       els
@@ -161,7 +156,7 @@ for (const route of routes) {
   test.describe(`SPEC-033 ${route.path} (${route.lang})`, () => {
     for (const width of [360, 390, 1024, 1440]) {
       for (const js of [true, false]) {
-        test(`CA-1/CA-2/CA-5/CA-7 at ${width}px ${js ? "with" : "without"} JS: kickoff order, day headers, galician mark`, async ({
+        test(`CA-1/CA-5/CA-7, SPEC-040 CA-2 at ${width}px ${js ? "with" : "without"} JS: kickoff order, a date per row, galician mark`, async ({
           page: jsPage,
           browser,
         }) => {
@@ -175,17 +170,20 @@ for (const route of routes) {
           for (const [id, w] of want) {
             // CA-1: by kickoff (then matchId), whatever the state.
             expect(seen[id].ids, id).toEqual(w.ids);
-            // CA-2: one <h3> per day, before its first match, also with
-            // a single day; today in capitals.
-            expect(
-              seen[id].headers.map((h) => h.text),
-              id,
-            ).toEqual(w.headers);
-            expect(seen[id].headers.every((h) => h.level === "H3")).toBe(true);
-            expect(seen[id].headers.every((h) => h.visible)).toBe(true);
-            expect(seen[id].groupsOk, id).toBe(true);
+            // SPEC-040 CA-2: no day header and one list; every row not
+            // live says its date (today in capitals), no live row does.
+            expect(seen[id].headers, id).toBe(0);
+            expect(seen[id].lists, id).toBe(1);
+            seen[id].statuses.forEach((status, i) => {
+              const date = w.dates[i];
+              if (date === null) {
+                expect(status, id).toBe("live");
+                expect(seen[id].subs[i], id).not.toMatch(/^\S+ \d+ \S+$/);
+              } else {
+                expect(seen[id].subs[i], id).toBe(date);
+              }
+            });
           }
-          // CA-2: an accessible heading, below the competition's <h2>.
           const primera = page.locator(
             'section[data-competition="primera-division"]',
           );
@@ -193,17 +191,17 @@ for (const route of routes) {
             1,
           );
           await expect(primera.getByRole("heading", { level: 3 })).toHaveCount(
-            want.get("primera-division")?.headers.length ?? 0,
+            0,
           );
-          const header = page.getByTestId("day-header").first();
-          await expect(header).toHaveCSS("color", rgb(COLORS.fgMuted.value));
-          await expect(header).toHaveCSS("font-size", "11px");
-          await expect(header).toHaveCSS("font-weight", "600");
-          await expect(header).toHaveCSS("min-height", "30px");
-          await expect(header).toHaveCSS(
-            "background-color",
-            "rgba(0, 0, 0, 0)",
-          );
+          // Mono 500 10 px, leading 1.2, --fg-dim.
+          const date = page
+            .locator('[data-status="finished"]')
+            .getByTestId("match-margin-sub")
+            .first();
+          await expect(date).toHaveCSS("color", rgb(COLORS.fgDim.value));
+          await expect(date).toHaveCSS("font-size", "10px");
+          await expect(date).toHaveCSS("font-weight", "500");
+          await expect(date).toHaveCSS("line-height", "12px");
 
           // CA-5: the Equipo galego in 600 and --marca; losing or
           // postponed, --marca-deep. Nobody else is green.
@@ -267,70 +265,75 @@ for (const route of routes) {
       }
     }
 
+    // SPEC-040 CA-3 (replaces SPEC-033 CA-3): no header to hide; a day
+    // and a filter hide rows and the competitions they leave empty.
     for (const width of [390, 1440]) {
-      test(`CA-3 at ${width}px: a chosen day hides the headers; a filter hides an emptied day`, async ({
+      test(`SPEC-040 CA-3 at ${width}px: a day and a filter hide rows and emptied competitions, no headers`, async ({
         page,
       }) => {
         await page.setViewportSize({ width, height: 900 });
         await page.goto(route.path);
-        const visibleHeaders = () =>
-          page
-            .getByTestId("day-header")
-            .evaluateAll((els) =>
-              els
-                .filter((el) => (el as HTMLElement).checkVisibility())
-                .map((el) => el.textContent ?? ""),
-            );
-        const all = (await visibleHeaders()).length;
-        expect(all).toBeGreaterThan(5);
-
-        // A day of the strip: the strip says it, so no header (H-1).
-        await page.getByTestId("day-link").nth(1).click();
-        await expect(page).toHaveURL(/#d=2026-10-03$/);
-        expect(await visibleHeaders()).toEqual([]);
+        const state = () =>
+          page.getByTestId("competition").evaluateAll((els) =>
+            els.map((el) => {
+              const rows = [
+                ...el.querySelectorAll<HTMLElement>("li[data-day]"),
+              ];
+              const visible = rows.filter((r) => r.checkVisibility());
+              return {
+                shown: (el as HTMLElement).checkVisibility(),
+                days: [...new Set(visible.map((r) => r.dataset.day))],
+                statuses: [...new Set(visible.map((r) => r.dataset.status))],
+                any: rows.length,
+              };
+            }),
+          );
         await expect(
-          page.locator("[data-day-header][hidden]").first(),
-        ).toBeAttached();
-        await capture(page, `lectura-dia-${route.lang}-${width}`);
-        await page.getByTestId("day-link").nth(1).click();
-        expect(await visibleHeaders()).toHaveLength(all);
+          page.locator("[data-day-header], [data-day-group]"),
+        ).toHaveCount(0);
+        expect((await state()).every((c) => c.shown)).toBe(true);
 
-        // En xogo: only days with a live match keep their group and header.
+        await page.getByTestId("day-link").nth(0).click();
+        await expect(page).toHaveURL(/#d=2026-10-02$/);
+        let seen = await state();
+        expect(seen.some((c) => !c.shown)).toBe(true);
+        for (const c of seen) {
+          expect(c.shown).toBe(c.days.length > 0);
+          expect(c.days.every((d) => d === "2026-10-02")).toBe(true);
+        }
+        await capture(page, `lectura-dia-${route.lang}-${width}`);
+        await page.getByTestId("day-link").nth(0).click();
+        expect((await state()).every((c) => c.shown)).toBe(true);
+
         await page.getByTestId("filter-live").click();
         await expect(page).toHaveURL(/#f=live$/);
-        const groups = await page.getByTestId("day-group").evaluateAll((els) =>
-          els.map((g) => ({
-            visible: (g as HTMLElement).checkVisibility(),
-            header:
-              (
-                g.querySelector('[data-testid="day-header"]') as HTMLElement
-              )?.checkVisibility() ?? false,
-            live: [...g.querySelectorAll("li[data-status]")].some(
-              (li) => li.getAttribute("data-status") === "live",
-            ),
-          })),
-        );
-        expect(groups.some((g) => !g.live)).toBe(true);
-        for (const g of groups) {
-          expect(g.visible).toBe(g.live);
-          expect(g.header).toBe(g.live);
+        seen = await state();
+        for (const c of seen) {
+          expect(c.shown).toBe(c.statuses.length > 0);
+          expect(c.statuses.every((st) => st === "live")).toBe(true);
         }
         await capture(page, `lectura-en-xogo-${route.lang}-${width}`);
         await page.getByTestId("filter-all").click();
-        expect(await visibleHeaders()).toHaveLength(all);
+        expect((await state()).every((c) => c.shown)).toBe(true);
       });
     }
 
-    test("CA-3 without JS: every header shows, also after following a day link", async ({
+    test("SPEC-040 CA-3 without JS: every row and its date, also after following a day link", async ({
       browser,
     }) => {
       const { context, page } = await noJsPage(browser, 390);
       await page.goto(route.path);
-      const count = await page.getByTestId("day-header").count();
-      expect(count).toBeGreaterThan(5);
+      const total = await page.getByTestId("match-row").count();
+      await expect(page.locator("[data-day-header]")).toHaveCount(0);
       await page.getByTestId("day-link").nth(1).click();
-      for (const header of await page.getByTestId("day-header").all())
-        await expect(header).toBeVisible();
+      await expect(
+        page.locator('[data-testid="match-row"]:visible'),
+      ).toHaveCount(total);
+      for (const sub of await page
+        .locator('[data-testid="match-row"]:not([data-status="live"])')
+        .getByTestId("match-margin-sub")
+        .all())
+        await expect(sub).toHaveText(/\d/);
       await context.close();
     });
   });

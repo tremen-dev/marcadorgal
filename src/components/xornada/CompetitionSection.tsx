@@ -1,7 +1,7 @@
 import { type Locale, t } from "@/i18n";
 import type { XornadaCompetition, XornadaDay } from "@/xornada/view";
 import { CountLabel } from "./CountLabel";
-import { dayHeaderLabel, liveCountTemplates } from "./labels";
+import { liveCountTemplates, matchCountTemplates } from "./labels";
 import { MatchRow } from "./MatchRow";
 import styles from "./Xornada.module.css";
 
@@ -10,7 +10,7 @@ type Props = {
   locale: Locale;
   // SPEC-024 CA-9: matchId → minutes since its last observation.
   ages?: ReadonlyMap<string, number>;
-  // SPEC-033 CA-2: the days of the xornada, to know which one is today.
+  // SPEC-040 CA-2: the days of the xornada, to know which one is today.
   days?: readonly XornadaDay[];
 };
 
@@ -56,9 +56,11 @@ export function CompetitionSection({
             {t(locale, "xornada.round", { n: competition.round })}
           </span>
           <span className={styles.spacer} />
-          {/* F-4: the client keeps it in step with the day and the filter
-              (hidden when none of the rows left is live). Filtering only
-              lowers the count, so it is served only with live matches. */}
+          {/* F-4: the client keeps both in step with the day and the
+              filter: the live count while a row left is live, else the
+              total. Filtering only lowers the live count, so it is served
+              only with live matches. SPEC-040 CA-4: the sidebar's count, in
+              words on desktop (V-1); mobile keeps today's bare pill. */}
           {competition.liveCount > 0 && (
             <span
               className={styles.livePill}
@@ -66,10 +68,10 @@ export function CompetitionSection({
               data-show="live"
               data-testid="live-pill"
             >
-              <span aria-hidden="true" data-n>
+              <span className={styles.pillNumber} aria-hidden="true" data-n>
                 {competition.liveCount}
               </span>
-              <span className={styles.srOnly}>
+              <span className={styles.pillWords}>
                 <CountLabel
                   templates={liveCountTemplates(locale)}
                   n={competition.liveCount}
@@ -77,40 +79,36 @@ export function CompetitionSection({
               </span>
             </span>
           )}
+          <span
+            className={styles.headTotal}
+            hidden={competition.liveCount > 0}
+            data-competition-count={competitionId}
+            data-show="matching"
+            data-testid="competition-total"
+          >
+            <CountLabel
+              templates={matchCountTemplates(locale)}
+              n={competition.rows.length}
+            />
+          </span>
           <span className={styles.arrow} aria-hidden="true">
             <span className={styles.arrowOpen}>▾</span>
             <span className={styles.arrowClosed}>▸</span>
           </span>
         </summary>
-        {/* SPEC-033 CA-2: each day of the competition under its header, an
-            <h3> below the competition's <h2>. The client hides the headers
-            with a day chosen, and a group left empty by a filter (CA-3). */}
-        {competition.dayGroups.map((group) => (
-          <div
-            key={group.date}
-            className={styles.dayGroup}
-            data-day-group={group.date}
-            data-testid="day-group"
-          >
-            <h3
-              className={styles.dayHeader}
-              data-day-header
-              data-testid="day-header"
-            >
-              {dayHeaderLabel(group, group.date === today, locale)}
-            </h3>
-            <ul className={styles.rows}>
-              {group.rows.map((row) => (
-                <MatchRow
-                  key={row.matchId}
-                  row={row}
-                  locale={locale}
-                  age={ages?.get(row.matchId) ?? null}
-                />
-              ))}
-            </ul>
-          </div>
-        ))}
+        {/* SPEC-040 CA-2 (replaces SPEC-033 CA-2): one list, no day
+            headers; every row says its own date. */}
+        <ul className={styles.rows}>
+          {competition.rows.map((row) => (
+            <MatchRow
+              key={row.matchId}
+              row={row}
+              locale={locale}
+              age={ages?.get(row.matchId) ?? null}
+              today={row.day === today}
+            />
+          ))}
+        </ul>
       </details>
     </section>
   );

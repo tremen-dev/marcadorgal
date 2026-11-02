@@ -1,15 +1,15 @@
 import { describe, expect, it } from "vitest";
 import type { XornadaDay } from "@/xornada/view";
 import {
-  dayHeaderLabel,
   dayLabel,
   liveCountLabel,
   matchCountLabel,
+  rowDateLabel,
 } from "./labels";
 
-// SPEC-033 CA-2 (H-1, H-2): the header of a day inside a competition, always
+// SPEC-040 CA-2 (was SPEC-033 CA-2's day header): the date of a row, always
 // with its month; today in capitals, as in the strip.
-describe("SPEC-033 CA-2 dayHeaderLabel", () => {
+describe("SPEC-040 CA-2 rowDateLabel", () => {
   const saturday = {
     date: "2026-10-11",
     weekdayKey: "weekday.sat",
@@ -18,13 +18,13 @@ describe("SPEC-033 CA-2 dayHeaderLabel", () => {
   } as const;
 
   it("«sáb 11 out» / «sáb 11 oct»", () => {
-    expect(dayHeaderLabel(saturday, false, "gl")).toBe("sáb 11 out");
-    expect(dayHeaderLabel(saturday, false, "es")).toBe("sáb 11 oct");
+    expect(rowDateLabel(saturday, false, "gl")).toBe("sáb 11 out");
+    expect(rowDateLabel(saturday, false, "es")).toBe("sáb 11 oct");
   });
 
   it("today in capitals: «SÁB 11 OUT»", () => {
-    expect(dayHeaderLabel(saturday, true, "gl")).toBe("SÁB 11 OUT");
-    expect(dayHeaderLabel(saturday, true, "es")).toBe("SÁB 11 OCT");
+    expect(rowDateLabel(saturday, true, "gl")).toBe("SÁB 11 OUT");
+    expect(rowDateLabel(saturday, true, "es")).toBe("SÁB 11 OCT");
   });
 });
 

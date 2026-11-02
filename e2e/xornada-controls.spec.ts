@@ -263,22 +263,9 @@ for (const route of routes) {
         await expect(section.getByTestId("competition-name")).toBeVisible();
         await section.getByTestId("competition-head").click();
         await expect(rows.first()).toBeVisible();
-        if (width >= 1024) {
-          // SPEC-028 CA-1 amends this CA: the sidebar takes you to the
-          // competition and opens it; it never folds or hides rows.
-          await section.getByTestId("competition-head").click();
-          await expect(rows.first()).toBeHidden();
-          await capture(page, `plegada-${route.lang}-${width}`);
-          const entry = page.getByTestId("sidebar-entry").nth(1);
-          await expect(entry).not.toHaveAttribute("aria-expanded");
-          await entry.click();
-          await expect(rows.first()).toBeVisible();
-          await entry.click();
-          await expect(rows.first()).toBeVisible();
-          await expect(page).toHaveURL(new RegExp(`${route.path}$`));
-        } else {
-          await expect(page.getByTestId("sidebar")).toBeHidden();
-        }
+        // SPEC-040 CA-4/CA-5 (H-5): the sidebar that opened a folded
+        // competition is gone at every width.
+        await expect(page.getByTestId("sidebar")).toHaveCount(0);
       });
     }
 
@@ -290,7 +277,6 @@ for (const route of routes) {
           '[data-testid="team-name"]',
           '[data-testid="competition-name"]',
           '[data-testid="day-link"]',
-          ...(width >= 1024 ? ['[data-testid="sidebar-name"]'] : []),
         ];
         const checked = await page
           .locator(selectors.join(", "))
@@ -314,7 +300,9 @@ for (const route of routes) {
       });
     }
 
-    test("CA-7 desktop at 1440px: 56 px header, 44 px bar, 236 px sidebar, rows up to 832 px", async ({
+    // SPEC-040 CA-4 amends this CA: no sidebar, no 832 px; the columns are
+    // e2e/xornada-columnas.spec.ts.
+    test("CA-7 desktop at 1440px: 56 px header, 44 px bar, round in the header", async ({
       page,
     }) => {
       await page.setViewportSize({ width: 1440, height: 900 });
@@ -340,42 +328,48 @@ for (const route of routes) {
             (el.parentElement as HTMLElement).getBoundingClientRect().height,
         );
       expect(bar).toBe(44);
-      expect((await box('[data-testid="sidebar"]')).width).toBe(236);
-      expect((await box("main")).width).toBeLessThanOrEqual(832);
-      await expect(page.getByTestId("sidebar-entry")).toHaveCount(5);
+      await expect(page.getByTestId("sidebar")).toHaveCount(0);
       await expect(page.getByTestId("competition-round").first()).toBeVisible();
       await expect(page.getByTestId("competition-round").first()).toHaveText(
         route.dict.xornada.round.replace("{n}", "8"),
       );
       const text = (await page.locator("body").textContent()) ?? "";
       expect(text).not.toMatch(/[★☆]/);
-      // The sidebar says the live count with its label, or the total.
-      const first = page.getByTestId("sidebar-entry").first();
-      await expect(first).toContainText(
-        route.dict.xornada.liveCount.replace("{n}", "2"),
-      );
-      await expect(page.getByTestId("sidebar-entry").nth(4)).toContainText(
-        route.dict.xornada.liveCount.replace("{n}", "1"),
-      );
+      // SPEC-040 CA-4: each header says the live count with its label, or
+      // the total.
+      const heads = page.getByTestId("competition-head");
+      await expect(
+        heads
+          .first()
+          .getByTestId("live-pill")
+          .getByText(route.dict.xornada.liveCount.replace("{n}", "2")),
+      ).toBeVisible();
+      await expect(
+        heads
+          .nth(4)
+          .getByTestId("live-pill")
+          .getByText(route.dict.xornada.liveCount.replace("{n}", "1")),
+      ).toBeVisible();
     });
 
-    // Iteration 2, V-1: in the sidebar, live and total are not told apart by
-    // colour alone: the live count carries its words on screen.
-    test("V-1 the sidebar live count is labelled on screen, the total is a bare number", async ({
+    // Iteration 2, V-1, moved by SPEC-040 CA-4 to each column's header: live
+    // and total are not told apart by colour alone, both carry their words.
+    test("V-1 the header's live count and total are labelled on screen", async ({
       page,
     }) => {
       await page.setViewportSize({ width: 1440, height: 900 });
       await page.goto(route.path);
-      const live = page.getByTestId("sidebar-live").first();
+      const head = page.getByTestId("competition-head").first();
+      const live = head.getByTestId("live-pill");
+      const words = route.dict.xornada.liveCount.replace("{n}", "2");
       await expect(live).toBeVisible();
-      await expect(live).toHaveText(
-        route.dict.xornada.liveCount.replace("{n}", "2"),
-      );
-      expect(await live.getAttribute("aria-hidden")).toBeNull();
+      await expect(live.getByText(words)).toBeVisible();
       for (const width of [1024, 1440]) {
         await page.setViewportSize({ width, height: 900 });
         const truncated = await page
-          .locator('[data-testid="sidebar-live"]:visible')
+          .locator(
+            '[data-testid="live-pill"]:visible, [data-testid="competition-total"]:visible',
+          )
           .evaluateAll(
             (els) =>
               els.filter(
@@ -386,18 +380,25 @@ for (const route of routes) {
           );
         expect(truncated).toBe(0);
       }
-      // Fold the filter to Rematados: no live left, the bare total shows.
+      // Rematados: no live left, the total shows in words.
       await page.getByTestId("filter-finished").click();
-      const entry = page.getByTestId("sidebar-entry").first();
-      await expect(entry.getByTestId("sidebar-live")).toBeHidden();
-      await expect(entry.getByTestId("sidebar-total")).toBeVisible();
-      await expect(
-        entry.getByTestId("sidebar-total").locator('[aria-hidden="true"]'),
-      ).toHaveText(/^\d+$/);
+      await expect(live).toBeHidden();
+      const total = head.getByTestId("competition-total");
+      await expect(total).toBeVisible();
+      const finished = await page
+        .getByTestId("competition")
+        .first()
+        .locator('[data-testid="match-row"][data-status="finished"]')
+        .count();
+      const template =
+        finished === 1
+          ? route.dict.xornada.matchCountOne
+          : route.dict.xornada.matchCount;
+      await expect(total).toHaveText(template.replace("{n}", String(finished)));
     });
 
-    // Iteration 2, F-4: the sidebar numbers and each header's live pill
-    // follow the day and the filter chosen.
+    // Iteration 2, F-4: each header's live pill and total (SPEC-040 CA-4,
+    // the sidebar's numbers) follow the day and the filter chosen.
     for (const width of [390, 1440]) {
       test(`F-4 counts follow the day and the filter at ${width}px`, async ({
         page,
@@ -417,11 +418,15 @@ for (const route of routes) {
                 const pill = el.querySelector<HTMLElement>(
                   '[data-testid="live-pill"]',
                 );
+                const total = el.querySelector<HTMLElement>(
+                  '[data-testid="competition-total"]',
+                );
                 return {
                   id: el.getAttribute("data-competition") ?? "",
                   matching: rows.length,
                   live: rows.filter((r) => r.dataset.status === "live").length,
                   pill: pill && !pill.hidden ? pill.textContent : null,
+                  total: total && !total.hidden ? total.textContent : null,
                 };
               }),
             );
@@ -431,36 +436,13 @@ for (const route of routes) {
               String(s.live),
             );
             expect(s.pill, s.id).toBe(s.live > 0 ? `${s.live}${label}` : null);
-            const entry = page.locator(
-              `[data-testid="sidebar-entry"][data-competition-link="${s.id}"]`,
+            const words =
+              s.matching === 1
+                ? route.dict.xornada.matchCountOne
+                : route.dict.xornada.matchCount;
+            expect(s.total, s.id).toBe(
+              s.live > 0 ? null : words.replace("{n}", String(s.matching)),
             );
-            const live = entry.getByTestId("sidebar-live");
-            const total = entry.getByTestId("sidebar-total");
-            if (s.live > 0) {
-              expect(
-                await live.evaluate((el) => (el as HTMLElement).hidden),
-              ).toBe(false);
-              await expect(live).toHaveText(label);
-              expect(
-                await total.evaluate((el) => (el as HTMLElement).hidden),
-              ).toBe(true);
-            } else {
-              expect(
-                await live.evaluateAll((els) =>
-                  els.every((el) => (el as HTMLElement).hidden),
-                ),
-              ).toBe(true);
-              expect(
-                await total.evaluate((el) => (el as HTMLElement).hidden),
-              ).toBe(false);
-              const words =
-                s.matching === 1
-                  ? route.dict.xornada.matchCountOne
-                  : route.dict.xornada.matchCount;
-              await expect(total).toHaveText(
-                `${s.matching}${words.replace("{n}", String(s.matching))}`,
-              );
-            }
           }
           return sections;
         };
@@ -492,8 +474,12 @@ for (const route of routes) {
       expect((await page.getByTestId("day-strip").boundingBox())?.height).toBe(
         40,
       );
-      await expect(page.getByTestId("sidebar")).toBeHidden();
+      await expect(page.getByTestId("sidebar")).toHaveCount(0);
       await expect(page.getByTestId("competition-round").first()).toBeHidden();
+      // SPEC-040 CA-4: mobile keeps today's header, no total on screen.
+      await expect(
+        page.locator('[data-testid="competition-total"]:visible'),
+      ).toHaveCount(0);
       await expect(page.getByTestId("filters")).toBeVisible();
     });
   });

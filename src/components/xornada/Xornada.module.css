@@ -164,91 +164,23 @@ a.weekArrow:focus-visible {
   font-variant-numeric: tabular-nums;
 }
 
-.body {
-  display: block;
-}
-
 .main {
   min-width: 0;
 }
 
-/* SPEC-023 CA-7: the sidebar only exists on desktop. */
-.sidebar {
-  display: none;
-}
-
-.sidebarTitle {
-  margin: 0;
-  padding: 0 18px 10px;
-  font-family: var(--mono);
-  font-weight: 600;
-  font-size: 10px;
-  line-height: 1;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  color: var(--fg-dim);
-}
-
-.navList {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.navEntry {
-  display: flex;
-  align-items: center;
-  gap: var(--space-8);
-  padding: 7px 18px;
-  color: var(--fg-muted);
-}
-
-.navEntry:hover {
-  color: var(--fg);
-  text-decoration: none;
-  background: var(--bg-elev);
-}
-
-/* D-2: the full name wraps; the design's ellipsis does not apply (N-1). */
-.navName {
-  flex: 1;
-  min-width: 0;
-  font-family: var(--sans);
-  font-weight: 500;
-  font-size: 12.5px;
-  line-height: 1.25;
-  overflow-wrap: break-word;
-  text-wrap: pretty;
-}
-
-.navCount {
-  flex: none;
-  font-family: var(--mono);
-  font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-  color: var(--fg-dim);
-}
-
-/* V-1: the live count carries its words on screen, never colour alone. */
-.navLive {
-  composes: navCount;
-  color: var(--directo);
-  white-space: nowrap;
+/* SPEC-040 CA-4: on mobile the competitions are a list, one after another. */
+.columns {
+  display: block;
 }
 
 /* SPEC-023 CA-6: what the client hides with `hidden` stays hidden, whatever
    display its class gives it. */
 .row[hidden],
 .competition[hidden],
-.dayGroup[hidden],
-.dayHeader[hidden],
 .empty[hidden],
 .legend[hidden],
 .livePill[hidden],
-.navCount[hidden],
-.navLive[hidden] {
+.headTotal[hidden] {
   display: none;
 }
 
@@ -386,8 +318,8 @@ a.weekArrow:focus-visible {
   padding: 0;
 }
 
-/* SPEC-028 CA-1: room above a header the sidebar jumps to, so nothing on
-   top (today nothing is sticky there, N-1) ever covers it. */
+/* SPEC-028 CA-1: room above a header an anchor (#xornada-<id>) jumps to,
+   so nothing on top ever covers it. */
 .competition {
   margin: 0;
   scroll-margin-top: var(--space-16);
@@ -455,6 +387,8 @@ a.weekArrow:focus-visible {
   overflow-wrap: break-word;
 }
 
+/* SPEC-040 CA-4: mobile keeps today's pill, the number with its words for
+   screen readers; desktop shows the words (V-1). */
 .livePill {
   flex: none;
   padding: 2px 6px;
@@ -467,31 +401,35 @@ a.weekArrow:focus-visible {
   color: var(--directo);
 }
 
+.pillWords {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* SPEC-040 CA-4: the total, «N partidos», only in a desktop column's
+   header, where the sidebar used to say it. No state colour: it is a count. */
+.headTotal {
+  display: none;
+  flex: none;
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--fg-dim);
+}
+
 .rows {
   list-style: none;
   margin: 0;
   padding: 0;
-}
-
-/* SPEC-033 CA-2: the header of a day inside a competition. The eyebrow's
-   letter (TYPE.eyebrow), muted, a compact row's height, no fill of its own. */
-.dayGroup {
-  margin: 0;
-}
-
-.dayHeader {
-  display: flex;
-  align-items: center;
-  min-height: var(--row-compact);
-  margin: 0;
-  padding: 0 14px;
-  font-family: var(--mono);
-  font-weight: 600;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: var(--tracking-eyebrow);
-  color: var(--fg-muted);
-  border-bottom: var(--hairline) solid var(--line-row);
 }
 
 /* Margin · (team, score) × 2. The design's 50px margin grows to 72px because
@@ -516,14 +454,27 @@ a.weekArrow:focus-visible {
   box-shadow: var(--live-edge) var(--alerta);
 }
 
+/* SPEC-040 CA-6: at the top of the row, so the two lines of every margin
+   sit at the same height whatever the teams' wrapping or the qualifier. */
 .margin {
+  align-self: start;
   display: flex;
   flex-direction: column;
   gap: 3px;
   min-width: 0;
 }
 
+/* SPEC-040 CA-2 (H-1): always two lines of fixed height, whatever the
+   state, so every row's margin measures the same and its lines sit level.
+   The qualifier stays below them. */
+.marginLines {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
 .marginMain {
+  height: 15px;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -531,12 +482,27 @@ a.weekArrow:focus-visible {
   font-weight: 600;
   font-size: 11px;
   line-height: 1.2;
-  letter-spacing: 0.03em;
+  /* SPEC-040 CA-6: no tracking, so a ten-letter state («Suspendido»,
+     «Finalizado») fits the 72 px also where the glyph advances round up
+     (Linux: 73 px with 0.03em). */
+  letter-spacing: 0;
   color: var(--fg-muted);
 }
 
 .marginMinute {
   font-size: 12px;
+}
+
+/* The date or the part: mono 500 10 px, leading 1.2, dim. Empty (live
+   without a minute), it keeps its height. */
+.marginSub {
+  height: 12px;
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 1.2;
+  color: var(--fg-dim);
+  white-space: nowrap;
 }
 
 .dot {
@@ -800,40 +766,42 @@ a.weekArrow:focus-visible {
     padding: 6px 13px;
   }
 
-  .body {
-    display: flex;
-    align-items: stretch;
-  }
-
-  /* SPEC-028 CA-3 (H-4): always at hand; taller than the viewport, it
-     scrolls inside itself. */
-  .sidebar {
-    position: sticky;
-    top: 0;
-    align-self: flex-start;
-    max-height: 100dvh;
-    overflow-y: auto;
-    display: block;
-    width: var(--sidebar);
-    flex: none;
-    padding: var(--space-16) 0;
-    border-right: var(--hairline) solid var(--line);
-  }
-
+  /* SPEC-040 CA-4 (H-2, H-3, H-5): no sidebar; the page's width with
+     16 px each side, a grid of 360 px columns 16 px apart, aligned left,
+     each as tall as it is. Above and below it, the full width. */
   .main {
-    flex: 1;
-    max-width: 832px;
+    padding: 0 var(--space-16);
   }
 
-  /* The divider runs the whole column, over the sidebar's own edge. */
-  .sidebar + .main {
-    margin-left: calc(-1 * var(--hairline));
-    border-left: var(--hairline) solid var(--line);
+  .columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, var(--competition-column));
+    gap: var(--space-16);
+    justify-content: start;
+    align-items: start;
   }
 
+  .competition {
+    min-width: 0;
+    border: var(--hairline) solid var(--line);
+  }
+
+  .freshness {
+    padding: var(--space-8) 0;
+  }
+
+  .empty,
+  .legend,
+  .unavailable {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  /* The column's border is the header's top edge. */
   .head {
     gap: 9px;
     padding: 9px var(--space-16);
+    border-top: 0;
   }
 
   .competitionName {
@@ -848,28 +816,30 @@ a.weekArrow:focus-visible {
   .livePill {
     padding: 3px 7px;
     font-size: 10px;
+    white-space: nowrap;
+  }
+
+  .pillNumber {
+    display: none;
+  }
+
+  .pillWords {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip-path: none;
+  }
+
+  .headTotal {
+    display: inline;
   }
 
   .arrow {
     font-size: 12px;
   }
 
-  .dayHeader {
-    padding: 0 var(--space-16);
-  }
-
-  .row {
-    gap: var(--space-8);
-    min-height: var(--row-wide);
-    padding: var(--space-8) var(--space-16);
-  }
-
-  .sides {
-    grid-template-columns: minmax(0, 1fr) 46px;
-    gap: 4px var(--space-8);
-  }
-
-  .freshness {
-    padding: var(--space-8) var(--space-16);
-  }
+  /* SPEC-040 CA-4: the rows keep the mobile metric (SPEC-019) in their
+     360 px column, so .row and .sides have no desktop rule. */
 }
