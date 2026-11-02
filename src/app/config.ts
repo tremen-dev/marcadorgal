@@ -10,15 +10,17 @@ export const PROVISIONAL_DISPLAY: ProvisionalDisplay = "mark";
 
 // SPEC-041 CA-3 (H-4): how long a goal pulses, in minutes, and how the
 // number is marked: "box" (a neutral box around it) or "label" (the «GOL»
-// pill). Global to the web, never per competition.
+// pill). Global to the web, never per competition. SPEC-042 CA-1: «label»
+// by default.
 export const RECENT_GOAL_MINUTES = 5;
-export const RECENT_GOAL_MARK: RecentGoalMark = "box";
+export const RECENT_GOAL_MARK: RecentGoalMark = "label";
 
-// SPEC-041 CA-6: the e2e build serves the other variant on a second server
-// (playwright.config.ts). Unset, or not a variant, it is RECENT_GOAL_MARK.
+// SPEC-042 CA-2: the variable RECENT_GOAL_MARK picks the variant (set in
+// Vercel, Production and Preview; read at render). Unset, or not exactly a
+// variant, it is RECENT_GOAL_MARK.
 export function recentGoalMark(
   env: Readonly<Record<string, string | undefined>>,
 ): RecentGoalMark {
-  const wanted = env.E2E_RECENT_GOAL_MARK;
+  const wanted = env.RECENT_GOAL_MARK;
   return RECENT_GOAL_MARKS.find((m) => m === wanted) ?? RECENT_GOAL_MARK;
 }

@@ -40,6 +40,7 @@ navegadores conectados.
    marcador, minuto y añadido, cualificador, `version`, `observed_at` y
    `decided_at`. Nunca: fuente, regla, ids de observación, dueños del
    marcador, alertas ni crudo.
+   *(Referencia cruzada, 2026-11-02: §3 lo precisa ADR-022, que añade `homeScoredAt` y `awayScoredAt`.)*
 4. **Lectura del servidor con rol mínimo.** Vista `web.xornada` en un esquema
    que la API de Supabase no expone, con exactamente las columnas de §3, y rol
    de login `web_reader` con `SELECT` solo sobre ella. La primera pintura y
