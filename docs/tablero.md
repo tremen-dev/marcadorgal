@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-11-01
+Actualizado: 2026-11-02
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -43,7 +43,7 @@ Actualizado: 2026-11-01
 | SPEC-033 — mejoras-de-lectura-cabecera-por-dia-equipos-gallegos-y-favicon | hecho | 2026-10-12 (sdd-verificador) |
 | SPEC-034 — provisional-configurable-en-la-pantalla | hecho | 2026-10-12 (sdd-verificador) |
 | SPEC-040 — fecha-y-hora-por-fila-y-escritorio-multicolumna | hecho | 2026-11-01 (sdd-verificador) |
-| SPEC-041 — gol-reciente-que-pulsa | aprobada | 2026-11-01 (Alberto Fojo) |
+| SPEC-041 — gol-reciente-que-pulsa | hecho | 2026-11-02 (sdd-verificador) |
 
 ## EPIC-004 — fuente-rfef (aprobada)
 
@@ -106,6 +106,5 @@ Actualizado: 2026-11-01
 
 ## Resumen
 
-- hecho: 36
+- hecho: 37
 - en-revision: 2
-- aprobada: 1
