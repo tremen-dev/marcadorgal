@@ -72,20 +72,38 @@ const adapter = createRfefExplorer({
   token: TOKEN,
 });
 
+// Two sets of real captures of the same three days (README of the folder):
+// export-<date>.json is the response of the endpoint deployed in Vercel
+// (2026-11-01 23:15Z, after the last match: FINISHED, POSTPONED, SCHEDULED);
+// export-local-<date>.json is the response of the same code running in local
+// at 22:07Z, the only one with real LIVE_PROVISIONAL rows.
 const EXPORT_DIR = "src/sources/rfef/fixtures/export";
 const FIXTURES = ["2026-10-31", "2026-11-01", "2026-11-02"] as const;
 const fixture = (date: string): string =>
   readText(`${EXPORT_DIR}/export-${date}.json`);
-const rowsOf = (date: string): ExplorerMatch[] =>
-  (JSON.parse(fixture(date)) as { matches: ExplorerMatch[] }).matches;
-const row = (date: string, home: string, estado?: string): ExplorerMatch => {
-  const found = rowsOf(date).find(
+const fixtureLocal = (date: string): string =>
+  readText(`${EXPORT_DIR}/export-local-${date}.json`);
+const rowsIn = (body: string): ExplorerMatch[] =>
+  (JSON.parse(body) as { matches: ExplorerMatch[] }).matches;
+const rowsOf = (date: string): ExplorerMatch[] => rowsIn(fixture(date));
+const rowsOfLocal = (date: string): ExplorerMatch[] =>
+  rowsIn(fixtureLocal(date));
+const find = (
+  rows: ExplorerMatch[],
+  home: string,
+  estado?: string,
+): ExplorerMatch => {
+  const found = rows.find(
     (m) =>
       m.equipoLocal === home && (estado === undefined || m.estado === estado),
   );
-  if (found === undefined) throw new Error(`no row ${home} in ${date}`);
+  if (found === undefined) throw new Error(`no row ${home} ${estado ?? ""}`);
   return found;
 };
+const row = (date: string, home: string, estado?: string): ExplorerMatch =>
+  find(rowsOf(date), home, estado);
+const rowLocal = (date: string, home: string, estado?: string): ExplorerMatch =>
+  find(rowsOfLocal(date), home, estado);
 
 const url = (date: string) => `${BASE_URL}/api/export/matches?date=${date}`;
 const capture = (bodies: string[], capturedAt: Instant = NOW): RawCapture =>
@@ -113,12 +131,15 @@ const empty = {
   requestErrors: [],
 };
 
-// Real rows of the five competitions used below (export-2026-11-01).
-const AMOREBIETA = row("2026-11-01", "SD Amorebieta", "LIVE_PROVISIONAL");
+// Real rows of the five competitions used below. LIVE_PROVISIONAL and
+// SCHEDULED-with-a-score only exist in the local captures (taken during the
+// day); FINISHED and the real POSTPONED come from the deployed ones.
+const AMOREBIETA = rowLocal("2026-11-01", "SD Amorebieta", "LIVE_PROVISIONAL");
 const AMOREBIETA_KICKOFF = "2026-11-01T17:00:00Z"; // declared, j9
 const ZAMORA = row("2026-11-01", "Zamora CF", "FINISHED");
-const ARENTEIRO = row("2026-11-01", "c.d. arenteiro", "LIVE_PROVISIONAL");
-const PORTUGALETE_SCHEDULED = row(
+const TENERIFE = row("2026-11-01", "CD Tenerife", "POSTPONED");
+const ARENTEIRO = rowLocal("2026-11-01", "c.d. arenteiro", "LIVE_PROVISIONAL");
+const PORTUGALETE_SCHEDULED = rowLocal(
   "2026-11-01",
   "Club Portugalete",
   "SCHEDULED",
@@ -126,24 +147,105 @@ const PORTUGALETE_SCHEDULED = row(
 
 describe("CA-1 contract and real fixtures", () => {
   it.each(FIXTURES)(
-    "export-%s.json validates ExplorerExport as captured",
+    "export-%s.json, response of the deployed endpoint, validates ExplorerExport as captured",
     (date) => {
       const body = ExplorerExport.parse(JSON.parse(fixture(date)));
+      expect(body.date).toBe(date);
+      expect(body.exportedAt).toMatch(/^2026-11-01T23:15:0[2-4]\.\d{3}Z$/);
+      expect(body.matches.length).toBeGreaterThan(0);
+    },
+  );
+
+  it.each(FIXTURES)(
+    "export-%s.json is unabridged: its bytes are the Content-Length the deployed endpoint declared",
+    (date) => {
+      const headers = readText(`${EXPORT_DIR}/export-${date}.headers`);
+      expect(headers).toMatch(/^HTTP\/1\.1 200 OK/);
+      expect(headers).toMatch(/^Cache-Control: no-store$/m);
+      expect(headers).toMatch(
+        /^Content-Type: application\/json; charset=utf-8$/m,
+      );
+      expect(headers).toMatch(/^Server: Vercel$/m);
+      expect(headers).not.toMatch(/authorization|bearer/i);
+      const declared = Number(/^Content-Length: (\d+)$/m.exec(headers)?.[1]);
+      expect(new TextEncoder().encode(fixture(date)).byteLength).toBe(declared);
+    },
+  );
+
+  it.each(FIXTURES)(
+    "export-local-%s.json, response of the same code in local, validates ExplorerExport as captured",
+    (date) => {
+      const body = ExplorerExport.parse(JSON.parse(fixtureLocal(date)));
       expect(body.date).toBe(date);
       expect(body.exportedAt).toMatch(/^2026-11-01T22:07:51\.\d{3}Z$/);
       expect(body.matches.length).toBeGreaterThan(0);
     },
   );
 
-  it("parses the three real captures without requestErrors, as one capture", () => {
-    const result = parseBodies(FIXTURES.map(fixture));
-    expect(result.requestErrors).toEqual([]);
+  it.each([
+    ["deployed", fixture],
+    ["local", fixtureLocal],
+  ])(
+    "parses the three %s captures without requestErrors nor unresolved, as one capture",
+    (_, read) => {
+      const result = parseBodies(FIXTURES.map(read));
+      expect(result.requestErrors).toEqual([]);
+      expect(result.unresolved).toEqual([]);
+      expect(result.observations.length).toBeGreaterThan(0);
+    },
+  );
+
+  it("deployed export-2026-11-01 (23:15Z): finished of the five competitions, the real POSTPONED, no duplicate rows, nothing of juvenil", () => {
+    const result = parseBodies([fixture("2026-11-01")]);
+    expect(result.skipped).toEqual([]);
     expect(result.unresolved).toEqual([]);
-    expect(result.observations.length).toBeGreaterThan(0);
+    // 36 rows: 35 FINISHED + 1 POSTPONED; 8 of juvenil (ignored), 28 of the
+    // five competitions, Tercera included (7 finished): 27 finished + 1
+    // postponed. The deployed explorer dedupes rows (F-SPEC-038-6).
+    expect(result.observations).toHaveLength(28);
+    expect(
+      result.observations.filter((o) => o.status === "finished"),
+    ).toHaveLength(27);
+    expect(
+      result.observations
+        .filter((o) => o.status === "postponed")
+        .map((o) => o.matchId),
+    ).toEqual(["segunda-division-2026-27-j12-tenerife-andorra"]);
+    const competitions = new Set(
+      result.observations.map((o) => o.matchId.replace(/-2026-27-.*$/, "")),
+    );
+    expect([...competitions].sort()).toEqual([...FIVE].sort());
+    expect(
+      result.observations.filter((o) => o.matchId.startsWith("tercera-")),
+    ).toHaveLength(7);
+    const rows = rowsOf("2026-11-01");
+    expect(rows).toHaveLength(36);
+    expect(
+      new Set(
+        rows.map((m) => `${m.codGrupo}|${m.equipoLocal}|${m.equipoVisitante}`),
+      ).size,
+    ).toBe(36);
+    const all = JSON.stringify(result);
+    for (const other of ["Club Bansander", 'r.c. celta "B"', "auriense c.a."])
+      expect(all).not.toContain(other);
   });
 
-  it("export-2026-11-01 brings live and finished of the five competitions, and nothing of juvenil or femenino", () => {
-    const result = parseBodies([fixture("2026-11-01")]);
+  it("deployed export-2026-10-31: 25 FINISHED rows, 16 of the five competitions (Tercera included), nothing skipped", () => {
+    const result = parseBodies([fixture("2026-10-31")]);
+    expect(result.observations).toHaveLength(16);
+    expect(result.observations.every((o) => o.status === "finished")).toBe(
+      true,
+    );
+    expect(result.skipped).toEqual([]);
+    expect(result.unresolved).toEqual([]);
+    expect(result.observations.map((o) => o.matchId)).toContain(
+      "tercera-rfef-g1-2026-27-j9-barco-montaneros",
+    );
+    expect(JSON.stringify(result)).not.toContain("conxo");
+  });
+
+  it("local export-2026-11-01 (22:07Z, during the day) brings live and finished of the five competitions, and nothing of juvenil or femenino", () => {
+    const result = parseBodies([fixtureLocal("2026-11-01")]);
     const competitions = new Set(
       result.observations.map((o) => o.matchId.replace(/-2026-27-.*$/, "")),
     );
@@ -188,8 +290,8 @@ describe("CA-1 contract and real fixtures", () => {
     });
   });
 
-  it("export-2026-10-31: 33 FINISHED rows, 14 of the five competitions; the Tercera rows with a score are SCHEDULED and say nothing", () => {
-    const result = parseBodies([fixture("2026-10-31")]);
+  it("local export-2026-10-31: 33 FINISHED rows, 14 of the five competitions; the Tercera rows with a score are SCHEDULED and say nothing", () => {
+    const result = parseBodies([fixtureLocal("2026-10-31")]);
     expect(result.observations).toHaveLength(14);
     expect(result.observations.every((o) => o.status === "finished")).toBe(
       true,
@@ -198,8 +300,9 @@ describe("CA-1 contract and real fixtures", () => {
     expect(JSON.stringify(result)).not.toContain("silva");
   });
 
-  it("export-2026-11-02: only SCHEDULED, so nothing at all", () => {
+  it("export-2026-11-02, deployed and local: only SCHEDULED, so nothing at all", () => {
     expect(parseBodies([fixture("2026-11-02")])).toEqual(empty);
+    expect(parseBodies([fixtureLocal("2026-11-02")])).toEqual(empty);
   });
 
   it("tolerates unknown fields in the body and in a row", () => {
@@ -254,14 +357,29 @@ describe("CA-1 contract and real fixtures", () => {
     expect(result.requestErrors[0].error).toMatch(reason);
   });
 
-  it("POSTPONED, SUSPENDED and discardedReadings > 0 come from real rows mutated in memory (none in the captures)", () => {
-    for (const date of FIXTURES)
-      for (const r of rowsOf(date)) {
-        expect(["SCHEDULED", "LIVE_PROVISIONAL", "FINISHED"]).toContain(
-          r.estado,
-        );
-        expect(r.discardedReadings).toBe(0);
-      }
+  it("the only real POSTPONED is Tenerife–Andorra (deployed 11-01); SUSPENDED and discardedReadings > 0 come from real rows mutated in memory (none in the captures)", () => {
+    const rows = FIXTURES.flatMap((date) => [
+      ...rowsOf(date),
+      ...rowsOfLocal(date),
+    ]);
+    for (const r of rows) {
+      expect([
+        "SCHEDULED",
+        "LIVE_PROVISIONAL",
+        "FINISHED",
+        "POSTPONED",
+      ]).toContain(r.estado);
+      expect(r.discardedReadings).toBe(0);
+    }
+    expect(rows.filter((r) => r.estado === "POSTPONED")).toEqual([TENERIFE]);
+    expect(TENERIFE).toMatchObject({
+      codGrupo: "33836087",
+      jornada: "12",
+      equipoVisitante: "FC Andorra",
+      golesLocal: null,
+      golesVisitante: null,
+      strategy: "none:scheduled",
+    });
     const discarded = { ...ZAMORA, discardedReadings: 2 };
     expect(
       ExplorerExport.parse(JSON.parse(exportOf([discarded]))).matches[0]
@@ -270,19 +388,29 @@ describe("CA-1 contract and real fixtures", () => {
     expect(parseRows([discarded]).observations).toHaveLength(1);
   });
 
-  it("the README names every fixture with its date, exportedAt and local origin, and no token", () => {
+  it("the README names every fixture with its date, exportedAt, the server Date and its origin (deployed in Vercel or local), and no token", () => {
     const readme = readText(`${EXPORT_DIR}/README.md`);
     for (const date of FIXTURES) {
       expect(readme).toContain(`export-${date}.json`);
+      expect(readme).toContain(`export-local-${date}.json`);
       expect(readme).toContain(`?date=${date}`);
-      const { exportedAt } = JSON.parse(fixture(date)) as {
-        exportedAt: string;
-      };
-      expect(readme).toContain(exportedAt);
+      for (const read of [fixture, fixtureLocal]) {
+        const { exportedAt } = JSON.parse(read(date)) as {
+          exportedAt: string;
+        };
+        expect(readme).toContain(exportedAt);
+      }
+      const serverDate = /^Date: (.+)$/m.exec(
+        readText(`${EXPORT_DIR}/export-${date}.headers`),
+      )?.[1];
+      expect(serverDate).toMatch(/^Sun, 01 Nov 2026 23:15:0[2-4] GMT$/);
+      expect(readme).toContain(serverDate as string);
     }
+    expect(readme).toMatch(/desplegado/i);
+    expect(readme).toContain("https://marcadorgal-explorer.vercel.app");
     expect(readme).toMatch(/local/i);
-    expect(readme).toMatch(/Vercel/);
     expect(readme).not.toMatch(/Bearer\s+[A-Za-z0-9_-]{8,}/);
+    expect(readme).not.toMatch(/X-API-Key:\s*\S/i);
   });
 });
 
@@ -439,7 +567,7 @@ describe("CA-3 mapping and clocks (ADR-023 §5), one case per row over real rows
   it("SCHEDULED gives nothing: no observation, no skipped, no unresolved", () => {
     expect(parseRows([PORTUGALETE_SCHEDULED])).toEqual(empty);
     // A SCHEDULED row that carries a score (Tercera, 2026-10-31) says nothing either.
-    const barco = row("2026-10-31", "c.d. barco", "SCHEDULED");
+    const barco = rowLocal("2026-10-31", "c.d. barco", "SCHEDULED");
     expect(barco.golesLocal).toBe(4);
     expect(parseRows([barco])).toEqual(empty);
   });
@@ -535,22 +663,26 @@ describe("CA-3 mapping and clocks (ADR-023 §5), one case per row over real rows
     }
   });
 
-  it("POSTPONED is postponed without score (real row mutated: no POSTPONED in the captures)", () => {
-    const postponed = {
-      ...ZAMORA,
-      estado: "POSTPONED",
-      golesLocal: null,
-      golesVisitante: null,
-    };
-    expect(parseRows([postponed]).observations).toEqual([
+  it("POSTPONED is postponed without score (real row of the deployed capture: Tenerife–Andorra, Segunda j12)", () => {
+    expect(TENERIFE.lastSeenAt).toBe("2026-11-01T22:58:41.619Z");
+    const result = parseRows([TENERIFE]);
+    expect(result.observations).toEqual([
       {
-        matchId: "primera-rfef-g1-2026-27-j10-zamora-deportivo-fabril",
+        matchId: "segunda-division-2026-27-j12-tenerife-andorra",
         status: "postponed",
         score: null,
         minute: null,
-        observedAt: ZAMORA.lastSeenAt,
+        observedAt: "2026-11-01T22:58:41.619Z",
       },
     ]);
+    expect(result.skipped).toEqual([]);
+    // A FINISHED row mutated to POSTPONED keeps the mapping, score or not.
+    const postponed = { ...ZAMORA, estado: "POSTPONED" };
+    expect(parseRows([postponed]).observations[0]).toMatchObject({
+      matchId: "primera-rfef-g1-2026-27-j10-zamora-deportivo-fabril",
+      status: "postponed",
+      observedAt: ZAMORA.lastSeenAt,
+    });
   });
 
   it("SUSPENDED with a score is suspended; without it, skipped suspended_without_score (real row mutated)", () => {
@@ -594,11 +726,13 @@ describe("CA-3 mapping and clocks (ADR-023 §5), one case per row over real rows
   });
 
   it("groups outside the competitions map are ignored without a trace", () => {
-    const femenino = row("2026-11-01", "CD Alba Femenino");
-    const juvenil = row("2026-11-01", "tomiño f.c.");
+    const femenino = rowLocal("2026-11-01", "CD Alba Femenino");
+    const juvenil = rowLocal("2026-11-01", "tomiño f.c.");
+    const juvenilDeployed = row("2026-11-01", "Club Bansander");
     expect(femenino.estado).toBe("FINISHED");
     expect(juvenil.estado).toBe("LIVE_PROVISIONAL");
-    expect(parseRows([femenino, juvenil])).toEqual(empty);
+    expect(juvenilDeployed.estado).toBe("FINISHED");
+    expect(parseRows([femenino, juvenil, juvenilDeployed])).toEqual(empty);
   });
 });
 
