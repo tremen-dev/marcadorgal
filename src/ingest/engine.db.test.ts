@@ -24,6 +24,7 @@ const engineTx = (tx: TransactionSql): IngestTx => ({
   sql: tx,
   insertObservations: () => Promise.reject(new Error("not used here")),
   openUnresolvedAlerts: () => Promise.resolve(0),
+  lastOwnObservations: () => Promise.resolve([]),
 });
 
 async function rollback(fn: (tx: TransactionSql) => Promise<void>) {

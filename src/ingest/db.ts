@@ -4,12 +4,19 @@ import type {
   Instant,
   MatchStatus,
   Observation,
+  Score,
   Unresolved,
   WindowMatch,
 } from "../model/index.ts";
 import { shiftInstant } from "../model/index.ts";
 import { CADENCE_JITTER_SECONDS } from "./constants.ts";
-import { isInWindow, windowKickoffRange } from "./window.ts";
+import {
+  isInRecovery,
+  isInWindow,
+  recoveryKickoffRange,
+  type WindowInput,
+  windowKickoffRange,
+} from "./window.ts";
 
 // The port of ADR-008 §5. The tick knows only this interface, so CI proves it
 // with doubles and npm run test:db proves the postgres.js implementation.
@@ -48,6 +55,15 @@ export type PurgeClose = {
   error?: string;
 };
 
+// The newest observation of a source for a match (SPEC-044 CA-5, ADR-025
+// §5): what planRecovery compares a recovered observation with.
+export type LastOwnObservation = {
+  matchId: string;
+  observedAt: Instant;
+  status: MatchStatus;
+  score: Score | null;
+};
+
 export interface IngestTx {
   insertObservations(observations: Observation[]): Promise<void>;
   openUnresolvedAlerts(
@@ -55,11 +71,27 @@ export interface IngestTx {
     rawRef: string,
     items: Unresolved[],
   ): Promise<number>;
+  // One row per match at most, the newest by observed_at of that source,
+  // read inside the transaction that is about to insert (ADR-025 §5).
+  lastOwnObservations(
+    sourceId: string,
+    matchIds: readonly string[],
+  ): Promise<LastOwnObservation[]>;
   sql: TransactionSql;
 }
 
 export interface IngestDb {
   windowMatches(now: Instant): Promise<WindowRow[]>;
+  // The recovery set of ADR-025 §2 at now for a horizon in hours: the board
+  // narrowed by recoveryKickoffRange and filtered with isInRecovery
+  // (SPEC-044 CA-5).
+  recoveryMatches(now: Instant, horizonHours: number): Promise<WindowRow[]>;
+  // When this source last opened an attempt that carried
+  // details.recuperacion, at or after since; null if none (ADR-025 §5).
+  lastRecoveryAttemptAt(
+    sourceId: string,
+    since: Instant,
+  ): Promise<Instant | null>;
   openAttempt(
     sourceId: string,
     now: Instant,
@@ -112,6 +144,33 @@ function ingestTx(tx: TransactionSql): IngestTx {
   return {
     sql: tx,
 
+    async lastOwnObservations(sourceId, matchIds) {
+      if (matchIds.length === 0) return [];
+      const rows = await tx<
+        {
+          match_id: string;
+          observed_at: Date;
+          status: MatchStatus;
+          home_score: number | null;
+          away_score: number | null;
+        }[]
+      >`select distinct on (match_id) match_id, observed_at, status,
+          home_score, away_score
+        from observations
+        where source_id = ${sourceId}
+          and match_id = any(${tx.array([...matchIds])})
+        order by match_id, observed_at desc, id desc`;
+      return rows.map((r) => ({
+        matchId: r.match_id,
+        observedAt: instant(r.observed_at),
+        status: r.status,
+        score:
+          r.home_score === null || r.away_score === null
+            ? null
+            : { home: r.home_score, away: r.away_score },
+      }));
+    },
+
     async insertObservations(observations) {
       if (observations.length === 0) return;
       const rows = observations.map(observationRow);
@@ -148,61 +207,82 @@ function ingestTx(tx: TransactionSql): IngestTx {
   };
 }
 
+type BoardRow = {
+  match_id: string;
+  competition_id: string;
+  season: string;
+  kickoff: Date;
+  home_team_id: string;
+  away_team_id: string;
+  status: MatchStatus;
+  forced_finish: boolean | null;
+  decided_at: Date | null;
+  last_observation_at: Date | null;
+};
+
+const windowInput = (r: BoardRow): WindowInput => ({
+  kickoff: instant(r.kickoff),
+  status: r.status,
+  forcedFinish: r.forced_finish,
+  decidedAt: r.decided_at === null ? null : instant(r.decided_at),
+});
+
+// decided_at only feeds isInWindow and isInRecovery (SPEC-018 CA-2): the
+// row the tick gets keeps its shape.
+const windowRow = (r: BoardRow): WindowRow =>
+  ({
+    id: r.match_id,
+    competitionId: r.competition_id,
+    season: r.season,
+    kickoff: instant(r.kickoff),
+    homeTeamId: r.home_team_id,
+    awayTeamId: r.away_team_id,
+    status: r.status,
+    forcedFinish: r.forced_finish,
+    lastObservationAt:
+      r.last_observation_at === null ? null : instant(r.last_observation_at),
+  }) as WindowRow;
+
+// The board is the current state (ADR-008 §2), narrowed by kickoff: the
+// pure functions of window.ts decide afterwards.
+const boardBetween = (sql: Sql, from: Instant, to: Instant) =>
+  sql<BoardRow[]>`select b.match_id, b.competition_id, b.season, b.kickoff,
+      b.home_team_id, b.away_team_id, b.status, d.forced_finish, d.decided_at,
+      (select max(o.received_at) from observations o
+        where o.match_id = b.match_id) as last_observation_at
+    from board b left join decisions d on d.id = b.decision_id
+    where b.kickoff >= ${from} and b.kickoff <= ${to}
+    order by b.kickoff, b.match_id`;
+
 export function createIngestDb(sql: Sql): IngestDb {
   return {
-    // The board is the current state (ADR-008 §2): the query narrows by
-    // kickoff and isInWindow decides, so both halves of the window live in
-    // one pure function.
+    // The query narrows by kickoff and isInWindow decides, so both halves
+    // of the window live in one pure function.
     async windowMatches(now) {
       const { from, to } = windowKickoffRange(now);
-      const rows = await sql<
-        {
-          match_id: string;
-          competition_id: string;
-          season: string;
-          kickoff: Date;
-          home_team_id: string;
-          away_team_id: string;
-          status: MatchStatus;
-          forced_finish: boolean | null;
-          decided_at: Date | null;
-          last_observation_at: Date | null;
-        }[]
-      >`select b.match_id, b.competition_id, b.season, b.kickoff, b.home_team_id,
-          b.away_team_id, b.status, d.forced_finish, d.decided_at,
-          (select max(o.received_at) from observations o
-            where o.match_id = b.match_id) as last_observation_at
-        from board b left join decisions d on d.id = b.decision_id
-        where b.kickoff >= ${from} and b.kickoff <= ${to}
-        order by b.kickoff, b.match_id`;
-      // decided_at only feeds isInWindow (SPEC-018 CA-2): the row the tick
-      // gets keeps its shape.
+      const rows = await boardBetween(sql, from, to);
+      return rows.filter((r) => isInWindow(windowInput(r), now)).map(windowRow);
+    },
+
+    // The same board, the half of ADR-025 §2: back to now minus the horizon
+    // and filtered with isInRecovery (SPEC-044 CA-5).
+    async recoveryMatches(now, horizonHours) {
+      if (horizonHours <= 0) return [];
+      const { from, to } = recoveryKickoffRange(now, horizonHours);
+      const rows = await boardBetween(sql, from, to);
       return rows
-        .filter((r) =>
-          isInWindow(
-            {
-              kickoff: instant(r.kickoff),
-              status: r.status,
-              forcedFinish: r.forced_finish,
-              decidedAt: r.decided_at === null ? null : instant(r.decided_at),
-            },
-            now,
-          ),
-        )
-        .map((r) => ({
-          id: r.match_id,
-          competitionId: r.competition_id,
-          season: r.season,
-          kickoff: instant(r.kickoff),
-          homeTeamId: r.home_team_id,
-          awayTeamId: r.away_team_id,
-          status: r.status,
-          forcedFinish: r.forced_finish,
-          lastObservationAt:
-            r.last_observation_at === null
-              ? null
-              : instant(r.last_observation_at),
-        })) as WindowRow[];
+        .filter((r) => isInRecovery(windowInput(r), now, horizonHours))
+        .map(windowRow);
+    },
+
+    async lastRecoveryAttemptAt(sourceId, since) {
+      const [row] = await sql<{ started_at: Date }[]>`
+        select started_at from ingest_attempts
+        where source_id = ${sourceId}
+          and started_at >= ${since}
+          and details ? 'recuperacion'
+        order by started_at desc limit 1`;
+      return row === undefined ? null : instant(row.started_at);
     },
 
     // Cadence guard and insert in one transaction behind an advisory lock

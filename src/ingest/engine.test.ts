@@ -39,6 +39,7 @@ function fakeTx(rows: (text: string) => unknown[] = () => []) {
     sql: sql as unknown as TransactionSql,
     insertObservations: async () => {},
     openUnresolvedAlerts: async () => 0,
+    lastOwnObservations: async () => [],
   };
   return { tx, calls };
 }

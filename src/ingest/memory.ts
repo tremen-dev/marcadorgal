@@ -29,6 +29,9 @@ export type MemoryAlert = {
 
 export type MemoryIngestDb = IngestDb & {
   matches: WindowRow[];
+  // The recovery set (SPEC-044 CA-5): what recoveryMatches answers for any
+  // source with a horizon.
+  recoverable: WindowRow[];
   attempts: MemoryAttempt[];
   cadence: Map<string, Instant>;
   // Sources whose advisory lock someone else holds (SPEC-029 CA-1).
@@ -47,6 +50,7 @@ export type MemoryIngestDb = IngestDb & {
 export function createMemoryIngestDb(log: string[] = []): MemoryIngestDb {
   const db: MemoryIngestDb = {
     matches: [],
+    recoverable: [],
     attempts: [],
     cadence: new Map(),
     locked: new Set(),
@@ -60,6 +64,27 @@ export function createMemoryIngestDb(log: string[] = []): MemoryIngestDb {
     async windowMatches() {
       log.push("windowMatches");
       return db.matches;
+    },
+
+    async recoveryMatches(_now, horizonHours) {
+      log.push(`recoveryMatches:${horizonHours}`);
+      return horizonHours > 0 ? db.recoverable : [];
+    },
+
+    // Derived from the attempts, as the real one: the newest started at or
+    // after since whose close carried details.recuperacion.
+    async lastRecoveryAttemptAt(sourceId, since) {
+      log.push(`lastRecoveryAttemptAt:${sourceId}:${since}`);
+      const found = db.attempts
+        .filter(
+          (a) =>
+            a.sourceId === sourceId &&
+            a.close?.details.recuperacion !== undefined &&
+            Date.parse(a.startedAt) >= Date.parse(since),
+        )
+        .map((a) => a.startedAt)
+        .sort();
+      return found.at(-1) ?? null;
     },
 
     async openAttempt(sourceId, now) {
@@ -93,6 +118,26 @@ export function createMemoryIngestDb(log: string[] = []): MemoryIngestDb {
           log.push(`openUnresolvedAlerts:${items.length}`);
           if (items.length > 0) db.alerts.push({ sourceId, rawRef, items });
           return items.length;
+        },
+        async lastOwnObservations(sourceId, matchIds) {
+          log.push(`lastOwnObservations:${sourceId}:${matchIds.length}`);
+          const wanted = new Set(matchIds);
+          const newest = new Map<string, Observation>();
+          for (const o of db.observations) {
+            if (o.sourceId !== sourceId || !wanted.has(o.matchId)) continue;
+            const seen = newest.get(o.matchId);
+            if (
+              seen === undefined ||
+              Date.parse(o.observedAt) >= Date.parse(seen.observedAt)
+            )
+              newest.set(o.matchId, o);
+          }
+          return [...newest.values()].map((o) => ({
+            matchId: o.matchId,
+            observedAt: o.observedAt,
+            status: o.status,
+            score: o.score,
+          }));
         },
       };
       try {
