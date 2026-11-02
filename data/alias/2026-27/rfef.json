@@ -1,0 +1,718 @@
+{
+  "source": "rfef",
+  "season": "2026-27",
+  "competitions": {
+    "26991073": "tercera-rfef-g1",
+    "33836085": "primera-division",
+    "33836087": "segunda-division",
+    "33836089": "primera-rfef-g1",
+    "33836092": "segunda-rfef-g1"
+  },
+  "teams": [
+    {
+      "externalId": "deportivo alavés",
+      "externalName": "Deportivo Alavés",
+      "teamId": "alaves"
+    },
+    {
+      "externalId": "deportivo alavés \"b\"",
+      "externalName": "Deportivo Alavés \"B\"",
+      "teamId": "alaves-b"
+    },
+    {
+      "externalId": "deportivo alavés b",
+      "externalName": "Deportivo Alavés B",
+      "teamId": "alaves-b"
+    },
+    {
+      "externalId": "albacete balompié",
+      "externalName": "Albacete Balompié",
+      "teamId": "albacete"
+    },
+    {
+      "externalId": "ud almería",
+      "externalName": "UD Almería",
+      "teamId": "almeria"
+    },
+    {
+      "externalId": "alondras c.f.",
+      "externalName": "alondras c.f.",
+      "teamId": "alondras"
+    },
+    {
+      "externalId": "alondras cf",
+      "externalName": "Alondras CF",
+      "teamId": "alondras"
+    },
+    {
+      "externalId": "sd amorebieta",
+      "externalName": "SD Amorebieta",
+      "teamId": "amorebieta"
+    },
+    {
+      "externalId": "fc andorra",
+      "externalName": "FC Andorra",
+      "teamId": "andorra"
+    },
+    {
+      "externalId": "antela f.c.",
+      "externalName": "antela f.c.",
+      "teamId": "antela"
+    },
+    {
+      "externalId": "cd antela",
+      "externalName": "CD Antela",
+      "teamId": "antela"
+    },
+    {
+      "externalId": "arenas club",
+      "externalName": "Arenas Club",
+      "teamId": "arenas"
+    },
+    {
+      "externalId": "c.d. arenteiro",
+      "externalName": "c.d. arenteiro",
+      "teamId": "arenteiro"
+    },
+    {
+      "externalId": "cd arenteiro",
+      "externalName": "CD Arenteiro",
+      "teamId": "arenteiro"
+    },
+    {
+      "externalId": "arosa sc",
+      "externalName": "Arosa SC",
+      "teamId": "arosa"
+    },
+    {
+      "externalId": "atlético astorga fc",
+      "externalName": "Atlético Astorga FC",
+      "teamId": "astorga"
+    },
+    {
+      "externalId": "athletic club",
+      "externalName": "Athletic Club",
+      "teamId": "athletic-club"
+    },
+    {
+      "externalId": "atletico arteixo",
+      "externalName": "atletico arteixo",
+      "teamId": "atletico-arteixo"
+    },
+    {
+      "externalId": "atlético arteixo",
+      "externalName": "Atlético Arteixo",
+      "teamId": "atletico-arteixo"
+    },
+    {
+      "externalId": "atlético de madrid",
+      "externalName": "Atlético de Madrid",
+      "teamId": "atletico-madrid"
+    },
+    {
+      "externalId": "club atlético de madrid",
+      "externalName": "Club Atlético de Madrid",
+      "teamId": "atletico-madrid"
+    },
+    {
+      "externalId": "real avilés industrial",
+      "externalName": "Real Avilés Industrial",
+      "teamId": "aviles"
+    },
+    {
+      "externalId": "barakaldo cf",
+      "externalName": "Barakaldo CF",
+      "teamId": "barakaldo"
+    },
+    {
+      "externalId": "fc barcelona",
+      "externalName": "FC Barcelona",
+      "teamId": "barcelona"
+    },
+    {
+      "externalId": "c.d. barco",
+      "externalName": "c.d. barco",
+      "teamId": "barco"
+    },
+    {
+      "externalId": "cd barco",
+      "externalName": "CD Barco",
+      "teamId": "barco"
+    },
+    {
+      "externalId": "cd basconia",
+      "externalName": "CD Basconia",
+      "teamId": "basconia"
+    },
+    {
+      "externalId": "bergantiños cf",
+      "externalName": "Bergantiños CF",
+      "teamId": "bergantinos"
+    },
+    {
+      "externalId": "bergantiños fc",
+      "externalName": "Bergantiños FC",
+      "teamId": "bergantinos"
+    },
+    {
+      "externalId": "athletic club \"b\"",
+      "externalName": "Athletic Club \"B\"",
+      "teamId": "bilbao-athletic"
+    },
+    {
+      "externalId": "bilbao athletic",
+      "externalName": "Bilbao Athletic",
+      "teamId": "bilbao-athletic"
+    },
+    {
+      "externalId": "c.d. boiro",
+      "externalName": "c.d. boiro",
+      "teamId": "boiro"
+    },
+    {
+      "externalId": "cd boiro",
+      "externalName": "CD Boiro",
+      "teamId": "boiro"
+    },
+    {
+      "externalId": "burgos cf",
+      "externalName": "Burgos CF",
+      "teamId": "burgos"
+    },
+    {
+      "externalId": "cp cacereño",
+      "externalName": "CP Cacereño",
+      "teamId": "cacereno"
+    },
+    {
+      "externalId": "cádiz cf",
+      "externalName": "Cádiz CF",
+      "teamId": "cadiz"
+    },
+    {
+      "externalId": "cd castellón",
+      "externalName": "CD Castellón",
+      "teamId": "castellon"
+    },
+    {
+      "externalId": "rc celta",
+      "externalName": "RC Celta",
+      "teamId": "celta"
+    },
+    {
+      "externalId": "rc celta de vigo",
+      "externalName": "RC Celta de Vigo",
+      "teamId": "celta"
+    },
+    {
+      "externalId": "gran peña f.c.",
+      "externalName": "gran peña f.c.",
+      "teamId": "celta-c"
+    },
+    {
+      "externalId": "rc celta c",
+      "externalName": "RC Celta C",
+      "teamId": "celta-c"
+    },
+    {
+      "externalId": "celta fortuna",
+      "externalName": "Celta Fortuna",
+      "teamId": "celta-fortuna"
+    },
+    {
+      "externalId": "rc celta fortuna",
+      "externalName": "RC Celta Fortuna",
+      "teamId": "celta-fortuna"
+    },
+    {
+      "externalId": "celtiga f.c.",
+      "externalName": "celtiga f.c.",
+      "teamId": "celtiga"
+    },
+    {
+      "externalId": "céltiga fc",
+      "externalName": "Céltiga FC",
+      "teamId": "celtiga"
+    },
+    {
+      "externalId": "ad ceuta",
+      "externalName": "AD Ceuta",
+      "teamId": "ceuta"
+    },
+    {
+      "externalId": "ad ceuta fc",
+      "externalName": "AD Ceuta FC",
+      "teamId": "ceuta"
+    },
+    {
+      "externalId": "sd compostela",
+      "externalName": "SD Compostela",
+      "teamId": "compostela"
+    },
+    {
+      "externalId": "córdoba cf",
+      "externalName": "Córdoba CF",
+      "teamId": "cordoba"
+    },
+    {
+      "externalId": "cd coria",
+      "externalName": "CD Coria",
+      "teamId": "coria"
+    },
+    {
+      "externalId": "coruxo fc",
+      "externalName": "Coruxo FC",
+      "teamId": "coruxo"
+    },
+    {
+      "externalId": "cultural leonesa",
+      "externalName": "Cultural Leonesa",
+      "teamId": "cultural-leonesa"
+    },
+    {
+      "externalId": "cyd leonesa",
+      "externalName": "CyD Leonesa",
+      "teamId": "cultural-leonesa"
+    },
+    {
+      "externalId": "rc deportivo",
+      "externalName": "RC Deportivo",
+      "teamId": "deportivo"
+    },
+    {
+      "externalId": "deportivo fabril",
+      "externalName": "Deportivo Fabril",
+      "teamId": "deportivo-fabril"
+    },
+    {
+      "externalId": "rc deportivo fabril",
+      "externalName": "RC Deportivo Fabril",
+      "teamId": "deportivo-fabril"
+    },
+    {
+      "externalId": "sd eibar",
+      "externalName": "SD Eibar",
+      "teamId": "eibar"
+    },
+    {
+      "externalId": "sd eibar \"b\"",
+      "externalName": "SD Eibar \"B\"",
+      "teamId": "eibar-b"
+    },
+    {
+      "externalId": "sd eibar b",
+      "externalName": "SD Eibar B",
+      "teamId": "eibar-b"
+    },
+    {
+      "externalId": "elche cf",
+      "externalName": "Elche CF",
+      "teamId": "elche"
+    },
+    {
+      "externalId": "cd eldense",
+      "externalName": "CD Eldense",
+      "teamId": "eldense"
+    },
+    {
+      "externalId": "rcd espanyol",
+      "externalName": "RCD Espanyol",
+      "teamId": "espanyol"
+    },
+    {
+      "externalId": "rcd espanyol de barcelona",
+      "externalName": "RCD Espanyol de Barcelona",
+      "teamId": "espanyol"
+    },
+    {
+      "externalId": "c.d. estradense",
+      "externalName": "c.d. estradense",
+      "teamId": "estradense"
+    },
+    {
+      "externalId": "cd estradense",
+      "externalName": "CD Estradense",
+      "teamId": "estradense"
+    },
+    {
+      "externalId": "cd extremadura",
+      "externalName": "CD Extremadura",
+      "teamId": "extremadura"
+    },
+    {
+      "externalId": "cd extremadura 1924",
+      "externalName": "CD Extremadura 1924",
+      "teamId": "extremadura"
+    },
+    {
+      "externalId": "sd gernika club",
+      "externalName": "SD Gernika Club",
+      "teamId": "gernika"
+    },
+    {
+      "externalId": "getafe cf",
+      "externalName": "Getafe CF",
+      "teamId": "getafe"
+    },
+    {
+      "externalId": "rs gimnástica de torrelavega",
+      "externalName": "RS Gimnástica de Torrelavega",
+      "teamId": "gimnastica"
+    },
+    {
+      "externalId": "girona fc",
+      "externalName": "Girona FC",
+      "teamId": "girona"
+    },
+    {
+      "externalId": "granada cf",
+      "externalName": "Granada CF",
+      "teamId": "granada"
+    },
+    {
+      "externalId": "c.d. lalin",
+      "externalName": "c.d. lalin",
+      "teamId": "lalin"
+    },
+    {
+      "externalId": "cd lalín",
+      "externalName": "CD Lalín",
+      "teamId": "lalin"
+    },
+    {
+      "externalId": "ud las palmas",
+      "externalName": "UD Las Palmas",
+      "teamId": "las-palmas"
+    },
+    {
+      "externalId": "cd leganés",
+      "externalName": "CD Leganés",
+      "teamId": "leganes"
+    },
+    {
+      "externalId": "levante ud",
+      "externalName": "Levante UD",
+      "teamId": "levante"
+    },
+    {
+      "externalId": "ud llanera",
+      "externalName": "UD Llanera",
+      "teamId": "llanera"
+    },
+    {
+      "externalId": "ud logroñés",
+      "externalName": "UD Logroñés",
+      "teamId": "logrones"
+    },
+    {
+      "externalId": "cd lugo",
+      "externalName": "CD Lugo",
+      "teamId": "lugo"
+    },
+    {
+      "externalId": "málaga cf",
+      "externalName": "Málaga CF",
+      "teamId": "malaga"
+    },
+    {
+      "externalId": "rcd mallorca",
+      "externalName": "RCD Mallorca",
+      "teamId": "mallorca"
+    },
+    {
+      "externalId": "club marino de luanco",
+      "externalName": "Club Marino de Luanco",
+      "teamId": "marino"
+    },
+    {
+      "externalId": "marino de luanco",
+      "externalName": "Marino de Luanco",
+      "teamId": "marino"
+    },
+    {
+      "externalId": "ad mérida",
+      "externalName": "AD Mérida",
+      "teamId": "merida"
+    },
+    {
+      "externalId": "mérida ad",
+      "externalName": "Mérida AD",
+      "teamId": "merida"
+    },
+    {
+      "externalId": "cd mirandés",
+      "externalName": "CD Mirandés",
+      "teamId": "mirandes"
+    },
+    {
+      "externalId": "atl. coruña montañeros c.f.",
+      "externalName": "atl. coruña montañeros c.f.",
+      "teamId": "montaneros"
+    },
+    {
+      "externalId": "atlético coruña montañeros",
+      "externalName": "Atlético Coruña Montañeros",
+      "teamId": "montaneros"
+    },
+    {
+      "externalId": "ca osasuna",
+      "externalName": "CA Osasuna",
+      "teamId": "osasuna"
+    },
+    {
+      "externalId": "club atlético osasuna",
+      "externalName": "Club Atlético Osasuna",
+      "teamId": "osasuna"
+    },
+    {
+      "externalId": "ourense cf",
+      "externalName": "Ourense CF",
+      "teamId": "ourense-cf"
+    },
+    {
+      "externalId": "real oviedo",
+      "externalName": "Real Oviedo",
+      "teamId": "oviedo"
+    },
+    {
+      "externalId": "real oviedo vetusta",
+      "externalName": "Real Oviedo Vetusta",
+      "teamId": "oviedo-vetusta"
+    },
+    {
+      "externalId": "sd ponferradina",
+      "externalName": "SD Ponferradina",
+      "teamId": "ponferradina"
+    },
+    {
+      "externalId": "pontevedra cf",
+      "externalName": "Pontevedra CF",
+      "teamId": "pontevedra"
+    },
+    {
+      "externalId": "pontevedra c.f. \"b\"",
+      "externalName": "pontevedra c.f. \"B\"",
+      "teamId": "pontevedra-b"
+    },
+    {
+      "externalId": "pontevedra cf b",
+      "externalName": "Pontevedra CF B",
+      "teamId": "pontevedra-b"
+    },
+    {
+      "externalId": "portonovo s.d.",
+      "externalName": "portonovo s.d.",
+      "teamId": "portonovo"
+    },
+    {
+      "externalId": "portonovo sd",
+      "externalName": "Portonovo SD",
+      "teamId": "portonovo"
+    },
+    {
+      "externalId": "club portugalete",
+      "externalName": "Club Portugalete",
+      "teamId": "portugalete"
+    },
+    {
+      "externalId": "racing club ferrol",
+      "externalName": "Racing Club Ferrol",
+      "teamId": "racing-ferrol"
+    },
+    {
+      "externalId": "racing de ferrol",
+      "externalName": "Racing de Ferrol",
+      "teamId": "racing-ferrol"
+    },
+    {
+      "externalId": "real racing club",
+      "externalName": "Real Racing Club",
+      "teamId": "racing-santander"
+    },
+    {
+      "externalId": "real racing club de santander",
+      "externalName": "Real Racing Club de Santander",
+      "teamId": "racing-santander"
+    },
+    {
+      "externalId": "rayo cantabria",
+      "externalName": "Rayo Cantabria",
+      "teamId": "rayo-cantabria"
+    },
+    {
+      "externalId": "rayo vallecano",
+      "externalName": "Rayo Vallecano",
+      "teamId": "rayo-vallecano"
+    },
+    {
+      "externalId": "rayo vallecano de madrid",
+      "externalName": "Rayo Vallecano de Madrid",
+      "teamId": "rayo-vallecano"
+    },
+    {
+      "externalId": "real betis",
+      "externalName": "Real Betis",
+      "teamId": "real-betis"
+    },
+    {
+      "externalId": "real betis balompié",
+      "externalName": "Real Betis Balompié",
+      "teamId": "real-betis"
+    },
+    {
+      "externalId": "real madrid",
+      "externalName": "Real Madrid",
+      "teamId": "real-madrid"
+    },
+    {
+      "externalId": "real madrid cf",
+      "externalName": "Real Madrid CF",
+      "teamId": "real-madrid"
+    },
+    {
+      "externalId": "real sociedad",
+      "externalName": "Real Sociedad",
+      "teamId": "real-sociedad"
+    },
+    {
+      "externalId": "real sociedad de fútbol",
+      "externalName": "Real Sociedad de Fútbol",
+      "teamId": "real-sociedad"
+    },
+    {
+      "externalId": "real sociedad b",
+      "externalName": "Real Sociedad B",
+      "teamId": "real-sociedad-b"
+    },
+    {
+      "externalId": "real sociedad de fútbol sad \"b\"",
+      "externalName": "Real Sociedad de Fútbol SAD \"B\"",
+      "teamId": "real-sociedad-b"
+    },
+    {
+      "externalId": "real unión club",
+      "externalName": "Real Unión Club",
+      "teamId": "real-union"
+    },
+    {
+      "externalId": "ce sabadell",
+      "externalName": "CE Sabadell",
+      "teamId": "sabadell"
+    },
+    {
+      "externalId": "ce sabadell fc",
+      "externalName": "CE Sabadell FC",
+      "teamId": "sabadell"
+    },
+    {
+      "externalId": "s.d. sarriana",
+      "externalName": "s.d. sarriana",
+      "teamId": "sarriana"
+    },
+    {
+      "externalId": "sd sarriana",
+      "externalName": "SD Sarriana",
+      "teamId": "sarriana"
+    },
+    {
+      "externalId": "sestao river club",
+      "externalName": "Sestao River Club",
+      "teamId": "sestao-river"
+    },
+    {
+      "externalId": "sevilla fc",
+      "externalName": "Sevilla FC",
+      "teamId": "sevilla"
+    },
+    {
+      "externalId": "silva s.d.",
+      "externalName": "silva s.d.",
+      "teamId": "silva"
+    },
+    {
+      "externalId": "silva sd",
+      "externalName": "Silva SD",
+      "teamId": "silva"
+    },
+    {
+      "externalId": "u.d. somozas",
+      "externalName": "u.d. somozas",
+      "teamId": "somozas"
+    },
+    {
+      "externalId": "ud somozas",
+      "externalName": "UD Somozas",
+      "teamId": "somozas"
+    },
+    {
+      "externalId": "real sporting",
+      "externalName": "Real Sporting",
+      "teamId": "sporting"
+    },
+    {
+      "externalId": "real sporting de gijón",
+      "externalName": "Real Sporting de Gijón",
+      "teamId": "sporting"
+    },
+    {
+      "externalId": "cd tenerife",
+      "externalName": "CD Tenerife",
+      "teamId": "tenerife"
+    },
+    {
+      "externalId": "ud ourense",
+      "externalName": "UD Ourense",
+      "teamId": "ud-ourense"
+    },
+    {
+      "externalId": "unionistas de salamanca cf",
+      "externalName": "Unionistas de Salamanca CF",
+      "teamId": "unionistas"
+    },
+    {
+      "externalId": "valencia cf",
+      "externalName": "Valencia CF",
+      "teamId": "valencia"
+    },
+    {
+      "externalId": "real valladolid",
+      "externalName": "Real Valladolid",
+      "teamId": "valladolid"
+    },
+    {
+      "externalId": "real valladolid cf",
+      "externalName": "Real Valladolid CF",
+      "teamId": "valladolid"
+    },
+    {
+      "externalId": "racing club villalbes",
+      "externalName": "racing club villalbes",
+      "teamId": "villalbes"
+    },
+    {
+      "externalId": "racing villalbés",
+      "externalName": "Racing Villalbés",
+      "teamId": "villalbes"
+    },
+    {
+      "externalId": "villarreal cf",
+      "externalName": "Villarreal CF",
+      "teamId": "villarreal"
+    },
+    {
+      "externalId": "viveiro c.f.",
+      "externalName": "viveiro c.f.",
+      "teamId": "viveiro"
+    },
+    {
+      "externalId": "viveiro cf",
+      "externalName": "Viveiro CF",
+      "teamId": "viveiro"
+    },
+    {
+      "externalId": "zamora cf",
+      "externalName": "Zamora CF",
+      "teamId": "zamora"
+    }
+  ]
+}

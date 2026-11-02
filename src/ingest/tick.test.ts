@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 import {
   AliasFile,
@@ -1041,5 +1042,187 @@ describe("SPEC-018 CA-3 the extension only asks by ids=", () => {
       "https://v3.football.api-sports.io/fixtures?live=435-439",
       "https://v3.football.api-sports.io/fixtures?ids=101-201-202",
     ]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// SPEC-038 CA-6 (ADR-023 §5): the export of explorer brings the whole day,
+// and the tick only listens to the window. An observation of a match outside
+// the window of this tick is dropped, counted in details.fueraDeVentana and
+// never reaches the engine. API-Football asks only for the window, so for it
+// the count is zero and nothing changes.
+
+describe("SPEC-038 CA-6 observations outside the window", () => {
+  const finished = (matchId: string) => ({
+    matchId,
+    status: "finished" as const,
+    score: { home: 2, away: 1 },
+    minute: null,
+  });
+
+  it("drops the observation of a match outside the window, counts it and does not run the engine for it", async () => {
+    const { db, store } = harness();
+    db.matches = [match("m1", "primera-division")];
+    const result = ParseResult.parse({
+      // m1 is in window; the other finished in the morning (out of window).
+      observations: [finished("m1"), finished("m-morning")],
+      unresolved: [],
+      skipped: [],
+      requestErrors: [],
+    });
+    const received: string[] = [];
+    const summary = await runTick({
+      db,
+      store,
+      sources: [PRIMERA],
+      adapterFor: () => stubAdapter({ result }),
+      fetch: forbiddenFetch,
+      now: NOW,
+      afterInsert: async (_tx, observations) => {
+        received.push(...observations.map((o) => o.matchId));
+      },
+    });
+    expect(db.observations.map((o) => o.matchId)).toEqual(["m1"]);
+    expect(received).toEqual(["m1"]);
+    expect(summary.attempts[0]).toMatchObject({
+      ok: true,
+      observations: 1,
+      outOfWindow: 1,
+    });
+    expect(db.attempts[0].close).toMatchObject({
+      ok: true,
+      observations: 1,
+      details: { matches: 1, fueraDeVentana: 1 },
+    });
+  });
+
+  it("with every observation outside the window inserts nothing and never calls afterInsert", async () => {
+    const { db, store } = harness();
+    db.matches = [match("m1", "primera-division")];
+    const result = ParseResult.parse({
+      observations: [finished("m-morning"), finished("m-other")],
+      unresolved: [],
+      skipped: [],
+      requestErrors: [],
+    });
+    const afterInsert = vi.fn(async () => {});
+    const summary = await runTick({
+      db,
+      store,
+      sources: [PRIMERA],
+      adapterFor: () => stubAdapter({ result }),
+      fetch: forbiddenFetch,
+      now: NOW,
+      afterInsert,
+    });
+    expect(db.observations).toEqual([]);
+    expect(afterInsert).not.toHaveBeenCalled();
+    expect(summary.attempts[0]).toMatchObject({
+      ok: true,
+      observations: 0,
+      outOfWindow: 2,
+    });
+    expect(db.attempts[0].close?.details).toMatchObject({ fueraDeVentana: 2 });
+  });
+
+  it("the window is the whole window of the tick: a match in the extension not due this tick is still accepted", async () => {
+    const { db, store } = harness();
+    const late = shiftInstant(NOW, -200 * MINUTE_MS);
+    const extension: WindowRow = {
+      ...match("m-ext", "primera-division"),
+      kickoff: late,
+      status: "scheduled",
+      forcedFinish: null,
+      // Heard two minutes ago: not due (ADR-013 §1), but in window.
+      lastObservationAt: shiftInstant(NOW, -2 * MINUTE_MS),
+    };
+    db.matches = [match("m1", "primera-division"), extension];
+    const result = ParseResult.parse({
+      observations: [finished("m1"), finished("m-ext")],
+      unresolved: [],
+      skipped: [],
+      requestErrors: [],
+    });
+    let asked: string[] = [];
+    const summary = await runTick({
+      db,
+      store,
+      sources: [PRIMERA],
+      adapterFor: () =>
+        stubAdapter({
+          result,
+          onFetch: (ctx) => {
+            asked = ctx.matches.map((m) => m.id);
+          },
+        }),
+      fetch: forbiddenFetch,
+      now: NOW,
+    });
+    expect(asked).toEqual(["m1"]);
+    expect(db.observations.map((o) => o.matchId).sort()).toEqual([
+      "m-ext",
+      "m1",
+    ]);
+    expect(summary.attempts[0]).toMatchObject({
+      observations: 2,
+      outOfWindow: 0,
+    });
+  });
+
+  it("api-football does not change: the provider answers what ids= asked, so zero are counted", async () => {
+    const root = new URL("../../", import.meta.url);
+    const aliases = AliasFile.parse(
+      JSON.parse(
+        readFileSync(
+          new URL("data/alias/2026-27/api-football.json", root),
+          "utf8",
+        ),
+      ),
+    );
+    const fixture = JSON.parse(
+      readFileSync(
+        new URL("src/sources/api-football/fixtures/ids-2026-09-21.json", root),
+        "utf8",
+      ),
+    ) as { response: { fixture: { id: number } }[] };
+    const MATCH = "segunda-division-2026-27-j6-albacete-cordoba";
+    const fixtureId = Object.entries(aliases.matches ?? {}).find(
+      ([, id]) => id === MATCH,
+    )?.[0];
+    if (fixtureId === undefined) throw new Error("no alias for the match");
+    const { db, store } = harness();
+    db.matches = [{ ...match(MATCH, "segunda-division"), kickoff: NOW }];
+    const urls: string[] = [];
+    // The provider answers exactly the ids it was asked for, as the real one.
+    const fetch = (async (input: string | URL | Request) => {
+      const url = String(input);
+      urls.push(url);
+      const ids = new Set((url.match(/ids=([\d-]+)/)?.[1] ?? "").split("-"));
+      const response = fixture.response.filter((f) =>
+        ids.has(String(f.fixture.id)),
+      );
+      return new Response(JSON.stringify({ errors: [], response }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      });
+    }) as unknown as typeof globalThis.fetch;
+    const summary = await runTick({
+      db,
+      store,
+      sources: [config("api-football", ["segunda-division"])],
+      adapterFor: () => createApiFootballResults({ aliases, apiKey: "k" }),
+      fetch,
+      now: NOW,
+    });
+    expect(urls).toEqual([
+      `https://v3.football.api-sports.io/fixtures?ids=${fixtureId}`,
+    ]);
+    expect(summary.attempts[0]).toMatchObject({
+      ok: true,
+      observations: 1,
+      outOfWindow: 0,
+    });
+    expect(db.observations[0]).toMatchObject({ matchId: MATCH });
+    expect(db.attempts[0].close?.details).toMatchObject({ fueraDeVentana: 0 });
   });
 });

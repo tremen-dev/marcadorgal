@@ -1,7 +1,9 @@
 import type { Env } from "../db/env.ts";
 import type { SourceAdapter, SourceConfig } from "../model/index.ts";
 import { createApiFootballResults } from "../sources/api-football/results.ts";
+import { createRfefExplorer } from "../sources/rfef/explorer.ts";
 import { loadAliasFile } from "./aliases.ts";
+import { loadDeclaredCalendar } from "./calendar.ts";
 
 // The id -> instance table is the core's, never the registry's (SPEC-005 N-5):
 // src/sources/registry.ts stays configuration and imports no adapter.
@@ -19,6 +21,15 @@ export const ADAPTERS: AdapterTable = {
     createApiFootballResults({
       aliases: loadAliasFile(season, "api-football"),
       apiKey: required(env, "API_FOOTBALL_KEY"),
+    }),
+  // The rfef via the export of explorer (ADR-023 §6, SPEC-038 CA-7): the
+  // direct adapter (the panel one, same folder) stays out, in reserve.
+  rfef: (season, env) =>
+    createRfefExplorer({
+      aliases: loadAliasFile(season, "rfef"),
+      calendar: loadDeclaredCalendar(season),
+      baseUrl: required(env, "RFEF_EXPLORER_URL"),
+      token: required(env, "RFEF_EXPLORER_TOKEN"),
     }),
 };
 

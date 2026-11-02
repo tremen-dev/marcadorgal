@@ -45,6 +45,20 @@ export function kickoffOf(row: PanelRow, capturedAt: Instant): number {
   return best;
 }
 
+// The window in which a row marked as in play is believed live (ADR-017 §4,
+// ADR-023 §5): [kickoff − 10, kickoff + 110), both in UTC ms. Shared by the
+// panel (rowState) and by the export of explorer (explorer.ts), where the
+// clock is the row's lastSeenAt and the kickoff the declared calendar's.
+export const LIVE_BEFORE_MINUTES = 10;
+export const LIVE_AFTER_MINUTES = 110;
+
+export function inLiveWindow(kickoff: number, at: number): boolean {
+  return (
+    at >= kickoff - LIVE_BEFORE_MINUTES * MIN &&
+    at < kickoff + LIVE_AFTER_MINUTES * MIN
+  );
+}
+
 export type RowState = MatchState | SkippedReason | null;
 
 // null: the row says nothing ("-"), it does not appear anywhere.
@@ -66,11 +80,7 @@ export function rowState(row: PanelRow, capturedAt: Instant): RowState {
   const kickoff = kickoffOf(row, capturedAt);
   if (!row.cell.blinking && now >= kickoff + 100 * MIN)
     return { status: "finished", score, minute: null };
-  if (
-    row.cell.blinking &&
-    now >= kickoff - 10 * MIN &&
-    now < kickoff + 110 * MIN
-  )
+  if (row.cell.blinking && inLiveWindow(kickoff, now))
     return { status: "live", score, minute: null, addedMinute: null };
   return "ambiguous_state";
 }
