@@ -188,6 +188,9 @@ jobs:
           # Una fusión hecha con GITHUB_TOKEN no dispara on: push, así que
           # el load se lanza a mano.
           gh workflow run calendario-semanal.yml --ref main -f cargar=si -f temporada="$TEMPORADA"
+          # Por lo mismo, el commit fusionado no tendría el check
+          # `migraciones` y Vercel no lo promovería (SPEC-043 CA-7, ADR-024).
+          gh workflow run migraciones.yml --ref main -f modo=aplicar
 
   load:
     if: github.event_name == 'push' || inputs.cargar == 'si'
