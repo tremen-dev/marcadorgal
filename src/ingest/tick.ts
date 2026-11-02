@@ -1,5 +1,6 @@
 import {
   type Instant,
+  type MatchId,
   Observation,
   type SourceAdapter,
   type SourceConfig,
@@ -49,10 +50,13 @@ export type TickSummary = {
 };
 
 // Where the engine plugs in (ADR-008 §6, N-11): inside the same transaction
-// as the observations, and never without observations.
+// as the observations, and never without observations. The third parameter
+// (SPEC-044 CA-4, ADR-025 §4) names the matches in recovery among them: the
+// engine runs for those at the hour of their observation.
 export type AfterInsert = (
   tx: IngestTx,
   observations: Observation[],
+  options?: { recovered: ReadonlySet<MatchId> },
 ) => Promise<void>;
 
 // The second hook of the engine (H-2): once per tick, over every match in

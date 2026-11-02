@@ -9,7 +9,7 @@ import {
 import { createSql } from "../db/connect.ts";
 import { SOURCES } from "../sources/registry.ts";
 import { createIngestDb, type IngestTx } from "./db.ts";
-import { decideMatches } from "./engine.ts";
+import { decideMatches, decideRecovered } from "./engine.ts";
 
 // CA-11: the engine against the real schema, always rolled back.
 const sql = createSql(process.env);
@@ -806,4 +806,192 @@ describe("SPEC-035 CA-3 no deadlock and no brake on ingest", () => {
       select count(*)::int as n from observations where match_id = ${m1}`;
     expect(row.n).toBe(2);
   });
+});
+
+// SPEC-044 CA-4 (ADR-025 §4): the engine at the hour of the observation,
+// against the real schema and always rolled back. The rfef gives on Sunday
+// night the final of a match the tick left scheduled · sen_sinal; on Monday
+// decideRecovered publishes it with decided_at = the Sunday instant, and
+// running it again writes nothing (ADR-009 §2).
+describe("SPEC-044 CA-4 decideRecovered through the database", () => {
+  const SUNDAY_KICKOFF = "2026-11-01T17:00:00.000Z" as Instant;
+  const SEEN = "2026-11-01T22:58:41.000Z" as Instant;
+  const SEEN_LATER = "2026-11-01T22:58:43.000Z" as Instant;
+  const MONDAY = "2026-11-02T10:00:00.000Z" as Instant;
+  const sunday = (minutes: number): Instant =>
+    shiftInstant(SUNDAY_KICKOFF, minutes * MINUTE_MS);
+
+  async function seedSundayMatch(tx: TransactionSql): Promise<string> {
+    const id = `test-${crypto.randomUUID()}`;
+    await tx`insert into competitions (id, season, name, tier)
+      values ('primera-division', '2026-27', 'Test', 1) on conflict do nothing`;
+    await tx`insert into teams (id, name) values ('test-home', 'Home'), ('test-away', 'Away')
+      on conflict do nothing`;
+    await tx`insert into matches (id, competition_id, season, round, kickoff, home_team_id, away_team_id)
+      values (${id}, 'primera-division', '2026-27', 11, ${SUNDAY_KICKOFF}, 'test-home', 'test-away')`;
+    return id;
+  }
+
+  // What the tick of Sunday left: scheduled · sen_sinal by RN-05 (ADR-013).
+  async function leaveSenSinal(tx: TransactionSql, matchId: string) {
+    await tx`insert into observations (match_id, source_id, status, observed_at,
+        received_at, raw_ref)
+      values (${matchId}, 'api-football', 'scheduled', ${sunday(-5)},
+        ${sunday(-5)}, 'raw/api-football/2026-11-01/x.json.gz')`;
+    await decideMatches(engineTx(tx), [matchId], sunday(-5), SOURCES);
+    await decideMatches(engineTx(tx), [matchId], sunday(20), SOURCES);
+    const [current] = await tx`select status, qualifier from decisions
+      where match_id = ${matchId} order by version desc limit 1`;
+    expect(current).toMatchObject({
+      status: "scheduled",
+      qualifier: "sen_sinal",
+    });
+  }
+
+  // The observation of the rfef, inserted as the tick would (received on
+  // Monday, observed on Sunday), handed back as the engine's Observation.
+  async function rfefObservation(
+    tx: TransactionSql,
+    matchId: string,
+    state:
+      | { status: "finished"; home: number; away: number }
+      | { status: "postponed" },
+    observedAt: Instant,
+  ): Promise<Observation> {
+    const home = state.status === "finished" ? state.home : null;
+    const away = state.status === "finished" ? state.away : null;
+    const [row] = await tx<{ id: string }[]>`
+      insert into observations (match_id, source_id, status, home_score,
+        away_score, minute, observed_at, received_at, raw_ref)
+      values (${matchId}, 'rfef', ${state.status}, ${home}, ${away}, null,
+        ${observedAt}, ${MONDAY}, 'raw/rfef/2026-11-02/x.json.gz')
+      returning id`;
+    return {
+      id: row.id,
+      matchId,
+      sourceId: "rfef",
+      status: state.status,
+      score: state.status === "finished" ? { home, away } : null,
+      minute: null,
+      observedAt,
+      receivedAt: MONDAY,
+      rawRef: "raw/rfef/2026-11-02/x.json.gz",
+    } as unknown as Observation;
+  }
+
+  it("publishes the Sunday final on Monday: finished provisional RN-01 by the rfef, decided_at = observedAt; again, nothing", () =>
+    rollback(async (tx) => {
+      const matchId = await seedSundayMatch(tx);
+      await leaveSenSinal(tx, matchId);
+      const observation = await rfefObservation(
+        tx,
+        matchId,
+        { status: "finished", home: 2, away: 1 },
+        SEEN,
+      );
+      expect(
+        await decideRecovered(engineTx(tx), [observation], SOURCES),
+      ).toEqual({ matches: 1, decisions: 1, alerts: 0, resolved: 0 });
+      const rows = await tx`select version, status, home_score, away_score,
+          qualifier, rule, observation_ids, decided_at, home_source_id,
+          away_source_id, forced_finish
+        from decisions where match_id = ${matchId} order by version`;
+      expect(rows.at(-1)).toMatchObject({
+        status: "finished",
+        home_score: 2,
+        away_score: 1,
+        qualifier: "provisional",
+        rule: "RN-01",
+        observation_ids: [observation.id],
+        home_source_id: "rfef",
+        away_source_id: "rfef",
+        forced_finish: false,
+      });
+      expect((rows.at(-1)?.decided_at as Date).toISOString()).toBe(SEEN);
+      // The board shows it, dated by the Sunday observation (RN-11).
+      const [board] = await tx`select status, observed_at from board
+        where match_id = ${matchId}`;
+      expect(board.status).toBe("finished");
+      expect((board.observed_at as Date).toISOString()).toBe(SEEN);
+
+      // Repeated: the same tuple writes no row (ADR-009 §2).
+      expect(
+        await decideRecovered(engineTx(tx), [observation], SOURCES),
+      ).toEqual({ matches: 1, decisions: 0, alerts: 0, resolved: 0 });
+      expect(
+        await tx`select 1 from decisions where match_id = ${matchId}`,
+      ).toHaveLength(rows.length);
+    }));
+
+  it("a postponed without a score comes out postponed provisional", () =>
+    rollback(async (tx) => {
+      const matchId = await seedSundayMatch(tx);
+      await leaveSenSinal(tx, matchId);
+      const observation = await rfefObservation(
+        tx,
+        matchId,
+        { status: "postponed" },
+        SEEN,
+      );
+      expect(
+        await decideRecovered(engineTx(tx), [observation], SOURCES),
+      ).toMatchObject({ decisions: 1 });
+      const [current] = await tx`select status, home_score, away_score,
+          qualifier, rule, decided_at
+        from decisions where match_id = ${matchId} order by version desc limit 1`;
+      expect(current).toMatchObject({
+        status: "postponed",
+        home_score: null,
+        away_score: null,
+        qualifier: "provisional",
+        rule: "RN-01",
+      });
+      expect((current.decided_at as Date).toISOString()).toBe(SEEN);
+    }));
+
+  it("two matches with distinct instants: two runs of the engine under a single lock", () =>
+    rollback(async (tx) => {
+      const a = await seedSundayMatch(tx);
+      const b = await seedSundayMatch(tx);
+      await leaveSenSinal(tx, a);
+      await leaveSenSinal(tx, b);
+      const first = await rfefObservation(
+        tx,
+        a,
+        { status: "finished", home: 1, away: 0 },
+        SEEN,
+      );
+      const second = await rfefObservation(
+        tx,
+        b,
+        { status: "finished", home: 0, away: 3 },
+        SEEN_LATER,
+      );
+      // The spy over lockMatches: every statement this transaction runs,
+      // recorded by its text; the lock of ADR-019 §1 is the only one that
+      // says "for no key update".
+      const statements: string[] = [];
+      const spied = new Proxy(tx, {
+        apply(target, thisArg, args: [TemplateStringsArray, ...unknown[]]) {
+          statements.push(args[0].join("?").replace(/\s+/g, " "));
+          return Reflect.apply(target, thisArg, args);
+        },
+      }) as TransactionSql;
+      expect(
+        await decideRecovered(engineTx(spied), [second, first], SOURCES),
+      ).toEqual({ matches: 2, decisions: 2, alerts: 0, resolved: 0 });
+      const locks = statements.filter((s) => s.includes("for no key update"));
+      expect(locks).toHaveLength(1);
+      // Two reads of the current Decision: one per instant.
+      expect(
+        statements.filter((s) => s.includes("from decisions where match_id")),
+      ).toHaveLength(2);
+      const decidedAt = async (matchId: string) => {
+        const [row] = await tx`select decided_at from decisions
+          where match_id = ${matchId} order by version desc limit 1`;
+        return (row.decided_at as Date).toISOString();
+      };
+      expect(await decidedAt(a)).toBe(SEEN);
+      expect(await decidedAt(b)).toBe(SEEN_LATER);
+    }));
 });
