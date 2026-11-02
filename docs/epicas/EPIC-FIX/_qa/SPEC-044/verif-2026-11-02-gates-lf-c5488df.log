@@ -1,0 +1,335 @@
+== typecheck
+EXIT tsc 0
+== lint
+src\arch\deploy.test.ts:336:8 lint/suspicious/noTemplateCurlyInString ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected template string placeholder.
+  
+    334 │     const step = stepNamed("sync", "Abrir o actualizar el PR");
+    335 │     expect(str(obj(step?.env).URGENTES)).toBe(
+  > 336 │       "${{ steps.sync.outputs.urgentes }}",
+        │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    337 │     );
+    338 │     const run = prRun();
+  
+  i Turn the string into a template string.
+  
+
+Checked 317 files in 1792ms. No fixes applied.
+Found 1 warning.
+EXIT biome 0
+== test
+
+ RUN  v5.0.1 D:/src/tremen-dev/wt-verif044-lf
+
+ ❯ src/design/no-hex.test.ts (3 tests | 2 failed) 388ms
+   ❯ CA-12 no hex outside the tokens (2)
+     × scans a non-trivial tree 115ms
+     × no file other than tokens.ts/tokens.css contains a hex colour 257ms
+ ❯ src/design/fonts.test.ts (10 tests | 1 failed) 114ms
+   ❯ CA-7 fonts and digits (10)
+     × no CSS under src/ uses the font shorthand 72ms
+ ❯ src/medicion/primera-pintura-perfil.test.ts (3 tests | 1 failed) 6561ms
+   ❯ SPEC-026 CA-1 the «3G» profile of WebPageTest, CPU ×4 (3)
+     × is fixed in tools/primera-pintura.mjs 6142ms
+ ❯ src/db/test-db.test.ts (11 tests | 6 failed) 8224ms
+   ❯ SPEC-020 CA-1 npm run test:db guard (6)
+     × on loopback applies the migrations with the Supabase CLI first 843ms
+   ❯ SPEC-022 CA-1 local Storage forced over the .env (3)
+     × passes API_URL and SERVICE_ROLE_KEY of supabase status to vitest 719ms
+     × wins over a .env file in the cwd too 850ms
+     × blanks the remote secrets for vitest (CA-4) 793ms
+   ❯ SPEC-022 CA-2 refuses without a local Storage (2)
+     × supabase status fails: exit 1 before db push and vitest, nothing leaked 828ms
+     × API_URL is remote: exit 1 before db push and vitest, nothing leaked 1010ms
+ ❯ src/calendar/cli.test.ts (8 tests | 4 failed) 9638ms
+   ❯ SPEC-015 calendario:sync against the fake provider (4)
+     × a clean run says so: no urgent lines, nothing to merge 349ms
+     × CA-3 the tool puts the clock and sums the urgent lines 299ms
+     × CA-4 only reschedules: auto=si 365ms
+     × CA-4 a reschedule plus a rename at the provider: auto=no 301ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/calendar/cli.test.ts > SPEC-015 calendario:sync against the fake provider > a clean run says so: no urgent lines, nothing to merge
+AssertionError: node:internal/modules/esm/load:184
+    throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+          ^
+
+Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'd:'
+    at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:184:11)
+    at defaultLoad (node:internal/modules/esm/load:82:3)
+    at ModuleLoader.load (node:internal/modules/esm/loader:801:12)
+    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:586:43)
+    at #createModuleJob (node:internal/modules/esm/loader:610:36)
+    at #getJobFromResolveResult (node:internal/modules/esm/loader:341:34)
+    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:309:41)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:650:25) {
+  code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+}
+
+Node.js v22.19.0
+: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ src/calendar/cli.test.ts:144:32
+    142|   it("a clean run says so: no urgent lines, nothing to merge", () => {
+    143|     const r = sync();
+    144|     expect(r.status, r.stderr).toBe(0);
+       |                                ^
+    145|     expect(r.stdout).toMatch(/rescheduled: 0 .*urgentes: 0/);
+    146|     expect(r.githubOutput).toContain("urgentes=0\n");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯
+
+ FAIL  src/calendar/cli.test.ts > SPEC-015 calendario:sync against the fake provider > CA-3 the tool puts the clock and sums the urgent lines
+AssertionError: node:internal/modules/esm/load:184
+    throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+          ^
+
+Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'd:'
+    at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:184:11)
+    at defaultLoad (node:internal/modules/esm/load:82:3)
+    at ModuleLoader.load (node:internal/modules/esm/loader:801:12)
+    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:586:43)
+    at #createModuleJob (node:internal/modules/esm/loader:610:36)
+    at #getJobFromResolveResult (node:internal/modules/esm/loader:341:34)
+    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:309:41)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:650:25) {
+  code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+}
+
+Node.js v22.19.0
+: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ src/calendar/cli.test.ts:154:32
+    152|       FAKE_PROVIDER_KICKOFFS: JSON.stringify({ [moved]: soon }),
+    153|     });
+    154|     expect(r.status, r.stderr).toBe(0);
+       |                                ^
+    155|     const line = r.stdout.split("\n").find((l) => l.includes(moved)) ?…
+    156|     expect(line).toMatch(/^ {3}~ .*URGENTE$/);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯
+
+ FAIL  src/calendar/cli.test.ts > SPEC-015 calendario:sync against the fake provider > CA-4 only reschedules: auto=si
+AssertionError: expected '' to match /^auto-aplicable: si$/m
+
+- Expected:
+/^auto-aplicable: si$/m
+
++ Received:
+""
+
+ ❯ src/calendar/cli.test.ts:165:22
+    163|       FAKE_PROVIDER_KICKOFFS: JSON.stringify({ [moved]: soon }),
+    164|     });
+    165|     expect(r.stdout).toMatch(/^auto-aplicable: si$/m);
+       |                      ^
+    166|     expect(r.githubOutput).toContain("auto=si\n");
+    167|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯
+
+ FAIL  src/calendar/cli.test.ts > SPEC-015 calendario:sync against the fake provider > CA-4 a reschedule plus a rename at the provider: auto=no
+AssertionError: node:internal/modules/esm/load:184
+    throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+          ^
+
+Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'd:'
+    at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:184:11)
+    at defaultLoad (node:internal/modules/esm/load:82:3)
+    at ModuleLoader.load (node:internal/modules/esm/loader:801:12)
+    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:586:43)
+    at #createModuleJob (node:internal/modules/esm/loader:610:36)
+    at #getJobFromResolveResult (node:internal/modules/esm/loader:341:34)
+    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:309:41)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:650:25) {
+  code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+}
+
+Node.js v22.19.0
+: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ src/calendar/cli.test.ts:174:32
+    172|       FAKE_PROVIDER_RENAMES: JSON.stringify({ "529": "FC Barcelona" }),
+    173|     });
+    174|     expect(r.status, r.stderr).toBe(0);
+       |                                ^
+    175|     expect(r.stdout).toMatch(/renamedAtProvider: 1/);
+    176|     expect(r.stdout).toMatch(/^auto-aplicable: no$/m);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
+
+ FAIL  src/db/test-db.test.ts > SPEC-020 CA-1 npm run test:db guard > on loopback applies the migrations with the Supabase CLI first
+Error: ENOENT: no such file or directory, open 'C:\Users\Albert\AppData\Local\Temp\marcadorgal-test-db-9XfD8o\calls'
+ ❯ src/db/test-db.test.ts:86:12
+     84|     const f = fakes({ pushExit: 3 });
+     85|     const r = runIn(f, { DATABASE_URL: url });
+     86|     expect(readFileSync(f.calls, "utf8").trim().split("\n")).toEqual([
+       |            ^
+     87|       "status -o env",
+     88|       `db push --db-url ${url}`,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯
+
+ FAIL  src/db/test-db.test.ts > SPEC-022 CA-1 local Storage forced over the .env > passes API_URL and SERVICE_ROLE_KEY of supabase status to vitest
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ src/db/test-db.test.ts:169:22
+    167|     const f = fakes({});
+    168|     const r = runIn(f, PROD_ENV);
+    169|     expect(r.status).toBe(0);
+       |                      ^
+    170|     const env = JSON.parse(readFileSync(f.npxEnv, "utf8"));
+    171|     expect(env.NEXT_PUBLIC_SUPABASE_URL).toBe("http://127.0.0.1:54321"…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/14]⎯
+
+ FAIL  src/db/test-db.test.ts > SPEC-022 CA-1 local Storage forced over the .env > wins over a .env file in the cwd too
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ src/db/test-db.test.ts:191:22
+    189|       encoding: "utf8",
+    190|     });
+    191|     expect(r.status).toBe(0);
+       |                      ^
+    192|     const env = JSON.parse(readFileSync(f.npxEnv, "utf8"));
+    193|     expect(env.NEXT_PUBLIC_SUPABASE_URL).toBe("http://127.0.0.1:54321"…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/14]⎯
+
+ FAIL  src/db/test-db.test.ts > SPEC-022 CA-1 local Storage forced over the .env > blanks the remote secrets for vitest (CA-4)
+Error: ENOENT: no such file or directory, open 'C:\Users\Albert\AppData\Local\Temp\marcadorgal-test-db-oUsNUs\npx-env'
+ ❯ src/db/test-db.test.ts:201:28
+    199|     const f = fakes({});
+    200|     runIn(f, PROD_ENV);
+    201|     const env = JSON.parse(readFileSync(f.npxEnv, "utf8"));
+       |                            ^
+    202|     for (const k of [
+    203|       "API_FOOTBALL_KEY",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/14]⎯
+
+ FAIL  src/db/test-db.test.ts > SPEC-022 CA-2 refuses without a local Storage > supabase status fails: exit 1 before db push and vitest, nothing leaked
+Error: ENOENT: no such file or directory, open 'C:\Users\Albert\AppData\Local\Temp\marcadorgal-test-db-GewoJO\calls'
+ ❯ src/db/test-db.test.ts:232:12
+    230|     const r = runIn(f, PROD_ENV);
+    231|     expect(r.status).toBe(1);
+    232|     expect(readFileSync(f.calls, "utf8").trim()).toBe("status -o env");
+       |            ^
+    233|     expect(existsSync(f.npxEnv)).toBe(false);
+    234|     expect(r.stderr).toContain("supabase start");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/14]⎯
+
+ FAIL  src/db/test-db.test.ts > SPEC-022 CA-2 refuses without a local Storage > API_URL is remote: exit 1 before db push and vitest, nothing leaked
+Error: ENOENT: no such file or directory, open 'C:\Users\Albert\AppData\Local\Temp\marcadorgal-test-db-DBB7IV\calls'
+ ❯ src/db/test-db.test.ts:232:12
+    230|     const r = runIn(f, PROD_ENV);
+    231|     expect(r.status).toBe(1);
+    232|     expect(readFileSync(f.calls, "utf8").trim()).toBe("status -o env");
+       |            ^
+    233|     expect(existsSync(f.npxEnv)).toBe(false);
+    234|     expect(r.stderr).toContain("supabase start");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/14]⎯
+
+ FAIL  src/design/fonts.test.ts > CA-7 fonts and digits > no CSS under src/ uses the font shorthand
+AssertionError: expected [ 'src\design\tokens.css', …(2) ] to include 'src/components/xornada/Xornada.module…'
+ ❯ src/design/fonts.test.ts:64:19
+     62|       relative(process.cwd(), f),
+     63|     );
+     64|     expect(files).toContain("src/components/xornada/Xornada.module.css…
+       |                   ^
+     65|     const offenders = files.flatMap((file) =>
+     66|       readFileSync(file, "utf8")
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/14]⎯
+
+ FAIL  src/design/no-hex.test.ts > CA-12 no hex outside the tokens > scans a non-trivial tree
+AssertionError: expected [ …(276) ] to include 'src/design/tokens.css'
+ ❯ src/design/no-hex.test.ts:17:19
+     15|     const files = sources();
+     16|     expect(files.length).toBeGreaterThan(10);
+     17|     expect(files).toContain("src/design/tokens.css");
+       |                   ^
+     18|     expect(files).toContain("src/components/xornada/Xornada.module.css…
+     19|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/14]⎯
+
+ FAIL  src/design/no-hex.test.ts > CA-12 no hex outside the tokens > no file other than tokens.ts/tokens.css contains a hex colour
+AssertionError: expected [ 'src\design\tokens.css', …(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "src\\design\\tokens.css",
++   "src\\design\\tokens.ts",
++ ]
+
+ ❯ src/design/no-hex.test.ts:25:23
+     23|       .filter((file) => !ALLOWED.has(file))
+     24|       .filter((file) => HEX.test(readFileSync(file, "utf8")));
+     25|     expect(offenders).toEqual([]);
+       |                       ^
+     26|   });
+     27| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/14]⎯
+
+ FAIL  src/medicion/primera-pintura-perfil.test.ts > SPEC-026 CA-1 the «3G» profile of WebPageTest, CPU ×4 > is fixed in tools/primera-pintura.mjs
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/medicion/primera-pintura-perfil.test.ts:26:3
+     24|
+     25| describe("SPEC-026 CA-1 the «3G» profile of WebPageTest, CPU ×4", () =…
+     26|   it("is fixed in tools/primera-pintura.mjs", async () => {
+       |   ^
+     27|     const { PERFIL_3G } = await cargar();
+     28|     expect(PERFIL_3G).toEqual({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/14]⎯
+
+
+ Test Files  5 failed | 109 passed (114)
+      Tests  14 failed | 2015 passed | 3 skipped (2032)
+   Start at  10:31:45
+   Duration  41.73s (tests 53%, import 39%, transform 7%, worker 2%)
+
+    Isolate  114 workers spawned · ~1.33s startup each (spawn + environment, per file)
+             at least ~8.77s faster with isolate: false — reuses workers across files instead of one per file
+
+EXIT vitest 1
