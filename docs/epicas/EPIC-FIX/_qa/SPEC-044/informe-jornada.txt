@@ -1,0 +1,113 @@
+(node:38728) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/src/tremen-dev/marcadorgal/src/clock.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to D:\src\tremen-dev\marcadorgal\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+# Informe de la jornada · 2026-10-30 → 2026-11-02
+
+Se midieron cinco de las cinco competiciones de D-3: Primeira División (10 partidos), Primeira Federación · Grupo 1 (10 partidos), Segunda División (11 partidos), Segunda Federación · Grupo 1 (9 partidos), Terceira Federación · Grupo 1 (9 partidos).
+Sin partidos en la ventana: ninguna.
+
+## 1. Ventana y cobertura
+ventana: 2026-10-30T18:00:00.000Z → 2026-11-02T23:00:00.000Z (77.0 h)
+partidos en la ventana: 49
+ticks: 4185 de 3392 esperados (123 %)   ← cobertura de CA-9
+  cobertura sobre la ventana efectiva de cada partido: de kickoff − 10 min al cierre de
+  su Decision finished; si es la forzada (RN-02, kickoff + 120 min), a kickoff + 150 min; si sigue scheduled, prórroga hasta kickoff + 360 min a un tick cada 5 min.
+intentos dentro de la ventana de ADR-002 §2 pero tras el cierre de todo partido: 0
+horas de ventana sin ejecuciones: 3 — 2026-11-02T20Z, 2026-11-02T21Z, 2026-11-02T22Z
+pg_cron (cron.job_run_details): 8292 ejecuciones (succeeded 8292) · horas de ventana sin ninguna ejecución: 3 — 2026-11-02T20Z, 2026-11-02T21Z, 2026-11-02T22Z
+intentos fuera de la ventana de todo partido: 5   ← criterio 2
+intentos fallidos: 4096
+  2026-10-30T19:50:06.287Z  api-football  api-football: 1 de 1 peticiones con error del proveedor: api-football returned errors: {"plan":"Free plans do not have access to the Ids parameter."}
+  2026-10-30T19:50:59.729Z  api-football  api-football: 1 de 1 peticiones con error del proveedor: api-football returned errors: {"plan":"Free plans do not have access to the Ids parameter."}
+  2026-10-30T19:51:29.859Z  api-football  api-football: 1 de 1 peticiones con error del proveedor: api-football returned errors: {"plan":"Free plans do not have access to the Ids parameter."}
+  2026-10-30T19:51:59.831Z  api-football  api-football: 1 de 1 peticiones con error del proveedor: api-football returned errors: {"plan":"Free plans do not have access to the Ids parameter."}
+  2026-10-30T19:52:29.877Z  api-football  api-football: 1 de 1 peticiones con error del proveedor: api-football returned errors: {"plan":"Free plans do not have access to the Ids parameter."}
+  … y 4091 más
+
+## 2. Cadencia efectiva
+Huecos entre observed_at consecutivos de cada partido, más el que va de su última
+observación al cierre de su ventana: el coste de muestrear a 30 s, y lo que delata
+un job caído, que deja de dejar observaciones.
+mediana: 30.0 s (n=461) · p95: 30.4 s (n=461) · máximo: 130246.1 s (n=461)
+huecos > 90 s: 16
+  2026-10-31T14:52:31.892Z  130246.1 s  primera-division-2026-27-j11-levante-atletico-madrid  Primeira División
+  2026-10-31T15:41:04.876Z  127333.1 s  primera-division-2026-27-j11-rayo-vallecano-celta  Primeira División
+  2026-10-31T15:41:04.876Z  127333.6 s  primera-rfef-g1-2026-27-j10-bilbao-athletic-cacereno  Primeira Federación · Grupo 1
+  2026-10-31T15:41:04.876Z  127333.6 s  primera-rfef-g1-2026-27-j10-logrones-mirandes  Primeira Federación · Grupo 1
+  2026-10-31T15:41:04.876Z  127333.6 s  primera-rfef-g1-2026-27-j10-racing-ferrol-ponferradina  Primeira Federación · Grupo 1
+  … y 11 más
+
+## 3. Latencia interna
+decided_at − observed_at de la observación citada que trae el marcador nuevo. Advertencia
+(N-10): es cero por construcción —`observed_at` y `decided_at` salen del mismo reloj
+inyectado por ruta (ADR-008 §7)— y **no mide** tiempo de proceso; las muestras no nulas
+son la antigüedad de la observación citada por RN-02. No es latencia extremo a extremo.
+La primera Decision con marcador de cada partido —el 0-0 del estreno— cuenta
+como cambio: la muestra lleva un estreno por partido además de los goles.
+mediana: 0.0 s (n=53) · p95: 0.0 s (n=53) · máximo: 0.0 s (n=53)
+techo propio = p95(a), el p95 de cadencia, sin sumar (b): 30.4 s
+Decisiones gemelas: 0 · `decided_at` invertido: 0
+
+## 4. Latencia extremo a extremo
+decided_at − instante de la referencia externa, una fila por gol referenciado
+a mano en referencias.csv (H-6 (ii)).
+(sin datos: ninguna fila de referencias.csv casó con una Decision)
+tamaño esperable: los 49 partidos de la ventana dan del orden de 123 goles, pero la muestra
+la limita lo que una persona puede seguir a la vez (H-3: domingo 27, 14:00Z-17:00Z),
+así que pesa menos que la cadencia (a), que se calcula sobre miles de capturas.
+referencias no casadas: 0
+
+## 5. Peticiones al proveedor
+De ingest_attempts.details->>'requests' y no de net._http_response, que pg_net
+poda a las pocas horas y no sobrevive a una medición de cuatro días (N-2).
+total: 6674 peticiones en 4190 intento(s)
+por día: 2026-10-30 497 · 2026-10-31 2212 · 2026-11-01 3711 · 2026-11-02 254
+pico por minuto: 6 (2026-11-01T16:50Z)
+presupuesto SPEC-005 N-4 (≤ 6/min, ~3000/día): EXCEDE
+
+## 6. Partidos sin señal
+RN-05 y RN-02: un partido sin señal es el motor haciendo su trabajo, no un defecto.
+El hueco de cada uno incluye el que va de su última observación al cierre de su
+ventana: así se ve un tick que murió a mitad de partido, no solo uno que saltó turnos.
+sin ninguna observación: 5
+  segunda-division-2026-27-j12-mallorca-cadiz · Segunda División
+  segunda-division-2026-27-j12-oviedo-las-palmas · Segunda División
+  segunda-division-2026-27-j12-tenerife-andorra · Segunda División
+  segunda-division-2026-27-j12-valladolid-leganes · Segunda División
+  primera-division-2026-27-j11-deportivo-osasuna · Primeira División
+con al menos un hueco > 15 min: 9
+  por competición: Primeira División 2, Primeira Federación · Grupo 1 4, Segunda Federación · Grupo 1 3
+  primera-division-2026-27-j11-levante-atletico-madrid · Primeira División · hueco mayor: 130246.1 s
+  segunda-rfef-g1-2026-27-j9-oviedo-vetusta-llanera · Segunda Federación · Grupo 1 · hueco mayor: 127333.8 s
+  primera-division-2026-27-j11-rayo-vallecano-celta · Primeira División · hueco mayor: 127333.1 s
+  primera-rfef-g1-2026-27-j10-bilbao-athletic-cacereno · Primeira Federación · Grupo 1 · hueco mayor: 127333.6 s
+  primera-rfef-g1-2026-27-j10-logrones-mirandes · Primeira Federación · Grupo 1 · hueco mayor: 127333.6 s
+  … y 4 más
+sin ninguna observación en juego: 35 — primera-division-2026-27-j11-villarreal-espanyol, segunda-rfef-g1-2026-27-j9-gernika-marino, primera-division-2026-27-j11-real-betis-malaga, primera-rfef-g1-2026-27-j10-real-union-aviles, primera-division-2026-27-j11-barcelona-alaves … y 30 más
+sin directo y sin final: 5 — segunda-division-2026-27-j12-mallorca-cadiz, segunda-division-2026-27-j12-oviedo-las-palmas, segunda-division-2026-27-j12-tenerife-andorra, segunda-division-2026-27-j12-valladolid-leganes, primera-division-2026-27-j11-deportivo-osasuna
+
+## 7. Alertas
+Ninguna se resuelve aquí (EPIC-004); cada una lleva su explicación a mano debajo.
+abiertas en la ventana: 17
+  por kind: forced_finish: 9 · silence: 8
+  2026-10-31T15:00:07.455Z  forced_finish  primera-division-2026-27-j11-levante-atletico-madrid  {"score":{"away":2,"home":0},"minute":90,"kickoff":"2026-10-31T13:00:00.000Z","heldScore":{"away":2,"home":0},"lastStatus":"live","lastObservedAt":"2026-10-31T14:52:31.892Z"}
+    explicación:
+  2026-10-31T15:56:07.180Z  silence  primera-division-2026-27-j11-rayo-vallecano-celta  {"lastObservedAt":"2026-10-31T15:41:04.876Z"}
+    explicación:
+  … y 15 más, explicadas por kind
+unresolved_team y conflict se esperaban en cero: unresolved_team 0, conflict 0.
+
+## 8. Contraste de marcadores
+Una sola tanda de peticiones por ids=, al terminar la jornada y fuera de
+ventana (RN-08), anotadas aparte de las del tick.
+(sin datos: se generó el informe sin --contrastar)
+
+## 9. Veredicto
+veredicto: sin veredicto
+  - falta el contraste de CA-5 (--contrastar): CA-9 (a) exige marcador coincidente y sin él no está medido
+salvedad de H-1: criterio 5 cerrado sobre cinco competiciones de cinco; todas jugaron en la ventana; su comprobación queda como R-SPEC-009-1.
+declaraciones pendientes (no se derivan de la base de datos): 3
+  - intervención sobre el dato (H-2 (i)): invalida el criterio 5
+  - intervención sobre la plataforma (H-2 (ii)): baja a válida con reservas
+  - explicación a mano de cada alerta abierta (CA-4 (c)): sin ella no hay válida
