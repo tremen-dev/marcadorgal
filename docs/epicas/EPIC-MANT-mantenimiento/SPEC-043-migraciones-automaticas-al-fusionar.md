@@ -52,6 +52,18 @@ rota); sdd-implementador y sdd-verificador (regla de compatibilidad, ADR-024 §3
   `migraciones` termine (marcas de tiempo de `gh run view` y del panel o
   `vercel inspect`). Un dispatch `aplicar` posterior sobre el mismo SHA sale
   verde sin aplicar nada (idempotencia).
+  - **Enmienda propuesta (2026-11-02, V-1; pendiente de aceptación del
+    titular).** El check `migraciones` no existe en Vercel hasta que el
+    workflow corre una vez en `main`, así que no puede retener el SHA del
+    merge. CA-5 pasa a: dada la PR de esta spec con la migración inocua,
+    cuando se fusiona, entonces (a) el run de `push` del SHA del merge la
+    aplica y `supabase migration list` la muestra aplicada; (b) un dispatch
+    `modo=aplicar` sobre ese mismo SHA sale verde sin aplicar nada
+    (idempotencia); (c) tras marcar `migraciones` como Deployment Check, en el
+    **siguiente commit de `main`** su despliegue de producción queda retenido
+    mientras el run corre y pasa a *Current* **después** de que el check
+    termine en verde (marcas de tiempo de `gh run view` y del panel o
+    `vercel inspect`).
 - **CA-6 Fallo no despliega.** Ningún paso tiene `continue-on-error` ni `|| true`;
   los `run:` usan `shell: bash` (pipefail): un `db push` no-cero deja el check
   en rojo. Vercel tiene `migraciones` como Deployment Check obligatorio de
@@ -90,7 +102,11 @@ va en dos tiempos: estática antes de la PR, real justo después.
 - **H-3 ¿Mismo `DATABASE_URL` u otro propio?** Recomiendo el mismo (rol
   `postgres`, ya usado por `db:push` y el job `load`). Si es la URL del pooler
   en modo transacción y la CLI falla, crear `DATABASE_URL_MIGRACIONES`
-  (conexión directa o pooler de sesión).
+  (conexión directa o pooler de sesión). **Confirmada (2026-11-02):** el
+  orquestador aplicó la migración de SPEC-041 a producción con
+  `supabase db push` (CLI 2.122.0) y la `DATABASE_URL` de producción (pooler,
+  puerto 6543); funcionó y el dry-run posterior dice «Remote database is up to
+  date». Basta el mismo secreto.
 - **H-4 ¿Aprobación manual por environment de GitHub?** Recomiendo no: un clic
   por fusión anula la petición.
 - **H-5 Aviso de fallo.** Recomiendo el correo por defecto de GitHub Actions al

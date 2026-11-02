@@ -55,6 +55,29 @@ fusión del calendario con `GITHUB_TOKEN` no dispara `push`) no se promovería:
 SPEC-043 lanza el workflow a mano desde ese job. La regla §3 no la comprueba
 ninguna máquina; la revisa el verificador de cada spec con migración.
 
+## Precisión (2026-11-02): desbloqueo con el check en rojo
+
+Sin alterar lo decidido (SPEC-043 V-2, V-5; fallos reproducidos con la CLI
+2.122.0). Producción sigue en el despliegue anterior mientras tanto.
+- **(a) SQL roto** (`DbPushApplyError`): las migraciones anteriores del lote
+  quedan aplicadas; se arregla hacia delante con una PR nueva.
+- **(b) Fecha anterior a la última aplicada** (`DbPushMissingRemoteError`, pide
+  `--include-all`): rojo en cada push hasta renombrar el fichero con un
+  timestamp posterior. Regla: al fusionar, el timestamp de toda migración es
+  posterior al de la última de `main`.
+- **(c) Versión en la base que no está en `main`** (`DbPushMissingLocalError`,
+  típico de `npm run db:push` desde una rama): rojo hasta fusionar el fichero
+  o `supabase migration repair`. Regla: `db:push` de emergencia solo desde
+  `main`; si se lanza desde una rama, ese fichero se fusiona de inmediato.
+- **Run de `push` cancelado** (V-5): la concurrencia de GitHub deja un solo run
+  pendiente por grupo; un dispatch puede cancelar el de `push` y dejar ese SHA
+  sin check verde. Remedio: re-run del run de `push` o dispatch `aplicar` en
+  `main`.
+- **Escape**: Vercel permite promover saltándose el check («You can bypass
+  Deployment Checks by selecting Force Promote from the deployment details
+  page», https://vercel.com/docs/deployment-checks). Solo si la base ya es
+  compatible con ese código (§3).
+
 ## Alternativas consideradas
 - **Desactivar el despliegue automático de Vercel y desplegar desde Actions**
   (`vercel deploy --prod` tras migrar): mismo orden, pero añade `VERCEL_TOKEN`,
