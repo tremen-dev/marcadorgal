@@ -1,13 +1,15 @@
 ---
 id: ADR-027
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-11-03, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-11-03, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # ADR-027: Una fuente puede observar el directo de una competición sin decidirlo (`liveObservedOnly` del registro)
 
-- Deciders: sdd-arquitecto propone (2026-11-03) a encargo del orquestador. **Alberto Fojo (titular)** fijó el marco el 2026-11-03: mitigación urgente antes del 2026-11-07, la rfef no publica marcador en directo en Primera y Segunda División hasta confirmar la causa del 0-0 congelado; API-Football sigue en gratuito. Aprobación pendiente (gate de SPEC-048).
+- Deciders: sdd-arquitecto propone (2026-11-03) a encargo del orquestador. **Alberto Fojo (titular)** fijó el marco el 2026-11-03: mitigación urgente antes del 2026-11-07, la rfef no publica marcador en directo en Primera y Segunda División hasta confirmar la causa del 0-0 congelado; API-Football sigue en gratuito. Aprobado por el titular el 2026-11-03.
 - Specs relacionadas: SPEC-048 (lo ejecuta); SPEC-039 (sigue midiendo con esas observaciones); SPEC-044 / ADR-025 (el final del acta sigue entrando). **Relación con ADR-026 (borrador, SPEC-046):** este ADR resuelve de forma temporal su H-1 y su §1 con otro mecanismo (registro en vez de constante del adaptador, y la observación se guarda). Si ADR-026 se aprueba, su §1 debe citar este campo en vez de `RFEF_LIVE_COMPETITIONS`. Amplía ADR-003 (contrato del registro) sin superseder; no toca RN-01..RN-12 ni `src/decide/`.
 
 ## Contexto
