@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-11-02
+Actualizado: 2026-11-03
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -71,6 +71,7 @@ Actualizado: 2026-11-02
 | SPEC-022 — test-db-no-toca-storage-de-produccion | hecho | 2026-10-08 (sdd-verificador) |
 | SPEC-030 — la-portada-sirve-una-instantanea-isr-antigua | hecho | 2026-10-12 (sdd-verificador) |
 | SPEC-044 — recuperacion-de-finales-fuera-de-ventana-por-la-rfef-herramienta-de-recuperacion-y-horizonte-por-fuente | hecho | 2026-11-02 (sdd-verificador) |
+| SPEC-045 — cabos-sueltos-de-la-xornada-diseno-de-escritorio-contexto-nombres-de-competicion-y-suites-con-base | hecho | 2026-11-03 (sdd-verificador) |
 
 ## EPIC-MANT — mantenimiento (borrador)
 
@@ -114,6 +115,6 @@ Actualizado: 2026-11-02
 
 ## Resumen
 
-- hecho: 41
+- hecho: 42
 - en-revision: 2
 - aprobada: 1

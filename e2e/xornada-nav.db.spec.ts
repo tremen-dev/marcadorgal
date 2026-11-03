@@ -109,6 +109,15 @@ for (const { lang, prefix, home } of LANGS) {
         });
         const page = await context.newPage();
         await page.goto(home);
+        // F-SPEC-045-3: Next writes its first history entry (the canonical
+        // URL, no fragment) once hydrated; a fragment set before that is
+        // lost on reload. The client has started when the transport is no
+        // longer the served one.
+        if (js)
+          await expect(page.getByTestId("freshness")).not.toHaveAttribute(
+            "data-transport",
+            "served",
+          );
         // A day with finished matches, so the filtered view is not empty.
         const day = await page
           .locator('[data-testid="match-row"][data-status="finished"]')

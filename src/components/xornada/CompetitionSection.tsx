@@ -1,6 +1,8 @@
+import { Fragment } from "react";
 import { type Locale, t } from "@/i18n";
 import type { XornadaCompetition, XornadaDay } from "@/xornada/view";
 import { CountLabel } from "./CountLabel";
+import { competitionNameSegments } from "./competition-name";
 import { liveCountTemplates, matchCountTemplates } from "./labels";
 import { MatchRow, type RecentGoalView } from "./MatchRow";
 import styles from "./Xornada.module.css";
@@ -53,7 +55,20 @@ export function CompetitionSection({
             className={styles.competitionName}
             data-testid="competition-name"
           >
-            {competition.name}
+            {/* SPEC-045 CA-3: breaks only before « · »; each segment, the
+                last «· Grupo 1» included, is one piece. The text stays the
+                canonical name (D-2). */}
+            {competitionNameSegments(competition.name).map((segment, i) => (
+              <Fragment key={segment}>
+                {i > 0 && " "}
+                <span
+                  className={styles.nameSegment}
+                  data-testid="competition-name-segment"
+                >
+                  {segment}
+                </span>
+              </Fragment>
+            ))}
           </h2>
           <span className={styles.round} data-testid="competition-round">
             {t(locale, "xornada.round", { n: competition.round })}

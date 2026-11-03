@@ -57,6 +57,7 @@ Medición CA-1 (postgres:17.9 efímero, 60 partidos × 150 Decisions = 9000, tre
 - **F-SPEC-041-5 (datos de la demo).** Bilbao Athletic – UD Ourense pasa de 0-0 a 1-0 (sigue `live` 67' `sen_sinal`) para que el nombre más largo lleve marca; la demo se renderiza por petición (`dynamic = "force-dynamic"`). Ningún e2e previo dependía de ese marcador.
 - **F-SPEC-041-6 (N-1 despliegue).** El código nuevo con la vista vieja deja fuera todas las filas (falta la columna; test en `row.test.ts`). La migración va antes, como dice N-1.
 - **F-SPEC-041-7 (N-2, D-8).** Primera animación de la pantalla y pastilla «GOL» sin diseño en `docs/diseno/`: revisión de diseño pendiente con las capturas. El recuadro `box` sobre `--bg-step` es discreto en tema oscuro (`box-*-fila.png`). Destino: titular.
+- **2026-11-03 (SPEC-045 CA-7) — reasignación de destinos:** V-5/F-SPEC-041-1 (`test:db` completo y `e2e:db` contra Supabase local) → SPEC-045 (CA-4 y CA-5).
 
 ## Cómo retomar (handoff)
 <!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->
