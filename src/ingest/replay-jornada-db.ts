@@ -6,6 +6,7 @@ import type {
   MatchStatus,
   SourceConfig,
 } from "../model/index.ts";
+import { SOURCES } from "../sources/registry.ts";
 import {
   insertDecision,
   lockMatches,
@@ -13,7 +14,6 @@ import {
   priorityLookup,
   toObservation,
 } from "./engine.ts";
-import { SOURCES } from "../sources/registry.ts";
 import { admittedByEngine } from "./live-observed-only.ts";
 import type {
   BoardState,
@@ -86,7 +86,10 @@ export async function replayJornadaFilas(
         const board = competitionOf.get(o.match_id);
         return (
           board !== undefined &&
-          admittedByEngine(sources, board)({
+          admittedByEngine(
+            sources,
+            board,
+          )({
             sourceId: o.source_id,
             status: o.status,
           })

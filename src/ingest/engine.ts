@@ -392,7 +392,9 @@ export async function decideRecovered(
   // of the engine; decideLocked filters what it reads at the others.
   const admitted = observations.filter((o) => {
     const row = rowOf.get(o.matchId);
-    return row !== undefined && admittedByEngine(sources, row.competition_id)(o);
+    return (
+      row !== undefined && admittedByEngine(sources, row.competition_id)(o)
+    );
   });
   for (const o of admitted) {
     const ids = byInstant.get(o.observedAt) ?? new Set<string>();
