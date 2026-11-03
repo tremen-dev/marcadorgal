@@ -6,8 +6,8 @@ epica: EPIC-FIX
 # Ledger — SPEC-045 Cabos sueltos de la xornada: diseño de escritorio, contexto, nombres de competición y suites con base
 
 ## Resumen
-- Fase: <!-- refleja el estado de la spec; la fuente de verdad es el frontmatter de la spec -->
-- Rama: `ft/SPEC-045-cabos-sueltos-de-la-xornada-diseno-de-escritorio-contexto-nombres-de-competicion-y-suites-con-base`
+- Fase: en-revision <!-- refleja el estado de la spec; la fuente de verdad es el frontmatter de la spec -->
+- Rama: `ft/SPEC-045-cabos-sueltos-xornada` (worktree `marcadorgal-infra`)
 
 ## Matriz de criterios de aceptación
 <!-- Escritores: sdd-implementador rellena Implementado y Test; sdd-verificador rellena Verif. y Estado. Nunca al revés. -->
@@ -15,14 +15,57 @@ epica: EPIC-FIX
 <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
-| CA-1 | | | | ❌ |
-| CA-2 | | | | ❌ |
-| CA-3 | | | | ❌ |
-| CA-4 | | | | ❌ |
-| CA-5 | | | | ❌ |
-| CA-6 | | | | ❌ |
-| CA-7 | | | | ❌ |
-| CA-8 | | | | ❌ |
+| CA-1 | `docs/fundacion/contexto.md`: líneas SPEC-040 (lateral retirado, ADR-022 Anexo A), SPEC-041, SPEC-042; SPEC-028 y SPEC-033 anotan qué las sustituye; «Última actualización» 2026-11-03 (`540f0ef`) | `grep -n "SPEC-040\|SPEC-041\|SPEC-042\|lateral" docs/fundacion/contexto.md` → líneas 5, 52, 53, 55, 56, 57 (ver Evidencia) | | ❌ |
+| CA-2 | `docs/diseno/Escritorio.tpl.html` (sin lateral, panel ni ★; rejilla `repeat(auto-fill, 360px)`, gap/padding 16, `align-items: start`; cabecera nombre·xornada·contador en palabras·flecha; margen 72 px), `Movil.tpl.html` (margen de dos líneas), `_logic.js` (nombres canónicos «… · Grupo 1»), `.dc.html` con `node build.mjs`, `HERENCIA.md` (`6943d21`) | `src/design/artboards.test.ts` (9 casos: sin lateral/panel/★; rejilla y 3 columnas a 1440; cabecera; regla CA-3; margen 72 px y línea 2 mono 500 10 px/1.2 en Escritorio y Movil; Global/Escritorio/Movil tpl+`_logic.js` = `.dc.html` byte a byte); `tokens.test.ts` verde | | ❌ |
+| CA-3 | `src/components/xornada/competition-name.ts` (`competitionNameSegments`), `CompetitionSection.tsx` (segmentos `nowrap`), `Xornada.module.css` (`.nameSegment`; en escritorio el nombre mide su segmento más ancho, hueco 6 px, sin espaciador, contador con `margin-left: auto`, `flex-wrap`) (`990c97f`) | `competition-name.test.ts` (4 casos); `e2e/xornada-columnas.spec.ts` «SPEC-045 CA-3 at {360…2200}px» ×2 idiomas (16 casos); capturas `_qa/SPEC-045/nombres-{gl,es}-{1024,1920}.png` | | ❌ |
+| CA-4 | — (sin código: se corre la suite) | `DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:54322/postgres npm run test:db` → exit 0, `Test Files 21 passed (21)` · `Tests 233 passed (233)` (ver Evidencia) | | ❌ |
+| CA-5 | `e2e/xornada-realtime.db.spec.ts` (F-SPEC-045-1, F-SPEC-045-2, `40e85af`), `e2e/xornada-nav.db.spec.ts` (F-SPEC-045-3, `cfe811c`) | `npm run e2e:db` → exit 0, 48 passed · 1 skipped (captura sin `QA_CAPTURE_DIR`) (ver Evidencia) | | ❌ |
+| CA-6 | F-SPEC-045-1..3: solo e2e; sin migración, sin tocar ficheros fuera de CA-8 | Rojo antes (logs de las corridas 1-3) y verde después (corrida final `cfe811c`); repetición `--repeat-each=5` del caso de F-3 → 10 passed | | ❌ |
+| CA-7 | Ledgers de SPEC-040 y SPEC-041: una línea fechada 2026-11-03 en «Salvedades / follow-ups» (`a0e49ba`) | `git diff 9a8d76d a0e49ba -- docs/epicas/EPIC-003-xornada-publica/*.ledger.md` → 2 inserciones, 0 borrados; veredictos y frontmatters intactos | | ❌ |
+| CA-8 | Solo `docs/diseno/`, `contexto.md`, `src/components/xornada/`, tests, e2e, ledgers 040/041/045, capturas; sin dependencias | Linux (`mcr.microsoft.com/playwright:v1.63.0-noble`, export LF de `cfe811c`): `npm run gates` exit 0 y `CI=1 npm run e2e` exit 0 (ver Evidencia); `git diff origin/main --stat -- src/sources src/decide src/ingest src/board src/model src/app/api supabase` vacío; `package.json`/`package-lock.json` sin diff | | ❌ |
+
+## Evidencia del implementador
+Entorno: Windows + Docker Desktop (engine 29.0.1). Supabase **local** (`project_id = marcadorgal`), CLI **2.122.0** (`supabase start` con el binario de la caché de npx en Windows; dentro del contenedor, `npm i -g supabase@2.122.0` + `docker-cli`). Suites en Linux: contenedor `mcr.microsoft.com/playwright:v1.63.0-noble` (node 24.20.0) con `--network host` y el socket de Docker, sobre `git -c core.autocrlf=false archive HEAD`. Nunca se usó la base remota.
+
+`supabase status -o env` (claves tapadas):
+```
+API_URL="http://127.0.0.1:54321"
+DB_URL="postgresql://postgres:postgres@127.0.0.1:54322/postgres"
+REST_URL="http://127.0.0.1:54321/rest/v1"
+STORAGE_S3_URL="http://127.0.0.1:54321/storage/v1/s3"
+ANON_KEY=<redactada>  SERVICE_ROLE_KEY=<redactada>  SECRET_KEY=<redactada>
+PUBLISHABLE_KEY=<redactada>  JWT_SECRET=<redactada>  S3_PROTOCOL_ACCESS_KEY_*=<redactada>
+```
+
+CA-1 — `grep -n "SPEC-040\|SPEC-041\|SPEC-042\|lateral" docs/fundacion/contexto.md`:
+```
+5:> Última actualización: 2026-11-03 (SPEC-040, SPEC-041 y SPEC-042 al día en EPIC-003: el lateral de escritorio está retirado; SPEC-045 en curso).
+52:- **SPEC-028:** el lateral lleva a su competición, … *El lateral lo retira SPEC-040 (ADR-022 Anexo A); el logo y el título siguen.*
+53:- **SPEC-033:** … *La cabecera por día la sustituye SPEC-040: fecha y hora en cada fila.* …
+55:- **SPEC-040:** fecha y hora por fila … **El lateral «Competicións» queda retirado en escritorio** (ADR-022 Anexo A); …
+56:- **SPEC-041:** gol reciente que pulsa. …
+57:- **SPEC-042:** la marca de gol reciente es `label` …
+```
+
+Corrida final sobre `cfe811c` (Linux):
+| Comando | Resultado |
+|---|---|
+| `npm run gates` | exit 0 · Biome `Checked 327 files` · Vitest `119 files`, `2142 passed \| 3 skipped` · build ok |
+| `CI=1 npm run e2e` | exit 0 · `249 passed`, `1 skipped` |
+| `npm run e2e:db` | exit 0 · `48 passed`, `1 skipped` (2.7 min) |
+| `DATABASE_URL=…127.0.0.1:54322/postgres npm run test:db` | exit 0 · `Local database is up to date.` · `Test Files 21 passed (21)` · `Tests 233 passed (233)` |
+| `npx playwright test --config playwright.db.config.ts e2e/xornada-nav.db.spec.ts -g "CA-4 with JS" --repeat-each=5` | exit 0 · `10 passed` |
+
+`e2e:db` por fichero (corrida final): `xornada-gol-reciente.db.spec.ts` 1 passed · `xornada-nav.db.spec.ts` 16 passed · `xornada-realtime.db.spec.ts` 7 passed · `xornada-weeks.db.spec.ts` 17 passed · `xornada.db.spec.ts` 7 passed, 1 skipped («QA captures of / and /es at 390 px», sin `QA_CAPTURE_DIR`).
+
+Rojo antes (CA-6):
+| Corrida | Código | Resultado |
+|---|---|---|
+| 1 · suite completa | `a0e49ba` (código = `main`) | `e2e:db` exit 1: 46 passed, 2 failed (`xornada-nav.db` es «CA-4 with JS» → `filter-finished` sin `aria-current`; `xornada-realtime.db` «CA-5 on» → `locator.click` timeout sobre una sección oculta), 1 skipped. `test:db` exit 0, 21/233 |
+| 2 · solo nav + realtime | `a0e49ba` | exit 1: 22 passed, 1 failed (`xornada-realtime.db` «CA-10 … aborted» → `animation-iteration-count:299` vs `298`) |
+| 3 · suite completa | `40e85af` (F-1, F-2) | `e2e:db` exit 1: 47 passed, 1 failed (`xornada-nav.db` gl «CA-4 with JS»; traza: `navigated to "http://localhost:3110/"`, sin `#d=2026-10-31&f=finished`) · `test:db` 21/233 |
+
+CA-3 rojo: `CI=1 npx playwright test e2e/xornada-columnas.spec.ts -g "SPEC-045 CA-3"` sobre `a0e49ba` + el e2e nuevo → 16 failed (sin segmentos); tras el cambio de cabecera, `e2e/xornada-columnas.spec.ts` completo → 57 passed.
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
@@ -32,6 +75,15 @@ epica: EPIC-FIX
 
 ## Salvedades / follow-ups
 <!-- IDs F-SPEC-045-1, F-SPEC-045-2… con destino (spec futura o EPIC-MEJORA). -->
+- **F-SPEC-045-1 (SPEC-041, e2e).** `xornada-realtime.db` «CA-10 … aborted» comparaba el `outerHTML` de las filas; desde SPEC-041 la marca de gol reciente recuenta `animation-iteration-count` con el reloj del navegador al montarse (299 → 298). El test ignora ahora ese estilo, como ya ignoraba la edad de fila. Rojo en la corrida 2, verde en la final.
+- **F-SPEC-045-2 (SPEC-040/041, e2e).** `xornada-realtime.db` «CA-5 on» plegaba la primera otra competición del DOM; con `#f=live` una competición sin directo no se pinta (SPEC-040 CA-4) y, con la suite completa (que desde SPEC-041 incluye `xornada-gol-reciente.db.spec.ts` antes), la primera quedaba oculta. Ahora pliega una visible. Rojo en la corrida 1, verde en la 3 y la final.
+- **F-SPEC-045-3 (carrera del test, no atribuible a 040-042).** `xornada-nav.db` «CA-4 with JS» fijaba `#d=…&f=finished` con un `goto` del mismo documento y recargaba; si llegaba antes de hidratar, el `replaceState` inicial de Next (`app-router.js`, URL canónica sin fragmento) lo borraba y el reload iba a `/`. Intermitente (es en la corrida 1, gl en la 3). El test espera ahora a que `freshness` deje `data-transport="served"`. Verde en la final y 10/10 con `--repeat-each=5`.
+- **F-SPEC-045-4 (entorno).** En Windows, `tools/test-db.mjs` y `playwright.db.config.ts` lanzan `supabase` y `npx` con `spawnSync` sin shell → `ENOENT` (los `.cmd` no se resuelven). La CLI no está en `devDependencies` y `npx --no-install supabase` da **3.0.0** (caché de npx), no 2.122.0. Por eso `test:db` y `e2e:db` se corrieron en Linux (contenedor con red del host y socket de Docker). Destino: EPIC-MANT, junto a F-SPEC-040-2.
+- **F-SPEC-045-5 (diseño, CA-3).** «PRIMEIRA FEDERACIÓN» mide 156 px y no cabía en la cabecera de 360 px junto a xornada, contador y flecha (quedaban 147-153 px). En escritorio la cabecera pasa a hueco 6 px (antes 9), sin espaciador y con `flex-wrap` de seguridad; el artboard lo dibuja igual. Destino: titular (revisión de diseño).
+- **F-SPEC-045-6 (CA-2).** Los artboards no se pueden renderizar: el repo no trae `support.js`. Sin captura del artboard; anotado en `HERENCIA.md`. El artboard pinta seis celdas (dos filas de tres columnas), las que entran en 900 px.
 
 ## Cómo retomar (handoff)
 <!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->
+- Hecho: CA-1..CA-8 implementados con evidencia. Commits `540f0ef` (CA-1), `a0e49ba` (CA-7), `990c97f` (CA-3), `6943d21` (CA-2), `40e85af` y `cfe811c` (CA-6: F-1..F-3). Spec en `en-revision`.
+- Reproducir: `supabase start` (CLI 2.122.0); contenedor `docker run -d --name sdd045 --network host -v /var/run/docker.sock:/var/run/docker.sock mcr.microsoft.com/playwright:v1.63.0-noble sleep infinity`, `git -c core.autocrlf=false archive HEAD | docker exec -i sdd045 tar -x -C /w`, dentro `apt-get install docker-cli`, `npm i -g supabase@2.122.0`, `npm ci`, y los comandos de la tabla. `e2e:db` resetea la base local al terminar.
+- Falta: verificación (sdd-verificador); revisión de diseño de F-SPEC-045-5.
