@@ -6,6 +6,7 @@ import {
   ParseResult,
   RawCapture,
   type SourceAdapter,
+  SourceConfig,
   SourceId,
   Unresolved,
 } from "./index.ts";
@@ -208,6 +209,38 @@ describe("CA-1 SourceAdapter contract types", () => {
         requests: [
           { url: "not a url", status: 200, contentType: null, body: "" },
         ],
+      }).success,
+    ).toBe(false);
+  });
+});
+
+describe("SPEC-048 CA-1 liveObservedOnly (ADR-027 §1)", () => {
+  const base = {
+    id: "acme",
+    kind: "pull",
+    competitions: ["primera-division", "primera-rfef-g1"],
+    priority: { "primera-division": 5, "primera-rfef-g1": 5 },
+    minIntervalSeconds: 30,
+    userAgent: "acme/1.0",
+    legalBasis: "test",
+  };
+
+  it("defaults to [] when absent", () => {
+    expect(SourceConfig.parse(base).liveObservedOnly).toEqual([]);
+  });
+
+  it("accepts a subset of competitions", () => {
+    expect(
+      SourceConfig.parse({ ...base, liveObservedOnly: ["primera-division"] })
+        .liveObservedOnly,
+    ).toEqual(["primera-division"]);
+  });
+
+  it("rejects a competition the source does not cover", () => {
+    expect(
+      SourceConfig.safeParse({
+        ...base,
+        liveObservedOnly: ["segunda-division"],
       }).success,
     ).toBe(false);
   });

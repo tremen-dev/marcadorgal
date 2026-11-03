@@ -47,6 +47,17 @@ describe("CA-2 registry", () => {
     expect(rfef.priority).toEqual(Object.fromEntries(FIVE.map((c) => [c, 5])));
   });
 
+  it("rfef observes Primera and Segunda live without deciding it (SPEC-048 CA-1, ADR-027 §3)", () => {
+    expect(sourceConfig("rfef")?.liveObservedOnly).toEqual([
+      "primera-division",
+      "segunda-division",
+    ]);
+  });
+
+  it("api-football has no liveObservedOnly (SPEC-048 CA-1)", () => {
+    expect(sourceConfig("api-football")?.liveObservedOnly).toEqual([]);
+  });
+
   it("sourceConfig finds a source by id and returns undefined otherwise", () => {
     expect(sourceConfig("api-football")).toBe(SOURCES[0]);
     expect(sourceConfig("rfef")).toBe(SOURCES[1]);
