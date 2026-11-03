@@ -74,9 +74,10 @@
             <span style="font: 400 11px/1 var(--sans); color: #716F6C">{{ it.arrow }}</span>
           </div>
           <div style="{{ it.rowStyle }}" onClick="{{ it.toggleStar }}">
-            <div style="display: flex; align-items: center; gap: 5px">
-              <span style="{{ it.dotStyle }}"></span>
-              <span style="{{ it.gutStyle }}">{{ it.gut }}</span>
+            <!-- SPEC-040 CA-2 (SPEC-045 CA-2, H-3): marxe de 72 px en dúas liñas. -->
+            <div style="align-self: start; display: flex; flex-direction: column; gap: 3px; min-width: 0">
+              <div style="{{ it.gutStyle }}"><span style="{{ it.dotStyle }}"></span>{{ it.gut }}</div>
+              <div style="height: 12px; font-family: var(--mono); font-weight: 500; font-size: 10px; line-height: 1.2; text-transform: uppercase; white-space: nowrap; color: #716F6C">{{ it.sub }}</div>
             </div>
             <div class="stk">
               <span style="{{ it.homeStyle }}">{{ it.home }}</span>
@@ -140,7 +141,7 @@ class Component extends DCLogic {
    Non se importa: os artboards non comparten runtime, así que cada un leva a súa copia. */
   data() {
     return [
-      ['t3g1','Terceira RFEF G1',4,[
+      ['t3g1','Terceira Federación · Grupo 1',4,[
         ['L',"31'",'Bergantiños FC',1,1,'UD Somozas','conf',1],
         ['L',"29'",'CD Barco',0,2,'Polvorín FC','conf',0],
         ['L',"28'",'Arosa SC',0,0,'Silva SD','conf',1],
@@ -217,7 +218,7 @@ class Component extends DCLogic {
         ['P','18:00','Albacete BP',null,null,'CD Mirandés','conf',0],
         ['P','20:30','Sporting de Gijón',null,null,'Cádiz CF','conf',0]
       ]],
-      ['p1f','Primeira Federación G1',4,[
+      ['p1f','Primeira Federación · Grupo 1',4,[
         ['L',"35'",'SD Ponferradina',0,0,'Real Unión','conf',0],
         ['F','FIN','Pontevedra CF',1,0,'Zamora CF','conf',0],
         ['P','17:00','CD Lugo',null,null,'Barakaldo CF','conf',0],
@@ -278,7 +279,7 @@ class Component extends DCLogic {
     var items = [];
 
     var HEAD = 'display:flex;align-items:center;gap:8px;padding:8px 14px;background:#1A1815;border-top:1px solid #2A2620;border-bottom:1px solid #2A2620;cursor:pointer;';
-    var WIDE = 'display:grid;grid-template-columns:50px minmax(0,1fr) 38px 30px;align-items:center;gap:6px;padding:7px 14px;border-bottom:1px solid #1D1A16;min-height:48px;cursor:pointer;';
+    var WIDE = 'display:grid;grid-template-columns:72px minmax(0,1fr) 38px 30px;align-items:center;gap:6px;padding:7px 14px;border-bottom:1px solid #1D1A16;min-height:48px;cursor:pointer;';
     var COMP = 'display:grid;grid-template-columns:30px minmax(0,1fr) 44px minmax(0,1fr) 14px;align-items:center;gap:4px;padding:9px 12px;border-bottom:1px solid #1D1A16;cursor:pointer;';
     var NW = 'font-family:var(--sans);font-size:14px;line-height:1.25;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
     var NC = 'font-family:var(--sans);font-size:12.5px;line-height:1.3;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
@@ -308,7 +309,7 @@ class Component extends DCLogic {
         dotStyle: 'display:none', gutStyle: 'display:none', homeStyle: 'display:none',
         awayStyle: 'display:none', hsStyle: 'display:none', asStyle: 'display:none',
         midStyle: 'display:none', starWrap: 'display:none',
-        gut: '', home: '', away: '', hs: '', as: '', mid: '', star: ''
+        gut: '', sub: '', home: '', away: '', hs: '', as: '', mid: '', star: ''
       });
 
       if (isCollapsed) { return; }
@@ -349,17 +350,31 @@ class Component extends DCLogic {
         var NAME = compact ? NC : NW;
         var mid = sched ? m[1] : (apr ? '–' : m[3] + '-' + m[4]);
 
+        // SPEC-040 CA-2: na xornada, liña 1 = hora, minuto ou estado; liña 2 =
+        // data ou parte (mono 500 10 px/1.2). O descanso: «En xogo» e «Descanso».
+        var w = self.state.lang === 'gl'
+          ? { inPlay: 'En xogo', fin: 'Rematado', post: 'Aprazado', half: 'Descanso', p1: '1ª P', p2: '2ª P', date: 'sáb 30 out' }
+          : { inPlay: 'En juego', fin: 'Finalizado', post: 'Aplazado', half: 'Descanso', p1: '1ª P', p2: '2ª P', date: 'sáb 30 oct' };
+        var minute = parseInt(m[1], 10);
+        var main = st === 'D' ? w.inPlay
+          : (live || nosig ? m[1] : (fin ? w.fin : (apr ? w.post : m[1])));
+        var sub = st === 'D' ? w.half
+          : (live || nosig ? (minute <= 45 ? w.p1 : w.p2) : w.date);
+
         items.push({
           headStyle: 'display:none',
           rowStyle: (compact ? COMP : WIDE) + tint,
           name: '', liveTxt: '', liveStyle: 'display:none', arrow: '',
           toggle: function () {},
-          dotStyle: live && !compact
-            ? 'width:6px;height:6px;border-radius:50%;background:#FF6B00;box-shadow:0 0 8px #FF6B00;flex:none;'
+          dotStyle: (live || nosig) && st !== 'D' && !compact
+            ? 'width:6px;height:6px;border-radius:50%;background:' + gutColor + ';box-shadow:0 0 8px ' + gutColor + ';flex:none;'
             : 'display:none',
-          gut: apr ? t.post.toUpperCase() : (fin ? 'FIN' : (sched && compact ? '' : m[1])),
-          gutStyle: 'font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:'
-            + (compact ? '10px' : '12px') + ';font-weight:600;letter-spacing:.03em;color:' + gutColor + ';',
+          gut: compact ? (apr ? t.post.toUpperCase() : (fin ? 'FIN' : (sched ? '' : m[1]))) : main,
+          sub: compact ? '' : sub,
+          gutStyle: compact
+            ? 'font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:10px;font-weight:600;letter-spacing:.03em;color:' + gutColor + ';'
+            : 'height:15px;display:flex;align-items:center;gap:5px;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:'
+              + (live && st !== 'D' || nosig ? '12px' : '11px') + ';font-weight:600;line-height:1.2;white-space:nowrap;color:' + gutColor + ';',
           home: m[2],
           homeStyle: NAME + 'font-weight:' + hw + ';color:' + hc + ';'
             + (compact ? 'text-align:right;' : ''),

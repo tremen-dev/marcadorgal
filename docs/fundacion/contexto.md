@@ -2,7 +2,7 @@
 
 > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.
 > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.
-> Última actualización: 2026-11-02 (SPEC-038 y SPEC-044 hechas: fuente rfef vía explorer con prioridad 5 temporal y recuperación de finales fuera de ventana; SPEC-039 aprobada, observación prevista el 2026-11-07/08).
+> Última actualización: 2026-11-03 (SPEC-040, SPEC-041 y SPEC-042 al día en EPIC-003: el lateral de escritorio está retirado; SPEC-045 en curso).
 
 ## Qué es y en qué punto está
 
@@ -49,9 +49,12 @@ Migraciones de SPEC-014 y SPEC-018 aplicadas en `dev`.
 - **SPEC-023:** escritorio con tira de días, filtros y plegado por competición.
 - **SPEC-024:** Realtime por Broadcast con fallback a polling y línea de frescura. Un fallo de transporte nunca se pinta como estado del partido.
 - **SPEC-027:** navegación entre xornadas en `/xornada/[fecha]`, con flechas ‹ ›.
-- **SPEC-028:** el lateral lleva a su competición, el logo vuelve al inicio y la xornada mirada tiene título visible.
-- **SPEC-033:** orden cronológico puro (el `live` ya no sube arriba) y cabecera discreta por día, oculta al elegir un día en la tira. Los equipos gallegos se declaran en `data/galegos/<temporada>.json`, uno por línea en `GALICIAN_SEASONS` cada temporada, y se marcan con 600 y `--marca`. También añade favicon e iconos.
+- **SPEC-028:** el lateral lleva a su competición, el logo vuelve al inicio y la xornada mirada tiene título visible. *El lateral lo retira SPEC-040 (ADR-022 Anexo A); el logo y el título siguen.*
+- **SPEC-033:** orden cronológico puro (el `live` ya no sube arriba) y cabecera discreta por día, oculta al elegir un día en la tira. *La cabecera por día la sustituye SPEC-040: fecha y hora en cada fila.* Los equipos gallegos se declaran en `data/galegos/<temporada>.json`, uno por línea en `GALICIAN_SEASONS` cada temporada, y se marcan con 600 y `--marca`. También añade favicon e iconos.
 - **SPEC-034:** `provisional` se pinta según `PROVISIONAL_DISPLAY`, en `src/app/config.ts`. Hay tres modos: `label`, `mark` (el `*` más una leyenda al pie, el modo por defecto) y `hidden`. `sen_sinal` conserva siempre su etiqueta.
+- **SPEC-040:** fecha y hora por fila (margen de dos líneas, 72 px) y, en escritorio, una competición por columna de 360 px en rejilla. **El lateral «Competicións» queda retirado en escritorio** (ADR-022 Anexo A); en móvil sigue la lista única.
+- **SPEC-041:** gol reciente que pulsa. `web.xornada` añade `home_scored_at`/`away_scored_at` (ADR-022) y el número del equipo que marcó hace menos de `RECENT_GOAL_MINUTES` (5) pulsa; vence sin recargar y sin JS.
+- **SPEC-042:** la marca de gol reciente es `label` (pastilla «GOL») por defecto; `RECENT_GOAL_MARK` (`box` | `label`) es configuración de producción, en Vercel.
 
 Las mediciones de SPEC-025 (latencia gol→pantalla con el segundo reloj de ADR-016) y SPEC-026 (primera pintura con 3G) son de campo, del 16 al 19 de octubre. Pendiente: credenciales de producción en el entorno Preview de Vercel (F-SPEC-020-12).
 
