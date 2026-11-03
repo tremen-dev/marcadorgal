@@ -6,7 +6,7 @@ epica: EPIC-FIX
 # Ledger — SPEC-048 La rfef observa sin decidir el directo de Primera y Segunda División
 
 ## Resumen
-- Fase: borrador (spec en gate del titular)
+- Fase: aprobada (2026-11-03, Alberto Fojo: H-1, H-2, H-3 y H-4 aprobadas en sesión con el orquestador)
 - Rama: `ft/SPEC-048-rfef-sin-decision-en-primera-y-segunda` (spec: `docs/SPEC-048-rfef-sin-decision-en-primera-y-segunda`)
 
 ## Matriz de criterios de aceptación

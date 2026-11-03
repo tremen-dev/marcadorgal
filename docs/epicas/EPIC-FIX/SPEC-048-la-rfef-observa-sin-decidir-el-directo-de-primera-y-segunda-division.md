@@ -2,10 +2,11 @@
 id: SPEC-048
 tipo: spec
 epica: EPIC-FIX
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-03, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-11-03, por: Alberto Fojo}
 ---
 # SPEC-048 — La rfef observa sin decidir el directo de Primera y Segunda División
 
