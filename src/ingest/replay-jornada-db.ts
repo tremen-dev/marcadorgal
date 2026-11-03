@@ -13,6 +13,8 @@ import {
   priorityLookup,
   toObservation,
 } from "./engine.ts";
+import { SOURCES } from "../sources/registry.ts";
+import { admittedByEngine } from "./live-observed-only.ts";
 import type {
   BoardState,
   ReplayJornadaInput,
@@ -43,16 +45,23 @@ const boardState = (row: BoardRow): BoardState => ({
 
 // The matchday is every match whose kickoff falls inside the window, as in
 // informe-db.ts (SPEC-009 N-1), and its observations inside the same window.
+// Only what the engine of the tick receives (ADR-027 §2, SPEC-048): a live
+// it never decides would make the replay propose corrections the tick never
+// would. sources defaults to the registry, the one the tick reads.
 export async function replayJornadaFilas(
   sql: Sql | TransactionSql,
   desde: string,
   hasta: string,
+  sources: readonly SourceConfig[] = SOURCES,
 ): Promise<Pick<ReplayJornadaInput, "matches" | "observations">> {
   const boards = await sql<BoardRow[]>`
     select match_id, competition_id, kickoff, status, home_score, away_score
     from board where kickoff >= ${desde} and kickoff <= ${hasta}
     order by match_id`;
   const ids = boards.map((b) => b.match_id);
+  const competitionOf = new Map(
+    boards.map((b) => [b.match_id, b.competition_id]),
+  );
   const observations =
     ids.length === 0
       ? []
@@ -72,7 +81,18 @@ export async function replayJornadaFilas(
       } satisfies EngineMatch,
       board: boardState(row),
     })),
-    observations: observations.map(toObservation),
+    observations: observations
+      .filter((o) => {
+        const board = competitionOf.get(o.match_id);
+        return (
+          board !== undefined &&
+          admittedByEngine(sources, board)({
+            sourceId: o.source_id,
+            status: o.status,
+          })
+        );
+      })
+      .map(toObservation),
   };
 }
 

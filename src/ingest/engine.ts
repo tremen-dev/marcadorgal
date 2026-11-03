@@ -26,6 +26,7 @@ import {
   shiftInstant,
 } from "../model/index.ts";
 import type { IngestDb, IngestTx, WindowRow } from "./db.ts";
+import { admittedByEngine, forEngine } from "./live-observed-only.ts";
 import type { AfterInsert } from "./tick.ts";
 
 // The adapter of the engine (N-2): src/decide/ does not know a database
@@ -72,6 +73,7 @@ type DecisionRow = StateRow & {
 
 type LastHeardRow = {
   match_id: string;
+  source_id: string;
   observed_at: Date;
   status: MatchStatus;
 };
@@ -312,20 +314,18 @@ async function decideLocked(
     order by observed_at`;
   const observationsOf = group(observations, (row) => row.match_id);
 
-  // The fourth query (N-9), with no window at all: one row per match, served
-  // by the same index. A silent match has nothing inside the fifteen minutes
-  // above, and it is precisely the silent match whose trace has to say when
-  // it was last heard from.
+  // The fourth query (N-9), with no window at all, served by the same index.
+  // A silent match has nothing inside the fifteen minutes above, and it is
+  // precisely the silent match whose trace has to say when it was last heard
+  // from. One row per (match, source, live or not) and not one per match
+  // (SPEC-048, ADR-027 §1): a live the engine never receives is not "heard",
+  // so the last heard is the latest row the filter admits.
   const lastHeardRows = await sql<LastHeardRow[]>`
-    select distinct on (match_id) match_id, observed_at, status
+    select distinct on (match_id, source_id, status = 'live')
+      match_id, source_id, observed_at, status
     from observations where match_id = any(${any})
-    order by match_id, observed_at desc`;
-  const lastHeardOf = new Map(
-    lastHeardRows.map((row) => [
-      row.match_id,
-      { observedAt: instant(row.observed_at), status: row.status },
-    ]),
-  );
+    order by match_id, source_id, status = 'live', observed_at desc`;
+  const lastHeardsOf = group(lastHeardRows, (row) => row.match_id);
 
   for (const row of matches) {
     counts.matches += 1;
@@ -335,12 +335,24 @@ async function decideLocked(
       kickoff: instant(row.kickoff),
     };
     const current = currentOf.get(row.id);
+    // The frontier ingest -> engine of ADR-027 §2 (SPEC-048).
+    const admitted = admittedByEngine(sources, row.competition_id);
+    const heard = (lastHeardsOf.get(row.id) ?? [])
+      .filter((r) => admitted({ sourceId: r.source_id, status: r.status }))
+      .sort((a, b) => b.observed_at.getTime() - a.observed_at.getTime())[0];
     const output = decide({
       match,
       current: current === undefined ? null : toDecision(current),
-      observations: (observationsOf.get(row.id) ?? []).map(toObservation),
+      observations: forEngine(
+        sources,
+        row.competition_id,
+        (observationsOf.get(row.id) ?? []).map(toObservation),
+      ),
       priority: priorityLookup(sources, row.competition_id),
-      lastHeard: lastHeardOf.get(row.id) ?? null,
+      lastHeard:
+        heard === undefined
+          ? null
+          : { observedAt: instant(heard.observed_at), status: heard.status },
       now,
     });
     if (output.decision !== null) {
@@ -376,7 +388,13 @@ export async function decideRecovered(
   );
   const rowOf = new Map(locked.map((row) => [row.id, row]));
   const byInstant = new Map<Instant, Set<string>>();
-  for (const o of observations) {
+  // ADR-027 §2 (SPEC-048): an instant only of excluded lives is no instant
+  // of the engine; decideLocked filters what it reads at the others.
+  const admitted = observations.filter((o) => {
+    const row = rowOf.get(o.matchId);
+    return row !== undefined && admittedByEngine(sources, row.competition_id)(o);
+  });
+  for (const o of admitted) {
     const ids = byInstant.get(o.observedAt) ?? new Set<string>();
     ids.add(o.matchId);
     byInstant.set(o.observedAt, ids);
