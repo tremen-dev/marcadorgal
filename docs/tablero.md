@@ -82,6 +82,7 @@ Actualizado: 2026-11-03
 | SPEC-029 — endurecer-web-reader-purgar-cron-y-v-7 | hecho | 2026-10-10 (sdd-verificador) |
 | SPEC-035 — motor-serializado-por-partido | hecho | 2026-10-15 (sdd-verificador) |
 | SPEC-043 — migraciones-automaticas-al-fusionar | hecho | 2026-11-02 (sdd-verificador) |
+| SPEC-047 — entorno-de-base-local-y-gates-en-windows | borrador | 2026-11-03 (sdd-arquitecto) |
 
 ## ADRs
 
@@ -118,3 +119,4 @@ Actualizado: 2026-11-03
 - hecho: 42
 - en-revision: 2
 - aprobada: 1
+- borrador: 1
