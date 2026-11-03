@@ -14,6 +14,7 @@ import {
   informeRfef,
   parseEvidencia,
   type RfefAlert,
+  type RfefDecision,
   type RfefMatch,
   type RfefObservation,
 } from "./informe-rfef.ts";
@@ -191,10 +192,53 @@ const exportDe = (
   fichero: string,
   exportedAt: string,
   matches: Record<string, unknown>[],
+  date = FECHA,
 ): ExportFichero => ({
   fichero,
-  contenido: JSON.stringify({ exportedAt, date: FECHA, matches }),
+  contenido: JSON.stringify({ exportedAt, date, matches }),
 });
+
+// A single match outside the recipe, with its aliases and, if given, its acta
+// row in the export of the day after.
+function suelto(
+  w: Mundo,
+  comp: string,
+  id: string,
+  kickoff: Instant,
+  acta: [number, number] | null,
+  names: [string, string] = [`Local ${id}`, `Visita ${id}`],
+): RfefMatch {
+  const [home, away] = names;
+  w.teams.push(
+    { externalId: home.toLowerCase(), externalName: home, teamId: `${id}-h` },
+    { externalId: away.toLowerCase(), externalName: away, teamId: `${id}-a` },
+  );
+  const m: RfefMatch = {
+    id,
+    competitionId: comp,
+    competitionName: comp,
+    round: 12,
+    kickoff,
+    homeTeamId: `${id}-h`,
+    awayTeamId: `${id}-a`,
+    homeName: home,
+    awayName: away,
+    status: "live",
+    score: { home: 0, away: 0 },
+  };
+  w.matches.push(m);
+  if (acta !== null)
+    w.actaRows.push(fila(comp, 0, home, away, acta, "FINISHED", "static:a"));
+  return m;
+}
+
+const decision = (
+  matchId: string,
+  version: number,
+  decidedAt: Instant,
+  status: RfefDecision["status"],
+  winnerSourceId: string | null,
+): RfefDecision => ({ matchId, version, decidedAt, status, winnerSourceId });
 
 const evidenciaLimpia = (): Evidencia => ({
   explorer: {
@@ -221,6 +265,7 @@ function input(
     observations: w.observations,
     alerts: [],
     attempts: [],
+    decisions: [],
     exportsDelDia: [
       exportDe("export-dia.json", "2026-11-07T22:59:00.000Z", w.rows),
     ],
@@ -325,23 +370,9 @@ describe("SPEC-039 CA-1 (b) desfase por gol", () => {
 });
 
 describe("SPEC-039 CA-1 (c) cobertura", () => {
-  it("counts rfef live while API-Football says scheduled past the kickoff or is silent ≥ 15 min, and the minutes", () => {
-    const w = vacio();
-    const kickoff = KICKOFF0;
-    const id = `${T}-x`;
-    w.matches.push({
-      id,
-      competitionId: T,
-      competitionName: T,
-      round: 12,
-      kickoff,
-      homeTeamId: "h",
-      awayTeamId: "a",
-      homeName: "H",
-      awayName: "A",
-      status: "live",
-      score: { home: 0, away: 0 },
-    });
+  // rfef live every minute from 1' to 10' (9 intervals of 1 min) at 0-0,
+  // while API-Football still says scheduled from before the kickoff.
+  const silencioAf = (w: Mundo, id: string, kickoff: Instant) =>
     w.observations.push(
       obs({
         matchId: id,
@@ -350,7 +381,6 @@ describe("SPEC-039 CA-1 (c) cobertura", () => {
         score: null,
         receivedAt: plus(kickoff, -5 * MINUTE_MS),
       }),
-      // rfef live every minute from 1' to 10' (9 intervals of 1 min).
       ...Array.from({ length: 10 }, (_, k) =>
         obs({
           matchId: id,
@@ -361,34 +391,26 @@ describe("SPEC-039 CA-1 (c) cobertura", () => {
         }),
       ),
     );
+
+  it("counts rfef live while API-Football says scheduled past the kickoff or is silent ≥ 15 min, and the minutes", () => {
+    const w = vacio();
+    const id = `${T}-x`;
+    suelto(w, T, id, KICKOFF0, [0, 0]);
+    silencioAf(w, id, KICKOFF0);
     const c = de(informeRfef(input(w)), T).cobertura;
-    expect(c.partidos).toEqual([id]);
-    expect(c.minutos).toBe(9);
+    expect(c.observado).toEqual({ partidos: [id], minutos: 9 });
   });
 
   it("does not count while API-Football gives a fresh live", () => {
     const w = competicion(vacio(), T, { n: 1 });
     const c = de(informeRfef(input(w)), T).cobertura;
-    expect(c.partidos).toEqual([]);
-    expect(c.minutos).toBe(0);
+    expect(c.observado).toEqual({ partidos: [], minutos: 0 });
   });
 
   it("an interval is capped at the freshness of RN-01 (5 min)", () => {
     const w = vacio();
     const id = `${T}-y`;
-    w.matches.push({
-      id,
-      competitionId: T,
-      competitionName: T,
-      round: 12,
-      kickoff: KICKOFF0,
-      homeTeamId: "h",
-      awayTeamId: "a",
-      homeName: "H",
-      awayName: "A",
-      status: "live",
-      score: { home: 0, away: 0 },
-    });
+    suelto(w, T, id, KICKOFF0, [0, 0]);
     w.observations.push(
       obs({
         matchId: id,
@@ -405,7 +427,61 @@ describe("SPEC-039 CA-1 (c) cobertura", () => {
         receivedAt: plus(KICKOFF0, 21 * MINUTE_MS),
       }),
     );
-    expect(de(informeRfef(input(w)), T).cobertura.minutos).toBe(5);
+    expect(de(informeRfef(input(w)), T).cobertura.observado.minutos).toBe(5);
+  });
+
+  it("publicado counts only while the current Decision is live with the rfef as winner", () => {
+    const w = vacio();
+    const id = `${T}-x`;
+    suelto(w, T, id, KICKOFF0, [0, 0]);
+    silencioAf(w, id, KICKOFF0);
+    const decisions = [
+      decision(id, 1, plus(KICKOFF0, -60 * MINUTE_MS), "scheduled", null),
+      // 1'..4' api-football's stale live, 4'..10' the rfef's: 6 min.
+      decision(id, 2, plus(KICKOFF0, 30 * SEC), "live", "api-football"),
+      decision(id, 3, plus(KICKOFF0, 4 * MINUTE_MS), "live", "rfef"),
+      decision(id, 4, plus(KICKOFF0, 10 * MINUTE_MS), "live", "operator"),
+    ];
+    const r = informeRfef(input(w, { decisions }));
+    const c = de(r, T).cobertura;
+    expect(c.observado.minutos).toBe(9);
+    expect(c.publicado).toEqual({ partidos: [id], minutos: 6 });
+    expect(c.observoSinDecidir).toBe(false);
+    expect(r.texto).not.toContain("la rfef observó sin decidir");
+  });
+
+  it("observed > 0 and published 0 says «la rfef observó sin decidir» (liveObservedOnly)", () => {
+    const w = vacio();
+    const id = `${T}-x`;
+    suelto(w, T, id, KICKOFF0, [0, 0]);
+    silencioAf(w, id, KICKOFF0);
+    const r = informeRfef(input(w));
+    const c = de(r, T).cobertura;
+    expect(c.publicado).toEqual({ partidos: [], minutos: 0 });
+    expect(c.observoSinDecidir).toBe(true);
+    const fila1 = r.texto.split("\n").find((l) => l.startsWith(`| ${T} | 1 |`));
+    expect(fila1).toContain("la rfef observó sin decidir");
+    expect(fila1).toContain("obs. 1 p, 9 min");
+    expect(fila1).toContain("pub. 0 p, 0 min");
+  });
+
+  it("matches without acta or with ≠ acta en directo do not add: they are listed apart", () => {
+    const w = vacio();
+    const sinActa = `${T}-s`;
+    const distinto = `${T}-d`;
+    suelto(w, T, sinActa, KICKOFF0, null);
+    suelto(w, T, distinto, plus(KICKOFF0, 180 * MINUTE_MS), [1, 0]);
+    silencioAf(w, sinActa, KICKOFF0);
+    silencioAf(w, distinto, plus(KICKOFF0, 180 * MINUTE_MS));
+    const r = informeRfef(input(w));
+    const c = de(r, T).cobertura;
+    expect(c.observado).toEqual({ partidos: [], minutos: 0 });
+    expect(c.observoSinDecidir).toBe(false);
+    expect(c.aparte).toEqual([
+      { matchId: sinActa, motivo: "sin acta" },
+      { matchId: distinto, motivo: "≠ acta en directo" },
+    ]);
+    expect(r.texto).toContain(`${sinActa} (sin acta)`);
   });
 });
 
@@ -668,7 +744,7 @@ describe("SPEC-039 CA-4 criterio de subida", () => {
     expect(tarde.desfase.ok).toBe(false);
     expect(tarde.recomendacion).toBe("5");
     expect(tarde.texto).toMatch(
-      /^5 — reserva útil, sin subir \(directo ganado: 0 partidos, 0 min\)$/,
+      /^5 — reserva útil, sin subir \(directo ganado: obs\. 0 p, 0 min; pub\. 0 p, 0 min\)$/,
     );
 
     const w = sano();
@@ -771,6 +847,234 @@ describe("SPEC-039 CA-4 criterio de subida", () => {
       );
     expect(tabla).toHaveLength(5);
     expect(tabla.find((l) => l.startsWith(`| ${T} `))).toMatch(/\| 50 \|$/);
+  });
+});
+
+// The competition with no API-Football at all (F-SPEC-039-6): the recipe
+// without its rows.
+const sinApiFootball = (w: Mundo): Mundo => {
+  w.observations = w.observations.filter((o) => o.sourceId !== "api-football");
+  return w;
+};
+
+describe("SPEC-039 refinamiento H-5: sin datos de API-Football", () => {
+  it("CA-1 (b) without API-Football observations in the competition says «sin datos», not n=0", () => {
+    const r = informeRfef(
+      input(sinApiFootball(competicion(vacio(), T, { n: 2 }))),
+    );
+    expect(de(r, T).desfase.sinDatos).toBe(true);
+    const fila1 = r.texto.split("\n").find((l) => l.startsWith(`| ${T} | 2 |`));
+    expect(fila1).toContain("| sin datos |");
+    expect(fila1).not.toMatch(/\| 0 \| — \| — \|/);
+  });
+
+  it("CA-1 (b) with API-Football observations but no shared goal is n=0, not «sin datos»", () => {
+    const w = competicion(vacio(), T, { n: 1 });
+    w.observations = w.observations.filter(
+      (o) => !(o.sourceId === "rfef" && o.status === "live"),
+    );
+    const d = de(informeRfef(input(w)), T).desfase;
+    expect(d.sinDatos).toBe(false);
+    expect(d.n).toBe(0);
+  });
+
+  it("CA-2 a match without API-Football finished is «sin api-football»; with none in the competition Triples and ≠ api-football say «sin datos»", () => {
+    const w = competicion(vacio(), T, { n: 3 });
+    w.observations = w.observations.filter(
+      (o) =>
+        !(
+          o.matchId === `${T}-m0` &&
+          o.sourceId === "api-football" &&
+          o.status === "finished"
+        ),
+    );
+    const a = de(informeRfef(input(w)), T).acta;
+    expect(a.sinApiFootball).toBe(1);
+    expect(a.apiFootballSinDatos).toBe(false);
+    expect(a.triples).toBe(2);
+
+    const r = informeRfef(
+      input(sinApiFootball(competicion(vacio(), T, { n: 3 }))),
+    );
+    expect(de(r, T).acta).toMatchObject({
+      sinApiFootball: 3,
+      apiFootballSinDatos: true,
+      triples: 0,
+      difApiFootball: 0,
+    });
+    const fila1 = r.texto
+      .split("\n")
+      .find((l) => l.startsWith(`| ${T} | 3 | sin datos | sin datos |`));
+    expect(fila1).toBeDefined();
+  });
+
+  it("CA-4 (ii) is «sin datos» when (b) is, and with the others passing the row says «5 — sin referencia de desfase» with the live gained", () => {
+    const r = informeRfef(
+      input(sinApiFootball(competicion(vacio(), T, { n: 6 }))),
+    );
+    const c = de(r, T).criterio;
+    expect(c.desfase.ok).toBe(false);
+    expect(c.desfase.sinDatos).toBe(true);
+    expect([
+      c.acta.ok,
+      c.bloqueo.ok,
+      c.estrategias.ok,
+      c.intervenciones.ok,
+    ]).toEqual([true, true, true, true]);
+    expect(c.recomendacion).toBe("5");
+    expect(c.texto).toMatch(
+      /^5 — sin referencia de desfase \(directo ganado: obs\. \d+ p, \d+ min; pub\. 0 p, 0 min\)$/,
+    );
+    const fila1 = r.texto.split("\n").find((l) => l.endsWith(`| ${c.texto} |`));
+    expect(fila1).toContain("| sin datos |");
+  });
+
+  it("CA-4 (ii) «sin datos» with another condition failing is a plain 5", () => {
+    const ev = evidenciaLimpia();
+    ev.intervenciones = [{ instante: KICKOFF0, competicion: T, motivo: "x" }];
+    const c = de(
+      informeRfef(
+        input(sinApiFootball(competicion(vacio(), T, { n: 6 })), {
+          evidencia: ev,
+        }),
+      ),
+      T,
+    ).criterio;
+    expect(c.texto).toBe("5");
+  });
+});
+
+describe("SPEC-039 refinamiento H-5: ≠ acta en directo", () => {
+  it("CA-2 counts matches with acta whose last rfef live differs from it, with or without a rfef finished, and the minutes since its last change", () => {
+    const w = competicion(vacio(), T, { n: 3 });
+    // m0: the rfef froze at 0-0 from 1' to 91' and closed 1-0 later.
+    w.observations = w.observations.filter(
+      (o) =>
+        !(
+          o.matchId === `${T}-m0` &&
+          o.sourceId === "rfef" &&
+          o.status === "live" &&
+          o.score?.home === 1
+        ),
+    );
+    w.observations.push(
+      obs({
+        matchId: `${T}-m0`,
+        sourceId: "rfef",
+        status: "live",
+        score: { home: 0, away: 0 },
+        receivedAt: plus(KICKOFF0, 91 * MINUTE_MS),
+      }),
+    );
+    const a = de(informeRfef(input(w)), T).acta;
+    expect(a.difActaDirecto).toBe(1);
+    const p = a.partidos.find((x) => x.matchId === `${T}-m0`);
+    expect(p?.rfefLive).toEqual({ home: 0, away: 0 });
+    expect(p?.difActaDirecto).toBe(true);
+    expect(p?.minutosSinCambio).toBe(90);
+    expect(a.partidos.filter((x) => x.difActaDirecto)).toHaveLength(1);
+  });
+
+  it("CA-4 (i) fails with one ≠ acta en directo even if every rfef finished matches", () => {
+    const w = competicion(vacio(), T, { n: 6, deltaS: -5 });
+    w.observations.push(
+      obs({
+        matchId: `${T}-m2`,
+        sourceId: "rfef",
+        status: "live",
+        score: { home: 0, away: 0 },
+        receivedAt: plus(KICKOFF0, (6 * 60 + 100) * MINUTE_MS),
+      }),
+    );
+    const c = de(informeRfef(input(w)), T).criterio;
+    expect(c.acta.ok).toBe(false);
+    expect(c.acta.detalle).toContain("1 ≠ directo");
+  });
+
+  it("CA-4 (i) counts over matches with acta and some rfef observation, finished or not", () => {
+    // Six matches with acta whose rfef only saw them live (no finished).
+    const w = competicion(vacio(), T, { n: 6, deltaS: -5 });
+    w.observations = w.observations.filter(
+      (o) => !(o.sourceId === "rfef" && o.status === "finished"),
+    );
+    const c = de(informeRfef(input(w)), T).criterio;
+    expect(c.acta.ok).toBe(true);
+    expect(c.acta.detalle).toContain("n=6");
+    // Seven matches, one without any rfef observation: still six.
+    const w2 = competicion(vacio(), T, { n: 7, deltaS: -5 });
+    w2.observations = w2.observations.filter(
+      (o) => !(o.matchId === `${T}-m6` && o.sourceId === "rfef"),
+    );
+    expect(de(informeRfef(input(w2)), T).criterio.acta.detalle).toContain(
+      "n=6",
+    );
+  });
+});
+
+// The incident of 2026-11-02 (F-SPEC-039-7): 215 rfef live 0-0 between 20:02Z
+// and 21:50Z, no rfef finished, no API-Football (free plan), acta 2-1 and the
+// operator closing the Decision 2-1.
+describe("SPEC-039 sonda Deportivo–Osasuna 2026-11-02", () => {
+  it("gives ≠ acta en directo 1, (i) «no» and coverage 0", () => {
+    const P = "primera-division";
+    const id = `${P}-depor-osasuna`;
+    const kickoff = "2026-11-02T20:00:00.000Z" as Instant;
+    const w = vacio();
+    const m = suelto(w, P, id, kickoff, null, ["Deportivo", "Osasuna"]);
+    m.status = "finished";
+    m.score = { home: 2, away: 1 };
+    const desde = plus(kickoff, 2 * MINUTE_MS);
+    const paso = (108 * MINUTE_MS) / 214;
+    for (let k = 0; k < 215; k += 1)
+      w.observations.push(
+        obs({
+          matchId: id,
+          sourceId: "rfef",
+          status: "live",
+          score: { home: 0, away: 0 },
+          receivedAt: plus(desde, Math.round(k * paso)),
+        }),
+      );
+    const acta = {
+      ...fila(P, 0, "Deportivo", "Osasuna", [2, 1], "FINISHED", "static:a"),
+      fechaIso: "2026-11-02",
+    };
+    const decisions = [
+      decision(id, 1, plus(kickoff, -60 * MINUTE_MS), "scheduled", null),
+      decision(id, 2, plus(kickoff, 3 * MINUTE_MS), "live", "rfef"),
+      decision(id, 3, plus(kickoff, 130 * MINUTE_MS), "finished", "operator"),
+    ];
+    const r = informeRfef(
+      input(w, {
+        decisions,
+        exportsDelDia: [],
+        exportsActa: [
+          exportDe(
+            "export-2026-11-02-acta.json",
+            "2026-11-03T10:00:00.000Z",
+            [acta],
+            "2026-11-02",
+          ),
+        ],
+      }),
+    );
+    const c = de(r, P);
+    expect(c.obsRfef).toBe(215);
+    expect(c.acta.digitosFalsos).toBe(0);
+    expect(c.acta.difActaDirecto).toBe(1);
+    const p = c.acta.partidos[0];
+    expect(p.acta).toEqual({ home: 2, away: 1 });
+    expect(p.minutosSinCambio).toBe(108);
+    expect(c.criterio.acta.ok).toBe(false);
+    expect(c.criterio.desfase.sinDatos).toBe(true);
+    expect(c.cobertura.observado).toEqual({ partidos: [], minutos: 0 });
+    expect(c.cobertura.publicado).toEqual({ partidos: [], minutos: 0 });
+    expect(c.cobertura.aparte).toEqual([
+      { matchId: id, motivo: "≠ acta en directo" },
+    ]);
+    expect(r.texto).toMatch(
+      /Deportivo – Osasuna\) \| 2-1 \|.*\| 0-0 \(108 min sin cambio\)/,
+    );
   });
 });
 

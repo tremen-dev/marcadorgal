@@ -3,6 +3,7 @@ import type { Instant, MatchStatus, Score } from "../model/index.ts";
 import type {
   RfefAlert,
   RfefAttempt,
+  RfefDecision,
   RfefMatch,
   RfefObservation,
 } from "./informe-rfef.ts";
@@ -23,6 +24,7 @@ export type InformeRfefFilas = {
   observations: RfefObservation[];
   alerts: RfefAlert[];
   attempts: RfefAttempt[];
+  decisions: RfefDecision[];
 };
 
 // The matchday is every match whose kickoff falls inside [desde, hasta], as in
@@ -133,6 +135,26 @@ export async function informeRfefFilas(
       and started_at >= ${desde} and started_at <= ${hasta}
     order by started_at`;
 
+  // CA-1 (c) publicado: every version of the Decision of those matches, with
+  // the source of its first observation (the winner it published or kept).
+  const decisions =
+    ids.length === 0
+      ? []
+      : await sql<
+          {
+            match_id: string;
+            version: number;
+            status: MatchStatus;
+            decided_at: Date;
+            winner: string | null;
+          }[]
+        >`select d.match_id, d.version, d.status, d.decided_at,
+            o.source_id as winner
+          from decisions d
+          left join observations o on o.id = d.observation_ids[1]
+          where d.match_id = any (${sql.array(ids)})
+          order by d.match_id, d.version`;
+
   return {
     seasons: [...new Set(matches.map((m) => m.season))].sort(),
     matches: matches.map((m) => ({
@@ -171,6 +193,13 @@ export async function informeRfefFilas(
       ok: a.ok,
       error: a.error,
       fueraDeVentana: a.fuera === null ? 0 : Number(a.fuera),
+    })),
+    decisions: decisions.map((d) => ({
+      matchId: d.match_id,
+      version: d.version,
+      status: d.status,
+      decidedAt: instant(d.decided_at),
+      winnerSourceId: d.winner,
     })),
   };
 }

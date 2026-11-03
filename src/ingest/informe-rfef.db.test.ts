@@ -61,6 +61,13 @@ describe("SPEC-039 informeRfefFilas contra la base", () => {
         values (${matchId}, 'rfef', 'live', 1, 0, null, ${at(29)}, ${at(30)}, ${ref}),
                (${matchId}, 'api-football', 'live', 1, 0, 30, ${at(30)}, ${at(30)}, ${refAf}),
                (${matchId}, 'api-football', 'live', 1, 0, 30, ${at(30)}, ${at(30)}, 'raw/none')`;
+      // CA-1 (c) publicado: the Decision with the rfef observation as winner.
+      const [rfefObs] = await tx<{ id: string }[]>`select id from observations
+        where match_id = ${matchId} and source_id = 'rfef'`;
+      await tx`insert into decisions (match_id, status, home_score, away_score, minute,
+          qualifier, rule, observation_ids, decided_at)
+        values (${matchId}, 'live', 1, 0, null, 'provisional', 'RN-01',
+          ${[rfefObs.id]}, ${at(30)})`;
       await tx`insert into alerts (kind, match_id, opened_at, resolved_at, details)
         values ('conflict', ${matchId}, ${at(40)}, ${at(42)}, ${tx.json({ winner: { sourceId: "api-football" }, rival: { sourceId: "rfef" } })}),
                ('silence', ${matchId}, ${at(40)}, null, '{}'::jsonb)`;
@@ -74,8 +81,9 @@ describe("SPEC-039 informeRfefFilas contra la base", () => {
           awayTeamId: "test-away",
           homeName: "Home",
           round: 12,
-          status: "scheduled",
-          score: null,
+          // The board reads the Decision seeded below.
+          status: "live",
+          score: { home: 1, away: 0 },
         }),
       ]);
       expect(f.seasons).toContain("2026-27");
@@ -93,6 +101,15 @@ describe("SPEC-039 informeRfefFilas contra la base", () => {
       expect(
         f.alerts.filter((a) => a.matchId === matchId).map((a) => a.kind),
       ).toEqual(["conflict"]);
+      expect(f.decisions.filter((d) => d.matchId === matchId)).toEqual([
+        {
+          matchId,
+          version: 1,
+          status: "live",
+          decidedAt: at(30),
+          winnerSourceId: "rfef",
+        },
+      ]);
       const attempts = f.attempts.filter(
         (a) => a.startedAt >= at(30) && a.startedAt <= at(32),
       );

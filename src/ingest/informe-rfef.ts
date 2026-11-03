@@ -89,6 +89,16 @@ export type RfefAttempt = {
   fueraDeVentana: number;
 };
 
+// CA-1 (c) publicado: a version of the Decision and the source that won it
+// (the source of its first observation; a held score keeps the previous one).
+export type RfefDecision = {
+  matchId: string;
+  version: number;
+  status: MatchStatus;
+  decidedAt: Instant;
+  winnerSourceId: string | null;
+};
+
 // An export of explorer as stored in _qa/SPEC-039/: the file name and its body.
 export type ExportFichero = { fichero: string; contenido: string };
 
@@ -145,6 +155,7 @@ export type InformeRfefInput = {
   observations: readonly RfefObservation[];
   alerts: readonly RfefAlert[];
   attempts: readonly RfefAttempt[];
+  decisions: readonly RfefDecision[];
   // The exports of each day, taken at its close (CA-1 f), and the exports of
   // the same dates taken the day after: FINISHED is the closed acta (CA-2).
   exportsDelDia: readonly ExportFichero[];
@@ -171,10 +182,20 @@ export type ActaPartido = {
   decision: Score | null;
   decisionFinished: boolean;
   rfef: Score | null;
+  // Some rfef observation of the match, of any status (CA-4 i).
+  conRfef: boolean;
+  // The last rfef live and the minutes it stood unchanged until then.
+  rfefLive: Score | null;
+  minutosSinCambio: number | null;
+  // CA-2: with acta, the last rfef live differs from it.
+  difActaDirecto: boolean;
   digitosFalsos: number;
 };
 
-export type Condicion = { ok: boolean; detalle: string };
+// sinDatos: the condition cannot be judged (CA-4 ii without API-Football).
+export type Condicion = { ok: boolean; detalle: string; sinDatos?: boolean };
+
+export type Cifra = { partidos: string[]; minutos: number };
 
 export type Criterio = {
   acta: Condicion;
@@ -198,8 +219,16 @@ export type ResumenCompeticion = {
     p95Ms: number | null;
     deltas: Desfase[];
     sinReloj: number;
+    // No API-Football observation in the competition: «sin datos», not n=0.
+    sinDatos: boolean;
   };
-  cobertura: { partidos: string[]; minutos: number };
+  cobertura: {
+    observado: Cifra;
+    publicado: Cifra;
+    observoSinDecidir: boolean;
+    // Matches that would count but have no acta or differ from it live.
+    aparte: { matchId: string; motivo: "sin acta" | "≠ acta en directo" }[];
+  };
   alertas: AlertaRfef[];
   futuras: number;
   estrategias: {
@@ -217,6 +246,11 @@ export type ResumenCompeticion = {
     difDecision: number;
     difRfef: number;
     sinActa: number;
+    sinApiFootball: number;
+    // No API-Football finished in the competition: Triples and ≠ api-football
+    // say «sin datos».
+    apiFootballSinDatos: boolean;
+    difActaDirecto: number;
     digitosFalsos: number;
   };
   bloqueo: {
@@ -362,6 +396,9 @@ function desfaseDe(
     p95Ms: percentil(values, 0.95),
     deltas,
     sinReloj,
+    sinDatos: !matchIds.some((m) =>
+      (obsOf.get(m) ?? []).some((o) => o.sourceId === API_FOOTBALL),
+    ),
   };
 }
 
@@ -371,18 +408,30 @@ function desfaseDe(
 // sen_sinal there: its last observation is older than SILENCE_MINUTES or there
 // is none, or it still says scheduled with the kickoff gone. A rfef live
 // observation at such a t covers until its next one, capped at the freshness
-// of RN-01 (OBSERVATION_WINDOW_MINUTES).
+// of RN-01 (OBSERVATION_WINDOW_MINUTES). Two figures: observado, every such
+// interval; publicado, the ones where the current Decision was live with the
+// rfef as winner. Only matches with acta and without ≠ acta en directo add
+// (CA-2): a frozen score is not live gained (F-SPEC-039-7).
 function coberturaDe(
   matches: readonly RfefMatch[],
   obsOf: Map<string, RfefObservation[]>,
+  decisionsOf: Map<string, RfefDecision[]>,
+  actaOf: Map<string, ActaPartido>,
 ): ResumenCompeticion["cobertura"] {
-  const partidos: string[] = [];
-  let ms = 0;
+  const observado: Cifra = { partidos: [], minutos: 0 };
+  const publicado: Cifra = { partidos: [], minutos: 0 };
+  const aparte: ResumenCompeticion["cobertura"]["aparte"] = [];
+  let msObservado = 0;
+  let msPublicado = 0;
   for (const m of matches) {
     const obs = obsOf.get(m.id) ?? [];
     const af = obs.filter((o) => o.sourceId === API_FOOTBALL);
     const rfef = obs.filter((o) => o.sourceId === RFEF && o.status === "live");
+    const decisions = decisionsOf.get(m.id) ?? [];
+    let ms = 0;
+    let msPub = 0;
     let cubierto = false;
+    let publicadoAqui = false;
     rfef.forEach((r, i) => {
       const t = r.receivedAt;
       const last = af.filter((o) => o.receivedAt <= t).at(-1);
@@ -392,16 +441,43 @@ function coberturaDe(
         (last.status === "scheduled" && t > m.kickoff);
       if (!sinDirecto) return;
       cubierto = true;
+      const vigente = decisions.filter((d) => d.decidedAt <= t).at(-1);
+      const deRfef =
+        vigente?.status === "live" && vigente.winnerSourceId === RFEF;
+      if (deRfef) publicadoAqui = true;
       const next = rfef[i + 1];
-      if (next !== undefined)
-        ms += Math.min(
-          instantDiff(t, next.receivedAt),
-          OBSERVATION_WINDOW_MINUTES * MINUTE_MS,
-        );
+      if (next === undefined) return;
+      const tramo = Math.min(
+        instantDiff(t, next.receivedAt),
+        OBSERVATION_WINDOW_MINUTES * MINUTE_MS,
+      );
+      ms += tramo;
+      if (deRfef) msPub += tramo;
     });
-    if (cubierto) partidos.push(m.id);
+    if (!cubierto) continue;
+    const acta = actaOf.get(m.id);
+    if (acta === undefined || acta.acta === null) {
+      aparte.push({ matchId: m.id, motivo: "sin acta" });
+      continue;
+    }
+    if (acta.difActaDirecto) {
+      aparte.push({ matchId: m.id, motivo: "≠ acta en directo" });
+      continue;
+    }
+    observado.partidos.push(m.id);
+    msObservado += ms;
+    if (publicadoAqui) publicado.partidos.push(m.id);
+    msPublicado += msPub;
   }
-  return { partidos, minutos: Math.round(ms / MINUTE_MS) };
+  observado.minutos = Math.round(msObservado / MINUTE_MS);
+  publicado.minutos = Math.round(msPublicado / MINUTE_MS);
+  return {
+    observado,
+    publicado,
+    observoSinDecidir:
+      observado.partidos.length > 0 && publicado.partidos.length === 0,
+    aparte,
+  };
 }
 
 // --------------------------------------------------------- (d) alertas rfef
@@ -474,25 +550,31 @@ function actaDe(input: InformeRfefInput, avisos: string[]): Map<string, Score> {
 // ----------------------------------------------------------------- CA-4
 
 function criterioDe(r: Omit<ResumenCompeticion, "criterio">): Criterio {
-  const conRfef = r.acta.partidos.filter((p) => p.rfef !== null);
-  const iguales = conRfef.filter((p) => sameScore(p.rfef, p.acta)).length;
+  // (i) over the matches with acta and some rfef observation, finished or not.
+  const base = r.acta.partidos.filter((p) => p.acta !== null && p.conRfef);
+  const finished = base.filter((p) => p.rfef !== null);
+  const iguales = finished.filter((p) => sameScore(p.rfef, p.acta)).length;
+  const difDirecto = base.filter((p) => p.difActaDirecto).length;
   const acta: Condicion = {
     ok:
-      conRfef.length >= SUBIDA_MIN_PARTIDOS &&
-      iguales === conRfef.length &&
-      r.acta.digitosFalsos === 0,
-    detalle: `${iguales}/${conRfef.length} = acta, ${r.acta.digitosFalsos} falsos`,
+      base.length >= SUBIDA_MIN_PARTIDOS &&
+      iguales === finished.length &&
+      r.acta.digitosFalsos === 0 &&
+      difDirecto === 0,
+    detalle: `${iguales}/${finished.length} = acta, ${r.acta.digitosFalsos} falsos, ${difDirecto} ≠ directo, n=${base.length}`,
   };
   const d = r.desfase;
-  const desfase: Condicion = {
-    ok:
-      d.n >= SUBIDA_MIN_GOLES &&
-      d.medianaMs !== null &&
-      d.p95Ms !== null &&
-      d.medianaMs <= SUBIDA_MEDIANA_MAX_MS &&
-      d.p95Ms <= SUBIDA_P95_MAX_MS,
-    detalle: `med ${seg(d.medianaMs)}, p95 ${seg(d.p95Ms)}, n=${d.n}`,
-  };
+  const desfase: Condicion = d.sinDatos
+    ? { ok: false, detalle: "sin api-football", sinDatos: true }
+    : {
+        ok:
+          d.n >= SUBIDA_MIN_GOLES &&
+          d.medianaMs !== null &&
+          d.p95Ms !== null &&
+          d.medianaMs <= SUBIDA_MEDIANA_MAX_MS &&
+          d.p95Ms <= SUBIDA_P95_MAX_MS,
+        detalle: `med ${seg(d.medianaMs)}, p95 ${seg(d.p95Ms)}, n=${d.n}`,
+      };
   const b = r.bloqueo;
   const fraccion = b.ventanaMs === 0 ? null : b.cooldownMs / b.ventanaMs;
   const bloqueo: Condicion =
@@ -523,11 +605,15 @@ function criterioDe(r: Omit<ResumenCompeticion, "criterio">): Criterio {
   const soloDesfase =
     !desfase.ok &&
     [acta, bloqueo, estrategias, intervenciones].every((c) => c.ok);
+  const { observado: o, publicado: p } = r.cobertura;
+  const ganado = `directo ganado: obs. ${o.partidos.length} p, ${o.minutos} min; pub. ${p.partidos.length} p, ${p.minutos} min`;
   const texto = subir
     ? "50"
-    : soloDesfase
-      ? `5 — reserva útil, sin subir (directo ganado: ${r.cobertura.partidos.length} partidos, ${r.cobertura.minutos} min)`
-      : "5";
+    : !soloDesfase
+      ? "5"
+      : desfase.sinDatos
+        ? `5 — sin referencia de desfase (${ganado})`
+        : `5 — reserva útil, sin subir (${ganado})`;
   return {
     acta,
     desfase,
@@ -548,6 +634,12 @@ export function informeRfef(input: InformeRfefInput): InformeRfef {
     const list = obsOf.get(o.matchId) ?? [];
     list.push(o);
     obsOf.set(o.matchId, list);
+  }
+  const decisionsOf = new Map<string, RfefDecision[]>();
+  for (const d of [...input.decisions].sort((a, b) => a.version - b.version)) {
+    const list = decisionsOf.get(d.matchId) ?? [];
+    list.push(d);
+    decisionsOf.set(d.matchId, list);
   }
   const competitionOfGroup = new Map(
     Object.entries(input.aliases.competitions ?? {}),
@@ -621,6 +713,15 @@ export function informeRfef(input: InformeRfefInput): InformeRfef {
           .filter((o) => o.sourceId === source && o.status === "finished")
           .at(-1)?.score ?? null;
       const a = acta.get(m.id) ?? null;
+      const live = own.filter(
+        (o) => o.sourceId === RFEF && o.status === "live" && o.score !== null,
+      );
+      const ultima = live.at(-1);
+      let desde = ultima;
+      for (let i = live.length - 1; i >= 0; i -= 1) {
+        if (!sameScore(live[i].score, ultima?.score ?? null)) break;
+        desde = live[i];
+      }
       const digitosFalsos =
         a === null
           ? 0
@@ -640,10 +741,23 @@ export function informeRfef(input: InformeRfefInput): InformeRfef {
         decision: m.score,
         decisionFinished: m.status === "finished",
         rfef: lastFinished(RFEF),
+        conRfef: own.some((o) => o.sourceId === RFEF),
+        rfefLive: ultima?.score ?? null,
+        minutosSinCambio:
+          ultima === undefined || desde === undefined
+            ? null
+            : Math.round(
+                instantDiff(desde.receivedAt, ultima.receivedAt) / MINUTE_MS,
+              ),
+        difActaDirecto:
+          a !== null && ultima !== undefined && !sameScore(ultima.score, a),
         digitosFalsos,
       };
     });
     const conActa = partidosActa.filter((p) => p.acta !== null);
+    const apiFootballSinDatos = partidosActa.every(
+      (p) => p.apiFootball === null,
+    );
 
     const ventana = union(
       matches.map((m) => ({
@@ -663,7 +777,12 @@ export function informeRfef(input: InformeRfefInput): InformeRfef {
       obsRfef: rfefObs.length,
       obsApiFootball: obs.filter((o) => o.sourceId === API_FOOTBALL).length,
       desfase: desfaseDe(ids, obsOf),
-      cobertura: coberturaDe(matches, obsOf),
+      cobertura: coberturaDe(
+        matches,
+        obsOf,
+        decisionsOf,
+        new Map(partidosActa.map((p) => [p.matchId, p])),
+      ),
       alertas,
       futuras: rfefObs.filter((o) => o.observedAt > o.receivedAt).length,
       estrategias: {
@@ -697,6 +816,9 @@ export function informeRfef(input: InformeRfefInput): InformeRfef {
           (p) => p.rfef !== null && !sameScore(p.acta, p.rfef),
         ).length,
         sinActa: partidosActa.length - conActa.length,
+        sinApiFootball: conActa.filter((p) => p.apiFootball === null).length,
+        apiFootballSinDatos,
+        difActaDirecto: conActa.filter((p) => p.difActaDirecto).length,
         digitosFalsos: partidosActa.reduce(
           (acc, p) => acc + p.digitosFalsos,
           0,
@@ -733,7 +855,10 @@ export function informeRfef(input: InformeRfefInput): InformeRfef {
 
 // ----------------------------------------------------------------- render
 
-const si = (c: Condicion) => `${c.ok ? "sí" : "no"} (${c.detalle})`;
+const si = (c: Condicion) =>
+  c.sinDatos ? "sin datos" : `${c.ok ? "sí" : "no"} (${c.detalle})`;
+const cobertura = (c: ResumenCompeticion["cobertura"]) =>
+  `obs. ${c.observado.partidos.length} p, ${c.observado.minutos} min · pub. ${c.publicado.partidos.length} p, ${c.publicado.minutos} min${c.observoSinDecidir ? " — la rfef observó sin decidir" : ""}${c.aparte.length > 0 ? ` (${c.aparte.length} aparte)` : ""}`;
 
 function render(
   input: InformeRfefInput,
@@ -751,11 +876,11 @@ function render(
     "",
     "## Por competición (CA-1 a-d)",
     "",
-    "| Competición | Partidos | Obs. rfef | Obs. api-football | Δ n | Δ mediana | Δ p95 | Cobertura | conflict | RN-03 |",
+    "| Competición | Partidos | Obs. rfef | Obs. api-football | Δ n | Δ mediana | Δ p95 | Cobertura (obs. / pub.) | conflict | RN-03 |",
     "|---|---|---|---|---|---|---|---|---|---|",
     ...cs.map(
       (c) =>
-        `| ${nombre(c)} | ${c.partidos} | ${c.obsRfef} | ${c.obsApiFootball} | ${c.desfase.n} | ${seg(c.desfase.medianaMs)} | ${seg(c.desfase.p95Ms)} | ${c.cobertura.partidos.length} p, ${c.cobertura.minutos} min | ${c.alertas.filter((a) => a.kind === "conflict").length} | ${c.alertas.filter((a) => a.kind === "RN-03").length} |`,
+        `| ${nombre(c)} | ${c.partidos} | ${c.obsRfef} | ${c.obsApiFootball} | ${c.desfase.sinDatos ? "sin datos | — | —" : `${c.desfase.n} | ${seg(c.desfase.medianaMs)} | ${seg(c.desfase.p95Ms)}`} | ${cobertura(c.cobertura)} | ${c.alertas.filter((a) => a.kind === "conflict").length} | ${c.alertas.filter((a) => a.kind === "RN-03").length} |`,
     ),
     "",
     "## Fallos y descartes (CA-1 e)",
@@ -784,11 +909,11 @@ function render(
     "",
     "## Contraste con acta cerrada (CA-2)",
     "",
-    "| Competición | finished | Triples | ≠ api-football | ≠ Decision | ≠ rfef | Sin acta | Dígitos falsos rfef |",
-    "|---|---|---|---|---|---|---|---|",
+    "| Competición | finished | Triples | ≠ api-football | ≠ Decision | ≠ rfef | ≠ acta en directo | Sin acta | Sin api-football | Dígitos falsos rfef |",
+    "|---|---|---|---|---|---|---|---|---|---|",
     ...cs.map(
       (c) =>
-        `| ${nombre(c)} | ${c.acta.partidos.length} | ${c.acta.triples} | ${c.acta.difApiFootball} | ${c.acta.difDecision} | ${c.acta.difRfef} | ${c.acta.sinActa} | ${c.acta.digitosFalsos} |`,
+        `| ${nombre(c)} | ${c.acta.partidos.length} | ${c.acta.apiFootballSinDatos ? "sin datos | sin datos" : `${c.acta.triples} | ${c.acta.difApiFootball}`} | ${c.acta.difDecision} | ${c.acta.difRfef} | ${c.acta.difActaDirecto} | ${c.acta.sinActa} | ${c.acta.sinApiFootball} | ${c.acta.digitosFalsos} |`,
     ),
     ...(avisos.length === 0 ? [] : ["", ...avisos.map((a) => `- Aviso: ${a}`)]),
     "",
@@ -812,7 +937,7 @@ function render(
         `| ${nombre(c)} | ${si(c.criterio.acta)} | ${si(c.criterio.desfase)} | ${si(c.criterio.bloqueo)} | ${si(c.criterio.estrategias)} | ${si(c.criterio.intervenciones)} | ${c.criterio.texto} |`,
     ),
     "",
-    `Umbrales: (i) 100 % de los finished de rfef = acta y 0 dígitos falsos, ≥ ${SUBIDA_MIN_PARTIDOS} partidos; (ii) mediana Δ ≤ ${SUBIDA_MEDIANA_MAX_MS / 1000} s y p95 Δ ≤ ${SUBIDA_P95_MAX_MS / 1000} s, n ≥ ${SUBIDA_MIN_GOLES}; (iii) cooldown < ${SUBIDA_COOLDOWN_MAX * 100} % de la ventana y 0 anomalías; (iv) ≥ ${SUBIDA_ESTATICAS_MIN * 100} % static; (v) 0 intervenciones. La decisión es del titular, en un ADR que supersede ADR-023 §1.`,
+    `Umbrales: (i) ≥ ${SUBIDA_MIN_PARTIDOS} partidos con acta y observación rfef, 100 % de los finished de rfef = acta, 0 dígitos falsos y 0 ≠ acta en directo; (ii) mediana Δ ≤ ${SUBIDA_MEDIANA_MAX_MS / 1000} s y p95 Δ ≤ ${SUBIDA_P95_MAX_MS / 1000} s, n ≥ ${SUBIDA_MIN_GOLES} (sin api-football: sin datos); (iii) cooldown < ${SUBIDA_COOLDOWN_MAX * 100} % de la ventana y 0 anomalías; (iv) ≥ ${SUBIDA_ESTATICAS_MIN * 100} % static; (v) 0 intervenciones. La decisión es del titular, en un ADR que supersede ADR-023 §1.`,
     "",
     APENDICE,
     "",
@@ -832,7 +957,9 @@ function apendice(
     out.push(
       `- Desfase por gol: ${c.desfase.deltas.map((d) => `${d.matchId} ${d.marcador} ${seg(d.deltaMs)}`).join("; ") || "ninguno"}${c.desfase.sinReloj > 0 ? ` (${c.desfase.sinReloj} sin segundo reloj)` : ""}.`,
     );
-    out.push(`- Cobertura: ${c.cobertura.partidos.join(", ") || "ninguno"}.`);
+    out.push(
+      `- Cobertura: observado ${c.cobertura.observado.partidos.join(", ") || "ninguno"}; publicado ${c.cobertura.publicado.partidos.join(", ") || "ninguno"}.${c.cobertura.aparte.length > 0 ? ` Aparte: ${c.cobertura.aparte.map((a) => `${a.matchId} (${a.motivo})`).join("; ")}.` : ""}`,
+    );
     out.push(
       `- Alertas: ${c.alertas.map((a) => `${a.kind} ${a.matchId} ${a.openedAt} (${a.duracionMs === null ? "abierta" : `${Math.round(a.duracionMs / 1000)} s`})`).join("; ") || "ninguna"}.`,
     );
@@ -843,11 +970,11 @@ function apendice(
     if (c.acta.partidos.length > 0) {
       out.push(
         "",
-        "| Partido | Acta | api-football | Decision | rfef | Dígitos falsos |",
-        "|---|---|---|---|---|---|",
+        "| Partido | Acta | api-football | Decision | rfef | Última rfef live | Dígitos falsos |",
+        "|---|---|---|---|---|---|---|",
         ...c.acta.partidos.map(
           (p) =>
-            `| ${p.matchId} (${p.partido}) | ${p.acta === null ? "sin acta" : marcador(p.acta)} | ${marcador(p.apiFootball)} | ${p.decisionFinished ? marcador(p.decision) : "no finished"} | ${marcador(p.rfef)} | ${p.digitosFalsos} |`,
+            `| ${p.matchId} (${p.partido}) | ${p.acta === null ? "sin acta" : marcador(p.acta)} | ${p.apiFootball === null && p.acta !== null ? "sin api-football" : marcador(p.apiFootball)} | ${p.decisionFinished ? marcador(p.decision) : "no finished"} | ${marcador(p.rfef)} | ${marcador(p.rfefLive)}${p.difActaDirecto ? ` (${p.minutosSinCambio} min sin cambio)` : ""} | ${p.digitosFalsos} |`,
         ),
       );
     }

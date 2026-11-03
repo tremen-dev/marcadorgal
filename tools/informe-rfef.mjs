@@ -100,6 +100,7 @@ try {
     observations: filas.observations,
     alerts: filas.alerts,
     attempts: filas.attempts,
+    decisions: filas.decisions,
     exportsDelDia: args.export.map(leer),
     exportsActa: args.acta.map(leer),
     aliases: loadAliasFile(season, "rfef"),
