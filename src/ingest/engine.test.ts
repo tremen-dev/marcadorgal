@@ -92,12 +92,15 @@ const decisionRow = (over: Record<string, unknown> = {}) => ({
 
 const lastHeardRow = (over: Record<string, unknown> = {}) => ({
   match_id: MATCH,
+  source_id: "api-football",
   observed_at: timestamptz(at(-40)),
   status: "live",
   ...over,
 });
 
-const LAST_HEARD = "distinct on (match_id) match_id, observed_at, status";
+// One row per (match, source, live or not) since SPEC-048 (ADR-027 §1): the
+// engine picks the latest one the filter admits.
+const LAST_HEARD = "distinct on (match_id, source_id, status = 'live')";
 
 const answering =
   (over: Record<string, unknown[]> = {}) =>
@@ -138,10 +141,12 @@ describe("CA-9 the four queries", () => {
     expect(observations?.text).toContain("order by observed_at");
     expect(observations?.values).toEqual([ids, at(-15)]);
 
-    // The fourth (N-9): one row per match, no window at all.
+    // The fourth (N-9): no window at all.
     const lastHeard = find(calls, LAST_HEARD);
     expect(lastHeard?.text).toContain("from observations");
-    expect(lastHeard?.text).toContain("order by match_id, observed_at desc");
+    expect(lastHeard?.text).toContain(
+      "order by match_id, source_id, status = 'live', observed_at desc",
+    );
     expect(lastHeard?.text).not.toContain("observed_at >= ?");
     expect(lastHeard?.values).toEqual([ids]);
     expect(calls).toHaveLength(4);
@@ -250,6 +255,25 @@ describe("CA-9 opening and resolving alerts", () => {
     const insert = find(calls, "insert into alerts");
     expect(insert?.values[0]).toBe("forced_finish");
     expect(insert?.values[2]).toMatchObject({
+      lastObservedAt: at(-40),
+      lastStatus: "live",
+    });
+  });
+
+  it("does not count as heard a live the engine never receives (SPEC-048, ADR-027 §1)", async () => {
+    const { tx, calls } = fakeTx(
+      answering({
+        decisions: [decisionRow({ minute: 90 })],
+        matches: [{ ...matchRow, kickoff: timestamptz(at(-121)) }],
+        lastHeard: [
+          lastHeardRow({ source_id: "rfef", observed_at: timestamptz(at(-1)) }),
+          lastHeardRow(),
+        ],
+        alerts: [{ id: "alert-5" }],
+      }),
+    );
+    await decideMatches(tx, [MATCH], NOW, SOURCES);
+    expect(find(calls, "insert into alerts")?.values[2]).toMatchObject({
       lastObservedAt: at(-40),
       lastStatus: "live",
     });

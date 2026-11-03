@@ -42,6 +42,11 @@ export const SOURCES: readonly SourceConfig[] = SourceConfig.array().parse([
     minIntervalSeconds: 30,
     userAgent: USER_AGENT,
     legalBasis: "Datos de rfef.es",
+    // ADR-027 §3 (SPEC-048): the rfef panel does not seem to carry the live
+    // of Primera and Segunda (0-0 frozen, 2026-11-02). Its live there is
+    // stored, never decided; its finals still count. Reverting is deleting
+    // this line, with the titular's decision in the ledger of SPEC-048.
+    liveObservedOnly: ["primera-division", "segunda-division"],
   },
 ]);
 

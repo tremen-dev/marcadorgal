@@ -156,9 +156,21 @@ export const SourceConfig = z
     minIntervalSeconds: z.int().min(1),
     userAgent: z.string().min(1),
     legalBasis: z.string().min(1),
+    // ADR-027 §1 (SPEC-048): competitions whose live observations of this
+    // source are stored but never handed to the engine. A subset of
+    // competitions; empty by default.
+    liveObservedOnly: z.array(CompetitionId).default([]),
   })
   .superRefine((config, ctx) => {
     const covered = new Set<string>(config.competitions);
+    for (const competition of config.liveObservedOnly) {
+      if (!covered.has(competition))
+        ctx.addIssue({
+          code: "custom",
+          path: ["liveObservedOnly"],
+          message: `liveObservedOnly for a competition not covered: ${competition}`,
+        });
+    }
     for (const competition of Object.keys(config.priority)) {
       if (!covered.has(competition))
         ctx.addIssue({
