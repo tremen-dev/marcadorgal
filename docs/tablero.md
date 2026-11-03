@@ -81,7 +81,7 @@ Actualizado: 2026-11-03
 | SPEC-017 — mejoras-del-informe-de-jornada | hecho | 2026-10-06 (sdd-verificador) |
 | SPEC-029 — endurecer-web-reader-purgar-cron-y-v-7 | hecho | 2026-10-10 (sdd-verificador) |
 | SPEC-035 — motor-serializado-por-partido | hecho | 2026-10-15 (sdd-verificador) |
-| SPEC-043 — migraciones-automaticas-al-fusionar | en-revision | 2026-11-02 (sdd-implementador) |
+| SPEC-043 — migraciones-automaticas-al-fusionar | hecho | 2026-11-02 (sdd-verificador) |
 
 ## ADRs
 
@@ -115,6 +115,6 @@ Actualizado: 2026-11-03
 
 ## Resumen
 
-- hecho: 41
-- en-revision: 3
+- hecho: 42
+- en-revision: 2
 - aprobada: 1
