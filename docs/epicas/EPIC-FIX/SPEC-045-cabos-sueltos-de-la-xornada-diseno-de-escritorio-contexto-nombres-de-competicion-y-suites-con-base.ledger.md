@@ -86,6 +86,8 @@ Hallazgos (no bloquean):
 - **V-2 (cosmético).** `artboards.test.ts` usa `it.each` con dos `%s` y un solo argumento: el título sale «reproduce undefined.dc.html». La aserción es correcta (mutación detectada). Destino: EPIC-MANT.
 - **V-3 (entorno).** F-SPEC-045-4 confirmado por diseño del entorno: las suites con base solo se corrieron en Linux. Destino EPIC-MANT, ya anotado.
 
+- **Cierre post-merge 2026-11-03 (sdd-verificador).** PR #93 fusionada en main, merge `bd0cd54`; runs de main en `bd0cd54`: `ci` success, `migraciones` success; https://marcador.gal responde 200.
+
 ## Evidencia visual
 <!-- Tabla CA → captura en _qa/SPEC-045/. Informe HTML opcional: _qa/SPEC-045/informe.html -->
 | CA | Captura | Qué se ve |
