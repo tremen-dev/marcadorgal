@@ -156,7 +156,7 @@ export const SourceConfig = z
     minIntervalSeconds: z.int().min(1),
     userAgent: z.string().min(1),
     legalBasis: z.string().min(1),
-    // ADR-027 ง1 (SPEC-048): competitions whose live observations of this
+    // ADR-027 ยง1 (SPEC-048): competitions whose live observations of this
     // source are stored but never handed to the engine. A subset of
     // competitions; empty by default.
     liveObservedOnly: z.array(CompetitionId).default([]),

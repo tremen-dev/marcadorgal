@@ -47,7 +47,7 @@ describe("CA-2 registry", () => {
     expect(rfef.priority).toEqual(Object.fromEntries(FIVE.map((c) => [c, 5])));
   });
 
-  it("rfef observes Primera and Segunda live without deciding it (SPEC-048 CA-1, ADR-027 ง3)", () => {
+  it("rfef observes Primera and Segunda live without deciding it (SPEC-048 CA-1, ADR-027 ยง3)", () => {
     expect(sourceConfig("rfef")?.liveObservedOnly).toEqual([
       "primera-division",
       "segunda-division",

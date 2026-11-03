@@ -98,7 +98,7 @@ const lastHeardRow = (over: Record<string, unknown> = {}) => ({
   ...over,
 });
 
-// One row per (match, source, live or not) since SPEC-048 (ADR-027 ง1): the
+// One row per (match, source, live or not) since SPEC-048 (ADR-027 ยง1): the
 // engine picks the latest one the filter admits.
 const LAST_HEARD = "distinct on (match_id, source_id, status = 'live')";
 
@@ -260,7 +260,7 @@ describe("CA-9 opening and resolving alerts", () => {
     });
   });
 
-  it("does not count as heard a live the engine never receives (SPEC-048, ADR-027 ง1)", async () => {
+  it("does not count as heard a live the engine never receives (SPEC-048, ADR-027 ยง1)", async () => {
     const { tx, calls } = fakeTx(
       answering({
         decisions: [decisionRow({ minute: 90 })],

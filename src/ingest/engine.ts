@@ -318,7 +318,7 @@ async function decideLocked(
   // A silent match has nothing inside the fifteen minutes above, and it is
   // precisely the silent match whose trace has to say when it was last heard
   // from. One row per (match, source, live or not) and not one per match
-  // (SPEC-048, ADR-027 ง1): a live the engine never receives is not "heard",
+  // (SPEC-048, ADR-027 ยง1): a live the engine never receives is not "heard",
   // so the last heard is the latest row the filter admits.
   const lastHeardRows = await sql<LastHeardRow[]>`
     select distinct on (match_id, source_id, status = 'live')
@@ -335,7 +335,7 @@ async function decideLocked(
       kickoff: instant(row.kickoff),
     };
     const current = currentOf.get(row.id);
-    // The frontier ingest -> engine of ADR-027 ง2 (SPEC-048).
+    // The frontier ingest -> engine of ADR-027 ยง2 (SPEC-048).
     const admitted = admittedByEngine(sources, row.competition_id);
     const heard = (lastHeardsOf.get(row.id) ?? [])
       .filter((r) => admitted({ sourceId: r.source_id, status: r.status }))
@@ -388,7 +388,7 @@ export async function decideRecovered(
   );
   const rowOf = new Map(locked.map((row) => [row.id, row]));
   const byInstant = new Map<Instant, Set<string>>();
-  // ADR-027 ง2 (SPEC-048): an instant only of excluded lives is no instant
+  // ADR-027 ยง2 (SPEC-048): an instant only of excluded lives is no instant
   // of the engine; decideLocked filters what it reads at the others.
   const admitted = observations.filter((o) => {
     const row = rowOf.get(o.matchId);

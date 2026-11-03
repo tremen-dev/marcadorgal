@@ -45,7 +45,7 @@ const boardState = (row: BoardRow): BoardState => ({
 
 // The matchday is every match whose kickoff falls inside the window, as in
 // informe-db.ts (SPEC-009 N-1), and its observations inside the same window.
-// Only what the engine of the tick receives (ADR-027 ง2, SPEC-048): a live
+// Only what the engine of the tick receives (ADR-027 ยง2, SPEC-048): a live
 // it never decides would make the replay propose corrections the tick never
 // would. sources defaults to the registry, the one the tick reads.
 export async function replayJornadaFilas(
