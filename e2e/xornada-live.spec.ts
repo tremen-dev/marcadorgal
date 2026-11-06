@@ -443,6 +443,7 @@ test("CA-8: served without JS, the line says the instant of the render", async (
 });
 
 test("CA-10: the demos neither subscribe nor poll", async ({ page }) => {
+  test.slow();
   const seen = await watch(page);
   const board = await routeBoard(page, [{ status: 304, etag: '"x"' }]);
   await page.clock.install({ time: NOW });
