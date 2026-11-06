@@ -1,7 +1,13 @@
 import { type CalendarImporter, CompetitionId } from "../model/index.ts";
 import { apiFootballCalendar } from "../sources/api-football/calendar.ts";
+import { rfefCalendar } from "../sources/rfef/calendar.ts";
 
-export const IMPORTERS: readonly CalendarImporter[] = [apiFootballCalendar];
+// Registered calendar importers in priority order: rfef (via explorer) is now
+// the primary official importer (ADR-026, SPEC-045).
+export const IMPORTERS: readonly CalendarImporter[] = [
+  rfefCalendar,
+  apiFootballCalendar,
+];
 
 export function importerFor(sourceId: string): CalendarImporter | undefined {
   return IMPORTERS.find((i) => i.id === sourceId);

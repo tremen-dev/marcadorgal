@@ -62,6 +62,8 @@ jobs:
         # enteraría (O-2 de la verificación).
         shell: bash
         env:
+          RFEF_EXPLORER_TOKEN: ${{ secrets.RFEF_EXPLORER_TOKEN }}
+          RFEF_EXPLORER_URL: ${{ secrets.RFEF_EXPLORER_URL }}
           API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
         # Además del diff, calendario:sync deja en GITHUB_OUTPUT urgentes=N y
         # auto=si|no (SPEC-015 CA-3, CA-4).
