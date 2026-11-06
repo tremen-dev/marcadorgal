@@ -30,6 +30,8 @@ export const SOURCES: readonly SourceConfig[] = SourceConfig.array().parse([
   },
   // The rfef via explorer (ADR-023, ADR-026, SPEC-038, SPEC-049): priority 50
   // as the official federative source (ADR-017 §5 restored, superseding priority 5).
+  // Multi-provider arbitration in explorer v2.0 (MARCA for Primera and Segunda,
+  // RFEF for 1ª/2ª/3ª RFEF) lifts the temporary liveObservedOnly restriction of ADR-027 §3.
   {
     id: "rfef",
     kind: "pull",
@@ -39,11 +41,6 @@ export const SOURCES: readonly SourceConfig[] = SourceConfig.array().parse([
     userAgent: USER_AGENT,
     legalBasis:
       "Datos de rfef.es y proveedores multi-fuente vía explorer (ADR-026)",
-    // ADR-027 §3 (SPEC-048): the rfef panel does not seem to carry the live
-    // of Primera and Segunda (0-0 frozen, 2026-11-02). Its live there is
-    // stored, never decided; its finals still count. Reverting is deleting
-    // this line, with the titular's decision in the ledger of SPEC-048.
-    liveObservedOnly: ["primera-division", "segunda-division"],
   },
 ]);
 

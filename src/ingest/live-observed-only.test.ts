@@ -1,13 +1,20 @@
 import { describe, expect, it } from "vitest";
-import type { MatchStatus } from "../model/index.ts";
+import { type MatchStatus, SourceConfig } from "../model/index.ts";
 import { SOURCES } from "../sources/registry.ts";
 import { admittedByEngine, forEngine } from "./live-observed-only.ts";
 
-// SPEC-048 CA-2 (ADR-027 §1): what the engine never receives, against the
-// registry as it is deployed.
+// SPEC-048 CA-2 (ADR-027 §1): what the engine never receives when a source has
+// liveObservedOnly configured.
+const CONFIG_WITH_FILTER = [
+  SOURCES[0],
+  SourceConfig.parse({
+    ...SOURCES[1],
+    liveObservedOnly: ["primera-division", "segunda-division"],
+  }),
+];
 const obs = (sourceId: string, status: MatchStatus) => ({ sourceId, status });
 const admits = (competition: string, sourceId: string, status: MatchStatus) =>
-  admittedByEngine(SOURCES, competition)(obs(sourceId, status));
+  admittedByEngine(CONFIG_WITH_FILTER, competition)(obs(sourceId, status));
 
 describe("SPEC-048 CA-2 live observed only", () => {
   it.each(["primera-division", "segunda-division"])(
@@ -46,16 +53,27 @@ describe("SPEC-048 CA-2 live observed only", () => {
       { id: 2, ...obs("api-football", "live") },
       { id: 3, ...obs("rfef", "finished") },
     ];
-    expect(forEngine(SOURCES, "primera-division", rows)).toEqual([
+    expect(forEngine(CONFIG_WITH_FILTER, "primera-division", rows)).toEqual([
       rows[1],
       rows[2],
     ]);
-    expect(forEngine(SOURCES, "primera-rfef-g1", rows)).toEqual(rows);
+    expect(forEngine(CONFIG_WITH_FILTER, "primera-rfef-g1", rows)).toEqual(
+      rows,
+    );
   });
 
   it("is pure: an empty registry keeps everything", () => {
     expect(
       forEngine([], "primera-division", [obs("rfef", "live")]),
     ).toHaveLength(1);
+  });
+
+  it("with deployed SOURCES (reverted for explorer v2.0 with MARCA), rfef live is admitted in every competition", () => {
+    expect(
+      admittedByEngine(SOURCES, "primera-division")(obs("rfef", "live")),
+    ).toBe(true);
+    expect(
+      admittedByEngine(SOURCES, "segunda-division")(obs("rfef", "live")),
+    ).toBe(true);
   });
 });

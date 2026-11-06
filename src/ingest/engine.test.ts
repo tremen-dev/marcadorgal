@@ -5,6 +5,7 @@ import {
   type MatchId,
   MINUTE_MS,
   type Observation,
+  SourceConfig,
   shiftInstant,
 } from "@/model";
 import { SOURCES } from "../sources/registry.ts";
@@ -48,7 +49,10 @@ function fakeTx(rows: (text: string) => unknown[] = () => []) {
 // ever allowed to call toISOString on it (no Date leaves src/ingest, CA-12),
 // so the double is exactly that much of a Date and no more.
 const timestamptz = (value: Instant) =>
-  ({ toISOString: () => value }) as unknown as Date;
+  ({
+    toISOString: () => value,
+    getTime: () => Date.parse(value),
+  }) as unknown as Date;
 
 const matchRow = {
   id: MATCH,
@@ -272,7 +276,14 @@ describe("CA-9 opening and resolving alerts", () => {
         alerts: [{ id: "alert-5" }],
       }),
     );
-    await decideMatches(tx, [MATCH], NOW, SOURCES);
+    const sourcesWithLiveObservedOnly = [
+      SOURCES[0],
+      SourceConfig.parse({
+        ...SOURCES[1],
+        liveObservedOnly: ["primera-division"],
+      }),
+    ];
+    await decideMatches(tx, [MATCH], NOW, sourcesWithLiveObservedOnly);
     expect(find(calls, "insert into alerts")?.values[2]).toMatchObject({
       lastObservedAt: at(-40),
       lastStatus: "live",
