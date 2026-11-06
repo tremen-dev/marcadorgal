@@ -442,20 +442,19 @@ test("CA-8: served without JS, the line says the instant of the render", async (
   await context.close();
 });
 
-test("CA-10: the demos neither subscribe nor poll", async ({ page }) => {
-  test.slow();
-  const seen = await watch(page);
-  const board = await routeBoard(page, [{ status: 304, etag: '"x"' }]);
-  await page.clock.install({ time: NOW });
-  for (const path of ["/demo/xornada", "/es/demo/xornada"]) {
+for (const path of ["/demo/xornada", "/es/demo/xornada"]) {
+  test(`CA-10: demo ${path} neither subscribes nor polls`, async ({ page }) => {
+    const seen = await watch(page);
+    const board = await routeBoard(page, [{ status: 304, etag: '"x"' }]);
+    await page.clock.install({ time: Date.now() });
     await page.goto(path);
     await expect(page.getByTestId("match-row").first()).toBeVisible();
     await page.clock.runFor(3 * MIN);
-  }
-  expect(board.requests).toEqual([]);
-  expect(seen.sockets).toEqual([]);
-  await expect(page.getByTestId("freshness")).toHaveCount(0);
-});
+    expect(board.requests).toEqual([]);
+    expect(seen.sockets).toEqual([]);
+    await expect(page.getByTestId("freshness")).toHaveCount(0);
+  });
+}
 
 // SPEC-025 CA-3 (H-2): the probe reads which Decision each row shows.
 test("SPEC-025 CA-3: each row carries data-version, and a new Decision repaints it", async ({
