@@ -18,7 +18,7 @@ import {
 import { type DeclaredMatch, normalizeName } from "./adapter.ts";
 import { inLiveWindow } from "./state.ts";
 
-// The rfef via explorer (ADR-023, SPEC-038): one GET per tick to the export
+// The rfef via explorer (ADR-023, SPEC-038, SPEC-049): one GET per tick to the export
 // of a service of our own, which reads marcadores.rfef.es with its own rules.
 // This is the adapter ADAPTERS["rfef"] builds. adapter.ts (the direct way,
 // SPEC-031) stays next to it, unregistered and in reserve; identity is the
@@ -38,6 +38,15 @@ export const ExplorerStatus = z.enum([
   "SUSPENDED",
 ]);
 export type ExplorerStatus = z.infer<typeof ExplorerStatus>;
+
+export const ExplorerGoal = z.looseObject({
+  team: z.enum(["home", "away"]),
+  player: z.string().min(1),
+  minute: z.int().min(0),
+  penalty: z.boolean().optional(),
+  ownGoal: z.boolean().optional(),
+});
+export type ExplorerGoal = z.infer<typeof ExplorerGoal>;
 
 export const ExplorerMatch = z.looseObject({
   codActa: z.string().nullable(),
@@ -59,6 +68,12 @@ export const ExplorerMatch = z.looseObject({
   lastChangedAt: Instant,
   strategy: z.string(),
   discardedReadings: z.int().min(0),
+  // Multi-provider enhancements (SPEC-049)
+  canonicalCompetitionId: z.string().optional(),
+  canonicalHomeTeamId: z.string().optional(),
+  canonicalAwayTeamId: z.string().optional(),
+  liveProvider: z.enum(["marca", "rfef"]).optional(),
+  goals: z.array(ExplorerGoal).optional(),
 });
 export type ExplorerMatch = z.infer<typeof ExplorerMatch>;
 

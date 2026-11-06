@@ -71,7 +71,8 @@ export function watchRecentGoal(
     const now = clock.now();
     onNow(now);
     armed = now < end;
-    if (armed) timer = clock.setTimeout(arm, end - now);
+    if (armed)
+      timer = clock.setTimeout(arm, Math.min(end - now, 2_147_483_647));
   };
   arm();
   return () => {

@@ -50,24 +50,27 @@ const ENV = {
 describe("CA-7 registry", () => {
   const rfef = sourceConfig("rfef");
 
-  it("rfef is registered: pull, the five competitions at priority 5, 30 s, the UA of adapter.ts and the legalBasis of the titular", () => {
+  it("rfef is registered: pull, the five competitions at priority 50 (ADR-026), 30 s, the UA of adapter.ts and the legalBasis of the titular", () => {
     expect(rfef).toBeDefined();
     expect(rfef).toMatchObject({
       id: "rfef",
       kind: "pull",
       minIntervalSeconds: 30,
       userAgent: USER_AGENT,
-      legalBasis: "Datos de rfef.es",
+      legalBasis:
+        "Datos de rfef.es y proveedores multi-fuente vía explorer (ADR-026)",
     });
     expect([...(rfef?.competitions ?? [])].sort()).toEqual([...FIVE].sort());
-    expect(rfef?.priority).toEqual(Object.fromEntries(FIVE.map((c) => [c, 5])));
+    expect(rfef?.priority).toEqual(
+      Object.fromEntries(FIVE.map((c) => [c, 50])),
+    );
   });
 
-  it("api-football keeps priority 10 in the five: it rules while it speaks (ADR-023 §1)", () => {
+  it("api-football keeps priority 10 in the five and rfef has priority 50 (ADR-026)", () => {
     for (const c of FIVE) {
       const priority = priorityLookup(SOURCES, c);
       expect(priority("api-football")).toBe(10);
-      expect(priority("rfef")).toBe(5);
+      expect(priority("rfef")).toBe(50);
     }
   });
 });
@@ -189,9 +192,12 @@ const current = (state: MatchState, by: SourceId): Decision =>
     scoredBy: { home: by, away: by },
     forcedFinish: false,
   }) as Decision;
-const priority = priorityLookup(SOURCES, MATCH.competitionId);
+// Historical ADR-023 §1 simulation: api-football at 10, rfef at 5
+const priority10vs5 = (id: string) =>
+  id === "api-football" ? 10 : id === "rfef" ? 5 : undefined;
 
 describe("CA-7 the engine with api-football at 10 and rfef at 5 (ADR-023 §1)", () => {
+  const priority = priority10vs5;
   it("when they agree: confirmado, citing both observations", () => {
     const api = obs("api-football", 30, live(1, 0));
     const rfef = obs("rfef", 29, live(1, 0));
@@ -284,6 +290,48 @@ describe("CA-7 the engine with api-football at 10 and rfef at 5 (ADR-023 §1)", 
     // current Decision, so nothing is written, and the retreat is alerted.
     expect(decision).toBeNull();
     expect(open.map((a) => a.kind)).toEqual(["regression"]);
+  });
+});
+
+describe("the engine with rfef at priority 50 (ADR-026)", () => {
+  const priority = priorityLookup(SOURCES, MATCH.competitionId);
+
+  it("rfef wins alone with confirmado as official federation source (ADR-017 §5, ADR-026)", () => {
+    const rfef = obs("rfef", 30, live(2, 0));
+    const { decision, open } = decide({
+      match: MATCH,
+      current: null,
+      observations: [rfef],
+      priority,
+      now: at(31),
+    });
+    expect(decision).toMatchObject({
+      status: "live",
+      score: { home: 2, away: 0 },
+      qualifier: "confirmado",
+      rule: "RN-01",
+    });
+    expect(decision?.observationIds).toEqual([rfef.id]);
+    expect(open).toEqual([]);
+  });
+
+  it("rfef at 50 beats api-football at 10", () => {
+    const api = obs("api-football", 30, live(1, 0));
+    const rfef = obs("rfef", 30, live(2, 0));
+    const { decision, open } = decide({
+      match: MATCH,
+      current: null,
+      observations: [rfef, api],
+      priority,
+      now: at(31),
+    });
+    expect(decision).toMatchObject({
+      score: { home: 2, away: 0 },
+      qualifier: "confirmado",
+      rule: "RN-01",
+    });
+    expect(decision?.observationIds).toEqual([rfef.id]);
+    expect(open).toEqual([]);
   });
 });
 
