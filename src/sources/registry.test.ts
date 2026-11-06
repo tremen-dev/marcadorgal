@@ -47,11 +47,8 @@ describe("CA-2 registry", () => {
     expect(rfef.priority).toEqual(Object.fromEntries(FIVE.map((c) => [c, 50])));
   });
 
-  it("rfef observes Primera and Segunda live without deciding it (SPEC-048 CA-1, ADR-027 §3)", () => {
-    expect(sourceConfig("rfef")?.liveObservedOnly).toEqual([
-      "primera-division",
-      "segunda-division",
-    ]);
+  it("rfef has no liveObservedOnly (reverted per ADR-027 §3 with explorer v2.0 MARCA)", () => {
+    expect(sourceConfig("rfef")?.liveObservedOnly).toEqual([]);
   });
 
   it("api-football has no liveObservedOnly (SPEC-048 CA-1)", () => {

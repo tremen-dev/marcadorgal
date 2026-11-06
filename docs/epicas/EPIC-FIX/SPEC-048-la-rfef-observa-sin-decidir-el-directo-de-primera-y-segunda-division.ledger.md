@@ -30,6 +30,7 @@ epica: EPIC-FIX
 - Suites db (Supabase local, `vitest.db.config.mts`): 22 ficheros, 238 tests en verde; `live-observed-only.db.test.ts` 5/5.
 - Revisado en código: `lastHeard` elige la última fila admitida por `admittedByEngine` (el live excluido no cuenta como oído); `decideRecovered` no abre instantes de lives excluidos y `decideLocked` filtra al leer; `replayJornadaFilas` filtra con el registro por defecto y `tools/replay-jornada.mjs` la llama sin `sources` (F-SPEC-048-1 aceptada); con `liveObservedOnly` vacío el filtro es la identidad.
 - **Corrección de F-SPEC-048-5 (errónea).** SELECT en prod 2026-11-03: `primera-division-2026-27-j11-deportivo-osasuna` tiene v1 `live 0-0 RN-01`, v2 `finished 0-0 RN-02 forced`, **v3 `finished 2-1 confirmado operator`** (decided_at 2026-11-02T23:58:30Z, una observación `operator`); `board` publica 2-1 confirmado. El 0-0 ya no está publicado; F-SPEC-048-5 queda sin objeto.
+- **Reversión de salvaguarda (2026-11-07, decisión de Alberto Fojo):** Se levanta `liveObservedOnly` de `src/sources/registry.ts` conforme a ADR-027 §3 tras el despliegue verificado en producción de `marcadorgal-explorer` v2.0 multi-proveedor con MARCA, habilitando la decisión y publicación del directo en Primera y Segunda División.
 
 ## Evidencia visual
 <!-- Tabla CA → captura en _qa/SPEC-048/. Informe HTML opcional: _qa/SPEC-048/informe.html -->
