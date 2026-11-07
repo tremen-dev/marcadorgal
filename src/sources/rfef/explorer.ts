@@ -221,19 +221,35 @@ export function createRfefExplorer({
 
   // Identity as adapter.ts resolves it: name, competition and round. The
   // codes of the export (codEquipo*, codActa) stay in the raw capture.
-  // SPEC-049: canonical team IDs take precedence when present in the row.
+  // Prioritizes candidate pairings (alias map and canonical IDs) that match
+  // a declared fixture in matchOf (SPEC-049, SPEC-054).
   function resolveMatch(
     row: ExplorerMatch,
     competitionId: CompetitionId,
   ): DeclaredFixture | Unresolved["reason"] {
-    const home =
-      (row.canonicalHomeTeamId as TeamId | undefined) ??
-      teamByName.get(normalizeName(row.equipoLocal));
-    const away =
-      (row.canonicalAwayTeamId as TeamId | undefined) ??
-      teamByName.get(normalizeName(row.equipoVisitante));
-    if (home === undefined || away === undefined) return "unknown_team";
-    const match = matchOf.get(`${competitionId}|${home}|${away}`);
+    const localCandidates = [
+      teamByName.get(normalizeName(row.equipoLocal)),
+      row.canonicalHomeTeamId as TeamId | undefined,
+    ].filter((t): t is TeamId => Boolean(t));
+
+    const awayCandidates = [
+      teamByName.get(normalizeName(row.equipoVisitante)),
+      row.canonicalAwayTeamId as TeamId | undefined,
+    ].filter((t): t is TeamId => Boolean(t));
+
+    if (localCandidates.length === 0 || awayCandidates.length === 0) {
+      return "unknown_team";
+    }
+
+    let match: DeclaredFixture | undefined;
+    for (const h of localCandidates) {
+      for (const a of awayCandidates) {
+        match = matchOf.get(`${competitionId}|${h}|${a}`);
+        if (match) break;
+      }
+      if (match) break;
+    }
+
     if (match === undefined) return "unknown_match";
     if (match.round !== Number(row.jornada)) return "inconsistent_alias";
     return match;

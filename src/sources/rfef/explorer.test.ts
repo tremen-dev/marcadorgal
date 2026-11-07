@@ -1099,5 +1099,22 @@ describe("CA-4 identity (ADR-017 §2): the same as adapter.ts", () => {
         }),
       ]);
     });
+
+    it("resolves match when canonical team ID slug differs from declared calendar ID but alias matches", () => {
+      // e.g. canonicalAwayTeamId is 'deportivo-fabril-fc' but calendar has 'deportivo-fabril'
+      // and alias map matches 'RC Deportivo Fabril' to 'deportivo-fabril'
+      const withDivergentCanonical = parseRows([
+        {
+          ...ZAMORA,
+          canonicalAwayTeamId: "deportivo-fabril-slug-divergente",
+        },
+      ]);
+      expect(withDivergentCanonical.observations).toEqual([
+        expect.objectContaining({
+          matchId: "primera-rfef-g1-2026-27-j10-zamora-deportivo-fabril",
+          status: "finished",
+        }),
+      ]);
+    });
   });
 });
