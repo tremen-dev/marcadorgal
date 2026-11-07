@@ -10,7 +10,7 @@ export default function EsLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="es">
       <body>
-        <div className="appShell">{children}</div>
+        {children}
         <Footer locale="es" />
       </body>
     </html>

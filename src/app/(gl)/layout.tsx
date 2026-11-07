@@ -10,7 +10,7 @@ export default function GlLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="gl">
       <body>
-        <div className="appShell">{children}</div>
+        {children}
         <Footer locale="gl" />
       </body>
     </html>

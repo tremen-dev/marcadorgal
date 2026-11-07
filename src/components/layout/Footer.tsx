@@ -35,10 +35,7 @@ export function Footer({ locale }: Props) {
             </span>
           </div>
 
-          <nav
-            className={styles.navLinks}
-            aria-label={t(locale, "footer.legalNotice")}
-          >
+          <div className={styles.navLinks}>
             <a
               href={routes.avisoLegal}
               className={styles.navLink}
@@ -70,7 +67,7 @@ export function Footer({ locale }: Props) {
               ·
             </span>
             <MailboxLink className={styles.navLink} />
-          </nav>
+          </div>
         </div>
 
         {/* Bottom row: Disclaimer & Copyright on left, {tremen.dev} lockup on right */}
