@@ -919,4 +919,74 @@ describe("CA-4 identity (ADR-017 §2): the same as adapter.ts", () => {
       reason: "inconsistent_alias",
     });
   });
+
+  describe("SPEC-049 canonical field resolution", () => {
+    it("resolves competition from canonicalCompetitionId when codGrupo is not in aliases.competitions", () => {
+      const withoutCanonical = parseRows([
+        { ...ZAMORA, codGrupo: "desconocido" },
+      ]);
+      expect(withoutCanonical).toEqual(empty);
+
+      const withCanonical = parseRows([
+        {
+          ...ZAMORA,
+          codGrupo: "desconocido",
+          canonicalCompetitionId: "primera-rfef-g1",
+        },
+      ]);
+      expect(withCanonical.observations).toEqual([
+        expect.objectContaining({
+          matchId: "primera-rfef-g1-2026-27-j10-zamora-deportivo-fabril",
+          status: "finished",
+        }),
+      ]);
+    });
+
+    it("resolves teams directly from canonicalHomeTeamId and canonicalAwayTeamId", () => {
+      const withoutCanonical = parseRows([
+        {
+          ...ZAMORA,
+          equipoLocal: "Equipo Desconocido 1",
+          equipoVisitante: "Equipo Desconocido 2",
+        },
+      ]);
+      expect(withoutCanonical.observations).toEqual([]);
+      expect(withoutCanonical.unresolved[0]).toMatchObject({
+        reason: "unknown_team",
+      });
+
+      const withCanonical = parseRows([
+        {
+          ...ZAMORA,
+          equipoLocal: "Equipo Desconocido 1",
+          equipoVisitante: "Equipo Desconocido 2",
+          canonicalHomeTeamId: "zamora",
+          canonicalAwayTeamId: "deportivo-fabril",
+        },
+      ]);
+      expect(withCanonical.observations).toEqual([
+        expect.objectContaining({
+          matchId: "primera-rfef-g1-2026-27-j10-zamora-deportivo-fabril",
+          status: "finished",
+        }),
+      ]);
+    });
+
+    it("falls back to alias map when canonical team IDs are absent", () => {
+      const withPartialCanonical = parseRows([
+        {
+          ...ZAMORA,
+          equipoLocal: "Equipo Desconocido 1",
+          canonicalHomeTeamId: "zamora",
+          // canonicalAwayTeamId missing, falls back to equipoVisitante alias
+        },
+      ]);
+      expect(withPartialCanonical.observations).toEqual([
+        expect.objectContaining({
+          matchId: "primera-rfef-g1-2026-27-j10-zamora-deportivo-fabril",
+          status: "finished",
+        }),
+      ]);
+    });
+  });
 });

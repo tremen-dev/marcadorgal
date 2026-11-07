@@ -197,8 +197,12 @@ export function createRfefExplorer({
     row: ExplorerMatch,
     competitionId: CompetitionId,
   ): DeclaredFixture | Unresolved["reason"] {
-    const home = teamByName.get(normalizeName(row.equipoLocal));
-    const away = teamByName.get(normalizeName(row.equipoVisitante));
+    const home =
+      (row.canonicalHomeTeamId as TeamId | undefined) ??
+      teamByName.get(normalizeName(row.equipoLocal));
+    const away =
+      (row.canonicalAwayTeamId as TeamId | undefined) ??
+      teamByName.get(normalizeName(row.equipoVisitante));
     if (home === undefined || away === undefined) return "unknown_team";
     const match = matchOf.get(`${competitionId}|${home}|${away}`);
     if (match === undefined) return "unknown_match";
@@ -213,7 +217,9 @@ export function createRfefExplorer({
       skipped: [],
     };
     for (const row of readExport(body).matches) {
-      const competitionId = competitionOf.get(row.codGrupo);
+      const competitionId =
+        competitionOf.get(row.codGrupo) ??
+        (row.canonicalCompetitionId as CompetitionId | undefined);
       if (competitionId === undefined) continue; // juvenil, femenino: ignored
       // A row without a state says nothing (ADR-023 §5): not even identity.
       if (row.estado === "SCHEDULED") continue;
