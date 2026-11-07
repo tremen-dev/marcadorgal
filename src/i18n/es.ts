@@ -71,6 +71,9 @@ export const es: Dictionary = {
     // the «label» variant (aria-hidden: the words above say it).
     recentGoal: "gol reciente",
     recentGoalLabel: "GOL",
+    // SPEC-056: expand/collapse goals drawer
+    expandGoals: "Desplegar goleadores",
+    collapseGoals: "Plegar goleadores",
   },
   weekday: {
     mon: "lun",

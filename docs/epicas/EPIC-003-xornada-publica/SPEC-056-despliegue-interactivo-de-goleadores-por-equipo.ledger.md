@@ -13,8 +13,8 @@ epica: EPIC-003
 ## Matriz de criterios de aceptación
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
-| CA-1 | `src/components/xornada/MatchRow.tsx`, `Xornada.module.css` | `src/components/xornada/goals.test.ts` | Pendiente | ⏳ |
-| CA-2 | `src/components/xornada/MatchRow.tsx`, `Xornada.module.css` | `src/components/xornada/goals.test.ts` | Pendiente | ⏳ |
-| CA-3 | `src/components/xornada/MatchRow.tsx`, `src/xornada/recent-goal.ts` | `src/components/xornada/recent-goal.test.ts` | Pendiente | ⏳ |
-| CA-4 | `src/components/xornada/MatchRow.tsx`, `Xornada.module.css` | `src/components/xornada/goals.test.ts` | Pendiente | ⏳ |
-| CA-5 | Tokens, a11y, i18n (`src/i18n/`) | `npm run gates` | Pendiente | ⏳ |
+| CA-1 | `src/components/xornada/MatchRow.tsx`, `Xornada.module.css` | `src/components/xornada/goals.test.ts` | 2026-11-07 | ✅ |
+| CA-2 | `src/components/xornada/MatchRow.tsx`, `Xornada.module.css` | `src/components/xornada/goals.test.ts` | 2026-11-07 | ✅ |
+| CA-3 | `src/components/xornada/MatchRow.tsx`, `src/xornada/recent-goal.ts` | `src/components/xornada/goals.test.ts` | 2026-11-07 | ✅ |
+| CA-4 | `src/components/xornada/MatchRow.tsx`, `Xornada.module.css` | `src/components/xornada/goals.test.ts` | 2026-11-07 | ✅ |
+| CA-5 | Tokens, a11y, i18n (`src/i18n/`) | `npm run gates` | 2026-11-07 | ✅ |

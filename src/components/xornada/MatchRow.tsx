@@ -1,5 +1,15 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { formatTime, type Locale, t } from "@/i18n";
-import { type RecentGoalMark, recentGoals } from "@/xornada/recent-goal";
+import {
+  isRecent,
+  pulseIterations,
+  type RecentGoalClock,
+  type RecentGoalMark,
+  recentGoals,
+  watchRecentGoal,
+} from "@/xornada/recent-goal";
 import { minuteLabel, type XornadaRow } from "@/xornada/view";
 import { rowDateLabel } from "./labels";
 import { RecentGoalScore } from "./RecentGoalScore";
@@ -26,6 +36,12 @@ export type RecentGoalView = {
 };
 
 const NO_RECENT_GOALS = { home: null, away: null } as const;
+
+const browserClock: RecentGoalClock = {
+  now: () => Date.now(),
+  setTimeout: (fn, ms) => window.setTimeout(fn, ms),
+  clearTimeout: (id) => window.clearTimeout(id as number),
+};
 
 const cx = (...names: (string | false | null | undefined)[]): string =>
   names.filter(Boolean).join(" ");
@@ -79,9 +95,18 @@ export function MatchRow({
   today = false,
   recentGoal,
 }: Props) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [clock, setClock] = useState(recentGoal?.now ?? 0);
+
   const isLive = row.status === "live";
   const noSignal = row.qualifier === "sen_sinal";
   const { margin, qualifierDisplay: qualifier } = row;
+
+  const allGoals = row.goals ?? [];
+  const hasGoals = allGoals.length > 0;
+  const homeGoals = allGoals.filter((g) => g.team === "home");
+  const awayGoals = allGoals.filter((g) => g.team === "away");
+
   // SPEC-040 CA-2 (H-1): the first line is the time, the minute or the state
   // word (at half-time, «En xogo»); the second, the date or the part.
   const marginText =
@@ -107,12 +132,44 @@ export function MatchRow({
     );
   const scoreText = (side: "home" | "away") =>
     row.score === null ? "–" : String(row.score[side]);
+
   // SPEC-041 CA-4: the recent number, decided at the render's instant; the
   // browser's clock takes over in RecentGoalScore (CA-5).
   const recent =
     recentGoal === undefined
       ? NO_RECENT_GOALS
       : recentGoals(row, recentGoal.now, recentGoal.minutes);
+
+  const homeUntil = recent.home;
+  const awayUntil = recent.away;
+
+  // SPEC-056 CA-3: synchronise browser clock with goal expiration
+  useEffect(() => {
+    if (!homeUntil && !awayUntil) return;
+    const target =
+      homeUntil && awayUntil
+        ? Date.parse(homeUntil) > Date.parse(awayUntil)
+          ? homeUntil
+          : awayUntil
+        : (homeUntil ?? awayUntil);
+    if (!target) return;
+    return watchRecentGoal(target, browserClock, setClock);
+  }, [homeUntil, awayUntil]);
+
+  const isHomeRecent = Boolean(homeUntil && isRecent(homeUntil, clock));
+  const isAwayRecent = Boolean(awayUntil && isRecent(awayUntil, clock));
+
+  const isGoalRecent = (
+    team: "home" | "away",
+    index: number,
+    totalForTeam: number,
+  ) => {
+    if (team === "home") {
+      return isHomeRecent && index === totalForTeam - 1;
+    }
+    return isAwayRecent && index === totalForTeam - 1;
+  };
+
   const score = (side: "home" | "away") => {
     const until = recent[side];
     if (recentGoal === undefined || until === null)
@@ -135,12 +192,31 @@ export function MatchRow({
     );
   };
 
+  const handleToggle = (e: React.MouseEvent) => {
+    if (!hasGoals) return;
+    if ((e.target as HTMLElement).closest(`[data-testid="match-goals"]`))
+      return;
+    setIsExpanded((prev) => !prev);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!hasGoals) return;
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      setIsExpanded((prev) => !prev);
+    }
+  };
+
+  const goalsId = `goals-${row.matchId}`;
+
   return (
+    // biome-ignore lint/a11y/useAriaPropsSupportedByRole: when hasGoals is true, role is button which supports aria-expanded
     <li
       className={cx(
         styles.row,
         isLive && !noSignal && styles.live,
         noSignal && styles.noSignal,
+        hasGoals && styles.rowWithGoals,
       )}
       data-testid="match-row"
       data-match-id={row.matchId}
@@ -148,6 +224,22 @@ export function MatchRow({
       data-qualifier={row.qualifier}
       data-day={row.day}
       data-version={row.version}
+      data-has-goals={hasGoals ? "true" : undefined}
+      data-expanded={hasGoals ? (isExpanded ? "true" : "false") : undefined}
+      role={hasGoals ? "button" : undefined}
+      tabIndex={hasGoals ? 0 : undefined}
+      aria-expanded={hasGoals ? isExpanded : undefined}
+      aria-controls={hasGoals ? goalsId : undefined}
+      aria-label={
+        hasGoals
+          ? `${row.home} ${scoreText("home")}, ${row.away} ${scoreText("away")}. ${t(
+              locale,
+              isExpanded ? "xornada.collapseGoals" : "xornada.expandGoals",
+            )}`
+          : undefined
+      }
+      onClick={hasGoals ? handleToggle : undefined}
+      onKeyDown={hasGoals ? handleKeyDown : undefined}
     >
       <div className={styles.margin}>
         <span className={styles.marginLines} data-testid="match-margin-lines">
@@ -190,6 +282,15 @@ export function MatchRow({
             <span className={styles.srOnly}>{t(locale, qualifier.key)}</span>
           </>
         )}
+        {hasGoals && (
+          <span
+            className={styles.goalsAffordance}
+            aria-hidden="true"
+            data-testid="goals-affordance"
+          >
+            {isExpanded ? "▾" : "▸"}
+          </span>
+        )}
       </div>
       {/* SPEC-041 CA-4: the «label» variant gives the pill its own track,
           as wide as the pill when there is one, none otherwise. */}
@@ -216,20 +317,118 @@ export function MatchRow({
         </span>
         {score("away")}
       </div>
-      {row.goals && row.goals.length > 0 && (
-        <div className={styles.matchGoals} data-testid="match-goals">
-          {row.goals.map((g, idx) => (
-            <span
-              // biome-ignore lint/suspicious/noArrayIndexKey: goals have no id
-              key={`${g.team}-${g.minute}-${g.player}-${idx}`}
-              className={styles.goalPill}
-              data-team={g.team}
-            >
-              ⚽ {g.player} {g.minute}&apos;
-              {g.penalty && <span className={styles.goalPenalty}> (p.)</span>}
-              {g.ownGoal && <span className={styles.goalPenalty}> (p.p.)</span>}
-            </span>
-          ))}
+      {hasGoals && (
+        <div
+          id={goalsId}
+          className={cx(
+            styles.matchGoals,
+            isExpanded && styles.matchGoalsExpanded,
+          )}
+          data-testid="match-goals"
+          data-expanded={isExpanded ? "true" : "false"}
+        >
+          <div className={styles.matchGoalsInner}>
+            <div className={styles.goalsTeams}>
+              {homeGoals.length > 0 && (
+                <div className={styles.teamGoalsCol} data-team="home">
+                  <span className={styles.teamGoalsName}>{row.home}</span>
+                  <div className={styles.teamGoalsList}>
+                    {homeGoals.map((g, idx) => {
+                      const isRecentGoalItem = isGoalRecent(
+                        "home",
+                        idx,
+                        homeGoals.length,
+                      );
+                      const homeUntilIso = homeUntil ?? "";
+                      return (
+                        <span
+                          // biome-ignore lint/suspicious/noArrayIndexKey: goals have no id
+                          key={`home-${g.minute}-${g.player}-${idx}`}
+                          className={cx(
+                            styles.goalPill,
+                            isRecentGoalItem && styles.recentGoalPill,
+                          )}
+                          data-team="home"
+                          data-recent={isRecentGoalItem ? "true" : undefined}
+                        >
+                          ⚽ {g.player} {g.minute}&apos;
+                          {g.penalty && (
+                            <span className={styles.goalPenalty}> (p.)</span>
+                          )}
+                          {g.ownGoal && (
+                            <span className={styles.goalPenalty}> (p.p.)</span>
+                          )}
+                          {isRecentGoalItem && (
+                            <span
+                              className={styles.recentScorerBadge}
+                              style={{
+                                animationIterationCount: pulseIterations(
+                                  homeUntilIso,
+                                  clock,
+                                ),
+                              }}
+                              data-testid="recent-scorer-badge"
+                            >
+                              {t(locale, "xornada.recentGoalLabel")}
+                            </span>
+                          )}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+              {awayGoals.length > 0 && (
+                <div className={styles.teamGoalsCol} data-team="away">
+                  <span className={styles.teamGoalsName}>{row.away}</span>
+                  <div className={styles.teamGoalsList}>
+                    {awayGoals.map((g, idx) => {
+                      const isRecentGoalItem = isGoalRecent(
+                        "away",
+                        idx,
+                        awayGoals.length,
+                      );
+                      const awayUntilIso = awayUntil ?? "";
+                      return (
+                        <span
+                          // biome-ignore lint/suspicious/noArrayIndexKey: goals have no id
+                          key={`away-${g.minute}-${g.player}-${idx}`}
+                          className={cx(
+                            styles.goalPill,
+                            isRecentGoalItem && styles.recentGoalPill,
+                          )}
+                          data-team="away"
+                          data-recent={isRecentGoalItem ? "true" : undefined}
+                        >
+                          ⚽ {g.player} {g.minute}&apos;
+                          {g.penalty && (
+                            <span className={styles.goalPenalty}> (p.)</span>
+                          )}
+                          {g.ownGoal && (
+                            <span className={styles.goalPenalty}> (p.p.)</span>
+                          )}
+                          {isRecentGoalItem && (
+                            <span
+                              className={styles.recentScorerBadge}
+                              style={{
+                                animationIterationCount: pulseIterations(
+                                  awayUntilIso,
+                                  clock,
+                                ),
+                              }}
+                              data-testid="recent-scorer-badge"
+                            >
+                              {t(locale, "xornada.recentGoalLabel")}
+                            </span>
+                          )}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
       {age !== null && (
