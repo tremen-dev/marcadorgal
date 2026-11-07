@@ -2,12 +2,13 @@
 id: SPEC-056
 tipo: spec
 epica: EPIC-003
-estado: en-progreso
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-07, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-11-07, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-11-07, por: sdd-implementador}
+  - {estado: hecho, fecha: 2026-11-07, por: sdd-implementador}
 ---
 # SPEC-056 — Despliegue interactivo de goleadores por equipo e identificación de goleador reciente
 

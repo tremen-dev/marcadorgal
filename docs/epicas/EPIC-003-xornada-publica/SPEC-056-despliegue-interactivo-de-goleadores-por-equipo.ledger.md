@@ -6,7 +6,7 @@ epica: EPIC-003
 # Ledger — SPEC-056 Despliegue interactivo de goleadores por equipo e identificación de goleador reciente
 
 ## Resumen
-- Fase: en-progreso
+- Fase: completada
 - Rama: `ft/SPEC-056-goleadores-desplegables`
 - Worktree: `D:/src/tremen-dev/marcadorgal-spec056`
 
