@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   Competition,
   type ImportedCalendar,
+  type Instant,
   MatchId,
   TeamId,
 } from "../model/index.ts";
@@ -303,6 +304,89 @@ describe("CA-6 syncCalendar", () => {
         ?.kickoff,
     ).toBe("2026-09-07T18:30:00Z");
     expect(calendar.matches).toHaveLength(4);
+  });
+
+  it("preserves confirmed kickoffs against unconfirmed midnight downgrades and preserves past played matches", () => {
+    const { calendar: current, aliases } = initial();
+    // In initial():
+    // ourense vs arenteiro (round 1) is 2026-09-06T16:00:00Z
+    // arenteiro vs arosa (round 2) is 2026-09-13T16:00:00Z
+    const now = "2026-09-10T00:00:00Z" as Instant;
+    const providerOutput: ImportedCalendar = {
+      ...imported,
+      matches: [
+        // Past match (2026-09-06 < now): provider attempts to reschedule to 2026-08-16T00:00:00Z
+        {
+          externalId: "1001",
+          round: 1,
+          kickoff: "2026-08-16T00:00:00Z",
+          home: "1",
+          away: "2",
+          timeConfirmed: true,
+        },
+        // Future match (2026-09-13 > now): provider sends unconfirmed midnight 00:00:00Z
+        {
+          externalId: "1003",
+          round: 2,
+          kickoff: "2026-09-13T00:00:00Z",
+          home: "2",
+          away: "3",
+          timeConfirmed: false,
+        },
+        // Future match (2026-09-13 > now): provider sends confirmed exact reschedule
+        {
+          externalId: "1002",
+          round: 1,
+          kickoff: "2026-09-14T20:00:00Z",
+          home: "3",
+          away: "4",
+          timeConfirmed: true,
+        },
+      ],
+    };
+
+    // Give arosa vs compostela a future kickoff in current for testing future reschedule
+    const futureCurrent: CalendarFile = {
+      ...current,
+      matches: current.matches.map((m) =>
+        m.home === "arosa" ? { ...m, kickoff: "2026-09-13T17:00:00Z" } : m,
+      ),
+    };
+
+    const { calendar, diff } = syncCalendar({
+      current: futureCurrent,
+      aliases,
+      imported: providerOutput,
+      competition,
+      sourceId,
+      now,
+    });
+
+    // Past match was preserved at 2026-09-06T16:00:00Z
+    expect(
+      calendar.matches.find((m) => m.home === "ourense" && m.round === 1)
+        ?.kickoff,
+    ).toBe("2026-09-06T16:00:00Z");
+
+    // Unconfirmed midnight was rejected, preserved at 2026-09-13T16:00:00Z
+    expect(
+      calendar.matches.find((m) => m.home === "arenteiro" && m.round === 2)
+        ?.kickoff,
+    ).toBe("2026-09-13T16:00:00Z");
+
+    // Confirmed future reschedule was accepted
+    expect(
+      calendar.matches.find((m) => m.home === "arosa" && m.round === 1)
+        ?.kickoff,
+    ).toBe("2026-09-14T20:00:00Z");
+
+    expect(diff.rescheduled).toEqual([
+      {
+        id: "tercera-rfef-g1-2026-27-j1-arosa-compostela",
+        from: "2026-09-13T17:00:00Z",
+        to: "2026-09-14T20:00:00Z",
+      },
+    ]);
   });
 
   // O-6: CA-8 exists so a human sees the postponements (D-3), and that only

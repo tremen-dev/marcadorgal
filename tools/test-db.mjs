@@ -38,6 +38,7 @@ if (!isLoopbackUrl(url)) {
 const status = spawnSync("supabase", ["status", "-o", "env"], {
   encoding: "utf8",
   stdio: ["ignore", "pipe", "pipe"],
+  shell: process.platform === "win32",
 });
 const storage =
   status.error || status.status !== 0
@@ -54,7 +55,11 @@ if (!storage) {
 const env = { ...withoutRemoteSecrets(process.env), ...storage };
 
 const step = (command, args) => {
-  const r = spawnSync(command, args, { stdio: "inherit", env });
+  const r = spawnSync(command, args, {
+    stdio: "inherit",
+    env,
+    shell: process.platform === "win32",
+  });
   if (r.error) {
     console.error(r.error.message);
     process.exit(1);

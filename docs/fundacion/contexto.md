@@ -127,8 +127,11 @@ Segunda. Explorer suministra además el calendario oficial completo vía
 `GET /api/export/calendar` (reemplazando a API-Football), marcadores con goles ligeros
 embebidos (anti-N+1), clasificaciones y trofeos individuales (Pichichi y Zamora) consumidos
 a través de `src/lib/explorer-client.ts`. El adaptador directo de SPEC-031 queda en
-reserva, sin registrar. La base legal de cada fuente la gestiona el titular fuera
-del repo (D-7).
+reserva, sin registrar. La sincronización semanal de calendario (`calendario-semanal.yml`)
+incorpora protección contra desbordamiento del cuerpo de PR en GitHub GraphQL (límite 65k)
+y blindaje en `src/calendar/sync.ts` contra degradaciones a medianoches provisionales (`00:00:00Z`)
+y reprogramaciones de partidos históricos ya disputados, garantizando la inmutabilidad de la historia.
+La base legal de cada fuente la gestiona el titular fuera del repo (D-7).
 
 ## Decisiones clave hasta hoy
 
