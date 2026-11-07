@@ -1,0 +1,140 @@
+.header {
+  padding: var(--space-16) var(--space-12);
+  background: var(--bg-elev);
+  border-bottom: var(--hairline) solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.backLink {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--marca);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
+.categoryTag {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-step);
+  color: var(--fg-muted);
+  border: var(--hairline) solid var(--line);
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.badge {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 24px;
+  line-height: 1.1;
+  letter-spacing: var(--tracking-display);
+  color: var(--fg);
+}
+
+.featuredBox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: 8px 12px;
+  background: var(--bg-live);
+  border-radius: var(--radius-sm);
+  border: var(--hairline) solid var(--line-strong);
+}
+
+.featuredShield {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.featuredText {
+  display: flex;
+  flex-direction: column;
+}
+
+.featuredLabel {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--marca);
+}
+
+.featuredName {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fg);
+}
+
+.tabs {
+  display: flex;
+  gap: var(--space-8);
+  border-top: var(--hairline) solid var(--line-row);
+  padding-top: var(--space-12);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tab {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-step);
+  color: var(--fg-dim);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  color: var(--fg);
+  text-decoration: none;
+  background: var(--line-strong);
+}
+
+.activeTab {
+  background: var(--fg);
+  color: var(--bg);
+  font-weight: 700;
+}
+
+.activeTab:hover {
+  background: var(--fg);
+  color: var(--bg);
+}

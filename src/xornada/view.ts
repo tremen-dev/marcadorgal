@@ -3,6 +3,7 @@ import type {
   Instant,
   MatchId,
   MatchStatus,
+  PublicGoal,
   PublicMatch,
   Qualifier,
   Score,
@@ -58,6 +59,7 @@ export type XornadaRow = {
   // it is recent is the components' call, with their clock (recentGoals).
   homeScoredAt: Instant | null;
   awayScoredAt: Instant | null;
+  goals?: PublicGoal[];
 };
 
 export type XornadaCompetition = {
@@ -148,6 +150,7 @@ function toRow(
     version: m.version,
     homeScoredAt: m.homeScoredAt,
     awayScoredAt: m.awayScoredAt,
+    goals: m.goals,
   };
 }
 

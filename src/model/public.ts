@@ -15,6 +15,15 @@ export const PublicTeam = z.strictObject({
 });
 export type PublicTeam = z.infer<typeof PublicTeam>;
 
+export const PublicGoal = z.strictObject({
+  team: z.enum(["home", "away"]),
+  player: z.string().min(1),
+  minute: z.int().min(0),
+  penalty: z.boolean().optional(),
+  ownGoal: z.boolean().optional(),
+});
+export type PublicGoal = z.infer<typeof PublicGoal>;
+
 const fields = {
   matchId: MatchId,
   competitionId: CompetitionId,
@@ -33,6 +42,7 @@ const fields = {
   // raised each side's score while live, seen live; null otherwise.
   homeScoredAt: Instant.nullable(),
   awayScoredAt: Instant.nullable(),
+  goals: z.array(PublicGoal).optional(),
 };
 
 // SPEC-041 CA-2: only a match with a score can have scored.

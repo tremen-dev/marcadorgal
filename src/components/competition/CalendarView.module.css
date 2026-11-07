@@ -1,0 +1,122 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.roundHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--bg-elev);
+  border: var(--hairline) solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+.roundTitle {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--fg);
+}
+
+.roundCount {
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1;
+  color: var(--fg-muted);
+}
+
+.matchesList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.matchCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--bg-elev);
+  border: var(--hairline) solid var(--line-row);
+  border-radius: var(--radius-sm);
+  gap: var(--space-12);
+}
+
+.matchCardGalician {
+  background: var(--bg-live);
+  border-color: var(--line-strong);
+}
+
+.matchTeams {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.teamRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.shield {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  flex: none;
+}
+
+.teamName {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.2;
+  color: var(--fg);
+}
+
+.galicianName {
+  font-weight: 700;
+  color: var(--marca);
+}
+
+.matchInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex: none;
+}
+
+.kickoffTime {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--fg);
+}
+
+.confirmedBadge {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--marca);
+  background: var(--marca-ink);
+  padding: 2px 6px;
+  border-radius: var(--radius-pill);
+  border: var(--hairline) solid var(--marca);
+}
+
+.tbdBadge {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--fg-dim);
+  background: var(--bg-step);
+  padding: 2px 6px;
+  border-radius: var(--radius-pill);
+}

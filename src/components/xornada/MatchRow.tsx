@@ -216,6 +216,22 @@ export function MatchRow({
         </span>
         {score("away")}
       </div>
+      {row.goals && row.goals.length > 0 && (
+        <div className={styles.matchGoals} data-testid="match-goals">
+          {row.goals.map((g, idx) => (
+            <span
+              // biome-ignore lint/suspicious/noArrayIndexKey: goals have no id
+              key={`${g.team}-${g.minute}-${g.player}-${idx}`}
+              className={styles.goalPill}
+              data-team={g.team}
+            >
+              ⚽ {g.player} {g.minute}&apos;
+              {g.penalty && <span className={styles.goalPenalty}> (p.)</span>}
+              {g.ownGoal && <span className={styles.goalPenalty}> (p.p.)</span>}
+            </span>
+          ))}
+        </div>
+      )}
       {age !== null && (
         <span className={styles.rowAge} data-testid="row-age">
           {t(locale, "freshness.lastData", { n: age })}

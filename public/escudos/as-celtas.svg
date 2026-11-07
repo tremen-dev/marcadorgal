@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <clipPath id="celtas-shield">
+      <path d="M22 16 L78 16 C78 16 82 50 50 88 C18 50 22 16 22 16 Z"/>
+    </clipPath>
+  </defs>
+  <!-- Main Shield -->
+  <path d="M20 14 L80 14 C80 14 84 52 50 92 C16 52 20 14 20 14 Z" fill="#87CEEB" stroke="#FFFFFF" stroke-width="2.5"/>
+  <g clip-path="url(#celtas-shield)">
+    <!-- Red Santiago Cross -->
+    <path d="M47 22 L53 22 L53 38 L68 38 L68 44 L53 44 L53 78 L50 84 L47 78 L47 44 L32 44 L32 38 L47 38 Z" fill="#DC2626"/>
+    <!-- Cross details -->
+    <path d="M50 18 L55 24 L45 24 Z" fill="#DC2626"/>
+    <path d="M72 41 L66 37 L66 45 Z" fill="#DC2626"/>
+    <path d="M28 41 L34 37 L34 45 Z" fill="#DC2626"/>
+    <!-- Celtic knot / wave bottom accent -->
+    <circle cx="50" cy="50" r="16" fill="none" stroke="#FFFFFF" stroke-width="2.5" opacity="0.9"/>
+    <path d="M44 46 C44 42 56 42 56 46 C56 50 44 50 44 54 C44 58 56 58 56 54" fill="none" stroke="#DC2626" stroke-width="2"/>
+    <!-- Banner -->
+    <rect x="18" y="66" width="64" height="15" rx="3" fill="#111110" opacity="0.85"/>
+    <text x="50" y="77" font-family="'Geist', sans-serif" font-size="7" font-weight="800" fill="#87CEEB" text-anchor="middle" letter-spacing="0.8">AS CELTAS</text>
+  </g>
+</svg>

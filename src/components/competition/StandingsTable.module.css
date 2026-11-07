@@ -1,0 +1,159 @@
+.container {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  background: var(--bg-elev);
+  border-radius: var(--radius-sm);
+  border: var(--hairline) solid var(--line);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.3;
+  text-align: left;
+}
+
+.table th {
+  padding: 8px 10px;
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--fg-muted);
+  border-bottom: var(--hairline) solid var(--line);
+  background: var(--bg-step);
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 8px 10px;
+  border-bottom: var(--hairline) solid var(--line-row);
+  color: var(--fg);
+  white-space: nowrap;
+}
+
+.rowGalician {
+  background: var(--bg-live);
+}
+
+.num {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  text-align: center;
+}
+
+.pos {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 12px;
+  width: 28px;
+  text-align: center;
+}
+
+.posTop {
+  color: var(--marca);
+}
+
+.posBottom {
+  color: var(--alerta);
+}
+
+.teamCell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 160px;
+}
+
+.shield {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex: none;
+}
+
+.shieldPlaceholder {
+  width: 20px;
+  height: 20px;
+  flex: none;
+}
+
+.teamName {
+  font-weight: 500;
+  color: var(--fg);
+}
+
+.galicianTeamName {
+  font-weight: 700;
+  color: var(--marca);
+}
+
+.pts {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--fg);
+  text-align: center;
+}
+
+.formCell {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.formDot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bg);
+}
+
+.formW {
+  background: var(--marca);
+  color: var(--marca-ink);
+}
+
+.formD {
+  background: var(--amber);
+  color: var(--bg);
+}
+
+.formL {
+  background: var(--fg-dim);
+  color: var(--fg);
+}
+
+.legendFooter {
+  padding: 10px 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--fg-dim);
+  border-top: var(--hairline) solid var(--line);
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legendMarker {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}

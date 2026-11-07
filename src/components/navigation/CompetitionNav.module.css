@@ -1,0 +1,112 @@
+.wrapper {
+  background: var(--bg-elev);
+  border-bottom: var(--hairline) solid var(--line);
+  padding: var(--space-8) var(--space-12);
+}
+
+.categoryBar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  margin-bottom: var(--space-8);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.categoryTab {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-step);
+  color: var(--fg-dim);
+  text-decoration: none;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: var(--hairline) solid var(--line);
+}
+
+.categoryTab:hover {
+  color: var(--fg);
+  text-decoration: none;
+  background: var(--line-strong);
+}
+
+.categoryActive {
+  background: var(--marca);
+  color: var(--marca-ink);
+  border-color: var(--marca);
+}
+
+.categoryActive:hover {
+  background: var(--marca);
+  color: var(--marca-ink);
+}
+
+.femBadge {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: var(--bg-live);
+  color: var(--directo);
+  padding: 2px 5px;
+  border-radius: var(--radius-pill);
+}
+
+.leaguesScroll {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+
+.leaguePill {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 1;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--bg-subtle);
+  color: var(--fg-muted);
+  border: var(--hairline) solid var(--line-row);
+  white-space: nowrap;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.leaguePill:hover {
+  color: var(--fg);
+  text-decoration: none;
+  border-color: var(--line-strong);
+}
+
+.leagueActive {
+  background: var(--bg-step);
+  color: var(--fg);
+  border-color: var(--marca);
+  font-weight: 700;
+}
+
+.leagueDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.featuredTeamTag {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--marca);
+}

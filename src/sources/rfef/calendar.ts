@@ -21,6 +21,13 @@ export const FIVE_COMPETITIONS: ReadonlySet<string> = new Set([
   "tercera-rfef-g1",
 ]);
 
+export const COVERED_COMPETITIONS: ReadonlySet<string> = new Set([
+  ...FIVE_COMPETITIONS,
+  "liga-f",
+  "primera-federacion-fem",
+  "segunda-federacion-fem-g1",
+]);
+
 // Raw shape returned by explorer GET /api/export/calendar?competition=...&season=...
 export const RawCalendarExport = z.looseObject({
   competition: z.string().min(1),
@@ -103,11 +110,11 @@ export function createRfefCalendar(baseUrl?: string): CalendarImporter {
     id: RFEF_SOURCE_ID,
 
     covers(competitionId: CompetitionId | string, _season: string) {
-      return FIVE_COMPETITIONS.has(String(competitionId));
+      return COVERED_COMPETITIONS.has(String(competitionId));
     },
 
     async fetch(competitionId, season, ctx: CalendarFetchContext) {
-      if (!FIVE_COMPETITIONS.has(String(competitionId))) {
+      if (!COVERED_COMPETITIONS.has(String(competitionId))) {
         throw new Error(`rfef calendar does not cover ${competitionId}`);
       }
       const token =

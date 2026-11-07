@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <clipPath id="depor-circle">
+      <circle cx="50" cy="54" r="38"/>
+    </clipPath>
+  </defs>
+  <!-- Crown on top -->
+  <path d="M28 24 L36 34 L50 20 L64 34 L72 24 L70 38 L30 38 Z" fill="#F0B135" stroke="#3D362C" stroke-width="1.5"/>
+  <circle cx="28" cy="22" r="3" fill="#F0B135"/>
+  <circle cx="50" cy="18" r="3.5" fill="#F0B135"/>
+  <circle cx="72" cy="22" r="3" fill="#F0B135"/>
+  <!-- Shield Circle -->
+  <circle cx="50" cy="54" r="40" fill="#004B9B" stroke="#F5F1EA" stroke-width="2"/>
+  <g clip-path="url(#depor-circle)">
+    <!-- White background -->
+    <rect x="10" y="14" width="80" height="80" fill="#FFFFFF"/>
+    <!-- Diagonal Purple/Blue stripe -->
+    <path d="M10 20 L80 90 L90 90 L20 20 Z" fill="#6A1B9A" opacity="0.3"/>
+    <!-- Vertical blue and white stripes -->
+    <rect x="34" y="14" width="8" height="80" fill="#004B9B"/>
+    <rect x="50" y="14" width="8" height="80" fill="#004B9B"/>
+    <rect x="66" y="14" width="8" height="80" fill="#004B9B"/>
+    <!-- ABANCA ribbon -->
+    <rect x="15" y="58" width="70" height="18" rx="3" fill="#004B9B" stroke="#FFFFFF" stroke-width="1"/>
+    <text x="50" y="70" font-family="'Geist', sans-serif" font-size="7" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.5">ABANCA</text>
+  </g>
+  <circle cx="50" cy="54" r="38" fill="none" stroke="#F0B135" stroke-width="2"/>
+</svg>

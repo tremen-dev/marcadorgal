@@ -1,5 +1,7 @@
 export * from "./alias.ts";
 export * from "./calendar-import.ts";
+export * from "./clubs.ts";
+export * from "./competitions.ts";
 export * from "./entities.ts";
 export * from "./galicians.ts";
 export * from "./ids.ts";
