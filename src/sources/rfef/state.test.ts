@@ -76,7 +76,7 @@ describe("CA-5 states (ADR-017 §4)", () => {
     });
   });
 
-  it("a score with parpadea is live in [kickoff - 10, kickoff + 110)", () => {
+  it("a score with parpadea is live in [kickoff - 10, kickoff + 130) (SPEC-053)", () => {
     expect(REAL_MADRID.cell.blinking).toBe(true);
     const live = {
       status: "live",
@@ -88,8 +88,8 @@ describe("CA-5 states (ADR-017 §4)", () => {
       "ambiguous_state",
     );
     expect(rowState(REAL_MADRID, at(KICKOFF - 10 * MIN))).toEqual(live);
-    expect(rowState(REAL_MADRID, at(KICKOFF + 109 * MIN))).toEqual(live);
-    expect(rowState(REAL_MADRID, at(KICKOFF + 110 * MIN))).toBe(
+    expect(rowState(REAL_MADRID, at(KICKOFF + 129 * MIN))).toEqual(live);
+    expect(rowState(REAL_MADRID, at(KICKOFF + 130 * MIN))).toBe(
       "ambiguous_state",
     );
   });

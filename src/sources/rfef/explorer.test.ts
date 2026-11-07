@@ -664,10 +664,10 @@ describe("CA-3 mapping and clocks (ADR-023 §5), one case per row over real rows
   it.each([
     ["kickoff − 11", "2026-11-01T16:49:00Z", "ambiguous_state"],
     ["kickoff − 10", "2026-11-01T16:50:00Z", "live"],
-    ["kickoff + 109", "2026-11-01T18:49:00Z", "live"],
-    ["kickoff + 110", "2026-11-01T18:50:00Z", "ambiguous_state"],
+    ["kickoff + 129", "2026-11-01T19:09:00Z", "live"],
+    ["kickoff + 130", "2026-11-01T19:10:00Z", "ambiguous_state"],
   ])(
-    "LIVE_PROVISIONAL with lastSeenAt at %s of the declared kickoff → %s",
+    "LIVE_PROVISIONAL without minute with lastSeenAt at %s of kickoff → %s (SPEC-053)",
     (_, lastSeenAt, expected) => {
       expect(AMOREBIETA_KICKOFF).toBe("2026-11-01T17:00:00Z");
       const result = parseRows([seenAt(AMOREBIETA, lastSeenAt)]);
@@ -675,6 +675,45 @@ describe("CA-3 mapping and clocks (ADR-023 §5), one case per row over real rows
         expect(result.observations).toHaveLength(1);
         expect(result.observations[0]).toMatchObject({
           status: "live",
+          observedAt: lastSeenAt,
+        });
+        expect(result.skipped).toEqual([]);
+      } else {
+        expect(result.observations).toEqual([]);
+        expect(result.skipped).toEqual([
+          {
+            externalMatchId: "70700138",
+            status: "LIVE_PROVISIONAL",
+            reason: "ambiguous_state",
+          },
+        ]);
+      }
+    },
+  );
+
+  it.each([
+    [
+      "kickoff + 135 (e.g. stoppage time with delays)",
+      "2026-11-01T19:15:00Z",
+      "live",
+    ],
+    ["kickoff + 140", "2026-11-01T19:20:00Z", "ambiguous_state"],
+  ])(
+    "LIVE_PROVISIONAL with explicit minute with lastSeenAt at %s → %s (SPEC-053)",
+    (_, lastSeenAt, expected) => {
+      const matchWithMinute = {
+        ...AMOREBIETA,
+        minute: 90,
+        addedMinute: 6,
+        lastSeenAt,
+      };
+      const result = parseRows([matchWithMinute]);
+      if (expected === "live") {
+        expect(result.observations).toHaveLength(1);
+        expect(result.observations[0]).toMatchObject({
+          status: "live",
+          minute: 90,
+          addedMinute: 6,
           observedAt: lastSeenAt,
         });
         expect(result.skipped).toEqual([]);

@@ -46,16 +46,20 @@ export function kickoffOf(row: PanelRow, capturedAt: Instant): number {
 }
 
 // The window in which a row marked as in play is believed live (ADR-017 §4,
-// ADR-023 §5): [kickoff − 10, kickoff + 110), both in UTC ms. Shared by the
+// ADR-023 §5, SPEC-053): [kickoff − 10, kickoff + afterMinutes), both in UTC ms. Shared by the
 // panel (rowState) and by the export of explorer (explorer.ts), where the
 // clock is the row's lastSeenAt and the kickoff the declared calendar's.
 export const LIVE_BEFORE_MINUTES = 10;
-export const LIVE_AFTER_MINUTES = 110;
+export const LIVE_AFTER_MINUTES = 130;
 
-export function inLiveWindow(kickoff: number, at: number): boolean {
+export function inLiveWindow(
+  kickoff: number,
+  at: number,
+  afterMinutes: number = LIVE_AFTER_MINUTES,
+): boolean {
   return (
     at >= kickoff - LIVE_BEFORE_MINUTES * MIN &&
-    at < kickoff + LIVE_AFTER_MINUTES * MIN
+    at < kickoff + afterMinutes * MIN
   );
 }
 

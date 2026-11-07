@@ -178,7 +178,13 @@ function rowState(
           row.addedMinute > 0
             ? Math.min(row.addedMinute, 30)
             : null;
-        return inLiveWindow(Date.parse(kickoff), Date.parse(row.lastSeenAt))
+        const hasExplicitLive = liveMinute !== null || row.halfTime === true;
+        const liveWindowMinutes = hasExplicitLive ? 140 : 130;
+        return inLiveWindow(
+          Date.parse(kickoff),
+          Date.parse(row.lastSeenAt),
+          liveWindowMinutes,
+        )
           ? {
               status: "live",
               score,
