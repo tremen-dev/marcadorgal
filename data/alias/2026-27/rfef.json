@@ -15,6 +15,11 @@
       "teamId": "alaves"
     },
     {
+      "externalId": "deportivo alavés, s.a.d.",
+      "externalName": "Deportivo Alavés, S.A.D.",
+      "teamId": "alaves"
+    },
+    {
       "externalId": "deportivo alavés \"b\"",
       "externalName": "Deportivo Alavés \"B\"",
       "teamId": "alaves-b"
@@ -43,6 +48,11 @@
       "externalId": "alondras cf",
       "externalName": "Alondras CF",
       "teamId": "alondras"
+    },
+    {
+      "externalId": "amorebieta",
+      "externalName": "Amorebieta",
+      "teamId": "amorebieta"
     },
     {
       "externalId": "sd amorebieta",
@@ -115,9 +125,24 @@
       "teamId": "atletico-madrid"
     },
     {
+      "externalId": "club atlético de madrid, s.a.d.",
+      "externalName": "Club Atlético de Madrid, S.A.D.",
+      "teamId": "atletico-madrid"
+    },
+    {
+      "externalId": "real avilés",
+      "externalName": "Real Avilés",
+      "teamId": "aviles"
+    },
+    {
       "externalId": "real avilés industrial",
       "externalName": "Real Avilés Industrial",
       "teamId": "aviles"
+    },
+    {
+      "externalId": "barakaldo",
+      "externalName": "Barakaldo",
+      "teamId": "barakaldo"
     },
     {
       "externalId": "barakaldo cf",
@@ -130,6 +155,11 @@
       "teamId": "barcelona"
     },
     {
+      "externalId": "fútbol club barcelona",
+      "externalName": "Fútbol Club Barcelona",
+      "teamId": "barcelona"
+    },
+    {
       "externalId": "c.d. barco",
       "externalName": "c.d. barco",
       "teamId": "barco"
@@ -138,6 +168,11 @@
       "externalId": "cd barco",
       "externalName": "CD Barco",
       "teamId": "barco"
+    },
+    {
+      "externalId": "basconia",
+      "externalName": "Basconia",
+      "teamId": "basconia"
     },
     {
       "externalId": "cd basconia",
@@ -178,6 +213,11 @@
       "externalId": "burgos cf",
       "externalName": "Burgos CF",
       "teamId": "burgos"
+    },
+    {
+      "externalId": "cacereño",
+      "externalName": "Cacereño",
+      "teamId": "cacereno"
     },
     {
       "externalId": "cp cacereño",
@@ -280,6 +320,11 @@
       "teamId": "deportivo"
     },
     {
+      "externalId": "rc deportivo de la coruña",
+      "externalName": "RC Deportivo de La Coruña",
+      "teamId": "deportivo"
+    },
+    {
       "externalId": "deportivo fabril",
       "externalName": "Deportivo Fabril",
       "teamId": "deportivo-fabril"
@@ -325,6 +370,11 @@
       "teamId": "espanyol"
     },
     {
+      "externalId": "reial club deportiu espanyol de barcelona, s.a.d.",
+      "externalName": "Reial Club Deportiu Espanyol de Barcelona, S.A.D.",
+      "teamId": "espanyol"
+    },
+    {
       "externalId": "c.d. estradense",
       "externalName": "c.d. estradense",
       "teamId": "estradense"
@@ -345,6 +395,16 @@
       "teamId": "extremadura"
     },
     {
+      "externalId": "extremadura 1924",
+      "externalName": "Extremadura 1924",
+      "teamId": "extremadura"
+    },
+    {
+      "externalId": "gernika",
+      "externalName": "Gernika",
+      "teamId": "gernika"
+    },
+    {
       "externalId": "sd gernika club",
       "externalName": "SD Gernika Club",
       "teamId": "gernika"
@@ -355,9 +415,24 @@
       "teamId": "getafe"
     },
     {
+      "externalId": "getafe club de fútbol, s.a.d.",
+      "externalName": "Getafe Club de Fútbol, S.A.D.",
+      "teamId": "getafe"
+    },
+    {
+      "externalId": "gimnástica torrelavega",
+      "externalName": "Gimnástica Torrelavega",
+      "teamId": "gimnastica"
+    },
+    {
       "externalId": "rs gimnástica de torrelavega",
       "externalName": "RS Gimnástica de Torrelavega",
       "teamId": "gimnastica"
+    },
+    {
+      "externalId": "girona",
+      "externalName": "Girona",
+      "teamId": "girona"
     },
     {
       "externalId": "girona fc",
@@ -385,14 +460,29 @@
       "teamId": "las-palmas"
     },
     {
+      "externalId": "unión deportiva las palmas, s.a.d.",
+      "externalName": "Unión Deportiva Las Palmas, S.A.D.",
+      "teamId": "las-palmas"
+    },
+    {
       "externalId": "cd leganés",
       "externalName": "CD Leganés",
+      "teamId": "leganes"
+    },
+    {
+      "externalId": "club deportivo leganés, s.a.d.",
+      "externalName": "Club Deportivo Leganés, S.A.D.",
       "teamId": "leganes"
     },
     {
       "externalId": "levante ud",
       "externalName": "Levante UD",
       "teamId": "levante"
+    },
+    {
+      "externalId": "llanera",
+      "externalName": "Llanera",
+      "teamId": "llanera"
     },
     {
       "externalId": "ud llanera",
@@ -420,6 +510,11 @@
       "teamId": "mallorca"
     },
     {
+      "externalId": "real club deportivo mallorca, s.a.d.",
+      "externalName": "Real Club Deportivo Mallorca, S.A.D.",
+      "teamId": "mallorca"
+    },
+    {
       "externalId": "club marino de luanco",
       "externalName": "Club Marino de Luanco",
       "teamId": "marino"
@@ -432,6 +527,11 @@
     {
       "externalId": "ad mérida",
       "externalName": "AD Mérida",
+      "teamId": "merida"
+    },
+    {
+      "externalId": "mérida",
+      "externalName": "Mérida",
       "teamId": "merida"
     },
     {
@@ -475,9 +575,19 @@
       "teamId": "oviedo"
     },
     {
+      "externalId": "real oviedo, s.a.d.",
+      "externalName": "Real Oviedo, S.A.D.",
+      "teamId": "oviedo"
+    },
+    {
       "externalId": "real oviedo vetusta",
       "externalName": "Real Oviedo Vetusta",
       "teamId": "oviedo-vetusta"
+    },
+    {
+      "externalId": "ponferradina",
+      "externalName": "Ponferradina",
+      "teamId": "ponferradina"
     },
     {
       "externalId": "sd ponferradina",
@@ -515,6 +625,16 @@
       "teamId": "portugalete"
     },
     {
+      "externalId": "portugalete",
+      "externalName": "Portugalete",
+      "teamId": "portugalete"
+    },
+    {
+      "externalId": "racing club de ferrol",
+      "externalName": "Racing Club de Ferrol",
+      "teamId": "racing-ferrol"
+    },
+    {
       "externalId": "racing club ferrol",
       "externalName": "Racing Club Ferrol",
       "teamId": "racing-ferrol"
@@ -535,6 +655,11 @@
       "teamId": "racing-santander"
     },
     {
+      "externalId": "real racing club de santander, s.a.d.",
+      "externalName": "Real Racing Club de Santander, S.A.D.",
+      "teamId": "racing-santander"
+    },
+    {
       "externalId": "rayo cantabria",
       "externalName": "Rayo Cantabria",
       "teamId": "rayo-cantabria"
@@ -550,6 +675,11 @@
       "teamId": "rayo-vallecano"
     },
     {
+      "externalId": "rayo vallecano de madrid, s.a.d.",
+      "externalName": "Rayo Vallecano de Madrid, S.A.D.",
+      "teamId": "rayo-vallecano"
+    },
+    {
       "externalId": "real betis",
       "externalName": "Real Betis",
       "teamId": "real-betis"
@@ -557,6 +687,11 @@
     {
       "externalId": "real betis balompié",
       "externalName": "Real Betis Balompié",
+      "teamId": "real-betis"
+    },
+    {
+      "externalId": "real betis balompié, s.a.d.",
+      "externalName": "Real Betis Balompié, S.A.D.",
       "teamId": "real-betis"
     },
     {
@@ -570,6 +705,11 @@
       "teamId": "real-madrid"
     },
     {
+      "externalId": "real madrid club de fútbol",
+      "externalName": "Real Madrid Club de Fútbol",
+      "teamId": "real-madrid"
+    },
+    {
       "externalId": "real sociedad",
       "externalName": "Real Sociedad",
       "teamId": "real-sociedad"
@@ -577,6 +717,11 @@
     {
       "externalId": "real sociedad de fútbol",
       "externalName": "Real Sociedad de Fútbol",
+      "teamId": "real-sociedad"
+    },
+    {
+      "externalId": "real sociedad de fútbol, s.a.d.",
+      "externalName": "Real Sociedad de Fútbol, S.A.D.",
       "teamId": "real-sociedad"
     },
     {
@@ -588,6 +733,11 @@
       "externalId": "real sociedad de fútbol sad \"b\"",
       "externalName": "Real Sociedad de Fútbol SAD \"B\"",
       "teamId": "real-sociedad-b"
+    },
+    {
+      "externalId": "real unión",
+      "externalName": "Real Unión",
+      "teamId": "real-union"
     },
     {
       "externalId": "real unión club",
@@ -605,6 +755,11 @@
       "teamId": "sabadell"
     },
     {
+      "externalId": "sabadell",
+      "externalName": "Sabadell",
+      "teamId": "sabadell"
+    },
+    {
       "externalId": "s.d. sarriana",
       "externalName": "s.d. sarriana",
       "teamId": "sarriana"
@@ -615,6 +770,11 @@
       "teamId": "sarriana"
     },
     {
+      "externalId": "sestao",
+      "externalName": "Sestao",
+      "teamId": "sestao-river"
+    },
+    {
       "externalId": "sestao river club",
       "externalName": "Sestao River Club",
       "teamId": "sestao-river"
@@ -622,6 +782,11 @@
     {
       "externalId": "sevilla fc",
       "externalName": "Sevilla FC",
+      "teamId": "sevilla"
+    },
+    {
+      "externalId": "sevilla fútbol club, s.a.d.",
+      "externalName": "Sevilla Fútbol Club, S.A.D.",
       "teamId": "sevilla"
     },
     {
@@ -655,6 +820,11 @@
       "teamId": "sporting"
     },
     {
+      "externalId": "real sporting de gijón, s.a.d.",
+      "externalName": "Real Sporting de Gijón, S.A.D.",
+      "teamId": "sporting"
+    },
+    {
       "externalId": "cd tenerife",
       "externalName": "CD Tenerife",
       "teamId": "tenerife"
@@ -670,8 +840,18 @@
       "teamId": "unionistas"
     },
     {
+      "externalId": "unionistas salamanca",
+      "externalName": "Unionistas Salamanca",
+      "teamId": "unionistas"
+    },
+    {
       "externalId": "valencia cf",
       "externalName": "Valencia CF",
+      "teamId": "valencia"
+    },
+    {
+      "externalId": "valencia club de fútbol, s.a.d.",
+      "externalName": "Valencia Club de Fútbol, S.A.D.",
       "teamId": "valencia"
     },
     {
@@ -682,6 +862,11 @@
     {
       "externalId": "real valladolid cf",
       "externalName": "Real Valladolid CF",
+      "teamId": "valladolid"
+    },
+    {
+      "externalId": "real valladolid club de fútbol, s.a.d.",
+      "externalName": "Real Valladolid Club de Fútbol, S.A.D.",
       "teamId": "valladolid"
     },
     {
@@ -700,6 +885,11 @@
       "teamId": "villarreal"
     },
     {
+      "externalId": "villarreal club de fútbol, s.a.d.",
+      "externalName": "Villarreal Club de Fútbol, S.A.D.",
+      "teamId": "villarreal"
+    },
+    {
       "externalId": "viveiro c.f.",
       "externalName": "viveiro c.f.",
       "teamId": "viveiro"
@@ -708,6 +898,11 @@
       "externalId": "viveiro cf",
       "externalName": "Viveiro CF",
       "teamId": "viveiro"
+    },
+    {
+      "externalId": "zamora",
+      "externalName": "Zamora",
+      "teamId": "zamora"
     },
     {
       "externalId": "zamora cf",

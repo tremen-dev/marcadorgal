@@ -203,6 +203,66 @@ describe("CA-6 syncCalendar", () => {
     });
   });
 
+  it("reuses alias when externalId differs but externalName matches, avoiding duplicate alias entries", () => {
+    const aliases = AliasFile.parse({
+      ...emptyAliases,
+      teams: [
+        {
+          externalId: "athletic club",
+          externalName: "Athletic Club",
+          teamId: "athletic-club",
+        },
+        {
+          externalId: "deportivo alavés",
+          externalName: "Deportivo Alavés",
+          teamId: "alaves",
+        },
+      ],
+    });
+    const current = CalendarFile.parse({
+      competition,
+      teams: [
+        { id: "athletic-club", name: "Athletic Club" },
+        { id: "alaves", name: "Deportivo Alavés" },
+      ],
+      matches: [
+        {
+          round: 1,
+          kickoff: "2026-09-06T16:00:00Z",
+          home: "athletic-club",
+          away: "alaves",
+        },
+      ],
+    });
+    const importedWithSlugId: ImportedCalendar = {
+      teams: [
+        { externalId: "athletic-club", externalName: "Athletic Club" },
+        { externalId: "alaves", externalName: "Deportivo Alavés" },
+      ],
+      matches: [
+        {
+          externalId: "m1",
+          round: 1,
+          kickoff: "2026-09-06T16:00:00Z",
+          home: "athletic-club",
+          away: "alaves",
+          timeConfirmed: true,
+        },
+      ],
+      ignoredRounds: {},
+    };
+    const { aliases: out, diff } = syncCalendar({
+      current,
+      aliases,
+      imported: importedWithSlugId,
+      competition,
+      sourceId,
+    });
+    expect(diff.newTeams).toHaveLength(0);
+    const names = out.teams.filter((t) => t.externalName === "Athletic Club");
+    expect(names).toHaveLength(1);
+  });
+
   it("(b) reports added and rescheduled matches and updates the kickoff", () => {
     const { calendar: current, aliases } = initial();
     const moved: ImportedCalendar = {

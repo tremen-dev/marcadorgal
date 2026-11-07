@@ -2,7 +2,7 @@
 
 > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.
 > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.
-> Última actualización: 2026-11-03 (SPEC-040, SPEC-041 y SPEC-042 al día en EPIC-003: el lateral de escritorio está retirado; SPEC-045 en curso).
+> Última actualización: 2026-11-07 (SPEC-048 y SPEC-049 completadas; explorer v2.0 en producción, retirada de API-Football y sincronización de calendario oficial).
 
 ## Qué es y en qué punto está
 
@@ -16,9 +16,9 @@ jornada completa, en una sola pantalla y en galego. Proyecto de tremen.dev.
 
 **SPEC-003 completa:** tokens de diseño tipados en `src/design/tokens.ts`, CSS generado (`npm run tokens:css`) con test de paridad contra `docs/diseno/_tokens.css`, i18n tipada en `src/i18n/` con diccionarios de galego y español con tipos de `dominio.md`, reglas sin hex sueltos en `src/` y sin shorthand `font:` en CSS de `src/` (para preservar `font-variant-numeric: tabular-nums` en números).
 
-**SPEC-004 completa:** calendario declarado en `data/calendario/2026-27/` (cinco competiciones, 1.834 partidos, nombres federativos), alias del proveedor en `data/alias/2026-27/`, importador de API-Football (`npm run calendario:sync`, `npm run calendario:load`, `npm run calendario:xornada`).
+**SPEC-004 completa:** calendario declarado en `data/calendario/2026-27/` (cinco competiciones, 1.834 partidos, nombres federativos), alias del proveedor en `data/alias/2026-27/`, importador inicial de calendario (`npm run calendario:sync`, `npm run calendario:load`, `npm run calendario:xornada`).
 
-**SPEC-005 completa:** contrato `SourceAdapter` tipado, registro de fuentes validado con API-Football (prioridad 10, cadencia 30 s), adaptador de resultados con estados mapeados y minutos derivados, alias de partido (`fixture.id` → `id` derivado), fixtures reales de API-Football para tests sin red.
+**SPEC-005 completa:** contrato `SourceAdapter` tipado, registro de fuentes validado inicialmente con API-Football (prioridad 10, cadencia 30 s), adaptador de resultados con estados mapeados y minutos derivados, alias de partido (`fixture.id` → `id` derivado), fixtures para tests sin red.
 
 **SPEC-006 completa:** raw store en Supabase Storage con retención de 30 días, ventana por partido, tick autenticado registrando cada intento, alerta `unresolved_team`, manejo de cadencia con tolerancia de 5 s, enganche para el motor (`afterInsert`).
 
@@ -60,17 +60,19 @@ Las mediciones de SPEC-025 (latencia gol→pantalla con el segundo reloj de ADR-
 
 **EPIC-004 (fuente RFEF), aprobada el 2026-10-10:** `marcadores.rfef.es` entra como segunda fuente con prioridad 50 para dar directo donde hoy hay `sen sinal`. La rigen ADR-017 (decodificación cerrada del marcador ofuscado, estados por marca y reloj) y ADR-018 (petición por POST, cuerpo vacío como error, respuesta rancia). SPEC-031 está hecha: adaptador en `src/sources/rfef/` sobre fixtures reales, todavía sin registrar. SPEC-032 (calibración con series de campo) está en su rama.
 
-**EPIC-004, giro del 2026-11-01 (titular):** la vía directa se agotó (SPEC-032: la RFEF corta tras 13 peticiones válidas, «sin cadencia») y el correo a la RFEF (SPEC-036) sigue sin respuesta. ADR-023 supersede ADR-021 §7 y ADR-017 §5: la RFEF entra con **prioridad 5 temporal** a través de **explorer**, un servicio propio fuera de este repo (`marcadorgal-explorer`, sin tremen-sdd) que lee `marcadores.rfef.es` con sus propias reglas de sesión, pacing, cooldown y proxies, desplegado en Vercel el 2026-11-01 sobre la misma base Supabase en un esquema `explorer` propio. **SPEC-038 hecha (2026-11-02):** adaptador pull `src/sources/rfef/explorer.ts` sobre el export de explorer, alias de las cinco competiciones (`data/alias/2026-27/rfef.json`), registro `rfef` con prioridad 5, filtro de fuera de ventana en el tick. Pendiente: CA-10 (alta en producción de marcadorgal en una ventana con partidos, con `RFEF_EXPLORER_URL` y `RFEF_EXPLORER_TOKEN` ya en Vercel). **SPEC-039 aprobada:** jornada de observación el 2026-11-07/08 con el criterio para subir la prioridad por competición. **SPEC-044 hecha (EPIC-FIX, 2026-11-02, ADR-025):** API-Football estuvo sin plan la jornada 2026-10-30/11-02 y 39 partidos quedaron en `scheduled`. La rfef gana un horizonte de recuperación de 72 h: el tick sigue consultando, cada 5 min y solo para estados finales, los partidos que su Decision no cierra, y el motor decide a la hora de la observación (`now = observedAt`). `npm run rfef:recuperar -- --desde --hasta [--dry-run]` es el camino manual. Pendiente: CA-8 (recuperación real de esa jornada en producción) y CA-9 (primera jornada con horizonte).
+**EPIC-004, giro del 2026-11-01 (titular):** la vía directa se agotó (SPEC-032: la RFEF corta tras 13 peticiones válidas, «sin cadencia») y el correo a la RFEF (SPEC-036) sigue sin respuesta. ADR-023 supersede ADR-021 §7 y ADR-017 §5: la RFEF entra con **prioridad 5 temporal** a través de **explorer**, un servicio propio fuera de este repo (`marcadorgal-explorer`, sin tremen-sdd) que lee `marcadores.rfef.es` con sus propias reglas de sesión, pacing, cooldown y proxies, desplegado en Vercel el 2026-11-01 sobre la misma base Supabase en un esquema `explorer` propio. **SPEC-038 hecha (2026-11-02):** adaptador pull `src/sources/rfef/explorer.ts` sobre el export de explorer, alias de las cinco competiciones (`data/alias/2026-27/rfef.json`), registro `rfef` con prioridad 5, filtro de fuera de ventana en el tick. **SPEC-039:** jornada de observación. **SPEC-044 hecha (EPIC-FIX, 2026-11-02, ADR-025):** horizonte de recuperación de 72 h en la rfef para consultar y cerrar finales pendientes tras la caída de API-Football (`npm run rfef:recuperar`).
+
+**EPIC-004 — SPEC-049 completa (2026-11-06/07, ADR-026):** sustitución definitiva de API-Football por explorer v2.0 (`marcadorgal-explorer.vercel.app`) para el calendario federativo oficial de las cinco divisiones (`GET /api/export/calendar`, implementado en `src/sources/rfef/calendar.ts`), retirada de API-Football de las fuentes activas, elevación de `rfef` a prioridad 50 (`FEDERATION_PRIORITY`, ADR-017 §5 restaurado), y levantamiento de la restricción `liveObservedOnly` de ADR-027 al disponer de motor multi-proveedor (MARCA para 1ª/2ª y RFEF para 1ª/2ª/3ª RFEF) en explorer v2.0. Cliente unificado en `src/lib/explorer-client.ts` con tipado de goles embebidos (anti-N+1), clasificaciones, Pichichi y Zamora. Se solucionó la sincronización semanal (`calendario-semanal.yml`) resolviendo la compatibilidad de alias federativos oficiales SAD (`rfef.json` con 180 equipos sin duplicados), la resolución inequívoca de filiales en Segunda, 1ª RFEF y 2ª RFEF mediante `COMPETITION_TEAM_OVERRIDES` (reescritura de `externalId`, `externalName` y emparejamientos en `matches`), la preservación del calendario benchmark de Tercera RFEF G1 (feeder regional sintético en Explorer), y la reutilización de alias por `externalName` en `syncCalendar` (evitando colisiones en lote y manteniendo la pureza de ficheros de alias basados en nombres).
 
 **EPIC-MANT — SPEC-017 completa (PR #31):** mejoras del informe de jornada, entre ellas el contraste con crudo propio (`--contrastar`). **SPEC-029 completa:** endurece `web_reader`, purga el cron y pasa a v7.
 
-**EPIC-FIX (correcciones urgentes):** SPEC-011 hecho. Arregla dos defectos de la ingesta: sin peticiones `live=` con un solo id de liga, y `ParseResult` gana cuarto canal `requestErrors` para guardar observaciones buenas aun si una petición falla. Entrada prioritaria para fallos que dañan medición en vivo. **SPEC-022 completa:** `test:db` ya no toca Storage de producción. **SPEC-030 completa (PR #64, 2026-10-12):** `/` y `/es` dejan ISR y pasan a `force-dynamic`. La CDN las cachea con `Vercel-CDN-Cache-Control: s-maxage=10, stale-while-revalidate=30`, porque en Vercel la página dinámica sale `private, no-store` y el `Cache-Control` de `next.config` no basta. El cliente pide `/api/board` al hidratar si `servedAt` tiene más de 45 s. Medido en producción con `npm run cache:portada`: 10 de 10, sin HTML del build.
+**EPIC-FIX (correcciones urgentes):** SPEC-011 hecho. Arregla dos defectos de la ingesta: sin peticiones `live=` con un solo id de liga, y `ParseResult` gana cuarto canal `requestErrors` para guardar observaciones buenas aun si una petición falla. Entrada prioritaria para fallos que dañan medición en vivo. **SPEC-022 completa:** `test:db` ya no toca Storage de producción. **SPEC-030 completa (PR #64, 2026-10-12):** `/` y `/es` dejan ISR y pasan a `force-dynamic`. La CDN las cachea con `Vercel-CDN-Cache-Control: s-maxage=10, stale-while-revalidate=30`.
 
-**EPIC-FIX — SPEC-015 completa (2026-10-15):** el calendario declarado se sincroniza de martes a sábado y las reprogramaciones puras se aplican solas. Corrigió las horas de relleno de Segunda J8 y Tercera J5 antes de jugarse. CA-5 se midió en la jornada 2026-10-09/12: 49 partidos y ninguna hora cambiada después del sábado a las 05:00Z.
+**EPIC-FIX — SPEC-015 completa (2026-10-15):** el calendario declarado se sincroniza de martes a sábado y las reprogramaciones puras se aplican solas. Corrigió las horas de relleno de Segunda J8 y Tercera J5 antes de jugarse.
 
-**Jornada 2026-10-09/12 leída (2026-10-15), la primera con las cinco competiciones:** válida con reservas, solo por el `suspended` de Rayo–Athletic (lanzamiento de objetos). `--contrastar` de SPEC-017: 48/49 coinciden, 0 discrepancias. Prórroga de SPEC-018: 20 peticiones (≤ 42). RN-12: 6/6 en ≤ 224 s (F-SPEC-013-6 resuelto). Primera produce Decisions (R-SPEC-009-1 cerrado). Cuatro partidos sin directo del proveedor; los cubrirá EPIC-004.
+**EPIC-FIX — SPEC-048 completa (2026-11-03, ADR-027):** `liveObservedOnly` en el registro de fuentes para aislar temporalmente el directo de competiciones del motor sin perder las observaciones en crudo ni en la base (utilizado en Primera y Segunda División antes de la integración del proveedor MARCA en explorer v2.0).
 
-**EPIC-MANT — SPEC-035 completa (2026-10-15, ADR-019):** el motor serializado por partido. pg_cron y Vercel Cron decidían a la vez y escribían versiones gemelas: 36 filas del 22-09 al 12-10, sin daño visible. Ahora `decideMatches`, `loadSeason` y `replay:jornada --aplicar` toman `for no key update` sobre `matches` en orden de id antes de leer o escribir. `informe:jornada` cuenta las gemelas y los `decided_at` invertidos, y tras desplegar las dos cuentas deben dar 0. Las cuatro specs de EPIC-MANT están en `hecho`.
+**EPIC-MANT — SPEC-035 completa (2026-10-15, ADR-019):** el motor serializado por partido (`for no key update` sobre `matches`). **SPEC-043 completa (2026-11-06, ADR-024):** migraciones de base automáticas aplicadas en GitHub Actions antes de promover el despliegue a producción. **SPEC-047 completa (2026-11-06):** base local Supabase y gates adaptados para ejecución limpia en entornos Windows.
 
 ### Herencia
 
@@ -113,13 +115,20 @@ el motor, luego la pantalla.
 
 Registro en `src/sources/registry.ts`. Tipos soportados por el contrato: API de
 proveedor (pull), web con acuerdo (pull), webhook (push), operador (push).
-API-Football Pro está contratado desde 2026-09-21 y ya es el importador de
-calendario. La verificación de cobertura de Tercera G1 (306 partidos, 34
-jornadas, eventos con minuto) está hecha. Alternativas sin directo: Sportmonks
-(sin directo en Segunda RFEF), BeSoccer API (sin precio público). La base legal
-de cada fuente la gestiona el titular fuera del repo (D-7). La fuente `rfef`
-está registrada con prioridad 5 vía explorer (ADR-023, SPEC-038); el adaptador
-directo de SPEC-031 queda en reserva, sin registrar.
+La suscripción de pago a API-Football Pro venció y no se ha renovado, retirándose de
+las fuentes activas (ADR-026, SPEC-049). La fuente oficial autoritativa pasa a ser
+`rfef` vía `marcadorgal-explorer` v2.0 (`https://marcadorgal-explorer.vercel.app`),
+elevada a prioridad 50 (`FEDERATION_PRIORITY`, restaurando ADR-017 §5 y supersediendo
+ADR-023 §1).
+Explorer v2.0 integra un motor multi-proveedor: MARCA para Primera y Segunda División,
+y RFEF oficial para Primera RFEF, Segunda RFEF y Tercera RFEF. Esta arquitectura
+permitió levantar la salvaguarda temporal `liveObservedOnly` de ADR-027 §3 en Primera y
+Segunda. Explorer suministra además el calendario oficial completo vía
+`GET /api/export/calendar` (reemplazando a API-Football), marcadores con goles ligeros
+embebidos (anti-N+1), clasificaciones y trofeos individuales (Pichichi y Zamora) consumidos
+a través de `src/lib/explorer-client.ts`. El adaptador directo de SPEC-031 queda en
+reserva, sin registrar. La base legal de cada fuente la gestiona el titular fuera
+del repo (D-7).
 
 ## Decisiones clave hasta hoy
 
@@ -146,7 +155,10 @@ directo de SPEC-031 queda en reserva, sin registrar.
 - ADR-020 Fuente RFEF: la sesión se abre en dos pasos (portada y NLogin); tope por vuelta 3 al abrir y 4 al renovar.
 - ADR-021 Fuente RFEF: consumo mínimo, una petición por vuelta con sesión reutilizada, solo en franja y con backoff; §6-§7 supersedidos por ADR-023 para la vía explorer.
 - ADR-023 Fuente RFEF vía explorer: prioridad 5 temporal, pull HTTP a un servicio propio y reglas de acceso de explorer (supersede ADR-017 §5 y ADR-021 §6-§7; retira la condición de alta de ADR-018 §4).
+- ADR-024 Migraciones de la base aplicadas por GitHub Actions antes de promover el despliegue (Deployment Check en Vercel).
 - ADR-025 Horizonte de recuperación por fuente (72 h la rfef) y motor a la hora de la observación fuera de la ventana común; `rfef:recuperar` como camino permanente (precisa ADR-002 §2, ADR-013 §1 y RN-08).
+- ADR-026 Sustitución de API-Football por explorer para calendario y retirada de API-Football de las fuentes activas (prioridad 50 para `rfef`, importador oficial `rfefCalendar` en `GET /api/export/calendar`, cliente en `src/lib/explorer-client.ts`).
+- ADR-027 Una fuente puede observar el directo de una competición sin decidirlo (`liveObservedOnly` del registro). Creada temporalmente para aislar Primera y Segunda en directo antes de explorer v2.0; levantada al incorporar proveedor MARCA en explorer v2.0.
 
 ## Riesgos y preguntas abiertas
 
@@ -155,4 +167,4 @@ directo de SPEC-031 queda en reserva, sin registrar.
 - **Pico de conexiones Realtime** en un Celta-Depor. Plan Pro de Supabase da
   500; el exceso se factura. Se mide en la primera jornada pública.
 - **Coste de plataforma al lanzar:** Vercel Pro 20 $ + Supabase Pro 25 $ +
-  proveedor 19 $ ≈ 64 $/mes.
+  proveedor 0 $ (explorer propio) ≈ 45 $/mes.

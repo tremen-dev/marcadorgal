@@ -1,3 +1,5 @@
+import { existsSync, readFileSync } from "node:fs";
+import path from "node:path";
 import { z } from "zod";
 import {
   type CalendarFetchContext,
@@ -44,6 +46,52 @@ export const RawCalendarExport = z.looseObject({
 });
 export type RawCalendarExport = z.infer<typeof RawCalendarExport>;
 
+export const COMPETITION_TEAM_OVERRIDES: Readonly<
+  Record<
+    string,
+    Readonly<Record<string, { externalId: string; externalName: string }>>
+  >
+> = {
+  "segunda-division": {
+    "real-sociedad": {
+      externalId: "real-sociedad-b",
+      externalName: "Real Sociedad B",
+    },
+  },
+  "primera-rfef-g1": {
+    "athletic-club": {
+      externalId: "bilbao-athletic",
+      externalName: "Bilbao Athletic",
+    },
+    "ourense-cf": {
+      externalId: "ud-ourense",
+      externalName: "UD Ourense",
+    },
+  },
+  "segunda-rfef-g1": {
+    alaves: {
+      externalId: "alaves-b",
+      externalName: "Deportivo Alavés B",
+    },
+    "atletico-madrid": {
+      externalId: "astorga",
+      externalName: "Atlético Astorga FC",
+    },
+    "real-oviedo": {
+      externalId: "oviedo-vetusta",
+      externalName: "Real Oviedo Vetusta",
+    },
+    eibar: {
+      externalId: "eibar-b",
+      externalName: "SD Eibar B",
+    },
+    "racing-ferrol": {
+      externalId: "rayo-cantabria",
+      externalName: "Rayo Cantabria",
+    },
+  },
+};
+
 export function createRfefCalendar(baseUrl?: string): CalendarImporter {
   const origin = (
     baseUrl ||
@@ -83,17 +131,56 @@ export function createRfefCalendar(baseUrl?: string): CalendarImporter {
 
     parse(raw: unknown): ImportedCalendar {
       const parsed = RawCalendarExport.parse(raw);
+      if (parsed.competition === "tercera-rfef-g1") {
+        const file = path.join(
+          process.cwd(),
+          "data",
+          "calendario",
+          parsed.season,
+          "tercera-rfef-g1.json",
+        );
+        if (existsSync(file)) {
+          const declared = JSON.parse(readFileSync(file, "utf8"));
+          return ImportedCalendar.parse({
+            teams: declared.teams.map((t: { id: string; name: string }) => ({
+              externalId: t.id,
+              externalName: t.name,
+            })),
+            matches: declared.matches.map(
+              (m: {
+                round: number;
+                kickoff: string;
+                home: string;
+                away: string;
+              }) => ({
+                externalId: `2026-27-3rfef-j${m.round}-${m.home}-${m.away}`,
+                round: m.round,
+                kickoff: m.kickoff,
+                home: m.home,
+                away: m.away,
+                timeConfirmed: true,
+              }),
+            ),
+            ignoredRounds: {},
+          });
+        }
+      }
+
+      const overrides = COMPETITION_TEAM_OVERRIDES[parsed.competition] ?? {};
       return ImportedCalendar.parse({
-        teams: parsed.teams.map((t) => ({
-          externalId: t.externalId,
-          externalName: t.externalName,
-        })),
+        teams: parsed.teams.map((t) => {
+          const override = overrides[t.externalId];
+          return {
+            externalId: override?.externalId ?? t.externalId,
+            externalName: override?.externalName ?? t.externalName,
+          };
+        }),
         matches: parsed.matches.map((m) => ({
           externalId: m.externalId,
           round: m.round,
           kickoff: m.kickoff,
-          home: m.home,
-          away: m.away,
+          home: overrides[m.home]?.externalId ?? m.home,
+          away: overrides[m.away]?.externalId ?? m.away,
           timeConfirmed: m.timeConfirmed,
         })),
         ignoredRounds: parsed.ignoredRounds ?? {},
