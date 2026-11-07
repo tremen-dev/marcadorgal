@@ -193,6 +193,7 @@ export function createRfefExplorer({
 
   // Identity as adapter.ts resolves it: name, competition and round. The
   // codes of the export (codEquipo*, codActa) stay in the raw capture.
+  // SPEC-049: canonical team IDs take precedence when present in the row.
   function resolveMatch(
     row: ExplorerMatch,
     competitionId: CompetitionId,

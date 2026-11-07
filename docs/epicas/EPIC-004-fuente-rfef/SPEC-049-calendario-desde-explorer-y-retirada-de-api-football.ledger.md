@@ -17,7 +17,7 @@ epica: EPIC-004
 | CA-3 | `tools/calendario-sync.mjs` lee `RFEF_EXPLORER_TOKEN` (o `EXPLORER_API_KEY`) y soporta `--source` por defecto `rfef` | `src/calendar/cli.test.ts` (8 tests) | ✅ | ✅ |
 | CA-4 | `src/sources/registry.ts` eleva `rfef` a prioridad 50 (`FEDERATION_PRIORITY`, ADR-017 §5 restaurado, ADR-026) | `src/sources/registry.test.ts` (12 tests) | ✅ | ✅ |
 | CA-5 | `src/lib/explorer-client.ts` cliente tipado con ISR para calendario, partidos, clasificaciones, Pichichi y Zamora | `src/lib/explorer-client.test.ts` (6 tests) | ✅ | ✅ |
-| CA-6 | `src/sources/rfef/explorer.ts` tolera y parsea campos opcionales `goals`, `canonicalCompetitionId`, `canonicalHomeTeamId`, `canonicalAwayTeamId` y `liveProvider` | `src/sources/rfef/explorer.test.ts` (59 tests) | ✅ | ✅ |
+| CA-6 | `src/sources/rfef/explorer.ts` tolera y parsea campos opcionales `goals`, `canonicalCompetitionId`, `canonicalHomeTeamId`, `canonicalAwayTeamId` y `liveProvider`; resolución con fallback canónico en `parseRequest` y `resolveMatch` | `src/sources/rfef/explorer.test.ts` (62 tests) | ✅ | ✅ |
 | CA-7 | Gates: TypeScript, Biome, Vitest y límites arquitecturales | `src/arch/rfef-boundary.test.ts`, `src/arch/sources-boundary.test.ts`, suites unitarias | ✅ | ✅ |
 
 ## Veredicto
@@ -36,3 +36,8 @@ Tras la ejecución del workflow programado `calendario-semanal` en GitHub Action
    Al generarse automáticamente el PR #102, se detectó que Explorer devolvía medianoches sintéticas (`00:00:00Z` o `timeConfirmed: false`) para rondas pasadas e inconfirmadas, sobrescribiendo partidos históricos ya disputados e invalidando fixtures (`explorer.test.ts`). Se revirtió el PR #102 y se implementó en `syncCalendar` la protección por reloj `now`: los partidos ya disputados (`existing.kickoff < now`) no se reescriben, y no se degradan horas confirmadas a medianoches provisionales inconfirmadas. Test unitario añadido en `src/calendar/sync.test.ts`.
 8. **Portabilidad y gates multiplataforma (Windows y Linux):**
    Normalización de separadores de ruta en `src/design/fonts.test.ts` y `src/design/no-hex.test.ts`, y compatibilidad con `spawnSync` en Windows para `tools/test-db.mjs` y `src/db/test-db.test.ts`. `npm run gates` verificado al 100% verde (typecheck, lint, 2.180 tests de vitest y build).
+9. **Resolución canónica en el ingestor de explorer (`src/sources/rfef/explorer.ts`):**
+   Alineación del ingestor con los campos canónicos emitidos por `marcadorgal-explorer` v2.0:
+   - **Competición (`parseRequest`):** fallback a `row.canonicalCompetitionId` cuando el grupo RFEF `row.codGrupo` no figura en `aliases.competitions` (crucial para partidos procedentes de arbitraje o descubrimiento dinámico).
+   - **Equipos (`resolveMatch`):** resolución directa por `canonicalHomeTeamId` y `canonicalAwayTeamId` si vienen informados en la fila, cayendo al mapa `teamByName` de alias únicamente cuando están ausentes.
+   - Verificado con tests unitarios dedicados en `src/sources/rfef/explorer.test.ts` (suite completa pasando con 62 tests y 125 archivos de tests en verde).
