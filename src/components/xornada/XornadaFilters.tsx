@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { LEAGUES_PREFERENCE_EVENT } from "@/lib/league-preferences";
 import {
   competitionCounts,
   countFilters,
@@ -53,9 +54,12 @@ function apply(root: HTMLElement, state: XornadaState): void {
   for (const section of root.querySelectorAll<HTMLElement>(
     "section[data-competition]",
   )) {
-    const visible = [...section.querySelectorAll<HTMLElement>(ROWS)].some(
-      (row) => !row.hidden,
-    );
+    const userHidden = section.getAttribute("data-user-hidden") === "true";
+    const visible =
+      !userHidden &&
+      [...section.querySelectorAll<HTMLElement>(ROWS)].some(
+        (row) => !row.hidden,
+      );
     section.hidden = !visible;
     anyVisible ||= visible;
   }
@@ -179,11 +183,13 @@ export function XornadaFilters() {
     root.addEventListener("click", onClick);
     window.addEventListener("hashchange", fromHash);
     document.addEventListener(REPAINT_EVENT, fromHash);
+    window.addEventListener(LEAGUES_PREFERENCE_EVENT, fromHash);
     fromHash();
     return () => {
       root.removeEventListener("click", onClick);
       window.removeEventListener("hashchange", fromHash);
       document.removeEventListener(REPAINT_EVENT, fromHash);
+      window.removeEventListener(LEAGUES_PREFERENCE_EVENT, fromHash);
     };
   }, []);
   return null;

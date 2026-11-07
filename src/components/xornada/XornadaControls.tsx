@@ -2,6 +2,7 @@ import type { Neighbours } from "@/board/weeks";
 import { type Locale, t } from "@/i18n";
 import type { FilterCounts } from "@/xornada/filter";
 import type { XornadaDay } from "@/xornada/view";
+import { LeaguesPreferencesTrigger } from "./LeaguesPreferencesDialog";
 import { dayLabel } from "./labels";
 import styles from "./Xornada.module.css";
 
@@ -144,6 +145,7 @@ export function FilterPills({
           {counts.finished}
         </span>
       </a>
+      <LeaguesPreferencesTrigger locale={locale} />
     </nav>
   );
 }

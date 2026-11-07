@@ -114,6 +114,23 @@ export function CompetitionSection({
             <span className={styles.arrowClosed}>▸</span>
           </span>
         </summary>
+        <div className={styles.competitionSubhead}>
+          <a
+            href={
+              locale === "es"
+                ? `/es/competicion/${competitionId}`
+                : `/competicion/${competitionId}`
+            }
+            className={styles.tableLink}
+            data-testid="competition-table-link"
+            aria-label={`${t(locale, "competitions.tableLink")} - ${competition.name}`}
+          >
+            <span>{t(locale, "competitions.tableLink")}</span>
+            <span className={styles.tableLinkArrow} aria-hidden="true">
+              ↗
+            </span>
+          </a>
+        </div>
         {/* SPEC-040 CA-2 (replaces SPEC-033 CA-2): one list, no day
             headers; every row says its own date. */}
         <ul className={styles.rows}>

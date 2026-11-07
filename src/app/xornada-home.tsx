@@ -5,7 +5,6 @@ import { readHome } from "@/board/week-read";
 import type { Neighbours } from "@/board/weeks";
 import { galicianNames } from "@/calendar/galicians";
 import { nowInstant } from "@/clock";
-import { CompetitionNav } from "@/components/navigation/CompetitionNav";
 import { XornadaScreen } from "@/components/xornada/XornadaScreen";
 import { type Locale, t } from "@/i18n";
 import { fetchWomenXornadaMatches } from "@/lib/explorer-xornada";
@@ -102,36 +101,33 @@ export async function HomeXornada({ locale }: { locale: Locale }) {
   }
 
   return (
-    <>
-      <CompetitionNav locale={locale} />
-      <XornadaScreen
-        locale={locale}
-        competitions={
-          matches === null
-            ? []
-            : buildXornada(matches, galicians, PROVISIONAL_DISPLAY)
-        }
-        days={matches === null ? [] : xornadaDays(matches, now)}
-        paths={HOME_PATHS}
-        // SPEC-034 CA-5: to the screen and to the client of SPEC-024.
-        provisionalDisplay={PROVISIONAL_DISPLAY}
-        // SPEC-041 CA-3: to the screen and to the client of SPEC-024.
-        recentGoal={{
-          now,
-          minutes: RECENT_GOAL_MINUTES,
-          mark: recentGoalMark(process.env),
-        }}
-        unavailable={matches === null}
-        arrows={read?.arrows}
-        // SPEC-024: the client keeps it up to date from the served state.
-        live={{
-          matches: matches ?? [],
-          servedAt: now,
-          season,
-          etag: matches === null ? null : boardEtag(matches),
-          galicians: [...galicians],
-        }}
-      />
-    </>
+    <XornadaScreen
+      locale={locale}
+      competitions={
+        matches === null
+          ? []
+          : buildXornada(matches, galicians, PROVISIONAL_DISPLAY)
+      }
+      days={matches === null ? [] : xornadaDays(matches, now)}
+      paths={HOME_PATHS}
+      // SPEC-034 CA-5: to the screen and to the client of SPEC-024.
+      provisionalDisplay={PROVISIONAL_DISPLAY}
+      // SPEC-041 CA-3: to the screen and to the client of SPEC-024.
+      recentGoal={{
+        now,
+        minutes: RECENT_GOAL_MINUTES,
+        mark: recentGoalMark(process.env),
+      }}
+      unavailable={matches === null}
+      arrows={read?.arrows}
+      // SPEC-024: the client keeps it up to date from the served state.
+      live={{
+        matches: matches ?? [],
+        servedAt: now,
+        season,
+        etag: matches === null ? null : boardEtag(matches),
+        galicians: [...galicians],
+      }}
+    />
   );
 }
