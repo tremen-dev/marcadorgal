@@ -83,6 +83,61 @@ describe("CA-1 rfefCalendar", () => {
     });
   });
 
+  it("applies COMPETITION_TEAM_OVERRIDES for filials in parse", () => {
+    const calendar = createRfefCalendar("https://test-explorer.vercel.app");
+    const rawSegunda = {
+      ...samplePayload,
+      competition: "segunda-division",
+      teams: [
+        {
+          externalId: "real-sociedad",
+          externalName: "Real Sociedad de Fútbol, S.A.D.",
+        },
+      ],
+      matches: [
+        {
+          externalId: "m1",
+          round: 1,
+          kickoff: "2026-08-16T18:00:00Z",
+          home: "real-sociedad",
+          away: "castellon",
+          timeConfirmed: true,
+        },
+      ],
+    };
+    const parsedSegunda = calendar.parse(rawSegunda);
+    expect(parsedSegunda.teams[0].externalId).toBe("real-sociedad-b");
+    expect(parsedSegunda.teams[0].externalName).toBe("Real Sociedad B");
+    expect(parsedSegunda.matches[0].home).toBe("real-sociedad-b");
+    expect(parsedSegunda.matches[0].away).toBe("castellon");
+
+    const raw1Rfef = {
+      ...samplePayload,
+      competition: "primera-rfef-g1",
+      teams: [{ externalId: "athletic-club", externalName: "Athletic Club" }],
+      matches: [],
+    };
+    const parsed1Rfef = calendar.parse(raw1Rfef);
+    expect(parsed1Rfef.teams[0].externalId).toBe("bilbao-athletic");
+    expect(parsed1Rfef.teams[0].externalName).toBe("Bilbao Athletic");
+  });
+
+  it("preserves declared benchmark calendar for tercera-rfef-g1", () => {
+    const calendar = createRfefCalendar("https://test-explorer.vercel.app");
+    const rawTercera = {
+      competition: "tercera-rfef-g1",
+      season: "2026-27",
+      exportedAt: "2026-11-06T22:50:00Z",
+      teams: [{ externalId: "synthetic-team", externalName: "Synthetic Team" }],
+      matches: [],
+      ignoredRounds: {},
+    };
+    const parsed = calendar.parse(rawTercera);
+    expect(parsed.teams).toHaveLength(18);
+    expect(parsed.matches).toHaveLength(306);
+    expect(parsed.teams.some((t) => t.externalId === "alondras")).toBe(true);
+  });
+
   it("throws when response is not ok", async () => {
     const stub = (async () => {
       return new Response("Not Found", { status: 404 });
