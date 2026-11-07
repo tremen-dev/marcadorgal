@@ -38,3 +38,5 @@ Criterios de aceptación y evidencia de verificación de SPEC-058.
 - `npm run lint` (biome check .) → 0 errores.
 - `npm test` (vitest run: 140 suites, 2234 tests) → 100% passed.
 - `npm run build` (next build Turbopack: 9 páginas estáticas prerenderizadas) → 0 errores.
+- `npm run e2e` (Playwright: 250 tests passed, 1 skipped) → 100% passed.
+- CI en GitHub Actions verificado en verde: [Run 42417114890](https://github.com/tremen-dev/marcadorgal/actions/runs/42417114890) (jobs `gates` y `e2e` en verde).
