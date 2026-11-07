@@ -23,6 +23,12 @@ function sandbox() {
   const fake = path.join(dir, "supabase");
   writeFileSync(fake, `#!/bin/sh\necho "$@" > "${marker}"\nexit 0\n`);
   chmodSync(fake, 0o755);
+  if (process.platform === "win32") {
+    writeFileSync(
+      path.join(dir, "supabase.cmd"),
+      `@echo off\necho %* > "${marker}"\nexit /b 0\n`,
+    );
+  }
   return { dir, marker };
 }
 
@@ -32,7 +38,11 @@ const run = (env: Record<string, string | undefined>) => {
   delete base.DATABASE_URL;
   const r = spawnSync(process.execPath, [script], {
     cwd: dir,
-    env: { ...base, PATH: `${dir}:${process.env.PATH}`, ...env },
+    env: {
+      ...base,
+      PATH: `${dir}${path.delimiter}${process.env.PATH}`,
+      ...env,
+    },
     encoding: "utf8",
   });
   return { ...r, called: existsSync(marker), marker };
@@ -83,10 +93,9 @@ describe("SPEC-020 CA-1 npm run test:db guard", () => {
     // before vitest.
     const f = fakes({ pushExit: 3 });
     const r = runIn(f, { DATABASE_URL: url });
-    expect(readFileSync(f.calls, "utf8").trim().split("\n")).toEqual([
-      "status -o env",
-      `db push --db-url ${url}`,
-    ]);
+    expect(
+      readFileSync(f.calls, "utf8").trim().replace(/\r/g, "").split("\n"),
+    ).toEqual(["status -o env", `db push --db-url ${url}`]);
     expect(r.status).toBe(3);
     expect(existsSync(f.npxEnv)).toBe(false);
   });
@@ -135,6 +144,16 @@ exit 0
   );
   chmodSync(path.join(dir, "supabase"), 0o755);
   chmodSync(path.join(dir, "npx"), 0o755);
+  if (process.platform === "win32") {
+    writeFileSync(
+      path.join(dir, "supabase.cmd"),
+      `@echo off\r\necho %*>> "${calls}"\r\nif "%~1" == "status" (\r\n  echo A new version of Supabase CLI is available >&2\r\n  type "${statusFile}"\r\n  exit /b ${opts.statusExit ?? 0}\r\n)\r\nexit /b ${opts.pushExit ?? 0}\r\n`,
+    );
+    writeFileSync(
+      path.join(dir, "npx.cmd"),
+      `@echo off\r\nnode -e "require('fs').writeFileSync(process.argv[1], JSON.stringify(process.env))" "${npxEnv}"\r\nexit /b 0\r\n`,
+    );
+  }
   return { dir, calls, npxEnv };
 }
 
@@ -143,7 +162,11 @@ function runIn(f: Fakes, env: Record<string, string | undefined>) {
   delete base.DATABASE_URL;
   return spawnSync(process.execPath, [script], {
     cwd: f.dir,
-    env: { ...base, PATH: `${f.dir}:${process.env.PATH}`, ...env },
+    env: {
+      ...base,
+      PATH: `${f.dir}${path.delimiter}${process.env.PATH}`,
+      ...env,
+    },
     encoding: "utf8",
   });
 }

@@ -137,6 +137,7 @@ for (const competition of competitions) {
     imported: importer.parse(raw),
     competition: { id: competition.id, season, name: competition.name, tier: competition.tier },
     sourceId: importer.id,
+    now,
   });
   console.log(formatSyncDiff(competition.id, result.diff, now));
   diffs.push(result.diff);

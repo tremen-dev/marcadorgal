@@ -23,6 +23,7 @@ export type SyncInput = {
   imported: ImportedCalendar;
   competition: Competition;
   sourceId: string;
+  now?: Instant;
 };
 
 export type SyncDiff = {
@@ -212,8 +213,18 @@ export function syncCalendar(input: SyncInput): SyncResult {
       diff.added.push(id);
       diff.kickoffs[id] = next.kickoff;
     } else if (existing.kickoff !== next.kickoff) {
-      diff.rescheduled.push({ id, from: existing.kickoff, to: next.kickoff });
-      existing.kickoff = next.kickoff;
+      const isPast = input.now !== undefined && existing.kickoff < input.now;
+      const isDowngradeToMidnight =
+        next.kickoff.endsWith("00:00:00Z") &&
+        !existing.kickoff.endsWith("00:00:00Z") &&
+        (!im.timeConfirmed || isPast);
+      if (isPast || isDowngradeToMidnight) {
+        // Do not rewrite history for matches that have already been played,
+        // and do not downgrade confirmed kickoff hours to unconfirmed placeholder midnights.
+      } else {
+        diff.rescheduled.push({ id, from: existing.kickoff, to: next.kickoff });
+        existing.kickoff = next.kickoff;
+      }
     }
   }
   for (const [id, m] of matches)
