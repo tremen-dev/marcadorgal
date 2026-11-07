@@ -1,0 +1,23 @@
+.mailboxLink {
+  color: var(--marca);
+  text-decoration: none;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.mailboxLink:hover {
+  text-decoration: underline;
+  color: var(--fg);
+}
+
+.mailboxText {
+  color: var(--fg-muted);
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.icon {
+  font-size: 11px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
