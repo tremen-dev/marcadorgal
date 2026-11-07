@@ -92,6 +92,17 @@ describe("SPEC-033 CA-6 the icon", () => {
     });
   });
 
+  it("PWA icons icon-192.png and icon-512.png have their sizes", () => {
+    expect(decodePng(read(ICON_FILES.pwa192.path))).toMatchObject({
+      width: 192,
+      height: 192,
+    });
+    expect(decodePng(read(ICON_FILES.pwa512.path))).toMatchObject({
+      width: 512,
+      height: 512,
+    });
+  });
+
   it("favicon.ico carries a 16 and a 32 px PNG", () => {
     const ico = read(ICON_FILES.favicon.path);
     expect([ico.readUInt16LE(0), ico.readUInt16LE(2)]).toEqual([0, 1]);

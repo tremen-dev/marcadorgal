@@ -12,6 +12,8 @@ export const ICON_FILES = {
   favicon: { path: "favicon.ico", sizes: [16, 32] },
   icon: { path: "icon-32.png", sizes: [32] },
   apple: { path: "apple-touch-icon.png", sizes: [180] },
+  pwa192: { path: "icon-192.png", sizes: [192] },
+  pwa512: { path: "icon-512.png", sizes: [512] },
 } as const;
 
 // `rounded`: the 48 grid's rounded tile with its hairline, as in the design.

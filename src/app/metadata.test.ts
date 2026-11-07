@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { siteMetadata } from "./metadata";
+import { COLORS } from "@/design/tokens";
+import { siteMetadata, siteViewport } from "./metadata";
 import { homeMetadata } from "./xornada-home";
 
 describe("SPEC-050 CA-2 siteMetadata", () => {
@@ -12,6 +13,13 @@ describe("SPEC-050 CA-2 siteMetadata", () => {
     );
     expect(meta.robots).toEqual({ index: false, follow: false });
     expect(meta.icons).toBeDefined();
+    expect(meta.manifest).toBe("/manifest.webmanifest");
+    expect(meta.appleWebApp).toEqual({
+      capable: true,
+      statusBarStyle: "black-translucent",
+      title: "marcador.gal",
+    });
+    expect(siteViewport.themeColor).toBe(COLORS.bg.value);
   });
 
   it("es defines localized title and description", () => {
