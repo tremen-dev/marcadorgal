@@ -144,7 +144,8 @@ export const es: Dictionary = {
     cookies: "Cookies",
     contact: "Contacto",
     disclaimer: "Información deportiva sin valor oficial",
-    antiSpamNotice: "Buzón para afición, medios e incidencias. No se admite publicidad ni spam.",
+    antiSpamNotice:
+      "Buzón para afición, medios e incidencias. No se admite publicidad ni spam.",
   },
   legal: {
     backToHome: "Volver al marcador",

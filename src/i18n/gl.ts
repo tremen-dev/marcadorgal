@@ -148,7 +148,8 @@ export const gl = {
     cookies: "Cookies",
     contact: "Contacto",
     disclaimer: "Información deportiva sen valor oficial",
-    antiSpamNotice: "Buzón para afición, medios e incidencias. Non se admite publicidade nin spam.",
+    antiSpamNotice:
+      "Buzón para afición, medios e incidencias. Non se admite publicidade nin spam.",
   },
   legal: {
     backToHome: "Volver ao marcador",
