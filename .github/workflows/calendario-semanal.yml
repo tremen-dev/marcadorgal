@@ -106,7 +106,13 @@ jobs:
             echo "Salida de \`npm run calendario:sync\`:"
             echo
             echo '```'
-            cat sync-diff.txt
+            if [ "$(wc -c < sync-diff.txt)" -gt 55000 ]; then
+              head -c 55000 sync-diff.txt
+              echo
+              echo '... [diff recortado por longitud; ver log completo en Actions]'
+            else
+              cat sync-diff.txt
+            fi
             echo '```'
             echo
             echo "URGENTE: la hora vieja o la nueva cae en los próximos 7 días. PASADO: el partido ya se jugó."
