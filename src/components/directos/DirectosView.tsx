@@ -1,5 +1,6 @@
 import { type Locale, t } from "../../i18n/index.ts";
 import type { GroupedCompetitionMatches } from "../../lib/explorer-matches.ts";
+import { CompetitionNav } from "../navigation/CompetitionNav.tsx";
 import styles from "./DirectosView.module.css";
 
 type Props = {
@@ -17,6 +18,7 @@ export function DirectosView({ date, groupedCompetitions, locale }: Props) {
   if (groupedCompetitions.length === 0) {
     return (
       <div className={styles.container} data-testid="directos-view">
+        <CompetitionNav locale={locale} />
         <div className={styles.dateBar}>
           <span className={styles.dateText}>{date}</span>
         </div>
@@ -29,6 +31,7 @@ export function DirectosView({ date, groupedCompetitions, locale }: Props) {
 
   return (
     <div className={styles.container} data-testid="directos-view">
+      <CompetitionNav locale={locale} />
       <div className={styles.dateBar}>
         <span className={styles.dateText}>{date}</span>
         {totalLive > 0 && (

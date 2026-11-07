@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { CalendarView } from "../components/competition/CalendarView.tsx";
 import { CompetitionHeader } from "../components/competition/CompetitionHeader.tsx";
 import { StandingsTable } from "../components/competition/StandingsTable.tsx";
+import { CompetitionNav } from "../components/navigation/CompetitionNav.tsx";
 import { type Locale, t } from "../i18n/index.ts";
 import {
   getOfficialCalendar,
@@ -49,6 +50,7 @@ export async function CompetitionOverviewPage({ id, locale }: PageProps) {
 
   return (
     <div className={styles.page} data-testid="competition-overview-page">
+      <CompetitionNav locale={locale} currentCompetitionId={id} />
       <CompetitionHeader
         competition={meta}
         locale={locale}
@@ -119,6 +121,7 @@ export async function CompetitionStandingsPage({ id, locale }: PageProps) {
 
   return (
     <div className={styles.page} data-testid="competition-standings-page">
+      <CompetitionNav locale={locale} currentCompetitionId={id} />
       <CompetitionHeader
         competition={meta}
         locale={locale}
@@ -162,6 +165,7 @@ export async function CompetitionCalendarPage({ id, locale }: PageProps) {
 
   return (
     <div className={styles.page} data-testid="competition-calendar-page">
+      <CompetitionNav locale={locale} currentCompetitionId={id} />
       <CompetitionHeader
         competition={meta}
         locale={locale}
