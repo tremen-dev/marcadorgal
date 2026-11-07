@@ -24,9 +24,38 @@ export const HOME_PATHS: Readonly<Record<Locale, string>> = {
 };
 
 export function homeMetadata(locale: Locale): Metadata {
+  const title = `${t(locale, "xornada.title")} · ${t(locale, "common.title")}`;
+  const ogTitle = `${t(locale, "common.title")} · ${t(locale, "common.claim")}`;
+  const description = t(locale, "common.description");
+  const path = HOME_PATHS[locale];
+
   return {
-    title: `${t(locale, "xornada.title")} · ${t(locale, "common.title")}`,
+    title,
+    description,
     robots: { index: false, follow: false },
+    openGraph: {
+      title: ogTitle,
+      description,
+      url: path,
+      siteName: t(locale, "common.title"),
+      locale: locale === "es" ? "es_ES" : "gl_ES",
+      type: "website",
+      images: [
+        {
+          url: "/og.png",
+          width: 1200,
+          height: 630,
+          alt: ogTitle,
+          type: "image/png",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: ogTitle,
+      description,
+      images: ["/og.png"],
+    },
   };
 }
 

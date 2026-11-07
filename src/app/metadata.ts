@@ -16,7 +16,9 @@ const ICONS: Metadata["icons"] = {
 
 export function siteMetadata(locale: Locale): Metadata {
   return {
+    metadataBase: new URL("https://marcador.gal"),
     title: t(locale, "common.title"),
+    description: t(locale, "common.description"),
     robots: { index: false, follow: false },
     icons: ICONS,
   };

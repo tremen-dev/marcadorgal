@@ -2,7 +2,13 @@ import type { MatchStatus, Qualifier } from "@/model";
 
 // Keys of status and qualifier mirror the model enums (dominio.md, ADR-005 §1-2).
 export const gl = {
-  common: { title: "marcador.gal", switchLocale: "Castellano" },
+  common: {
+    title: "marcador.gal",
+    claim: "Todo o fútbol galego nunha pantalla",
+    description:
+      "Resultados galegos en directo de 1ª, 2ª, 1ª RFEF, 2ª RFEF e 3ª RFEF",
+    switchLocale: "Castellano",
+  },
   waiting: {
     heading: "Todo o fútbol galego nunha pantalla",
     body: "Estamos a preparar o marcador. Volve pronto.",

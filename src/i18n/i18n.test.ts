@@ -205,7 +205,9 @@ describe("SPEC-023 Xornada controls", () => {
       live: "En juego",
       finished: "Finalizados",
     });
-    expect(JSON.stringify([gl, es])).not.toMatch(/Directo/i);
+    expect(
+      JSON.stringify([gl.filter, es.filter, gl.status, es.status]),
+    ).not.toMatch(/Directo/i);
   });
 
   it("CA-3 empty: «nada aquí» in both", () => {
