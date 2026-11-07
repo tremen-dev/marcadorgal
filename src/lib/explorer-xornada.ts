@@ -233,6 +233,7 @@ export async function fetchWomenXornadaMatches(
           PublicMatch.parse({
             status: "finished",
             score: { home: homeScore ?? 0, away: awayScore ?? 0 },
+            minute: null,
             ...baseFields,
           }),
         );
@@ -240,6 +241,8 @@ export async function fetchWomenXornadaMatches(
         results.push(
           PublicMatch.parse({
             status: "postponed",
+            score: null,
+            minute: null,
             ...baseFields,
           }),
         );
@@ -247,10 +250,8 @@ export async function fetchWomenXornadaMatches(
         results.push(
           PublicMatch.parse({
             status: "suspended",
-            score:
-              homeScore !== null && awayScore !== null
-                ? { home: homeScore, away: awayScore }
-                : null,
+            score: { home: homeScore ?? 0, away: awayScore ?? 0 },
+            minute: null,
             ...baseFields,
           }),
         );
@@ -258,6 +259,8 @@ export async function fetchWomenXornadaMatches(
         results.push(
           PublicMatch.parse({
             status: "scheduled",
+            score: null,
+            minute: null,
             ...baseFields,
           }),
         );
@@ -265,7 +268,8 @@ export async function fetchWomenXornadaMatches(
     }
 
     return results;
-  } catch (_e) {
+  } catch (e) {
+    console.error("fetchWomenXornadaMatches failed:", e);
     return [];
   }
 }

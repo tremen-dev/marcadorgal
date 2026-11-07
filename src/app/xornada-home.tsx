@@ -90,13 +90,15 @@ export async function HomeXornada({ locale }: { locale: Locale }) {
     "As Celtas",
   ]);
 
-  try {
-    const womenMatches = await fetchWomenXornadaMatches(now, season);
-    if (womenMatches.length > 0) {
-      matches = [...(matches ?? []), ...womenMatches];
+  if (matches !== null) {
+    try {
+      const womenMatches = await fetchWomenXornadaMatches(now, season);
+      if (womenMatches.length > 0) {
+        matches = [...matches, ...womenMatches];
+      }
+    } catch (_e) {
+      // Graceful fallback
     }
-  } catch (_e) {
-    // Graceful fallback
   }
 
   return (
