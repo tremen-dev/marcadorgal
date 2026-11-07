@@ -75,6 +75,9 @@ export const gl = {
     // the «label» variant (aria-hidden: the words above say it).
     recentGoal: "gol recente",
     recentGoalLabel: "GOL",
+    // SPEC-056: expand/collapse goals drawer
+    expandGoals: "Despregar goleadores",
+    collapseGoals: "Pregar goleadores",
   },
   weekday: {
     mon: "lun",
