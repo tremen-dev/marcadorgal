@@ -176,7 +176,7 @@ const html = `<!doctype html>
 
   <div class="content">
     <h1 class="headline">Todo o fútbol galego nunha pantalla</h1>
-    <p class="description">Resultados galegos en directo de 1ª, 2ª, 1ª RFEF, 2ª RFEF e 3ª RFEF</p>
+    <p class="description">Resultados en directo nun golpe de vista</p>
   </div>
 
   <div class="footer">
