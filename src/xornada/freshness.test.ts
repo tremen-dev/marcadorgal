@@ -81,7 +81,12 @@ describe("SPEC-024 CA-9 rowAge (source clock, observedAt)", () => {
     ],
     ["live, 1 min 59 s", live({ observedAt: ago(2 * MIN - 1) }), null],
     ["live, no observation", live({ observedAt: null }), null],
-    ["half-time", live({ halfTime: true } as Partial<PublicMatch>), 3],
+    ["half-time", live({ halfTime: true } as Partial<PublicMatch>), null],
+    [
+      "live without minute (e.g. Tercera)",
+      live({ minute: null } as Partial<PublicMatch>),
+      null,
+    ],
     [
       "sen_sinal",
       live({ qualifier: "sen_sinal", minute: null } as Partial<PublicMatch>),
