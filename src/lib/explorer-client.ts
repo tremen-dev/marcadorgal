@@ -56,6 +56,9 @@ export type DayMatchesResponse = {
       penalty?: boolean;
       ownGoal?: boolean;
     }>;
+    minute?: number | null;
+    addedMinute?: number | null;
+    halfTime?: boolean;
   }>;
 };
 

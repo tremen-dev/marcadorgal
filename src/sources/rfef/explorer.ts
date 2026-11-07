@@ -74,6 +74,10 @@ export const ExplorerMatch = z.looseObject({
   canonicalAwayTeamId: z.string().optional(),
   liveProvider: z.enum(["marca", "rfef"]).optional(),
   goals: z.array(ExplorerGoal).optional(),
+  // Live minute and half-time (SPEC-052)
+  minute: z.int().nullable().optional(),
+  addedMinute: z.int().nullable().optional(),
+  halfTime: z.boolean().optional(),
 });
 export type ExplorerMatch = z.infer<typeof ExplorerMatch>;
 
@@ -163,9 +167,27 @@ function rowState(
         : { status: "finished", score, minute: null };
     case "LIVE_PROVISIONAL":
       if (score === null) return "missing_score";
-      return inLiveWindow(Date.parse(kickoff), Date.parse(row.lastSeenAt))
-        ? { status: "live", score, minute: null, addedMinute: null }
-        : "ambiguous_state";
+      {
+        const liveMinute =
+          row.minute !== undefined && row.minute !== null && row.minute >= 0
+            ? Math.min(row.minute, 130)
+            : null;
+        const liveAdded =
+          row.addedMinute !== undefined &&
+          row.addedMinute !== null &&
+          row.addedMinute > 0
+            ? Math.min(row.addedMinute, 30)
+            : null;
+        return inLiveWindow(Date.parse(kickoff), Date.parse(row.lastSeenAt))
+          ? {
+              status: "live",
+              score,
+              minute: liveMinute,
+              addedMinute: liveAdded,
+              ...(row.halfTime !== undefined ? { halfTime: row.halfTime } : {}),
+            }
+          : "ambiguous_state";
+      }
     default:
       return "unsupported_status";
   }

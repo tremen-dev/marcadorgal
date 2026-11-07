@@ -589,6 +589,78 @@ describe("CA-3 mapping and clocks (ADR-023 §5), one case per row over real rows
     expect(result.skipped).toEqual([]);
   });
 
+  it("LIVE_PROVISIONAL with minute, addedMinute and halfTime propagates them (SPEC-052)", () => {
+    const withMinute = {
+      ...AMOREBIETA,
+      minute: 37,
+      addedMinute: null,
+      halfTime: false,
+    };
+    const resMinute = parseRows([withMinute]);
+    expect(resMinute.observations[0]).toMatchObject({
+      status: "live",
+      minute: 37,
+      addedMinute: null,
+      halfTime: false,
+    });
+
+    const withStoppage = {
+      ...AMOREBIETA,
+      minute: 45,
+      addedMinute: 3,
+      halfTime: false,
+    };
+    const resStoppage = parseRows([withStoppage]);
+    expect(resStoppage.observations[0]).toMatchObject({
+      status: "live",
+      minute: 45,
+      addedMinute: 3,
+      halfTime: false,
+    });
+
+    const atHalfTime = {
+      ...AMOREBIETA,
+      minute: 45,
+      addedMinute: null,
+      halfTime: true,
+    };
+    const resHalfTime = parseRows([atHalfTime]);
+    expect(resHalfTime.observations[0]).toMatchObject({
+      status: "live",
+      minute: 45,
+      addedMinute: null,
+      halfTime: true,
+    });
+
+    const clampStoppage = {
+      ...AMOREBIETA,
+      minute: 90,
+      addedMinute: 45, // clamped to 30
+      halfTime: false,
+    };
+    const resClamp = parseRows([clampStoppage]);
+    expect(resClamp.observations[0]).toMatchObject({
+      status: "live",
+      minute: 90,
+      addedMinute: 30,
+      halfTime: false,
+    });
+
+    const zeroStoppage = {
+      ...AMOREBIETA,
+      minute: 90,
+      addedMinute: 0, // 0 -> null
+      halfTime: false,
+    };
+    const resZero = parseRows([zeroStoppage]);
+    expect(resZero.observations[0]).toMatchObject({
+      status: "live",
+      minute: 90,
+      addedMinute: null,
+      halfTime: false,
+    });
+  });
+
   it.each([
     ["kickoff − 11", "2026-11-01T16:49:00Z", "ambiguous_state"],
     ["kickoff − 10", "2026-11-01T16:50:00Z", "live"],
