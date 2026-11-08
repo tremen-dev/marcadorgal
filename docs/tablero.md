@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-11-03
+Actualizado: 2026-11-08
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -45,6 +45,14 @@ Actualizado: 2026-11-03
 | SPEC-040 — fecha-y-hora-por-fila-y-escritorio-multicolumna | hecho | 2026-11-01 (sdd-verificador) |
 | SPEC-041 — gol-reciente-que-pulsa | hecho | 2026-11-02 (sdd-verificador) |
 | SPEC-042 — gol-por-defecto-y-variable-recent-goal-mark | hecho | 2026-11-02 (sdd-verificador) |
+| SPEC-050 — metadatos-opengraph-tarjeta-social-e-imaxe-og | hecho | 2026-11-07 (sdd-verificador) |
+| SPEC-051 — manifiesto-pwa-e-pantalla-completa-standalone | hecho | 2026-11-07 (sdd-verificador) |
+| SPEC-055 — soporte-futbol-femenino-e-integracion-explorer | hecho | 2026-11-07 (sdd-implementador) |
+| SPEC-056 — despliegue-interactivo-de-goleadores-por-equipo | hecho | 2026-11-07 (sdd-implementador) |
+| SPEC-057 — panel-preferencias-ligas-e-enlaces-clasificacion | hecho | 2026-11-07 (sdd-implementador) |
+| SPEC-058 — footer-de-produccion-version-identidad-tremen-dev-e-informacion-legal | hecho | 2026-11-07 (sdd-verificador) |
+| SPEC-059 — enriquecemento-de-goleadores-da-xornada-desde-explorer | feito | 2026-11-08 (sdd-implementador) |
+| SPEC-060 — ingesta-historica-resultados-y-goleadores | implementada | 2026-11-08 (sdd-implementador) |
 
 ## EPIC-004 — fuente-rfef (aprobada)
 

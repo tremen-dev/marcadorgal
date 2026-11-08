@@ -74,6 +74,28 @@ describe("SPEC-027 readWeekPage", () => {
     ]);
   });
 
+  it("SPEC-060 CA-3 preserves goals on returned week matches", async () => {
+    const matchWithGoals = {
+      matchId: "segunda-6-10-17",
+      goals: [{ team: "home", player: "Hugo Rama", minute: 55 }],
+    } as unknown as PublicMatch;
+    const reader = {
+      async index() {
+        return index;
+      },
+      async matches() {
+        return [matchWithGoals];
+      },
+    };
+    const out = await readWeekPage(reader, "2026-10-17", "gl", now);
+    expect(out.kind).toBe("page");
+    if (out.kind === "page") {
+      expect(out.matches[0].goals).toEqual([
+        { team: "home", player: "Hugo Rama", minute: 55 },
+      ]);
+    }
+  });
+
   it("the home week and a week outside: decided from the index alone", async () => {
     const { reader, calls } = fakeReader();
     expect(await readWeekPage(reader, "2026-10-10", "gl", now)).toEqual({
