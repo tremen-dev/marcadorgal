@@ -118,6 +118,8 @@ export const gl = {
     overview: "Competición",
     backToHome: "Volver á xornada",
     tableLink: "Táboa",
+    viewFullTable: "Ver táboa completa",
+    viewRounds: "Ver xornadas",
     preferencesButton: "Ligas",
     preferencesTitle: "Ligas visibles",
     preferencesSubtitle: "Personaliza as ligas que queres ver",

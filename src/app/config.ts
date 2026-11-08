@@ -39,3 +39,20 @@ export function showDayStrip(
   if (wanted === "false" || wanted === "0") return false;
   return SHOW_DAY_STRIP;
 }
+
+// Whether each competition of the xornada links to its table («Táboa ↗»).
+// False (hidden) by default: the tables of Explorer are incomplete
+// (2026-11-08: goals at 0, fallback tables of zeros, groups without data).
+export const SHOW_TABLE_LINK = false;
+
+// The variable SHOW_TABLE_LINK picks whether the link is shown (read at
+// render). "true"/"1" shows it, "false"/"0" hides it; anything else, or
+// unset, is SHOW_TABLE_LINK.
+export function showTableLink(
+  env: Readonly<Record<string, string | undefined>>,
+): boolean {
+  const wanted = env.SHOW_TABLE_LINK;
+  if (wanted === "true" || wanted === "1") return true;
+  if (wanted === "false" || wanted === "0") return false;
+  return SHOW_TABLE_LINK;
+}

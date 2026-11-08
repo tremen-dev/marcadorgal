@@ -14,6 +14,7 @@ import {
   RECENT_GOAL_MINUTES,
   recentGoalMark,
   showDayStrip,
+  showTableLink,
 } from "./config";
 
 // SPEC-027 CA-3 (H-2..H-5): /xornada/[fecha] and /es/xornada/[fecha], the
@@ -75,6 +76,7 @@ export async function WeekXornada({
         es: `/es/xornada/${param.week}`,
       }}
       showDayStrip={showDayStrip(process.env)}
+      showTableLink={showTableLink(process.env)}
       unavailable={matches === null}
       arrows={read.kind === "page" ? read.arrows : undefined}
       freshness={

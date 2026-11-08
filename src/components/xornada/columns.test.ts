@@ -102,6 +102,22 @@ for (const [locale, dict] of [
       expect(navs).toEqual(["locale-switch", "day-strip", "filters"]);
     });
 
+    it("links each competition to its table only with showTableLink", () => {
+      const props = {
+        locale,
+        competitions: buildXornada(MATCHES),
+        days: xornadaDays(MATCHES, "2026-10-03T16:50:00Z"),
+        paths: { gl: "/demo/xornada", es: "/es/demo/xornada" },
+        provisionalDisplay: "label" as const,
+      };
+      const hidden = renderToStaticMarkup(createElement(XornadaBody, props));
+      expect(hidden).not.toContain('data-testid="competition-table-link"');
+      const shown = renderToStaticMarkup(
+        createElement(XornadaBody, { ...props, showTableLink: true }),
+      );
+      expect(shown).toContain('data-testid="competition-table-link"');
+    });
+
     it("the sections, in tier order, inside one grid of columns", () => {
       const grid =
         /<div class="[^"]*columns[^"]*" data-testid="xornada-columns">/.exec(
