@@ -1,13 +1,19 @@
-const EXPLORER_URL =
-  process.env.EXPLORER_BASE_URL ||
-  process.env.RFEF_EXPLORER_URL ||
-  "https://marcadorgal-explorer.vercel.app";
+function getExplorerUrl(): string {
+  return (
+    process.env.EXPLORER_BASE_URL ||
+    process.env.RFEF_EXPLORER_URL ||
+    "https://marcadorgal-explorer.vercel.app"
+  );
+}
 
-const API_TOKEN =
-  process.env.RFEF_EXPLORER_TOKEN ||
-  process.env.EXPLORER_API_KEY ||
-  process.env.EXPLORER_TOKEN ||
-  "";
+function getApiToken(): string {
+  return (
+    process.env.RFEF_EXPLORER_TOKEN ||
+    process.env.EXPLORER_API_KEY ||
+    process.env.EXPLORER_TOKEN ||
+    ""
+  );
+}
 
 export type OfficialCalendarResponse = {
   competition: string;
@@ -114,16 +120,17 @@ export async function fetchExplorer<T>(
   params?: Record<string, string>,
   customFetch: typeof fetch = fetch,
 ): Promise<T> {
-  const url = new URL(path, EXPLORER_URL);
+  const url = new URL(path, getExplorerUrl());
   if (params) {
     for (const [k, v] of Object.entries(params)) {
       url.searchParams.set(k, v);
     }
   }
 
+  const token = getApiToken();
   const res = await customFetch(url.toString(), {
     headers: {
-      Authorization: `Bearer ${API_TOKEN}`,
+      Authorization: `Bearer ${token}`,
       Accept: "application/json",
     },
     // Next.js ISR revalidation when called in server components

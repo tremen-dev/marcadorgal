@@ -10,10 +10,13 @@ import { sqlOptionsFor } from "../src/db/connect.ts";
 import { parseHistoricoArgs, HISTORICO_USAGE } from "../src/ingest/historico.ts";
 import { historicoSync } from "../src/ingest/historico-db.ts";
 
-try {
-  process.loadEnvFile();
-} catch {
-  // no .env: rely on environment
+for (const envFile of [".env.local", ".env"]) {
+  try {
+    process.loadEnvFile(envFile);
+    break;
+  } catch {
+    // continue
+  }
 }
 
 const message = (e) => (e instanceof Error ? e.message : String(e));
