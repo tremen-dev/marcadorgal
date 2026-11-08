@@ -15,25 +15,9 @@ const FIVE = [
 ];
 
 describe("CA-2 registry", () => {
-  it("has api-football first, pull, over the five competitions at priority 10", () => {
-    expect(SOURCES.map((s) => s.id)).toEqual(["api-football", "rfef"]);
-    const [apiFootball] = SOURCES;
-    expect(SourceConfig.safeParse(apiFootball).success).toBe(true);
-    expect(apiFootball).toMatchObject({
-      id: "api-football",
-      kind: "pull",
-      minIntervalSeconds: 30,
-      userAgent: "marcador.gal (ingesta; https://marcador.gal)",
-    });
-    expect([...apiFootball.competitions].sort()).toEqual([...FIVE].sort());
-    expect(apiFootball.priority).toEqual(
-      Object.fromEntries(FIVE.map((c) => [c, 10])),
-    );
-    expect(apiFootball.legalBasis.length).toBeGreaterThan(0);
-  });
-
-  it("has rfef second, pull, over the five competitions at priority 50 (SPEC-049, ADR-026)", () => {
-    const rfef = SOURCES[1];
+  it("has rfef as the official source, pull, over the five competitions at priority 50 (SPEC-049, SPEC-062, ADR-026)", () => {
+    expect(SOURCES.map((s) => s.id)).toEqual(["rfef"]);
+    const [rfef] = SOURCES;
     expect(SourceConfig.safeParse(rfef).success).toBe(true);
     expect(rfef).toMatchObject({
       id: "rfef",
@@ -51,13 +35,9 @@ describe("CA-2 registry", () => {
     expect(sourceConfig("rfef")?.liveObservedOnly).toEqual([]);
   });
 
-  it("api-football has no liveObservedOnly (SPEC-048 CA-1)", () => {
-    expect(sourceConfig("api-football")?.liveObservedOnly).toEqual([]);
-  });
-
   it("sourceConfig finds a source by id and returns undefined otherwise", () => {
-    expect(sourceConfig("api-football")).toBe(SOURCES[0]);
-    expect(sourceConfig("rfef")).toBe(SOURCES[1]);
+    expect(sourceConfig("rfef")).toBe(SOURCES[0]);
+    expect(sourceConfig("api-football")).toBeUndefined();
     expect(sourceConfig("operator")).toBeUndefined();
   });
 

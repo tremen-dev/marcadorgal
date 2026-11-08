@@ -2,7 +2,7 @@ import { gunzipSync } from "node:zlib";
 import type { Sql, TransactionSql } from "postgres";
 import { type AliasFile, type Instant, RawCapture } from "../model/index.ts";
 import type { RawStore } from "../raw/store.ts";
-import { goalReferences } from "../sources/api-football/events.ts";
+import { goalReferences } from "./goal-events.ts";
 import {
   construirInforme,
   informeMarkdown,

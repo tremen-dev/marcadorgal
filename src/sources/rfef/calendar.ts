@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { z } from "zod";
 import {
   type CalendarFetchContext,
@@ -139,8 +140,12 @@ export function createRfefCalendar(baseUrl?: string): CalendarImporter {
     parse(raw: unknown): ImportedCalendar {
       const parsed = RawCalendarExport.parse(raw);
       if (parsed.competition === "tercera-rfef-g1") {
+        const repoRoot = fileURLToPath(new URL("../../../..", import.meta.url));
+        const baseDir = existsSync(path.join(process.cwd(), "data"))
+          ? process.cwd()
+          : repoRoot;
         const file = path.join(
-          process.cwd(),
+          baseDir,
           "data",
           "calendario",
           parsed.season,

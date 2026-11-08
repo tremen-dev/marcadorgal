@@ -48,7 +48,7 @@ export type LatAttempt = {
 
 export type LatRawObject = { rawRef: string; createdAt: Instant };
 
-// The provider's k-th goal of a match (src/sources/api-football/events.ts,
+// The provider's k-th goal of a match (src/medicion/goal-events.ts,
 // already mapped from fixture to match).
 export type LatReferencia = {
   matchId: string;

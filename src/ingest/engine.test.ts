@@ -63,7 +63,7 @@ const matchRow = {
 const observationRow = (over: Record<string, unknown> = {}) => ({
   id: "11111111-1111-4111-8111-111111111111",
   match_id: MATCH,
-  source_id: "api-football",
+  source_id: "rfef",
   status: "live",
   home_score: 1,
   away_score: 0,
@@ -84,19 +84,19 @@ const decisionRow = (over: Record<string, unknown> = {}) => ({
   away_score: 0,
   minute: 20,
   added_minute: null,
-  qualifier: "provisional",
+  qualifier: "confirmado",
   rule: "RN-01",
   observation_ids: ["33333333-3333-4333-8333-333333333333"],
   decided_at: timestamptz(at(-1)),
-  home_source_id: null,
-  away_source_id: null,
+  home_source_id: "rfef",
+  away_source_id: "rfef",
   forced_finish: null,
   ...over,
 });
 
 const lastHeardRow = (over: Record<string, unknown> = {}) => ({
   match_id: MATCH,
-  source_id: "api-football",
+  source_id: "rfef",
   observed_at: timestamptz(at(-40)),
   status: "live",
   ...over,
@@ -188,13 +188,13 @@ describe("CA-9 writing a decision", () => {
       0,
       20,
       null,
-      "provisional",
+      "confirmado",
       "RN-01",
       ["11111111-1111-4111-8111-111111111111"],
       NOW,
       // SPEC-014 CA-4, CA-8: the owner of each side and the mark.
-      "api-football",
-      "api-football",
+      "rfef",
+      "rfef",
       false,
       // SPEC-021 CA-5: half_time, false for a live outside half-time.
       false,
@@ -271,15 +271,26 @@ describe("CA-9 opening and resolving alerts", () => {
         matches: [{ ...matchRow, kickoff: timestamptz(at(-121)) }],
         lastHeard: [
           lastHeardRow({ source_id: "rfef", observed_at: timestamptz(at(-1)) }),
-          lastHeardRow(),
+          lastHeardRow({
+            source_id: "test-src",
+            observed_at: timestamptz(at(-40)),
+          }),
         ],
         alerts: [{ id: "alert-5" }],
       }),
     );
     const sourcesWithLiveObservedOnly = [
-      SOURCES[0],
       SourceConfig.parse({
-        ...SOURCES[1],
+        id: "test-src",
+        kind: "pull",
+        competitions: ["primera-division"],
+        priority: { "primera-division": 10 },
+        minIntervalSeconds: 30,
+        userAgent: "test",
+        legalBasis: "test",
+      }),
+      SourceConfig.parse({
+        ...SOURCES[0],
         liveObservedOnly: ["primera-division"],
       }),
     ];
@@ -348,8 +359,8 @@ describe("CA-9 priorityLookup", () => {
     "tercera-rfef-g1",
   ];
 
-  it.each(FIVE)("gives api-football priority 10 in %s", (competition) => {
-    expect(priorityLookup(SOURCES, competition)("api-football")).toBe(10);
+  it.each(FIVE)("gives rfef priority 50 in %s", (competition) => {
+    expect(priorityLookup(SOURCES, competition)("rfef")).toBe(50);
   });
 
   it("gives the operator 100 and an unknown source nothing", () => {

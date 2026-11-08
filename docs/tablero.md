@@ -53,6 +53,7 @@ Actualizado: 2026-11-08
 | SPEC-058 — footer-de-produccion-version-identidad-tremen-dev-e-informacion-legal | hecho | 2026-11-07 (sdd-verificador) |
 | SPEC-059 — enriquecemento-de-goleadores-da-xornada-desde-explorer | feito | 2026-11-08 (sdd-implementador) |
 | SPEC-060 — ingesta-historica-resultados-y-goleadores | implementada | 2026-11-08 (sdd-implementador) |
+| SPEC-061 — tira-de-dias-configurable-e-oculta-por-defecto | hecho | 2026-11-08 (sdd-verificador) |
 
 ## EPIC-004 — fuente-rfef (aprobada)
 
@@ -63,6 +64,7 @@ Actualizado: 2026-11-08
 | SPEC-036 — vias-legitimas-de-acceso-a-los-datos-de-la-rfef | hecho | 2026-10-18 (sdd-verificador) |
 | SPEC-038 — alta-de-la-fuente-rfef-via-explorer-adaptador-pull-sobre-el-export-alias-y-registro-con-prioridad-5 | hecho | 2026-11-02 (sdd-verificador) |
 | SPEC-039 — jornada-de-observacion-de-la-rfef-via-explorer-con-prioridad-5 | aprobada | 2026-11-01 (Alberto Fojo) |
+| SPEC-062 — extraccion-api-football-hacia-explorer | implementada | 2026-11-08 (sdd-implementador) |
 
 ## EPIC-006 — patrocinio (aprobada)
 

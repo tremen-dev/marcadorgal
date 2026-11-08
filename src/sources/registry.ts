@@ -18,17 +18,7 @@ const FIVE = [
 const USER_AGENT = "marcador.gal (ingesta; https://marcador.gal)";
 
 export const SOURCES: readonly SourceConfig[] = SourceConfig.array().parse([
-  {
-    id: "api-football",
-    kind: "pull",
-    competitions: FIVE,
-    priority: Object.fromEntries(FIVE.map((c) => [c, 10])),
-    minIntervalSeconds: 30,
-    userAgent: USER_AGENT,
-    legalBasis:
-      "Plan Pro de API-Football contratado el 2026-09-21 por el titular; uso conforme a los términos del proveedor; gestión fuera del repo (D-7).",
-  },
-  // The rfef via explorer (ADR-023, ADR-026, SPEC-038, SPEC-049): priority 50
+  // The rfef via explorer (ADR-023, ADR-026, SPEC-038, SPEC-049, SPEC-062): priority 50
   // as the official federative source (ADR-017 §5 restored, superseding priority 5).
   // Multi-provider arbitration in explorer v2.0 (MARCA for Primera and Segunda,
   // RFEF for 1ª/2ª/3ª RFEF) lifts the temporary liveObservedOnly restriction of ADR-027 §3.

@@ -14,7 +14,7 @@ import type { ContrasteCaptura, ContrasteFila } from "./informe.ts";
 // when the matchday is over and outside every window (RN-08), counted apart.
 // The capture arrives from an injected builder so this module stays free of
 // the provider's base url, key header and page size —those live inside
-// src/sources/api-football/— and the comparison itself is not here either:
+// the provider adapter / explorer— and the comparison itself is not here either:
 // that is pure arithmetic and lives in informe.ts.
 
 export type CapturaPorIds = (

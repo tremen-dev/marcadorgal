@@ -1,18 +1,91 @@
 import { readFileSync } from "node:fs";
 import type { Sql, TransactionSql } from "postgres";
 import { afterAll, describe, expect, it } from "vitest";
-import type { Instant, MatchStatus } from "@/model";
+import type {
+  AliasFile,
+  Instant,
+  MatchStatus,
+  RawCapture,
+  SourceAdapter,
+} from "@/model";
+import { SourceId } from "@/model";
 import { createSql } from "../db/connect.ts";
 import { createMemoryRawStore } from "../raw/memory.ts";
-import {
-  apiFootballByIds,
-  createApiFootballResults,
-} from "../sources/api-football/results.ts";
 import { SOURCES } from "../sources/registry.ts";
 import { loadAliasFile } from "./aliases.ts";
 import { createIngestDb, type IngestTx } from "./db.ts";
 import { createEngineHook, decideMatches } from "./engine.ts";
 import { reconciliarSinDirecto } from "./reconciliacion-sin-directo.ts";
+
+const apiFootballByIds = async ({
+  fixtureIds,
+  apiKey,
+  userAgent,
+  now,
+  fetch = globalThis.fetch,
+}: {
+  fixtureIds: readonly string[];
+  apiKey: string;
+  userAgent: string;
+  now: Instant;
+  fetch?: typeof globalThis.fetch;
+}): Promise<RawCapture> => {
+  const url = `https://v3.football.api-sports.io/fixtures?ids=${fixtureIds.join("-")}`;
+  const response = await fetch(url, {
+    headers: { "x-apisports-key": apiKey, "user-agent": userAgent },
+  });
+  const body = await response.text();
+  return {
+    sourceId: SourceId.parse("api-football"),
+    capturedAt: now,
+    requests: [
+      {
+        url,
+        status: response.status,
+        contentType: response.headers.get("content-type") ?? "application/json",
+        body,
+      },
+    ],
+  };
+};
+
+type SinDirectoDbFixtureItem = {
+  fixture?: { id?: number | string; status?: { short?: string } };
+  goals?: { home: number; away: number };
+};
+
+const createTestAdapter = (aliases: AliasFile): SourceAdapter => ({
+  id: SourceId.parse("api-football"),
+  kind: "pull",
+  resolveTeam: () => null,
+  parse: (capture: RawCapture) => {
+    const observations = [];
+    for (const req of capture.requests) {
+      if (!req.body) continue;
+      const json = JSON.parse(req.body);
+      for (const item of (json.response ?? []) as SinDirectoDbFixtureItem[]) {
+        const matchId = aliases.matches?.[String(item.fixture?.id)];
+        if (matchId && item.fixture?.status?.short === "FT") {
+          observations.push({
+            matchId,
+            observedAt: capture.capturedAt,
+            status: "finished" as const,
+            score: item.goals ?? { home: 0, away: 0 },
+            period: null,
+            minute: null,
+            extraMinute: null,
+          });
+        }
+      }
+    }
+    return {
+      observations,
+      skipped: [],
+      unresolved: [],
+      requestErrors: [],
+    };
+  },
+});
 
 // SPEC-018 CA-7 against the real schema, always rolled back: the two matches
 // of dev, seeded as dev has them (scheduled provisional RN-01, window closed
@@ -133,7 +206,7 @@ describe("SPEC-018 CA-7 the two matches of dev through the database", () => {
           matchIds: ids,
           vigentes: await vigentes(),
           aliases,
-          adapter: createApiFootballResults({ aliases, apiKey: "clave" }),
+          adapter: createTestAdapter(aliases),
           capturar: (fixtureIds) =>
             apiFootballByIds({
               fixtureIds,

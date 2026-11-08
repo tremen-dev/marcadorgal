@@ -26,7 +26,7 @@ import { createStorageRawStore } from "../src/raw/store.ts";
 import {
   apiFootballByIds,
   createApiFootballResults,
-} from "../src/sources/api-football/results.ts";
+} from "./legacy-api-football.mjs";
 import { SOURCES } from "../src/sources/registry.ts";
 
 try {

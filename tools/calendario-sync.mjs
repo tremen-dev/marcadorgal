@@ -3,7 +3,7 @@
 // merges it into data/calendario/<season>/<competition>.json and
 // data/alias/<season>/<source>.json (SPEC-004 CA-7, SPEC-045).
 //
-// Usage: npm run calendario:sync -- <season> [competition_id...] [--source <rfef|api-football>] [--dry-run]
+// Usage: npm run calendario:sync -- <season> [competition_id...] [--dry-run]
 // Runs on Node's native type stripping: no tsx, no build step.
 import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
@@ -35,24 +35,18 @@ const nonFlags = args.filter((a, idx) => {
 const [season, ...requested] = nonFlags;
 
 if (!season || !/^\d{4}-\d{2}$/.test(season)) {
-  console.error("Uso: npm run calendario:sync -- <temporada YYYY-YY> [competition_id...] [--source <rfef|api-football>] [--dry-run]");
+  console.error("Uso: npm run calendario:sync -- <temporada YYYY-YY> [competition_id...] [--dry-run]");
   process.exit(1);
 }
 
 // Determine default importer based on flags or available credentials
-const defaultSourceId = sourceArg || (
-  process.env.API_FOOTBALL_KEY && !process.env.RFEF_EXPLORER_TOKEN
-    ? "api-football"
-    : "rfef"
-);
+const defaultSourceId = sourceArg || "rfef";
 
 const apiKey =
-  defaultSourceId === "rfef"
-    ? (process.env.RFEF_EXPLORER_TOKEN || process.env.EXPLORER_API_KEY || process.env.API_FOOTBALL_KEY)
-    : (process.env.API_FOOTBALL_KEY || process.env.RFEF_EXPLORER_TOKEN || process.env.EXPLORER_API_KEY);
+  process.env.RFEF_EXPLORER_TOKEN || process.env.EXPLORER_API_KEY || process.env.EXPLORER_TOKEN;
 
 if (!apiKey) {
-  console.error("API_FOOTBALL_KEY o RFEF_EXPLORER_TOKEN no está definida (H-1)");
+  console.error("RFEF_EXPLORER_TOKEN no está definida (H-1)");
   process.exit(1);
 }
 const unknown = requested.filter((id) => !COMPETITIONS.some((c) => c.id === id));

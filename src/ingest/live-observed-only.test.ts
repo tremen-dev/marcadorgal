@@ -5,13 +5,34 @@ import { admittedByEngine, forEngine } from "./live-observed-only.ts";
 
 // SPEC-048 CA-2 (ADR-027 §1): what the engine never receives when a source has
 // liveObservedOnly configured.
-const CONFIG_WITH_FILTER = [
-  SOURCES[0],
-  SourceConfig.parse({
-    ...SOURCES[1],
-    liveObservedOnly: ["primera-division", "segunda-division"],
-  }),
-];
+const afConfig = SourceConfig.parse({
+  id: "api-football",
+  kind: "pull",
+  competitions: [
+    "primera-division",
+    "segunda-division",
+    "primera-rfef-g1",
+    "segunda-rfef-g1",
+    "tercera-rfef-g1",
+  ],
+  priority: {
+    "primera-division": 10,
+    "segunda-division": 10,
+    "primera-rfef-g1": 10,
+    "segunda-rfef-g1": 10,
+    "tercera-rfef-g1": 10,
+  },
+  minIntervalSeconds: 30,
+  userAgent: "marcador.gal (ingesta)",
+  legalBasis: "test",
+});
+
+const rfefConfig = SourceConfig.parse({
+  ...SOURCES[0],
+  liveObservedOnly: ["primera-division", "segunda-division"],
+});
+
+const CONFIG_WITH_FILTER = [afConfig, rfefConfig];
 const obs = (sourceId: string, status: MatchStatus) => ({ sourceId, status });
 const admits = (competition: string, sourceId: string, status: MatchStatus) =>
   admittedByEngine(CONFIG_WITH_FILTER, competition)(obs(sourceId, status));

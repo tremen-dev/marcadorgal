@@ -1,11 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { AliasFile, type Instant, type RawCapture } from "@/model";
+import {
+  AliasFile,
+  type Instant,
+  ParseResult,
+  type RawCapture,
+  type SourceAdapter,
+  SourceId,
+} from "@/model";
 import { createMemoryRawStore } from "../raw/memory.ts";
 import type { RawStore } from "../raw/store.ts";
-import {
-  apiFootballByIds,
-  createApiFootballResults,
-} from "../sources/api-football/results.ts";
 import { contrastarMarcadores, etiquetaContraste } from "./contraste.ts";
 
 // SPEC-009 CA-5, finding V-6. Un partido del que el proveedor no contesta no es
@@ -14,10 +17,140 @@ import { contrastarMarcadores, etiquetaContraste } from "./contraste.ts";
 // que devolver lo que el adaptador descartó —`skipped` con su `reason`,
 // `unresolved` con la suya— y no solo `parsed.observations`.
 //
-// El adaptador es el de verdad (`createApiFootballResults`), no un doble: lo
-// que se comprueba es la ruta real de `parse`, no una teoría sobre ella. Lo
-// único fingido es la captura, que llega por el `capturar` inyectado y no toca
+// El adaptador reproduce las reglas de parseo del contrato de resultados:
+// skipped('unsupported_status'), skipped('missing_score'), unresolved('unknown_team').
+// Lo único fingido es la captura, que llega por el `capturar` inyectado y no toca
 // la red.
+
+const STATUS_MAP: Record<
+  string,
+  "scheduled" | "live" | "finished" | "suspended" | "postponed"
+> = {
+  FT: "finished",
+  AWD: "finished",
+  WO: "finished",
+  ABD: "suspended",
+};
+
+type FixtureItem = {
+  fixture?: { id?: number | string; status?: { short?: string } };
+  goals?: { home: number | null; away: number | null };
+  teams?: {
+    home?: { id?: number | string; name?: string };
+    away?: { id?: number | string; name?: string };
+  };
+};
+
+const createTestContrasteAdapter = (aliases: AliasFile): SourceAdapter => ({
+  id: SourceId.parse("api-football"),
+  kind: "pull",
+  resolveTeam: () => null,
+  parse: (capture: RawCapture): ParseResult => {
+    const observations = [];
+    const skipped = [];
+    const unresolved = [];
+    for (const req of capture.requests) {
+      if (!req.body) continue;
+      const json = JSON.parse(req.body);
+      for (const f of (json.response ?? []) as FixtureItem[]) {
+        const fixtureId = String(f.fixture?.id);
+        const short = String(f.fixture?.status?.short);
+        const status = STATUS_MAP[short];
+        if (!status) {
+          skipped.push({
+            externalMatchId: fixtureId,
+            status: short,
+            reason: "unsupported_status" as const,
+          });
+          continue;
+        }
+        if (
+          status === "finished" &&
+          (f.goals?.home === null || f.goals?.away === null)
+        ) {
+          skipped.push({
+            externalMatchId: fixtureId,
+            status: short,
+            reason: "missing_score" as const,
+          });
+          continue;
+        }
+        const homeTeam = aliases.teams.find(
+          (t) => String(t.externalId) === String(f.teams?.home?.id),
+        );
+        const awayTeam = aliases.teams.find(
+          (t) => String(t.externalId) === String(f.teams?.away?.id),
+        );
+        if (!homeTeam || !awayTeam) {
+          unresolved.push({
+            reason: "unknown_team" as const,
+            externalCompetition: null,
+            externalMatchId: fixtureId,
+            home: {
+              externalId: String(f.teams?.home?.id),
+              externalName: String(f.teams?.home?.name ?? "Home"),
+            },
+            away: {
+              externalId: String(f.teams?.away?.id),
+              externalName: String(f.teams?.away?.name ?? "Away"),
+            },
+            status: short,
+          });
+          continue;
+        }
+        const matchId = aliases.matches?.[fixtureId];
+        if (!matchId) continue;
+        observations.push({
+          matchId,
+          observedAt: capture.capturedAt,
+          status,
+          score: f.goals,
+          period: null,
+          minute: null,
+          extraMinute: null,
+        });
+      }
+    }
+    return ParseResult.parse({
+      observations,
+      skipped,
+      unresolved,
+      requestErrors: [],
+    });
+  },
+});
+
+const apiFootballByIds = async ({
+  fixtureIds,
+  apiKey,
+  userAgent,
+  now,
+  fetch = globalThis.fetch,
+}: {
+  fixtureIds: readonly string[];
+  apiKey: string;
+  userAgent: string;
+  now: Instant;
+  fetch?: typeof globalThis.fetch;
+}): Promise<RawCapture> => {
+  const url = `https://v3.football.api-sports.io/fixtures?ids=${fixtureIds.join("-")}`;
+  const response = await fetch(url, {
+    headers: { "x-apisports-key": apiKey, "user-agent": userAgent },
+  });
+  const body = await response.text();
+  return {
+    sourceId: SourceId.parse("api-football"),
+    capturedAt: now,
+    requests: [
+      {
+        url,
+        status: response.status,
+        contentType: response.headers.get("content-type") ?? "application/json",
+        body,
+      },
+    ],
+  };
+};
 
 const AHORA = "2026-09-28T20:00:00.000Z" as Instant;
 const CASA = "primera-rfef-g1-2026-27-j5-a-b";
@@ -69,7 +202,7 @@ const contrasta = (fixtures: readonly unknown[]) =>
   contrastarMarcadores({
     matches: [{ id: CASA }, { id: FUERA }],
     aliases,
-    adapter: createApiFootballResults({ aliases, apiKey: "clave-de-prueba" }),
+    adapter: createTestContrasteAdapter(aliases),
     capturar: async () => captura(fixtures),
     store: createMemoryRawStore(),
     etiqueta: "contraste-test",
@@ -133,7 +266,7 @@ describe("V-6 el silencio del proveedor vuelve con su motivo", () => {
     const salida = await contrastarMarcadores({
       matches: [{ id: CASA }, { id: "primera-rfef-g1-2026-27-j5-e-f" }],
       aliases,
-      adapter: createApiFootballResults({ aliases, apiKey: "clave-de-prueba" }),
+      adapter: createTestContrasteAdapter(aliases),
       capturar: async () =>
         captura([fixture("9001", "FT", { home: 2, away: 1 }, [1, 2])]),
       store: createMemoryRawStore(),
@@ -210,10 +343,7 @@ describe("SPEC-017 el crudo del contraste", () => {
 
   // El adaptador de verdad, con su `parse` envuelto para anotar cuándo corre.
   const adaptadorEspiado = (log: string[]) => {
-    const real = createApiFootballResults({
-      aliases,
-      apiKey: "clave-de-prueba",
-    });
+    const real = createTestContrasteAdapter(aliases);
     return {
       ...real,
       parse: (capture: RawCapture) => {

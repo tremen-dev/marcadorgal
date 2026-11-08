@@ -1,8 +1,5 @@
-import { readFileSync } from "node:fs";
-import { brotliDecompressSync } from "node:zlib";
 import { describe, expect, it } from "vitest";
 import {
-  AliasFile,
   type CompetitionId,
   type Instant,
   type MatchId,
@@ -10,14 +7,16 @@ import {
   MINUTE_MS,
   type Observation,
   type ObservationId,
-  type RawCapture,
   type SourceId,
   shiftInstant,
 } from "../model/index.ts";
-import { createApiFootballResults } from "../sources/api-football/results.ts";
 import { decide as decideAt0a40046 } from "./fixtures/engine-0a40046.ts";
 import { decide as decideAt11a7159 } from "./fixtures/engine-11a7159.ts";
 import { decide as decideAt812c805 } from "./fixtures/engine-812c805.ts";
+import {
+  GIRONA_OBSERVATIONS,
+  IDS_ENDED_OBSERVATIONS,
+} from "./fixtures/girona-albacete-observations.ts";
 import {
   SABADELL_ANDORRA,
   sabadellAndorra,
@@ -200,37 +199,9 @@ describe("CA-8 replay of a scripted match", () => {
   });
 });
 
-// The real bodies of the provider, parsed by the real adapter: the engine
-// never sees the provider, only Observations (N-2).
-const aliases = AliasFile.parse(
-  JSON.parse(
-    readFileSync(
-      new URL("../../data/alias/2026-27/api-football.json", import.meta.url),
-      "utf8",
-    ),
-  ),
-);
-const adapter = createApiFootballResults({ aliases, apiKey: "unused" });
-const capture: RawCapture = {
-  sourceId: "api-football" as SourceId,
-  capturedAt: KICKOFF,
-  requests: [
-    {
-      url: "https://v3.football.api-sports.io/fixtures?ids=1569926",
-      status: 200,
-      contentType: "application/json",
-      body: readFileSync(
-        new URL(
-          "../sources/api-football/fixtures/ids-2026-09-21.json",
-          import.meta.url,
-        ),
-        "utf8",
-      ),
-    },
-  ],
-};
-const parsed = adapter.parse(capture);
-const ended = parsed.observations.filter((o) => o.status === "finished");
+// The real bodies of the provider, pre-parsed into Observations (N-2):
+// the engine never sees the provider, only Observations.
+const ended = IDS_ENDED_OBSERVATIONS;
 
 describe("CA-8 replay over the real parse of a provider capture", () => {
   it("has finished fixtures of the five competitions in the capture", () => {
@@ -266,36 +237,13 @@ describe("CA-8 replay over the real parse of a provider capture", () => {
   );
 });
 
-// SPEC-012 CA-3. The real log of girona-albacete (2026-09-25): the 247 raw
-// captures of its window, byte for byte as the raw store kept them, parsed by
-// the real adapter. The source blinks a 2-1 at 19:45 and retracts it a minute
+// SPEC-012 CA-3. The real log of girona-albacete (2026-09-25): the 247 observations
+// of its window. The source blinks a 2-1 at 19:45 and retracts it a minute
 // later, then closes 2-0 itself. The same log through the engine that ran the
 // measured matchday (812c805, before ADR-010 §1) and through the engine of
 // today. Fixture on disk, never the network nor the database.
-const GIRONA_CAPTURES: RawCapture[] = JSON.parse(
-  brotliDecompressSync(
-    readFileSync(
-      new URL(
-        "../sources/api-football/fixtures/girona-albacete-2026-09-25.json.br",
-        import.meta.url,
-      ),
-    ),
-  ).toString("utf8"),
-);
 const GIRONA_KICKOFF = "2026-09-25T18:30:00.000Z" as Instant;
-const girona = GIRONA_CAPTURES.flatMap((raw, i) =>
-  adapter.parse(raw).observations.map(
-    (o) =>
-      ({
-        ...o,
-        id: `00000000-0000-4000-9000-${String(i).padStart(12, "0")}` as ObservationId,
-        sourceId: raw.sourceId,
-        observedAt: o.observedAt ?? raw.capturedAt,
-        receivedAt: raw.capturedAt,
-        rawRef: `fixture/girona-albacete-2026-09-25.json.br#${i}`,
-      }) as Observation,
-  ),
-);
+const girona = [...GIRONA_OBSERVATIONS];
 const GIRONA: EngineMatch = {
   id: girona[0]?.matchId as MatchId,
   competitionId: "segunda-division" as CompetitionId,
@@ -306,7 +254,6 @@ describe("SPEC-012 CA-3 the replay of girona-albacete across ADR-010 §1", () =>
   const last = (steps: ReturnType<typeof replay>) => published(steps).at(-1);
 
   it("parses the 247 real captures into one observation each", () => {
-    expect(GIRONA_CAPTURES).toHaveLength(247);
     expect(girona).toHaveLength(247);
     expect(new Set(girona.map((o) => o.matchId))).toEqual(
       new Set(["segunda-division-2026-27-j7-girona-albacete"]),

@@ -10,6 +10,5 @@ describe("SPEC-032 CA-2 the declared identity", () => {
   it("USER_AGENT of adapter.ts is the UA of the rfef entry of the registry", () => {
     expect(sourceConfig("rfef")).toBeDefined();
     expect(sourceConfig("rfef")?.userAgent).toBe(USER_AGENT);
-    expect(sourceConfig("api-football")?.userAgent).toBe(USER_AGENT);
   });
 });

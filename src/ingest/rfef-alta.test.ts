@@ -1,8 +1,6 @@
-import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 import { decide, type EngineMatch } from "../decide/index.ts";
 import {
-  AliasFile,
   type CompetitionId,
   type Decision,
   type DecisionId,
@@ -27,10 +25,6 @@ import { runTick } from "./tick.ts";
 
 // SPEC-038 CA-7 (registry, ADAPTERS, the engine with the priorities of the
 // registry) and CA-8 (a failure of explorer is visible and isolated).
-
-const root = new URL("../../", import.meta.url);
-const readJson = (rel: string): unknown =>
-  JSON.parse(readFileSync(new URL(rel, root), "utf8"));
 
 const FIVE = [
   "primera-division",
@@ -66,10 +60,9 @@ describe("CA-7 registry", () => {
     );
   });
 
-  it("api-football keeps priority 10 in the five and rfef has priority 50 (ADR-026)", () => {
+  it("rfef has priority 50 (ADR-026)", () => {
     for (const c of FIVE) {
       const priority = priorityLookup(SOURCES, c);
-      expect(priority("api-football")).toBe(10);
       expect(priority("rfef")).toBe(50);
     }
   });
@@ -131,7 +124,7 @@ describe("CA-7 ADAPTERS['rfef'] builds the explorer adapter", () => {
       },
     ]);
     expect(JSON.stringify(capture)).not.toContain(TOKEN);
-    expect(Object.keys(ADAPTERS).sort()).toEqual(["api-football", "rfef"]);
+    expect(Object.keys(ADAPTERS).sort()).toEqual(["rfef"]);
   });
 
   it.each(["RFEF_EXPLORER_URL", "RFEF_EXPLORER_TOKEN"])(
@@ -337,19 +330,9 @@ describe("the engine with rfef at priority 50 (ADR-026)", () => {
 
 // --- CA-8: a failure of explorer, visible and isolated -------------------
 
-describe("CA-8 a tick with both sources and a double of explorer that fails", () => {
+describe("CA-8 a tick with explorer that fails", () => {
   const NOW = "2026-09-18T20:30:00.000Z" as Instant;
   const MATCH_ID = "segunda-division-2026-27-j6-albacete-cordoba";
-  const aliases = AliasFile.parse(
-    readJson("data/alias/2026-27/api-football.json"),
-  );
-  const fixture = readJson(
-    "src/sources/api-football/fixtures/ids-2026-09-21.json",
-  ) as { response: { fixture: { id: number } }[] };
-  const fixtureId = Object.entries(aliases.matches ?? {}).find(
-    ([, id]) => id === MATCH_ID,
-  )?.[0];
-  if (fixtureId === undefined) throw new Error("no alias for the match");
 
   const windowRow: WindowRow = {
     id: MATCH_ID,
@@ -363,21 +346,13 @@ describe("CA-8 a tick with both sources and a double of explorer that fails", ()
     lastObservationAt: null,
   } as WindowRow;
 
-  // API-Football answers the ids it was asked; explorer answers as the case says.
   const fetchDouble = (explorer: () => Response) => {
     const urls: string[] = [];
     const fetch = (async (input: string | URL | Request) => {
       const url = String(input);
       urls.push(url);
       if (url.startsWith(EXPLORER_URL)) return explorer();
-      const ids = new Set((url.match(/ids=([\d-]+)/)?.[1] ?? "").split("-"));
-      const response = fixture.response.filter((f) =>
-        ids.has(String(f.fixture.id)),
-      );
-      return new Response(JSON.stringify({ errors: [], response }), {
-        status: 200,
-        headers: { "content-type": "application/json" },
-      });
+      return new Response("Not found", { status: 404 });
     }) as unknown as typeof globalThis.fetch;
     return { urls, fetch };
   };
@@ -438,37 +413,29 @@ describe("CA-8 a tick with both sources and a double of explorer that fails", ()
     ],
     ["a 200 with invalid JSON", () => json("<html>", 200), /not JSON/],
   ])(
-    "explorer answers %s: the rfef attempt fails with the reason, api-football ends ok and the engine only hears api-football",
+    "explorer answers %s: the rfef attempt fails with the reason",
     async (_, explorer, reason) => {
       const { db, urls, summary, engineSaw, salud } = await run(explorer);
       expect(urls.filter((u) => u.startsWith(EXPLORER_URL))).toEqual([
         `${EXPLORER_URL}/api/export/matches?date=2026-09-18`,
       ]);
       const byId = new Map(summary.attempts.map((a) => [a.sourceId, a]));
-      expect(byId.get("api-football")).toMatchObject({
-        ok: true,
-        observations: 1,
-      });
       expect(byId.get("rfef")?.ok).toBe(false);
       expect(byId.get("rfef")?.error).toMatch(reason);
-      expect(db.observations.map((o) => o.sourceId)).toEqual(["api-football"]);
-      expect(engineSaw).toEqual(["api-football"]);
-      // tick:salud shows the rfef in FALLO and api-football ok, without the token.
+      expect(db.observations).toHaveLength(0);
+      expect(engineSaw).toHaveLength(0);
+      // tick:salud shows the rfef in FALLO without the token.
       expect(salud.ok).toBe(false);
       expect(salud.text).toMatch(/rfef\s+FALLO/);
-      expect(salud.text).toMatch(/api-football\s+ok/);
       expect(salud.text).not.toContain(TOKEN);
-      // Both attempts closed in ingest_attempts.
-      expect(db.attempts.map((a) => [a.sourceId, a.close?.ok])).toEqual(
-        expect.arrayContaining([
-          ["api-football", true],
-          ["rfef", false],
-        ]),
-      );
+      // Attempt closed in ingest_attempts.
+      expect(db.attempts.map((a) => [a.sourceId, a.close?.ok])).toEqual([
+        ["rfef", false],
+      ]);
     },
   );
 
-  it("with explorer healthy both attempts end ok and the rfef asks once per tick", async () => {
+  it("with explorer healthy attempt ends ok and the rfef asks once per tick", async () => {
     const { summary, urls } = await run(() =>
       json(
         '{"exportedAt":"2026-09-18T20:30:00Z","date":"2026-09-18","matches":[]}',
@@ -476,7 +443,6 @@ describe("CA-8 a tick with both sources and a double of explorer that fails", ()
       ),
     );
     expect(summary.attempts.map((a) => [a.sourceId, a.ok])).toEqual([
-      ["api-football", true],
       ["rfef", true],
     ]);
     expect(urls.filter((u) => u.startsWith(EXPLORER_URL))).toHaveLength(1);

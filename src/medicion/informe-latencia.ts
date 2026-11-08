@@ -6,7 +6,7 @@ import {
 } from "../ingest/constants.ts";
 import { etiquetaP95, percentil } from "../ingest/informe.ts";
 import { type Instant, instantDiff } from "../model/index.ts";
-import type { FixtureGoals } from "../sources/api-football/events.ts";
+import type { FixtureGoals } from "./goal-events.ts";
 import type {
   GolMedido,
   Juntas,

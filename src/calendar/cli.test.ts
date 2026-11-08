@@ -37,10 +37,10 @@ describe("CA-4 COMPETITIONS", () => {
 });
 
 describe("CA-7 calendario:sync", () => {
-  it("exits 1 without API_FOOTBALL_KEY and never touches data/", () => {
+  it("exits 1 without RFEF_EXPLORER_TOKEN and never touches data/", () => {
     const r = run("calendario-sync.mjs", "2026-27", "--dry-run");
     expect(r.status).toBe(1);
-    expect(r.stderr).toMatch(/API_FOOTBALL_KEY/);
+    expect(r.stderr).toMatch(/RFEF_EXPLORER_TOKEN/);
   });
 
   it("exits 1 without a season", () => {
@@ -127,7 +127,7 @@ describe("SPEC-015 calendario:sync against the fake provider", () => {
         cwd: cleanCwd,
         env: {
           ...cleanEnv,
-          API_FOOTBALL_KEY: "fake",
+          RFEF_EXPLORER_TOKEN: "fake",
           GITHUB_OUTPUT: output,
           ...env,
         },

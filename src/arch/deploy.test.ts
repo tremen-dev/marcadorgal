@@ -225,8 +225,8 @@ describe("SPEC-008 CA-8 calendario-semanal.yml", () => {
   it("syncs against the provider, taking the key from secrets", () => {
     const sync = stepNamed("sync", "Sincronizar contra el proveedor");
     expect(str(sync?.run)).toContain("npm run calendario:sync --");
-    expect(str(obj(sync?.env).API_FOOTBALL_KEY)).toContain(
-      "secrets.API_FOOTBALL_KEY",
+    expect(str(obj(sync?.env).RFEF_EXPLORER_TOKEN)).toContain(
+      "secrets.RFEF_EXPLORER_TOKEN",
     );
   });
 
@@ -333,7 +333,7 @@ describe("SPEC-008 CA-8 calendario-semanal.yml", () => {
   it("SPEC-015 CA-3 the title of the PR ends in — N urgentes when N > 0", () => {
     const step = stepNamed("sync", "Abrir o actualizar el PR");
     expect(str(obj(step?.env).URGENTES)).toBe(
-      "${{ steps.sync.outputs.urgentes }}",
+      "${" + "{ steps.sync.outputs.urgentes }}",
     );
     const run = prRun();
     expect(run).toContain('if [ "$URGENTES" -gt 0 ]; then');

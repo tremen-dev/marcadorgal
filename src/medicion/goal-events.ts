@@ -1,15 +1,10 @@
-import type { Instant, RawCapture } from "../../model/index.ts";
+import type { Instant, RawCapture } from "../model/index.ts";
 
-// SPEC-025 CA-2 (H-1): the provider's reference of each goal, out of raw that
-// is already stored (the live= and ids= bodies of the tick, ADR-007). Pure:
-// no request, no clock. The provider gives the minute (elapsed, extra) and the
-// start of each half (fixture.periods, unix seconds), so a goal is known to a
-// resolution of 60 s: minute m of a half is [start + (m-1)·60, start + m·60).
+// SPEC-025 CA-2 (H-1): goal events reference extractor out of stored raw captures
+// for latency measurement (ADR-007, SPEC-025, SPEC-061).
 
 export type GoalInterval = { from: Instant; to: Instant };
 
-// Why a goal has no interval: the provider gave no start for its half, or the
-// goal is in extra time, whose halves the provider does not date.
 export type NoIntervalReason = "no_periods" | "extra_time";
 
 export type ProviderGoal = {
@@ -41,7 +36,6 @@ type RawFixture = {
   fixtureId: string;
   leagueId: string | null;
   periods: { first: number | null; second: number | null };
-  // home + away of the body's score, or null when it gives none.
   scored: number | null;
   events: RawEvent[] | null;
 };
@@ -65,8 +59,6 @@ const hasErrors = (errors: unknown): boolean =>
       ? Object.keys(errors).length > 0
       : errors !== undefined && errors !== null;
 
-// A Goal event that really is a goal: not a missed penalty, not a shootout
-// kick (which the provider also files as Goal).
 function goalEvent(e: unknown): RawEvent | null {
   if (!isRecord(e) || e.type !== "Goal") return null;
   const detail = typeof e.detail === "string" ? e.detail : "";
@@ -131,8 +123,6 @@ function intervalOf(
   const firstHalf = e.elapsed <= HALF_MINUTES;
   const start = firstHalf ? periods.first : periods.second;
   if (start === null) return { interval: null, reason: "no_periods" };
-  // The minute inside its half, 1-based: 45+3 is the 48th of the first half,
-  // 46 the 1st of the second and 90+4 its 49th.
   const minute =
     Math.max(1, e.elapsed + (e.extra ?? 0)) - (firstHalf ? 0 : HALF_MINUTES);
   return {
@@ -168,22 +158,13 @@ function toGoals(fixture: RawFixture): FixtureGoals {
   };
 }
 
-// The goals of every fixture of one raw body. A body that is not JSON, or
-// that carries the provider's errors, gives nothing (it is not a reference).
 export function goalEvents(body: string): FixtureGoals[] {
   return rawFixtures(body).map(toGoals);
 }
 
-// Whether a body's events are the whole list of its goals. Short: fewer goal
-// events than its own score, or none at all when it gives no score. The
-// provider sends `events: []` in some FT bodies (V-1): that is the events
-// missing, not the goals gone.
 const isShort = (f: RawFixture, events: RawEvent[]): boolean =>
   f.scored === null ? events.length === 0 : events.length < f.scored;
 
-// The events to keep: the newest body's, unless they are short and an
-// earlier capture had more (a goal disallowed later is gone from a complete
-// list, and a complete list always replaces).
 function mergedEvents(
   f: RawFixture,
   prev: RawEvent[] | null,
@@ -194,9 +175,6 @@ function mergedEvents(
   return f.events;
 }
 
-// The goals of every fixture across stored captures, oldest to newest: the
-// events of the newest body that has them complete (mergedEvents) and, half by half, the newest start the provider gave (it empties
-// periods once the match is over).
 export function goalReferences(
   captures: readonly RawCapture[],
 ): FixtureGoals[] {
