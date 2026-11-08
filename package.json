@@ -14,6 +14,7 @@
     "test": "vitest run",
     "tokens:css": "node tools/tokens-css.mjs",
     "og:image": "node tools/og-image.mjs",
+    "redes": "node tools/redes.mjs",
     "gates": "npm run typecheck && npm run lint && npm run test && npm run build",
     "e2e": "playwright test",
     "e2e:db": "playwright test --config playwright.db.config.ts",

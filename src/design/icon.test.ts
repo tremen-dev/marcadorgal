@@ -1,73 +1,13 @@
 import { readFileSync } from "node:fs";
-import { inflateSync } from "node:zlib";
 import { describe, expect, it } from "vitest";
 import { ICON_FILES, iconSvg } from "./icon.ts";
+import { decodePng, pixel, rgbOf } from "./raster.ts";
 import { COLORS } from "./tokens.ts";
 
 // SPEC-063 CA-4 (ADR-028 §4): one bar in COLORS, rasterised into public/ by
 // tools/icons.mjs (`node tools/icons.mjs`), same files as SPEC-033 CA-6.
 
-type Png = { width: number; height: number; rgba: Uint8Array };
-
-// A minimal decoder for the 8-bit RGB or RGBA, non-interlaced PNGs the
-// tool writes; the result is always RGBA.
-function decodePng(buf: Buffer): Png {
-  expect(buf.subarray(1, 4).toString("latin1")).toBe("PNG");
-  let offset = 8;
-  let width = 0;
-  let height = 0;
-  let bpp = 4;
-  const idat: Buffer[] = [];
-  while (offset < buf.length) {
-    const length = buf.readUInt32BE(offset);
-    const type = buf.subarray(offset + 4, offset + 8).toString("latin1");
-    const data = buf.subarray(offset + 8, offset + 8 + length);
-    if (type === "IHDR") {
-      width = data.readUInt32BE(0);
-      height = data.readUInt32BE(4);
-      expect([data[8], data[12]]).toEqual([8, 0]);
-      expect([2, 6]).toContain(data[9]);
-      bpp = data[9] === 6 ? 4 : 3;
-    }
-    if (type === "IDAT") idat.push(data);
-    offset += 12 + length;
-  }
-  const raw = inflateSync(Buffer.concat(idat));
-  const stride = width * bpp;
-  const out = new Uint8Array(height * stride);
-  for (let y = 0; y < height; y++) {
-    const filter = raw[y * (stride + 1)];
-    for (let x = 0; x < stride; x++) {
-      const v = raw[y * (stride + 1) + 1 + x];
-      const a = x >= bpp ? out[y * stride + x - bpp] : 0;
-      const b = y > 0 ? out[(y - 1) * stride + x] : 0;
-      const c = x >= bpp && y > 0 ? out[(y - 1) * stride + x - bpp] : 0;
-      const p = a + b - c;
-      const pa = Math.abs(p - a);
-      const pb = Math.abs(p - b);
-      const pc = Math.abs(p - c);
-      const paeth = pa <= pb && pa <= pc ? a : pb <= pc ? b : c;
-      const predictor = [0, a, b, (a + b) >> 1, paeth][filter];
-      out[y * stride + x] = (v + predictor) & 0xff;
-    }
-  }
-  const rgba = new Uint8Array(width * height * 4);
-  for (let i = 0; i < width * height; i++) {
-    for (let k = 0; k < 3; k++) rgba[i * 4 + k] = out[i * bpp + k];
-    rgba[i * 4 + 3] = bpp === 4 ? out[i * bpp + 3] : 255;
-  }
-  return { width, height, rgba };
-}
-
 const read = (path: string): Buffer => readFileSync(`public/${path}`);
-
-const rgbOf = (value: string): number[] =>
-  [1, 3, 5].map((i) => Number.parseInt(value.slice(i, i + 2), 16));
-
-const pixel = (png: Png, x: number, y: number): number[] => {
-  const i = (y * png.width + x) * 4;
-  return [...png.rgba.subarray(i, i + 4)];
-};
 
 const BAR = 'x="18.6" y="11.175" width="10.8" height="25.65" rx="3.375"';
 
