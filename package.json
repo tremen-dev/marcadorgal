@@ -35,7 +35,8 @@
     "cache:portada": "node tools/cache-portada.mjs",
     "rfef:calibrar": "node tools/calibrar-rfef.mjs",
     "rfef:recuperar": "node tools/rfef-recuperar.mjs",
-    "alias:rfef": "node tools/alias-rfef.mjs"
+    "alias:rfef": "node tools/alias-rfef.mjs",
+    "historico:sync": "node tools/historico-sync.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.117.3",

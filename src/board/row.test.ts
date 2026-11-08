@@ -321,3 +321,81 @@ describe("SPEC-041 CA-2 home_scored_at and away_scored_at", () => {
     expect(String(error.mock.calls[0].join(" "))).toContain("homeScoredAt");
   });
 });
+
+describe("SPEC-060 CA-1 goals in toPublicMatches", () => {
+  it("maps goals array from row to PublicMatch", () => {
+    const rowWithGoals: XornadaDbRow = {
+      ...base,
+      ...decided,
+      status: "finished",
+      home_score: 2,
+      away_score: 1,
+      goals: [
+        {
+          team: "home",
+          player: "Aspas",
+          minute: 15,
+          penalty: false,
+          ownGoal: false,
+        },
+        {
+          team: "away",
+          player: "Visitante",
+          minute: 40,
+          penalty: true,
+          ownGoal: false,
+        },
+        {
+          team: "home",
+          player: "Borja",
+          minute: 88,
+          penalty: false,
+          own_goal: false,
+        },
+      ],
+    };
+
+    const [pm] = toPublicMatches([rowWithGoals]);
+    expect(pm.goals).toEqual([
+      { team: "home", player: "Aspas", minute: 15 },
+      { team: "away", player: "Visitante", minute: 40, penalty: true },
+      { team: "home", player: "Borja", minute: 88 },
+    ]);
+  });
+
+  it("handles stringified JSON goals (e.g. from Realtime delta)", () => {
+    const rowWithStringGoals: XornadaDbRow = {
+      ...base,
+      ...decided,
+      status: "live",
+      home_score: 1,
+      away_score: 0,
+      goals: JSON.stringify([
+        {
+          team: "home",
+          player: "Lozano",
+          minute: 33,
+          penalty: false,
+          own_goal: false,
+        },
+      ]),
+    };
+
+    const [pm] = toPublicMatches([rowWithStringGoals]);
+    expect(pm.goals).toEqual([{ team: "home", player: "Lozano", minute: 33 }]);
+  });
+
+  it("omits goals when empty array or null", () => {
+    const rowEmptyGoals: XornadaDbRow = {
+      ...base,
+      ...decided,
+      status: "finished",
+      home_score: 0,
+      away_score: 0,
+      goals: [],
+    };
+
+    const [pm] = toPublicMatches([rowEmptyGoals]);
+    expect(pm.goals).toBeUndefined();
+  });
+});

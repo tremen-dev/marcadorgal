@@ -198,7 +198,9 @@ describe("SPEC-043 CA-5 the harmless migration", () => {
     const files = readdirSync(dir).sort();
     const own = files.filter((f) => /_spec043_/.test(f));
     expect(own).toHaveLength(1);
-    expect(files.at(-1)).toBe(own[0]);
+    expect(files.indexOf(own[0] ?? "")).toBeGreaterThan(
+      files.indexOf("20261101120000_spec041_scored_at.sql"),
+    );
     const sql = codeOf(readFileSync(path.join(dir, own[0] ?? ""), "utf8"))
       .split("\n")
       .filter((l) => !l.trimStart().startsWith("--") && l.trim() !== "")

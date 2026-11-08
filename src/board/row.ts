@@ -3,6 +3,7 @@ import type {
   Instant,
   MatchId,
   MatchStatus,
+  PublicGoal,
 } from "../model/index.ts";
 import { PublicMatch } from "../model/index.ts";
 
@@ -39,6 +40,8 @@ export type XornadaDbRow = {
   // SPEC-041 CA-1 (ADR-022): the last columns of web.xornada.
   home_scored_at: XornadaInstant | null;
   away_scored_at: XornadaInstant | null;
+  // SPEC-060 CA-1: the goals of the match.
+  goals?: unknown;
 };
 
 // What the selection of the current xornada needs of every match (CA-5).
@@ -60,11 +63,46 @@ function iso(d: XornadaInstant | null): string | null {
   return Number.isNaN(ms) ? d : new Date(ms).toISOString();
 }
 
+function parseGoals(raw: unknown): PublicGoal[] | undefined {
+  if (raw === null || raw === undefined) return undefined;
+  let val = raw;
+  if (typeof val === "string") {
+    try {
+      val = JSON.parse(val);
+    } catch {
+      return undefined;
+    }
+  }
+  if (!Array.isArray(val) || val.length === 0) return undefined;
+  const goals: PublicGoal[] = [];
+  for (const item of val) {
+    if (!item || typeof item !== "object") continue;
+    const g = item as Record<string, unknown>;
+    const team = g.team;
+    if (team !== "home" && team !== "away") continue;
+    if (typeof g.player !== "string" || !g.player.trim()) continue;
+    const minute =
+      typeof g.minute === "number" && !Number.isNaN(g.minute)
+        ? Math.max(0, Math.round(g.minute))
+        : null;
+    if (minute === null) continue;
+    goals.push({
+      team,
+      player: g.player.trim(),
+      minute,
+      ...(g.penalty === true ? { penalty: true } : {}),
+      ...(g.ownGoal === true || g.own_goal === true ? { ownGoal: true } : {}),
+    });
+  }
+  return goals.length > 0 ? goals : undefined;
+}
+
 function candidate(row: XornadaDbRow): unknown {
   const score =
     row.home_score === null && row.away_score === null
       ? null
       : { home: row.home_score, away: row.away_score };
+  const goals = parseGoals(row.goals);
   return {
     matchId: row.match_id,
     competitionId: row.competition_id,
@@ -93,6 +131,7 @@ function candidate(row: XornadaDbRow): unknown {
     decidedAt: iso(row.decided_at),
     homeScoredAt: iso(row.home_scored_at),
     awayScoredAt: iso(row.away_scored_at),
+    ...(goals ? { goals } : {}),
   };
 }
 

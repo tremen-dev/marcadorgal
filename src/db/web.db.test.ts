@@ -276,7 +276,7 @@ const PUBLIC_TABLES = [
 afterAll(() => sql.end());
 
 describe("SPEC-020 CA-2 web.xornada", () => {
-  it("has exactly the columns of ADR-014 §3 plus season, half_time (SPEC-021 CA-4) and the two instants of ADR-022 last (SPEC-041 CA-1)", async () => {
+  it("has exactly the columns of ADR-014 §3 plus season, half_time (SPEC-021 CA-4), the two instants of ADR-022 (SPEC-041 CA-1) and goals (SPEC-060 CA-1)", async () => {
     const cols = await sql`select column_name from information_schema.columns
       where table_schema = 'web' and table_name = 'xornada' order by ordinal_position`;
     expect(cols.map((c) => c.column_name)).toEqual([
@@ -303,6 +303,7 @@ describe("SPEC-020 CA-2 web.xornada", () => {
       "half_time",
       "home_scored_at",
       "away_scored_at",
+      "goals",
     ]);
   });
 
@@ -344,6 +345,7 @@ describe("SPEC-020 CA-2 web.xornada", () => {
         half_time: false,
         home_scored_at: null,
         away_scored_at: null,
+        goals: [],
       });
     }));
 
@@ -817,5 +819,75 @@ describe("SPEC-041 CA-1 web.xornada carries home_scored_at and away_scored_at", 
       ]);
       await asRole(tx, "web_reader");
       expect(await scoredAt(tx, m)).toEqual({ home: null, away: at[1] });
+    }));
+});
+
+describe("SPEC-060 CA-1 web.xornada carries goals", () => {
+  it("a match without goals returns empty array []", () =>
+    rollback(async (tx) => {
+      const m = await seedMatch(tx);
+      const [row] =
+        await tx`select goals from web.xornada where match_id = ${m}`;
+      expect(row.goals).toEqual([]);
+    }));
+
+  it("persisted match_goals appear chronologically ordered in web.xornada", () =>
+    rollback(async (tx) => {
+      const m = await seedMatch(tx);
+      await tx`insert into public.match_goals (match_id, team, player, minute, penalty, own_goal)
+        values
+          (${m}, 'away', 'Visitante 1', 75, false, false),
+          (${m}, 'home', 'Goleador 1', 12, false, false),
+          (${m}, 'home', 'Goleador 2', 45, true, false)`;
+
+      const [row] =
+        await tx`select goals from web.xornada where match_id = ${m}`;
+      expect(row.goals).toEqual([
+        {
+          team: "home",
+          player: "Goleador 1",
+          minute: 12,
+          penalty: false,
+          ownGoal: false,
+        },
+        {
+          team: "home",
+          player: "Goleador 2",
+          minute: 45,
+          penalty: true,
+          ownGoal: false,
+        },
+        {
+          team: "away",
+          player: "Visitante 1",
+          minute: 75,
+          penalty: false,
+          ownGoal: false,
+        },
+      ]);
+    }));
+
+  it("web_reader reads goals through web.xornada without direct access to match_goals", () =>
+    rollback(async (tx) => {
+      const m = await seedMatch(tx);
+      await tx`insert into public.match_goals (match_id, team, player, minute)
+        values (${m}, 'home', 'Aspas', 10)`;
+
+      await asRole(tx, "web_reader");
+      const [row] =
+        await tx`select goals from web.xornada where match_id = ${m}`;
+      expect(row.goals).toEqual([
+        {
+          team: "home",
+          player: "Aspas",
+          minute: 10,
+          penalty: false,
+          ownGoal: false,
+        },
+      ]);
+
+      expect(await pgCode(tx, (s) => s`select * from public.match_goals`)).toBe(
+        "42501",
+      );
     }));
 });
