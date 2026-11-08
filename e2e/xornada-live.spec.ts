@@ -358,7 +358,7 @@ for (const route of [
       await expect(name).toHaveText("Celta");
       await expect(name).toHaveAttribute("data-galician", "true");
       await expect(name).toHaveCSS("font-weight", "600");
-      await expect(name).toHaveCSS("color", "rgb(86, 219, 143)");
+      await expect(name).toHaveCSS("color", "rgb(0, 153, 204)");
 
       await page.clock.runFor(POLL);
       await expect(page.getByTestId("match-row")).toHaveCount(LIST.length + 2);

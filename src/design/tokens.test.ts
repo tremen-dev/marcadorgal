@@ -21,7 +21,7 @@ import {
 describe("CA-1 colors", () => {
   const entries = Object.entries(COLORS);
 
-  it("has exactly the 17 keys of the spec", () => {
+  it("has exactly the 18 keys of the spec (SPEC-063 adds victory)", () => {
     expect(Object.keys(COLORS)).toEqual([
       "bg",
       "bgElevated",
@@ -40,6 +40,7 @@ describe("CA-1 colors", () => {
       "bgSubtle",
       "bgLive",
       "lineRow",
+      "victory",
     ]);
   });
 
@@ -69,8 +70,8 @@ describe("CA-1 colors", () => {
   it("repeats no value and no variable", () => {
     const values = entries.map(([, c]) => c.value.toLowerCase());
     const vars = entries.map(([, c]) => c.css);
-    expect(new Set(values).size).toBe(17);
-    expect(new Set(vars).size).toBe(17);
+    expect(new Set(values).size).toBe(18);
+    expect(new Set(vars).size).toBe(18);
   });
 
   it("has no fgProv key and no --fg-prov variable", () => {

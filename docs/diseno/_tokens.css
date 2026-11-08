@@ -3,8 +3,9 @@
   --bg:#111110; --bg-elev:#1A1815; --bg-step:#221F1A;
   --line:#2A2620; --line-strong:#3D362C;
   --fg:#F5F1EA; --fg-muted:#A7A5A0; --fg-prov:#8E8C88; --fg-dim:#716F6C;
-  --marca:#56DB8F; --marca-deep:#35C177; --marca-ink:#04160C;
+  --marca:#0099CC; --marca-deep:#3A93BA; --marca-ink:#00151F;
   --directo:#FF6B00; --amber:#F0B135; --alerta:#FF655A;
+  --victoria:#4CC38A;
   --sans:'Geist',ui-sans-serif,system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
   --mono:'Geist Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
 }

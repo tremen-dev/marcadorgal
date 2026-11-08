@@ -4,8 +4,8 @@ import { describe, expect, it } from "vitest";
 import { ICON_FILES, iconSvg } from "./icon.ts";
 import { COLORS } from "./tokens.ts";
 
-// SPEC-033 CA-6 (H-6): seed B of Marca.dc.html in COLORS, rasterised into
-// public/ by tools/icons.mjs (`node tools/icons.mjs`).
+// SPEC-063 CA-4 (ADR-028 §4): one bar in COLORS, rasterised into public/ by
+// tools/icons.mjs (`node tools/icons.mjs`), same files as SPEC-033 CA-6.
 
 type Png = { width: number; height: number; rgba: Uint8Array };
 
@@ -69,16 +69,31 @@ const pixel = (png: Png, x: number, y: number): number[] => {
   return [...png.rgba.subarray(i, i + 4)];
 };
 
-describe("SPEC-033 CA-6 the icon", () => {
-  it("is seed B on the 48 grid, in the colours of COLORS", () => {
+const BAR = 'x="18.6" y="11.175" width="10.8" height="25.65" rx="3.375"';
+
+describe("SPEC-063 CA-4 the icon: one bar", () => {
+  it("dark (default): the bg tile and one bar in the brand", () => {
     const svg = iconSvg({ rounded: true });
+    expect(svg).toBe(iconSvg({ rounded: true, variant: "dark" }));
     expect(svg).toContain('viewBox="0 0 48 48"');
-    for (const token of [COLORS.bg, COLORS.line, COLORS.fg, COLORS.brand])
-      expect(svg).toContain(`"${token.value}"`);
-    expect(svg).toContain('x="14" y="10" width="8" height="28" rx="2.5"');
-    expect(svg).toContain('x="26" y="19" width="8" height="19" rx="2.5"');
+    expect(svg).toContain(`rx="11" fill="${COLORS.bg.value}"`);
+    expect(svg).toContain(`stroke="${COLORS.line.value}"`);
+    expect(svg.match(/<rect /g)).toHaveLength(3);
+    expect(svg.split(BAR)).toHaveLength(2);
+    expect(svg).toContain(`${BAR} fill="${COLORS.brand.value}"`);
+    expect(svg).not.toContain(COLORS.fg.value);
     const square = iconSvg({ rounded: false });
     expect(square).not.toContain('rx="11"');
+    expect(square.match(/<rect /g)).toHaveLength(2);
+  });
+
+  it("brand: the bar in bg on a brand tile", () => {
+    const svg = iconSvg({ rounded: false, variant: "brand" });
+    expect(svg).toContain(
+      `<rect width="48" height="48" fill="${COLORS.brand.value}"/>`,
+    );
+    expect(svg.split(BAR)).toHaveLength(2);
+    expect(svg).toContain(`${BAR} fill="${COLORS.bg.value}"`);
   });
 
   it("icon-32.png and apple-touch-icon.png have their sizes", () => {
@@ -121,18 +136,25 @@ describe("SPEC-033 CA-6 the icon", () => {
     expect(sizes).toEqual([16, 32]);
   });
 
-  it("the background is --bg and the lit bar --marca (apple-touch-icon)", () => {
+  it("apple-touch-icon.png: the centre is --marca, the corners --bg, no --fg left", () => {
     const png = decodePng(read(ICON_FILES.apple.path));
-    // 180 / 48 = 3.75 px per unit: a corner, the middle of each bar.
-    expect(pixel(png, 2, 2)).toEqual([...rgbOf(COLORS.bg.value), 255]);
-    expect(pixel(png, Math.round(30 * 3.75), Math.round(30 * 3.75))).toEqual([
-      ...rgbOf(COLORS.brand.value),
-      255,
-    ]);
-    expect(pixel(png, Math.round(18 * 3.75), Math.round(20 * 3.75))).toEqual([
-      ...rgbOf(COLORS.fg.value),
-      255,
-    ]);
+    const bg = [...rgbOf(COLORS.bg.value), 255];
+    for (const [x, y] of [
+      [2, 2],
+      [177, 2],
+      [2, 177],
+      [177, 177],
+    ])
+      expect(pixel(png, x, y), `${x},${y}`).toEqual(bg);
+    expect(pixel(png, 90, 90)).toEqual([...rgbOf(COLORS.brand.value), 255]);
+    const fg = rgbOf(COLORS.fg.value);
+    let fgPixels = 0;
+    for (let y = 0; y < png.height; y++)
+      for (let x = 0; x < png.width; x++) {
+        const [r, g, b] = pixel(png, x, y);
+        if (r === fg[0] && g === fg[1] && b === fg[2]) fgPixels++;
+      }
+    expect(fgPixels).toBe(0);
   });
 
   it("the rounded tile leaves its corners transparent (icon-32.png)", () => {

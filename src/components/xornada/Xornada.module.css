@@ -223,10 +223,6 @@ a.weekArrow:focus-visible {
   color: var(--fg);
 }
 
-.mark {
-  color: var(--marca);
-}
-
 /* SPEC-028 CA-6 (H-6 = A): the one <h1>, visible. Mobile: the 42 px row of
    Movil.tpl.html's segment (barMobileSegment), between the strip and the
    filters. It lives in the header (the client repaints it with the days) and

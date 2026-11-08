@@ -77,9 +77,14 @@ const html = `<!doctype html>
       letter-spacing: -0.045em;
       color: ${COLORS.fg.value};
     }
+    /* SPEC-063 CA-3: the block is drawn, not a glyph (the art is SPEC-064's). */
     .logo-block {
-      color: ${COLORS.brand.value};
-      margin: 0 1px;
+      display: inline-block;
+      width: 0.3em;
+      height: 0.72em;
+      margin: 0 0.06em;
+      border-radius: 0.095em;
+      background: ${COLORS.brand.value};
     }
     .badge-live {
       display: flex;
@@ -166,7 +171,7 @@ const html = `<!doctype html>
         <rect x="14" y="10" width="8" height="28" rx="2.5" fill="${COLORS.fg.value}"/>
         <rect x="26" y="19" width="8" height="19" rx="2.5" fill="${COLORS.brand.value}"/>
       </svg>
-      <div class="logo-text">marcador<span class="logo-block">▮</span>gal</div>
+      <div class="logo-text">marcador<span class="logo-block" aria-hidden="true"></span>gal</div>
     </div>
     <div class="badge-live">
       <div class="badge-dot"></div>

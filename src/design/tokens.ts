@@ -13,9 +13,11 @@ export const COLORS = {
   fg: { value: "#F5F1EA", css: "--fg" },
   fgMuted: { value: "#A7A5A0", css: "--fg-muted" },
   fgDim: { value: "#716F6C", css: "--fg-dim" },
-  brand: { value: "#56DB8F", css: "--marca" },
-  brandDeep: { value: "#35C177", css: "--marca-deep" },
-  brandInk: { value: "#04160C", css: "--marca-ink" },
+  // ADR-028 §1: the sky blue of the Galician flag. A brand fill takes
+  // brandInk, never fg (2.90:1).
+  brand: { value: "#0099CC", css: "--marca" },
+  brandDeep: { value: "#3A93BA", css: "--marca-deep" },
+  brandInk: { value: "#00151F", css: "--marca-ink" },
   ember: { value: "#FF6B00", css: "--directo" },
   amber: { value: "#F0B135", css: "--amber" },
   red: { value: "#FF655A", css: "--alerta" },
@@ -23,6 +25,9 @@ export const COLORS = {
   bgSubtle: { value: "#131211", css: "--bg-subtle" },
   bgLive: { value: "#1E1A16", css: "--bg-live" },
   lineRow: { value: "#1D1A16", css: "--line-row" },
+  // ADR-028 §2: a result colour, the W of the form guide (bg on it, 8.53:1).
+  // Neither brand nor match state: no brand piece uses it.
+  victory: { value: "#4CC38A", css: "--victoria" },
 } as const satisfies Record<string, Color>;
 
 export type ColorToken = keyof typeof COLORS;

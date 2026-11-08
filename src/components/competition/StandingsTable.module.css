@@ -119,9 +119,11 @@
   color: var(--bg);
 }
 
+/* SPEC-063 CA-7 (ADR-028 §2): the win in the victory green, a result
+   colour and not the brand; the letter says it too. */
 .formW {
-  background: var(--marca);
-  color: var(--marca-ink);
+  background: var(--victoria);
+  color: var(--bg);
 }
 
 .formD {
