@@ -29,9 +29,28 @@ epica: EPIC-003
 
 ## Evidencia visual
 <!-- Tabla CA → captura en _qa/SPEC-063/. Informe HTML opcional: _qa/SPEC-063/informe.html -->
+| CA | Captura (implementador) |
+|---|---|
+| CA-3 | `_qa/SPEC-063/ca3-{_,_es,_demo_xornada,_es_demo_xornada}-{360,1440}.png` |
+| CA-4 | `_qa/SPEC-063/ca4-iconas-antes.png`, `ca4-iconas-despois.png` (16/32/180/512); iconos viejos en `_qa/SPEC-063/antes/` |
+| CA-6 | `_qa/SPEC-063/ca6-{antes,despois}_{demo_xornada,es_demo_xornada}-{360,1440}.png` (antes = build de 5918431); `ca6-_{,es_}directos-*` |
+| CA-7 | `_qa/SPEC-063/ca7{,_es}-{360,1440}.png` |
+
+## Evidencia de gates (implementador, 2026-11-08)
+- `npm run gates` en Docker `mcr.microsoft.com/playwright:v1.63.0-noble` sobre `git archive` de HEAD (commit «git grep --no-index»): `Checked 396 files … No fixes applied` · `Test Files 140 passed (140) · Tests 2183 passed | 3 skipped` · `✓ Compiled successfully` · `gates exit 0`.
+- Windows (worktree LF): `src/db/test-db.test.ts › wins over a .env file in the cwd too` falla (`expected 1 to be +0`) también sin estos cambios (`git stash`): el test arma `PATH` con `:`; solo Windows. En Linux pasa.
+- `npm run e2e` (CI=1, Docker, commit 8306bb5): `274 passed (2.8m) · 1 skipped · exit 0`. `e2e/identidade-celeste.spec.ts` (20 casos) también verde en Windows.
+- `npm run e2e:db` (Docker, red del host, Supabase local del host): `46 passed · 2 failed · 1 skipped`. Fallan `xornada-nav.db.spec.ts:103 CA-4 with JS … the logo resets` (gl y es) en `heads.nth(1).click()` (timeout, antes de tocar el logo). En la base 5918431 el mismo fichero da `14 passed · 2 failed` con los mismos dos casos y la misma línea: preexistente, no de esta spec.
+- CA-8: `git diff origin/main --stat -- src/sources src/decide src/ingest src/board src/app/api supabase` → vacío. `manifest.ts`/`metadata.ts` y sus tests sin diff.
 
 ## Salvedades / follow-ups
 <!-- IDs F-SPEC-063-1, F-SPEC-063-2… con destino (spec futura o EPIC-MEJORA). -->
+- **F-SPEC-063-1** (→ SPEC-064). Para cumplir «ninguna fuente bajo `tools/` contiene ▮» (CA-3) se cambió el glifo por un bloque CSS en `tools/og-image.mjs` y `tools/twitter-assets.mjs`, **sin regenerar** `og.png` ni `twitter-*.png` (siguen con el verde y la semente B hasta SPEC-064). Sus SVG inline de semente B siguen ahí, sin hex (usan `COLORS`).
+- **F-SPEC-063-2** (interpretación, para el verificador). «Competición activa» de CA-6 no existe en `/demo/xornada`; se probó en la pestaña activa de `CompetitionNav` (`tab-all`) en `/directos` y `/es/directos`. En la demo se prueban día seleccionado, gallego/perdedor y directo en ember.
+- **F-SPEC-063-3**. CA-7 usa un Explorer de mentira (`e2e/fixtures/explorer-mock.mjs`, puerto 3103) y una tercera instancia `next start` (3102) en `playwright.config.ts`: +1 arranque en `npm run e2e`.
+- **F-SPEC-063-4**. Además de los tres hex, en `*.tpl.html` y `Componentes.dc.html` se cambió la tinta `rgba(86,219,143,.12)` → `rgba(0,153,204,.12)` (es la marca en rgba); el test de CA-5 también la vigila.
+- **F-SPEC-063-5** (→ EPIC-MEJORA/SPEC-047). `xornada-nav.db.spec.ts:103` (2 casos) rojo ya en main; `test-db.test.ts` rojo solo en Windows.
 
 ## Cómo retomar (handoff)
 <!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->
+CA-1..CA-8 implementados en la rama; spec en `en-revision`. Falta la verificación (sdd-verificador). Tests de unidad nuevos en `src/design/identity.test.ts`; e2e en `e2e/identidade-celeste.spec.ts` (`QA_CAPTURE_DIR=_qa/SPEC-063` para capturas). Regenerar: `node tools/tokens-css.mjs`, `node tools/icons.mjs`, `cd docs/diseno && node build.mjs`. SPEC-064 puede empezar sobre esta rama (`iconSvg({variant})`, `Wordmark`).
