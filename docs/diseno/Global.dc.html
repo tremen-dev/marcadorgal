@@ -15,7 +15,7 @@
     }
     *,*::before,*::after{box-sizing:border-box}
     body{margin:0;background:#111110;color:#F5F1EA;font-family:var(--sans);-webkit-font-smoothing:antialiased}
-    a{color:#56DB8F;text-decoration:none}
+    a{color:#0099CC;text-decoration:none}
     a:hover{color:#F5F1EA;text-decoration:underline}
     .n{font-family:var(--mono);font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1}
     .col{flex:1;min-width:0;display:flex;flex-direction:column}
@@ -25,10 +25,10 @@
 <div style="width: 1440px; height: 900px; background: #111110; display: flex; flex-direction: column; overflow: hidden">
 
   <div style="height: 56px; flex: none; display: flex; align-items: center; gap: 28px; padding: 0 20px; border-bottom: 1px solid #2A2620">
-    <span style="font: 800 21px/1 var(--sans); letter-spacing: -.045em; color: #F5F1EA">marcador<span style="color: #56DB8F">▮</span>gal</span>
+    <span style="font: 800 21px/1 var(--sans); letter-spacing: -.045em; color: #F5F1EA">marcador<span style="color: #0099CC">▮</span>gal</span>
     <div style="display: flex; gap: 22px">
       <span style="font: 500 13px/1 var(--sans); color: #A7A5A0">{{ t.xornada }}</span>
-      <span style="font: 600 13px/1 var(--sans); color: #F5F1EA; padding-bottom: 4px; box-shadow: inset 0 -2px 0 #56DB8F">{{ t.global }}</span>
+      <span style="font: 600 13px/1 var(--sans); color: #F5F1EA; padding-bottom: 4px; box-shadow: inset 0 -2px 0 #0099CC">{{ t.global }}</span>
       <span style="font: 500 13px/1 var(--sans); color: #A7A5A0">{{ t.tables }}</span>
     </div>
     <span style="flex: 1"></span>
@@ -43,7 +43,7 @@
   <div style="height: 44px; flex: none; display: flex; align-items: center; gap: 4px; padding: 0 20px; border-bottom: 1px solid #2A2620; background: #131211">
     <span style="font: 400 15px/1 var(--sans); color: #716F6C; padding-right: 8px">‹</span>
     <span style="padding: 6px 12px; border-radius: 7px; font: 500 12px/1 var(--mono); color: #716F6C">{{ t.d0 }}</span>
-    <span style="padding: 6px 12px; border-radius: 7px; background: #56DB8F; font: 600 12px/1 var(--mono); color: #04160C">{{ t.d1 }}</span>
+    <span style="padding: 6px 12px; border-radius: 7px; background: #0099CC; font: 600 12px/1 var(--mono); color: #00151F">{{ t.d1 }}</span>
     <span style="padding: 6px 12px; border-radius: 7px; font: 500 12px/1 var(--mono); color: #716F6C">{{ t.d2 }}</span>
     <span style="padding: 6px 12px; border-radius: 7px; font: 500 12px/1 var(--mono); color: #716F6C">{{ t.d3 }}</span>
     <span style="font: 400 15px/1 var(--sans); color: #716F6C; padding-left: 8px">›</span>
@@ -61,7 +61,7 @@
       <sc-for list="{{ c1 }}" as="it" hint-placeholder-count="8">
         <sc-if value="{{ it.isHeader }}" hint-placeholder-val="{{ true }}">
           <div style="{{ it.headStyle }}" onClick="{{ it.toggle }}">
-            <span style="font: 600 10px/1.2 var(--mono); letter-spacing: .09em; text-transform: uppercase; color: #56DB8F; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ it.name }}</span>
+            <span style="font: 600 10px/1.2 var(--mono); letter-spacing: .09em; text-transform: uppercase; color: #0099CC; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ it.name }}</span>
             <span style="flex: 1"></span>
             <span style="{{ it.liveStyle }}">{{ it.liveTxt }}</span>
             <span class="n" style="font-size: 10px; color: #716F6C">{{ it.round }}</span>
@@ -86,7 +86,7 @@
       <sc-for list="{{ c2 }}" as="it" hint-placeholder-count="8">
         <sc-if value="{{ it.isHeader }}" hint-placeholder-val="{{ true }}">
           <div style="{{ it.headStyle }}" onClick="{{ it.toggle }}">
-            <span style="font: 600 10px/1.2 var(--mono); letter-spacing: .09em; text-transform: uppercase; color: #56DB8F; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ it.name }}</span>
+            <span style="font: 600 10px/1.2 var(--mono); letter-spacing: .09em; text-transform: uppercase; color: #0099CC; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ it.name }}</span>
             <span style="flex: 1"></span>
             <span style="{{ it.liveStyle }}">{{ it.liveTxt }}</span>
             <span class="n" style="font-size: 10px; color: #716F6C">{{ it.round }}</span>
@@ -111,7 +111,7 @@
       <sc-for list="{{ c3 }}" as="it" hint-placeholder-count="8">
         <sc-if value="{{ it.isHeader }}" hint-placeholder-val="{{ true }}">
           <div style="{{ it.headStyle }}" onClick="{{ it.toggle }}">
-            <span style="font: 600 10px/1.2 var(--mono); letter-spacing: .09em; text-transform: uppercase; color: #56DB8F; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ it.name }}</span>
+            <span style="font: 600 10px/1.2 var(--mono); letter-spacing: .09em; text-transform: uppercase; color: #0099CC; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ it.name }}</span>
             <span style="flex: 1"></span>
             <span style="{{ it.liveStyle }}">{{ it.liveTxt }}</span>
             <span class="n" style="font-size: 10px; color: #716F6C">{{ it.round }}</span>
@@ -136,7 +136,7 @@
       <sc-for list="{{ c4 }}" as="it" hint-placeholder-count="8">
         <sc-if value="{{ it.isHeader }}" hint-placeholder-val="{{ true }}">
           <div style="{{ it.headStyle }}" onClick="{{ it.toggle }}">
-            <span style="font: 600 10px/1.2 var(--mono); letter-spacing: .09em; text-transform: uppercase; color: #56DB8F; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ it.name }}</span>
+            <span style="font: 600 10px/1.2 var(--mono); letter-spacing: .09em; text-transform: uppercase; color: #0099CC; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ it.name }}</span>
             <span style="flex: 1"></span>
             <span style="{{ it.liveStyle }}">{{ it.liveTxt }}</span>
             <span class="n" style="font-size: 10px; color: #716F6C">{{ it.round }}</span>
@@ -160,7 +160,7 @@
   </div>
 
   <div style="height: 30px; flex: none; display: flex; align-items: center; gap: 16px; padding: 0 20px; border-top: 1px solid #2A2620; background: #131211">
-    <span style="font: 800 11px/1 var(--sans); letter-spacing: -.04em; color: #716F6C">marcador<span style="color: #56DB8F">▮</span>gal</span>
+    <span style="font: 800 11px/1 var(--sans); letter-spacing: -.04em; color: #716F6C">marcador<span style="color: #0099CC">▮</span>gal</span>
     <span style="font: 400 11px/1 var(--sans); color: #716F6C">{{ t.hint }}</span>
     <span style="flex: 1"></span>
     <span class="n" style="font-size: 10px; color: #3D362C">{{ t.stamp }}</span>
@@ -394,7 +394,7 @@ class Component extends DCLogic {
           mid: mid,
           midStyle: MID + 'color:' + midColor + ';' + midExtra,
           star: starred ? '★' : '☆',
-          starStyle: 'font:400 11px/1 var(--sans);text-align:right;color:' + (starred ? '#56DB8F' : '#2A2620') + ';',
+          starStyle: 'font:400 11px/1 var(--sans);text-align:right;color:' + (starred ? '#0099CC' : '#2A2620') + ';',
           pick: function () {
             var s = {};
             for (var p in stars) { s[p] = stars[p]; }
@@ -433,7 +433,7 @@ class Component extends DCLogic {
     var PILL_OFF = 'padding:6px 13px;border-radius:999px;border:1px solid #2A2620;font:600 12px/1 var(--sans);color:#A7A5A0;cursor:pointer';
     var LIVE_ON = 'padding:6px 13px;border-radius:999px;background:rgba(255,107,0,.14);border:1px solid #FF6B00;font:600 12px/1 var(--sans);color:#FF6B00;cursor:pointer';
     var LIVE_OFF = 'padding:6px 13px;border-radius:999px;border:1px solid rgba(255,107,0,.4);font:600 12px/1 var(--sans);color:#FF6B00;cursor:pointer';
-    var LANG_ON = 'padding:6px 8px;border-radius:6px;background:rgba(86,219,143,.12);color:#56DB8F;text-transform:uppercase;letter-spacing:.05em;cursor:pointer';
+    var LANG_ON = 'padding:6px 8px;border-radius:6px;background:rgba(0,153,204,.12);color:#0099CC;text-transform:uppercase;letter-spacing:.05em;cursor:pointer';
     var LANG_OFF = 'padding:6px 8px;border-radius:6px;color:#716F6C;text-transform:uppercase;letter-spacing:.05em;cursor:pointer';
 
     return {

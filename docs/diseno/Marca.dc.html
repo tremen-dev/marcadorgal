@@ -15,7 +15,7 @@
     }
     *,*::before,*::after{box-sizing:border-box}
     body{margin:0;background:#111110;color:#F5F1EA;font-family:var(--sans);-webkit-font-smoothing:antialiased}
-    a{color:#56DB8F;text-decoration:none}
+    a{color:#0099CC;text-decoration:none}
     a:hover{color:#F5F1EA;text-decoration:underline}
     .n{font-family:var(--mono);font-variant-numeric:tabular-nums}
     .cap{font:400 12px/1.45 var(--sans);color:#A7A5A0}
@@ -26,29 +26,29 @@
 <div style="padding: 48px 40px 64px; background: #111110; min-height: 100%">
 
   <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 14px">
-    <span style="font: 600 11px/1 var(--mono); letter-spacing: .15em; text-transform: uppercase; color: #56DB8F">/ 03 — semente de marca</span>
+    <span style="font: 600 11px/1 var(--mono); letter-spacing: .15em; text-transform: uppercase; color: #0099CC">/ 03 — semente de marca</span>
     <span style="flex: 1; height: 1px; background-image: linear-gradient(90deg, #3D362C 50%, transparent 50%); background-size: 6px 1px"></span>
   </div>
-  <h1 style="margin: 0 0 8px; font: 700 28px/1.05 var(--sans); letter-spacing: -.035em">Aínda non hai logo</h1>
+  <h1 style="margin: 0 0 8px; font: 700 28px/1.05 var(--sans); letter-spacing: -.035em">Logotipo e icona</h1>
   <p style="margin: 0 0 12px; font: 400 15px/1.55 var(--sans); color: #A7A5A0; text-wrap: pretty">
-    E non debe habelo antes de comprobar na OEPM que non hai rexistro previo da marca
-    (<span class="n" style="font-size: 13px; color: #716F6C">docs/negocio/marca.md</span>). O que hai aquí son <strong style="color: #F5F1EA; font-weight: 600">sementes</strong>:
-    tres direccións xeométricas que xa cumpren os dous requisitos duros —funcionar a 48&nbsp;px como icona
-    e como marca de auga na captura que se comparte por WhatsApp— e un logotipo que só é tipografía,
-    e polo tanto xa é usable hoxe.
+    Decidido polo titular o 2026-11-08 (ADR-028): a marca é o celeste da bandeira de Galicia
+    (<span class="n" style="font-size: 13px; color: #716F6C">--marca</span>), o bloque do logotipo é unha peza
+    <strong style="color: #F5F1EA; font-weight: 600">debuxada</strong>, non un carácter, e a icona é ese mesmo bloque só.
+    Todo recheo de marca leva texto en <span class="n" style="font-size: 13px; color: #716F6C">--marca-ink</span>, nunca en hueso.
+    As sementes do 2026-09-12 quedan abaixo como historia.
   </p>
 
   <!-- logotipo -->
   <div class="lbl" style="margin: 36px 0 14px">Logotipo — tipográfico, dispoñible xa</div>
   <div style="border: 1px solid #2A2620; border-radius: 14px; background: #1A1815; padding: 34px 28px; margin-bottom: 12px">
-    <div style="font: 800 46px/1 var(--sans); letter-spacing: -.045em; color: #F5F1EA">marcador<span style="color: #56DB8F">▮</span>gal</div>
+    <div style="font: 800 46px/1 var(--sans); letter-spacing: -.045em; color: #F5F1EA">marcador<span aria-hidden="true" style="display: inline-block; width: .3em; height: .72em; margin: 0 .06em; border-radius: .095em; background: #0099CC"></span>gal</div>
     <div style="height: 1px; background: #2A2620; margin: 26px 0"></div>
     <div style="display: flex; align-items: baseline; gap: 34px; flex-wrap: wrap">
-      <span style="font: 800 26px/1 var(--sans); letter-spacing: -.045em; color: #F5F1EA">marcador<span style="color: #56DB8F">▮</span>gal</span>
-      <span style="font: 800 17px/1 var(--sans); letter-spacing: -.045em; color: #F5F1EA">marcador<span style="color: #56DB8F">▮</span>gal</span>
-      <span style="font: 800 12px/1 var(--sans); letter-spacing: -.04em; color: #F5F1EA">marcador<span style="color: #56DB8F">▮</span>gal</span>
-      <span style="padding: 8px 14px; background: #F5F1EA; border-radius: 8px; font: 800 17px/1 var(--sans); letter-spacing: -.045em; color: #111110">marcador<span style="color: #35C177">▮</span>gal</span>
-      <span style="padding: 8px 14px; border: 1px solid #3D362C; border-radius: 8px; font: 800 17px/1 var(--sans); letter-spacing: -.045em; color: #F5F1EA">marcador<span style="color: #F5F1EA">▮</span>gal</span>
+      <span style="font: 800 26px/1 var(--sans); letter-spacing: -.045em; color: #F5F1EA">marcador<span aria-hidden="true" style="display: inline-block; width: .3em; height: .72em; margin: 0 .06em; border-radius: .095em; background: #0099CC"></span>gal</span>
+      <span style="font: 800 17px/1 var(--sans); letter-spacing: -.045em; color: #F5F1EA">marcador<span aria-hidden="true" style="display: inline-block; width: .3em; height: .72em; margin: 0 .06em; border-radius: .095em; background: #0099CC"></span>gal</span>
+      <span style="font: 800 12px/1 var(--sans); letter-spacing: -.04em; color: #F5F1EA">marcador<span aria-hidden="true" style="display: inline-block; width: .3em; height: .72em; margin: 0 .06em; border-radius: .095em; background: #0099CC"></span>gal</span>
+      <span style="padding: 8px 14px; background: #F5F1EA; border-radius: 8px; font: 800 17px/1 var(--sans); letter-spacing: -.045em; color: #111110">marcador<span aria-hidden="true" style="display: inline-block; width: .3em; height: .72em; margin: 0 .06em; border-radius: .095em; background: #3A93BA"></span>gal</span>
+      <span style="padding: 8px 14px; border: 1px solid #3D362C; border-radius: 8px; font: 800 17px/1 var(--sans); letter-spacing: -.045em; color: #F5F1EA">marcador<span aria-hidden="true" style="display: inline-block; width: .3em; height: .72em; margin: 0 .06em; border-radius: .095em; background: #F5F1EA"></span>gal</span>
     </div>
   </div>
   <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 28px; margin-bottom: 44px">
@@ -58,8 +58,31 @@
     <div class="cap">Non se compón nunca con escudos ao lado, nin dentro dunha caixa con sombra, nin en maiúsculas.</div>
   </div>
 
-  <!-- sementes de icona -->
-  <div class="lbl" style="margin-bottom: 6px">Sementes de icona — tres direccións</div>
+  <!-- icona elixida -->
+  <div class="lbl" style="margin-bottom: 6px">Icona — unha barra soa (ADR-028)</div>
+  <p class="cap" style="margin: 0 0 18px; max-width: 640px">O bloque do logotipo (8&nbsp;×&nbsp;19, raio 2.5 na retícula de 48) escalado ×&nbsp;1.35 e centrado en (24,&nbsp;24). Probada a 72, 32 e 16&nbsp;px. A escura é a do sitio; a celeste, a das redes.</p>
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-bottom: 44px">
+    <div style="border: 1px solid #2A2620; border-radius: 14px; background: #1A1815; padding: 22px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: flex-end; gap: 14px">
+        <svg width="72" height="72" viewBox="0 0 48 48"><rect width="48" height="48" rx="11" fill="#111110"/><rect x="0.5" y="0.5" width="47" height="47" rx="10.5" fill="none" stroke="#2A2620"/><rect x="18.6" y="11.175" width="10.8" height="25.65" rx="3.375" fill="#0099CC"/></svg>
+        <svg width="32" height="32" viewBox="0 0 48 48"><rect width="48" height="48" rx="11" fill="#111110"/><rect x="0.5" y="0.5" width="47" height="47" rx="10.5" fill="none" stroke="#2A2620"/><rect x="18.6" y="11.175" width="10.8" height="25.65" rx="3.375" fill="#0099CC"/></svg>
+        <svg width="16" height="16" viewBox="0 0 48 48"><rect width="48" height="48" rx="11" fill="#111110"/><rect x="0.5" y="0.5" width="47" height="47" rx="10.5" fill="none" stroke="#2A2620"/><rect x="18.6" y="11.175" width="10.8" height="25.65" rx="3.375" fill="#0099CC"/></svg>
+      </div>
+      <div class="cap"><strong style="color: #F5F1EA; font-weight: 600">Escura.</strong> Fondo <span class="n" style="font-size: 11px">--bg</span>, filete <span class="n" style="font-size: 11px">--line</span>, barra <span class="n" style="font-size: 11px">--marca</span>. Favicon, PWA e apple-touch-icon.</div>
+    </div>
+    <div style="border: 1px solid #2A2620; border-radius: 14px; background: #1A1815; padding: 22px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: flex-end; gap: 14px">
+        <svg width="72" height="72" viewBox="0 0 48 48"><rect width="48" height="48" rx="11" fill="#0099CC"/><rect x="18.6" y="11.175" width="10.8" height="25.65" rx="3.375" fill="#111110"/></svg>
+        <svg width="32" height="32" viewBox="0 0 48 48"><rect width="48" height="48" rx="11" fill="#0099CC"/><rect x="18.6" y="11.175" width="10.8" height="25.65" rx="3.375" fill="#111110"/></svg>
+        <svg width="16" height="16" viewBox="0 0 48 48"><rect width="48" height="48" rx="11" fill="#0099CC"/><rect x="18.6" y="11.175" width="10.8" height="25.65" rx="3.375" fill="#111110"/></svg>
+      </div>
+      <div class="cap"><strong style="color: #F5F1EA; font-weight: 600">Celeste.</strong> Fondo <span class="n" style="font-size: 11px">--marca</span>, barra <span class="n" style="font-size: 11px">--bg</span>. Variante para avatares de redes.</div>
+    </div>
+  </div>
+
+  <!-- sementes de icona: historia (2026-09-12) -->
+  <div data-historia="2026-09-12">
+  <div class="lbl" style="margin-bottom: 6px">Historia · sementes de icona do 2026-09-12, coa súa cor orixinal</div>
   <p class="cap" style="margin: 0 0 18px; max-width: 640px">Cada unha probada nos tres tamaños que importan: 48&nbsp;px (icona de app), 32&nbsp;px (favicon retina) e 16&nbsp;px (favicon). Se non sobrevive a 16, non é candidata.</p>
 
   <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 16px">
@@ -103,6 +126,9 @@
       </div>
     </div>
   </div>
+  <p class="cap" style="margin: 0; max-width: 640px">Elixiuse unha barra soa, en celeste (ADR-028, 2026-11-08). As tres sementes quedan como historia: a B (SPEC-033) foi a icona ata entón.</p>
+  </div>
+  <!-- /data-historia -->
 
   <!-- marca de auga -->
   <div class="lbl" style="margin: 44px 0 6px">Marca de auga da captura</div>
@@ -113,7 +139,7 @@
   </p>
   <div style="border: 1px solid #2A2620; border-radius: 14px; background: #1A1815; overflow: hidden; max-width: 420px">
     <div style="display: flex; align-items: center; gap: 8px; padding: 8px 14px; background: #221F1A; border-bottom: 1px solid #2A2620">
-      <span style="font: 600 10px/1 var(--mono); letter-spacing: .11em; text-transform: uppercase; color: #56DB8F">Preferente Futgal G1</span>
+      <span style="font: 600 10px/1 var(--mono); letter-spacing: .11em; text-transform: uppercase; color: #0099CC">Preferente Futgal G1</span>
       <span style="flex: 1"></span>
       <span style="font: 500 10px/1 var(--mono); color: #716F6C">xornada 4</span>
     </div>
@@ -128,7 +154,7 @@
       <div style="display: flex; flex-direction: column; gap: 3px; text-align: right"><span class="n" style="font-size: 14px; font-weight: 600">3</span><span class="n" style="font-size: 14px; font-weight: 600; color: #A7A5A0">0</span></div>
     </div>
     <div style="display: flex; align-items: center; gap: 8px; padding: 9px 14px">
-      <span style="font: 800 11px/1 var(--sans); letter-spacing: -.04em; color: #716F6C">marcador<span style="color: #56DB8F">▮</span>gal</span>
+      <span style="font: 800 11px/1 var(--sans); letter-spacing: -.04em; color: #716F6C">marcador<span aria-hidden="true" style="display: inline-block; width: .3em; height: .72em; margin: 0 .06em; border-radius: .095em; background: #0099CC"></span>gal</span>
       <span style="flex: 1"></span>
       <span style="font: 500 10px/1 var(--mono); color: #3D362C">sáb 30 · 18:43</span>
     </div>
@@ -138,25 +164,25 @@
   <div class="lbl" style="margin: 44px 0 14px">Zona de respiro e mínimos</div>
   <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
     <div style="border: 1px solid #2A2620; border-radius: 12px; background: #1A1815; padding: 18px">
-      <div style="font: 700 26px/1 var(--mono); color: #56DB8F">1×</div>
+      <div style="font: 700 26px/1 var(--mono); color: #0099CC">1×</div>
       <div style="font: 600 12px/1.3 var(--sans); margin-top: 10px">Zona de respiro</div>
-      <div class="cap" style="margin-top: 5px">Ao redor do logotipo, o alto do bloque ▮. Nada entra aí, nin sequera unha regra.</div>
+      <div class="cap" style="margin-top: 5px">Ao redor do logotipo, o alto do bloque. Nada entra aí, nin sequera unha regra.</div>
     </div>
     <div style="border: 1px solid #2A2620; border-radius: 12px; background: #1A1815; padding: 18px">
-      <div style="font: 700 26px/1 var(--mono); color: #56DB8F">88<span style="font-size: 14px; color: #716F6C">px</span></div>
+      <div style="font: 700 26px/1 var(--mono); color: #0099CC">88<span style="font-size: 14px; color: #716F6C">px</span></div>
       <div style="font: 600 12px/1.3 var(--sans); margin-top: 10px">Ancho mínimo do logotipo</div>
       <div class="cap" style="margin-top: 5px">Por baixo, o bloque colle o tamaño dun punto e a idea pérdese. Use&nbsp;a icona soa.</div>
     </div>
     <div style="border: 1px solid #2A2620; border-radius: 12px; background: #1A1815; padding: 18px">
-      <div style="font: 700 26px/1 var(--mono); color: #56DB8F">16<span style="font-size: 14px; color: #716F6C">px</span></div>
+      <div style="font: 700 26px/1 var(--mono); color: #0099CC">16<span style="font-size: 14px; color: #716F6C">px</span></div>
       <div style="font: 600 12px/1.3 var(--sans); margin-top: 10px">Mínimo da icona</div>
-      <div class="cap" style="margin-top: 5px">Todas as sementes se debuxan sobre a retícula de 48 e se comproban aquí antes de gustar.</div>
+      <div class="cap" style="margin-top: 5px">A barra debúxase sobre a retícula de 48 e compróbase a 16&nbsp;px.</div>
     </div>
   </div>
 
   <div style="margin-top: 36px; padding: 16px 18px; border-left: 2px solid #F0B135; background: rgba(240,177,53,.06); border-radius: 0 10px 10px 0">
-    <div style="font: 600 13px/1.3 var(--sans); color: #F0B135; margin-bottom: 6px">Antes de elixir unha</div>
-    <div class="cap">Comprobación na OEPM de que non hai rexistro previo da marca, e handles de redes. Ata iso, isto é dirección, non identidade. O paso seguinte previsto era un deseñador freelance galego para pulir e escribir un manual mínimo; estas sementes son o encargo, non o substituto.</div>
+    <div style="font: 600 13px/1.3 var(--sans); color: #F0B135; margin-bottom: 6px">Pendente: OEPM</div>
+    <div class="cap">O titular adoptou a identidade (ADR-028, 2026-11-08) sen a comprobación na OEPM de que non hai rexistro previo da marca; queda pendente antes de investir en difusión de pago. O paso seguinte previsto era un deseñador freelance galego para pulir e escribir un manual mínimo; estas sementes son o encargo, non o substituto.</div>
   </div>
 
 </div>

@@ -208,3 +208,64 @@ describe("SPEC-063 CA-3 the wordmark with a drawn block", () => {
     }
   });
 });
+
+describe("SPEC-063 CA-5 docs/diseno (ADR-028 §4)", () => {
+  const DIR = "docs/diseno";
+  const read = (name: string): string =>
+    readFileSync(`${DIR}/${name}`, "utf8").replace(/\r\n/g, "\n");
+  // The history blocks keep their original colour.
+  const withoutHistory = (text: string): string =>
+    text.replace(/<div data-historia[\s\S]*?<!-- \/data-historia -->/g, "");
+  const oldGreen = new RegExp(`${OLD_GREENS.join("|")}|86,s*219,s*143`, "i");
+
+  it("outside the monolith and the history blocks, no old green", () => {
+    const names = files(`${DIR}/*`)
+      .map((file) => file.slice(DIR.length + 1))
+      .filter((name) => name !== "sistema-de-deseno-marcador-gal.html");
+    expect(names).toContain("Marca.dc.html");
+    expect(names).toContain("HERENCIA.md");
+    const offenders = names.filter((name) =>
+      oldGreen.test(withoutHistory(read(name))),
+    );
+    expect(offenders).toEqual([]);
+  });
+
+  it("the templates' .dc.html are what build.mjs makes of them", () => {
+    const shared = read("_logic.js");
+    for (const name of ["Global", "Escritorio", "Movil"])
+      expect(read(`${name}.dc.html`), name).toBe(
+        read(`${name}.tpl.html`).replace("  //__SHARED__", shared),
+      );
+  });
+
+  it("Marca.dc.html: the drawn block and the one bar, dark and sky blue, at 72/32/16", () => {
+    const html = read("Marca.dc.html");
+    const current = withoutHistory(html);
+    expect(current).not.toContain(GLYPH);
+    expect(current).toContain("border-radius: .095em");
+    const bar = 'x="18.6" y="11.175" width="10.8" height="25.65" rx="3.375"';
+    for (const size of [72, 32, 16]) {
+      expect(current).toContain(
+        `<svg width="${size}" height="${size}" viewBox="0 0 48 48"><rect width="48" height="48" rx="11" fill="${COLORS.bg.value}"/><rect x="0.5" y="0.5" width="47" height="47" rx="10.5" fill="none" stroke="${COLORS.line.value}"/><rect ${bar} fill="${COLORS.brand.value}"/></svg>`,
+      );
+      expect(current).toContain(
+        `<svg width="${size}" height="${size}" viewBox="0 0 48 48"><rect width="48" height="48" rx="11" fill="${COLORS.brand.value}"/><rect ${bar} fill="${COLORS.bg.value}"/></svg>`,
+      );
+    }
+    // Seeds A, B and C are history, in their original green.
+    const history = html.match(
+      /<div data-historia[\s\S]*?<!-- \/data-historia -->/g,
+    );
+    expect(history).not.toBeNull();
+    const told = (history ?? []).join("\n");
+    for (const seed of ["A · Dúas liñas", "B · O bloque", "C · A matriz"])
+      expect(told).toContain(seed);
+    expect(told).toMatch(oldGreen);
+  });
+
+  it("HERENCIA.md records the change of 2026-11-08", () => {
+    const text = read("HERENCIA.md");
+    expect(text).toContain("2026-11-08");
+    expect(text).toContain("ADR-028");
+  });
+});
