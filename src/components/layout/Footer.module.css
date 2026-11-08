@@ -151,6 +151,10 @@
 }
 
 @media (min-width: 1024px) {
+  .footer {
+    padding: var(--space-16) 0;
+  }
+
   .inner {
     max-width: none;
     padding: 0 20px;

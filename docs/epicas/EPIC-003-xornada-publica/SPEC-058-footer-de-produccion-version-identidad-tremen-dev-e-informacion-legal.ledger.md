@@ -8,6 +8,7 @@ Criterios de aceptación y evidencia de verificación de SPEC-058.
 - Respeta tokens de diseño (`--bg`, `--line`, `--fg`, `--fg-muted`, `--fg-dim`, `--marca`), no utiliza valores hexadecimales crudos ni shorthand `font:`.
 - `src/design/no-hex.test.ts` (3 tests) en verde.
 - `src/design/css.test.ts` (5 tests) y `fonts.test.ts` (10 tests) en verde.
+- Sticky footer en flex layout (`body { min-height: 100dvh; display: flex; flex-direction: column; }` y `.page { flex: 1 0 auto; width: 100%; }`): en escritorio permanece visible en el viewport sin forzar scroll cuando hay espacio debajo de las tablas.
 
 ## CA-2 Identidad y lockup de `{tremen.dev}`
 - Evidencia: `src/components/layout/Footer.test.ts` en verde.

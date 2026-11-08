@@ -1,10 +1,18 @@
 .page {
-  min-height: 100dvh;
+  flex: 1 0 auto;
+  width: 100%;
   max-width: 640px;
   margin: 0 auto;
   background: var(--bg);
   display: flex;
   flex-direction: column;
+}
+
+@media (min-width: 1024px) {
+  .page {
+    max-width: none;
+    margin: 0;
+  }
 }
 
 .main {

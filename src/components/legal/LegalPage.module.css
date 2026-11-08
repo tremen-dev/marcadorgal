@@ -1,7 +1,8 @@
 /* Legal Page (SPEC-058, CA-5) */
 
 .page {
-  min-height: 100dvh;
+  flex: 1 0 auto;
+  width: 100%;
   max-width: 640px;
   margin: 0 auto;
   padding: var(--space-24) var(--space-16) var(--space-48);
