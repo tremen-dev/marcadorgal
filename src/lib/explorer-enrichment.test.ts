@@ -9,6 +9,7 @@ import {
   enrichMatchesWithGoals,
   isMatchEqual,
   sanitizeGoals,
+  toMadridDate,
 } from "./explorer-enrichment.ts";
 
 function createMockMatch(overrides: Partial<PublicMatch> = {}): PublicMatch {
@@ -217,6 +218,21 @@ describe("explorer-enrichment", () => {
     it("handles empty matches array", async () => {
       const enriched = await enrichMatchesWithGoals([]);
       expect(enriched).toEqual([]);
+    });
+
+    it("converts UTC kickoff to Europe/Madrid date when querying Explorer", async () => {
+      const match = createMockMatch({
+        kickoff: "2026-11-08T23:30:00.000Z" as Instant,
+      });
+      const mockFetcher = vi.fn().mockResolvedValue({
+        date: "2026-11-09",
+        exportedAt: "2026-11-09T00:00:00Z",
+        matches: [],
+      });
+
+      await enrichMatchesWithGoals([match], mockFetcher);
+      expect(toMadridDate("2026-11-08T23:30:00.000Z")).toBe("2026-11-09");
+      expect(mockFetcher).toHaveBeenCalledWith("2026-11-09");
     });
   });
 });

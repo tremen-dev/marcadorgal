@@ -156,6 +156,22 @@ export function isMatchEqual(
   return false;
 }
 
+const madridFormatter = new Intl.DateTimeFormat("en-US", {
+  timeZone: "Europe/Madrid",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
+export function toMadridDate(isoInstant: string): string {
+  const ts = Date.parse(isoInstant);
+  if (Number.isNaN(ts)) return isoInstant.slice(0, 10);
+  const parts = new Map(
+    madridFormatter.formatToParts(ts).map((p) => [p.type, p.value]),
+  );
+  return `${parts.get("year")}-${parts.get("month")}-${parts.get("day")}`;
+}
+
 /**
  * Enriquece os partidos de PublicMatch cos goles procedentes da API Explorer.
  *
@@ -183,8 +199,8 @@ export async function enrichMatchesWithGoals(
     return matches;
   }
 
-  // Recoller datas únicas dos partidos candidatos (formato YYYY-MM-DD en UTC)
-  const dates = [...new Set(candidates.map((m) => m.kickoff.slice(0, 10)))];
+  // Recoller datas únicas dos partidos candidatos (formato YYYY-MM-DD en Europe/Madrid)
+  const dates = [...new Set(candidates.map((m) => toMadridDate(m.kickoff)))];
 
   const explorerMatches: DayMatchesResponse["matches"] = [];
 

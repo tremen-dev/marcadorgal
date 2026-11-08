@@ -1,6 +1,7 @@
 import { boardResponse } from "@/board/http";
 import { readPublicXornada, seasonOf } from "@/board/reader";
 import { nowInstant } from "@/clock";
+import { enrichMatchesWithGoals } from "@/lib/explorer-enrichment";
 import { fetchWomenXornadaMatches } from "@/lib/explorer-xornada";
 import type { Instant, PublicMatch } from "@/model";
 
@@ -9,8 +10,14 @@ import type { Instant, PublicMatch } from "@/model";
 export const dynamic = "force-dynamic";
 
 async function readBoard(now: Instant): Promise<PublicMatch[] | null> {
-  const matches = await readPublicXornada(now);
-  if (matches === null) return null;
+  const rawMatches = await readPublicXornada(now);
+  if (rawMatches === null) return null;
+  let matches = rawMatches;
+  try {
+    matches = await enrichMatchesWithGoals(matches);
+  } catch (_e) {
+    // Graceful fallback: maintain existing matches
+  }
   try {
     const womenMatches = await fetchWomenXornadaMatches(now, seasonOf(now));
     if (womenMatches.length > 0) {
