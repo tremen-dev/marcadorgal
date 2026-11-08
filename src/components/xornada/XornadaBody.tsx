@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { SHOW_DAY_STRIP } from "@/app/config";
 import type { Neighbours } from "@/board/weeks";
 import { type Locale, t } from "@/i18n";
 import { countFilters } from "@/xornada/filter";
@@ -36,6 +37,8 @@ export type XornadaBodyProps = {
   // SPEC-041 CA-3, CA-4: the render's instant (the server's, or the
   // client's clock of SPEC-024) and RECENT_GOAL_MINUTES/RECENT_GOAL_MARK.
   recentGoal?: RecentGoalView;
+  // Whether to show the strip of days (SHOW_DAY_STRIP).
+  showDayStrip?: boolean;
 };
 
 export function XornadaBody({
@@ -49,6 +52,7 @@ export function XornadaBody({
   arrows,
   provisionalDisplay,
   recentGoal,
+  showDayStrip = SHOW_DAY_STRIP,
 }: XornadaBodyProps) {
   const rows = competitions.flatMap((c) => c.rows);
   const hasRows = rows.length > 0;
@@ -60,12 +64,14 @@ export function XornadaBody({
         locale={locale}
         paths={paths}
         heading={xornadaHeading(days, locale)}
-        strip={hasRows}
+        strip={hasRows && showDayStrip}
       />
       {!hasRows && <div className={styles.titleSpace} />}
       {hasRows && (
         <div className={styles.controls}>
-          <DayStrip days={days} locale={locale} arrows={arrows} />
+          {showDayStrip && (
+            <DayStrip days={days} locale={locale} arrows={arrows} />
+          )}
           <FilterPills
             counts={countFilters(rows, null)}
             locale={locale}

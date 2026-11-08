@@ -14,6 +14,7 @@ import {
   PROVISIONAL_DISPLAY,
   RECENT_GOAL_MINUTES,
   recentGoalMark,
+  showDayStrip,
 } from "./config";
 
 // / and /es (SPEC-020 CA-6): the snapshot of the current xornada, rendered on
@@ -86,7 +87,27 @@ export async function HomeXornada({ locale }: { locale: Locale }) {
   const galicians = new Set([
     ...galicianNames(season),
     "Deportivo ABANCA",
+    "Depor ABANCA",
     "As Celtas",
+    "RC Celta Femenino / As Celtas",
+    "RC Celta Femenino (As Celtas)",
+    "Deportivo ABANCA B",
+    "Depor ABANCA B",
+    "Depor Abanca B",
+    "CD Lugo Femenino",
+    "Lugo Femenino",
+    "Lugo Fem.",
+    "Peluquería Mixta Friol",
+    "PM Friol",
+    "Pm Friol",
+    "Sárdoma CF",
+    "Sárdoma",
+    "Sardoma Cf",
+    "Viajes InterRías FF",
+    "InterRías",
+    "Viajes Interrias Ff",
+    "Victoria CF",
+    "Victoria Cf",
   ]);
 
   if (matches !== null) {
@@ -118,6 +139,7 @@ export async function HomeXornada({ locale }: { locale: Locale }) {
         minutes: RECENT_GOAL_MINUTES,
         mark: recentGoalMark(process.env),
       }}
+      showDayStrip={showDayStrip(process.env)}
       unavailable={matches === null}
       arrows={read?.arrows}
       // SPEC-024: the client keeps it up to date from the served state.

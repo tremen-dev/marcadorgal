@@ -15,6 +15,7 @@ import {
   PROVISIONAL_DISPLAY,
   RECENT_GOAL_MINUTES,
   recentGoalMark,
+  showDayStrip,
 } from "./config";
 
 // /demo/xornada and /es/demo/xornada (SPEC-019 CA-5): server content only,
@@ -52,6 +53,7 @@ export function DemoXornada({ locale }: { locale: Locale }) {
         minutes: RECENT_GOAL_MINUTES,
         mark: recentGoalMark(process.env),
       }}
+      showDayStrip={showDayStrip(process.env)}
     />
   );
 }

@@ -24,3 +24,18 @@ export function recentGoalMark(
   const wanted = env.RECENT_GOAL_MARK;
   return RECENT_GOAL_MARKS.find((m) => m === wanted) ?? RECENT_GOAL_MARK;
 }
+
+// Whether the strip of days of the matchday is shown on the screen.
+// False (hidden) by default.
+export const SHOW_DAY_STRIP = false;
+
+// The variable SHOW_DAY_STRIP (or DAY_STRIP) picks whether the strip of days
+// is shown (read at render). Unset, or not "true"/"1", it defaults to SHOW_DAY_STRIP.
+export function showDayStrip(
+  env: Readonly<Record<string, string | undefined>>,
+): boolean {
+  const wanted = env.SHOW_DAY_STRIP ?? env.DAY_STRIP;
+  if (wanted === "true" || wanted === "1") return true;
+  if (wanted === "false" || wanted === "0") return false;
+  return SHOW_DAY_STRIP;
+}

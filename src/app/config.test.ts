@@ -8,6 +8,8 @@ import {
   RECENT_GOAL_MARK,
   RECENT_GOAL_MINUTES,
   recentGoalMark,
+  SHOW_DAY_STRIP,
+  showDayStrip,
 } from "./config";
 
 // SPEC-034 CA-5 (H-1, H-2): the mode lives in one constant of the web.
@@ -67,5 +69,40 @@ describe("SPEC-042 CA-4 .env.example", () => {
     );
     expect(example).toMatch(/^RECENT_GOAL_MARK=$/m);
     expect(example).not.toContain(OLD_NAME);
+  });
+});
+
+describe("SHOW_DAY_STRIP", () => {
+  it("is a boolean, false (hidden) by default", () => {
+    expect(typeof SHOW_DAY_STRIP).toBe("boolean");
+    expect(SHOW_DAY_STRIP).toBe(false);
+  });
+});
+
+describe("showDayStrip(env)", () => {
+  it.each([
+    [{ SHOW_DAY_STRIP: "true" }, true],
+    [{ SHOW_DAY_STRIP: "1" }, true],
+    [{ SHOW_DAY_STRIP: "false" }, false],
+    [{ SHOW_DAY_STRIP: "0" }, false],
+    [{}, false],
+    [{ SHOW_DAY_STRIP: undefined }, false],
+    [{ SHOW_DAY_STRIP: "" }, false],
+    [{ SHOW_DAY_STRIP: "yes" }, false],
+    [{ DAY_STRIP: "true" }, true],
+    [{ DAY_STRIP: "1" }, true],
+    [{ DAY_STRIP: "false" }, false],
+  ])("%j -> %s", (env, expected) => {
+    expect(showDayStrip(env)).toBe(expected);
+  });
+});
+
+describe(".env.example SHOW_DAY_STRIP", () => {
+  it("names SHOW_DAY_STRIP with no value", () => {
+    const example = readFileSync(
+      fileURLToPath(new URL("../../.env.example", import.meta.url)),
+      "utf8",
+    );
+    expect(example).toMatch(/^SHOW_DAY_STRIP=$/m);
   });
 });

@@ -1,5 +1,6 @@
 import { mkdirSync } from "node:fs";
 import { expect, type Page, test } from "@playwright/test";
+import { boxPort } from "../playwright.config";
 import { es } from "../src/i18n/es";
 import { gl } from "../src/i18n/gl";
 
@@ -61,6 +62,14 @@ async function capture(page: Page, name: string) {
 
 for (const route of routes) {
   test.describe(`SPEC-023 ${route.path} (${route.lang})`, () => {
+    test("day strip is hidden by default when SHOW_DAY_STRIP is not enabled", async ({
+      page,
+    }) => {
+      await page.goto(`http://localhost:${boxPort}${route.path}`);
+      await expect(page.getByTestId("day-strip")).toHaveCount(0);
+      await expect(page.getByTestId("week-strip")).toHaveCount(0);
+    });
+
     test("CA-2 strip: one link per day, today in capitals, nothing selected, no arrows", async ({
       page,
     }) => {

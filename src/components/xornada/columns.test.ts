@@ -72,17 +72,34 @@ for (const [locale, dict] of [
     const html = body(locale);
 
     it("no sidebar: no nav, no entry, no «Competicións»", () => {
-      // The strip, the filters and gl·es are navs; none of competitions.
+      // By default the day-strip is hidden: the filters and gl·es are the only navs; none of competitions.
       const navs = [...html.matchAll(/<nav[^>]*data-testid="([^"]+)"/g)].map(
         (m) => m[1],
       );
-      expect(navs).toEqual(["locale-switch", "day-strip", "filters"]);
+      expect(navs).toEqual(["locale-switch", "filters"]);
       expect(html.slice(html.indexOf("<main"))).not.toContain("<nav");
       expect(html).not.toContain("sidebar");
       expect(html).not.toContain("data-competition-link");
       expect(html).not.toContain(
         locale === "gl" ? "Competicións" : "Competiciones",
       );
+    });
+
+    it("renders day-strip when showDayStrip is true", () => {
+      const withStrip = renderToStaticMarkup(
+        createElement(XornadaBody, {
+          locale,
+          competitions: buildXornada(MATCHES),
+          days: xornadaDays(MATCHES, "2026-10-03T16:50:00Z"),
+          paths: { gl: "/demo/xornada", es: "/es/demo/xornada" },
+          provisionalDisplay: "label",
+          showDayStrip: true,
+        }),
+      );
+      const navs = [
+        ...withStrip.matchAll(/<nav[^>]*data-testid="([^"]+)"/g),
+      ].map((m) => m[1]);
+      expect(navs).toEqual(["locale-switch", "day-strip", "filters"]);
     });
 
     it("the sections, in tier order, inside one grid of columns", () => {

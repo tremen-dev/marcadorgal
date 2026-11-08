@@ -34,6 +34,7 @@ export default defineConfig({
         DATABASE_URL_PUBLIC: "",
         NEXT_PUBLIC_REALTIME: "",
         RECENT_GOAL_MARK: "",
+        SHOW_DAY_STRIP: "true",
       },
       timeout: 180_000,
     },
