@@ -125,6 +125,8 @@ describe("SPEC-063 CA-2 no loose green", () => {
         "git",
         [
           "grep",
+          // Also outside a checkout (a `git archive` in Docker).
+          "--no-index",
           "-i",
           "-E",
           OLD_GREENS.join("|"),
