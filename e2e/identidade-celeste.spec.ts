@@ -5,7 +5,7 @@ import { COLORS } from "../src/design/tokens";
 import { es } from "../src/i18n/es";
 import { gl } from "../src/i18n/gl";
 
-// SPEC-063 (ADR-028): the sky blue brand on screen, the drawn block of the
+// SPEC-065 (ADR-029): the sky blue brand on screen, the drawn block of the
 // wordmark and the victory green of the form guide.
 const WIDTHS = [360, 1440] as const;
 const GLYPH = String.fromCodePoint(0x25ae);
@@ -70,7 +70,7 @@ const pages = [
   { path: "/es/demo/xornada", dict: es },
 ] as const;
 
-test.describe("SPEC-063 CA-3 the wordmark with a drawn block", () => {
+test.describe("SPEC-065 CA-3 the wordmark with a drawn block", () => {
   for (const { path, dict } of pages)
     for (const width of WIDTHS)
       test(`${path} at ${width} px`, async ({ page }) => {
@@ -113,7 +113,7 @@ const demos = [
   { path: "/es/demo/xornada", dict: es },
 ] as const;
 
-test.describe("SPEC-063 CA-6 the screen in sky blue", () => {
+test.describe("SPEC-065 CA-6 the screen in sky blue", () => {
   for (const { path } of demos)
     for (const width of WIDTHS)
       test(`${path} at ${width} px`, async ({ page }) => {
@@ -174,7 +174,7 @@ test.describe("SPEC-063 CA-6 the screen in sky blue", () => {
       });
 });
 
-test.describe("SPEC-063 CA-7 victory in the form guide", () => {
+test.describe("SPEC-065 CA-7 victory in the form guide", () => {
   for (const prefix of ["", "/es"])
     for (const width of WIDTHS)
       test(`${prefix}/clasificacion at ${width} px`, async ({ page }) => {

@@ -1,7 +1,7 @@
 import { type IconVariant, iconSvg } from "./icon.ts";
 import { COLORS, FAMILIES } from "./tokens.ts";
 
-// SPEC-064 (ADR-028): the pieces for social networks and the Open Graph card,
+// SPEC-064 (ADR-029): the pieces for social networks and the Open Graph card,
 // one catalogue and the pages that paint them. Pure: tools/redes.mjs and
 // tools/og-image.mjs pass in the @font-face rules (Geist from public/fonts/)
 // and rasterise the pages with Playwright's Chromium. Colours from COLORS only.
@@ -140,7 +140,7 @@ const barCss = (selector: string, height: number): string => `
       background: ${COLORS.brand.value};
     }`;
 
-// The wordmark of SPEC-063 CA-3: the block is drawn, never a glyph.
+// The wordmark of SPEC-065 CA-3: the block is drawn, never a glyph.
 const WORDMARK = `marcador<span class="block" aria-hidden="true"></span>gal`;
 const DOMAIN = "marcador.gal";
 

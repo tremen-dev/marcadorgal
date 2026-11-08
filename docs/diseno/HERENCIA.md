@@ -25,12 +25,12 @@ Lo que **no** se hereda está enumerado en `docs/adr/ADR-005-sistema-de-diseno-h
 - `sistema-de-deseno-marcador-gal.html` **no** se regenera: sigue siendo la
   foto del 2026-09-12.
 - Los artboards no se pueden renderizar desde el repo: falta `support.js`.
-- **2026-11-08 (SPEC-063 CA-5, ADR-028 §4).** La marca pasa al celeste de
+- **2026-11-08 (SPEC-065 CA-5, ADR-029 §4).** La marca pasa al celeste de
   Galicia: `_tokens.css` cambia `--marca`, `--marca-deep` y `--marca-ink` y
   gana `--victoria` (resultado, no marca). Las tres plantillas `*.tpl.html`
   cambian los tres hex y la tinta `rgba(…,.12)` de marca, y con
   `node build.mjs` sus `.dc.html`; `Componentes.dc.html` y `Main.dc.html`, lo
-  mismo a mano. En esos artboards el ▮ sigue siendo glifo (SPEC-063 H-2): la
+  mismo a mano. En esos artboards el ▮ sigue siendo glifo (SPEC-065 H-2): la
   referencia del bloque dibujado es `Marca.dc.html`, que presenta el logotipo
   con el bloque, el icono de una barra (oscuro y celeste, a 72/32/16 px) y
   guarda las semillas A/B/C en un bloque `data-historia` con su color original.

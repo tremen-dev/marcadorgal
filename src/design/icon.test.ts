@@ -4,14 +4,14 @@ import { ICON_FILES, iconSvg } from "./icon.ts";
 import { decodePng, pixel, rgbOf } from "./raster.ts";
 import { COLORS } from "./tokens.ts";
 
-// SPEC-063 CA-4 (ADR-028 §4): one bar in COLORS, rasterised into public/ by
+// SPEC-065 CA-4 (ADR-029 §4): one bar in COLORS, rasterised into public/ by
 // tools/icons.mjs (`node tools/icons.mjs`), same files as SPEC-033 CA-6.
 
 const read = (path: string): Buffer => readFileSync(`public/${path}`);
 
 const BAR = 'x="18.6" y="11.175" width="10.8" height="25.65" rx="3.375"';
 
-describe("SPEC-063 CA-4 the icon: one bar", () => {
+describe("SPEC-065 CA-4 the icon: one bar", () => {
   it("dark (default): the bg tile and one bar in the brand", () => {
     const svg = iconSvg({ rounded: true });
     expect(svg).toBe(iconSvg({ rounded: true, variant: "dark" }));

@@ -1,6 +1,6 @@
 import { COLORS } from "./tokens.ts";
 
-// SPEC-063 CA-4 (ADR-028 §4): one bar, the block of the wordmark (8 × 19,
+// SPEC-065 CA-4 (ADR-029 §4): one bar, the block of the wordmark (8 × 19,
 // rx 2.5 on the 48 grid) scaled × 1.35 and centred on (24, 24). Seeds A/B/C
 // of docs/diseno/Marca.dc.html are history. Colours from COLORS only.
 // tools/icons.mjs rasterises the dark variant into public/.

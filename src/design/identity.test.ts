@@ -7,7 +7,7 @@ import { describe, expect, it } from "vitest";
 import { Wordmark } from "../components/brand/Wordmark.tsx";
 import { COLORS } from "./tokens.ts";
 
-// SPEC-063 (ADR-028): the Galician sky blue as the brand, the green as the
+// SPEC-065 (ADR-029): the Galician sky blue as the brand, the green as the
 // victory of the form guide, the drawn block of the wordmark.
 
 const luminance = (hex: string): number => {
@@ -34,8 +34,8 @@ const VICTORY_VAR = `var(--${"victoria"})`;
 // No hex literal outside tokens.ts/tokens.css (no-hex.test.ts).
 const hex = (digits: string): string => `#${digits}`;
 
-describe("SPEC-063 CA-1 tokens", () => {
-  it("the brand is the sky blue of ADR-028", () => {
+describe("SPEC-065 CA-1 tokens", () => {
+  it("the brand is the sky blue of ADR-029", () => {
     expect(COLORS.brand.value).toBe(hex("0099CC"));
     expect(COLORS.brandDeep.value).toBe(hex("3A93BA"));
     expect(COLORS.brandInk.value).toBe(hex("00151F"));
@@ -117,7 +117,7 @@ describe("SPEC-063 CA-1 tokens", () => {
   });
 });
 
-describe("SPEC-063 CA-2 no loose green", () => {
+describe("SPEC-065 CA-2 no loose green", () => {
   it("git grep of the three old greens in src, tools and public is empty", () => {
     let out = "";
     try {
@@ -169,7 +169,7 @@ describe("SPEC-063 CA-2 no loose green", () => {
   });
 });
 
-describe("SPEC-063 CA-3 the wordmark with a drawn block", () => {
+describe("SPEC-065 CA-3 the wordmark with a drawn block", () => {
   it("no source under src/ or tools/ contains the glyph", () => {
     const offenders = files("{src,tools}/**/*.{ts,tsx,css,mjs,js}").filter(
       (file) => readFileSync(file, "utf8").includes(GLYPH),
@@ -211,7 +211,7 @@ describe("SPEC-063 CA-3 the wordmark with a drawn block", () => {
   });
 });
 
-describe("SPEC-063 CA-5 docs/diseno (ADR-028 §4)", () => {
+describe("SPEC-065 CA-5 docs/diseno (ADR-029 §4)", () => {
   const DIR = "docs/diseno";
   const read = (name: string): string =>
     readFileSync(`${DIR}/${name}`, "utf8").replace(/\r\n/g, "\n");
@@ -268,6 +268,6 @@ describe("SPEC-063 CA-5 docs/diseno (ADR-028 §4)", () => {
   it("HERENCIA.md records the change of 2026-11-08", () => {
     const text = read("HERENCIA.md");
     expect(text).toContain("2026-11-08");
-    expect(text).toContain("ADR-028");
+    expect(text).toContain("ADR-029");
   });
 });

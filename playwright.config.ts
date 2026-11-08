@@ -4,7 +4,7 @@ const port = 3100;
 // SPEC-041 CA-6, SPEC-042 CA-3: the alternative variant («box») of the
 // recent goal; the default one («label») is served on port.
 export const boxPort = 3101;
-// SPEC-063 CA-7: the same build against a stand-in Explorer
+// SPEC-065 CA-7: the same build against a stand-in Explorer
 // (e2e/fixtures/explorer-mock.mjs), for a standings table with a form guide.
 export const explorerAppPort = 3102;
 const explorerMockPort = 3103;

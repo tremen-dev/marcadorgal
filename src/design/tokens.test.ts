@@ -21,7 +21,7 @@ import {
 describe("CA-1 colors", () => {
   const entries = Object.entries(COLORS);
 
-  it("has exactly the 18 keys of the spec (SPEC-063 adds victory)", () => {
+  it("has exactly the 18 keys of the spec (SPEC-065 adds victory)", () => {
     expect(Object.keys(COLORS)).toEqual([
       "bg",
       "bgElevated",

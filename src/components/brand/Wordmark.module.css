@@ -1,4 +1,4 @@
-/* SPEC-063 CA-3 (ADR-028 §3): the drawn block of the wordmark, the
+/* SPEC-065 CA-3 (ADR-029 §3): the drawn block of the wordmark, the
    proportion of the icon's bar. Sits on the baseline (an empty inline-block
    aligns its bottom edge there). */
 .block {

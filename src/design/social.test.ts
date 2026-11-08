@@ -18,7 +18,7 @@ import {
 } from "./social.ts";
 import { COLORS } from "./tokens.ts";
 
-// SPEC-064 (ADR-028): the pieces for social networks and og.png, painted from
+// SPEC-064 (ADR-029): the pieces for social networks and og.png, painted from
 // COLORS by tools/redes.mjs and tools/og-image.mjs.
 
 // Built from pieces so that no hex literal lives outside tokens.ts and the
@@ -159,7 +159,7 @@ describe("SPEC-064 CA-1 the catalogue", () => {
   });
 });
 
-// The colours a brand piece may use: COLORS, never victory (ADR-028 §2).
+// The colours a brand piece may use: COLORS, never victory (ADR-029 §2).
 const allowed = new Set(
   Object.entries(COLORS)
     .filter(([key]) => key !== "victory")

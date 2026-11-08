@@ -7,7 +7,7 @@ epica: EPIC-003
 
 ## Resumen
 - Fase: <!-- refleja el estado de la spec; la fuente de verdad es el frontmatter de la spec -->
-- Rama: `ft/SPEC-064-assets-de-redes-sociales-y-og-png-con-la-identidad-celeste`
+- Rama: `ft/SPEC-065-identidad-celeste-y-redes`
 
 ## Matriz de criterios de aceptación
 <!-- Escritores: sdd-implementador rellena Implementado y Test; sdd-verificador rellena Verif. y Estado. Nunca al revés. -->
@@ -41,7 +41,7 @@ epica: EPIC-003
 
 ## Salvedades / follow-ups
 <!-- IDs F-SPEC-064-1, F-SPEC-064-2… con destino (spec futura o EPIC-MEJORA). -->
-- **F-SPEC-064-1** (interpretación, para el verificador). «Color mayoritario» = el RGB exacto más frecuente entre los píxeles distintos del fondo exacto. Para que gane `brand` en las piezas con texto, banner y poster llevan la barra del icono en grande junto al wordmark, y `og.png` una barra grande a la derecha (ocupa el sitio que dejaba la píldora).
+- **F-SPEC-064-1** (interpretación, para el verificador). «Color mayoritario» = el RGB exacto más frecuente entre los píxeles distintos del fondo exacto. Para que gane `brand` en las piezas con texto, banner y poster llevan la barra del icono en grande junto al wordmark, y `og.png` una barra grande a la derecha (ocupa el sitio que dejaba la píldora). **Aceptado por el titular (2026-11-08):** se mantiene la barra celeste grande en `og.png`, posts y story.
 - **F-SPEC-064-2** (interpretación). Zonas seguras que la spec no fija: og x 24–1176, y 24–606 (dentro del marco); post 1:1 108–972; post 4:5 x 135–945, y 135–1215 (rejilla 3:4); story x 90–990 además de y 250–1670.
 - **F-SPEC-064-3**. ΔE = CIE76 (distancia euclídea en CIELAB D65).
 - **F-SPEC-064-4**. El decodificador PNG de `icon.test.ts` pasó a `src/design/raster.ts`, compartido; mismos casos.

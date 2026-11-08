@@ -1,4 +1,4 @@
-// SPEC-063 CA-7: a stand-in for the Explorer's export API, so that a
+// SPEC-065 CA-7: a stand-in for the Explorer's export API, so that a
 // standings table with a form guide can be painted in e2e without the
 // network. Serves e2e/fixtures/explorer-standings.json for any competition;
 // every other path is a 404 (the pages fall back as they do in production).
