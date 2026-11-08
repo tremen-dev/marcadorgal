@@ -42,12 +42,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-.brandMark {
-  color: var(--marca);
-  display: inline-block;
-  margin: 0 1px;
-}
-
 .versionBadge {
   font-family: var(--mono);
   font-size: 11px;

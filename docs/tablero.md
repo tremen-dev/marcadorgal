@@ -54,6 +54,8 @@ Actualizado: 2026-11-08
 | SPEC-059 — enriquecemento-de-goleadores-da-xornada-desde-explorer | feito | 2026-11-08 (sdd-implementador) |
 | SPEC-060 — ingesta-historica-resultados-y-goleadores | implementada | 2026-11-08 (sdd-implementador) |
 | SPEC-061 — tira-de-dias-configurable-e-oculta-por-defecto | hecho | 2026-11-08 (sdd-verificador) |
+| SPEC-064 — assets-de-redes-sociales-y-og-png-con-la-identidad-celeste | hecho | 2026-11-08 (sdd-verificador) |
+| SPEC-065 — identidad-celeste-tokens-wordmark-con-bloque-dibujado-e-icono-de-barra-sola | hecho | 2026-11-08 (sdd-verificador) |
 
 ## EPIC-004 — fuente-rfef (aprobada)
 
@@ -132,10 +134,11 @@ Actualizado: 2026-11-08
 | ADR-026 | aprobada | sustitucion-de-api-football-por-explorer-para-calendario-y-retirada-de-api-football | 2026-11-06 (Alberto Fojo) |
 | ADR-027 | aprobada | una-fuente-puede-observar-el-directo-de-una-competicion-sin-decidirlo | 2026-11-03 (Alberto Fojo) |
 | ADR-028 | borrador | cada-pr-sube-la-version-de-la-app-exigido-por-un-gate-de-ci | 2026-11-08 (sdd-arquitecto) |
+| ADR-029 | aprobada | celeste-de-galicia-como-color-de-marca-y-barra-sola-como-icono-enmienda-adr-005 | 2026-11-08 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 53
+- hecho: 55
 - en-revision: 3
 - borrador: 2
 - feito: 1

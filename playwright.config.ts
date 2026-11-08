@@ -4,6 +4,10 @@ const port = 3100;
 // SPEC-041 CA-6, SPEC-042 CA-3: the alternative variant («box») of the
 // recent goal; the default one («label») is served on port.
 export const boxPort = 3101;
+// SPEC-065 CA-7: the same build against a stand-in Explorer
+// (e2e/fixtures/explorer-mock.mjs), for a standings table with a form guide.
+export const explorerAppPort = 3102;
+const explorerMockPort = 3103;
 
 export default defineConfig({
   testDir: "./e2e",
@@ -47,6 +51,26 @@ export default defineConfig({
         DATABASE_URL_PUBLIC: "",
         NEXT_PUBLIC_REALTIME: "",
         RECENT_GOAL_MARK: "box",
+        VERCEL_ENV: "development",
+      },
+      timeout: 60_000,
+    },
+    {
+      command: `node e2e/fixtures/explorer-mock.mjs ${explorerMockPort}`,
+      url: `http://127.0.0.1:${explorerMockPort}/`,
+      reuseExistingServer: false,
+      timeout: 30_000,
+    },
+    {
+      command: `npm run start -- --port ${explorerAppPort}`,
+      url: `http://localhost:${explorerAppPort}/`,
+      reuseExistingServer: false,
+      env: {
+        DATABASE_URL_PUBLIC: "",
+        NEXT_PUBLIC_REALTIME: "",
+        RECENT_GOAL_MARK: "",
+        EXPLORER_BASE_URL: `http://127.0.0.1:${explorerMockPort}`,
+        RFEF_EXPLORER_TOKEN: "e2e",
         VERCEL_ENV: "development",
       },
       timeout: 60_000,

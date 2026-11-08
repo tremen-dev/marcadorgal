@@ -1,6 +1,7 @@
 import { type Locale, t } from "@/i18n";
 import { LEGAL_ROUTES, MARCA } from "@/lib/legal/content";
 import { getAppVersionDisplay } from "@/lib/version";
+import { Wordmark } from "../brand/Wordmark";
 import { MailboxLink } from "../common/MailboxLink";
 import styles from "./Footer.module.css";
 
@@ -24,7 +25,7 @@ export function Footer({ locale }: Props) {
               className={styles.brandName}
               aria-label={t(locale, "common.title")}
             >
-              marcador<span className={styles.brandMark}>▮</span>gal
+              <Wordmark />
             </a>
             <span
               className={styles.versionBadge}
