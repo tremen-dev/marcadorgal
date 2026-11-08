@@ -15,6 +15,22 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run gates
+  version:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Version gate (PR)
+        if: github.event_name == 'pull_request'
+        run: node tools/version-gate.mjs --base "origin/${{ github.base_ref }}"
+      - name: Version gate (push a main)
+        if: github.event_name == 'push'
+        run: node tools/version-gate.mjs --base "${{ github.event.before }}"
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 20
