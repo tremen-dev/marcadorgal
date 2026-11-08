@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   checkLockfile,
   checkVersionBump,
+  evaluateGate,
   isCalendarOnly,
 } from "./version-bump";
 
@@ -114,5 +115,66 @@ describe("isCalendarOnly (SPEC-063 CA-3)", () => {
     [["data/calendario-old/a.json"]],
   ])("does not exempt %j", (paths) => {
     expect(isCalendarOnly(paths)).toBe(false);
+  });
+});
+
+describe("evaluateGate (SPEC-063 CA-4 messages)", () => {
+  const coherent = (v: string) => ({
+    pkg: { version: v },
+    lock: { version: v, packages: { "": { version: v } } },
+  });
+
+  it("exempts calendar-only diffs with exit 0", () => {
+    const result = evaluateGate({
+      baseVersion: "0.2.0",
+      ...coherent("0.2.0"),
+      paths: ["data/calendario/a.json"],
+    });
+    expect(result.code).toBe(0);
+    expect(result.message).toMatch(/exento/i);
+  });
+
+  it("fails without a bump, naming both versions and the commands", () => {
+    const result = evaluateGate({
+      baseVersion: "0.2.0",
+      ...coherent("0.2.0"),
+      paths: ["src/x.ts"],
+    });
+    expect(result.code).toBe(1);
+    expect(result.message).toContain("0.2.0");
+    expect(result.message).toContain("npm version patch --no-git-tag-version");
+    expect(result.message).toContain("npm version minor --no-git-tag-version");
+  });
+
+  it("passes with a bump and a coherent lock", () => {
+    const result = evaluateGate({
+      baseVersion: "0.2.0",
+      ...coherent("0.2.1"),
+      paths: ["src/x.ts", "package.json"],
+    });
+    expect(result.code).toBe(0);
+    expect(result.message).toContain("0.2.0");
+    expect(result.message).toContain("0.2.1");
+  });
+
+  it("fails with an incoherent lock, naming the field", () => {
+    const result = evaluateGate({
+      baseVersion: "0.2.0",
+      pkg: { version: "0.2.1" },
+      lock: { version: "0.2.1", packages: { "": { version: "0.2.0" } } },
+      paths: ["package.json"],
+    });
+    expect(result.code).toBe(1);
+    expect(result.message).toContain('packages[""].version');
+  });
+
+  it("fails on an invalid head version", () => {
+    const result = evaluateGate({
+      baseVersion: "0.2.0",
+      ...coherent("0.3.0-rc.1"),
+      paths: ["package.json"],
+    });
+    expect(result.code).toBe(1);
+    expect(result.message).toContain("0.3.0-rc.1");
   });
 });
