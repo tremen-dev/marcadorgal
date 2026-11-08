@@ -114,6 +114,8 @@ export const es: Dictionary = {
     overview: "Competición",
     backToHome: "Volver a la jornada",
     tableLink: "Tabla",
+    viewFullTable: "Ver tabla completa",
+    viewRounds: "Ver jornadas",
     preferencesButton: "Ligas",
     preferencesTitle: "Ligas visibles",
     preferencesSubtitle: "Personaliza las ligas que quieres ver",

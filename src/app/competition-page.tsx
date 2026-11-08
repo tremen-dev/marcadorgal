@@ -66,7 +66,7 @@ export async function CompetitionOverviewPage({ id, locale }: PageProps) {
               href={`${prefix}/clasificacion/${id}`}
               className={styles.viewAllLink}
             >
-              Ver táboa completa ›
+              {t(locale, "competitions.viewFullTable")} ›
             </a>
           </div>
           {standingsData && standingsData.standings.length > 0 ? (
@@ -86,7 +86,7 @@ export async function CompetitionOverviewPage({ id, locale }: PageProps) {
               href={`${prefix}/calendario/${id}`}
               className={styles.viewAllLink}
             >
-              Ver xornadas ›
+              {t(locale, "competitions.viewRounds")} ›
             </a>
           </div>
           {calendarData && calendarData.matches.length > 0 ? (

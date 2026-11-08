@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { SHOW_TABLE_LINK } from "@/app/config";
 import { type Locale, t } from "@/i18n";
 import type { XornadaCompetition, XornadaDay } from "@/xornada/view";
 import { CountLabel } from "./CountLabel";
@@ -16,6 +17,8 @@ type Props = {
   days?: readonly XornadaDay[];
   // SPEC-041 CA-4: the render's instant and the web's window and variant.
   recentGoal?: RecentGoalView;
+  // Whether to link to the competition's table (SHOW_TABLE_LINK).
+  showTableLink?: boolean;
 };
 
 export const sectionId = (competitionId: string): string =>
@@ -31,6 +34,7 @@ export function CompetitionSection({
   ages,
   days = [],
   recentGoal,
+  showTableLink = SHOW_TABLE_LINK,
 }: Props) {
   const { competitionId } = competition;
   const today = days.find((d) => d.today)?.date ?? null;
@@ -114,23 +118,25 @@ export function CompetitionSection({
             <span className={styles.arrowClosed}>▸</span>
           </span>
         </summary>
-        <div className={styles.competitionSubhead}>
-          <a
-            href={
-              locale === "es"
-                ? `/es/competicion/${competitionId}`
-                : `/competicion/${competitionId}`
-            }
-            className={styles.tableLink}
-            data-testid="competition-table-link"
-            aria-label={`${t(locale, "competitions.tableLink")} - ${competition.name}`}
-          >
-            <span>{t(locale, "competitions.tableLink")}</span>
-            <span className={styles.tableLinkArrow} aria-hidden="true">
-              ↗
-            </span>
-          </a>
-        </div>
+        {showTableLink && (
+          <div className={styles.competitionSubhead}>
+            <a
+              href={
+                locale === "es"
+                  ? `/es/competicion/${competitionId}`
+                  : `/competicion/${competitionId}`
+              }
+              className={styles.tableLink}
+              data-testid="competition-table-link"
+              aria-label={`${t(locale, "competitions.tableLink")} - ${competition.name}`}
+            >
+              <span>{t(locale, "competitions.tableLink")}</span>
+              <span className={styles.tableLinkArrow} aria-hidden="true">
+                ↗
+              </span>
+            </a>
+          </div>
+        )}
         {/* SPEC-040 CA-2 (replaces SPEC-033 CA-2): one list, no day
             headers; every row says its own date. */}
         <ul className={styles.rows}>

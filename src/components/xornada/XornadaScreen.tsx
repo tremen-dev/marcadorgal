@@ -38,6 +38,8 @@ type Props = {
   recentGoal: { now: Instant; minutes: number; mark: RecentGoalMark };
   // Whether to show the strip of days (SHOW_DAY_STRIP).
   showDayStrip?: boolean;
+  // Whether each competition links to its table (SHOW_TABLE_LINK).
+  showTableLink?: boolean;
 };
 
 export function XornadaScreen({
@@ -52,6 +54,7 @@ export function XornadaScreen({
   provisionalDisplay,
   recentGoal,
   showDayStrip,
+  showTableLink,
 }: Props) {
   const hasRows = competitions.some((c) => c.rows.length > 0);
   return (
@@ -72,6 +75,7 @@ export function XornadaScreen({
             mark: recentGoal.mark,
           }}
           showDayStrip={showDayStrip}
+          showTableLink={showTableLink}
         />
       ) : (
         <XornadaLive
@@ -84,6 +88,7 @@ export function XornadaScreen({
           recentGoalMinutes={recentGoal.minutes}
           recentGoalMark={recentGoal.mark}
           showDayStrip={showDayStrip}
+          showTableLink={showTableLink}
           {...live}
         />
       )}

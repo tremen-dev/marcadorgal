@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { SHOW_DAY_STRIP } from "@/app/config";
+import { SHOW_DAY_STRIP, SHOW_TABLE_LINK } from "@/app/config";
 import type { Neighbours } from "@/board/weeks";
 import { type Locale, t } from "@/i18n";
 import { countFilters } from "@/xornada/filter";
@@ -39,6 +39,8 @@ export type XornadaBodyProps = {
   recentGoal?: RecentGoalView;
   // Whether to show the strip of days (SHOW_DAY_STRIP).
   showDayStrip?: boolean;
+  // Whether each competition links to its table (SHOW_TABLE_LINK).
+  showTableLink?: boolean;
 };
 
 export function XornadaBody({
@@ -53,6 +55,7 @@ export function XornadaBody({
   provisionalDisplay,
   recentGoal,
   showDayStrip = SHOW_DAY_STRIP,
+  showTableLink = SHOW_TABLE_LINK,
 }: XornadaBodyProps) {
   const rows = competitions.flatMap((c) => c.rows);
   const hasRows = rows.length > 0;
@@ -98,6 +101,7 @@ export function XornadaBody({
               ages={ages}
               days={days}
               recentGoal={recentGoal}
+              showTableLink={showTableLink}
             />
           ))}
         </div>

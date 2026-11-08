@@ -9,7 +9,9 @@ import {
   RECENT_GOAL_MINUTES,
   recentGoalMark,
   SHOW_DAY_STRIP,
+  SHOW_TABLE_LINK,
   showDayStrip,
+  showTableLink,
 } from "./config";
 
 // SPEC-034 CA-5 (H-1, H-2): the mode lives in one constant of the web.
@@ -104,5 +106,37 @@ describe(".env.example SHOW_DAY_STRIP", () => {
       "utf8",
     );
     expect(example).toMatch(/^SHOW_DAY_STRIP=$/m);
+  });
+});
+
+describe("SHOW_TABLE_LINK", () => {
+  it("is a boolean, false (hidden) by default", () => {
+    expect(typeof SHOW_TABLE_LINK).toBe("boolean");
+    expect(SHOW_TABLE_LINK).toBe(false);
+  });
+});
+
+describe("showTableLink(env)", () => {
+  it.each([
+    [{ SHOW_TABLE_LINK: "true" }, true],
+    [{ SHOW_TABLE_LINK: "1" }, true],
+    [{ SHOW_TABLE_LINK: "false" }, false],
+    [{ SHOW_TABLE_LINK: "0" }, false],
+    [{}, false],
+    [{ SHOW_TABLE_LINK: undefined }, false],
+    [{ SHOW_TABLE_LINK: "" }, false],
+    [{ SHOW_TABLE_LINK: "yes" }, false],
+  ])("%j -> %s", (env, expected) => {
+    expect(showTableLink(env)).toBe(expected);
+  });
+});
+
+describe(".env.example SHOW_TABLE_LINK", () => {
+  it("names SHOW_TABLE_LINK with no value", () => {
+    const example = readFileSync(
+      fileURLToPath(new URL("../../.env.example", import.meta.url)),
+      "utf8",
+    );
+    expect(example).toMatch(/^SHOW_TABLE_LINK=$/m);
   });
 });
