@@ -202,6 +202,7 @@ export function MatchRow({
     <TeamGoals
       team={side}
       goals={allGoals}
+      locale={locale}
       id={goalsId(side)}
       expanded={isExpanded}
     />

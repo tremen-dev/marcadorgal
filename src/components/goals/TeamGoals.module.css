@@ -78,3 +78,16 @@
   color: var(--fg-muted);
   overflow-wrap: break-word;
 }
+
+/* CA-3: «(p.)» or «(p.p.)», mono, muted and upright: a note, not a state
+   (ADR-005 keeps amber for what awaits a person). */
+.kind {
+  flex: none;
+  margin-left: 5px;
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 16px;
+  font-style: normal;
+  color: var(--fg-muted);
+}

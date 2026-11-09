@@ -1,6 +1,8 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import { es } from "@/i18n/es";
+import { gl } from "@/i18n/gl";
 import type { Instant, MatchId, PublicGoal, Score } from "@/model";
 import type { XornadaRow } from "@/xornada/view";
 import { MatchRow, type RecentGoalView } from "./MatchRow.tsx";
@@ -195,6 +197,36 @@ describe("SPEC-068 CA-2 minute first, whole name, ordered by minute", () => {
     expect(order(awayBlock)).toEqual([["45'", "Alexia"]]);
     for (const line of elements(homeBlock, "goal-line"))
       expect(attr(line, "data-team")).toBe("home");
+  });
+});
+
+describe("SPEC-068 CA-3 penalty and own goal as a grey note", () => {
+  it("adds goal-kind after the player with the i18n text of gl and es", () => {
+    const row = mockRow({
+      goals: [
+        { team: "home", player: "Millene", minute: 23, penalty: true },
+        { team: "home", player: "Aitana", minute: 61, ownGoal: true },
+        { team: "home", player: "Alexia", minute: 70 },
+      ],
+    });
+    for (const locale of ["gl", "es"] as const) {
+      const dict = locale === "gl" ? gl : es;
+      const lines = elements(render(row, locale), "goal-line");
+      expect(lines).toHaveLength(3);
+      const kinds = lines.map((l) => elements(l, "goal-kind"));
+      expect(kinds.map((k) => k.length)).toEqual([1, 1, 0]);
+      expect(text(kinds[0][0])).toBe(dict.xornada.goalPenalty);
+      expect(text(kinds[1][0])).toBe(dict.xornada.goalOwnGoal);
+      // After the player, and the player's text stays whole.
+      expect(lines[0].indexOf('data-testid="goal-player"')).toBeLessThan(
+        lines[0].indexOf('data-testid="goal-kind"'),
+      );
+      expect(text(elements(lines[0], "goal-player")[0])).toBe("Millene");
+    }
+    expect(gl.xornada.goalPenalty).toBe("(p.)");
+    expect(gl.xornada.goalOwnGoal).toBe("(p.p.)");
+    expect(es.xornada.goalPenalty).toBe("(p.)");
+    expect(es.xornada.goalOwnGoal).toBe("(p.p.)");
   });
 });
 
