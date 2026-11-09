@@ -37,7 +37,9 @@ async function pgCode(
 
 const KICKOFF = "2026-11-07T17:30:00.000Z";
 
-async function seedDecision(tx: Tx): Promise<{ matchId: string; decisionId: string }> {
+async function seedDecision(
+  tx: Tx,
+): Promise<{ matchId: string; decisionId: string }> {
   const matchId = `test-${crypto.randomUUID()}`;
   await tx`insert into competitions (id, season, name, tier)
     values ('primera-division', '2026-27', 'Test', 1) on conflict do nothing`;
@@ -102,7 +104,9 @@ describe("SPEC-066 CA-1 social_posts", () => {
       ).toBe("23505");
       // The other side of the same Decision is a different row.
       expect(
-        await pgCode(tx, (s) => insertPost(s, decisionId, matchId, "away", "goal")),
+        await pgCode(tx, (s) =>
+          insertPost(s, decisionId, matchId, "away", "goal"),
+        ),
       ).toBeUndefined();
     }));
 
