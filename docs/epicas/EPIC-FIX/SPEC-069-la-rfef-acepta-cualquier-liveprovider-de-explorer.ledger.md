@@ -44,4 +44,4 @@ Sin UI. Evidencia de comando (implementador):
 
 ## Cómo retomar (handoff)
 <!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->
-CA-1..CA-6 implementados en la rama `ft/SPEC-069-rfef-acepta-cualquier-live-provider` (worktree `D:\src	remen-dev\wt-069`), commits locales sin push. Falta: verificación, push/PR/merge y despliegue (orquestador); después, CA-7 (consulta de solo lectura a `ingest_attempts` ≥ 1 h de partidos en juego tras el despliegue, con id y sha del despliegue).
+CA-1..CA-6 implementados en la rama `ft/SPEC-069-rfef-acepta-cualquier-live-provider` (worktree `D:/src/tremen-dev/wt-069`), commits locales sin push. Falta: verificación, push/PR/merge y despliegue (orquestador); después, CA-7 (consulta de solo lectura a `ingest_attempts` ≥ 1 h de partidos en juego tras el despliegue, con id y sha del despliegue).
