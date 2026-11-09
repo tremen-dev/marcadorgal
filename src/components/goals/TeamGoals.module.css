@@ -1,0 +1,80 @@
+/* SPEC-068: the scorers hung from their team (docs/epicas/EPIC-003/_qa/
+   SPEC-068, variant A). Colours and families only through tokens.css; never
+   the font shorthand. */
+
+/* The block spans the whole .sides grid of MatchRow (both columns) or the
+   teamsBox of DirectosView. Static by default: always visible. */
+.block {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+/* SPEC-056 CA-4, SPEC-068 CA-5: served folded (0fr, no height), opened by
+   the row with a transition of the track, never a layout jump. */
+.folded {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.2s ease-out;
+}
+
+.expanded {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.clip {
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* The room above and below lives inside the clip, so a folded block measures
+   exactly 0 (CA-6). */
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 1px 0 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.block[data-team="away"] .list {
+  padding-bottom: 1px;
+}
+
+/* CA-2: minute first, in a fixed column of 4 mono digits aligned right; the
+   name after it, in sans, wrapping inside its own column (D-2: whole, as it
+   comes). Baseline-aligned, the same line height, so a wrapped name keeps its
+   minute on the first line. */
+.line {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+}
+
+.minute {
+  flex: none;
+  width: 4ch;
+  margin-right: 8px;
+  text-align: right;
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 16px;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg-muted);
+}
+
+.player {
+  flex: 0 1 auto;
+  min-width: 0;
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--fg-muted);
+  overflow-wrap: break-word;
+}
