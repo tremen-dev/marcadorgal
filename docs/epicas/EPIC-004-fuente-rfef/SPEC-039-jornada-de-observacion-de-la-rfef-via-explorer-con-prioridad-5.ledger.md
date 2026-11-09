@@ -63,3 +63,5 @@ epica: EPIC-004
 4. `npm run informe:rfef -- 2026-11-06T17:00Z 2026-11-09T22:00Z --export _qa/…/export-*-dia.json --acta _qa/…/export-*-acta.json --evidencia _qa/…/evidencia.json` (contra producción, solo lectura) → `_qa/SPEC-039/2026-11-06-informe.md`.
 5. `npm run informe:jornada -- <desde> <hasta> --contrastar --salida _qa/SPEC-039/…` (SPEC-017) y explicar en su texto los `conflict` atribuibles a la rfef (H-2).
 6. Anotar la evidencia de explorer en este ledger. La decisión de subir es del titular (ADR posterior).
+
+**Enmienda de CA-3 (2026-11-09, sdd-arquitecto, decisión del titular sobre F-SPEC-039-10, opción a).** CA-3 pasa a no aplicable: superado por ADR-026 (rfef a 50, SPEC-049). Evidencia: la medida ya ejecutada, `_qa/SPEC-039/2026-11-06-informe.md`. No hay otra jornada que correr ni código que tocar. Falta: re-verificar CA-3 contra el texto enmendado y, con GREEN, `hecho`. F-SPEC-039-11 sigue fuera de esta spec.

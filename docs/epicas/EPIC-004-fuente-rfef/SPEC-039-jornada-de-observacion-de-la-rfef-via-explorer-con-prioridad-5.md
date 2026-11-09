@@ -9,6 +9,7 @@ historial:
   - {estado: aprobada, fecha: 2026-11-01, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-11-02, por: sdd-implementador}
   - {estado: en-progreso, fecha: 2026-11-03, por: sdd-arquitecto — refinamiento de CA-1 b/c y CA-2 y CA-4 por F-SPEC-039-6 y F-SPEC-039-7 (H-5)}
+  - {estado: en-progreso, fecha: 2026-11-09, por: sdd-arquitecto — enmienda de CA-3 a no aplicable por decisión del titular (Alberto Fojo, 2026-11-09), superado por ADR-026 (F-SPEC-039-10)}
 ---
 # SPEC-039 — Jornada de observación de la rfef vía explorer con prioridad 5
 
@@ -61,16 +62,17 @@ prioridad: lo hará un ADR posterior con sus criterios (CA-4).
   `sin api-football`: ninguno coincide ni discrepa por omisión, y si la
   competición no tiene `finished` de API-Football, «Triples» y
   «≠ api-football» dicen `sin datos`.
-- **CA-3 Jornada real.** Una jornada completa (viernes a lunes) con las cinco
-  competiciones, la rfef registrada con 5 (SPEC-038 CA-10) y **cero
-  intervenciones manuales** por alias, parseo u ofuscación. Evidencia en
-  `_qa/SPEC-039/`: el informe de CA-1, el de `informe:jornada --contrastar`
-  (SPEC-017) con las alertas `conflict` atribuibles a la rfef explicadas en su
-  texto (CA-9 de SPEC-017 las espera en cero), los exports del día y del día
-  siguiente, y la **evidencia externa** de explorer al cierre: `/api/health`,
-  sesiones abiertas, soft-blocks, segundos en cooldown dentro de la ventana de
-  cada competición, sondeos saltados y anomalías (anotado en el ledger; explorer
-  no es de este repo).
+- **CA-3 Jornada real — no aplicable (enmienda del titular, 2026-11-09).**
+  _Histórico:_ una jornada completa (viernes a lunes) con las cinco
+  competiciones, la rfef registrada con 5 (SPEC-038 CA-10), cero intervenciones
+  manuales y su evidencia en `_qa/SPEC-039/`. **Vigente:** superado por
+  ADR-026, que ya respondió la pregunta de la prioridad (rfef a 50 desde el
+  2026-11-06, SPEC-049). La jornada 2026-11-06/09 no se jugó en las premisas
+  de la spec (rfef con 50, SPEC-048 retirada, explorer multi-proveedor,
+  API-Football fuera del registro; F-SPEC-039-10). Se cumple con la medida ya
+  ejecutada: `_qa/SPEC-039/2026-11-06-informe.md` existe, lo generó
+  `informe:rfef` (CA-1) sobre esa jornada y queda como evidencia; no se exige
+  otra jornada, `--contrastar` ni la evidencia de explorer.
 - **CA-4 Criterio de subida por competición.** El informe acaba con una tabla,
   una fila por competición, con estas condiciones y la recomendación `5` o `50`:
   (i) acta: sobre ≥ 6 partidos con acta y alguna observación rfef, 100 % de
