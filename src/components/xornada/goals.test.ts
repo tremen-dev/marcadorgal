@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
@@ -280,6 +281,51 @@ describe("SPEC-068 CA-4 recent scorer", () => {
     ]) {
       expect(html).not.toContain('data-recent="true"');
       expect(html).not.toContain('data-testid="recent-scorer-badge"');
+    }
+  });
+});
+
+describe("SPEC-068 CA-5 served folded, aria-controls lists the blocks", () => {
+  it("serves every block with data-expanded=false and aria-controls with the present ids, in DOM order, each unique", () => {
+    const both = render(mockRow({ goals: GOALS }));
+    expect(attr(elements(both, "match-row")[0], "aria-controls")).toBe(
+      `goals-${MATCH_ID}-home goals-${MATCH_ID}-away`,
+    );
+    for (const block of elements(both, "team-goals"))
+      expect(attr(block, "data-expanded")).toBe("false");
+    for (const side of ["home", "away"])
+      expect(count(both, `id="goals-${MATCH_ID}-${side}"`)).toBe(1);
+
+    const awayOnly = render(
+      mockRow({ goals: [{ team: "away", player: "Alexia", minute: 45 }] }),
+    );
+    expect(attr(elements(awayOnly, "match-row")[0], "aria-controls")).toBe(
+      `goals-${MATCH_ID}-away`,
+    );
+  });
+});
+
+describe("SPEC-068 CA-9 the old drawer's classes are gone from the CSS", () => {
+  it("keeps none of goalsTeams, teamGoalsCol, teamGoalsName, teamGoalsList, goalPill, goalPenalty, goalsBox, goalItem", () => {
+    for (const file of [
+      "src/components/xornada/Xornada.module.css",
+      "src/components/directos/DirectosView.module.css",
+      "src/components/goals/TeamGoals.module.css",
+    ]) {
+      const css = readFileSync(file, "utf8");
+      for (const name of [
+        "goalsTeams",
+        "teamGoalsCol",
+        "teamGoalsName",
+        "teamGoalsList",
+        "goalPill",
+        "goalPenalty",
+        "goalsBox",
+        "goalItem",
+        "matchGoals",
+        "recentScorerBadge",
+      ])
+        expect(css, `${file} ${name}`).not.toContain(`.${name}`);
     }
   });
 });

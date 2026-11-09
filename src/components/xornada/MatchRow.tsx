@@ -124,12 +124,17 @@ export function MatchRow({
   const showDot = isLive && !noSignal && margin.kind !== "halfTime";
   const saysStatus = margin.kind === "status" || margin.kind === "halfTime";
   const nameClass = (side: "home" | "away") =>
-    cx(styles.team, TONE_CLASS[teamNameTone(row, side)]);
+    cx(
+      styles.team,
+      TONE_CLASS[teamNameTone(row, side)],
+      side === "away" && styles.awaySide,
+    );
   const galician = (side: "home" | "away") =>
     (side === "home" ? row.homeGalician : row.awayGalician) || undefined;
   const scoreClass = (side: "home" | "away") =>
     cx(
       styles.score,
+      side === "away" && styles.awaySide,
       row.score === null && styles.scoreEmpty,
       row.score !== null && noSignal && styles.scoreNoSignal,
       row.winner !== null && row.winner !== side && styles.loser,
