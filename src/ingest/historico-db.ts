@@ -3,10 +3,12 @@ import {
   type DayMatchesResponse,
   getDayMatches,
 } from "../lib/explorer-client.ts";
+import type { AliasFile } from "../model/index.ts";
 import {
   type HistoricoArgs,
   type HistoricoSyncReport,
   type MatchToSync,
+  pairedLine,
   planDaySync,
 } from "./historico.ts";
 
@@ -16,6 +18,8 @@ type MatchDbRow = {
   round: number;
   kickoff: Date;
   madrid_date: string;
+  home_team_id: string;
+  away_team_id: string;
   home_name: string;
   home_short_name: string | null;
   away_name: string;
@@ -38,6 +42,8 @@ export async function fetchMatchesInDateRange(
       m.round,
       m.kickoff,
       to_char(m.kickoff at time zone 'Europe/Madrid', 'YYYY-MM-DD') as madrid_date,
+      m.home_team_id,
+      m.away_team_id,
       h.name as home_name,
       h.short_name as home_short_name,
       a.name as away_name,
@@ -69,6 +75,8 @@ export async function fetchMatchesInDateRange(
       competitionId: r.competition_id,
       round: r.round,
       kickoff: r.kickoff.toISOString(),
+      homeTeamId: r.home_team_id,
+      awayTeamId: r.away_team_id,
       homeName: r.home_name,
       homeShortName: r.home_short_name,
       awayName: r.away_name,
@@ -87,6 +95,9 @@ export async function historicoSync(
   sql: Sql | TransactionSql,
   args: HistoricoArgs,
   fetcher: (date: string) => Promise<DayMatchesResponse> = getDayMatches,
+  // The rfef alias of the season of each date (SPEC-070): without it the
+  // competition comes only from canonicalCompetitionId.
+  aliasesFor: (date: string) => AliasFile | null = () => null,
 ): Promise<HistoricoSyncReport> {
   const matchesByDate = await fetchMatchesInDateRange(
     sql,
@@ -103,6 +114,12 @@ export async function historicoSync(
     matchesConsolidated: 0,
     goalsRecorded: 0,
     detailsByCompetition: {},
+    matchesPaired: 0,
+    matchesUnpaired: 0,
+    matchesAmbiguous: 0,
+    pairedLines: [],
+    unpaired: [],
+    ambiguous: [],
   };
 
   const dates = [...matchesByDate.keys()].sort();
@@ -134,7 +151,16 @@ export async function historicoSync(
       date,
       localMatches,
       explorerResponse.matches ?? [],
+      aliasesFor(date),
     );
+
+    report.matchesPaired += dayPlan.matches.length;
+    report.matchesUnpaired += dayPlan.unpaired.length;
+    report.matchesAmbiguous += dayPlan.ambiguous.length;
+    for (const p of dayPlan.matches)
+      report.pairedLines.push(pairedLine(date, p));
+    for (const u of dayPlan.unpaired) report.unpaired.push({ date, ...u });
+    for (const a of dayPlan.ambiguous) report.ambiguous.push({ date, ...a });
 
     if (args.dryRun) {
       for (const p of dayPlan.matches) {

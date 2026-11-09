@@ -28,3 +28,22 @@ export function loadAliasFile(
   cache.set(key, parsed);
   return parsed;
 }
+
+// The web routes (SPEC-070 CA-11) enrich with the explorer export: with the
+// rfef alias they pair rows by codGrupo and name; without it (the file not
+// traced into the deployment) they fall back on canonicalCompetitionId and
+// canonical ids equal to the local ones, and never break the page.
+export function rfefAliasesOrNull(
+  season: string,
+  dataRoot?: string,
+): AliasFile | null {
+  try {
+    return loadAliasFile(season, "rfef", dataRoot);
+  } catch (e) {
+    console.warn(
+      `[aliases] sen alias rfef ${season}: emparellamento só por ids canónicos`,
+      e instanceof Error ? e.message : e,
+    );
+    return null;
+  }
+}

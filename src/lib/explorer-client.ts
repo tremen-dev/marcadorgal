@@ -37,6 +37,10 @@ export type DayMatchesResponse = {
   matches: Array<{
     matchKey?: string;
     codActa?: string | null;
+    // Contract fields of ADR-023 §4 the pairing reads (SPEC-070): the group
+    // gives the competition through the rfef alias, the hour breaks a tie.
+    codGrupo?: string;
+    horaTexto?: string;
     canonicalCompetitionId?: string;
     canonicalHomeTeamId?: string;
     canonicalAwayTeamId?: string;

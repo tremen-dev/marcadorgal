@@ -1,5 +1,11 @@
-import type { PublicGoal, PublicMatch } from "../model/index.ts";
+import type { AliasFile, PublicGoal, PublicMatch } from "../model/index.ts";
 import { type DayMatchesResponse, getDayMatches } from "./explorer-client.ts";
+import {
+  candidateOf,
+  type ExplorerRow,
+  isSamePublicMatch,
+  pickRow,
+} from "./explorer-identity.ts";
 
 /**
  * Filtra de forma defensiva calquera gol con autor sintético ou formato inválido.
@@ -48,112 +54,16 @@ export function sanitizeGoals(rawGoals: unknown[]): PublicGoal[] {
 }
 
 /**
- * Normaliza un nome de equipo ou slug para permitir matching tolerante.
- */
-function normalizeSlug(str: string): string {
-  return str
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
-
-const NOISE_WORDS = new Set([
-  "cf",
-  "cd",
-  "ud",
-  "sd",
-  "rc",
-  "fc",
-  "sad",
-  "club",
-  "futbol",
-  "deportivo",
-  "deportiva",
-  "de",
-]);
-
-function toTokenSet(str: string): Set<string> {
-  const tokens = normalizeSlug(str)
-    .split("-")
-    .filter((w) => w.length > 2 && !NOISE_WORDS.has(w));
-  return new Set(tokens);
-}
-
-function areTeamsSimilar(
-  nameA: string,
-  shortA: string | null | undefined,
-  nameB: string,
-): boolean {
-  const normA = normalizeSlug(nameA);
-  const normB = normalizeSlug(nameB);
-  if (normA.includes(normB) || normB.includes(normA)) return true;
-
-  if (shortA) {
-    const normShort = normalizeSlug(shortA);
-    if (normB.includes(normShort) || normShort.includes(normB)) return true;
-  }
-
-  const tokensA = toTokenSet(shortA ? `${nameA} ${shortA}` : nameA);
-  const tokensB = toTokenSet(nameB);
-  if (tokensA.size > 0 && tokensB.size > 0) {
-    for (const t of tokensA) {
-      if (tokensB.has(t)) return true;
-    }
-  }
-
-  return false;
-}
-
-/**
- * Comproba se un partido de Explorer coincide cun PublicMatch de marcador.gal.
+ * Comproba se un partido de Explorer é o PublicMatch de marcador.gal pola
+ * identidade de SPEC-070 (competición e os dous equipos resoltos por alias ou
+ * por id canónico igual), nunca por nomes parecidos.
  */
 export function isMatchEqual(
   pm: PublicMatch,
   em: DayMatchesResponse["matches"][number],
+  aliases: AliasFile | null = null,
 ): boolean {
-  // 1. Por canonicalCompetitionId (se existe e non coincide, non é o mesmo partido)
-  if (
-    em.canonicalCompetitionId &&
-    em.canonicalCompetitionId !== pm.competitionId
-  ) {
-    return false;
-  }
-
-  const matchIdSlug = pm.matchId.toLowerCase();
-
-  // 2. Coincidencia por canonicalHomeTeamId e canonicalAwayTeamId
-  if (em.canonicalHomeTeamId && em.canonicalAwayTeamId) {
-    const homeSlug = normalizeSlug(em.canonicalHomeTeamId);
-    const awaySlug = normalizeSlug(em.canonicalAwayTeamId);
-    if (matchIdSlug.includes(homeSlug) && matchIdSlug.includes(awaySlug)) {
-      return true;
-    }
-  }
-
-  // 3. Coincidencia por nomes normalizados de equipo
-  const emHomeName = em.homeTeam || em.equipoLocal;
-  const emAwayName = em.awayTeam || em.equipoVisitante;
-
-  if (emHomeName && emAwayName) {
-    const homeMatch = areTeamsSimilar(
-      pm.home.name,
-      pm.home.shortName,
-      emHomeName,
-    );
-    const awayMatch = areTeamsSimilar(
-      pm.away.name,
-      pm.away.shortName,
-      emAwayName,
-    );
-
-    if (homeMatch && awayMatch) {
-      return true;
-    }
-  }
-
-  return false;
+  return isSamePublicMatch(pm, em, aliases);
 }
 
 const madridFormatter = new Intl.DateTimeFormat("en-US", {
@@ -177,10 +87,13 @@ export function toMadridDate(isoInstant: string): string {
  *
  * @param matches Partidos actuais da xornada (normalmente de Postgres web.xornada).
  * @param fetcher Inxectador de fetch para facilitar probas unitarias (por defecto getDayMatches).
+ * @param aliases Alias rfef da tempada (SPEC-070 CA-11); sen el, a competición
+ *   sae só de canonicalCompetitionId e os equipos só de ids canónicos iguais.
  */
 export async function enrichMatchesWithGoals(
   matches: PublicMatch[],
   fetcher: (date: string) => Promise<DayMatchesResponse> = getDayMatches,
+  aliases: AliasFile | null = null,
 ): Promise<PublicMatch[]> {
   if (!matches || matches.length === 0) {
     return matches;
@@ -202,21 +115,17 @@ export async function enrichMatchesWithGoals(
   // Recoller datas únicas dos partidos candidatos (formato YYYY-MM-DD en Europe/Madrid)
   const dates = [...new Set(candidates.map((m) => toMadridDate(m.kickoff)))];
 
-  const explorerMatches: DayMatchesResponse["matches"] = [];
-
+  // Todas as filas de cada día, con ou sen goles: a ambigüidade mírase sobre
+  // todas (SPEC-070 CA-5), non só sobre as que traen goles.
+  const rowsByDate = new Map<string, ExplorerRow[]>();
   const results = await Promise.allSettled(dates.map((date) => fetcher(date)));
-
-  for (const res of results) {
+  results.forEach((res, i) => {
     if (res.status === "fulfilled" && Array.isArray(res.value?.matches)) {
-      for (const m of res.value.matches) {
-        if (Array.isArray(m.goals) && m.goals.length > 0) {
-          explorerMatches.push(m);
-        }
-      }
+      rowsByDate.set(dates[i] as string, res.value.matches);
     }
-  }
+  });
 
-  if (explorerMatches.length === 0) {
+  if (rowsByDate.size === 0) {
     return matches;
   }
 
@@ -236,12 +145,29 @@ export async function enrichMatchesWithGoals(
       return m;
     }
 
-    const found = explorerMatches.find((em) => isMatchEqual(m, em));
-    if (!found || !Array.isArray(found.goals)) {
+    const rows = rowsByDate.get(toMadridDate(m.kickoff)) ?? [];
+    const pairing = pickRow(
+      rows,
+      (row) => isMatchEqual(m, row, aliases),
+      m.kickoff,
+    );
+    if (pairing.kind === "ambiguous") {
+      console.warn(
+        `[explorer-enrichment] ${m.matchId}: varias filas do export cumpren a identidade, sen goles:`,
+        pairing.candidates
+          .map((r) => {
+            const c = candidateOf(r);
+            return `${c.codActa ?? "sen acta"} ${c.home ?? "?"}–${c.away ?? "?"}`;
+          })
+          .join("; "),
+      );
+      return m;
+    }
+    if (pairing.kind !== "paired" || !Array.isArray(pairing.row.goals)) {
       return m;
     }
 
-    const cleanGoals = sanitizeGoals(found.goals);
+    const cleanGoals = sanitizeGoals(pairing.row.goals);
     if (cleanGoals.length === 0) {
       return m;
     }

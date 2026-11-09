@@ -96,7 +96,9 @@ describe("explorer-enrichment", () => {
       expect(isMatchEqual(pm, em)).toBe(true);
     });
 
-    it("matches by normalized team names when canonical IDs not provided", () => {
+    // SPEC-070: this case fixed the permissive pairing by similar names
+    // (shared tokens); now names pair only through the rfef alias.
+    it("does not match by similar names when no alias or id resolves them", () => {
       const pm = createMockMatch();
       const em = {
         canonicalCompetitionId: "primera-division",
@@ -104,7 +106,7 @@ describe("explorer-enrichment", () => {
         equipoVisitante: "Real Madrid",
         estado: "FINISHED" as const,
       };
-      expect(isMatchEqual(pm, em)).toBe(true);
+      expect(isMatchEqual(pm, em)).toBe(false);
     });
 
     it("rejects when competition differs", () => {

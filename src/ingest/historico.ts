@@ -1,6 +1,14 @@
 import type { DayMatchesResponse } from "../lib/explorer-client.ts";
-import { isMatchEqual, sanitizeGoals } from "../lib/explorer-enrichment.ts";
+import { sanitizeGoals } from "../lib/explorer-enrichment.ts";
+import {
+  type Candidate,
+  candidateOf,
+  isSameMatch,
+  pickRow,
+  rowCompetitionId,
+} from "../lib/explorer-identity.ts";
 import type {
+  AliasFile,
   CompetitionId,
   Instant,
   MatchId,
@@ -26,6 +34,8 @@ export type MatchToSync = {
   competitionId: string;
   round: number;
   kickoff: string;
+  homeTeamId: string;
+  awayTeamId: string;
   homeName: string;
   homeShortName: string | null;
   awayName: string;
@@ -44,9 +54,15 @@ export type MatchSyncPlan = {
   goals: PublicGoal[];
 };
 
+// Why a local match found no row (SPEC-070 CA-9): no row of the day in its
+// competition, or rows of its competition but none with both of its teams.
+export type UnpairedReason = "no_competition_rows" | "no_identity";
+
 export type DaySyncPlan = {
   date: string;
   matches: MatchSyncPlan[];
+  unpaired: { matchId: string; reason: UnpairedReason }[];
+  ambiguous: { matchId: string; candidates: Candidate[] }[];
 };
 
 export type HistoricoSyncReport = {
@@ -58,6 +74,14 @@ export type HistoricoSyncReport = {
   matchesConsolidated: number;
   goalsRecorded: number;
   detailsByCompetition: Record<string, { matches: number; goals: number }>;
+  // SPEC-070 CA-7: what paired, what did not and what was ambiguous.
+  matchesPaired: number;
+  matchesUnpaired: number;
+  matchesAmbiguous: number;
+  // fecha · matchId · codActa · local–visitante de la fila · marcador · nº goles
+  pairedLines: string[];
+  unpaired: { date: string; matchId: string; reason: UnpairedReason }[];
+  ambiguous: { date: string; matchId: string; candidates: Candidate[] }[];
 };
 
 const dayNumber = (date: string): number => Date.parse(`${date}T00:00:00Z`);
@@ -137,13 +161,36 @@ export function planDaySync(
   date: string,
   localMatches: readonly MatchToSync[],
   explorerMatches: DayMatchesResponse["matches"],
+  aliases: AliasFile | null = null,
 ): DaySyncPlan {
   const plans: MatchSyncPlan[] = [];
+  const unpaired: DaySyncPlan["unpaired"] = [];
+  const ambiguous: DaySyncPlan["ambiguous"] = [];
 
   for (const lm of localMatches) {
-    const pm = toPublicMatchMock(lm);
-    const em = explorerMatches.find((candidate) => isMatchEqual(pm, candidate));
-    if (!em) continue;
+    const pairing = pickRow(
+      explorerMatches,
+      (row) => isSameMatch(lm, row, aliases),
+      lm.kickoff,
+    );
+    if (pairing.kind === "ambiguous") {
+      ambiguous.push({
+        matchId: lm.matchId,
+        candidates: pairing.candidates.map(candidateOf),
+      });
+      continue;
+    }
+    if (pairing.kind === "unpaired") {
+      const inCompetition = explorerMatches.some(
+        (row) => rowCompetitionId(row, aliases) === lm.competitionId,
+      );
+      unpaired.push({
+        matchId: lm.matchId,
+        reason: inCompetition ? "no_identity" : "no_competition_rows",
+      });
+      continue;
+    }
+    const em = pairing.row;
 
     const emHomeScore = em.homeScore ?? em.golesLocal ?? null;
     const emAwayScore = em.awayScore ?? em.golesVisitante ?? null;
@@ -174,5 +221,24 @@ export function planDaySync(
   return {
     date,
     matches: plans,
+    unpaired,
+    ambiguous,
   };
+}
+
+// One line per paired match (SPEC-070 CA-7).
+export function pairedLine(date: string, p: MatchSyncPlan): string {
+  const row = candidateOf(p.explorerMatch);
+  const home = p.explorerMatch.homeScore ?? p.explorerMatch.golesLocal ?? null;
+  const away =
+    p.explorerMatch.awayScore ?? p.explorerMatch.golesVisitante ?? null;
+  const score = home === null || away === null ? "—" : `${home}-${away}`;
+  return [
+    date,
+    p.match.matchId,
+    row.codActa ?? "sen acta",
+    `${row.home ?? "?"}–${row.away ?? "?"}`,
+    score,
+    `${p.goals.length} goles`,
+  ].join(" · ");
 }

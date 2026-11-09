@@ -9,11 +9,17 @@ import { CompetitionId, MatchId } from "../model/ids.ts";
 import { Instant } from "../model/instant.ts";
 import { PublicMatch } from "../model/public.ts";
 import {
-  type DayMatchesResponse,
   getDayMatches,
   getOfficialCalendar,
   type OfficialCalendarResponse,
 } from "./explorer-client.ts";
+import { toMadridDate } from "./explorer-enrichment.ts";
+import {
+  candidateOf,
+  type ExplorerRow,
+  isSameMatch,
+  pickRow,
+} from "./explorer-identity.ts";
 
 export const WOMEN_COMPETITIONS: readonly CompetitionCode[] = [
   "liga-f",
@@ -192,7 +198,7 @@ export async function fetchWomenXornadaMatches(
       if (roundMatches.length === 0) continue;
 
       for (const m of roundMatches) {
-        allDates.add(m.kickoff.slice(0, 10));
+        allDates.add(toMadridDate(m.kickoff));
       }
 
       const meta = getCompetitionMetadata(comp);
@@ -212,24 +218,14 @@ export async function fetchWomenXornadaMatches(
       return [];
     }
 
-    const dayMatchesMap = new Map<
-      string,
-      DayMatchesResponse["matches"][number]
-    >();
+    // Every row of each day, never keyed by teams alone: a Map by
+    // home-away kept the last row of any competition (SPEC-070 CA-6).
+    const rowsByDate = new Map<string, ExplorerRow[]>();
     await Promise.all(
       [...allDates].map(async (d) => {
         try {
           const res = await getDayMatches(d);
-          if (res?.matches) {
-            for (const match of res.matches) {
-              const key = match.canonicalHomeTeamId
-                ? `${match.canonicalHomeTeamId}-${match.canonicalAwayTeamId}`
-                : match.matchKey || "";
-              if (key) {
-                dayMatchesMap.set(key, match);
-              }
-            }
-          }
+          if (res?.matches) rowsByDate.set(d, res.matches);
         } catch (_e) {
           // Ignore per-day errors
         }
@@ -246,10 +242,34 @@ export async function fetchWomenXornadaMatches(
         const homeNames = resolveTeamNames(m.home, teamsMap.get(m.home));
         const awayNames = resolveTeamNames(m.away, teamsMap.get(m.away));
 
-        const dayMatch =
-          dayMatchesMap.get(`${m.home}-${m.away}`) ||
-          dayMatchesMap.get(`${m.home.replace(/-femenino$/, "")}-${m.away}`) ||
-          null;
+        // Identity of SPEC-070 without alias: the competition of the row is
+        // its canonicalCompetitionId and each side a canonical id equal to
+        // the calendar's (or the calendar's without -femenino).
+        const homeIds = [m.home, m.home.replace(/-femenino$/, "")];
+        const pairing = pickRow(
+          rowsByDate.get(toMadridDate(m.kickoff)) ?? [],
+          (row) =>
+            homeIds.some((homeTeamId) =>
+              isSameMatch(
+                { competitionId: comp, homeTeamId, awayTeamId: m.away },
+                row,
+                null,
+              ),
+            ),
+          m.kickoff,
+        );
+        if (pairing.kind === "ambiguous") {
+          console.warn(
+            `[explorer-xornada] ${m.externalId}: varias filas do export cumpren a identidade, sen datos do día:`,
+            pairing.candidates
+              .map((r) => {
+                const c = candidateOf(r);
+                return `${c.codActa ?? "sen acta"} ${c.home ?? "?"}–${c.away ?? "?"}`;
+              })
+              .join("; "),
+          );
+        }
+        const dayMatch = pairing.kind === "paired" ? pairing.row : null;
 
         const rawStatus = dayMatch?.estado;
         let status:
