@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-11-08
+Actualizado: 2026-11-09
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -56,6 +56,7 @@ Actualizado: 2026-11-08
 | SPEC-061 — tira-de-dias-configurable-e-oculta-por-defecto | hecho | 2026-11-08 (sdd-verificador) |
 | SPEC-064 — assets-de-redes-sociales-y-og-png-con-la-identidad-celeste | hecho | 2026-11-08 (sdd-verificador) |
 | SPEC-065 — identidad-celeste-tokens-wordmark-con-bloque-dibujado-e-icono-de-barra-sola | hecho | 2026-11-08 (sdd-verificador) |
+| SPEC-068 — goleadores-colgados-de-su-equipo-en-la-fila-de-partido | hecho | 2026-11-09 (sdd-verificador) |
 
 ## EPIC-004 — fuente-rfef (aprobada)
 
@@ -138,7 +139,7 @@ Actualizado: 2026-11-08
 
 ## Resumen
 
-- hecho: 55
+- hecho: 56
 - en-revision: 3
 - borrador: 2
 - feito: 1
