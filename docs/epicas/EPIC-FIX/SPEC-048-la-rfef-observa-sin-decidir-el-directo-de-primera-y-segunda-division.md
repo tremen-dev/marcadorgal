@@ -2,13 +2,17 @@
 id: SPEC-048
 tipo: spec
 epica: EPIC-FIX
-estado: en-revision
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-03, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-11-03, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-11-03, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-11-03, por: sdd-implementador}
+  - {estado: en-progreso, fecha: 2026-11-09, por: sdd-verificador}
+  - {estado: en-progreso, fecha: 2026-11-09, por: sdd-arquitecto — enmienda de CA-7 por decisión del titular (Alberto Fojo 2026-11-09): (a) cumplida y (b) no aplicable por retirada de la salvaguarda (F-SPEC-048-6)}
+  - {estado: en-revision, fecha: 2026-11-09, por: sdd-verificador}
+  - {estado: hecho, fecha: 2026-11-09, por: sdd-verificador}
 ---
 # SPEC-048 — La rfef observa sin decidir el directo de Primera y Segunda División
 
@@ -26,7 +30,7 @@ historial:
 - **CA-4 Todas las entradas al motor.** El filtro se aplica también en el motor a la hora de la observación (ADR-025 §4, `rfef:recuperar`) y en `replay-jornada`. Tests: recuperación de un partido de Primera con observaciones rfef `live` y `finished` → solo cuenta el `finished`; `replayJornada` sobre ese partido no produce ninguna Decision `live` ni una corrección con el marcador de un `live` excluido.
 - **CA-5 Los finales del acta valen (evidencia).** Consulta de producción, en el ledger: por cada partido de `primera-division` y `segunda-division` con observaciones rfef `finished` desde el alta de la rfef (SPEC-038), primer marcador `finished`, último y Decision vigente. Si algún primer `finished` difiere del último (un final rfef que se corrigió solo), la spec **para** y vuelve al titular antes de desplegar.
 - **CA-6 Fronteras y gates.** `git diff --stat` solo en `src/model/source.ts`, `src/sources/registry.ts`, `src/ingest/` y tests; nada en `src/decide/`, `src/sources/rfef/` ni `supabase/`. `npm run gates` → 0; `npm run test:db` en verde.
-- **CA-7 Desplegado y jornada.** (a) Despliegue de producción con el commit de la spec antes del primer kickoff del 2026-11-07 (id de despliegue y sha en el ledger). (b) Tras la jornada, consulta: Decisions `live` de partidos de Primera/Segunda del 2026-11-07 al 2026-11-09 que citen una observación rfef → 0; observaciones rfef `live` de esos partidos > 0 (se siguió observando). Una captura gl de un partido de Primera en juego con «sen sinal» en `_qa/SPEC-048/`.
+- **CA-7 Desplegado y jornada — enmendado por el titular (2026-11-09).** _Histórico:_ (a) despliegue de producción con el commit de la spec antes del primer kickoff del 2026-11-07, con id y sha en el ledger; (b) tras la jornada, 0 Decisions `live` de Primera/Segunda del 07 al 09 que citen una observación rfef, observaciones rfef `live` > 0 y una captura gl con «sen sinal». **Vigente:** (a) **cumplida**: deployment 7531140945, sha 702e209 (2026-11-03). (b) **no aplicable**: el titular retiró la salvaguarda el 2026-11-06 (PR #99, 885e4c0, en prod 2026-11-06T23:38:56Z) por explorer v2.0 con MARCA, antes de la jornada; no se mide (F-SPEC-048-6). El mecanismo sigue en el código con la lista vacía (nota en ADR-027).
 
 ## Entidades y reglas afectadas
 Fuente, Observation, Decision, Cualificador, Ventana (`dominio.md`); RN-01, RN-02, RN-05, RN-12 sin cambio de letra; **ADR-027**, ADR-003, ADR-013 §2, ADR-023, ADR-025 §4; D-5, D-7.
