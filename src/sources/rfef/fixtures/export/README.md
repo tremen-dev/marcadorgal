@@ -79,6 +79,18 @@ mal formada. El explorer en local de entonces **no** deduplicaba filas.
 - El desplegado no trae ninguna fila de femenino ni del juvenil `26992215`
   (7 grupos frente a los 12 del local); las de femenino están en el local.
 
+## Proveedor abierto (SPEC-069), 2026-11-09 20:34Z
+
+`export-2026-11-09-proveedores.json` **no es byte a byte**: es la respuesta
+real del endpoint desplegado a `?date=2026-11-09` (`exportedAt`
+`2026-11-09T20:34:48.506Z`, 3 filas `LIVE_PROVISIONAL`, explorer v2.0 con
+arbitraje entre proveedores), guardada en el QA de SPEC-039 como
+`export-2026-11-09-dia-2034Z.json` (sha256 `3d93ca3f…6a24a4`, 2257 bytes), con
+**un solo campo cambiado**: el `liveProvider` de UD Las Palmas – CD Eldense pasa
+de `"espn"` a `"proveedor-inventado"`. Quedan una fila `"espn"` (CE Sabadell FC
+– Real Sociedad B, descanso), una inventada y una `"marca"` (Liga F, fuera de
+las cinco competiciones). No tiene `.headers`: no es una captura íntegra.
+
 ## Alias
 
 `data/alias/2026-27/rfef.json` resuelve todos los nombres de las cinco

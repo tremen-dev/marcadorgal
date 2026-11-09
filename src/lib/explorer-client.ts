@@ -54,7 +54,8 @@ export type DayMatchesResponse = {
       | "FINISHED"
       | "POSTPONED"
       | "SUSPENDED";
-    liveProvider?: "marca" | "rfef";
+    // Open list (SPEC-069): "marca", "rfef", "espn", "football-data", ...
+    liveProvider?: string;
     goals?: Array<{
       team: "home" | "away";
       player: string;

@@ -1118,3 +1118,118 @@ describe("CA-4 identity (ADR-017 §2): the same as adapter.ts", () => {
     });
   });
 });
+
+// SPEC-069: explorer v2.0 arbitrates between providers and names the winner in
+// liveProvider ("marca", "rfef", "espn", "football-data", and whatever comes
+// next). The field is informative: a new provider never rejects the export.
+describe("SPEC-069 liveProvider is open; estado and goals[].team stay closed", () => {
+  // Real export of 2026-11-09 20:34Z (two rows "espn", one "marca") with one
+  // field changed: Las Palmas–Eldense says "proveedor-inventado" (README).
+  const PROVIDERS = "export-2026-11-09-proveedores.json";
+  const providers = (): string => readText(`${EXPORT_DIR}/${PROVIDERS}`);
+  const withoutProvider = (body: string): string => {
+    const json = JSON.parse(body) as { matches: Record<string, unknown>[] };
+    return JSON.stringify({
+      ...json,
+      matches: json.matches.map(({ liveProvider: _, ...rest }) => rest),
+    });
+  };
+
+  it('CA-1 liveProvider: "" still rejects the export: an empty field is not a provider', () => {
+    const result = parseBodies([
+      exportOf([{ ...ZAMORA, liveProvider: "" }]),
+      exportOf([ZAMORA]),
+    ]);
+    expect(result.requestErrors).toHaveLength(1);
+    expect(result.requestErrors[0].error).toMatch(/liveProvider/);
+    expect(result.observations).toHaveLength(1);
+  });
+
+  it("CA-1 known and unknown providers validate, and an absent one too", () => {
+    for (const liveProvider of [
+      "marca",
+      "rfef",
+      "espn",
+      "football-data",
+      "proveedor-inventado",
+      undefined,
+    ]) {
+      const parsed = ExplorerExport.parse(
+        JSON.parse(exportOf([{ ...ZAMORA, liveProvider }])),
+      );
+      expect(parsed.matches[0].liveProvider).toBe(liveProvider);
+    }
+  });
+
+  it('CA-2 the fixture has >= 1 row "espn" and >= 1 row "proveedor-inventado"', () => {
+    const providersIn = rowsIn(providers()).map((m) => m.liveProvider);
+    expect(providersIn).toContain("espn");
+    expect(providersIn).toContain("proveedor-inventado");
+  });
+
+  it("CA-2 the export parses without error and liveProvider arrives as it came", () => {
+    const body = ExplorerExport.parse(JSON.parse(providers()));
+    expect(body.date).toBe("2026-11-09");
+    expect(body.matches.map((m) => [m.equipoLocal, m.liveProvider])).toEqual([
+      ["CE Sabadell FC", "espn"],
+      ["UD Las Palmas", "proveedor-inventado"],
+      ["Deportivo de A Coruña Femenino", "marca"],
+    ]);
+  });
+
+  it("CA-2 all its observations come out: the same result as the same export without liveProvider", () => {
+    const result = parseBodies([providers()]);
+    expect(result.requestErrors).toEqual([]);
+    expect(result).toEqual(parseBodies([withoutProvider(providers())]));
+    // Every row says what it said before SPEC-069 would have let it through:
+    // Sabadell–Real Sociedad B ("espn") is live at half-time; Las Palmas–
+    // Eldense ("proveedor-inventado") was postponed on 11-08 and replayed on
+    // 11-09, so against its declared kickoff it is ambiguous_state; the Liga F
+    // row ("marca") is outside the five competitions' calendar.
+    expect(result.observations).toEqual([
+      {
+        matchId: "segunda-division-2026-27-j13-sabadell-real-sociedad-b",
+        status: "live",
+        score: { home: 0, away: 0 },
+        minute: 45,
+        addedMinute: null,
+        halfTime: true,
+        observedAt: "2026-11-09T20:34:36.012Z",
+      },
+    ]);
+    expect(result.skipped).toEqual([
+      {
+        externalMatchId: null,
+        status: "LIVE_PROVISIONAL",
+        reason: "ambiguous_state",
+      },
+    ]);
+    expect(result.unresolved).toEqual([
+      expect.objectContaining({
+        reason: "unknown_match",
+        externalCompetition: "marca-grupo",
+      }),
+    ]);
+  });
+
+  it.each([
+    ['estado: "HALFTIME"', { ...ZAMORA, estado: "HALFTIME" }, /estado/],
+    [
+      'goals[].team: "neutral"',
+      {
+        ...ZAMORA,
+        goals: [{ team: "neutral", player: "X", minute: 10 }],
+      },
+      /goals\.0\.team/,
+    ],
+  ])(
+    "CA-5 %s still rejects the export (domain, not information)",
+    (_, bad, reason) => {
+      const result = parseBodies([exportOf([bad]), exportOf([ZAMORA])]);
+      expect(result.requestErrors).toHaveLength(1);
+      expect(result.requestErrors[0].url).toBe(url("2026-10-31"));
+      expect(result.requestErrors[0].error).toMatch(reason);
+      expect(result.observations).toHaveLength(1);
+    },
+  );
+});
