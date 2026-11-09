@@ -106,3 +106,4 @@ Verificación 2026-11-09 (sdd-verificador, rama `docs/SPEC-048-ca7-jornada` desd
 <!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->
 - Hecho: CA-1 a CA-6 implementados y con tests en la rama `ft/SPEC-048-rfef-sin-decision-en-primera-y-segunda`, solo en local (sin push). CA-5 con evidencia de producción.
 - Falta: la verificación y CA-7. CA-7 (a) es desplegar antes del primer kickoff del 2026-11-07 y anotar aquí el id de despliegue y el sha. CA-7 (b) es la consulta tras la jornada del 07 al 09 y la captura gl en `_qa/SPEC-048/`.
+- Enmienda de CA-7 (2026-11-09, sdd-arquitecto, decisión del titular sobre F-SPEC-048-6): (a) cumplida con deployment 7531140945, sha 702e209; (b) no aplicable, salvaguarda retirada por el titular el 2026-11-06 (PR #99, 885e4c0). Nota de vigencia en ADR-027. Falta: re-verificar CA-7 contra el texto enmendado y, con GREEN, `hecho`.
