@@ -2,7 +2,7 @@
 id: SPEC-048
 tipo: spec
 epica: EPIC-FIX
-estado: en-progreso
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-03, por: sdd-arquitecto}
@@ -10,7 +10,9 @@ historial:
   - {estado: en-progreso, fecha: 2026-11-03, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-11-03, por: sdd-implementador}
   - {estado: en-progreso, fecha: 2026-11-09, por: sdd-verificador}
-  - {estado: en-progreso, fecha: 2026-11-09, por: sdd-arquitecto — enmienda de CA-7 por decisión del titular (Alberto Fojo, 2026-11-09): (a) cumplida, (b) no aplicable por retirada de la salvaguarda (F-SPEC-048-6)}
+  - {estado: en-progreso, fecha: 2026-11-09, por: sdd-arquitecto — enmienda de CA-7 por decisión del titular (Alberto Fojo 2026-11-09): (a) cumplida y (b) no aplicable por retirada de la salvaguarda (F-SPEC-048-6)}
+  - {estado: en-revision, fecha: 2026-11-09, por: sdd-verificador}
+  - {estado: hecho, fecha: 2026-11-09, por: sdd-verificador}
 ---
 # SPEC-048 — La rfef observa sin decidir el directo de Primera y Segunda División
 
