@@ -6,7 +6,7 @@ epica: EPIC-FIX
 # Ledger — SPEC-070 Emparejamiento estricto con el export de explorer
 
 ## Resumen
-- Fase: en-revision <!-- refleja el estado de la spec; la fuente de verdad es el frontmatter de la spec -->
+- Fase: hecho <!-- refleja el estado de la spec; la fuente de verdad es el frontmatter de la spec -->
 - Rama: `ft/SPEC-070-emparejamiento-estricto-con-el-export-de-explorer`
 
 ## Matriz de criterios de aceptación
@@ -15,17 +15,17 @@ epica: EPIC-FIX
 <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
-| CA-1 | `src/lib/explorer-identity.ts` (`isSamePublicMatch`, `isSameMatch`, `pickRow`), `src/lib/explorer-enrichment.ts` (`isMatchEqual`, `enrichMatchesWithGoals`), `src/ingest/historico.ts` (`planDaySync`); fixture `src/sources/rfef/fixtures/export/export-2026-11-08-emparejamiento.json` (+ README) | `src/lib/explorer-emparejamiento.test.ts` › «CA-1 the real case of 2026-11-08» (3 casos: `isMatchEqual` false/true, plan 1-2 + 3 goles en los dos órdenes, enriquecimiento) | | ❌ |
-| CA-2 | ídem | `src/lib/explorer-emparejamiento.test.ts` › «CA-2 two «Real» of Segunda the same day» (`isMatchEqual`, `planDaySync`, `enrichMatchesWithGoals`) | | |
-| CA-3 | `src/lib/explorer-identity.ts` (`sideTeamId`: manda el alias; el canónico solo si el alias no conoce el nombre, y por igualdad) | `src/lib/explorer-emparejamiento.test.ts` › «CA-3 canonical ids of another match» (4 casos, incl. subcadena `sport` → false) | | |
-| CA-4 | `src/lib/explorer-identity.ts` (`rowCompetitionId`: `competitions[codGrupo]` ?? `canonicalCompetitionId` ?? null) | `src/lib/explorer-emparejamiento.test.ts` › «CA-4 a row without competition» (2 casos, con y sin alias) | | |
-| CA-5 | `src/lib/explorer-identity.ts` (`pickRow`, `madridHour`), `planDaySync` (`ambiguous`), `enrichMatchesWithGoals` (`console.warn`) | `src/lib/explorer-emparejamiento.test.ts` › «CA-5 ambiguity» (plan sin pareja + candidatas, aviso, desempate por `horaTexto`) | | |
-| CA-6 | `src/lib/explorer-xornada.ts` (sin `Map` por equipos; filas del día de Madrid del kickoff; `isSameMatch` sin alias + `pickRow`) | `src/lib/explorer-xornada.test.ts` › «SPEC-070 CA-6 …» (3 casos) | | |
-| CA-7 | `src/ingest/historico.ts` (`unpaired`/`ambiguous` en el plan, `pairedLine`), `src/ingest/historico-db.ts` (`matchesPaired/Unpaired/Ambiguous`, `pairedLines`, listas), `tools/historico-sync.mjs` (imprime; carga el alias por temporada) | `src/ingest/historico.test.ts` › «SPEC-070 CA-7 the dry-run report» (2 casos; `historicoSync` en dry-run con un `sql` falso de solo lectura) | | |
-| CA-8 | tests ajustados (ver Evidencia CA-8) | `npm run typecheck` 0, `npm run lint` 0, `npm run test` 2519 ok + 1 fallo previo ajeno, `next build` 0 | | |
-| CA-9 | dry-run real (ver Evidencia CA-9) | `_qa/SPEC-070/dry-run-2026-08-14_2026-11-09.log`, `ca9-check.log`, `ca9-vecinos.log` | | |
-| CA-10 | `src/lib/explorer-enrichment.ts`: borrados `normalizeSlug`, `NOISE_WORDS`, `toTokenSet`, `areTeamsSimilar` | `src/lib/explorer-emparejamiento.test.ts` › «CA-10 no approximate names»; `grep` (ver Evidencia) | | |
-| CA-11 | `next.config.ts` (`outputFileTracingIncludes` de `/api/board`, `/`, `/es`, `/xornada/*`), `src/ingest/aliases.ts` (`rfefAliasesOrNull`), `src/app/api/board/route.ts`, `src/app/xornada-home.tsx`, `src/app/xornada-week.tsx` | `src/arch/deploy.test.ts` › «SPEC-070 CA-11 …» (5 rutas); `src/ingest/aliases.test.ts` › «SPEC-070 CA-11 rfefAliasesOrNull»; CA-1..5 usan `rfefAliasesOrNull("2026-27")` | | |
+| CA-1 | `src/lib/explorer-identity.ts` (`isSamePublicMatch`, `isSameMatch`, `pickRow`), `src/lib/explorer-enrichment.ts` (`isMatchEqual`, `enrichMatchesWithGoals`), `src/ingest/historico.ts` (`planDaySync`); fixture `src/sources/rfef/fixtures/export/export-2026-11-08-emparejamiento.json` (+ README) | `src/lib/explorer-emparejamiento.test.ts` › «CA-1 the real case of 2026-11-08» (3 casos: `isMatchEqual` false/true, plan 1-2 + 3 goles en los dos órdenes, enriquecimiento) | vitest verde; test lee el fixture real, ambos órdenes de filas; `isSamePublicMatch` exige competición resuelta + sufijo N-2 exacto | ✅ |
+| CA-2 | ídem | `src/lib/explorer-emparejamiento.test.ts` › «CA-2 two «Real» of Segunda the same day» (`isMatchEqual`, `planDaySync`, `enrichMatchesWithGoals`) | vitest verde en las tres vías; filas en orden invertido | ✅ |
+| CA-3 | `src/lib/explorer-identity.ts` (`sideTeamId`: manda el alias; el canónico solo si el alias no conoce el nombre, y por igualdad) | `src/lib/explorer-emparejamiento.test.ts` › «CA-3 canonical ids of another match» (4 casos, incl. subcadena `sport` → false) | vitest verde; `sideTeamId` = alias ?? canónico, igualdad estricta (`sport` → false); revisado | ✅ |
+| CA-4 | `src/lib/explorer-identity.ts` (`rowCompetitionId`: `competitions[codGrupo]` ?? `canonicalCompetitionId` ?? null) | `src/lib/explorer-emparejamiento.test.ts` › «CA-4 a row without competition» (2 casos, con y sin alias) | vitest verde; `rowCompetitionId` null → `isSameMatch`/`isSamePublicMatch` false antes de mirar equipos | ✅ |
+| CA-5 | `src/lib/explorer-identity.ts` (`pickRow`, `madridHour`), `planDaySync` (`ambiguous`), `enrichMatchesWithGoals` (`console.warn`) | `src/lib/explorer-emparejamiento.test.ts` › «CA-5 ambiguity» (plan sin pareja + candidatas, aviso, desempate por `horaTexto`) | vitest verde; `pickRow` filtra todas las filas del día (no solo las con goles); desempate solo con exactamente una a la hora de Madrid | ✅ |
+| CA-6 | `src/lib/explorer-xornada.ts` (sin `Map` por equipos; filas del día de Madrid del kickoff; `isSameMatch` sin alias + `pickRow`) | `src/lib/explorer-xornada.test.ts` › «SPEC-070 CA-6 …» (3 casos) | vitest verde (3 casos); `Map` por equipos eliminado; `canonicalCompetitionId` exacto | ✅ |
+| CA-7 | `src/ingest/historico.ts` (`unpaired`/`ambiguous` en el plan, `pairedLine`), `src/ingest/historico-db.ts` (`matchesPaired/Unpaired/Ambiguous`, `pairedLines`, listas), `tools/historico-sync.mjs` (imprime; carga el alias por temporada) | `src/ingest/historico.test.ts` › «SPEC-070 CA-7 the dry-run report» (2 casos; `historicoSync` en dry-run con un `sql` falso de solo lectura) | vitest verde; `tools/historico-sync.mjs` imprime totales, líneas y listas; log real en `_qa` | ✅ |
+| CA-8 | tests ajustados (ver Evidencia CA-8) | `npm run typecheck` 0, `npm run lint` 0, `npm run test` 2519 ok + 1 fallo previo ajeno, `next build` 0 | typecheck 0, lint 0, `next build` 0; test 2519 ok + 1 fallo idéntico en `origin/main` (entorno Windows, ajeno) | ⚠️ |
+| CA-9 | dry-run real (ver Evidencia CA-9) | `_qa/SPEC-070/dry-run-2026-08-14_2026-11-09.log`, `ca9-check.log`, `ca9-vecinos.log` | artefactos revisados: 533/20/0, línea 70695047 1-2 3 goles, `ca9-check` rival_distinto=0, causas agrupadas; no re-ejecutado | ✅ |
+| CA-10 | `src/lib/explorer-enrichment.ts`: borrados `normalizeSlug`, `NOISE_WORDS`, `toTokenSet`, `areTeamsSimilar` | `src/lib/explorer-emparejamiento.test.ts` › «CA-10 no approximate names»; `grep` (ver Evidencia) | vitest verde; `grep areTeamsSimilar|NOISE_WORDS|toTokenSet src/` vacío; `normalizeName` solo NFC/espacios/minúsculas | ✅ |
+| CA-11 | `next.config.ts` (`outputFileTracingIncludes` de `/api/board`, `/`, `/es`, `/xornada/*`), `src/ingest/aliases.ts` (`rfefAliasesOrNull`), `src/app/api/board/route.ts`, `src/app/xornada-home.tsx`, `src/app/xornada-week.tsx` | `src/arch/deploy.test.ts` › «SPEC-070 CA-11 …» (5 rutas); `src/ingest/aliases.test.ts` › «SPEC-070 CA-11 rfefAliasesOrNull»; CA-1..5 usan `rfefAliasesOrNull("2026-27")` | `next build` propio: las cinco rutas web llevan `data/alias/2026-27/rfef.json` en su `.nft.json`; vitest verde | ✅ |
 
 ## Evidencia del implementador
 **Decisiones aplicadas.** (1) Vía del alias en la web (CA-11): **fichero**. Antes no llegaba (0 ocurrencias en el trace de las cinco rutas web, 1 en `/api/ingest/tick`); se añadió a `outputFileTracingIncludes` y ahora llega. Next casa las claves con picomatch `contains`, así que `/` alcanza todas las rutas de servidor. (2) Si en una ruta web el fichero no carga, `rfefAliasesOrNull` devuelve `null` con aviso y la competición sale solo de `canonicalCompetitionId` con igualdad exacta a `pm.competitionId`; una fila sin competición resoluble no empareja (decisión del orquestador, punto 1 de la petición del titular). (3) Ids de equipo del partido público: sufijo N-2 comparado con `<local>-<visitante>` resueltos de la fila; en `historico:sync`, `m.home_team_id`/`m.away_team_id` de `public.matches`. (4) Xornada femenina: sin alias (`canonical*` exacto; se conserva la variante sin `-femenino` del calendario que ya existía); el `matchKey` deja de ser llave (no es identidad).
@@ -82,9 +82,22 @@ Causas de los 20 sin emparejar (todas `no_identity`: hay filas de su competició
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
+**GREEN — 2026-11-10 (sdd-verificador).** Gates en worktree LF de `3ddee45`: `npm run typecheck` 0; `npm run lint` 0 (433 ficheros); `npm run test` 2519 ok, 1 fallo, 3 skipped. `next build` (árbol principal) 0.
+```
+$ npx vitest run src/db/test-db.test.ts     # en origin/main, sin SPEC-070
+ FAIL  src/db/test-db.test.ts > SPEC-022 CA-1 ... > wins over a .env file in the cwd too
+      Tests  1 failed | 10 passed (11)       # mismo fallo: previo, de entorno (spawn de npx en Windows)
+$ grep .nft.json de /api/board, (gl)/page, (es)/es/page, (gl)/xornada/[fecha], (es)/es/xornada/[fecha]
+  las cinco -> data/alias/2026-27/rfef.json
+$ sonda ad hoc: ¿algún `<local>-<visitante>` del calendario 2026-27 admite otro corte en dos ids conocidos?
+  matches 1834 teams 98 collisions 0
+```
+Revisión adversarial del núcleo: (1) fila sin competición resoluble → `rowCompetitionId` null → nunca empareja (CA-4, CA-6); (2) sin comparación aproximada: `normalizeName` = NFC + espacios + minúsculas sobre `externalId` exacto del alias, y `areTeamsSimilar`/`NOISE_WORDS`/`toTokenSet` borrados; (3) dos candidatas → `ambiguous` salvo desempate por `horaTexto` exacto, y la ambigüedad se mira sobre todas las filas del día; (4) `canonical*TeamId` solo por igualdad y solo si el alias no conoce el nombre; un alias que resuelve a otro id descarta; ninguna comparación por subcadena (`startsWith` solo sobre el prefijo de competición del propio `matchId`).
+CA-8 ⚠️: `npm run gates` no da 0 en esta máquina por un fallo previo y ajeno (F-SPEC-070-4); sin regresiones. Confirmar en CI del PR.
 
 ## Evidencia visual
 <!-- Tabla CA → captura en _qa/SPEC-070/. Informe HTML opcional: _qa/SPEC-070/informe.html -->
+Sin UI: ningún CA cambia la interfaz. Evidencia en texto: `_qa/SPEC-070/ca11-nft.txt`, `dry-run-2026-08-14_2026-11-09.log`, `ca9-check.log`, `ca9-vecinos.log`.
 
 ## Salvedades / follow-ups
 <!-- IDs F-SPEC-070-1, F-SPEC-070-2… con destino (spec futura o EPIC-MEJORA). -->
