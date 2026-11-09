@@ -54,13 +54,13 @@ La tabla de arriba es la de la versión anterior (CA-1..CA-5) con el RED. Esta e
 
 | Criterio | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 | :--- | :--- | :--- | :--- | :--- |
-| CA-1 `match_goals` | migración `20261108120000_spec060_match_goals.sql` (sin cambios) | `src/db/schema.db.test.ts` «has the eleven tables…» y «enables RLS on every table…» (V-1) | | |
-| CA-2 Corrección por el motor | `src/ingest/historico.ts` (`parseHistoricoArgs`, `planDaySync`), `src/ingest/historico-db.ts` (`historicoSync`, `applyDate`), `src/lib/explorer-client.ts` (`getDayMatchesRaw`), `tools/historico-sync.mjs` | `historico.db.test.ts` «finished 1-1 + Explorer FINISHED 2-1 → v2…; again, 0 rows», «a match with no Decision…»; `historico.test.ts` parseHistoricoArgs, planDaySync, «no INSERT into decisions from the tool»; `explorer-client.test.ts` getDayMatchesRaw | | |
-| CA-3 Goleadores | `historico.ts` (`completeGoals`, `replaceGoals`), `historico-db.ts` (`applyDate`) | `historico.db.test.ts` «LIVE_PROVISIONAL with goals: [] and FINISHED 1-0 without goals keep the stored goals»; `historico.test.ts` completeGoals y planDaySync | | |
-| CA-4 Dry-run revisable | `historico.ts` (`formatHistoricoReport`), `historico-db.ts` (`dryDate`) | `historico.test.ts` «prints one line per match with a change…»; `historico.db.test.ts` «0 rows in every table, nothing in the raw store…» | | |
-| CA-5 Fallos visibles | `historico.ts` (`parseExplorerDay`, `isAuthFailure`, `historicoFailed`), `historico-db.ts` (`realDate`, `AuthAbort`), `tools/historico-sync.mjs` (exit) | `historico.db.test.ts` «a 401 aborts in the act…», «an empty date fails…», «an invalid answer…»; `historico.test.ts` historicoFailed | | |
-| CA-6 Lectura pública | sin cambios de código: `web.xornada.goals` → `src/board/row.ts` → `MatchRow` | `e2e/xornada-goleadores-historico.db.spec.ts` | | |
-| CA-7 Gates | toda la rama | `npm run gates`, suite db (ver abajo) | | |
+| CA-1 `match_goals` | migración `20261108120000_spec060_match_goals.sql` (sin cambios) | `src/db/schema.db.test.ts` «has the eleven tables…» y «enables RLS on every table…» (V-1) | ✅ E-3 | ✅ |
+| CA-2 Corrección por el motor | `src/ingest/historico.ts` (`parseHistoricoArgs`, `planDaySync`), `src/ingest/historico-db.ts` (`historicoSync`, `applyDate`), `src/lib/explorer-client.ts` (`getDayMatchesRaw`), `tools/historico-sync.mjs` | `historico.db.test.ts` «finished 1-1 + Explorer FINISHED 2-1 → v2…; again, 0 rows», «a match with no Decision…»; `historico.test.ts` parseHistoricoArgs, planDaySync, «no INSERT into decisions from the tool»; `explorer-client.test.ts` getDayMatchesRaw | ⚠️ E-3..E-7, S-1 | ⚠️ |
+| CA-3 Goleadores | `historico.ts` (`completeGoals`, `replaceGoals`), `historico-db.ts` (`applyDate`) | `historico.db.test.ts` «LIVE_PROVISIONAL with goals: [] and FINISHED 1-0 without goals keep the stored goals»; `historico.test.ts` completeGoals y planDaySync | ✅ E-3, E-4, E-6 | ✅ |
+| CA-4 Dry-run revisable | `historico.ts` (`formatHistoricoReport`), `historico-db.ts` (`dryDate`) | `historico.test.ts` «prints one line per match with a change…»; `historico.db.test.ts` «0 rows in every table, nothing in the raw store…» | ✅ E-3, E-8 | ✅ |
+| CA-5 Fallos visibles | `historico.ts` (`parseExplorerDay`, `isAuthFailure`, `historicoFailed`), `historico-db.ts` (`realDate`, `AuthAbort`), `tools/historico-sync.mjs` (exit) | `historico.db.test.ts` «a 401 aborts in the act…», «an empty date fails…», «an invalid answer…»; `historico.test.ts` historicoFailed | ✅ E-3, E-9 | ✅ |
+| CA-6 Lectura pública | sin cambios de código: `web.xornada.goals` → `src/board/row.ts` → `MatchRow` | `e2e/xornada-goleadores-historico.db.spec.ts` | ✅ E-10 | ✅ |
+| CA-7 Gates | toda la rama | `npm run gates`, suite db (ver abajo) | ⚠️ E-1, E-2, S-2 | ⚠️ |
 
 ### Evidencia del implementador (enmienda)
 
@@ -92,3 +92,33 @@ Fallos ajenos de la suite db (23, presentes igual en la base): `engine.db.test.t
 ### Cómo retomar (handoff)
 
 Código: `src/ingest/historico.ts` (puro), `src/ingest/historico-db.ts` (BD), `tools/historico-sync.mjs` (shell). Verificar con la suite db contra Supabase local (comando de arriba) y el spec e2e:db. La ejecución real contra producción la lanza el titular, solo tras revisar `npm run historico:sync -- --dry-run`.
+
+## Veredicto del verificador (enmienda) — GREEN con salvedades (2026-11-09)
+
+Entorno: worktree `D:/src/tremen-dev/wt-060` en `4b2803c` (LF, `npm ci`), Supabase local (`127.0.0.1:54322`, `db reset --local` + competiciones antes y después), Node 22.19, Windows. Nada contra producción; sin `.env.local` en el worktree.
+
+| # | Comando | Salida clave |
+| :--- | :--- | :--- |
+| E-1 | `npm run typecheck` · `npm run lint` · `npx vitest run` · `npm run build` | limpio · `Checked 402 files … No fixes applied` · `1 failed \| 2305 passed \| 3 skipped`: solo `src/db/test-db.test.ts` «wins over a .env file in the cwd too» (spawnSync en Windows; fichero no tocado por la rama) · build completo |
+| E-2 | `npx vitest run --config vitest.db.config.mts` (BD recién reseteada) | `Tests 23 failed \| 225 passed (248)`; los 23 son exactamente la lista de fallos ajenos de arriba. Ninguno en `schema.db.test.ts` ni `historico.db.test.ts`. Ningún fichero fallido está en `git diff origin/main...HEAD` ni importa `historico*`; el cambio en `explorer-client.ts` es solo aditivo (`getDayMatchesRaw`) |
+| E-3 | ídem: `historico.db.test.ts` (7), `schema.db.test.ts`, `historico.test.ts` (19), `explorer-client.test.ts` (7) | todos ✓; tests no vacíos (asserts sobre filas, versión, regla, `raw_ref` legible, intento, alertas) |
+| E-4 | sonda propia `historicoSync` (rollback) en `tercera-rfef-g1`: v1 `finished 1-1` RN-01 sobre observación `rfef` + Explorer `FINISHED 2-1` con placeholder «Goleador Local»; y partido sin Decision con `FINISHED 0-0` | v2 `finished 2-1 confirmado operator`, `decided_at` = `observed_at` = instante de lectura (≠ kickoff); v1 `finished 0-0 operator`; `raw_ref` = la única clave del store; **0 alertas** pese al `rfef 1-1`; goles 2 válidos ≠ 3 → «(incompletos)», 0 filas en `match_goals` |
+| E-5 | sonda: segunda ejecución idéntica | `Sin cambios.`; observaciones, decisiones, goles y alertas iguales; `ingest_attempts` +1 y un crudo más (S-1) |
+| E-6 | sonda: `replay:jornada` (`replayJornadaFilas` + `replayJornada`) | ventana que incluye la lectura (hasta 2026-11-10): reproduce `finished 2-1` y `0-0`, sin corrección. Ventana solo del día del partido: propone `RN-02 finished 1-1` (ver R-1) |
+| E-7 | CLI real `npm run historico:sync -- --desde 2026-07-01 --hasta 2026-07-01` contra Explorer simulado en loopback y Storage local | exit 0; BD `obs 1→2, dec 1→2, goals 0→3, alerts 0, attempts 0→1, storage.objects 0→1`; intento `ok, observations 1, raw_ref` = el de la observación y presente en `storage.objects`; repetido: `Sin cambios.`, solo `attempts` y `storage.objects` +1 |
+| E-8 | CLI `--dry-run` con un cambio pendiente; CLI `--dry-run` sin argumentos | `2026-07-01 · tercera-rfef-g1 · J1 · Celta P–Osasuna P · finished 1-1 → 2-1 · goles 3 → 3`, listas, «Por jornada: tercera-rfef-g1 J1…», «Por competición…»; contadores y `storage.objects` idénticos antes/después · sin argumentos: `2026-08-14 → 2026-11-08` (ayer, Europe/Madrid) |
+| E-9 | CLI con Explorer que responde 401 (`--desde 2026-06-30 --hasta 2026-07-02`); CLI `--hasta 2026-11-09` | `Fechas fallidas (1): 2026-07-01 · [explorer] respuesta 401` + `Ejecución abortada…`, **exit 1**, 0 filas salvo el intento `ok=false` con crudo · `--hasta tiene que ser anterior a hoy (2026-11-09, Europe/Madrid)`, exit 1 |
+| E-10 | `npx playwright test` (config `playwright.db.config.ts` sin teardown, `screenshot: on`) `e2e/xornada-goleadores-historico.db.spec.ts` | `1 passed`; captura `_qa/SPEC-060/CA-6-acordeon-semana-pasada.png`: semana 30 out–2 nov, Athletic 2–1 Real Sociedad «Rematado», acordeón con «Aspas E2E 23'», «Swedberg E2E 85'» |
+| E-11 | `package.json` | `0.3.0` (origin/main) → `0.3.1`, `package-lock.json` coherente (patch, ADR-028) |
+
+### Salvedades aceptadas
+
+- **S-1 (CA-2, F-SPEC-060-1).** Coherente con la spec y el ADR: CA-2 (a) y ADR-031 §4 exigen intento + crudo en *cada* fecha consultada; el «no escribe nada» de (c) y ADR-031 §3 es por partido (observación, Decision). Las tablas de verdad (`observations`, `decisions`, `match_goals`, `alerts`) quedan a 0 filas (E-5, E-7). No es RED.
+- **S-2 (CA-7).** `npm run gates` no termina en verde en Windows por `src/db/test-db.test.ts` (ajeno, preexistente, fichero no tocado); typecheck, lint, resto de tests y build en verde por separado. Condición: CI (Linux) en verde en el PR.
+
+### Riesgos para la ejecución real (no bloquean)
+
+- **R-1** `replay:jornada --aplicar` con la ventana del día del partido no ve la observación del operador (`observed_at` = hoy) y propone devolver el marcador antiguo con `RN-02`. No usar `--aplicar` sobre jornadas corregidas sin una ventana que llegue hasta la corrección.
+- **R-2** El emparejado (`isMatchEqual`, `planDaySync` con `find`) es por subcadena de slug y no es exclusivo: dos partidos locales pueden emparejar el mismo de Explorer, y sin `canonicalCompetitionId` puede cruzar competiciones. El control es la revisión línea a línea del dry-run.
+- **R-3** Un partido `postponed`/`suspended` que Explorer dé `FINISHED` se cierra `operator · confirmado`; un `FINISHED 0-0` borra los goles guardados (suma = 0). Buscar `postponed →`, `suspended →` y `goles n → 0` en el dry-run.
+- **R-4** Cada re-ejecución añade un intento y un crudo por fecha (S-1); `informe:*`/`salud` aún no separan `operator` (F-SPEC-060-3).
