@@ -29,7 +29,8 @@ const RFEF = SourceId.parse("rfef");
 export const EXPORT_PATH = "/api/export/matches";
 
 // The contract of ADR-023 §4, as explorer serves it. Unknown fields are
-// tolerated (looseObject); a value outside the enum is not.
+// tolerated (looseObject); a value outside the enum is not. The two enums left
+// (estado, goals[].team) are domain and stay closed on purpose (SPEC-069).
 export const ExplorerStatus = z.enum([
   "SCHEDULED",
   "LIVE_PROVISIONAL",
@@ -72,7 +73,11 @@ export const ExplorerMatch = z.looseObject({
   canonicalCompetitionId: z.string().optional(),
   canonicalHomeTeamId: z.string().optional(),
   canonicalAwayTeamId: z.string().optional(),
-  liveProvider: z.enum(["marca", "rfef"]).optional(),
+  // The provider whose reading explorer arbitrated as the live one (SPEC-049).
+  // Informative only, and an open list (SPEC-069): "marca", "rfef", "espn",
+  // "football-data" are the known values, not a closed set. A new provider
+  // never rejects the export; an empty string is not a provider.
+  liveProvider: z.string().min(1).optional(),
   goals: z.array(ExplorerGoal).optional(),
   // Live minute and half-time (SPEC-052)
   minute: z.int().nullable().optional(),

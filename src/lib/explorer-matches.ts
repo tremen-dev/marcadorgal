@@ -37,7 +37,8 @@ export type TransformedMatch = {
   addedMinute: number | null;
   halfTime: boolean;
   goals: TransformedGoal[];
-  liveProvider?: "marca" | "rfef";
+  // Open list (SPEC-069): "marca", "rfef", "espn", "football-data", ...
+  liveProvider?: string;
 };
 
 export type GroupedCompetitionMatches = {
