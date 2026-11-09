@@ -1,9 +1,11 @@
 ---
 id: ADR-031
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-11-09, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-11-09, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # ADR-031: Back-fill histórico: Explorer manda en las jornadas pasadas y el operador corrige el cierre
 
