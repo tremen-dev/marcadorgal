@@ -2,11 +2,12 @@
 id: SPEC-069
 tipo: spec
 epica: EPIC-FIX
-estado: aprobada
+estado: en-progreso
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-09, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-11-09, por: Alberto Fojo}
+  - {estado: en-progreso, fecha: 2026-11-09, por: sdd-implementador}
 ---
 # SPEC-069 — La rfef acepta cualquier liveProvider de explorer
 
