@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 import { formatTime, type Locale, t } from "@/i18n";
 import {
-  isRecent,
-  pulseIterations,
   type RecentGoalClock,
   type RecentGoalMark,
   recentGoals,
