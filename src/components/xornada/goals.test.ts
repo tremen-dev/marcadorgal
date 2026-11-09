@@ -230,6 +230,60 @@ describe("SPEC-068 CA-3 penalty and own goal as a grey note", () => {
   });
 });
 
+describe("SPEC-068 CA-4 recent scorer", () => {
+  const now = Date.parse("2026-11-08T18:30:00.000Z");
+  const oneMinAgo = new Date(now - 60_000).toISOString() as Instant;
+  const recent: RecentGoalView = { now, minutes: 5, mark: "label" };
+  const row = mockRow({
+    homeScoredAt: oneMinAgo,
+    score: { home: 3, away: 1 } as Score,
+    goals: [
+      // Arrives out of order: the recent one is the last by minute, not
+      // the last to arrive.
+      { team: "home", player: "Ainhoa Marín", minute: 73 },
+      { team: "home", player: "Millene", minute: 23 },
+      { team: "away", player: "Alexia", minute: 45 },
+      { team: "home", player: "Tere Abelleira", minute: 60 },
+    ],
+  });
+
+  it("marks only the last line by minute of the side that just scored, with the GOL pill after the name", () => {
+    const html = render(row, "gl", recent);
+    const [homeBlock, awayBlock] = elements(html, "team-goals");
+    const homeLines = elements(homeBlock, "goal-line");
+    expect(homeLines.map((l) => attr(l, "data-recent"))).toEqual([
+      "false",
+      "false",
+      "true",
+    ]);
+    expect(text(elements(homeLines[2], "goal-player")[0])).toBe("Ainhoa Marín");
+    const badges = elements(homeLines[2], "recent-scorer-badge");
+    expect(badges).toHaveLength(1);
+    expect(text(badges[0])).toBe(gl.xornada.recentGoalLabel);
+    expect(homeLines[2].indexOf('data-testid="goal-player"')).toBeLessThan(
+      homeLines[2].indexOf('data-testid="recent-scorer-badge"'),
+    );
+    // One pulse per second left, so it stops on its own (SPEC-041 CA-4).
+    expect(badges[0]).toMatch(/animation-iteration-count:\s*240/);
+    // Nothing on the other lines nor on the other side.
+    expect(elements(homeLines[0], "recent-scorer-badge")).toHaveLength(0);
+    expect(elements(homeLines[1], "recent-scorer-badge")).toHaveLength(0);
+    for (const line of elements(awayBlock, "goal-line"))
+      expect(attr(line, "data-recent")).toBe("false");
+    expect(elements(awayBlock, "recent-scorer-badge")).toHaveLength(0);
+  });
+
+  it("marks nothing without a recent goal, nor once the window is over", () => {
+    for (const html of [
+      render(row, "gl"),
+      render(row, "gl", { ...recent, now: now + 6 * 60_000 }),
+    ]) {
+      expect(html).not.toContain('data-recent="true"');
+      expect(html).not.toContain('data-testid="recent-scorer-badge"');
+    }
+  });
+});
+
 describe("SPEC-056 kept: affordance, button role and localized label", () => {
   it("renders the affordance and the button role when the row has goals", () => {
     const html = render(mockRow({ goals: GOALS }));

@@ -1,5 +1,6 @@
 import { type Locale, t } from "@/i18n";
-import type { PublicGoal } from "@/model";
+import type { Instant, PublicGoal } from "@/model";
+import { isRecent, pulseIterations } from "@/xornada/recent-goal";
 import styles from "./TeamGoals.module.css";
 
 // SPEC-068: the scorers of one side, hung from their team. The position
@@ -17,6 +18,10 @@ type Props = {
   // Folded block (MatchRow): served closed, toggled by the row. Undefined
   // means always visible, without interaction (DirectosView).
   expanded?: boolean;
+  // CA-4 (SPEC-041, SPEC-056 CA-3): the side scored a little while ago. The
+  // instant its mark ends and the clock to read it with (the render's, then
+  // the browser's); the pill pulses once per second left.
+  recent?: { until: Instant; now: number } | null;
 };
 
 const cx = (...names: (string | false | undefined)[]): string =>
@@ -33,10 +38,20 @@ function kindKey(goal: PublicGoal) {
   return null;
 }
 
-export function TeamGoals({ team, goals, locale, id, expanded }: Props) {
+export function TeamGoals({
+  team,
+  goals,
+  locale,
+  id,
+  expanded,
+  recent = null,
+}: Props) {
   const own = sortGoals(goals.filter((g) => g.team === team));
   if (own.length === 0) return null;
   const folded = expanded !== undefined;
+  // CA-4: only the last line by minute of a side that just scored.
+  const marked =
+    recent !== null && isRecent(recent.until, recent.now) ? recent : null;
   return (
     <div
       id={id}
@@ -53,6 +68,8 @@ export function TeamGoals({ team, goals, locale, id, expanded }: Props) {
         <ul className={styles.list}>
           {own.map((g, idx) => {
             const kind = kindKey(g);
+            const isLast = idx === own.length - 1;
+            const scorer = isLast ? marked : null;
             return (
               <li
                 // biome-ignore lint/suspicious/noArrayIndexKey: goals have no id
@@ -60,6 +77,7 @@ export function TeamGoals({ team, goals, locale, id, expanded }: Props) {
                 className={styles.line}
                 data-testid="goal-line"
                 data-team={team}
+                data-recent={scorer !== null ? "true" : "false"}
               >
                 <span className={styles.minute} data-testid="goal-minute">
                   {g.minute}&apos;
@@ -70,6 +88,20 @@ export function TeamGoals({ team, goals, locale, id, expanded }: Props) {
                 {kind !== null && (
                   <span className={styles.kind} data-testid="goal-kind">
                     {t(locale, kind)}
+                  </span>
+                )}
+                {scorer !== null && (
+                  <span
+                    className={styles.badge}
+                    style={{
+                      animationIterationCount: pulseIterations(
+                        scorer.until,
+                        scorer.now,
+                      ),
+                    }}
+                    data-testid="recent-scorer-badge"
+                  >
+                    {t(locale, "xornada.recentGoalLabel")}
                   </span>
                 )}
               </li>

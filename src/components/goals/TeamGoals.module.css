@@ -79,6 +79,13 @@
   overflow-wrap: break-word;
 }
 
+/* CA-4: the scorer who just scored reads in --fg; the hierarchy is the
+   weight, never a state colour. */
+.line[data-recent="true"] .player {
+  font-weight: 500;
+  color: var(--fg);
+}
+
 /* CA-3: «(p.)» or «(p.p.)», mono, muted and upright: a note, not a state
    (ADR-005 keeps amber for what awaits a person). */
 .kind {
@@ -90,4 +97,51 @@
   line-height: 16px;
   font-style: normal;
   color: var(--fg-muted);
+}
+
+/* CA-4 (SPEC-056 CA-3): the «GOL» pill after the scorer's name, in ember
+   (the goal is a live event) with the brand ink; one 1 s pulse per second
+   left (the inline animation-iteration-count), so it stops on its own also
+   without JavaScript. */
+.badge {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  padding: 1px 4px;
+  border-radius: var(--radius-pill);
+  background: var(--directo);
+  color: var(--marca-ink);
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  animation-name: recent-scorer-pulse;
+  animation-duration: 1s;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes recent-scorer-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+}
+
+/* Reduced motion: the pill stays, fixed; the fold opens without transition. */
+@media (prefers-reduced-motion: reduce) {
+  .badge {
+    animation-name: none;
+  }
+
+  .folded {
+    transition: none;
+  }
 }

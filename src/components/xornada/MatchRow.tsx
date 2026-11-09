@@ -198,15 +198,22 @@ export function MatchRow({
     }
   };
 
-  const goals = (side: "home" | "away") => (
-    <TeamGoals
-      team={side}
-      goals={allGoals}
-      locale={locale}
-      id={goalsId(side)}
-      expanded={isExpanded}
-    />
-  );
+  // SPEC-068 CA-4: the side's mark, read with the browser's clock once it
+  // takes over (the render's at first, so the served HTML and the
+  // hydration agree).
+  const goals = (side: "home" | "away") => {
+    const until = recent[side];
+    return (
+      <TeamGoals
+        team={side}
+        goals={allGoals}
+        locale={locale}
+        id={goalsId(side)}
+        expanded={isExpanded}
+        recent={until === null ? null : { until, now: clock }}
+      />
+    );
+  };
 
   return (
     // biome-ignore lint/a11y/useAriaPropsSupportedByRole: when hasGoals is true, role is button which supports aria-expanded
