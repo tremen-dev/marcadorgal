@@ -26,7 +26,9 @@ import {
   shiftInstant,
 } from "../model/index.ts";
 import type { IngestDb, IngestTx, WindowRow } from "./db.ts";
+import { goalEvents } from "./goal-events.ts";
 import { admittedByEngine, forEngine } from "./live-observed-only.ts";
+import { queueSocialPosts } from "./social-outbox.ts";
 import type { AfterInsert } from "./tick.ts";
 
 // The adapter of the engine (N-2): src/decide/ does not know a database
@@ -158,13 +160,14 @@ const scoreOf = (draft: DecisionDraft) => ({
 });
 
 // version and id are never written: the trigger and the default put them
-// (ADR-006 §3), which is what keeps the engine replayable.
+// (ADR-006 §3), which is what keeps the engine replayable. Returns the id
+// the default gave (SPEC-066 CA-3: the outbox cites it).
 export async function insertDecision(
   sql: TransactionSql,
   draft: DecisionDraft,
-): Promise<void> {
+): Promise<string> {
   const { home, away } = scoreOf(draft);
-  await sql`insert into decisions
+  const [row] = await sql<{ id: string }[]>`insert into decisions
       (match_id, status, home_score, away_score, minute, added_minute,
        qualifier, rule, observation_ids, decided_at,
        home_source_id, away_source_id, forced_finish, half_time)
@@ -174,7 +177,9 @@ export async function insertDecision(
       ${sql.array(draft.observationIds as unknown as string[])}::uuid[],
       ${draft.decidedAt},
       ${draft.scoredBy?.home ?? null}, ${draft.scoredBy?.away ?? null},
-      ${draft.forcedFinish ?? null}, ${isHalfTime(draft)})`;
+      ${draft.forcedFinish ?? null}, ${isHalfTime(draft)})
+    returning id`;
+  return row.id;
 }
 
 // One open alert per (kind, match) while nobody resolves it, the four kinds
@@ -276,19 +281,23 @@ export async function decideMatches(
   // the order in which the rows are locked. web_reader cannot take it: it
   // has no privileges on matches (ADR-015 §1).
   const matches = await lockMatches(tx.sql, ids);
-  return decideLocked(tx, ids, matches, now, sources);
+  return decideLocked(tx, ids, matches, now, sources, true);
 }
 
 // The engine over rows already locked by this transaction (ADR-019 §1): the
 // three reads and the writes, at now, for ids (sorted, unique). decideMatches
 // takes the lock and calls it once; decideRecovered takes it once and calls
 // it per instant with the rows of that instant.
+// `social` (SPEC-066 CA-3, ADR-030 §1): only the live engine queues the goal
+// events of each Decision for the social outbox; the recovery (ADR-025 §4)
+// and the replay (ADR-019 §6) never do.
 async function decideLocked(
   tx: IngestTx,
   ids: readonly string[],
   matches: readonly MatchRow[],
   now: Instant,
   sources: readonly SourceConfig[],
+  social: boolean,
 ): Promise<EngineCounts> {
   const counts = empty();
   if (matches.length === 0) return counts;
@@ -356,8 +365,18 @@ async function decideLocked(
       now,
     });
     if (output.decision !== null) {
-      await insertDecision(sql, output.decision);
+      const decisionId = await insertDecision(sql, output.decision);
       counts.decisions += 1;
+      if (social)
+        await queueSocialPosts(
+          sql,
+          decisionId,
+          row.id,
+          goalEvents(
+            current === undefined ? null : toDecision(current),
+            output.decision,
+          ),
+        );
     }
     for (const alert of output.open)
       counts.alerts += await openAlert(sql, alert);
@@ -409,7 +428,7 @@ export async function decideRecovered(
     const rows = ids
       .map((id) => rowOf.get(id))
       .filter((row): row is MatchRow => row !== undefined);
-    const step = await decideLocked(tx, ids, rows, now, sources);
+    const step = await decideLocked(tx, ids, rows, now, sources, false);
     counts.matches += step.matches;
     counts.decisions += step.decisions;
     counts.alerts += step.alerts;

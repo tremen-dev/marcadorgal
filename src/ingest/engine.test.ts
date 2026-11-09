@@ -27,15 +27,23 @@ type Call = { text: string; values: unknown[] };
 // A tx.sql that records every statement and answers with canned rows: the
 // double of src/ingest/memory.ts leaves sql undefined on purpose, so the
 // shape of the SQL is proved here and its behaviour in engine.db.test.ts.
+const DECISION_ID = "00000000-0000-0000-0000-00000000d001";
+
 function fakeTx(rows: (text: string) => unknown[] = () => []) {
   const calls: Call[] = [];
   const sql = (strings: TemplateStringsArray, ...values: unknown[]) => {
     const text = strings.join("?").replace(/\s+/g, " ").trim();
     calls.push({ text, values });
-    return Promise.resolve(rows(text));
+    const answer = rows(text);
+    // insertDecision reads the id the default gave (SPEC-066 CA-3).
+    if (answer.length === 0 && text.startsWith("insert into decisions"))
+      return Promise.resolve([{ id: DECISION_ID }]);
+    return Promise.resolve(answer);
   };
   sql.array = (value: unknown) => value;
   sql.json = (value: unknown) => value;
+  // The savepoint of the social outbox (SPEC-066 CA-3) runs inline here.
+  sql.savepoint = (fn: (s: unknown) => unknown) => fn(sql);
   const tx: IngestTx = {
     sql: sql as unknown as TransactionSql,
     insertObservations: async () => {},

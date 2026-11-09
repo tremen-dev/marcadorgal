@@ -1,15 +1,18 @@
 import type { TransactionSql } from "postgres";
-import { afterAll, describe, expect, it } from "vitest";
+import { afterAll, describe, expect, it, vi } from "vitest";
 import {
   type Instant,
+  type MatchId,
   MINUTE_MS,
   type Observation,
   shiftInstant,
 } from "@/model";
 import { createSql } from "../db/connect.ts";
+import type { DecisionDraft } from "../decide/index.ts";
 import { SOURCES } from "../sources/registry.ts";
 import { createIngestDb, type IngestTx } from "./db.ts";
-import { decideMatches, decideRecovered } from "./engine.ts";
+import { decideMatches, decideRecovered, insertDecision } from "./engine.ts";
+import { aplicarCorrecciones } from "./replay-jornada-db.ts";
 
 // CA-11: the engine against the real schema, always rolled back.
 const sql = createSql(process.env);
@@ -576,6 +579,7 @@ afterAll(async () => {
     await sqlC.begin(async (tx) => {
       await tx`set local session_replication_role = replica`;
       const ids = tx.array(committed);
+      await tx`delete from social_posts where match_id = any(${ids})`;
       await tx`delete from decisions where match_id = any(${ids})`;
       await tx`delete from alerts where match_id = any(${ids})`;
       await tx`delete from observations where match_id = any(${ids})`;
@@ -995,5 +999,210 @@ describe("SPEC-044 CA-4 decideRecovered through the database", () => {
       };
       expect(await decidedAt(a)).toBe(SEEN);
       expect(await decidedAt(b)).toBe(SEEN_LATER);
+    }));
+});
+
+// SPEC-066 CA-3 (ADR-030 §1-§2): the outbox is written with the Decision, in
+// decideLocked and only there. The rfef decides confirmado (priority 50).
+const observeRfef = async (
+  tx: TransactionSql,
+  matchId: string,
+  home: number,
+  away: number,
+  minute: number,
+  observedAt: Instant,
+): Promise<string> => {
+  const [row] = await tx<{ id: string }[]>`
+    insert into observations (match_id, source_id, status, home_score, away_score,
+      minute, observed_at, received_at, raw_ref)
+    values (${matchId}, 'rfef', 'live', ${home}, ${away}, ${minute},
+      ${observedAt}, ${observedAt}, 'raw/2026-11-07/rfef/x.json.gz')
+    returning id`;
+  return row.id;
+};
+
+const socialPosts = (q: TransactionSql | typeof sql, matchId: string) =>
+  q<
+    {
+      decision_id: string;
+      side: string;
+      kind: string;
+      status: string;
+      attempts: number;
+      text: string | null;
+    }[]
+  >`select decision_id, side, kind, status, attempts, text from social_posts
+     where match_id = ${matchId} order by created_at, side`;
+
+const currentDecisionId = async (
+  q: TransactionSql | typeof sql,
+  matchId: string,
+): Promise<string> => {
+  const [row] = await q<{ id: string }[]>`select id from decisions
+    where match_id = ${matchId} order by version desc limit 1`;
+  return row.id;
+};
+
+describe("SPEC-066 CA-3 the outbox is written with the Decision", () => {
+  it("one pending row per goal event, citing the new Decision", () =>
+    rollback(async (tx) => {
+      const matchId = await seedMatch(tx);
+      const tick = engineTx(tx);
+      await observeRfef(tx, matchId, 0, 0, 1, at(-1));
+      await decideMatches(tick, [matchId], at(0), SOURCES);
+      expect(await socialPosts(tx, matchId)).toEqual([]);
+
+      await observeRfef(tx, matchId, 1, 0, 20, at(1));
+      expect(
+        await decideMatches(tick, [matchId], at(1), SOURCES),
+      ).toMatchObject({ decisions: 1 });
+      const goal = await currentDecisionId(tx, matchId);
+      expect(await socialPosts(tx, matchId)).toEqual([
+        {
+          decision_id: goal,
+          side: "home",
+          kind: "goal",
+          status: "pending",
+          attempts: 0,
+          text: null,
+        },
+      ]);
+
+      // Two goals in one Decision: two rows. Then the home goal is annulled.
+      await observeRfef(tx, matchId, 2, 1, 40, at(2));
+      await decideMatches(tick, [matchId], at(2), SOURCES);
+      const two = await currentDecisionId(tx, matchId);
+      await observeRfef(tx, matchId, 1, 1, 41, at(3));
+      await decideMatches(tick, [matchId], at(3), SOURCES);
+      const annulled = await currentDecisionId(tx, matchId);
+      expect(
+        (await socialPosts(tx, matchId)).map((r) => [
+          r.decision_id,
+          r.side,
+          r.kind,
+        ]),
+      ).toEqual([
+        [goal, "home", "goal"],
+        [two, "home", "goal"],
+        [two, "away", "goal"],
+        [annulled, "home", "goal_annulled"],
+      ]);
+      // The tick that writes no Decision writes no row either.
+      await decideMatches(tick, [matchId], at(4), SOURCES);
+      expect(await socialPosts(tx, matchId)).toHaveLength(4);
+    }));
+
+  it("two concurrent engines over the same goal leave one row (SPEC-035)", async () => {
+    const [m] = await seedCommitted(1);
+    await sqlC.begin((tx) => observeRfef(tx, m, 0, 0, 1, at(-1)));
+    await dbC.transaction((tx) => decideMatches(tx, [m], at(0), SOURCES));
+    await sqlC.begin((tx) => observeRfef(tx, m, 1, 0, 20, at(1)));
+
+    const a = holdOpen(dbA, (tx) => decideMatches(tx, [m], at(1), SOURCES));
+    let b: Promise<unknown> = Promise.resolve();
+    try {
+      expect(await a.ran).toMatchObject({ decisions: 1 });
+      const pid = deferred<number>();
+      b = dbB.transaction(async (tx) => {
+        pid.resolve(await pidOf(tx));
+        return decideMatches(tx, [m], shiftInstant(at(1), 3000), SOURCES);
+      });
+      await waitUntilBlocked(await pid.promise);
+    } finally {
+      a.release();
+      await a.done;
+    }
+    expect(await b).toMatchObject({ decisions: 0 });
+    const rows = await socialPosts(sqlC, m);
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({ side: "home", kind: "goal" });
+  });
+
+  it("decideRecovered writes the Decision and no row (ADR-025 §4)", () =>
+    rollback(async (tx) => {
+      const matchId = await seedMatch(tx);
+      await observeRfef(tx, matchId, 0, 0, 1, at(-1));
+      await decideMatches(engineTx(tx), [matchId], at(0), SOURCES);
+      const id = await observeRfef(tx, matchId, 1, 0, 20, at(1));
+      const observation = {
+        id,
+        matchId,
+        sourceId: "rfef",
+        status: "live",
+        score: { home: 1, away: 0 },
+        minute: 20,
+        addedMinute: null,
+        observedAt: at(1),
+        receivedAt: at(1),
+        rawRef: "raw/2026-11-07/rfef/x.json.gz",
+      } as unknown as Observation;
+      expect(
+        await decideRecovered(engineTx(tx), [observation], SOURCES),
+      ).toMatchObject({ decisions: 1 });
+      expect(await socialPosts(tx, matchId)).toEqual([]);
+    }));
+
+  it("replay:jornada --aplicar writes the correction and no row (ADR-019 §6)", () =>
+    rollback(async (tx) => {
+      const matchId = await seedMatch(tx);
+      await observeRfef(tx, matchId, 0, 0, 1, at(-1));
+      await decideMatches(engineTx(tx), [matchId], at(0), SOURCES);
+      const id = await observeRfef(tx, matchId, 1, 0, 20, at(1));
+      const correction = {
+        matchId,
+        status: "live",
+        score: { home: 1, away: 0 },
+        minute: 20,
+        addedMinute: null,
+        qualifier: "confirmado",
+        rule: "RN-01",
+        observationIds: [id],
+        decidedAt: at(1),
+        scoredBy: { home: "rfef", away: "rfef" },
+        forcedFinish: false,
+      } as unknown as DecisionDraft;
+      expect(
+        await aplicarCorrecciones(tx, [
+          {
+            matchId: matchId as MatchId,
+            board: { status: "live", score: { home: 0, away: 0 } },
+            replay: { status: "live", score: { home: 1, away: 0 } },
+            divergent: true,
+            correction,
+            liveTicks: 0,
+          },
+        ]),
+      ).toBe(1);
+      // insertDecision alone never queues anything either.
+      await insertDecision(tx, { ...correction, decidedAt: at(2) });
+      expect(
+        await tx`select 1 from decisions where match_id = ${matchId}`,
+      ).toHaveLength(3);
+      expect(await socialPosts(tx, matchId)).toEqual([]);
+    }));
+
+  it("with the outbox gone, the Decision is written and the error is one log line", () =>
+    rollback(async (tx) => {
+      const matchId = await seedMatch(tx);
+      const tick = engineTx(tx);
+      await observeRfef(tx, matchId, 0, 0, 1, at(-1));
+      await decideMatches(tick, [matchId], at(0), SOURCES);
+      await tx`alter table social_posts rename to social_posts_gone`;
+      const error = vi.spyOn(console, "error").mockImplementation(() => {});
+      try {
+        await observeRfef(tx, matchId, 1, 0, 20, at(1));
+        expect(
+          await decideMatches(tick, [matchId], at(1), SOURCES),
+        ).toMatchObject({ decisions: 1 });
+        expect(error).toHaveBeenCalledTimes(1);
+        const line = String(error.mock.calls[0][0]);
+        expect(line).not.toContain("\n");
+        expect(line).toMatch(/social_posts/);
+      } finally {
+        error.mockRestore();
+      }
+      const [row] = await tx`select home_score from decisions
+        where match_id = ${matchId} order by version desc limit 1`;
+      expect(row.home_score).toBe(1);
     }));
 });
