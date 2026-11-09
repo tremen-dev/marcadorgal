@@ -59,6 +59,17 @@ export type AttemptSummary = {
   recovered?: RecoverySummary;
 };
 
+// The counters of the social dispatch (SPEC-066 CA-11, ADR-030 §3). The
+// shape of src/social/dispatch.ts SocialCounts, declared here because the
+// ingest never imports src/social (CA-12): the route wires both.
+export type SocialCounts = {
+  sent: number;
+  failed: number;
+  retried: number;
+  expired: number;
+  skipped: number;
+};
+
 export type TickSummary = {
   now: Instant;
   inWindow: number;
@@ -66,6 +77,8 @@ export type TickSummary = {
   attempts: AttemptSummary[];
   engine?: EngineCounts;
   engineError?: string;
+  social?: SocialCounts;
+  socialError?: string;
 };
 
 // Where the engine plugs in (ADR-008 §6, N-11): inside the same transaction
@@ -83,6 +96,11 @@ export type AfterInsert = (
 // RN-02 are born of the absence of observations, not of their arrival.
 export type EngineSweep = (matches: WindowRow[]) => Promise<EngineCounts>;
 
+// The third hook (SPEC-066 CA-11, ADR-030 §3): the social dispatch, after
+// the sweep, outside every transaction of the engine and in every tick,
+// window or not. The route wires it; npm run ingest:tick does not.
+export type SocialDispatch = () => Promise<SocialCounts>;
+
 export type TickInput = {
   db: IngestDb;
   store: RawStore;
@@ -92,6 +110,7 @@ export type TickInput = {
   now: Instant;
   afterInsert?: AfterInsert;
   sweep?: EngineSweep;
+  social?: SocialDispatch;
 };
 
 const toWindowMatch = ({
@@ -132,10 +151,26 @@ const emptySummary = (
 // report of the matchday has to explain every not ok row (SPEC-009 CA-7).
 const oneLine = (text: string): string => text.replace(/\s+/g, " ").trim();
 
-// One tick: retention, window, and one attempt per pull source and season.
-// Nothing is asked of a provider outside the window (RN-08) and the clock is
-// never read here: now arrives from the route or the CLI (ADR-008 §7).
+// One tick: retention, window, one attempt per pull source and season, the
+// sweep and, last, the social dispatch (SPEC-066 CA-11), which runs whether
+// or not anything was in window. Nothing is asked of a provider outside the
+// window (RN-08) and the clock is never read here: now arrives from the route
+// or the CLI (ADR-008 §7).
 export async function runTick(input: TickInput): Promise<TickSummary> {
+  const summary = await runIngest(input);
+  // Its failure is a line of the summary and of the row (ADR-030 §3), never
+  // the tick's: the Decisions are already committed when it starts.
+  if (input.social !== undefined) {
+    try {
+      summary.social = await input.social();
+    } catch (e) {
+      summary.socialError = errorMessage(e);
+    }
+  }
+  return summary;
+}
+
+async function runIngest(input: TickInput): Promise<TickSummary> {
   const { db, store, sources, now, sweep } = input;
   const purge = await purgeRaw({ db, store, now });
   const matches = await db.windowMatches(now);

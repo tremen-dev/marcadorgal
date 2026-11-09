@@ -1806,3 +1806,97 @@ describe("SPEC-044 CA-5 the tick with recovery", () => {
     expect(db.log.filter((l) => l.startsWith("recoveryMatches"))).toEqual([]);
   });
 });
+
+// SPEC-066 CA-11 (ADR-030 §3): the third hook, the social dispatch, after
+// the sweep and in every tick, window or not. Its failure is a line of the
+// summary, never the tick's.
+describe("SPEC-066 CA-11 the social dispatch", () => {
+  const counts = { sent: 1, failed: 0, retried: 0, expired: 2, skipped: 3 };
+
+  it("runs in a tick with nothing in window and reports its counters", async () => {
+    const { db, store } = harness();
+    const social = vi.fn(async () => counts);
+    const summary = await runTick({
+      db,
+      store,
+      sources: [PRIMERA],
+      adapterFor: () => stubAdapter(),
+      fetch: forbiddenFetch,
+      now: NOW,
+      social,
+    });
+    expect(summary.inWindow).toBe(0);
+    expect(social).toHaveBeenCalledTimes(1);
+    expect(summary.social).toEqual(counts);
+    expect(summary.socialError).toBeUndefined();
+  });
+
+  it("runs after the sweep, outside every transaction, with matches in window", async () => {
+    const log: string[] = [];
+    const { db, store } = harness({ log });
+    db.matches = [match("m1", "primera-division")];
+    const summary = await runTick({
+      db,
+      store,
+      sources: [PRIMERA],
+      adapterFor: () => stubAdapter({ log }),
+      fetch: forbiddenFetch,
+      now: NOW,
+      sweep: async () => {
+        log.push("sweep");
+        return { matches: 1, decisions: 0, alerts: 0, resolved: 0 };
+      },
+      social: async () => {
+        log.push("social");
+        return counts;
+      },
+    });
+    expect(log.indexOf("social")).toBe(log.length - 1);
+    expect(log.indexOf("sweep")).toBe(log.length - 2);
+    expect(log.filter((l) => l === "begin").length).toBe(
+      log.filter((l) => l === "commit").length,
+    );
+    expect(summary.social).toEqual(counts);
+  });
+
+  it("never brings the tick down when it throws: the attempts and the sweep stand", async () => {
+    const { db, store } = harness();
+    db.matches = [match("m1", "primera-division")];
+    const engine = { matches: 1, decisions: 1, alerts: 0, resolved: 0 };
+    const summary = await runTick({
+      db,
+      store,
+      sources: [PRIMERA],
+      adapterFor: () => stubAdapter(),
+      fetch: forbiddenFetch,
+      now: NOW,
+      sweep: async () => engine,
+      social: async () => {
+        throw new Error("relation social_posts does not exist");
+      },
+    });
+    expect(summary.socialError).toBe("relation social_posts does not exist");
+    expect(summary.social).toBeUndefined();
+    expect(summary.engine).toEqual(engine);
+    expect(summary.attempts[0]).toMatchObject({ ok: true });
+  });
+
+  it("without the hook (npm run ingest:tick) nothing is dispatched", async () => {
+    const { db, store } = harness();
+    const summary = await runTick({
+      db,
+      store,
+      sources: [PRIMERA],
+      adapterFor: () => stubAdapter(),
+      fetch: forbiddenFetch,
+      now: NOW,
+    });
+    expect(summary.social).toBeUndefined();
+    expect(summary.socialError).toBeUndefined();
+    const cli = readFileSync(
+      new URL("../../tools/ingest-tick.mjs", import.meta.url),
+      "utf8",
+    );
+    expect(cli).not.toMatch(/social/i);
+  });
+});

@@ -66,7 +66,7 @@ Actualizado: 2026-11-09
 | SPEC-032 — calibracion-de-la-cadencia-sostenible-de-la-rfef-con-una-identidad-estable | hecho | 2026-10-18 (sdd-verificador) |
 | SPEC-036 — vias-legitimas-de-acceso-a-los-datos-de-la-rfef | hecho | 2026-10-18 (sdd-verificador) |
 | SPEC-038 — alta-de-la-fuente-rfef-via-explorer-adaptador-pull-sobre-el-export-alias-y-registro-con-prioridad-5 | hecho | 2026-11-02 (sdd-verificador) |
-| SPEC-039 — jornada-de-observacion-de-la-rfef-via-explorer-con-prioridad-5 | aprobada | 2026-11-01 (Alberto Fojo) |
+| SPEC-039 — jornada-de-observacion-de-la-rfef-via-explorer-con-prioridad-5 | hecho | 2026-11-09 (sdd-verificador) |
 | SPEC-049 — calendario-desde-explorer-y-retirada-de-api-football | hecho | 2026-11-06 (sdd-implementador) |
 | SPEC-052 — minuto-y-descanso-desde-explorer | hecho | 2026-11-07 (sdd-verificador) |
 | SPEC-053 — ampliar-ventana-live-explorer | hecho | 2026-11-07 (sdd-implementador) |
@@ -79,6 +79,13 @@ Actualizado: 2026-11-09
 |---|---|---|
 | SPEC-037 — estudio-de-mercado-del-patrocinio-por-jornada | hecho | 2026-10-18 (sdd-verificador) |
 
+## EPIC-007 — redes-goles-en-directo-en-x (aprobada)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
+| SPEC-066 — goles-a-la-cola-de-redes-deteccion-outbox-publicador-con-doble-plantillas-y-configuracion | hecho | 2026-11-09 (sdd-verificador) |
+| SPEC-067 — publicador-de-buffer-cliente-graphql-sonda-contra-la-api-real-y-encendido | borrador | 2026-11-09 (sdd-arquitecto) |
+
 ## EPIC-FIX (aprobada)
 
 | Spec | Estado | Último cambio |
@@ -89,7 +96,7 @@ Actualizado: 2026-11-09
 | SPEC-030 — la-portada-sirve-una-instantanea-isr-antigua | hecho | 2026-10-12 (sdd-verificador) |
 | SPEC-044 — recuperacion-de-finales-fuera-de-ventana-por-la-rfef-herramienta-de-recuperacion-y-horizonte-por-fuente | hecho | 2026-11-02 (sdd-verificador) |
 | SPEC-045 — cabos-sueltos-de-la-xornada-diseno-de-escritorio-contexto-nombres-de-competicion-y-suites-con-base | hecho | 2026-11-03 (sdd-verificador) |
-| SPEC-048 — la-rfef-observa-sin-decidir-el-directo-de-primera-y-segunda-division | en-revision | 2026-11-03 (sdd-implementador) |
+| SPEC-048 — la-rfef-observa-sin-decidir-el-directo-de-primera-y-segunda-division | hecho | 2026-11-09 (sdd-verificador) |
 | SPEC-069 — la-rfef-acepta-cualquier-liveprovider-de-explorer | en-revision | 2026-11-09 (sdd-implementador) |
 
 ## EPIC-MANT — mantenimiento (borrador)
@@ -137,12 +144,12 @@ Actualizado: 2026-11-09
 | ADR-027 | aprobada | una-fuente-puede-observar-el-directo-de-una-competicion-sin-decidirlo | 2026-11-03 (Alberto Fojo) |
 | ADR-028 | borrador | cada-pr-sube-la-version-de-la-app-exigido-por-un-gate-de-ci | 2026-11-08 (sdd-arquitecto) |
 | ADR-029 | aprobada | celeste-de-galicia-como-color-de-marca-y-barra-sola-como-icono-enmienda-adr-005 | 2026-11-08 (Alberto Fojo) |
+| ADR-030 | aprobada | integracion-saliente-de-redes-outbox-de-goles-en-la-transaccion-del-motor-y-publicador-al-final-del-tick | 2026-11-09 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 56
-- en-revision: 4
-- borrador: 2
+- hecho: 59
+- en-revision: 3
+- borrador: 3
 - feito: 1
 - implementada: 2
-- aprobada: 1

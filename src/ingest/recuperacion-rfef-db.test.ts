@@ -191,8 +191,10 @@ function world() {
     }
     if (text.startsWith("insert into decisions")) {
       decisions.push(values);
-      ids.set(values, crypto.randomUUID());
-      return [];
+      const id = crypto.randomUUID();
+      ids.set(values, id);
+      // returning id (SPEC-066 CA-3).
+      return [{ id }];
     }
     if (text.startsWith("insert into alerts")) {
       const key = `${values[0]}|${values[1]}`;
@@ -209,6 +211,7 @@ function world() {
   };
   sql.array = (value: unknown) => value;
   sql.json = (value: unknown) => value;
+  sql.savepoint = (fn: (s: unknown) => unknown) => fn(sql);
   // The memory tx leaves sql undefined: here the engine gets the double.
   const transaction = db.transaction.bind(db);
   db.transaction = (fn) =>

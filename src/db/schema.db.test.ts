@@ -68,7 +68,8 @@ const decision = (
 afterAll(() => sql.end());
 
 describe("CA-9 schema", () => {
-  it("has the ten tables and no timestamp without time zone", async () => {
+  // The ten of SPEC-002, match_goals (SPEC-060) and social_posts (SPEC-066).
+  it("has the twelve tables and no timestamp without time zone", async () => {
     const tables = await sql`select table_name from information_schema.tables
       where table_schema = 'public' and table_type = 'BASE TABLE' order by table_name`;
     expect(tables.map((t) => t.table_name)).toEqual([
@@ -77,9 +78,11 @@ describe("CA-9 schema", () => {
       "competitions",
       "decisions",
       "ingest_attempts",
+      "match_goals",
       "matches",
       "observations",
       "raw_purges",
+      "social_posts",
       "team_aliases",
       "teams",
     ]);
@@ -149,9 +152,14 @@ describe("CA-10 append-only and version", () => {
       }
     }));
 
+  // social_posts references decisions (SPEC-066 CA-1): truncating decisions
+  // alone is refused by the foreign key before the trigger speaks, so both
+  // go in one statement and the append-only trigger is what answers.
   it("rejects truncate", async () => {
     await expect(sql`truncate observations`).rejects.toThrow(/append-only/);
-    await expect(sql`truncate decisions`).rejects.toThrow(/append-only/);
+    await expect(sql`truncate decisions, social_posts`).rejects.toThrow(
+      /append-only/,
+    );
   });
 
   it("assigns version 1 and 2 when it is not given", () =>
@@ -292,9 +300,11 @@ describe("CA-12 extensions and RLS", () => {
       competitions: 0,
       decisions: 0,
       ingest_attempts: 0,
+      match_goals: 0,
       matches: 0,
       observations: 0,
       raw_purges: 0,
+      social_posts: 0,
       team_aliases: 0,
       teams: 0,
     });

@@ -1,3 +1,4 @@
+import { createSocialDispatch } from "@/app/social";
 import { nowInstant } from "@/clock";
 import { getSql } from "@/db/client";
 import { adapterFor } from "@/ingest/adapters";
@@ -8,6 +9,7 @@ import { createTickHandler } from "@/ingest/handler";
 import { runTick } from "@/ingest/tick";
 import { rawStoreEnv } from "@/raw/env";
 import { createStorageRawStore } from "@/raw/store";
+import { createSocialDb } from "@/social/db";
 import { SOURCES } from "@/sources/registry";
 
 // node:zlib, postgres.js and node:fs rule out the Edge runtime (ADR-008).
@@ -25,7 +27,8 @@ export const maxDuration = 60;
 export const POST = createTickHandler({
   authorize: (header) => authorizeTick(header, process.env, nowInstant()),
   run: (now) => {
-    const db = createIngestDb(getSql());
+    const sql = getSql();
+    const db = createIngestDb(sql);
     return runTick({
       db,
       store: createStorageRawStore({ ...rawStoreEnv(process.env), fetch }),
@@ -36,6 +39,10 @@ export const POST = createTickHandler({
       // The engine runs twice (H-2): on what arrives and on what does not.
       afterInsert: createEngineHook(SOURCES, now),
       sweep: createEngineSweep(db, SOURCES, now),
+      // The third hook (SPEC-066 CA-11, ADR-030 §3): the social dispatch,
+      // after the sweep and in every tick, dry while SOCIAL_PUBLISHER names
+      // no publisher of the registry.
+      social: createSocialDispatch(process.env, createSocialDb(sql), now),
     });
   },
 });
