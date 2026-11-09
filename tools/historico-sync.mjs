@@ -1,16 +1,34 @@
 #!/usr/bin/env node
-// tools/historico-sync.mjs (SPEC-060 CA-2)
-// Ingesta e sincronización histórica de resultados finais e goleadores.
-// One-time back-fill tool: execución manual para consolidar datos desde a
-// xornada 1 ata a data actual sen custo engadido.
+// Back-fill of the matchdays already played from Explorer (SPEC-060,
+// ADR-031): a manual tool the titular runs after reviewing the dry run, never
+// periodic. The shell and nothing more: the plan and the report are
+// src/ingest/historico.ts and every statement src/ingest/historico-db.ts.
+// Per date: one attempt of the operator, the raw of Explorer stored before it
+// is parsed (the seven days of its window ±3, SPEC-071), and the operator
+// observations + the engine at the instant of
+// the reading + the goals, in one transaction. No Decision is written here.
 //
 // Usage: npm run historico:sync -- [--desde <YYYY-MM-DD>] [--hasta <YYYY-MM-DD>] [--dry-run]
-import postgres from "postgres";
+//   --desde    default 2026-08-14
+//   --hasta    default yesterday (Europe/Madrid); today or later is refused
+//   --dry-run  the same GETs and the same report; writes no row and no raw
+// Exit != 0 if any date failed (listed at the end) or a 401/403 aborted.
 import { seasonOf } from "../src/board/current.ts";
-import { sqlOptionsFor } from "../src/db/connect.ts";
+import { nowInstant } from "../src/clock.ts";
+import { createSql } from "../src/db/connect.ts";
 import { loadAliasFile } from "../src/ingest/aliases.ts";
-import { parseHistoricoArgs, HISTORICO_USAGE } from "../src/ingest/historico.ts";
+import { createIngestDb } from "../src/ingest/db.ts";
+import {
+  formatHistoricoReport,
+  HISTORICO_USAGE,
+  historicoFailed,
+  parseHistoricoArgs,
+} from "../src/ingest/historico.ts";
 import { historicoSync } from "../src/ingest/historico-db.ts";
+import { getDayMatchesRaw } from "../src/lib/explorer-client.ts";
+import { rawStoreEnv } from "../src/raw/env.ts";
+import { createStorageRawStore } from "../src/raw/store.ts";
+import { SOURCES } from "../src/sources/registry.ts";
 
 for (const envFile of [".env.local", ".env"]) {
   try {
@@ -25,94 +43,43 @@ const message = (e) => (e instanceof Error ? e.message : String(e));
 
 let args;
 try {
-  args = parseHistoricoArgs(process.argv.slice(2));
+  args = parseHistoricoArgs(process.argv.slice(2), nowInstant());
 } catch (e) {
   console.error(`${message(e)}\n${HISTORICO_USAGE}`);
   process.exit(1);
 }
 
-const url = process.env.DATABASE_URL;
-if (!url) {
+if (!process.env.DATABASE_URL) {
   console.error("DATABASE_URL is not set");
   process.exit(1);
 }
 
-const token =
-  process.env.RFEF_EXPLORER_TOKEN ||
-  process.env.EXPLORER_API_KEY ||
-  process.env.EXPLORER_TOKEN;
-
-if (!token) {
-  console.warn(
-    "[historico:sync] Aviso: RFEF_EXPLORER_TOKEN / EXPLORER_TOKEN non está configurado no contorno.",
-  );
-}
-
-const sql = postgres(url, {
-  ...sqlOptionsFor(url),
-  max: 2,
-  idle_timeout: 20,
-  connect_timeout: 10,
-});
-
-async function main() {
-  console.log(
-    `[historico:sync] Iniciando sincronización histórica (${args.desde} ata ${args.hasta})${
-      args.dryRun ? " [DRY-RUN]" : ""
-    }...`,
-  );
-
-  try {
+const sql = createSql(process.env);
+try {
+  const report = await historicoSync({
+    sql,
+    db: createIngestDb(sql),
+    store: args.dryRun
+      ? null
+      : createStorageRawStore({ ...rawStoreEnv(process.env), fetch }),
+    fetchDay: (date) => getDayMatchesRaw(date),
     // SPEC-070: the identity of the rfef adapter, alias of the season of
     // each date (codGrupo -> competition, name -> team).
-    const aliasesFor = (date) =>
-      loadAliasFile(seasonOf(`${date}T12:00:00Z`), "rfef");
-    const report = await historicoSync(sql, args, undefined, aliasesFor);
+    aliasesFor: (date) => loadAliasFile(seasonOf(`${date}T12:00:00Z`), "rfef"),
+    clock: nowInstant,
+    sources: SOURCES,
+    args,
+    progress: (line) => console.error(`[historico:sync] ${line}`),
+  });
 
-    console.log("\n=======================================================");
-    console.log(
-      `Resumo de sincronización histórica${args.dryRun ? " (DRY-RUN - Sen escrituras)" : ""}:`,
-    );
-    console.log(`  Datas procesadas:       ${report.datesProcessed}`);
-    console.log(`  Partidos analizados:    ${report.matchesScanned}`);
-    console.log(`  Partidos consolidados:  ${report.matchesConsolidated}`);
-    console.log(`  Goles rexistrados:      ${report.goalsRecorded}`);
-    console.log("-------------------------------------------------------");
-    console.log("Desglose por competición:");
-    for (const [comp, stats] of Object.entries(report.detailsByCompetition)) {
-      console.log(
-        `  - ${comp.padEnd(20)}: ${String(stats.matches).padStart(3)} partidos | ${String(
-          stats.goals,
-        ).padStart(3)} goles`,
-      );
-    }
-    console.log("-------------------------------------------------------");
-    console.log(`  Partidos emparejados:   ${report.matchesPaired}`);
-    console.log(`  Sen emparejar:          ${report.matchesUnpaired}`);
-    console.log(`  Ambiguos:               ${report.matchesAmbiguous}`);
-    // SPEC-071 CA-4: paired with a row of another day of the window (±3).
-    console.log(`  Noutro día (±3):        ${report.matchesOtherDay}`);
-    console.log(
-      "Emparejados (fecha [→ fecha da fila] · matchId · codActa · local–visitante · marcador · goles):",
-    );
-    for (const line of report.pairedLines) console.log(`  ${line}`);
-    console.log("Sen emparejar (fecha · matchId · causa):");
-    for (const u of report.unpaired)
-      console.log(`  ${u.date} · ${u.matchId} · ${u.reason}`);
-    console.log("Ambiguos (fecha · matchId · candidatas):");
-    for (const a of report.ambiguous)
-      console.log(
-        `  ${a.date} · ${a.matchId} · ${a.candidates
-          .map((c) => `${c.codActa ?? "sen acta"} ${c.home ?? "?"}–${c.away ?? "?"}`)
-          .join("; ")}`,
-      );
-    console.log("=======================================================\n");
-  } catch (err) {
-    console.error("[historico:sync] Erro durante a execución:", err);
-    process.exitCode = 1;
-  } finally {
-    await sql.end({ timeout: 5 });
-  }
+  console.log(
+    `historico:sync ${args.desde} → ${args.hasta}${args.dryRun ? " (en seco: no se escribe nada)" : ""} · ${report.datesProcessed} fechas con partidos`,
+  );
+  for (const line of formatHistoricoReport(report)) console.log(line);
+  if (historicoFailed(report)) process.exitCode = 1;
+} catch (e) {
+  console.error(message(e));
+  process.exitCode = 1;
+} finally {
+  await sql.end({ timeout: 5 });
 }
-
-main();

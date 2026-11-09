@@ -176,6 +176,36 @@ export async function getDayMatches(
   );
 }
 
+// The same request as getDayMatches, unparsed, whatever the status (SPEC-060,
+// ADR-031 §4): the caller keeps the raw before it reads it. The token goes
+// only in the header, never in the url that is stored.
+export type ExplorerRawResponse = {
+  url: string;
+  status: number;
+  contentType: string | null;
+  body: string;
+};
+
+export async function getDayMatchesRaw(
+  date: string,
+  customFetch: typeof fetch = fetch,
+): Promise<ExplorerRawResponse> {
+  const url = new URL("/api/export/matches", getExplorerUrl());
+  url.searchParams.set("date", date);
+  const res = await customFetch(url.toString(), {
+    headers: {
+      Authorization: `Bearer ${getApiToken()}`,
+      Accept: "application/json",
+    },
+  });
+  return {
+    url: url.toString(),
+    status: res.status,
+    contentType: res.headers.get("content-type"),
+    body: await res.text(),
+  };
+}
+
 // 3. Clasificación
 export async function getStandings(
   competition: string,
