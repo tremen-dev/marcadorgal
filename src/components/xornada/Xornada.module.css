@@ -641,8 +641,16 @@ section.competition[data-user-hidden="true"] {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 30px;
   align-items: baseline;
-  gap: 3px 6px;
+  column-gap: 6px;
+  /* SPEC-068 CA-6: no row gap, so a folded block (a 0-height row between
+     the two sides) adds nothing; the 3 px between the sides is the away
+     line's margin (.awaySide). */
+  row-gap: 0;
   min-width: 0;
+}
+
+.awaySide {
+  margin-top: 3px;
 }
 
 /* D-2: team names wrap; they are never truncated. */
@@ -792,104 +800,9 @@ section.competition[data-user-hidden="true"] {
   user-select: none;
 }
 
-.matchGoals {
-  grid-column: 2;
-  display: grid;
-  grid-template-rows: 0fr;
-  transition:
-    grid-template-rows 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.2s ease-out;
-  opacity: 0;
-  overflow: hidden;
-  margin-top: 0;
-  border-top: 0;
-}
-
-.matchGoalsExpanded {
-  grid-template-rows: 1fr;
-  opacity: 1;
-  margin-top: 6px;
-  padding-top: 6px;
-  border-top: var(--hairline) dashed var(--line);
-}
-
-.matchGoalsInner {
-  min-height: 0;
-  overflow: hidden;
-}
-
-.goalsTeams {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 16px;
-}
-
-.teamGoalsCol {
-  flex: 1 1 140px;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.teamGoalsName {
-  font-family: var(--sans);
-  font-weight: 600;
-  font-size: 11px;
-  line-height: 1.2;
-  color: var(--fg-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.teamGoalsList {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.goalPill {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-family: var(--mono);
-  font-weight: 500;
-  font-size: 11px;
-  line-height: 1.3;
-  color: var(--fg-muted);
-}
-
-.recentGoalPill {
-  color: var(--fg);
-  font-weight: 600;
-}
-
-.goalPenalty {
-  color: var(--amber);
-  font-style: italic;
-}
-
-.recentScorerBadge {
-  display: inline-flex;
-  align-items: center;
-  padding: 1px 4px;
-  background: var(--directo);
-  color: var(--marca-ink);
-  border-radius: var(--radius-pill);
-  font-family: var(--mono);
-  font-weight: 700;
-  font-size: 9px;
-  line-height: 1;
-  letter-spacing: 0.05em;
-  animation-name: recent-goal-pulse;
-  animation-duration: 1s;
-  animation-timing-function: ease-in-out;
-}
-
 /* Reduced motion: the mark stays, fixed. */
 @media (prefers-reduced-motion: reduce) {
-  .recentGoal,
-  .recentScorerBadge {
+  .recentGoal {
     animation-name: none;
   }
 }

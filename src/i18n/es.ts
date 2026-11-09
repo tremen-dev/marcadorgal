@@ -74,6 +74,9 @@ export const es: Dictionary = {
     // SPEC-056: expand/collapse goals drawer
     expandGoals: "Desplegar goleadores",
     collapseGoals: "Plegar goleadores",
+    // SPEC-068 CA-3: the note after a scorer's name, penalty or own goal.
+    goalPenalty: "(p.)",
+    goalOwnGoal: "(p.p.)",
   },
   weekday: {
     mon: "lun",

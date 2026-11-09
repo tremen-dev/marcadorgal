@@ -1,12 +1,17 @@
+import { readFileSync } from "node:fs";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import type { Instant, MatchId, Score } from "@/model";
+import { es } from "@/i18n/es";
+import { gl } from "@/i18n/gl";
+import type { Instant, MatchId, PublicGoal, Score } from "@/model";
 import type { XornadaRow } from "@/xornada/view";
-import { MatchRow } from "./MatchRow.tsx";
+import { MatchRow, type RecentGoalView } from "./MatchRow.tsx";
+
+const MATCH_ID = "liga-f-2026-27-j9-depor-abanca-barcelona" as MatchId;
 
 const mockRow = (overrides?: Partial<XornadaRow>): XornadaRow => ({
-  matchId: "liga-f-2026-27-j9-depor-abanca-barcelona" as MatchId,
+  matchId: MATCH_ID,
   status: "live",
   qualifier: "confirmado",
   home: "Deportivo ABANCA",
@@ -28,134 +33,335 @@ const mockRow = (overrides?: Partial<XornadaRow>): XornadaRow => ({
   ...overrides,
 });
 
-describe("MatchRow Embedded Goals (SPEC-055 & SPEC-056)", () => {
-  it("renders goals when provided on the row with collapsible drawer and team grouping", () => {
+const render = (
+  row: XornadaRow,
+  locale: "gl" | "es" = "gl",
+  recentGoal?: RecentGoalView,
+) => renderToStaticMarkup(createElement(MatchRow, { row, locale, recentGoal }));
+
+// The outer HTML of every element with the given data-testid, in DOM order.
+// Elements of one kind never nest, so the first closing tag of the same name
+// after the opening one is the right one.
+function elements(html: string, testId: string): string[] {
+  const out: string[] = [];
+  const open = new RegExp(`<(\\w+)[^>]*data-testid="${testId}"[^>]*>`, "g");
+  for (const m of html.matchAll(open)) {
+    const tag = m[1];
+    const start = m.index ?? 0;
+    // Nested same-name tags: count depth.
+    let depth = 0;
+    const tagRe = new RegExp(`<(/?)${tag}\\b[^>]*>`, "g");
+    let end = -1;
+    for (const t of html.slice(start).matchAll(tagRe)) {
+      depth += t[1] === "/" ? -1 : 1;
+      if (depth === 0) {
+        end = start + (t.index ?? 0) + t[0].length;
+        break;
+      }
+    }
+    out.push(html.slice(start, end === -1 ? undefined : end));
+  }
+  return out;
+}
+
+const attr = (el: string, name: string): string | null => {
+  const m = el.match(new RegExp(`^<[^>]*\\s${name}="([^"]*)"`));
+  return m ? m[1] : null;
+};
+
+const text = (el: string): string =>
+  el
+    .replace(/<[^>]+>/g, "")
+    .replace(/&#x27;/g, "'")
+    .replace(/&amp;/g, "&");
+
+const count = (html: string, needle: string): number =>
+  html.split(needle).length - 1;
+
+const GOALS: PublicGoal[] = [
+  { team: "home", player: "Millene", minute: 23, penalty: true },
+  { team: "away", player: "Alexia Putellas", minute: 45 },
+  { team: "away", player: "Aitana Bonmatí", minute: 61, ownGoal: true },
+];
+
+describe("SPEC-068 CA-1 every list hangs from its team", () => {
+  it("puts each block right after its team's score inside .sides, the home one before the away name", () => {
+    const html = render(mockRow({ goals: GOALS }));
+    const blocks = elements(html, "team-goals");
+    expect(blocks).toHaveLength(2);
+    expect(blocks.map((b) => attr(b, "data-team"))).toEqual(["home", "away"]);
+    expect(attr(blocks[0], "id")).toBe(`goals-${MATCH_ID}-home`);
+    expect(attr(blocks[1], "id")).toBe(`goals-${MATCH_ID}-away`);
+
+    // Vitest names CSS module classes `_sides_<hash>`.
+    const sidesOpen = html.search(/<div class="[^"]*_sides_/);
+    const names = [...html.matchAll(/data-testid="team-name"/g)].map(
+      (m) => m.index ?? -1,
+    );
+    const scores = [...html.matchAll(/data-testid="score"/g)].map(
+      (m) => m.index ?? -1,
+    );
+    const homeBlock = html.indexOf(`id="goals-${MATCH_ID}-home"`);
+    const awayBlock = html.indexOf(`id="goals-${MATCH_ID}-away"`);
+    expect(sidesOpen).toBeGreaterThan(-1);
+    expect(names).toHaveLength(2);
+    expect(scores).toHaveLength(2);
+    // home name < home score < home block < away name < away score < away block
+    expect(sidesOpen).toBeLessThan(names[0]);
+    expect(names[0]).toBeLessThan(scores[0]);
+    expect(scores[0]).toBeLessThan(homeBlock);
+    expect(homeBlock).toBeLessThan(names[1]);
+    expect(names[1]).toBeLessThan(scores[1]);
+    expect(scores[1]).toBeLessThan(awayBlock);
+    // The away block is still inside .sides: nothing closes the row's grid
+    // between the sides and it (the next sibling of .sides, if any, is rowAge).
+    const sidesClose = html.indexOf("</div>", awayBlock);
+    expect(sidesClose).toBeGreaterThan(awayBlock);
+  });
+
+  it("emits no block for a team without goals", () => {
+    const html = render(
+      mockRow({ goals: [{ team: "away", player: "Alexia", minute: 45 }] }),
+    );
+    const blocks = elements(html, "team-goals");
+    expect(blocks).toHaveLength(1);
+    expect(attr(blocks[0], "data-team")).toBe("away");
+    expect(html).not.toContain(`id="goals-${MATCH_ID}-home"`);
+  });
+
+  it("has no ⚽, no match-goals and no team name outside its team-name and the aria-label", () => {
+    const row = mockRow({ goals: GOALS });
+    const html = render(row);
+    expect(html).not.toContain("⚽");
+    expect(html).not.toContain('data-testid="match-goals"');
+    // Once in the aria-label, once in the team-name span.
+    expect(count(html, row.home)).toBe(2);
+    expect(count(html, row.away)).toBe(2);
+    for (const name of elements(html, "team-name"))
+      expect([row.home, row.away]).toContain(text(name));
+  });
+});
+
+describe("SPEC-068 CA-2 minute first, whole name, ordered by minute", () => {
+  it("gives every line its minute first, as {minute}', and the player as it comes", () => {
+    const html = render(
+      mockRow({
+        goals: [
+          {
+            team: "home",
+            player: "FRANCISCO JOSÉ sánchez-rodríguez da Silva",
+            minute: 7,
+          },
+        ],
+      }),
+    );
+    const lines = elements(html, "goal-line");
+    expect(lines).toHaveLength(1);
+    const minute = elements(lines[0], "goal-minute");
+    const player = elements(lines[0], "goal-player");
+    expect(minute).toHaveLength(1);
+    expect(player).toHaveLength(1);
+    expect(text(minute[0])).toBe("7'");
+    expect(text(player[0])).toBe("FRANCISCO JOSÉ sánchez-rodríguez da Silva");
+    expect(lines[0].indexOf('data-testid="goal-minute"')).toBeLessThan(
+      lines[0].indexOf('data-testid="goal-player"'),
+    );
+    expect(attr(lines[0], "data-team")).toBe("home");
+  });
+
+  it("orders the lines of a block by minute ascending, arrival order on a tie, whatever the arrival order", () => {
+    const html = render(
+      mockRow({
+        goals: [
+          { team: "away", player: "Alexia", minute: 45 },
+          { team: "home", player: "Tercera", minute: 88 },
+          { team: "home", player: "Primera", minute: 12 },
+          { team: "home", player: "Segunda A", minute: 40 },
+          { team: "home", player: "Segunda B", minute: 40 },
+          { team: "home", player: "Cero", minute: 0 },
+        ],
+      }),
+    );
+    const [homeBlock, awayBlock] = elements(html, "team-goals");
+    const order = (block: string) =>
+      elements(block, "goal-line").map((l) => [
+        text(elements(l, "goal-minute")[0]),
+        text(elements(l, "goal-player")[0]),
+      ]);
+    expect(order(homeBlock)).toEqual([
+      ["0'", "Cero"],
+      ["12'", "Primera"],
+      ["40'", "Segunda A"],
+      ["40'", "Segunda B"],
+      ["88'", "Tercera"],
+    ]);
+    expect(order(awayBlock)).toEqual([["45'", "Alexia"]]);
+    for (const line of elements(homeBlock, "goal-line"))
+      expect(attr(line, "data-team")).toBe("home");
+  });
+});
+
+describe("SPEC-068 CA-3 penalty and own goal as a grey note", () => {
+  it("adds goal-kind after the player with the i18n text of gl and es", () => {
     const row = mockRow({
       goals: [
         { team: "home", player: "Millene", minute: 23, penalty: true },
-        { team: "away", player: "Alexia", minute: 45 },
-        { team: "away", player: "Aitana", minute: 61, ownGoal: true },
+        { team: "home", player: "Aitana", minute: 61, ownGoal: true },
+        { team: "home", player: "Alexia", minute: 70 },
       ],
     });
+    for (const locale of ["gl", "es"] as const) {
+      const dict = locale === "gl" ? gl : es;
+      const lines = elements(render(row, locale), "goal-line");
+      expect(lines).toHaveLength(3);
+      const kinds = lines.map((l) => elements(l, "goal-kind"));
+      expect(kinds.map((k) => k.length)).toEqual([1, 1, 0]);
+      expect(text(kinds[0][0])).toBe(dict.xornada.goalPenalty);
+      expect(text(kinds[1][0])).toBe(dict.xornada.goalOwnGoal);
+      // After the player, and the player's text stays whole.
+      expect(lines[0].indexOf('data-testid="goal-player"')).toBeLessThan(
+        lines[0].indexOf('data-testid="goal-kind"'),
+      );
+      expect(text(elements(lines[0], "goal-player")[0])).toBe("Millene");
+    }
+    expect(gl.xornada.goalPenalty).toBe("(p.)");
+    expect(gl.xornada.goalOwnGoal).toBe("(p.p.)");
+    expect(es.xornada.goalPenalty).toBe("(p.)");
+    expect(es.xornada.goalOwnGoal).toBe("(p.p.)");
+  });
+});
 
-    const html = renderToStaticMarkup(
-      createElement(MatchRow, {
-        row,
-        locale: "gl",
-      }),
+describe("SPEC-068 CA-4 recent scorer", () => {
+  const now = Date.parse("2026-11-08T18:30:00.000Z");
+  const oneMinAgo = new Date(now - 60_000).toISOString() as Instant;
+  const recent: RecentGoalView = { now, minutes: 5, mark: "label" };
+  const row = mockRow({
+    homeScoredAt: oneMinAgo,
+    score: { home: 3, away: 1 } as Score,
+    goals: [
+      // Arrives out of order: the recent one is the last by minute, not
+      // the last to arrive.
+      { team: "home", player: "Ainhoa Marín", minute: 73 },
+      { team: "home", player: "Millene", minute: 23 },
+      { team: "away", player: "Alexia", minute: 45 },
+      { team: "home", player: "Tere Abelleira", minute: 60 },
+    ],
+  });
+
+  it("marks only the last line by minute of the side that just scored, with the GOL pill after the name", () => {
+    const html = render(row, "gl", recent);
+    const [homeBlock, awayBlock] = elements(html, "team-goals");
+    const homeLines = elements(homeBlock, "goal-line");
+    expect(homeLines.map((l) => attr(l, "data-recent"))).toEqual([
+      "false",
+      "false",
+      "true",
+    ]);
+    expect(text(elements(homeLines[2], "goal-player")[0])).toBe("Ainhoa Marín");
+    const badges = elements(homeLines[2], "recent-scorer-badge");
+    expect(badges).toHaveLength(1);
+    expect(text(badges[0])).toBe(gl.xornada.recentGoalLabel);
+    expect(homeLines[2].indexOf('data-testid="goal-player"')).toBeLessThan(
+      homeLines[2].indexOf('data-testid="recent-scorer-badge"'),
     );
+    // One pulse per second left, so it stops on its own (SPEC-041 CA-4).
+    expect(badges[0]).toMatch(/animation-iteration-count:\s*240/);
+    // Nothing on the other lines nor on the other side.
+    expect(elements(homeLines[0], "recent-scorer-badge")).toHaveLength(0);
+    expect(elements(homeLines[1], "recent-scorer-badge")).toHaveLength(0);
+    for (const line of elements(awayBlock, "goal-line"))
+      expect(attr(line, "data-recent")).toBe("false");
+    expect(elements(awayBlock, "recent-scorer-badge")).toHaveLength(0);
+  });
 
-    // CA-1: Interactive attributes and affordance
+  it("marks nothing without a recent goal, nor once the window is over", () => {
+    for (const html of [
+      render(row, "gl"),
+      render(row, "gl", { ...recent, now: now + 6 * 60_000 }),
+    ]) {
+      expect(html).not.toContain('data-recent="true"');
+      expect(html).not.toContain('data-testid="recent-scorer-badge"');
+    }
+  });
+});
+
+describe("SPEC-068 CA-5 served folded, aria-controls lists the blocks", () => {
+  it("serves every block with data-expanded=false and aria-controls with the present ids, in DOM order, each unique", () => {
+    const both = render(mockRow({ goals: GOALS }));
+    expect(attr(elements(both, "match-row")[0], "aria-controls")).toBe(
+      `goals-${MATCH_ID}-home goals-${MATCH_ID}-away`,
+    );
+    for (const block of elements(both, "team-goals"))
+      expect(attr(block, "data-expanded")).toBe("false");
+    for (const side of ["home", "away"])
+      expect(count(both, `id="goals-${MATCH_ID}-${side}"`)).toBe(1);
+
+    const awayOnly = render(
+      mockRow({ goals: [{ team: "away", player: "Alexia", minute: 45 }] }),
+    );
+    expect(attr(elements(awayOnly, "match-row")[0], "aria-controls")).toBe(
+      `goals-${MATCH_ID}-away`,
+    );
+  });
+});
+
+describe("SPEC-068 CA-9 the old drawer's classes are gone from the CSS", () => {
+  it("keeps none of goalsTeams, teamGoalsCol, teamGoalsName, teamGoalsList, goalPill, goalPenalty, goalsBox, goalItem", () => {
+    for (const file of [
+      "src/components/xornada/Xornada.module.css",
+      "src/components/directos/DirectosView.module.css",
+      "src/components/goals/TeamGoals.module.css",
+    ]) {
+      const css = readFileSync(file, "utf8");
+      for (const name of [
+        "goalsTeams",
+        "teamGoalsCol",
+        "teamGoalsName",
+        "teamGoalsList",
+        "goalPill",
+        "goalPenalty",
+        "goalsBox",
+        "goalItem",
+        "matchGoals",
+        "recentScorerBadge",
+      ])
+        expect(css, `${file} ${name}`).not.toContain(`.${name}`);
+    }
+  });
+});
+
+describe("SPEC-056 kept: affordance, button role and localized label", () => {
+  it("renders the affordance and the button role when the row has goals", () => {
+    const html = render(mockRow({ goals: GOALS }));
     expect(html).toContain('data-has-goals="true"');
     expect(html).toContain('role="button"');
     expect(html).toContain('tabindex="0"');
     expect(html).toContain('aria-expanded="false"');
     expect(html).toContain('data-testid="goals-affordance"');
     expect(html).toContain("▸");
-
-    // CA-2: Drawer, separation by team and minute formatting
-    expect(html).toContain('data-testid="match-goals"');
-    expect(html).toContain('data-team="home"');
-    expect(html).toContain('data-team="away"');
-    expect(html).toContain("Deportivo ABANCA");
-    expect(html).toContain("FC Barcelona Femení");
-    expect(html).toContain("Millene");
-    expect(html).toContain("23");
-    expect(html).toContain("(p.)");
-    expect(html).toContain("Alexia");
-    expect(html).toContain("45");
-    expect(html).toContain("Aitana");
-    expect(html).toContain("61");
-    expect(html).toContain("(p.p.)");
   });
 
-  it("does not render match-goals nor interactive button role when row has no goals", () => {
-    const row = mockRow({ goals: [] });
-    const html = renderToStaticMarkup(
-      createElement(MatchRow, {
-        row,
-        locale: "gl",
-      }),
-    );
-
-    expect(html).not.toContain('data-testid="match-goals"');
-    expect(html).not.toContain('data-has-goals="true"');
-    expect(html).not.toContain('role="button"');
-    expect(html).not.toContain('data-testid="goals-affordance"');
-  });
-
-  it("marks the latest goal of a recently scored side with GOL badge (SPEC-056 CA-3)", () => {
-    const now = Date.parse("2026-11-08T18:30:00.000Z");
-    const oneMinAgo = new Date(now - 60_000).toISOString() as Instant;
-
-    const row = mockRow({
-      homeScoredAt: oneMinAgo,
-      score: { home: 2, away: 1 } as Score,
-      goals: [
-        { team: "home", player: "Millene", minute: 23 },
-        { team: "home", player: "Ainhoa Marín", minute: 73 },
-        { team: "away", player: "Alexia", minute: 45 },
-      ],
-    });
-
-    const html = renderToStaticMarkup(
-      createElement(MatchRow, {
-        row,
-        locale: "gl",
-        recentGoal: {
-          now,
-          minutes: 5,
-          mark: "box",
-        },
-      }),
-    );
-
-    expect(html).toContain('data-testid="recent-scorer-badge"');
-    expect(html).toContain("GOL");
-
-    // The second goal (Ainhoa Marín at 73') is the latest for home, so it is marked recent
-    expect(html).toMatch(
-      /data-team="home"[^>]*data-recent="true"[^>]*>.*Ainhoa Marín.*73/s,
-    );
-
-    // The first goal (Millene at 23') is not the latest home goal
-    expect(html).not.toMatch(
-      /data-team="home"[^>]*data-recent="true"[^>]*>.*Millene.*23/s,
-    );
-
-    // Away team has not scored recently
-    expect(html).not.toMatch(/data-team="away"[^>]*data-recent="true"/s);
+  it("renders no block nor interactive role when the row has no goals", () => {
+    for (const goals of [[], undefined]) {
+      const html = render(mockRow({ goals }));
+      expect(html).not.toContain('data-testid="team-goals"');
+      expect(html).not.toContain('data-has-goals="true"');
+      expect(html).not.toContain('role="button"');
+      expect(html).not.toContain("aria-controls");
+      expect(html).not.toContain('data-testid="goals-affordance"');
+    }
   });
 
   it("renders localized aria-label in gl and es", () => {
-    const row = mockRow({
-      goals: [{ team: "home", player: "Millene", minute: 23 }],
-    });
-
-    const htmlGl = renderToStaticMarkup(
-      createElement(MatchRow, { row, locale: "gl" }),
-    );
-    expect(htmlGl).toContain("Despregar goleadores");
-
-    const htmlEs = renderToStaticMarkup(
-      createElement(MatchRow, { row, locale: "es" }),
-    );
-    expect(htmlEs).toContain("Desplegar goleadores");
+    const row = mockRow({ goals: GOALS });
+    expect(render(row, "gl")).toContain("Despregar goleadores");
+    expect(render(row, "es")).toContain("Desplegar goleadores");
   });
 
   it("renders half-time state correctly", () => {
-    const row = mockRow({
-      margin: { kind: "halfTime" },
-      part: "halfTime",
-    });
-
-    const html = renderToStaticMarkup(
-      createElement(MatchRow, {
-        row,
-        locale: "gl",
-      }),
+    const html = render(
+      mockRow({ margin: { kind: "halfTime" }, part: "halfTime" }),
     );
-
     expect(html).toContain("DESCANSO");
   });
 });
