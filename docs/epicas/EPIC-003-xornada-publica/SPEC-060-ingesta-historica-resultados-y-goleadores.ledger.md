@@ -47,3 +47,48 @@ Entorno: worktree LF de `origin/main` (6148242), Supabase local (`127.0.0.1:5432
 - **V-6 (CA-3) Sin verificar en navegador.** `src/board/reader.ts:51` hace `select *` y `row.ts` mapea `goals`, con tests unitarios. El acordeón en una semana pasada no se ha visto con Playwright.
 - **Riesgo, no bloquea.** `src/ingest/historico-db.ts:191`: el `delete from match_goals` corre para todo partido emparejado aunque Explorer no lo dé por `FINISHED` o devuelva `goals: []`. P2: Explorer devuelve el partido como `LIVE_PROVISIONAL` con `goals: []` y el gol que había guardado se borra.
 - **Conforme.** RLS sin políticas: `web_reader` recibe `42501` al leer `match_goals` y lee los goles por `web.xornada`, que se ejecuta con los permisos de su propietario (ADR-015). Es más estricto que la letra de CA-1. Placeholders de SPEC-059: P3 descarta «Goleador Local», «Goleador Visitante» y los nombres en blanco. La idempotencia de `match_goals` (borrar e insertar por partido dentro de la transacción del día) también está bien.
+
+## Enmienda 2026-11-09 (ADR-031) — matriz CA-1..CA-7
+
+La tabla de arriba es la de la versión anterior (CA-1..CA-5) con el RED. Esta es la de la spec enmendada; Verif. y Estado son del verificador.
+
+| Criterio | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
+| :--- | :--- | :--- | :--- | :--- |
+| CA-1 `match_goals` | migración `20261108120000_spec060_match_goals.sql` (sin cambios) | `src/db/schema.db.test.ts` «has the eleven tables…» y «enables RLS on every table…» (V-1) | | |
+| CA-2 Corrección por el motor | `src/ingest/historico.ts` (`parseHistoricoArgs`, `planDaySync`), `src/ingest/historico-db.ts` (`historicoSync`, `applyDate`), `src/lib/explorer-client.ts` (`getDayMatchesRaw`), `tools/historico-sync.mjs` | `historico.db.test.ts` «finished 1-1 + Explorer FINISHED 2-1 → v2…; again, 0 rows», «a match with no Decision…»; `historico.test.ts` parseHistoricoArgs, planDaySync, «no INSERT into decisions from the tool»; `explorer-client.test.ts` getDayMatchesRaw | | |
+| CA-3 Goleadores | `historico.ts` (`completeGoals`, `replaceGoals`), `historico-db.ts` (`applyDate`) | `historico.db.test.ts` «LIVE_PROVISIONAL with goals: [] and FINISHED 1-0 without goals keep the stored goals»; `historico.test.ts` completeGoals y planDaySync | | |
+| CA-4 Dry-run revisable | `historico.ts` (`formatHistoricoReport`), `historico-db.ts` (`dryDate`) | `historico.test.ts` «prints one line per match with a change…»; `historico.db.test.ts` «0 rows in every table, nothing in the raw store…» | | |
+| CA-5 Fallos visibles | `historico.ts` (`parseExplorerDay`, `isAuthFailure`, `historicoFailed`), `historico-db.ts` (`realDate`, `AuthAbort`), `tools/historico-sync.mjs` (exit) | `historico.db.test.ts` «a 401 aborts in the act…», «an empty date fails…», «an invalid answer…»; `historico.test.ts` historicoFailed | | |
+| CA-6 Lectura pública | sin cambios de código: `web.xornada.goals` → `src/board/row.ts` → `MatchRow` | `e2e/xornada-goleadores-historico.db.spec.ts` | | |
+| CA-7 Gates | toda la rama | `npm run gates`, suite db (ver abajo) | | |
+
+### Evidencia del implementador (enmienda)
+
+Entorno: worktree `D:/src/tremen-dev/wt-060` (LF), rama `ft/SPEC-060-back-fill-historico-explorer`, Supabase local (`127.0.0.1:54322`), Node 22.19, Windows. Nunca contra producción.
+
+| Comando | Salida clave |
+| :--- | :--- |
+| `npx vitest run src/ingest/historico.test.ts src/lib/explorer-client.test.ts` | `historico.test.ts` 19 passed · `explorer-client.test.ts` 7 passed |
+| `DATABASE_URL=…54322 npx vitest run --config vitest.db.config.mts src/ingest/historico.db.test.ts` | `Tests 7 passed (7)` |
+| suite db completa en `e54ff0d` (base: main + docs) tras `supabase db reset --local` + competiciones | `Tests 25 failed \| 217 passed (242)` |
+| suite db completa en la rama, mismo estado de BD | `Tests 23 failed \| 225 passed (248)`; `comm` de los FAIL: **0 solo en la rama**, 2 solo en la base (los dos de `schema.db.test.ts`, V-1) |
+| `npx playwright test --config playwright.db.config.ts e2e/xornada-goleadores-historico.db.spec.ts` | `ok 1 … SPEC-060 CA-6 a past week shows the scorers and minutes of match_goals in the accordion (2.2s)` · `1 passed`; el `globalTeardown` falla en Windows (`spawnSync supabase` sin shell, ajeno) y se hizo el reset a mano |
+| `EXPLORER_BASE_URL=http://127.0.0.1:9 npm run historico:sync -- --desde 2026-11-01 --hasta 2026-11-02 --dry-run` (BD local) | `Fechas fallidas (2): 2026-11-01 · fetch failed …` · **exit 1** · 0 intentos `operator` en BD |
+| `npm run historico:sync -- --hasta 2026-11-09` (hoy) | `--hasta tiene que ser anterior a hoy (2026-11-09, Europe/Madrid)` · exit 1 |
+| `npm run gates` | typecheck limpio · lint `Checked 402 files … No fixes applied` · test `1 failed \| 2305 passed \| 3 skipped`: solo `src/db/test-db.test.ts` «wins over a .env file in the cwd too» (spawnSync en Windows, el mismo ajeno del RED) → gates se corta antes del build |
+| `npm run build` (aparte) | `✓ Compiled successfully` · `✓ Generating static pages (9/9)` · exit 0 |
+| `npm version patch --no-git-tag-version` (ADR-028) | `v0.3.1` (`package.json` y `package-lock.json`) |
+
+Fallos ajenos de la suite db (23, presentes igual en la base): `engine.db.test.ts` (14: CA-11 ×3, SPEC-013 CA-4, SPEC-014, SPEC-018 CA-5, SPEC-021 CA-5 ×2, SPEC-035 CA-1/CA-2/CA-3, SPEC-044 CA-4 ×3), `live-observed-only.db.test.ts` (3), `replay-jornada.db.test.ts` (3), `reconciliacion.db.test.ts` (1), `reconciliacion-sin-directo.db.test.ts` (1), `recuperacion-rfef.db.test.ts` (1, «applied: …»). Con la BD sucia (1834 partidos de un e2e:db anterior) la base daba 30.
+
+### Salvedades / follow-ups
+
+- **F-SPEC-060-1** «Una segunda ejecución igual escribe 0 filas» (CA-2): interpretado como 0 filas en `observations`, `decisions`, `match_goals` y `alerts`. Cada fecha consultada abre su `ingest_attempt` (ADR-031 §4) y guarda su crudo, también en la segunda ejecución; el test lo afirma (`ingest_attempts + 1`).
+- **F-SPEC-060-2** La línea de cambio de CA-4 añade « (incompletos)» tras `goles <n> → <n>` cuando los goles de Explorer no suman el marcador, para que no parezca que se van a escribir.
+- **F-SPEC-060-3** `informe:*`/`salud` aún no tratan las filas `operator` (follow-up de ADR-031, fuera de alcance).
+- **F-SPEC-060-4** `e2e/db-teardown.ts` y `tools/test-db.mjs` fallan en Windows por `spawnSync` sin shell (ajeno; ya conocido).
+- La herramienta comprueba que el motor publica una Decision por cada observación del operador; si no, deshace la fecha (fallo visible).
+
+### Cómo retomar (handoff)
+
+Código: `src/ingest/historico.ts` (puro), `src/ingest/historico-db.ts` (BD), `tools/historico-sync.mjs` (shell). Verificar con la suite db contra Supabase local (comando de arriba) y el spec e2e:db. La ejecución real contra producción la lanza el titular, solo tras revisar `npm run historico:sync -- --dry-run`.

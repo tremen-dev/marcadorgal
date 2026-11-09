@@ -2,13 +2,14 @@
 id: SPEC-060
 tipo: spec
 epica: EPIC-003
-estado: en-progreso
+estado: en-revision
 historial:
   - {estado: borrador, fecha: 2026-11-08, por: sdd-arquitecto}
   - {estado: implementada, fecha: 2026-11-08, por: sdd-implementador}
   - {estado: borrador, fecha: 2026-11-09, por: sdd-arquitecto, nota: "enmienda tras el RED del verificador (V-1..V-6) y la decisión del titular del 2026-11-09; ADR-031"}
   - {estado: aprobada, fecha: 2026-11-09, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-11-09, por: sdd-implementador}
+  - {estado: en-revision, fecha: 2026-11-09, por: sdd-implementador}
 aprobada-por: Alberto Fojo
 ---
 # SPEC-060 — Back-fill histórico de resultados y goleadores desde Explorer
