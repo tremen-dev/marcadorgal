@@ -2,12 +2,13 @@
 id: SPEC-066
 tipo: spec
 epica: EPIC-007
-estado: en-progreso
+estado: en-revision
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-09, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-11-09, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-11-09, por: sdd-implementador}
+  - {estado: en-revision, fecha: 2026-11-09, por: sdd-implementador}
 ---
 # SPEC-066 — Goles a la cola de redes: detección, outbox, publicador con doble, plantillas y configuración
 
