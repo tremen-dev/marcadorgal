@@ -58,6 +58,10 @@ export type XornadaLiveProps = {
   // browser's). Each mark keeps its own timer (RecentGoalScore, CA-5).
   recentGoalMinutes: number;
   recentGoalMark: RecentGoalMark;
+  // Whether to show the strip of days (SHOW_DAY_STRIP).
+  showDayStrip?: boolean;
+  // Whether each competition links to its table (SHOW_TABLE_LINK).
+  showTableLink?: boolean;
 };
 
 function lazyOpener(config: { url: string; key: string }): OpenChannel {
@@ -136,6 +140,8 @@ export function XornadaLive({
   provisionalDisplay,
   recentGoalMinutes,
   recentGoalMark,
+  showDayStrip,
+  showTableLink,
 }: XornadaLiveProps) {
   const [snapshot, setSnapshot] = useState<LiveSnapshot>(() => ({
     board: initialBoard(matches, days),
@@ -230,6 +236,8 @@ export function XornadaLive({
         minutes: recentGoalMinutes,
         mark: recentGoalMark,
       }}
+      showDayStrip={showDayStrip}
+      showTableLink={showTableLink}
       freshness={
         <FreshnessLine
           locale={locale}

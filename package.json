@@ -1,6 +1,6 @@
 {
   "name": "marcadorgal",
-  "version": "0.1.0",
+  "version": "0.3.1",
   "private": true,
   "engines": {
     "node": "24.x"
@@ -13,6 +13,8 @@
     "lint": "biome check .",
     "test": "vitest run",
     "tokens:css": "node tools/tokens-css.mjs",
+    "og:image": "node tools/og-image.mjs",
+    "redes": "node tools/redes.mjs",
     "gates": "npm run typecheck && npm run lint && npm run test && npm run build",
     "e2e": "playwright test",
     "e2e:db": "playwright test --config playwright.db.config.ts",
@@ -35,7 +37,8 @@
     "cache:portada": "node tools/cache-portada.mjs",
     "rfef:calibrar": "node tools/calibrar-rfef.mjs",
     "rfef:recuperar": "node tools/rfef-recuperar.mjs",
-    "alias:rfef": "node tools/alias-rfef.mjs"
+    "alias:rfef": "node tools/alias-rfef.mjs",
+    "historico:sync": "node tools/historico-sync.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.117.3",

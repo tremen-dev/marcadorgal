@@ -1,0 +1,92 @@
+#!/usr/bin/env node
+// tools/historico-sync.mjs (SPEC-060 CA-2)
+// Ingesta e sincronización histórica de resultados finais e goleadores.
+// One-time back-fill tool: execución manual para consolidar datos desde a
+// xornada 1 ata a data actual sen custo engadido.
+//
+// Usage: npm run historico:sync -- [--desde <YYYY-MM-DD>] [--hasta <YYYY-MM-DD>] [--dry-run]
+import postgres from "postgres";
+import { sqlOptionsFor } from "../src/db/connect.ts";
+import { parseHistoricoArgs, HISTORICO_USAGE } from "../src/ingest/historico.ts";
+import { historicoSync } from "../src/ingest/historico-db.ts";
+
+for (const envFile of [".env.local", ".env"]) {
+  try {
+    process.loadEnvFile(envFile);
+    break;
+  } catch {
+    // continue
+  }
+}
+
+const message = (e) => (e instanceof Error ? e.message : String(e));
+
+let args;
+try {
+  args = parseHistoricoArgs(process.argv.slice(2));
+} catch (e) {
+  console.error(`${message(e)}\n${HISTORICO_USAGE}`);
+  process.exit(1);
+}
+
+const url = process.env.DATABASE_URL;
+if (!url) {
+  console.error("DATABASE_URL is not set");
+  process.exit(1);
+}
+
+const token =
+  process.env.RFEF_EXPLORER_TOKEN ||
+  process.env.EXPLORER_API_KEY ||
+  process.env.EXPLORER_TOKEN;
+
+if (!token) {
+  console.warn(
+    "[historico:sync] Aviso: RFEF_EXPLORER_TOKEN / EXPLORER_TOKEN non está configurado no contorno.",
+  );
+}
+
+const sql = postgres(url, {
+  ...sqlOptionsFor(url),
+  max: 2,
+  idle_timeout: 20,
+  connect_timeout: 10,
+});
+
+async function main() {
+  console.log(
+    `[historico:sync] Iniciando sincronización histórica (${args.desde} ata ${args.hasta})${
+      args.dryRun ? " [DRY-RUN]" : ""
+    }...`,
+  );
+
+  try {
+    const report = await historicoSync(sql, args);
+
+    console.log("\n=======================================================");
+    console.log(
+      `Resumo de sincronización histórica${args.dryRun ? " (DRY-RUN - Sen escrituras)" : ""}:`,
+    );
+    console.log(`  Datas procesadas:       ${report.datesProcessed}`);
+    console.log(`  Partidos analizados:    ${report.matchesScanned}`);
+    console.log(`  Partidos consolidados:  ${report.matchesConsolidated}`);
+    console.log(`  Goles rexistrados:      ${report.goalsRecorded}`);
+    console.log("-------------------------------------------------------");
+    console.log("Desglose por competición:");
+    for (const [comp, stats] of Object.entries(report.detailsByCompetition)) {
+      console.log(
+        `  - ${comp.padEnd(20)}: ${String(stats.matches).padStart(3)} partidos | ${String(
+          stats.goals,
+        ).padStart(3)} goles`,
+      );
+    }
+    console.log("=======================================================\n");
+  } catch (err) {
+    console.error("[historico:sync] Erro durante a execución:", err);
+    process.exitCode = 1;
+  } finally {
+    await sql.end({ timeout: 5 });
+  }
+}
+
+main();

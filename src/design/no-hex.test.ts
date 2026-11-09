@@ -7,7 +7,7 @@ const ALLOWED = new Set(["src/design/tokens.ts", "src/design/tokens.css"]);
 
 const sources = (): string[] =>
   globSync("src/**/*.{ts,tsx,css}")
-    .map((file) => relative(process.cwd(), file))
+    .map((file) => relative(process.cwd(), file).replaceAll("\\", "/"))
     .sort();
 
 describe("CA-12 no hex outside the tokens", () => {

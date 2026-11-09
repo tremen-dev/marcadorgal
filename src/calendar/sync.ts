@@ -23,6 +23,7 @@ export type SyncInput = {
   imported: ImportedCalendar;
   competition: Competition;
   sourceId: string;
+  now?: Instant;
 };
 
 export type SyncDiff = {
@@ -91,6 +92,12 @@ export function syncCalendar(input: SyncInput): SyncResult {
   );
   const aliasEntries = input.aliases.teams.map((a) => ({ ...a }));
   const aliasByExternalId = new Map(aliasEntries.map((a) => [a.externalId, a]));
+  const aliasByExternalName = new Map(
+    aliasEntries.map((a) => [a.externalName.toLowerCase(), a]),
+  );
+  const aliasByName = new Map(
+    aliasEntries.map((a) => [slugify(a.externalName), a]),
+  );
   const diff: SyncDiff = {
     newTeams: [],
     added: [],
@@ -113,7 +120,15 @@ export function syncCalendar(input: SyncInput): SyncResult {
 
   const teamIdOf = new Map<string, TeamId>();
   for (const ext of [...imported.teams].sort(byExternalId)) {
-    const alias = aliasByExternalId.get(ext.externalId);
+    let alias = aliasByExternalId.get(ext.externalId);
+    if (!alias) {
+      alias =
+        aliasByExternalName.get(ext.externalName.toLowerCase()) ??
+        aliasByName.get(slugify(ext.externalName));
+      if (alias) {
+        aliasByExternalId.set(ext.externalId, alias);
+      }
+    }
     if (alias) {
       if (alias.externalName !== ext.externalName)
         diff.renamedAtProvider.push({
@@ -143,6 +158,8 @@ export function syncCalendar(input: SyncInput): SyncResult {
     });
     aliasEntries.push(entry);
     aliasByExternalId.set(entry.externalId, entry);
+    aliasByExternalName.set(entry.externalName.toLowerCase(), entry);
+    aliasByName.set(slugify(entry.externalName), entry);
     diff.newTeams.push(entry);
     teamIdOf.set(ext.externalId, entry.teamId);
   }
@@ -196,8 +213,18 @@ export function syncCalendar(input: SyncInput): SyncResult {
       diff.added.push(id);
       diff.kickoffs[id] = next.kickoff;
     } else if (existing.kickoff !== next.kickoff) {
-      diff.rescheduled.push({ id, from: existing.kickoff, to: next.kickoff });
-      existing.kickoff = next.kickoff;
+      const isPast = input.now !== undefined && existing.kickoff < input.now;
+      const isDowngradeToMidnight =
+        next.kickoff.endsWith("00:00:00Z") &&
+        !existing.kickoff.endsWith("00:00:00Z") &&
+        (!im.timeConfirmed || isPast);
+      if (isPast || isDowngradeToMidnight) {
+        // Do not rewrite history for matches that have already been played,
+        // and do not downgrade confirmed kickoff hours to unconfirmed placeholder midnights.
+      } else {
+        diff.rescheduled.push({ id, from: existing.kickoff, to: next.kickoff });
+        existing.kickoff = next.kickoff;
+      }
     }
   }
   for (const [id, m] of matches)
@@ -219,11 +246,17 @@ export function syncCalendar(input: SyncInput): SyncResult {
       teams: aliasEntries,
       // Numeric order: JS objects already list integer-like keys ascending,
       // so this is the order JSON.stringify writes.
-      matches: Object.fromEntries(
-        Object.entries(matchAliases).sort(([a], [b]) =>
-          a.localeCompare(b, "en", { numeric: true }),
-        ),
-      ),
+      // Name-based sources like rfef (ADR-017 §2, SPEC-038 CA-5) carry a competitions
+      // map and no match map; provider aliases (SPEC-005 CA-3) carry matches.
+      ...(sourceId === "rfef" || input.aliases.competitions !== undefined
+        ? {}
+        : {
+            matches: Object.fromEntries(
+              Object.entries(matchAliases).sort(([a], [b]) =>
+                a.localeCompare(b, "en", { numeric: true }),
+              ),
+            ),
+          }),
     },
     diff,
   };

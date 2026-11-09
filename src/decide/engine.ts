@@ -457,7 +457,8 @@ export function decide(input: EngineInput): EngineOutput {
     const mayLower = (side: Side) => {
       const owner = currentOwners[side] ?? LEGACY_OWNER;
       if (owner === winner.observation.sourceId) return true;
-      const weight = priority(owner);
+      const weight =
+        priority(owner) ?? (owner === LEGACY_OWNER ? 10 : undefined);
       return weight !== undefined && winner.priority > weight;
     };
     const keep = (side: Side) =>

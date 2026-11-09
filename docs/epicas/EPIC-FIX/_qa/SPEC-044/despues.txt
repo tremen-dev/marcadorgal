@@ -1,0 +1,58 @@
+== despues 2026-11-02T15:08:02.006Z
+conteos {"decisions":16955,"obs_rfef":51,"alertas_abiertas":81}
+board filas 49 {"finished/provisional":35,"finished/confirmado":9,"scheduled/null":5}
+  primera-division-2026-27-j11-villarreal-espanyol  finished  0-1  provisional
+  primera-division-2026-27-j11-levante-atletico-madrid  finished  0-2  confirmado
+  segunda-rfef-g1-2026-27-j9-oviedo-vetusta-llanera  finished  2-1  confirmado
+  primera-division-2026-27-j11-rayo-vallecano-celta  finished  3-0  confirmado
+  primera-rfef-g1-2026-27-j10-bilbao-athletic-cacereno  finished  3-1  confirmado
+  primera-rfef-g1-2026-27-j10-logrones-mirandes  finished  0-1  confirmado
+  primera-rfef-g1-2026-27-j10-racing-ferrol-ponferradina  finished  0-0  confirmado
+  segunda-rfef-g1-2026-27-j9-gernika-marino  finished  0-0  provisional
+  primera-division-2026-27-j11-real-betis-malaga  finished  2-1  provisional
+  primera-rfef-g1-2026-27-j10-real-union-aviles  finished  0-3  provisional
+  primera-division-2026-27-j11-barcelona-alaves  finished  6-1  provisional
+  segunda-rfef-g1-2026-27-j9-portugalete-arosa  finished  3-3  confirmado
+  segunda-rfef-g1-2026-27-j9-rayo-cantabria-astorga  finished  2-0  confirmado
+  primera-rfef-g1-2026-27-j10-barakaldo-pontevedra  finished  0-0  confirmado
+  primera-division-2026-27-j11-getafe-sevilla  finished  3-1  provisional
+  segunda-rfef-g1-2026-27-j9-alaves-b-eibar-b  finished  2-1  provisional
+  tercera-rfef-g1-2026-27-j9-pontevedra-b-antela  finished  1-0  provisional
+  primera-division-2026-27-j11-racing-santander-real-madrid  finished  0-3  provisional
+  primera-rfef-g1-2026-27-j10-coria-arenas  finished  0-1  provisional
+  primera-rfef-g1-2026-27-j10-ud-ourense-cultural-leonesa  finished  1-0  provisional
+  segunda-division-2026-27-j12-albacete-sabadell  finished  2-1  provisional
+  segunda-division-2026-27-j12-burgos-castellon  finished  1-1  provisional
+  segunda-division-2026-27-j12-celta-fortuna-cordoba  finished  2-2  provisional
+  segunda-division-2026-27-j12-ceuta-sporting  finished  0-2  provisional
+  segunda-division-2026-27-j12-eibar-almeria  finished  1-1  provisional
+  segunda-division-2026-27-j12-eldense-granada  finished  0-2  provisional
+  segunda-division-2026-27-j12-mallorca-cadiz  scheduled  ---  null
+  segunda-division-2026-27-j12-oviedo-las-palmas  scheduled  ---  null
+  segunda-division-2026-27-j12-real-sociedad-b-girona  finished  1-0  provisional
+  segunda-division-2026-27-j12-tenerife-andorra  scheduled  ---  null
+  segunda-division-2026-27-j12-valladolid-leganes  scheduled  ---  null
+  segunda-rfef-g1-2026-27-j9-bergantinos-ourense-cf  finished  1-1  provisional
+  segunda-rfef-g1-2026-27-j9-compostela-basconia  finished  0-0  provisional
+  segunda-rfef-g1-2026-27-j9-coruxo-sestao-river  finished  0-2  provisional
+  segunda-rfef-g1-2026-27-j9-amorebieta-gimnastica  finished  1-0  provisional
+  tercera-rfef-g1-2026-27-j9-alondras-estradense  finished  1-1  provisional
+  tercera-rfef-g1-2026-27-j9-arenteiro-celtiga  finished  2-0  provisional
+  tercera-rfef-g1-2026-27-j9-barco-montaneros  finished  4-0  provisional
+  tercera-rfef-g1-2026-27-j9-celta-c-villalbes  finished  0-1  provisional
+  tercera-rfef-g1-2026-27-j9-lalin-sarriana  finished  0-0  provisional
+  tercera-rfef-g1-2026-27-j9-portonovo-atletico-arteixo  finished  2-2  provisional
+  tercera-rfef-g1-2026-27-j9-silva-viveiro  finished  2-0  provisional
+  tercera-rfef-g1-2026-27-j9-somozas-boiro  finished  1-1  provisional
+  primera-division-2026-27-j11-elche-valencia  finished  0-1  provisional
+  primera-rfef-g1-2026-27-j10-lugo-merida  finished  2-1  provisional
+  primera-rfef-g1-2026-27-j10-zamora-deportivo-fabril  finished  1-3  provisional
+  primera-division-2026-27-j11-athletic-club-real-sociedad  finished  2-1  provisional
+  primera-rfef-g1-2026-27-j10-extremadura-unionistas  finished  3-0  provisional
+  primera-division-2026-27-j11-deportivo-osasuna  scheduled  ---  null
+intentos con recuperacion 4
+  2026-11-02T15:07:57.292Z ok=true raw/rfef/2026-11-02/2026-11-02T15-07-57.292Z-15332d4a-f2bc-4795-a0b2-78c967693141.json.gz {"desde":"2026-10-30","hasta":"2026-11-02","dryRun":false,"fechas":4,"alertas":0,"partidos":49,"decididas":0,"duplicadas":37,"insertadas":7,"herramienta":"rfef:recuperar","descartadasLive":0,"cerradosCoinciden":7,"cerradosDiscrepan":0}
+  2026-11-02T15:06:25.076Z ok=true raw/rfef/2026-11-02/2026-11-02T15-06-25.076Z-b9be4e19-6631-4874-a95b-64b60355b497.json.gz {"desde":"2026-10-30","hasta":"2026-11-02","dryRun":true,"fechas":4,"alertas":0,"partidos":49,"decididas":0,"duplicadas":37,"insertadas":0,"herramienta":"rfef:recuperar","descartadasLive":0,"cerradosCoinciden":7,"cerradosDiscrepan":0}
+  2026-11-02T15:05:38.212Z ok=false  {"desde":"2026-10-30","hasta":"2026-11-02","dryRun":true,"fechas":4,"partidos":49,"herramienta":"rfef:recuperar"}
+  2026-11-02T15:04:48.823Z ok=true raw/rfef/2026-11-02/2026-11-02T15-04-48.823Z-9284ecda-9288-4f96-812c-b1009cf398be.json.gz {"fechas":3,"partidos":48,"duplicadas":0,"insertadas":44,"descartadasLive":0}
+conflict abiertas 0

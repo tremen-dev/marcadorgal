@@ -1,4 +1,5 @@
 import { LOCALES, type Locale, t } from "@/i18n";
+import { Wordmark } from "../brand/Wordmark";
 import styles from "./Xornada.module.css";
 
 // SPEC-028 CA-4 (H-5): the logo goes back to the current xornada, a plain
@@ -26,7 +27,7 @@ export function XornadaHeader({ locale, paths, heading, strip }: Props) {
         aria-label={t(locale, "xornada.home")}
         data-testid="home-link"
       >
-        marcador<span className={styles.mark}>▮</span>gal
+        <Wordmark />
       </a>
       <h1 className={styles.title} data-testid="xornada-title">
         <span className={styles.titleText}>{heading}</span>

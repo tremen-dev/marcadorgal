@@ -1,0 +1,59 @@
+(node:45844) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/src/tremen-dev/marcadorgal/src/clock.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to D:\src\tremen-dev\marcadorgal\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+rfef:recuperar 2026-10-30 → 2026-11-02 (en seco)
+partidos declarados: 49 · 2026-10-30: 1 · 2026-10-31: 10 · 2026-11-01: 37 · 2026-11-02: 1
+raw_ref: raw/rfef/2026-11-02/2026-11-02T15-06-25.076Z-b9be4e19-6631-4874-a95b-64b60355b497.json.gz (4 GET)
+
+plan (partido · vigente → propuesto · acción):
+  primera-division-2026-27-j11-villarreal-espanyol  finished 0-1  →  finished 0-1  ·  duplicada o en ventana
+  primera-division-2026-27-j11-levante-atletico-madrid  finished 0-2  →  finished 0-2  ·  duplicada o en ventana
+  segunda-division-2026-27-j12-real-sociedad-b-girona  finished 1-0  →  finished 1-0  ·  insertar; cerrado, coincide
+  segunda-rfef-g1-2026-27-j9-oviedo-vetusta-llanera  finished 2-1  →  finished 2-1  ·  duplicada o en ventana
+  primera-division-2026-27-j11-rayo-vallecano-celta  finished 3-0  →  finished 3-0  ·  duplicada o en ventana
+  segunda-division-2026-27-j12-eibar-almeria  finished 1-1  →  finished 1-1  ·  insertar; cerrado, coincide
+  primera-rfef-g1-2026-27-j10-bilbao-athletic-cacereno  finished 3-1  →  finished 3-1  ·  duplicada o en ventana
+  primera-rfef-g1-2026-27-j10-racing-ferrol-ponferradina  finished 0-0  →  finished 0-0  ·  duplicada o en ventana
+  primera-rfef-g1-2026-27-j10-logrones-mirandes  finished 0-1  →  finished 0-1  ·  duplicada o en ventana
+  tercera-rfef-g1-2026-27-j9-barco-montaneros  finished 4-0  →  finished 4-0  ·  duplicada o en ventana
+  tercera-rfef-g1-2026-27-j9-silva-viveiro  finished 2-0  →  finished 2-0  ·  duplicada o en ventana
+  segunda-rfef-g1-2026-27-j9-gernika-marino  finished 0-0  →  finished 0-0  ·  duplicada o en ventana
+  primera-division-2026-27-j11-real-betis-malaga  finished 2-1  →  finished 2-1  ·  duplicada o en ventana
+  segunda-division-2026-27-j12-celta-fortuna-cordoba  finished 2-2  →  finished 2-2  ·  insertar; cerrado, coincide
+  primera-rfef-g1-2026-27-j10-real-union-aviles  finished 0-3  →  finished 0-3  ·  duplicada o en ventana
+  primera-division-2026-27-j11-barcelona-alaves  finished 6-1  →  finished 6-1  ·  duplicada o en ventana
+  segunda-division-2026-27-j12-albacete-sabadell  finished 2-1  →  finished 2-1  ·  insertar; cerrado, coincide
+  segunda-rfef-g1-2026-27-j9-portugalete-arosa  finished 3-3  →  finished 3-3  ·  duplicada o en ventana
+  segunda-rfef-g1-2026-27-j9-rayo-cantabria-astorga  finished 2-0  →  finished 2-0  ·  duplicada o en ventana
+  tercera-rfef-g1-2026-27-j9-arenteiro-celtiga  finished 2-0  →  finished 2-0  ·  duplicada o en ventana
+  primera-rfef-g1-2026-27-j10-barakaldo-pontevedra  finished 0-0  →  finished 0-0  ·  duplicada o en ventana
+  primera-division-2026-27-j11-getafe-sevilla  finished 3-1  →  finished 3-1  ·  duplicada o en ventana
+  segunda-division-2026-27-j12-eldense-granada  finished 0-2  →  finished 0-2  ·  insertar; cerrado, coincide
+  segunda-rfef-g1-2026-27-j9-alaves-b-eibar-b  finished 2-1  →  finished 2-1  ·  duplicada o en ventana
+  tercera-rfef-g1-2026-27-j9-alondras-estradense  finished 1-1  →  finished 1-1  ·  duplicada o en ventana
+  tercera-rfef-g1-2026-27-j9-celta-c-villalbes  finished 0-1  →  finished 0-1  ·  duplicada o en ventana
+  primera-division-2026-27-j11-racing-santander-real-madrid  finished 0-3  →  finished 0-3  ·  duplicada o en ventana
+  segunda-division-2026-27-j12-ceuta-sporting  finished 0-2  →  finished 0-2  ·  insertar; cerrado, coincide
+  primera-rfef-g1-2026-27-j10-coria-arenas  finished 0-1  →  finished 0-1  ·  duplicada o en ventana
+  primera-rfef-g1-2026-27-j10-ud-ourense-cultural-leonesa  finished 1-0  →  finished 1-0  ·  duplicada o en ventana
+  tercera-rfef-g1-2026-27-j9-lalin-sarriana  finished 0-0  →  finished 0-0  ·  duplicada o en ventana
+  tercera-rfef-g1-2026-27-j9-pontevedra-b-antela  finished 1-0  →  finished 1-0  ·  duplicada o en ventana
+  tercera-rfef-g1-2026-27-j9-somozas-boiro  finished 1-1  →  finished 1-1  ·  duplicada o en ventana
+  segunda-rfef-g1-2026-27-j9-bergantinos-ourense-cf  finished 1-1  →  finished 1-1  ·  duplicada o en ventana
+  segunda-rfef-g1-2026-27-j9-coruxo-sestao-river  finished 0-2  →  finished 0-2  ·  duplicada o en ventana
+  segunda-rfef-g1-2026-27-j9-compostela-basconia  finished 0-0  →  finished 0-0  ·  duplicada o en ventana
+  tercera-rfef-g1-2026-27-j9-portonovo-atletico-arteixo  finished 2-2  →  finished 2-2  ·  duplicada o en ventana
+  segunda-rfef-g1-2026-27-j9-amorebieta-gimnastica  finished 1-0  →  finished 1-0  ·  duplicada o en ventana
+  primera-division-2026-27-j11-elche-valencia  finished 0-1  →  finished 0-1  ·  duplicada o en ventana
+  segunda-division-2026-27-j12-burgos-castellon  finished 1-1  →  finished 1-1  ·  insertar; cerrado, coincide
+  primera-rfef-g1-2026-27-j10-lugo-merida  finished 2-1  →  finished 2-1  ·  duplicada o en ventana
+  primera-rfef-g1-2026-27-j10-zamora-deportivo-fabril  finished 1-3  →  finished 1-3  ·  duplicada o en ventana
+  primera-division-2026-27-j11-athletic-club-real-sociedad  finished 2-1  →  finished 2-1  ·  duplicada o en ventana
+  primera-rfef-g1-2026-27-j10-extremadura-unionistas  finished 3-0  →  finished 3-0  ·  duplicada o en ventana
+
+insertar 7 · decidir 0 partidos en 0 instantes · duplicadas 37 · en ventana 0 · live descartados 0 · fuera del rango 0 · cerrados: 7 coinciden, 0 discrepan
+
+antes:   decisions 16955 · observations (rfef) 44 · alerts 81 · ingest_attempts (rfef) 2
+después: decisions 16955 · observations (rfef) 44 · alerts 81 · ingest_attempts (rfef) 3
+En seco: GET, crudo e intento hechos; no se ha insertado, decidido ni alertado nada (sin --dry-run se aplicaría).

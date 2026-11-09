@@ -2,6 +2,7 @@ import { mkdirSync } from "node:fs";
 import { type Browser, expect, type Page, test } from "@playwright/test";
 import { es } from "../src/i18n/es";
 import { gl } from "../src/i18n/gl";
+import { DEMO_MATCHES } from "../src/xornada/demo";
 
 // SPEC-040 CA-5 and CA-6 over the demonstration (Friday 2 to Monday 5 of
 // October 2026, the five competitions): desktop in 360 px columns without the
@@ -25,6 +26,13 @@ const CA6_WIDTHS = [360, 390, 1024, 1280, 1440, 1536, 1920, 2200] as const;
 const CAPTURE_WIDTHS = new Set([390, 1024, 1536, 1920]);
 // QA_CAPTURE_DIR=docs/epicas/EPIC-003-xornada-publica/_qa/SPEC-040
 const CAPTURES = process.env.QA_CAPTURE_DIR;
+// SPEC-045 CA-3: the canonical name of each competition of the demo (D-2).
+// Its captures (1024 and 1920) go with
+// QA_CAPTURE_DIR=docs/epicas/EPIC-FIX/_qa/SPEC-045.
+const DEMO_NAMES = new Map<string, string>(
+  DEMO_MATCHES.map((m) => [m.competitionId, m.competitionName]),
+);
+const NAME_CAPTURE_WIDTHS = new Set([1024, 1920]);
 
 async function capture(page: Page, name: string) {
   if (!CAPTURES) return;
@@ -249,6 +257,75 @@ for (const route of routes) {
         "true",
       );
     });
+
+    // SPEC-045 CA-3 (H-1): a long name breaks only before « · »; «· Grupo 1»
+    // never splits, the name takes at most two lines, nothing is cut and its
+    // text is the canonical name (D-2).
+    for (const width of CA6_WIDTHS) {
+      test(`SPEC-045 CA-3 at ${width}px: competition names break only before « · », at most two lines, canonical`, async ({
+        page,
+      }) => {
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto(route.path);
+        await page.evaluate(() => document.fonts.ready);
+        const names = await page.getByTestId("competition").evaluateAll((els) =>
+          els.map((el) => {
+            const name = el.querySelector(
+              '[data-testid="competition-name"]',
+            ) as HTMLElement;
+            const style = getComputedStyle(name);
+            const segments = [
+              ...name.querySelectorAll<HTMLElement>(
+                '[data-testid="competition-name-segment"]',
+              ),
+            ];
+            return {
+              id: el.getAttribute("data-competition") ?? "",
+              text: name.textContent,
+              height: name.getBoundingClientRect().height,
+              lineHeight: Number.parseFloat(style.lineHeight),
+              cut:
+                name.scrollWidth > name.clientWidth ||
+                style.textOverflow === "ellipsis",
+              segments: segments.map((s) => ({
+                text: s.textContent,
+                rects: s.getClientRects().length,
+                ellipsis: getComputedStyle(s).textOverflow === "ellipsis",
+              })),
+            };
+          }),
+        );
+        expect(names).toHaveLength(5);
+        for (const n of names) {
+          const canonical = DEMO_NAMES.get(n.id) ?? "";
+          expect(n.text, n.id).toBe(canonical);
+          expect(n.cut, n.id).toBe(false);
+          expect(n.lineHeight, n.id).toBeGreaterThan(0);
+          expect(n.height, n.id).toBeLessThanOrEqual(2 * n.lineHeight + 1);
+          expect(
+            n.segments.map((s) => s.text),
+            n.id,
+          ).toEqual(
+            canonical.split(" · ").map((p, i) => (i === 0 ? p : `· ${p}`)),
+          );
+          // Every segment, and so the last («· Grupo 1»), is one piece.
+          for (const s of n.segments) {
+            expect(s.rects, `${n.id} ${s.text}`).toBe(1);
+            expect(s.ellipsis, `${n.id} ${s.text}`).toBe(false);
+          }
+        }
+        expect(names.some((n) => n.segments.length > 1)).toBe(true);
+        expect(
+          await page.evaluate(
+            () =>
+              document.documentElement.scrollWidth <=
+              document.documentElement.clientWidth,
+          ),
+        ).toBe(true);
+        if (NAME_CAPTURE_WIDTHS.has(width))
+          await capture(page, `nombres-${route.lang}-${width}`);
+      });
+    }
 
     for (const width of CA6_WIDTHS) {
       test(`CA-6 at ${width}px: nothing truncated, a date per row, level margins`, async ({

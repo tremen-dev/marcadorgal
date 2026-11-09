@@ -15,7 +15,7 @@
     }
     *,*::before,*::after{box-sizing:border-box}
     body{margin:0;background:#111110;color:#F5F1EA;font-family:var(--sans);-webkit-font-smoothing:antialiased}
-    a{color:#56DB8F;text-decoration:none}
+    a{color:#0099CC;text-decoration:none}
     a:hover{color:#F5F1EA}
     .n{font-family:var(--mono);font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1}
     .stk{display:flex;flex-direction:column;gap:3px;min-width:0}
@@ -25,7 +25,7 @@
 <div style="width: 390px; height: 844px; background: #111110; display: flex; flex-direction: column; overflow: hidden">
 
   <div style="height: 52px; flex: none; display: flex; align-items: center; gap: 8px; padding: 0 14px; border-bottom: 1px solid #2A2620">
-    <span style="font: 800 18px/1 var(--sans); letter-spacing: -.045em; color: #F5F1EA">marcador<span style="color: #56DB8F">▮</span>gal</span>
+    <span style="font: 800 18px/1 var(--sans); letter-spacing: -.045em; color: #F5F1EA">marcador<span style="color: #0099CC">▮</span>gal</span>
     <span style="flex: 1"></span>
     <span style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A7A5A0" stroke-width="1.75" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
@@ -40,7 +40,7 @@
   <div style="height: 40px; flex: none; display: flex; align-items: center; gap: 3px; padding: 0 10px; border-bottom: 1px solid #2A2620; background: #131211">
     <span style="width: 26px; text-align: center; font: 400 14px/1 var(--sans); color: #716F6C">‹</span>
     <span style="flex: 1; text-align: center; padding: 6px 0; border-radius: 7px; font: 500 11px/1 var(--mono); color: #716F6C">{{ t.d0 }}</span>
-    <span style="flex: 1; text-align: center; padding: 6px 0; border-radius: 7px; background: #56DB8F; font: 600 11px/1 var(--mono); color: #04160C">{{ t.d1 }}</span>
+    <span style="flex: 1; text-align: center; padding: 6px 0; border-radius: 7px; background: #0099CC; font: 600 11px/1 var(--mono); color: #00151F">{{ t.d1 }}</span>
     <span style="flex: 1; text-align: center; padding: 6px 0; border-radius: 7px; font: 500 11px/1 var(--mono); color: #716F6C">{{ t.d2 }}</span>
     <span style="flex: 1; text-align: center; padding: 6px 0; border-radius: 7px; font: 500 11px/1 var(--mono); color: #716F6C">{{ t.d3 }}</span>
     <span style="width: 26px; text-align: center; font: 400 14px/1 var(--sans); color: #716F6C">›</span>
@@ -68,15 +68,16 @@
       <sc-for list="{{ wide }}" as="it" hint-placeholder-count="10">
         <div>
           <div style="{{ it.headStyle }}" onClick="{{ it.toggle }}">
-            <span style="font: 600 10px/1.2 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: #56DB8F; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ it.name }}</span>
+            <span style="font: 600 10px/1.2 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: #0099CC; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ it.name }}</span>
             <span style="flex: 1"></span>
             <span style="{{ it.liveStyle }}">{{ it.liveTxt }}</span>
             <span style="font: 400 11px/1 var(--sans); color: #716F6C">{{ it.arrow }}</span>
           </div>
           <div style="{{ it.rowStyle }}" onClick="{{ it.toggleStar }}">
-            <div style="display: flex; align-items: center; gap: 5px">
-              <span style="{{ it.dotStyle }}"></span>
-              <span style="{{ it.gutStyle }}">{{ it.gut }}</span>
+            <!-- SPEC-040 CA-2 (SPEC-045 CA-2, H-3): marxe de 72 px en dúas liñas. -->
+            <div style="align-self: start; display: flex; flex-direction: column; gap: 3px; min-width: 0">
+              <div style="{{ it.gutStyle }}"><span style="{{ it.dotStyle }}"></span>{{ it.gut }}</div>
+              <div style="height: 12px; font-family: var(--mono); font-weight: 500; font-size: 10px; line-height: 1.2; text-transform: uppercase; white-space: nowrap; color: #716F6C">{{ it.sub }}</div>
             </div>
             <div class="stk">
               <span style="{{ it.homeStyle }}">{{ it.home }}</span>
@@ -96,7 +97,7 @@
       <sc-for list="{{ compact }}" as="it" hint-placeholder-count="18">
         <div>
           <div style="{{ it.headStyle }}" onClick="{{ it.toggle }}">
-            <span style="font: 600 10px/1.2 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: #56DB8F; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ it.name }}</span>
+            <span style="font: 600 10px/1.2 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: #0099CC; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ it.name }}</span>
             <span style="flex: 1"></span>
             <span style="{{ it.liveStyle }}">{{ it.liveTxt }}</span>
             <span style="font: 400 11px/1 var(--sans); color: #716F6C">{{ it.arrow }}</span>
@@ -115,8 +116,8 @@
 
   <div style="height: 60px; flex: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid #2A2620; background: #131211">
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#56DB8F" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg>
-      <span style="font: 600 10px/1 var(--sans); color: #56DB8F">{{ t.xornada }}</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0099CC" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg>
+      <span style="font: 600 10px/1 var(--sans); color: #0099CC">{{ t.xornada }}</span>
     </div>
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#716F6C" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
@@ -166,7 +167,7 @@ class Component extends DCLogic {
     var items = [];
 
     var HEAD = 'display:flex;align-items:center;gap:8px;padding:8px 14px;background:#1A1815;border-top:1px solid #2A2620;border-bottom:1px solid #2A2620;cursor:pointer;';
-    var WIDE = 'display:grid;grid-template-columns:50px minmax(0,1fr) 38px 30px;align-items:center;gap:6px;padding:7px 14px;border-bottom:1px solid #1D1A16;min-height:48px;cursor:pointer;';
+    var WIDE = 'display:grid;grid-template-columns:72px minmax(0,1fr) 38px 30px;align-items:center;gap:6px;padding:7px 14px;border-bottom:1px solid #1D1A16;min-height:48px;cursor:pointer;';
     var COMP = 'display:grid;grid-template-columns:30px minmax(0,1fr) 44px minmax(0,1fr) 14px;align-items:center;gap:4px;padding:9px 12px;border-bottom:1px solid #1D1A16;cursor:pointer;';
     var NW = 'font-family:var(--sans);font-size:14px;line-height:1.25;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
     var NC = 'font-family:var(--sans);font-size:12.5px;line-height:1.3;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
@@ -196,7 +197,7 @@ class Component extends DCLogic {
         dotStyle: 'display:none', gutStyle: 'display:none', homeStyle: 'display:none',
         awayStyle: 'display:none', hsStyle: 'display:none', asStyle: 'display:none',
         midStyle: 'display:none', starWrap: 'display:none',
-        gut: '', home: '', away: '', hs: '', as: '', mid: '', star: ''
+        gut: '', sub: '', home: '', away: '', hs: '', as: '', mid: '', star: ''
       });
 
       if (isCollapsed) { return; }
@@ -237,17 +238,31 @@ class Component extends DCLogic {
         var NAME = compact ? NC : NW;
         var mid = sched ? m[1] : (apr ? '–' : m[3] + '-' + m[4]);
 
+        // SPEC-040 CA-2: na xornada, liña 1 = hora, minuto ou estado; liña 2 =
+        // data ou parte (mono 500 10 px/1.2). O descanso: «En xogo» e «Descanso».
+        var w = self.state.lang === 'gl'
+          ? { inPlay: 'En xogo', fin: 'Rematado', post: 'Aprazado', half: 'Descanso', p1: '1ª P', p2: '2ª P', date: 'sáb 30 out' }
+          : { inPlay: 'En juego', fin: 'Finalizado', post: 'Aplazado', half: 'Descanso', p1: '1ª P', p2: '2ª P', date: 'sáb 30 oct' };
+        var minute = parseInt(m[1], 10);
+        var main = st === 'D' ? w.inPlay
+          : (live || nosig ? m[1] : (fin ? w.fin : (apr ? w.post : m[1])));
+        var sub = st === 'D' ? w.half
+          : (live || nosig ? (minute <= 45 ? w.p1 : w.p2) : w.date);
+
         items.push({
           headStyle: 'display:none',
           rowStyle: (compact ? COMP : WIDE) + tint,
           name: '', liveTxt: '', liveStyle: 'display:none', arrow: '',
           toggle: function () {},
-          dotStyle: live && !compact
-            ? 'width:6px;height:6px;border-radius:50%;background:#FF6B00;box-shadow:0 0 8px #FF6B00;flex:none;'
+          dotStyle: (live || nosig) && st !== 'D' && !compact
+            ? 'width:6px;height:6px;border-radius:50%;background:' + gutColor + ';box-shadow:0 0 8px ' + gutColor + ';flex:none;'
             : 'display:none',
-          gut: apr ? t.post.toUpperCase() : (fin ? 'FIN' : (sched && compact ? '' : m[1])),
-          gutStyle: 'font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:'
-            + (compact ? '10px' : '12px') + ';font-weight:600;letter-spacing:.03em;color:' + gutColor + ';',
+          gut: compact ? (apr ? t.post.toUpperCase() : (fin ? 'FIN' : (sched ? '' : m[1]))) : main,
+          sub: compact ? '' : sub,
+          gutStyle: compact
+            ? 'font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:10px;font-weight:600;letter-spacing:.03em;color:' + gutColor + ';'
+            : 'height:15px;display:flex;align-items:center;gap:5px;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:'
+              + (live && st !== 'D' || nosig ? '12px' : '11px') + ';font-weight:600;line-height:1.2;white-space:nowrap;color:' + gutColor + ';',
           home: m[2],
           homeStyle: NAME + 'font-weight:' + hw + ';color:' + hc + ';'
             + (compact ? 'text-align:right;' : ''),
@@ -261,7 +276,7 @@ class Component extends DCLogic {
           midStyle: 'font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:12.5px;font-weight:600;text-align:center;color:' + scColor + ';' + scExtra,
           star: starred ? '★' : '☆',
           starWrap: 'display:flex;justify-content:flex-end;font-family:var(--sans);font-size:'
-            + (compact ? '11px' : '14px') + ';color:' + (starred ? '#56DB8F' : '#2A2620') + ';',
+            + (compact ? '11px' : '14px') + ';color:' + (starred ? '#0099CC' : '#2A2620') + ';',
           toggleStar: function () {
             var s = {};
             for (var p in stars) { s[p] = stars[p]; }
@@ -297,9 +312,9 @@ class Component extends DCLogic {
     var PILL_OFF = 'padding:6px 12px;border-radius:999px;border:1px solid #2A2620;font:600 12px/1 var(--sans);color:#A7A5A0;cursor:pointer';
     var LIVE_ON = 'padding:6px 12px;border-radius:999px;background:rgba(255,107,0,.14);border:1px solid #FF6B00;font:600 12px/1 var(--sans);color:#FF6B00;cursor:pointer';
     var LIVE_OFF = 'padding:6px 12px;border-radius:999px;border:1px solid rgba(255,107,0,.4);font:600 12px/1 var(--sans);color:#FF6B00;cursor:pointer';
-    var LANG_ON = 'padding:6px 8px;border-radius:6px;background:rgba(86,219,143,.12);color:#56DB8F;text-transform:uppercase;letter-spacing:.05em;cursor:pointer';
+    var LANG_ON = 'padding:6px 8px;border-radius:6px;background:rgba(0,153,204,.12);color:#0099CC;text-transform:uppercase;letter-spacing:.05em;cursor:pointer';
     var LANG_OFF = 'padding:6px 8px;border-radius:6px;color:#716F6C;text-transform:uppercase;letter-spacing:.05em;cursor:pointer';
-    var SEG_ON = 'padding:6px 14px;border-radius:999px;background:#56DB8F;font:600 12px/1 var(--sans);color:#04160C;cursor:pointer';
+    var SEG_ON = 'padding:6px 14px;border-radius:999px;background:#0099CC;font:600 12px/1 var(--sans);color:#00151F;cursor:pointer';
     var SEG_OFF = 'padding:6px 14px;border-radius:999px;font:600 12px/1 var(--sans);color:#A7A5A0;cursor:pointer';
 
     return {

@@ -57,12 +57,15 @@ export function transportNotice(state: {
   return null;
 }
 
-// CA-9 (H-4): only a live row (half-time and sen_sinal included) whose last
-// observation is 2 min old or more says its age.
+// CA-9 (H-4): only a live row in active play (not half-time, and not
+// competitions without a live minute) whose last observation is 2 min old
+// or more says its age. A match marked sen_sinal shows its age even without a minute.
 export const ROW_AGE_MIN_MS = 2 * MINUTE_MS;
 
 export function rowAge(match: PublicMatch, now: number): number | null {
   if (match.status !== "live" || match.observedAt === null) return null;
+  if (match.halfTime) return null;
+  if (match.minute === null && match.qualifier !== "sen_sinal") return null;
   const elapsed = now - Date.parse(match.observedAt);
   if (elapsed < ROW_AGE_MIN_MS) return null;
   return Math.floor(elapsed / MINUTE_MS);

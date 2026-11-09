@@ -589,13 +589,85 @@ describe("CA-3 mapping and clocks (ADR-023 §5), one case per row over real rows
     expect(result.skipped).toEqual([]);
   });
 
+  it("LIVE_PROVISIONAL with minute, addedMinute and halfTime propagates them (SPEC-052)", () => {
+    const withMinute = {
+      ...AMOREBIETA,
+      minute: 37,
+      addedMinute: null,
+      halfTime: false,
+    };
+    const resMinute = parseRows([withMinute]);
+    expect(resMinute.observations[0]).toMatchObject({
+      status: "live",
+      minute: 37,
+      addedMinute: null,
+      halfTime: false,
+    });
+
+    const withStoppage = {
+      ...AMOREBIETA,
+      minute: 45,
+      addedMinute: 3,
+      halfTime: false,
+    };
+    const resStoppage = parseRows([withStoppage]);
+    expect(resStoppage.observations[0]).toMatchObject({
+      status: "live",
+      minute: 45,
+      addedMinute: 3,
+      halfTime: false,
+    });
+
+    const atHalfTime = {
+      ...AMOREBIETA,
+      minute: 45,
+      addedMinute: null,
+      halfTime: true,
+    };
+    const resHalfTime = parseRows([atHalfTime]);
+    expect(resHalfTime.observations[0]).toMatchObject({
+      status: "live",
+      minute: 45,
+      addedMinute: null,
+      halfTime: true,
+    });
+
+    const clampStoppage = {
+      ...AMOREBIETA,
+      minute: 90,
+      addedMinute: 45, // clamped to 30
+      halfTime: false,
+    };
+    const resClamp = parseRows([clampStoppage]);
+    expect(resClamp.observations[0]).toMatchObject({
+      status: "live",
+      minute: 90,
+      addedMinute: 30,
+      halfTime: false,
+    });
+
+    const zeroStoppage = {
+      ...AMOREBIETA,
+      minute: 90,
+      addedMinute: 0, // 0 -> null
+      halfTime: false,
+    };
+    const resZero = parseRows([zeroStoppage]);
+    expect(resZero.observations[0]).toMatchObject({
+      status: "live",
+      minute: 90,
+      addedMinute: null,
+      halfTime: false,
+    });
+  });
+
   it.each([
     ["kickoff − 11", "2026-11-01T16:49:00Z", "ambiguous_state"],
     ["kickoff − 10", "2026-11-01T16:50:00Z", "live"],
-    ["kickoff + 109", "2026-11-01T18:49:00Z", "live"],
-    ["kickoff + 110", "2026-11-01T18:50:00Z", "ambiguous_state"],
+    ["kickoff + 129", "2026-11-01T19:09:00Z", "live"],
+    ["kickoff + 130", "2026-11-01T19:10:00Z", "ambiguous_state"],
   ])(
-    "LIVE_PROVISIONAL with lastSeenAt at %s of the declared kickoff → %s",
+    "LIVE_PROVISIONAL without minute with lastSeenAt at %s of kickoff → %s (SPEC-053)",
     (_, lastSeenAt, expected) => {
       expect(AMOREBIETA_KICKOFF).toBe("2026-11-01T17:00:00Z");
       const result = parseRows([seenAt(AMOREBIETA, lastSeenAt)]);
@@ -603,6 +675,45 @@ describe("CA-3 mapping and clocks (ADR-023 §5), one case per row over real rows
         expect(result.observations).toHaveLength(1);
         expect(result.observations[0]).toMatchObject({
           status: "live",
+          observedAt: lastSeenAt,
+        });
+        expect(result.skipped).toEqual([]);
+      } else {
+        expect(result.observations).toEqual([]);
+        expect(result.skipped).toEqual([
+          {
+            externalMatchId: "70700138",
+            status: "LIVE_PROVISIONAL",
+            reason: "ambiguous_state",
+          },
+        ]);
+      }
+    },
+  );
+
+  it.each([
+    [
+      "kickoff + 135 (e.g. stoppage time with delays)",
+      "2026-11-01T19:15:00Z",
+      "live",
+    ],
+    ["kickoff + 140", "2026-11-01T19:20:00Z", "ambiguous_state"],
+  ])(
+    "LIVE_PROVISIONAL with explicit minute with lastSeenAt at %s → %s (SPEC-053)",
+    (_, lastSeenAt, expected) => {
+      const matchWithMinute = {
+        ...AMOREBIETA,
+        minute: 90,
+        addedMinute: 6,
+        lastSeenAt,
+      };
+      const result = parseRows([matchWithMinute]);
+      if (expected === "live") {
+        expect(result.observations).toHaveLength(1);
+        expect(result.observations[0]).toMatchObject({
+          status: "live",
+          minute: 90,
+          addedMinute: 6,
           observedAt: lastSeenAt,
         });
         expect(result.skipped).toEqual([]);
@@ -919,4 +1030,206 @@ describe("CA-4 identity (ADR-017 §2): the same as adapter.ts", () => {
       reason: "inconsistent_alias",
     });
   });
+
+  describe("SPEC-049 canonical field resolution", () => {
+    it("resolves competition from canonicalCompetitionId when codGrupo is not in aliases.competitions", () => {
+      const withoutCanonical = parseRows([
+        { ...ZAMORA, codGrupo: "desconocido" },
+      ]);
+      expect(withoutCanonical).toEqual(empty);
+
+      const withCanonical = parseRows([
+        {
+          ...ZAMORA,
+          codGrupo: "desconocido",
+          canonicalCompetitionId: "primera-rfef-g1",
+        },
+      ]);
+      expect(withCanonical.observations).toEqual([
+        expect.objectContaining({
+          matchId: "primera-rfef-g1-2026-27-j10-zamora-deportivo-fabril",
+          status: "finished",
+        }),
+      ]);
+    });
+
+    it("resolves teams directly from canonicalHomeTeamId and canonicalAwayTeamId", () => {
+      const withoutCanonical = parseRows([
+        {
+          ...ZAMORA,
+          equipoLocal: "Equipo Desconocido 1",
+          equipoVisitante: "Equipo Desconocido 2",
+        },
+      ]);
+      expect(withoutCanonical.observations).toEqual([]);
+      expect(withoutCanonical.unresolved[0]).toMatchObject({
+        reason: "unknown_team",
+      });
+
+      const withCanonical = parseRows([
+        {
+          ...ZAMORA,
+          equipoLocal: "Equipo Desconocido 1",
+          equipoVisitante: "Equipo Desconocido 2",
+          canonicalHomeTeamId: "zamora",
+          canonicalAwayTeamId: "deportivo-fabril",
+        },
+      ]);
+      expect(withCanonical.observations).toEqual([
+        expect.objectContaining({
+          matchId: "primera-rfef-g1-2026-27-j10-zamora-deportivo-fabril",
+          status: "finished",
+        }),
+      ]);
+    });
+
+    it("falls back to alias map when canonical team IDs are absent", () => {
+      const withPartialCanonical = parseRows([
+        {
+          ...ZAMORA,
+          equipoLocal: "Equipo Desconocido 1",
+          canonicalHomeTeamId: "zamora",
+          // canonicalAwayTeamId missing, falls back to equipoVisitante alias
+        },
+      ]);
+      expect(withPartialCanonical.observations).toEqual([
+        expect.objectContaining({
+          matchId: "primera-rfef-g1-2026-27-j10-zamora-deportivo-fabril",
+          status: "finished",
+        }),
+      ]);
+    });
+
+    it("resolves match when canonical team ID slug differs from declared calendar ID but alias matches", () => {
+      // e.g. canonicalAwayTeamId is 'deportivo-fabril-fc' but calendar has 'deportivo-fabril'
+      // and alias map matches 'RC Deportivo Fabril' to 'deportivo-fabril'
+      const withDivergentCanonical = parseRows([
+        {
+          ...ZAMORA,
+          canonicalAwayTeamId: "deportivo-fabril-slug-divergente",
+        },
+      ]);
+      expect(withDivergentCanonical.observations).toEqual([
+        expect.objectContaining({
+          matchId: "primera-rfef-g1-2026-27-j10-zamora-deportivo-fabril",
+          status: "finished",
+        }),
+      ]);
+    });
+  });
+});
+
+// SPEC-069: explorer v2.0 arbitrates between providers and names the winner in
+// liveProvider ("marca", "rfef", "espn", "football-data", and whatever comes
+// next). The field is informative: a new provider never rejects the export.
+describe("SPEC-069 liveProvider is open; estado and goals[].team stay closed", () => {
+  // Real export of 2026-11-09 20:34Z (two rows "espn", one "marca") with one
+  // field changed: Las Palmas–Eldense says "proveedor-inventado" (README).
+  const PROVIDERS = "export-2026-11-09-proveedores.json";
+  const providers = (): string => readText(`${EXPORT_DIR}/${PROVIDERS}`);
+  const withoutProvider = (body: string): string => {
+    const json = JSON.parse(body) as { matches: Record<string, unknown>[] };
+    return JSON.stringify({
+      ...json,
+      matches: json.matches.map(({ liveProvider: _, ...rest }) => rest),
+    });
+  };
+
+  it('CA-1 liveProvider: "" still rejects the export: an empty field is not a provider', () => {
+    const result = parseBodies([
+      exportOf([{ ...ZAMORA, liveProvider: "" }]),
+      exportOf([ZAMORA]),
+    ]);
+    expect(result.requestErrors).toHaveLength(1);
+    expect(result.requestErrors[0].error).toMatch(/liveProvider/);
+    expect(result.observations).toHaveLength(1);
+  });
+
+  it("CA-1 known and unknown providers validate, and an absent one too", () => {
+    for (const liveProvider of [
+      "marca",
+      "rfef",
+      "espn",
+      "football-data",
+      "proveedor-inventado",
+      undefined,
+    ]) {
+      const parsed = ExplorerExport.parse(
+        JSON.parse(exportOf([{ ...ZAMORA, liveProvider }])),
+      );
+      expect(parsed.matches[0].liveProvider).toBe(liveProvider);
+    }
+  });
+
+  it('CA-2 the fixture has >= 1 row "espn" and >= 1 row "proveedor-inventado"', () => {
+    const providersIn = rowsIn(providers()).map((m) => m.liveProvider);
+    expect(providersIn).toContain("espn");
+    expect(providersIn).toContain("proveedor-inventado");
+  });
+
+  it("CA-2 the export parses without error and liveProvider arrives as it came", () => {
+    const body = ExplorerExport.parse(JSON.parse(providers()));
+    expect(body.date).toBe("2026-11-09");
+    expect(body.matches.map((m) => [m.equipoLocal, m.liveProvider])).toEqual([
+      ["CE Sabadell FC", "espn"],
+      ["UD Las Palmas", "proveedor-inventado"],
+      ["Deportivo de A Coruña Femenino", "marca"],
+    ]);
+  });
+
+  it("CA-2 all its observations come out: the same result as the same export without liveProvider", () => {
+    const result = parseBodies([providers()]);
+    expect(result.requestErrors).toEqual([]);
+    expect(result).toEqual(parseBodies([withoutProvider(providers())]));
+    // Every row says what it said before SPEC-069 would have let it through:
+    // Sabadell–Real Sociedad B ("espn") is live at half-time; Las Palmas–
+    // Eldense ("proveedor-inventado") was postponed on 11-08 and replayed on
+    // 11-09, so against its declared kickoff it is ambiguous_state; the Liga F
+    // row ("marca") is outside the five competitions' calendar.
+    expect(result.observations).toEqual([
+      {
+        matchId: "segunda-division-2026-27-j13-sabadell-real-sociedad-b",
+        status: "live",
+        score: { home: 0, away: 0 },
+        minute: 45,
+        addedMinute: null,
+        halfTime: true,
+        observedAt: "2026-11-09T20:34:36.012Z",
+      },
+    ]);
+    expect(result.skipped).toEqual([
+      {
+        externalMatchId: null,
+        status: "LIVE_PROVISIONAL",
+        reason: "ambiguous_state",
+      },
+    ]);
+    expect(result.unresolved).toEqual([
+      expect.objectContaining({
+        reason: "unknown_match",
+        externalCompetition: "marca-grupo",
+      }),
+    ]);
+  });
+
+  it.each([
+    ['estado: "HALFTIME"', { ...ZAMORA, estado: "HALFTIME" }, /estado/],
+    [
+      'goals[].team: "neutral"',
+      {
+        ...ZAMORA,
+        goals: [{ team: "neutral", player: "X", minute: 10 }],
+      },
+      /goals\.0\.team/,
+    ],
+  ])(
+    "CA-5 %s still rejects the export (domain, not information)",
+    (_, bad, reason) => {
+      const result = parseBodies([exportOf([bad]), exportOf([ZAMORA])]);
+      expect(result.requestErrors).toHaveLength(1);
+      expect(result.requestErrors[0].url).toBe(url("2026-10-31"));
+      expect(result.requestErrors[0].error).toMatch(reason);
+      expect(result.observations).toHaveLength(1);
+    },
+  );
 });

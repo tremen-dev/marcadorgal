@@ -59,7 +59,7 @@ describe("CA-7 fonts and digits", () => {
   // element styled with it would lose the tabular digits inherited from html.
   it("no CSS under src/ uses the font shorthand", () => {
     const files = globSync("src/**/*.css").map((f) =>
-      relative(process.cwd(), f),
+      relative(process.cwd(), f).replaceAll("\\", "/"),
     );
     expect(files).toContain("src/components/xornada/Xornada.module.css");
     const offenders = files.flatMap((file) =>

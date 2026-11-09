@@ -18,7 +18,9 @@ datos. Inspiración de marcadorgalego.gal, no sucesión.
 
 **SPEC-003 entregada:** tokens de diseño tipados en `src/design/tokens.ts` (colores, tipografía, escalas, espaciado, medidas y variables semánticas de estado), CSS generado (`npm run tokens:css`) con test de paridad contra `docs/diseno/_tokens.css`, i18n tipada en `src/i18n/` (diccionarios de galego y español con tipos de `dominio.md`), reglas sin hex sueltos en componentes y sin shorthand `font:` en CSS de `src/` (para preservar `font-variant-numeric: tabular-nums` en números).
 
-**SPEC-004 entregada:** calendario declarado en `data/calendario/2026-27/` (cinco competiciones, 1.834 partidos, nombres de competiciones en galego, equipos con forma de RFEF y `shortName`), alias del proveedor en `data/alias/2026-27/`, importador de API-Football con `npm run calendario:sync` (relee el proveedor y muestra el diff), `npm run calendario:load` (carga idempotente en la base) y `npm run calendario:xornada` (jornada en curso de las cinco).
+**SPEC-004 entregada:** calendario declarado en `data/calendario/2026-27/` (cinco competiciones, 1.834 partidos, nombres de competiciones en galego, equipos con forma de RFEF y `shortName`), alias del proveedor en `data/alias/2026-27/`, importador con `npm run calendario:sync` (relee el proveedor y muestra el diff), `npm run calendario:load` (carga idempotente en la base) y `npm run calendario:xornada` (jornada en curso de las cinco).
+
+**SPEC-049 entregada:** sustitución de API-Football por `marcadorgal-explorer` v2.0 como importador oficial de calendario (`GET /api/export/calendar`), retirada de API-Football de las fuentes activas, elevación de `rfef` a prioridad 50 (`FEDERATION_PRIORITY`, ADR-026) y cliente unificado en `src/lib/explorer-client.ts`.
 
 ## Arranque
 
@@ -29,7 +31,7 @@ npm run gates        # Typecheck, lint, test y build (tsc, Biome, Vitest, next b
 npm run tokens:css   # Regenera src/design/tokens.css desde tokens.ts
 npm run db:push      # Aplica migraciones sobre la base de `DATABASE_URL`
 npm run test:db      # Tests de integración (requiere `.env` con `DATABASE_URL`)
-npm run calendario:sync     # Relee el proveedor y muestra el diff (requiere `API_FOOTBALL_KEY` en `.env`)
+npm run calendario:sync     # Relee el proveedor oficial (explorer) y muestra el diff (requiere `RFEF_EXPLORER_TOKEN` en `.env`)
 npm run calendario:load     # Carga idempotente del calendario en la base
 npm run calendario:xornada  # Muestra la jornada en curso de las cinco competiciones
 npm run alias:rfef          # Regenera data/alias/<temporada>/rfef.json; con --export <json> lista los nombres sin resolver

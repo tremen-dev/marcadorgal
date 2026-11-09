@@ -15,41 +15,29 @@ const FIVE = [
 ];
 
 describe("CA-2 registry", () => {
-  it("has api-football first, pull, over the five competitions at priority 10", () => {
-    // Two sources since SPEC-038: api-football (10) and rfef (5, ADR-023).
-    expect(SOURCES.map((s) => s.id)).toEqual(["api-football", "rfef"]);
-    const [apiFootball] = SOURCES;
-    expect(SourceConfig.safeParse(apiFootball).success).toBe(true);
-    expect(apiFootball).toMatchObject({
-      id: "api-football",
-      kind: "pull",
-      minIntervalSeconds: 30,
-      userAgent: "marcador.gal (ingesta; https://marcador.gal)",
-    });
-    expect([...apiFootball.competitions].sort()).toEqual([...FIVE].sort());
-    expect(apiFootball.priority).toEqual(
-      Object.fromEntries(FIVE.map((c) => [c, 10])),
-    );
-    expect(apiFootball.legalBasis.length).toBeGreaterThan(0);
-  });
-
-  it("has rfef second, pull, over the five competitions at priority 5 (SPEC-038 CA-7, ADR-023 §1)", () => {
-    const rfef = SOURCES[1];
+  it("has rfef as the official source, pull, over the five competitions at priority 50 (SPEC-049, SPEC-062, ADR-026)", () => {
+    expect(SOURCES.map((s) => s.id)).toEqual(["rfef"]);
+    const [rfef] = SOURCES;
     expect(SourceConfig.safeParse(rfef).success).toBe(true);
     expect(rfef).toMatchObject({
       id: "rfef",
       kind: "pull",
       minIntervalSeconds: 30,
       userAgent: "marcador.gal (ingesta; https://marcador.gal)",
-      legalBasis: "Datos de rfef.es",
+      legalBasis:
+        "Datos de rfef.es y proveedores multi-fuente vía explorer (ADR-026)",
     });
     expect([...rfef.competitions].sort()).toEqual([...FIVE].sort());
-    expect(rfef.priority).toEqual(Object.fromEntries(FIVE.map((c) => [c, 5])));
+    expect(rfef.priority).toEqual(Object.fromEntries(FIVE.map((c) => [c, 50])));
+  });
+
+  it("rfef has no liveObservedOnly (reverted per ADR-027 §3 with explorer v2.0 MARCA)", () => {
+    expect(sourceConfig("rfef")?.liveObservedOnly).toEqual([]);
   });
 
   it("sourceConfig finds a source by id and returns undefined otherwise", () => {
-    expect(sourceConfig("api-football")).toBe(SOURCES[0]);
-    expect(sourceConfig("rfef")).toBe(SOURCES[1]);
+    expect(sourceConfig("rfef")).toBe(SOURCES[0]);
+    expect(sourceConfig("api-football")).toBeUndefined();
     expect(sourceConfig("operator")).toBeUndefined();
   });
 

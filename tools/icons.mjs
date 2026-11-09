@@ -60,6 +60,14 @@ try {
     `${publicDir}${ICON_FILES.apple.path}`,
     await render(page, ICON_FILES.apple.sizes[0], false),
   );
+  writeFileSync(
+    `${publicDir}${ICON_FILES.pwa192.path}`,
+    await render(page, ICON_FILES.pwa192.sizes[0], false),
+  );
+  writeFileSync(
+    `${publicDir}${ICON_FILES.pwa512.path}`,
+    await render(page, ICON_FILES.pwa512.sizes[0], false),
+  );
   console.log(`icons: wrote ${Object.values(ICON_FILES).map((f) => f.path).join(", ")}`);
 } finally {
   await browser.close();

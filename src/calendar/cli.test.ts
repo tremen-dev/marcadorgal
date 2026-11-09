@@ -2,7 +2,7 @@ import { spawnSync } from "node:child_process";
 import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { describe, expect, it } from "vitest";
 import { MatchId, TeamId } from "../model/index.ts";
 import { COMPETITIONS } from "./importers.ts";
@@ -14,6 +14,7 @@ const root = fileURLToPath(new URL("../..", import.meta.url));
 const cleanCwd = mkdtempSync(path.join(tmpdir(), "marcadorgal-cli-"));
 const cleanEnv = { ...process.env };
 delete cleanEnv.API_FOOTBALL_KEY;
+delete cleanEnv.RFEF_EXPLORER_TOKEN;
 delete cleanEnv.DATABASE_URL;
 
 const run = (tool: string, ...args: string[]) =>
@@ -36,10 +37,10 @@ describe("CA-4 COMPETITIONS", () => {
 });
 
 describe("CA-7 calendario:sync", () => {
-  it("exits 1 without API_FOOTBALL_KEY and never touches data/", () => {
+  it("exits 1 without RFEF_EXPLORER_TOKEN and never touches data/", () => {
     const r = run("calendario-sync.mjs", "2026-27", "--dry-run");
     expect(r.status).toBe(1);
-    expect(r.stderr).toMatch(/API_FOOTBALL_KEY/);
+    expect(r.stderr).toMatch(/RFEF_EXPLORER_TOKEN/);
   });
 
   it("exits 1 without a season", () => {
@@ -107,7 +108,9 @@ describe("CA-7 calendario:sync", () => {
 // The whole tool against a fake provider built from the repo (RN-08: no
 // request leaves the machine), with --dry-run so data/ is never written.
 describe("SPEC-015 calendario:sync against the fake provider", () => {
-  const fake = path.join(root, "src/calendar/cli.fake-provider.mjs");
+  const fake = pathToFileURL(
+    path.join(root, "src/calendar/cli.fake-provider.mjs"),
+  ).href;
   const sync = (env: Record<string, string> = {}) => {
     const output = path.join(cleanCwd, `github-output-${Math.random()}`);
     writeFileSync(output, "");
@@ -124,7 +127,7 @@ describe("SPEC-015 calendario:sync against the fake provider", () => {
         cwd: cleanCwd,
         env: {
           ...cleanEnv,
-          API_FOOTBALL_KEY: "fake",
+          RFEF_EXPLORER_TOKEN: "fake",
           GITHUB_OUTPUT: output,
           ...env,
         },

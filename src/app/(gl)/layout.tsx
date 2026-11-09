@@ -1,13 +1,18 @@
 import type { ReactNode } from "react";
+import { Footer } from "@/components/layout/Footer";
 import "../globals.css";
-import { siteMetadata } from "../metadata";
+import { siteMetadata, siteViewport } from "../metadata";
 
 export const metadata = siteMetadata("gl");
+export const viewport = siteViewport;
 
 export default function GlLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="gl">
-      <body>{children}</body>
+      <body>
+        {children}
+        <Footer locale="gl" />
+      </body>
     </html>
   );
 }

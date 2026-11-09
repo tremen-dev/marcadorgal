@@ -1,9 +1,17 @@
 import type { TransactionSql } from "postgres";
 import { afterAll, describe, expect, it } from "vitest";
-import { AliasFile, type Instant, MINUTE_MS, shiftInstant } from "@/model";
+import {
+  AliasFile,
+  type Instant,
+  MatchId,
+  MINUTE_MS,
+  ParseResult,
+  type RawCapture,
+  SourceId,
+  shiftInstant,
+} from "@/model";
 import { createSql } from "../db/connect.ts";
 import { createMemoryRawStore } from "../raw/memory.ts";
-import { apiFootballByIds } from "../sources/api-football/results.ts";
 import { contrastarMarcadores } from "./contraste.ts";
 import { informeJornada } from "./informe.ts";
 import { contrasteGuardado, informeFilas } from "./informe-db.ts";
@@ -307,25 +315,61 @@ describe("CA-5 el contraste con el proveedor", () => {
         ],
         matches: { "101": coincide, "102": discrepa },
       });
-      const { createApiFootballResults } = await import(
-        "../sources/api-football/results.ts"
-      );
-      const adapter = createApiFootballResults({
-        aliases,
-        apiKey: "clave-de-prueba",
-      });
+      type InformeFixtureItem = {
+        fixture?: { id?: number | string };
+        goals?: { home: number; away: number };
+      };
+      const adapter = {
+        id: SourceId.parse("api-football"),
+        kind: "pull" as const,
+        resolveTeam: () => null,
+        parse: (capture: RawCapture): ParseResult => {
+          const observations = [];
+          for (const req of capture.requests) {
+            if (!req.body) continue;
+            const json = JSON.parse(req.body);
+            for (const item of (json.response ?? []) as InformeFixtureItem[]) {
+              const ext = aliases.matches?.[String(item.fixture?.id)];
+              if (ext) {
+                observations.push({
+                  matchId: MatchId.parse(ext),
+                  observedAt: capture.capturedAt,
+                  status: "finished" as const,
+                  score: item.goals ?? { home: 0, away: 0 },
+                  period: null,
+                  minute: null,
+                });
+              }
+            }
+          }
+          return ParseResult.parse({
+            observations,
+            skipped: [],
+            unresolved: [],
+            requestErrors: [],
+          });
+        },
+      };
       const salida = await contrastarMarcadores({
         matches: filas.matches,
         aliases,
         adapter,
-        capturar: (fixtureIds) =>
-          apiFootballByIds({
-            fixtureIds,
-            apiKey: "clave-de-prueba",
-            userAgent: "test",
-            now: seg(200),
-            fetch: doble,
-          }),
+        capturar: async (fixtureIds) => {
+          const url = `https://v3.football.api-sports.io/fixtures?ids=${fixtureIds.join("-")}`;
+          const res = await doble(url);
+          return {
+            sourceId: SourceId.parse("api-football"),
+            capturedAt: seg(200),
+            requests: [
+              {
+                url,
+                status: res.status,
+                contentType: "application/json",
+                body: await res.text(),
+              },
+            ],
+          };
+        },
         store: createMemoryRawStore(),
         etiqueta: "contraste-test",
         guardado: null,

@@ -29,10 +29,7 @@ async function rollback(fn: (tx: TransactionSql) => Promise<void>) {
 // Cultural Leonesa 2-0 Coria of the fixture: kick-off 14:30:00Z
 // (periods.first), goals at 17' and 31', captured at 15:10:00Z.
 const LIVE = readFileSync(
-  new URL(
-    "../sources/api-football/fixtures/live-2026-09-26.json",
-    import.meta.url,
-  ),
+  new URL("./fixtures/live-2026-09-26.json", import.meta.url),
   "utf8",
 );
 const at = (hms: string) => `2026-09-26T${hms}Z`;

@@ -36,6 +36,10 @@ type Props = {
   // SPEC-041 CA-3: RECENT_GOAL_MINUTES and RECENT_GOAL_MARK, passed by the
   // page with the instant of its render, to the screen and to the client.
   recentGoal: { now: Instant; minutes: number; mark: RecentGoalMark };
+  // Whether to show the strip of days (SHOW_DAY_STRIP).
+  showDayStrip?: boolean;
+  // Whether each competition links to its table (SHOW_TABLE_LINK).
+  showTableLink?: boolean;
 };
 
 export function XornadaScreen({
@@ -49,6 +53,8 @@ export function XornadaScreen({
   freshness,
   provisionalDisplay,
   recentGoal,
+  showDayStrip,
+  showTableLink,
 }: Props) {
   const hasRows = competitions.some((c) => c.rows.length > 0);
   return (
@@ -68,6 +74,8 @@ export function XornadaScreen({
             minutes: recentGoal.minutes,
             mark: recentGoal.mark,
           }}
+          showDayStrip={showDayStrip}
+          showTableLink={showTableLink}
         />
       ) : (
         <XornadaLive
@@ -79,6 +87,8 @@ export function XornadaScreen({
           provisionalDisplay={provisionalDisplay}
           recentGoalMinutes={recentGoal.minutes}
           recentGoalMark={recentGoal.mark}
+          showDayStrip={showDayStrip}
+          showTableLink={showTableLink}
           {...live}
         />
       )}

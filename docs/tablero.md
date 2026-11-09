@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-11-02
+Actualizado: 2026-11-08
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -45,6 +45,17 @@ Actualizado: 2026-11-02
 | SPEC-040 — fecha-y-hora-por-fila-y-escritorio-multicolumna | hecho | 2026-11-01 (sdd-verificador) |
 | SPEC-041 — gol-reciente-que-pulsa | hecho | 2026-11-02 (sdd-verificador) |
 | SPEC-042 — gol-por-defecto-y-variable-recent-goal-mark | hecho | 2026-11-02 (sdd-verificador) |
+| SPEC-050 — metadatos-opengraph-tarjeta-social-e-imaxe-og | hecho | 2026-11-07 (sdd-verificador) |
+| SPEC-051 — manifiesto-pwa-e-pantalla-completa-standalone | hecho | 2026-11-07 (sdd-verificador) |
+| SPEC-055 — soporte-futbol-femenino-e-integracion-explorer | hecho | 2026-11-07 (sdd-implementador) |
+| SPEC-056 — despliegue-interactivo-de-goleadores-por-equipo | hecho | 2026-11-07 (sdd-implementador) |
+| SPEC-057 — panel-preferencias-ligas-e-enlaces-clasificacion | borrador | 2026-11-07 (sdd-arquitecto) |
+| SPEC-058 — footer-de-produccion-version-identidad-tremen-dev-e-informacion-legal | hecho | 2026-11-07 (sdd-verificador) |
+| SPEC-059 — enriquecemento-de-goleadores-da-xornada-desde-explorer | feito | 2026-11-08 (sdd-implementador) |
+| SPEC-060 — ingesta-historica-resultados-y-goleadores | implementada | 2026-11-08 (sdd-implementador) |
+| SPEC-061 — tira-de-dias-configurable-e-oculta-por-defecto | hecho | 2026-11-08 (sdd-verificador) |
+| SPEC-064 — assets-de-redes-sociales-y-og-png-con-la-identidad-celeste | hecho | 2026-11-08 (sdd-verificador) |
+| SPEC-065 — identidad-celeste-tokens-wordmark-con-bloque-dibujado-e-icono-de-barra-sola | hecho | 2026-11-08 (sdd-verificador) |
 
 ## EPIC-004 — fuente-rfef (aprobada)
 
@@ -55,6 +66,11 @@ Actualizado: 2026-11-02
 | SPEC-036 — vias-legitimas-de-acceso-a-los-datos-de-la-rfef | hecho | 2026-10-18 (sdd-verificador) |
 | SPEC-038 — alta-de-la-fuente-rfef-via-explorer-adaptador-pull-sobre-el-export-alias-y-registro-con-prioridad-5 | hecho | 2026-11-02 (sdd-verificador) |
 | SPEC-039 — jornada-de-observacion-de-la-rfef-via-explorer-con-prioridad-5 | aprobada | 2026-11-01 (Alberto Fojo) |
+| SPEC-049 — calendario-desde-explorer-y-retirada-de-api-football | hecho | 2026-11-06 (sdd-implementador) |
+| SPEC-052 — minuto-y-descanso-desde-explorer | hecho | 2026-11-07 (sdd-verificador) |
+| SPEC-053 — ampliar-ventana-live-explorer | hecho | 2026-11-07 (sdd-implementador) |
+| SPEC-054 — resolucion-robusta-equipos-explorer | hecho | 2026-11-07 (sdd-implementador) |
+| SPEC-062 — extraccion-api-football-hacia-explorer | implementada | 2026-11-08 (sdd-implementador) |
 
 ## EPIC-006 — patrocinio (aprobada)
 
@@ -71,6 +87,8 @@ Actualizado: 2026-11-02
 | SPEC-022 — test-db-no-toca-storage-de-produccion | hecho | 2026-10-08 (sdd-verificador) |
 | SPEC-030 — la-portada-sirve-una-instantanea-isr-antigua | hecho | 2026-10-12 (sdd-verificador) |
 | SPEC-044 — recuperacion-de-finales-fuera-de-ventana-por-la-rfef-herramienta-de-recuperacion-y-horizonte-por-fuente | hecho | 2026-11-02 (sdd-verificador) |
+| SPEC-045 — cabos-sueltos-de-la-xornada-diseno-de-escritorio-contexto-nombres-de-competicion-y-suites-con-base | hecho | 2026-11-03 (sdd-verificador) |
+| SPEC-048 — la-rfef-observa-sin-decidir-el-directo-de-primera-y-segunda-division | en-revision | 2026-11-03 (sdd-implementador) |
 
 ## EPIC-MANT — mantenimiento (borrador)
 
@@ -80,7 +98,9 @@ Actualizado: 2026-11-02
 | SPEC-017 — mejoras-del-informe-de-jornada | hecho | 2026-10-06 (sdd-verificador) |
 | SPEC-029 — endurecer-web-reader-purgar-cron-y-v-7 | hecho | 2026-10-10 (sdd-verificador) |
 | SPEC-035 — motor-serializado-por-partido | hecho | 2026-10-15 (sdd-verificador) |
-| SPEC-043 — migraciones-automaticas-al-fusionar | en-revision | 2026-11-02 (sdd-implementador) |
+| SPEC-043 — migraciones-automaticas-al-fusionar | hecho | 2026-11-02 (sdd-verificador) |
+| SPEC-047 — entorno-de-base-local-y-gates-en-windows | borrador | 2026-11-03 (sdd-arquitecto) |
+| SPEC-063 — gate-de-version-en-cada-pr | hecho | 2026-11-08 (sdd-verificador) |
 
 ## ADRs
 
@@ -111,9 +131,16 @@ Actualizado: 2026-11-02
 | ADR-023 | aprobada | fuente-rfef-via-explorer-prioridad-5-temporal-pull-http-a-un-servicio-propio-y-reglas-de-acceso-de-explorer | 2026-11-01 (Alberto Fojo) |
 | ADR-024 | aprobada | migraciones-de-la-base-aplicadas-por-github-actions-antes-de-promover-el-despliegue | 2026-11-02 (Alberto Fojo) |
 | ADR-025 | aprobada | horizonte-de-recuperacion-por-fuente-y-motor-a-la-hora-de-la-observacion-fuera-de-la-ventana-comun | 2026-11-02 (Alberto Fojo) |
+| ADR-026 | aprobada | sustitucion-de-api-football-por-explorer-para-calendario-y-retirada-de-api-football | 2026-11-06 (Alberto Fojo) |
+| ADR-027 | aprobada | una-fuente-puede-observar-el-directo-de-una-competicion-sin-decidirlo | 2026-11-03 (Alberto Fojo) |
+| ADR-028 | borrador | cada-pr-sube-la-version-de-la-app-exigido-por-un-gate-de-ci | 2026-11-08 (sdd-arquitecto) |
+| ADR-029 | aprobada | celeste-de-galicia-como-color-de-marca-y-barra-sola-como-icono-enmienda-adr-005 | 2026-11-08 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 40
+- hecho: 55
 - en-revision: 3
+- borrador: 2
+- feito: 1
+- implementada: 2
 - aprobada: 1

@@ -50,6 +50,7 @@ export default defineConfig({
       ...Object.fromEntries(REMOTE_SECRETS.map((name) => [name, ""])),
       NEXT_PUBLIC_REALTIME: "on",
       NEXT_PUBLIC_SUPABASE_ANON_KEY: LOCAL_ANON_KEY,
+      SHOW_DAY_STRIP: "true",
     },
   },
 });

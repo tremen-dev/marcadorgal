@@ -38,4 +38,9 @@ código ni docs; en la interfaz, ver la cabecera de `dominio.md`.
   migraciones SQL con la CLI de Supabase, Vitest, Playwright, Biome, npm.
   Detalle en `docs/adr/ADR-001-stack.md`.
 - **Gates.** `npm run gates` = typecheck + lint + test + build. CI lo ejecuta
-  en cada PR. Rama `ft/SPEC-NNN-slug` para todo código vigilado.
+  en cada PR. Rama `ft/SPEC-NNN-slug` para todo código vigilado. Cada PR
+  sube la versión (job `version`, ADR-028): `patch` para
+  fix/chore/docs/test/refactor, `minor` para feat, `major` solo por decisión
+  del titular, con `npm version <patch|minor> --no-git-tag-version` (deja
+  `package-lock.json` coherente). Exentos los cambios que solo tocan
+  `data/calendario/**` o `data/alias/**` (bot del calendario).

@@ -1,0 +1,34 @@
+{
+  "competition": "primera-rfef-g1",
+  "season": "2026-27",
+  "updatedAt": "2026-11-08T17:00:00Z",
+  "isLive": false,
+  "standings": [
+    {
+      "position": 1,
+      "teamId": "fixture-a",
+      "teamName": "Equipo A",
+      "played": 5,
+      "won": 3,
+      "drawn": 1,
+      "lost": 1,
+      "goalsFor": 9,
+      "goalsAgainst": 4,
+      "points": 10,
+      "form": ["W", "D", "L", "W", "W"]
+    },
+    {
+      "position": 2,
+      "teamId": "fixture-b",
+      "teamName": "Equipo B",
+      "played": 5,
+      "won": 2,
+      "drawn": 2,
+      "lost": 1,
+      "goalsFor": 6,
+      "goalsAgainst": 5,
+      "points": 8,
+      "form": ["L", "V", "E", "D", "W"]
+    }
+  ]
+}

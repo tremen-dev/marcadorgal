@@ -1,6 +1,5 @@
 import type { Env } from "../db/env.ts";
 import type { SourceAdapter, SourceConfig } from "../model/index.ts";
-import { createApiFootballResults } from "../sources/api-football/results.ts";
 import { createRfefExplorer } from "../sources/rfef/explorer.ts";
 import { loadAliasFile } from "./aliases.ts";
 import { loadDeclaredCalendar } from "./calendar.ts";
@@ -17,12 +16,7 @@ function required(env: Env, name: string): string {
 }
 
 export const ADAPTERS: AdapterTable = {
-  "api-football": (season, env) =>
-    createApiFootballResults({
-      aliases: loadAliasFile(season, "api-football"),
-      apiKey: required(env, "API_FOOTBALL_KEY"),
-    }),
-  // The rfef via the export of explorer (ADR-023 §6, SPEC-038 CA-7): the
+  // The rfef via the export of explorer (ADR-023 §6, SPEC-038 CA-7, SPEC-062): the
   // direct adapter (the panel one, same folder) stays out, in reserve.
   rfef: (season, env) =>
     createRfefExplorer({

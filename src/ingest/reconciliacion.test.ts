@@ -6,11 +6,51 @@ import {
   type Observation,
   type RawCapture,
   type SourceAdapter,
+  SourceId,
 } from "@/model";
 import { createMemoryRawStore } from "../raw/memory.ts";
-import { createApiFootballResults } from "../sources/api-football/results.ts";
 import { createMemoryIngestDb } from "./memory.ts";
 import { reconciliarCierres, type Vigente } from "./reconciliacion.ts";
+
+type ReconciliacionFixtureItem = {
+  fixture?: { id?: number | string };
+  goals?: { home: number; away: number };
+};
+
+const createReconciliacionTestAdapter = (
+  aliases: AliasFile,
+): SourceAdapter => ({
+  id: SourceId.parse("api-football"),
+  kind: "pull",
+  resolveTeam: () => null,
+  parse: (capture: RawCapture) => {
+    const observations = [];
+    for (const req of capture.requests) {
+      if (!req.body) continue;
+      const json = JSON.parse(req.body);
+      for (const item of (json.response ?? []) as ReconciliacionFixtureItem[]) {
+        const matchId = aliases.matches?.[String(item.fixture?.id)];
+        if (matchId) {
+          observations.push({
+            matchId,
+            observedAt: capture.capturedAt,
+            status: "finished" as const,
+            score: item.goals ?? { home: 0, away: 0 },
+            period: null,
+            minute: null,
+            extraMinute: null,
+          });
+        }
+      }
+    }
+    return {
+      observations,
+      skipped: [],
+      unresolved: [],
+      requestErrors: [],
+    };
+  },
+});
 
 // SPEC-013 CA-6. The one-off reconciliation of the two matches of the measured
 // matchday (H-1): ids= through the path of contraste.ts, raw stored before
@@ -81,7 +121,7 @@ function setup(capture = captura) {
   const log: string[] = [];
   const store = createMemoryRawStore(log);
   const db = createMemoryIngestDb(log);
-  const real = createApiFootballResults({ aliases, apiKey: "clave-de-prueba" });
+  const real = createReconciliacionTestAdapter(aliases);
   const adapter: SourceAdapter = {
     ...real,
     parse: (c) => {

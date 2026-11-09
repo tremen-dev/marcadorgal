@@ -7,12 +7,16 @@ import { galicianNames } from "@/calendar/galicians";
 import { nowInstant } from "@/clock";
 import { XornadaScreen } from "@/components/xornada/XornadaScreen";
 import { type Locale, t } from "@/i18n";
+import { enrichMatchesWithGoals } from "@/lib/explorer-enrichment";
+import { fetchWomenXornadaMatches } from "@/lib/explorer-xornada";
 import type { Instant, PublicMatch } from "@/model";
 import { buildXornada, xornadaDays } from "@/xornada/view";
 import {
   PROVISIONAL_DISPLAY,
   RECENT_GOAL_MINUTES,
   recentGoalMark,
+  showDayStrip,
+  showTableLink,
 } from "./config";
 
 // / and /es (SPEC-020 CA-6): the snapshot of the current xornada, rendered on
@@ -24,9 +28,38 @@ export const HOME_PATHS: Readonly<Record<Locale, string>> = {
 };
 
 export function homeMetadata(locale: Locale): Metadata {
+  const title = `${t(locale, "xornada.title")} · ${t(locale, "common.title")}`;
+  const ogTitle = `${t(locale, "common.title")} · ${t(locale, "common.claim")}`;
+  const description = t(locale, "common.description");
+  const path = HOME_PATHS[locale];
+
   return {
-    title: `${t(locale, "xornada.title")} · ${t(locale, "common.title")}`,
+    title,
+    description,
     robots: { index: false, follow: false },
+    openGraph: {
+      title: ogTitle,
+      description,
+      url: path,
+      siteName: t(locale, "common.title"),
+      locale: locale === "es" ? "es_ES" : "gl_ES",
+      type: "website",
+      images: [
+        {
+          url: "/og.png",
+          width: 1200,
+          height: 630,
+          alt: ogTitle,
+          type: "image/png",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: ogTitle,
+      description,
+      images: ["/og.png"],
+    },
   };
 }
 
@@ -51,10 +84,51 @@ async function snapshot(
 export async function HomeXornada({ locale }: { locale: Locale }) {
   const now = nowInstant();
   const read = await snapshot(now, locale);
-  const matches = read?.matches ?? null;
+  let matches = read?.matches ?? null;
   const season = seasonOf(now);
-  // SPEC-033 CA-4: resolved here, on the server; the client gets the same.
-  const galicians = galicianNames(season);
+  const galicians = new Set([
+    ...galicianNames(season),
+    "Deportivo ABANCA",
+    "Depor ABANCA",
+    "As Celtas",
+    "RC Celta Femenino / As Celtas",
+    "RC Celta Femenino (As Celtas)",
+    "Deportivo ABANCA B",
+    "Depor ABANCA B",
+    "Depor Abanca B",
+    "CD Lugo Femenino",
+    "Lugo Femenino",
+    "Lugo Fem.",
+    "Peluquería Mixta Friol",
+    "PM Friol",
+    "Pm Friol",
+    "Sárdoma CF",
+    "Sárdoma",
+    "Sardoma Cf",
+    "Viajes InterRías FF",
+    "InterRías",
+    "Viajes Interrias Ff",
+    "Victoria CF",
+    "Victoria Cf",
+  ]);
+
+  if (matches !== null) {
+    try {
+      matches = await enrichMatchesWithGoals(matches);
+    } catch (_e) {
+      // Graceful fallback
+    }
+
+    try {
+      const womenMatches = await fetchWomenXornadaMatches(now, season);
+      if (womenMatches.length > 0) {
+        matches = [...matches, ...womenMatches];
+      }
+    } catch (_e) {
+      // Graceful fallback
+    }
+  }
+
   return (
     <XornadaScreen
       locale={locale}
@@ -73,6 +147,8 @@ export async function HomeXornada({ locale }: { locale: Locale }) {
         minutes: RECENT_GOAL_MINUTES,
         mark: recentGoalMark(process.env),
       }}
+      showDayStrip={showDayStrip(process.env)}
+      showTableLink={showTableLink(process.env)}
       unavailable={matches === null}
       arrows={read?.arrows}
       // SPEC-024: the client keeps it up to date from the served state.

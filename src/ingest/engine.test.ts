@@ -5,6 +5,7 @@ import {
   type MatchId,
   MINUTE_MS,
   type Observation,
+  SourceConfig,
   shiftInstant,
 } from "@/model";
 import { SOURCES } from "../sources/registry.ts";
@@ -48,7 +49,10 @@ function fakeTx(rows: (text: string) => unknown[] = () => []) {
 // ever allowed to call toISOString on it (no Date leaves src/ingest, CA-12),
 // so the double is exactly that much of a Date and no more.
 const timestamptz = (value: Instant) =>
-  ({ toISOString: () => value }) as unknown as Date;
+  ({
+    toISOString: () => value,
+    getTime: () => Date.parse(value),
+  }) as unknown as Date;
 
 const matchRow = {
   id: MATCH,
@@ -59,7 +63,7 @@ const matchRow = {
 const observationRow = (over: Record<string, unknown> = {}) => ({
   id: "11111111-1111-4111-8111-111111111111",
   match_id: MATCH,
-  source_id: "api-football",
+  source_id: "rfef",
   status: "live",
   home_score: 1,
   away_score: 0,
@@ -80,24 +84,27 @@ const decisionRow = (over: Record<string, unknown> = {}) => ({
   away_score: 0,
   minute: 20,
   added_minute: null,
-  qualifier: "provisional",
+  qualifier: "confirmado",
   rule: "RN-01",
   observation_ids: ["33333333-3333-4333-8333-333333333333"],
   decided_at: timestamptz(at(-1)),
-  home_source_id: null,
-  away_source_id: null,
+  home_source_id: "rfef",
+  away_source_id: "rfef",
   forced_finish: null,
   ...over,
 });
 
 const lastHeardRow = (over: Record<string, unknown> = {}) => ({
   match_id: MATCH,
+  source_id: "rfef",
   observed_at: timestamptz(at(-40)),
   status: "live",
   ...over,
 });
 
-const LAST_HEARD = "distinct on (match_id) match_id, observed_at, status";
+// One row per (match, source, live or not) since SPEC-048 (ADR-027 §1): the
+// engine picks the latest one the filter admits.
+const LAST_HEARD = "distinct on (match_id, source_id, status = 'live')";
 
 const answering =
   (over: Record<string, unknown[]> = {}) =>
@@ -138,10 +145,12 @@ describe("CA-9 the four queries", () => {
     expect(observations?.text).toContain("order by observed_at");
     expect(observations?.values).toEqual([ids, at(-15)]);
 
-    // The fourth (N-9): one row per match, no window at all.
+    // The fourth (N-9): no window at all.
     const lastHeard = find(calls, LAST_HEARD);
     expect(lastHeard?.text).toContain("from observations");
-    expect(lastHeard?.text).toContain("order by match_id, observed_at desc");
+    expect(lastHeard?.text).toContain(
+      "order by match_id, source_id, status = 'live', observed_at desc",
+    );
     expect(lastHeard?.text).not.toContain("observed_at >= ?");
     expect(lastHeard?.values).toEqual([ids]);
     expect(calls).toHaveLength(4);
@@ -179,13 +188,13 @@ describe("CA-9 writing a decision", () => {
       0,
       20,
       null,
-      "provisional",
+      "confirmado",
       "RN-01",
       ["11111111-1111-4111-8111-111111111111"],
       NOW,
       // SPEC-014 CA-4, CA-8: the owner of each side and the mark.
-      "api-football",
-      "api-football",
+      "rfef",
+      "rfef",
       false,
       // SPEC-021 CA-5: half_time, false for a live outside half-time.
       false,
@@ -255,6 +264,43 @@ describe("CA-9 opening and resolving alerts", () => {
     });
   });
 
+  it("does not count as heard a live the engine never receives (SPEC-048, ADR-027 §1)", async () => {
+    const { tx, calls } = fakeTx(
+      answering({
+        decisions: [decisionRow({ minute: 90 })],
+        matches: [{ ...matchRow, kickoff: timestamptz(at(-121)) }],
+        lastHeard: [
+          lastHeardRow({ source_id: "rfef", observed_at: timestamptz(at(-1)) }),
+          lastHeardRow({
+            source_id: "test-src",
+            observed_at: timestamptz(at(-40)),
+          }),
+        ],
+        alerts: [{ id: "alert-5" }],
+      }),
+    );
+    const sourcesWithLiveObservedOnly = [
+      SourceConfig.parse({
+        id: "test-src",
+        kind: "pull",
+        competitions: ["primera-division"],
+        priority: { "primera-division": 10 },
+        minIntervalSeconds: 30,
+        userAgent: "test",
+        legalBasis: "test",
+      }),
+      SourceConfig.parse({
+        ...SOURCES[0],
+        liveObservedOnly: ["primera-division"],
+      }),
+    ];
+    await decideMatches(tx, [MATCH], NOW, sourcesWithLiveObservedOnly);
+    expect(find(calls, "insert into alerts")?.values[2]).toMatchObject({
+      lastObservedAt: at(-40),
+      lastStatus: "live",
+    });
+  });
+
   it("leaves the trace empty when the match was never observed", async () => {
     const { tx, calls } = fakeTx(
       answering({
@@ -313,8 +359,8 @@ describe("CA-9 priorityLookup", () => {
     "tercera-rfef-g1",
   ];
 
-  it.each(FIVE)("gives api-football priority 10 in %s", (competition) => {
-    expect(priorityLookup(SOURCES, competition)("api-football")).toBe(10);
+  it.each(FIVE)("gives rfef priority 50 in %s", (competition) => {
+    expect(priorityLookup(SOURCES, competition)("rfef")).toBe(50);
   });
 
   it("gives the operator 100 and an unknown source nothing", () => {

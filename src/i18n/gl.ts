@@ -2,7 +2,13 @@ import type { MatchStatus, Qualifier } from "@/model";
 
 // Keys of status and qualifier mirror the model enums (dominio.md, ADR-005 §1-2).
 export const gl = {
-  common: { title: "marcador.gal", switchLocale: "Castellano" },
+  common: {
+    title: "marcador.gal",
+    claim: "Todo o fútbol galego nunha pantalla",
+    description:
+      "Resultados galegos en directo de 1ª, 2ª, 1ª RFEF, 2ª RFEF e 3ª RFEF",
+    switchLocale: "Castellano",
+  },
   waiting: {
     heading: "Todo o fútbol galego nunha pantalla",
     body: "Estamos a preparar o marcador. Volve pronto.",
@@ -69,6 +75,9 @@ export const gl = {
     // the «label» variant (aria-hidden: the words above say it).
     recentGoal: "gol recente",
     recentGoalLabel: "GOL",
+    // SPEC-056: expand/collapse goals drawer
+    expandGoals: "Despregar goleadores",
+    collapseGoals: "Pregar goleadores",
   },
   weekday: {
     mon: "lun",
@@ -98,6 +107,58 @@ export const gl = {
     all: "Todos",
     live: "En xogo",
     finished: "Rematados",
+  },
+  competitions: {
+    title: "Competicións",
+    all: "Todo",
+    men: "Masculino",
+    women: "Fútbol Feminino",
+    standings: "Clasificación",
+    calendar: "Calendario",
+    overview: "Competición",
+    backToHome: "Volver á xornada",
+    tableLink: "Táboa",
+    viewFullTable: "Ver táboa completa",
+    viewRounds: "Ver xornadas",
+    preferencesButton: "Ligas",
+    preferencesTitle: "Ligas visibles",
+    preferencesSubtitle: "Personaliza as ligas que queres ver",
+    presetAll: "Todas",
+    presetWomen: "Feminino",
+    presetModest: "RFEF / Galegas",
+    presetPro: "Profesional",
+    close: "Pechar",
+    atLeastOne: "Debes manter polo menos unha liga visible",
+    goals: "Goles",
+    played: "PX",
+    won: "V",
+    drawn: "E",
+    lost: "D",
+    goalsFor: "GF",
+    goalsAgainst: "GC",
+    diff: "DG",
+    points: "Pts",
+    form: "Forma",
+    confirmedTime: "Horario confirmado",
+    tbdTime: "Horario por confirmar",
+    live: "En directo",
+    noMatches: "Non hai partidos rexistrados para esta data.",
+    galicianTeam: "Equipo galego",
+  },
+  footer: {
+    by: "Un proxecto de",
+    version: "versión",
+    legalNotice: "Aviso legal",
+    privacy: "Privacidade",
+    cookies: "Cookies",
+    contact: "Contacto",
+    disclaimer: "Información deportiva sen valor oficial",
+    antiSpamNotice:
+      "Buzón para afición, medios e incidencias. Non se admite publicidade nin spam.",
+  },
+  legal: {
+    backToHome: "Volver ao marcador",
+    lastUpdated: "Última actualización: {date}",
   },
   locales: { gl: "gl", es: "es" },
 } as const satisfies {

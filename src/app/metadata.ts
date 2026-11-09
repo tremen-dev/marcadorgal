@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { ICON_FILES } from "@/design/icon";
+import { COLORS } from "@/design/tokens";
 import { type Locale, t } from "@/i18n";
 
 // SPEC-033 CA-6: the icons of every page (/, /es, /xornada/[fecha], demos),
@@ -14,10 +15,22 @@ const ICONS: Metadata["icons"] = {
   ],
 };
 
+export const siteViewport: Viewport = {
+  themeColor: COLORS.bg.value,
+};
+
 export function siteMetadata(locale: Locale): Metadata {
   return {
+    metadataBase: new URL("https://marcador.gal"),
     title: t(locale, "common.title"),
+    description: t(locale, "common.description"),
     robots: { index: false, follow: false },
     icons: ICONS,
+    manifest: "/manifest.webmanifest",
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: "black-translucent",
+      title: t(locale, "common.title"),
+    },
   };
 }

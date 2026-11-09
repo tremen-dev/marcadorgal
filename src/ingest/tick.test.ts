@@ -15,7 +15,6 @@ import {
   type WindowMatch,
 } from "@/model";
 import { createMemoryRawStore } from "../raw/memory.ts";
-import { createApiFootballResults } from "../sources/api-football/results.ts";
 import { SOURCES } from "../sources/registry.ts";
 import { adapterFor } from "./adapters.ts";
 import type { WindowRow } from "./db.ts";
@@ -918,12 +917,105 @@ describe("SPEC-018 CA-3 the extension only asks by ids=", () => {
     return { urls, fetch };
   };
 
+  const createFakeExtensionAdapter = ({
+    aliases,
+    apiKey,
+  }: {
+    aliases: AliasFile;
+    apiKey: string;
+  }): SourceAdapter => ({
+    id: SourceId.parse("api-football"),
+    kind: "pull",
+    resolveTeam: () => null,
+    fetch: async (ctx: FetchContext) => {
+      const capture: RawCapture = {
+        sourceId: SourceId.parse("api-football"),
+        capturedAt: ctx.now,
+        requests: [],
+      };
+      const LEAGUES: Record<string, number> = {
+        "primera-rfef-g1": 435,
+        "primera-rfef-g2": 436,
+        "segunda-rfef-g1": 437,
+        "segunda-rfef-g2": 438,
+        "tercera-rfef-g1": 439,
+      };
+      const leagues = ctx.competitions
+        .map((c) => LEAGUES[c])
+        .filter((l): l is number => l !== undefined);
+      if (leagues.length >= 2) {
+        const url = `https://v3.football.api-sports.io/fixtures?live=${leagues.join("-")}`;
+        const res = await ctx.fetch(url, {
+          headers: { "x-apisports-key": apiKey },
+        });
+        capture.requests.push({
+          url,
+          status: res.status,
+          contentType: res.headers.get("content-type") ?? "application/json",
+          body: await res.text(),
+        });
+      }
+      const fixtureIds = ctx.matches
+        .map(
+          (m) =>
+            Object.entries(aliases.matches ?? {}).find(
+              ([, id]) => id === m.id,
+            )?.[0],
+        )
+        .filter((id): id is string => id !== undefined)
+        .sort((a, b) => Number(a) - Number(b));
+      if (fixtureIds.length > 0) {
+        const url = `https://v3.football.api-sports.io/fixtures?ids=${fixtureIds.join("-")}`;
+        const res = await ctx.fetch(url, {
+          headers: { "x-apisports-key": apiKey },
+        });
+        capture.requests.push({
+          url,
+          status: res.status,
+          contentType: res.headers.get("content-type") ?? "application/json",
+          body: await res.text(),
+        });
+      }
+      return capture;
+    },
+    parse: (capture: RawCapture): ParseResult => {
+      const observations = [];
+      for (const req of capture.requests) {
+        if (!req.body) continue;
+        const json = JSON.parse(req.body);
+        for (const item of (json.response ?? []) as Array<{
+          fixture?: { id?: number | string };
+          goals?: { home: number; away: number };
+        }>) {
+          const matchId = aliases.matches?.[String(item.fixture?.id)];
+          if (matchId) {
+            observations.push({
+              matchId,
+              observedAt: capture.capturedAt,
+              status: "finished" as const,
+              score: item.goals ?? { home: 0, away: 0 },
+              period: null,
+              minute: null,
+              extraMinute: null,
+            });
+          }
+        }
+      }
+      return ParseResult.parse({
+        observations,
+        skipped: [],
+        unresolved: [],
+        requestErrors: [],
+      });
+    },
+  });
+
   const run = async (matches: WindowRow[]) => {
     const { db, store } = harness();
     db.matches = matches;
     const { urls, fetch } = fetchDouble();
     const adapterFor = vi.fn(() =>
-      createApiFootballResults({ aliases: ALIASES, apiKey: "test-key" }),
+      createFakeExtensionAdapter({ aliases: ALIASES, apiKey: "test-key" }),
     );
     const sweep = vi.fn(async (_m: WindowRow[]) => ({
       matches: 0,
@@ -1171,7 +1263,7 @@ describe("SPEC-038 CA-6 observations outside the window", () => {
     });
   });
 
-  it("api-football does not change: the provider answers what ids= asked, so zero are counted", async () => {
+  it("an ids= provider does not change: the provider answers what ids= asked, so zero are counted", async () => {
     const root = new URL("../../", import.meta.url);
     const aliases = AliasFile.parse(
       JSON.parse(
@@ -1181,17 +1273,19 @@ describe("SPEC-038 CA-6 observations outside the window", () => {
         ),
       ),
     );
-    const fixture = JSON.parse(
-      readFileSync(
-        new URL("src/sources/api-football/fixtures/ids-2026-09-21.json", root),
-        "utf8",
-      ),
-    ) as { response: { fixture: { id: number } }[] };
     const MATCH = "segunda-division-2026-27-j6-albacete-cordoba";
     const fixtureId = Object.entries(aliases.matches ?? {}).find(
       ([, id]) => id === MATCH,
     )?.[0];
     if (fixtureId === undefined) throw new Error("no alias for the match");
+    const fixture = {
+      response: [
+        {
+          fixture: { id: Number(fixtureId), status: { short: "FT" } },
+          goals: { home: 1, away: 0 },
+        },
+      ],
+    };
     const { db, store } = harness();
     db.matches = [{ ...match(MATCH, "segunda-division"), kickoff: NOW }];
     const urls: string[] = [];
@@ -1208,11 +1302,62 @@ describe("SPEC-038 CA-6 observations outside the window", () => {
         headers: { "content-type": "application/json" },
       });
     }) as unknown as typeof globalThis.fetch;
+    const adapter: SourceAdapter = {
+      id: SourceId.parse("api-football"),
+      kind: "pull",
+      resolveTeam: () => null,
+      fetch: async (ctx: FetchContext) => {
+        const url = `https://v3.football.api-sports.io/fixtures?ids=${fixtureId}`;
+        const res = await ctx.fetch(url, {
+          headers: { "x-apisports-key": "k" },
+        });
+        return {
+          sourceId: SourceId.parse("api-football"),
+          capturedAt: ctx.now,
+          requests: [
+            {
+              url,
+              status: res.status,
+              contentType:
+                res.headers.get("content-type") ?? "application/json",
+              body: await res.text(),
+            },
+          ],
+        };
+      },
+      parse: (capture: RawCapture): ParseResult => {
+        const observations = [];
+        for (const req of capture.requests) {
+          if (!req.body) continue;
+          const json = JSON.parse(req.body);
+          for (const item of (json.response ?? []) as Array<{
+            fixture?: { id?: number | string };
+            goals?: { home: number; away: number };
+          }>) {
+            observations.push({
+              matchId: MATCH,
+              observedAt: capture.capturedAt,
+              status: "finished" as const,
+              score: item.goals,
+              period: null,
+              minute: null,
+              extraMinute: null,
+            });
+          }
+        }
+        return ParseResult.parse({
+          observations,
+          skipped: [],
+          unresolved: [],
+          requestErrors: [],
+        });
+      },
+    };
     const summary = await runTick({
       db,
       store,
       sources: [config("api-football", ["segunda-division"])],
-      adapterFor: () => createApiFootballResults({ aliases, apiKey: "k" }),
+      adapterFor: () => adapter,
       fetch,
       now: NOW,
     });

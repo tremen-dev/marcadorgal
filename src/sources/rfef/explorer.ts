@@ -18,7 +18,7 @@ import {
 import { type DeclaredMatch, normalizeName } from "./adapter.ts";
 import { inLiveWindow } from "./state.ts";
 
-// The rfef via explorer (ADR-023, SPEC-038): one GET per tick to the export
+// The rfef via explorer (ADR-023, SPEC-038, SPEC-049): one GET per tick to the export
 // of a service of our own, which reads marcadores.rfef.es with its own rules.
 // This is the adapter ADAPTERS["rfef"] builds. adapter.ts (the direct way,
 // SPEC-031) stays next to it, unregistered and in reserve; identity is the
@@ -29,7 +29,8 @@ const RFEF = SourceId.parse("rfef");
 export const EXPORT_PATH = "/api/export/matches";
 
 // The contract of ADR-023 §4, as explorer serves it. Unknown fields are
-// tolerated (looseObject); a value outside the enum is not.
+// tolerated (looseObject); a value outside the enum is not. The two enums left
+// (estado, goals[].team) are domain and stay closed on purpose (SPEC-069).
 export const ExplorerStatus = z.enum([
   "SCHEDULED",
   "LIVE_PROVISIONAL",
@@ -38,6 +39,15 @@ export const ExplorerStatus = z.enum([
   "SUSPENDED",
 ]);
 export type ExplorerStatus = z.infer<typeof ExplorerStatus>;
+
+export const ExplorerGoal = z.looseObject({
+  team: z.enum(["home", "away"]),
+  player: z.string().min(1),
+  minute: z.int().min(0),
+  penalty: z.boolean().optional(),
+  ownGoal: z.boolean().optional(),
+});
+export type ExplorerGoal = z.infer<typeof ExplorerGoal>;
 
 export const ExplorerMatch = z.looseObject({
   codActa: z.string().nullable(),
@@ -59,6 +69,20 @@ export const ExplorerMatch = z.looseObject({
   lastChangedAt: Instant,
   strategy: z.string(),
   discardedReadings: z.int().min(0),
+  // Multi-provider enhancements (SPEC-049)
+  canonicalCompetitionId: z.string().optional(),
+  canonicalHomeTeamId: z.string().optional(),
+  canonicalAwayTeamId: z.string().optional(),
+  // The provider whose reading explorer arbitrated as the live one (SPEC-049).
+  // Informative only, and an open list (SPEC-069): "marca", "rfef", "espn",
+  // "football-data" are the known values, not a closed set. A new provider
+  // never rejects the export; an empty string is not a provider.
+  liveProvider: z.string().min(1).optional(),
+  goals: z.array(ExplorerGoal).optional(),
+  // Live minute and half-time (SPEC-052)
+  minute: z.int().nullable().optional(),
+  addedMinute: z.int().nullable().optional(),
+  halfTime: z.boolean().optional(),
 });
 export type ExplorerMatch = z.infer<typeof ExplorerMatch>;
 
@@ -148,9 +172,33 @@ function rowState(
         : { status: "finished", score, minute: null };
     case "LIVE_PROVISIONAL":
       if (score === null) return "missing_score";
-      return inLiveWindow(Date.parse(kickoff), Date.parse(row.lastSeenAt))
-        ? { status: "live", score, minute: null, addedMinute: null }
-        : "ambiguous_state";
+      {
+        const liveMinute =
+          row.minute !== undefined && row.minute !== null && row.minute >= 0
+            ? Math.min(row.minute, 130)
+            : null;
+        const liveAdded =
+          row.addedMinute !== undefined &&
+          row.addedMinute !== null &&
+          row.addedMinute > 0
+            ? Math.min(row.addedMinute, 30)
+            : null;
+        const hasExplicitLive = liveMinute !== null || row.halfTime === true;
+        const liveWindowMinutes = hasExplicitLive ? 140 : 130;
+        return inLiveWindow(
+          Date.parse(kickoff),
+          Date.parse(row.lastSeenAt),
+          liveWindowMinutes,
+        )
+          ? {
+              status: "live",
+              score,
+              minute: liveMinute,
+              addedMinute: liveAdded,
+              ...(row.halfTime !== undefined ? { halfTime: row.halfTime } : {}),
+            }
+          : "ambiguous_state";
+      }
     default:
       return "unsupported_status";
   }
@@ -178,14 +226,35 @@ export function createRfefExplorer({
 
   // Identity as adapter.ts resolves it: name, competition and round. The
   // codes of the export (codEquipo*, codActa) stay in the raw capture.
+  // Prioritizes candidate pairings (alias map and canonical IDs) that match
+  // a declared fixture in matchOf (SPEC-049, SPEC-054).
   function resolveMatch(
     row: ExplorerMatch,
     competitionId: CompetitionId,
   ): DeclaredFixture | Unresolved["reason"] {
-    const home = teamByName.get(normalizeName(row.equipoLocal));
-    const away = teamByName.get(normalizeName(row.equipoVisitante));
-    if (home === undefined || away === undefined) return "unknown_team";
-    const match = matchOf.get(`${competitionId}|${home}|${away}`);
+    const localCandidates = [
+      teamByName.get(normalizeName(row.equipoLocal)),
+      row.canonicalHomeTeamId as TeamId | undefined,
+    ].filter((t): t is TeamId => Boolean(t));
+
+    const awayCandidates = [
+      teamByName.get(normalizeName(row.equipoVisitante)),
+      row.canonicalAwayTeamId as TeamId | undefined,
+    ].filter((t): t is TeamId => Boolean(t));
+
+    if (localCandidates.length === 0 || awayCandidates.length === 0) {
+      return "unknown_team";
+    }
+
+    let match: DeclaredFixture | undefined;
+    for (const h of localCandidates) {
+      for (const a of awayCandidates) {
+        match = matchOf.get(`${competitionId}|${h}|${a}`);
+        if (match) break;
+      }
+      if (match) break;
+    }
+
     if (match === undefined) return "unknown_match";
     if (match.round !== Number(row.jornada)) return "inconsistent_alias";
     return match;
@@ -198,7 +267,9 @@ export function createRfefExplorer({
       skipped: [],
     };
     for (const row of readExport(body).matches) {
-      const competitionId = competitionOf.get(row.codGrupo);
+      const competitionId =
+        competitionOf.get(row.codGrupo) ??
+        (row.canonicalCompetitionId as CompetitionId | undefined);
       if (competitionId === undefined) continue; // juvenil, femenino: ignored
       // A row without a state says nothing (ADR-023 §5): not even identity.
       if (row.estado === "SCHEDULED") continue;

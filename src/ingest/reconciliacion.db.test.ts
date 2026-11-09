@@ -3,13 +3,14 @@ import { afterAll, describe, expect, it } from "vitest";
 import {
   AliasFile,
   type Instant,
+  MatchId,
   MINUTE_MS,
   type RawCapture,
+  SourceId,
   shiftInstant,
 } from "@/model";
 import { createSql } from "../db/connect.ts";
 import { createMemoryRawStore } from "../raw/memory.ts";
-import { createApiFootballResults } from "../sources/api-football/results.ts";
 import { SOURCES } from "../sources/registry.ts";
 import type { IngestTx } from "./db.ts";
 import { createIngestDb } from "./db.ts";
@@ -112,7 +113,27 @@ describe("SPEC-013 CA-6 the reconciliation through the database", () => {
           { matchId, status: "finished", rule: "RN-02", forcedFinish: true },
         ],
         aliases,
-        adapter: createApiFootballResults({ aliases, apiKey: "clave" }),
+        adapter: {
+          id: SourceId.parse("api-football"),
+          kind: "pull",
+          resolveTeam: () => null,
+          parse: (c: RawCapture) => ({
+            observations: [
+              {
+                matchId: MatchId.parse(matchId),
+                observedAt: c.capturedAt,
+                status: "finished" as const,
+                score: { home: 3, away: 1 },
+                period: null,
+                minute: null,
+                extraMinute: null,
+              },
+            ],
+            skipped: [],
+            unresolved: [],
+            requestErrors: [],
+          }),
+        },
         capturar: async (ids) => capture(ids),
         store: createMemoryRawStore(),
         db: dbIn(tx),

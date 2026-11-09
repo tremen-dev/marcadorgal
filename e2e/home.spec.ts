@@ -117,6 +117,23 @@ for (const route of routes) {
       );
       expect(overflow).toBeLessThanOrEqual(0);
     });
+
+    test("on desktop (1440x900 and 1920x1080), footer is visible in the viewport when content has space below", async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 1440, height: 900 });
+      await page.goto(route.path);
+      const footer = page.locator("footer");
+      await expect(footer).toBeVisible();
+      await expect(footer).toBeInViewport();
+
+      const demoPath =
+        route.path === "/" ? "/demo/xornada" : "/es/demo/xornada";
+      await page.setViewportSize({ width: 1920, height: 1080 });
+      await page.goto(demoPath);
+      await expect(footer).toBeVisible();
+      await expect(footer).toBeInViewport();
+    });
   });
 }
 

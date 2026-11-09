@@ -23,13 +23,15 @@ const readJson = (...parts) =>
 const kickoffs = JSON.parse(process.env.FAKE_PROVIDER_KICKOFFS ?? "{}");
 const renames = JSON.parse(process.env.FAKE_PROVIDER_RENAMES ?? "{}");
 
-const aliases = readJson("data", "alias", SEASON, "api-football.json");
-const externalOfTeam = new Map(aliases.teams.map((t) => [t.teamId, t]));
-const externalOfMatch = new Map(
-  Object.entries(aliases.matches).map(([ext, id]) => [id, ext]),
-);
+const rfefAliases = readJson("data", "alias", SEASON, "rfef.json");
+const teamToAlias = new Map();
+for (const t of rfefAliases.teams) {
+  if (!teamToAlias.has(t.teamId)) {
+    teamToAlias.set(t.teamId, t);
+  }
+}
 
-function response(competitionId) {
+function explorerResponse(competitionId) {
   const calendar = readJson(
     "data",
     "calendario",
@@ -37,31 +39,57 @@ function response(competitionId) {
     `${competitionId}.json`,
   );
   const team = (teamId) => {
-    const alias = externalOfTeam.get(teamId);
+    const alias = teamToAlias.get(teamId);
+    const rawRename =
+      renames[alias.externalId] ??
+      (alias.teamId === "barcelona" ? renames["529"] : undefined);
+    const rename =
+      rawRename === alias.externalName ? `${rawRename} Modificado` : rawRename;
     return {
-      id: Number(alias.externalId),
-      name: renames[alias.externalId] ?? alias.externalName,
+      externalId: String(alias.externalId),
+      externalName: rename ?? alias.externalName,
     };
   };
-  return calendar.matches.map((m) => {
+  const teamsMap = new Map();
+  const matches = calendar.matches.map((m) => {
     const id = `${competitionId}-${SEASON}-j${m.round}-${m.home}-${m.away}`;
+    const homeTeam = team(m.home);
+    const awayTeam = team(m.away);
+    teamsMap.set(homeTeam.externalId, homeTeam);
+    teamsMap.set(awayTeam.externalId, awayTeam);
     return {
-      fixture: {
-        id: Number(externalOfMatch.get(id)),
-        date: kickoffs[id] ?? m.kickoff,
-        status: { short: "NS" },
-      },
-      league: { round: `Regular Season - ${m.round}` },
-      teams: { home: team(m.home), away: team(m.away) },
+      externalId: id,
+      round: m.round,
+      kickoff: kickoffs[id] ?? m.kickoff,
+      home: homeTeam.externalId,
+      away: awayTeam.externalId,
+      timeConfirmed: true,
     };
   });
+  return {
+    competition: competitionId,
+    season: SEASON,
+    exportedAt: new Date().toISOString(),
+    teams: [...teamsMap.values()],
+    matches,
+    ignoredRounds: {},
+  };
 }
 
 globalThis.fetch = async (url) => {
-  const league = new URL(url).searchParams.get("league");
-  const competitionId = LEAGUES[league];
+  const parsed = new URL(url);
+  const comp = parsed.searchParams.get("competition");
+  const league = parsed.searchParams.get("league");
+  const competitionId = comp || LEAGUES[league];
   if (!competitionId)
-    throw new Error(`fake provider: unknown league ${league}`);
+    throw new Error(`fake provider: unknown league or competition in ${url}`);
+
+  if (comp) {
+    return new Response(JSON.stringify(explorerResponse(competitionId)), {
+      status: 200,
+      headers: { "content-type": "application/json" },
+    });
+  }
   return new Response(
     JSON.stringify({ errors: [], response: response(competitionId) }),
     {

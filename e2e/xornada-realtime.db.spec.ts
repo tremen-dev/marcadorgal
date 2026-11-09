@@ -193,9 +193,14 @@ test("CA-10 on: with /api/board aborted, the rows do not change", async ({
   await page.routeWebSocket(/\/realtime\/v1\//, (ws) => ws.close());
   await page.route("**/api/board", (r) => r.abort());
   await page.goto("/es");
+  // The age of a row and the seconds left of a recent goal's pulse (SPEC-041
+  // CA-4, recounted by the browser's clock when it mounts) are the clock, not
+  // the rows (F-SPEC-045-1).
   const strip = (html: string[]) =>
     html.map((h) =>
-      h.replace(/<span[^>]*data-testid="row-age"[^>]*>[^<]*<\/span>/, ""),
+      h
+        .replace(/<span[^>]*data-testid="row-age"[^>]*>[^<]*<\/span>/, "")
+        .replace(/ style="animation-iteration-count:[^"]*"/g, ""),
     );
   const before = strip(
     await page
@@ -232,9 +237,12 @@ test("CA-5 on: folded competition and #f=live; a Decision to finished leaves the
   const competition = await row(page, id)
     .locator("xpath=ancestor::section[@data-competition]")
     .getAttribute("data-competition");
+  // Another competition still shown by #f=live: one with nothing live is
+  // not painted (SPEC-040 CA-4), and earlier specs may leave none live in the
+  // first one (F-SPEC-045-2).
   const other = await page
     .locator(
-      `section[data-competition]:not([data-competition="${competition}"])`,
+      `section[data-competition]:not([data-competition="${competition}"]):visible`,
     )
     .first()
     .getAttribute("data-competition");

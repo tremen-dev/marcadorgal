@@ -1,7 +1,13 @@
 import type { Dictionary } from "./gl";
 
 export const es: Dictionary = {
-  common: { title: "marcador.gal", switchLocale: "Galego" },
+  common: {
+    title: "marcador.gal",
+    claim: "Todo el fútbol gallego en una pantalla",
+    description:
+      "Resultados gallegos en directo de 1ª, 2ª, 1ª RFEF, 2ª RFEF y 3ª RFEF",
+    switchLocale: "Galego",
+  },
   waiting: {
     heading: "Todo el fútbol gallego en una pantalla",
     body: "Estamos preparando el marcador. Vuelve pronto.",
@@ -65,6 +71,9 @@ export const es: Dictionary = {
     // the «label» variant (aria-hidden: the words above say it).
     recentGoal: "gol reciente",
     recentGoalLabel: "GOL",
+    // SPEC-056: expand/collapse goals drawer
+    expandGoals: "Desplegar goleadores",
+    collapseGoals: "Plegar goleadores",
   },
   weekday: {
     mon: "lun",
@@ -94,6 +103,58 @@ export const es: Dictionary = {
     all: "Todos",
     live: "En juego",
     finished: "Finalizados",
+  },
+  competitions: {
+    title: "Competiciones",
+    all: "Todo",
+    men: "Masculino",
+    women: "Fútbol Femenino",
+    standings: "Clasificación",
+    calendar: "Calendario",
+    overview: "Competición",
+    backToHome: "Volver a la jornada",
+    tableLink: "Tabla",
+    viewFullTable: "Ver tabla completa",
+    viewRounds: "Ver jornadas",
+    preferencesButton: "Ligas",
+    preferencesTitle: "Ligas visibles",
+    preferencesSubtitle: "Personaliza las ligas que quieres ver",
+    presetAll: "Todas",
+    presetWomen: "Femenino",
+    presetModest: "RFEF / Gallegas",
+    presetPro: "Profesional",
+    close: "Cerrar",
+    atLeastOne: "Debes mantener al menos una liga visible",
+    goals: "Goles",
+    played: "PJ",
+    won: "V",
+    drawn: "E",
+    lost: "D",
+    goalsFor: "GF",
+    goalsAgainst: "GC",
+    diff: "DG",
+    points: "Pts",
+    form: "Forma",
+    confirmedTime: "Horario confirmado",
+    tbdTime: "Horario por confirmar",
+    live: "En directo",
+    noMatches: "No hay partidos registrados para esta fecha.",
+    galicianTeam: "Equipo gallego",
+  },
+  footer: {
+    by: "Un proyecto de",
+    version: "versión",
+    legalNotice: "Aviso legal",
+    privacy: "Privacidad",
+    cookies: "Cookies",
+    contact: "Contacto",
+    disclaimer: "Información deportiva sin valor oficial",
+    antiSpamNotice:
+      "Buzón para afición, medios e incidencias. No se admite publicidad ni spam.",
+  },
+  legal: {
+    backToHome: "Volver al marcador",
+    lastUpdated: "Última actualización: {date}",
   },
   locales: { gl: "gl", es: "es" },
 };
