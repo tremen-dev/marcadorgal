@@ -72,6 +72,18 @@ tipo: roadmap
   2-3 $/mes) para no depender de los gratuitos. El minuto aproximado desde el
   kickoff y los goleadores desde la ficha de la RFEF se valoran aparte.
 
+- **EPIC-007 — Redes: goles en directo en X.** *(Aprobada por el titular el
+  2026-11-09.)* Un tweet por gol de los
+  equipos vigilados, solo en directo, en galego y con plantillas al azar,
+  publicado a través de Buffer (plan Free, API) con la X API de pago por uso
+  como reserva. Cierra cuando una jornada real medida produce un tweet por
+  gol de equipo vigilado, sin duplicados ni intervención.
+  *Por qué ahora (titular, 2026-11-09):* el dato ya es correcto y llega en
+  directo; la cuenta de X tiene identidad (SPEC-064) y ningún contenido. No
+  compite con EPIC-003 ni EPIC-004 por el dato: solo lo consume. La
+  investigación de vías gratuitas descartó la automatización por navegador
+  (X la castiga con suspensión permanente).
+
 ## Después (comprometido, sin empezar)
 
 - **EPIC-005 — Operador y fuentes push.** Panel mínimo con Auth, webhook
@@ -90,8 +102,9 @@ tipo: roadmap
   resultado final sin operador; el directo sigue necesitando operador o
   segunda fuente.
 
-- **EPIC-006 — Modelo de ingresos: patrocinio.** *(Borrador, propuesto el
-  2026-10-18; pendiente de aprobación del titular.)* Estudio de mercado,
+- **EPIC-006 — Modelo de ingresos: patrocinio.** *(Aprobada por el titular el
+  2026-10-18; SPEC-037, el estudio, hecha ese día. Lo que se pinta vive en
+  EPIC-008.)* Estudio de mercado,
   spike sin código: cuánto pagaría un patrocinador gallego por una jornada o
   una competición, y de ahí el techo de coste mensual para datos. Cierra
   cuando el titular acepta un techo en € con fórmula reproducible.
@@ -138,6 +151,16 @@ tipo: roadmap
 - Ligas territoriales gallegas (Preferente, Primeira Galega): candidata
   `marcadores.rfef.es` con `federacion=3` (sondeo 2026-10-10), tras EPIC-004.
 - Feed o widget para medios y clubes.
+- **EPIC-008 — Patrocinio en pantalla y en redes.** *(Borrador, aparcada por
+  el titular el 2026-11-09.)* Qué recibe quien paga: patrocinador de jornada
+  (franja, nombre, imagen al compartir, tweets de apertura y resumen) y
+  patrocinador de equipo (etiqueta en la fila, tweets de gol y de final).
+  Cierra cuando una jornada real patrocinada cumple la tabla de piezas sin
+  terceros y con informe reproducible.
+  *Por qué aquí:* sin visitas medidas no hay precio alto que pedir, y el
+  criterio de corte aparca lo que depende de un acuerdo sin firmar. Sube a
+  «Después» cuando el titular decida medir la audiencia (su primer
+  entregable); depende de que EPIC-007 tenga publicador.
 
 ## Criterios de corte
 
