@@ -86,6 +86,11 @@ Actualizado: 2026-11-09
 | SPEC-066 — goles-a-la-cola-de-redes-deteccion-outbox-publicador-con-doble-plantillas-y-configuracion | hecho | 2026-11-09 (sdd-verificador) |
 | SPEC-067 — publicador-de-buffer-cliente-graphql-sonda-contra-la-api-real-y-encendido | borrador | 2026-11-09 (sdd-arquitecto) |
 
+## EPIC-008 — patrocinio-en-pantalla-y-en-redes (borrador)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
+
 ## EPIC-FIX (aprobada)
 
 | Spec | Estado | Último cambio |
@@ -98,6 +103,7 @@ Actualizado: 2026-11-09
 | SPEC-045 — cabos-sueltos-de-la-xornada-diseno-de-escritorio-contexto-nombres-de-competicion-y-suites-con-base | hecho | 2026-11-03 (sdd-verificador) |
 | SPEC-048 — la-rfef-observa-sin-decidir-el-directo-de-primera-y-segunda-division | hecho | 2026-11-09 (sdd-verificador) |
 | SPEC-069 — la-rfef-acepta-cualquier-liveprovider-de-explorer | en-revision | 2026-11-09 (sdd-implementador) |
+| SPEC-070 — emparejamiento-estricto-con-el-export-de-explorer | hecho | 2026-11-09 (sdd-verificador) |
 
 ## EPIC-MANT — mantenimiento (borrador)
 
@@ -148,7 +154,7 @@ Actualizado: 2026-11-09
 
 ## Resumen
 
-- hecho: 59
+- hecho: 60
 - en-revision: 3
 - borrador: 3
 - feito: 1
