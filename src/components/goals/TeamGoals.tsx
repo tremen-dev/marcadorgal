@@ -20,8 +20,12 @@ type Props = {
 const cx = (...names: (string | false | undefined)[]): string =>
   names.filter(Boolean).join(" ");
 
+// CA-2: by minute ascending; on a tie, arrival order (Array.sort is stable).
+export const sortGoals = (goals: readonly PublicGoal[]): PublicGoal[] =>
+  [...goals].sort((a, b) => a.minute - b.minute);
+
 export function TeamGoals({ team, goals, id, expanded }: Props) {
-  const own = goals.filter((g) => g.team === team);
+  const own = sortGoals(goals.filter((g) => g.team === team));
   if (own.length === 0) return null;
   const folded = expanded !== undefined;
   return (

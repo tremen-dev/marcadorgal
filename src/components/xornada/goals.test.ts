@@ -139,6 +139,65 @@ describe("SPEC-068 CA-1 every list hangs from its team", () => {
   });
 });
 
+describe("SPEC-068 CA-2 minute first, whole name, ordered by minute", () => {
+  it("gives every line its minute first, as {minute}', and the player as it comes", () => {
+    const html = render(
+      mockRow({
+        goals: [
+          {
+            team: "home",
+            player: "FRANCISCO JOSÉ sánchez-rodríguez da Silva",
+            minute: 7,
+          },
+        ],
+      }),
+    );
+    const lines = elements(html, "goal-line");
+    expect(lines).toHaveLength(1);
+    const minute = elements(lines[0], "goal-minute");
+    const player = elements(lines[0], "goal-player");
+    expect(minute).toHaveLength(1);
+    expect(player).toHaveLength(1);
+    expect(text(minute[0])).toBe("7'");
+    expect(text(player[0])).toBe("FRANCISCO JOSÉ sánchez-rodríguez da Silva");
+    expect(lines[0].indexOf('data-testid="goal-minute"')).toBeLessThan(
+      lines[0].indexOf('data-testid="goal-player"'),
+    );
+    expect(attr(lines[0], "data-team")).toBe("home");
+  });
+
+  it("orders the lines of a block by minute ascending, arrival order on a tie, whatever the arrival order", () => {
+    const html = render(
+      mockRow({
+        goals: [
+          { team: "away", player: "Alexia", minute: 45 },
+          { team: "home", player: "Tercera", minute: 88 },
+          { team: "home", player: "Primera", minute: 12 },
+          { team: "home", player: "Segunda A", minute: 40 },
+          { team: "home", player: "Segunda B", minute: 40 },
+          { team: "home", player: "Cero", minute: 0 },
+        ],
+      }),
+    );
+    const [homeBlock, awayBlock] = elements(html, "team-goals");
+    const order = (block: string) =>
+      elements(block, "goal-line").map((l) => [
+        text(elements(l, "goal-minute")[0]),
+        text(elements(l, "goal-player")[0]),
+      ]);
+    expect(order(homeBlock)).toEqual([
+      ["0'", "Cero"],
+      ["12'", "Primera"],
+      ["40'", "Segunda A"],
+      ["40'", "Segunda B"],
+      ["88'", "Tercera"],
+    ]);
+    expect(order(awayBlock)).toEqual([["45'", "Alexia"]]);
+    for (const line of elements(homeBlock, "goal-line"))
+      expect(attr(line, "data-team")).toBe("home");
+  });
+});
+
 describe("SPEC-056 kept: affordance, button role and localized label", () => {
   it("renders the affordance and the button role when the row has goals", () => {
     const html = render(mockRow({ goals: GOALS }));
