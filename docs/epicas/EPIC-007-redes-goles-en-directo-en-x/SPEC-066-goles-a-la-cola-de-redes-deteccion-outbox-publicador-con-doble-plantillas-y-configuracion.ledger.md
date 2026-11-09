@@ -50,7 +50,7 @@ epica: EPIC-007
 
 ## Cómo retomar (handoff)
 <!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->
-- Rama `ft/SPEC-066-goles-a-la-cola-de-redes`, sobre `origin/main` 93faaa1, con 14 commits (docs, CA-2, CA-1, CA-3, CA-4, CA-8, CA-9, CA-10, CA-5/6/7, SocialDb, CA-11, CA-12, `chore(release): 0.4.0`, ledger). Sin push ni PR.
+- Rama `ft/SPEC-066-goles-a-la-cola-de-redes`, sobre `origin/main` 93faaa1, con 15 commits (docs, CA-2, CA-1, formato, CA-3, CA-4, CA-8, CA-9, CA-10, CA-5/6/7, SocialDb, CA-11, CA-12, `chore(release): 0.4.0`, ledger). Sin push ni PR.
 - Hecho: los 12 CA con test; `src/decide/` intacto; migración solo-crea; `.env.example` con las tres variables.
 - Falta: verificación (sdd-verificador). Para `test:db` en esta máquina: `supabase start -x studio,imgproxy,inbucket,pg_meta,edge-runtime,vector,pooler`, luego `supabase db push --db-url postgresql://postgres:postgres@127.0.0.1:54322/postgres` y `DATABASE_URL=... NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321 SUPABASE_SERVICE_ROLE_KEY=<supabase status> npx vitest run --config vitest.db.config.mts src/social src/ingest/engine.db.test.ts src/db` (las 24 roturas preexistentes de F-SPEC-066-2 están fuera de ese filtro salvo las 14 de `engine.db.test.ts`, que son las de `api-football`).
 - Diseño: `src/social/port.ts` es el puerto; `db.ts` lo implementa con `begin` o `savepoint` según reciba `Sql` o `TransactionSql`; `dispatch.ts` para el tick en el primer `retry`; `app/social.ts` es el único sitio donde ingest y social se encuentran. SPEC-067 añade `buffer` a `PUBLISHERS` y nada más.
