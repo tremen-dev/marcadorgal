@@ -2,14 +2,16 @@
 id: SPEC-039
 tipo: spec
 epica: EPIC-004
-estado: en-progreso
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-01, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-11-01, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-11-02, por: sdd-implementador}
   - {estado: en-progreso, fecha: 2026-11-03, por: sdd-arquitecto — refinamiento de CA-1 b/c y CA-2 y CA-4 por F-SPEC-039-6 y F-SPEC-039-7 (H-5)}
-  - {estado: en-progreso, fecha: 2026-11-09, por: sdd-arquitecto — enmienda de CA-3 a no aplicable por decisión del titular (Alberto Fojo, 2026-11-09), superado por ADR-026 (F-SPEC-039-10)}
+  - {estado: en-progreso, fecha: 2026-11-09, por: sdd-arquitecto — enmienda de CA-3 a no aplicable por decisión del titular (Alberto Fojo 2026-11-09) — superado por ADR-026 (F-SPEC-039-10)}
+  - {estado: en-revision, fecha: 2026-11-09, por: sdd-verificador}
+  - {estado: hecho, fecha: 2026-11-09, por: sdd-verificador}
 ---
 # SPEC-039 — Jornada de observación de la rfef vía explorer con prioridad 5
 
