@@ -65,13 +65,13 @@ export function TeamGoals({
       data-expanded={folded ? (expanded ? "true" : "false") : undefined}
     >
       <div className={styles.clip}>
-        <ul className={styles.list}>
+        <div className={styles.list}>
           {own.map((g, idx) => {
             const kind = kindKey(g);
             const isLast = idx === own.length - 1;
             const scorer = isLast ? marked : null;
             return (
-              <li
+              <div
                 // biome-ignore lint/suspicious/noArrayIndexKey: goals have no id
                 key={`${g.minute}-${g.player}-${idx}`}
                 className={styles.line}
@@ -104,10 +104,10 @@ export function TeamGoals({
                     {t(locale, "xornada.recentGoalLabel")}
                   </span>
                 )}
-              </li>
+              </div>
             );
           })}
-        </ul>
+        </div>
       </div>
     </div>
   );
