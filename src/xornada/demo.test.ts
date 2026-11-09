@@ -175,3 +175,77 @@ describe("SPEC-041 CA-6 recent goals in the demonstration", () => {
     }
   });
 });
+
+// SPEC-068 CA-8: the demonstration carries scorers, coherent with the
+// score, in every case the row has to show.
+describe("SPEC-068 CA-8 scorers in the demonstration", () => {
+  const NOW = "2026-11-02T18:00:00.000Z";
+  const matches = demoMatches(NOW);
+  const withGoals = matches.filter((m) => (m.goals?.length ?? 0) > 0);
+
+  it("every match with goals has as many per side as its score says", () => {
+    expect(withGoals.length).toBeGreaterThan(0);
+    for (const m of withGoals) {
+      expect(m.score, m.matchId).not.toBeNull();
+      const goals = m.goals ?? [];
+      expect(
+        {
+          home: goals.filter((g) => g.team === "home").length,
+          away: goals.filter((g) => g.team === "away").length,
+        },
+        m.matchId,
+      ).toEqual(m.score);
+    }
+  });
+
+  it("has a finished row with goals of both sides, a penalty and an own goal", () => {
+    const rows = withGoals.filter((m) => {
+      const goals = m.goals ?? [];
+      return (
+        m.status === "finished" &&
+        goals.some((g) => g.team === "home") &&
+        goals.some((g) => g.team === "away") &&
+        goals.some((g) => g.penalty) &&
+        goals.some((g) => g.ownGoal)
+      );
+    });
+    expect(rows.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("has a row whose goals are all of one side", () => {
+    const oneSided = withGoals.filter((m) => {
+      const teams = new Set((m.goals ?? []).map((g) => g.team));
+      return teams.size === 1;
+    });
+    expect(oneSided.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("has a scorer whose name does not fit one line at 360 px", () => {
+    // 360 px: 254 px for .sides, minus the 4ch minute and its gap, leaves
+    // ~220 px; at 12 px sans a name of 40+ characters wraps.
+    const longest = Math.max(
+      ...withGoals.flatMap((m) => (m.goals ?? []).map((g) => g.player.length)),
+    );
+    expect(longest).toBeGreaterThanOrEqual(40);
+  });
+
+  it("gives the live row with the recent goal of SPEC-041 CA-6 its scorer", () => {
+    const live = matches.find(
+      (m) =>
+        m.matchId === "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+    );
+    expect(live?.status).toBe("live");
+    expect(live?.homeScoredAt).not.toBeNull();
+    const home = (live?.goals ?? []).filter((g) => g.team === "home");
+    expect(home).toHaveLength(1);
+  });
+
+  it("keeps rows without goals", () => {
+    const without = matches.filter(
+      (m) => m.goals === undefined || m.goals.length === 0,
+    );
+    expect(without.length).toBeGreaterThan(0);
+    // Among them, rows with a score (0-0 or no list), not only scheduled.
+    expect(without.some((m) => m.score !== null)).toBe(true);
+  });
+});

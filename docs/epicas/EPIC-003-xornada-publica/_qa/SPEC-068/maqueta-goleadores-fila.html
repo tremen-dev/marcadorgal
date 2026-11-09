@@ -1,0 +1,335 @@
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Goleadores en la fila</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: tres columnas reales de 360 px (la del tablero), una por variante, con sus notas debajo.
+   Un solo tema, oscuro: el producto solo tiene modo oscuro (D-8) y la maqueta usa sus tokens. */
+:root {
+  color-scheme: dark;
+  --bg: #111110; --bg-elev: #1A1815; --bg-step: #221F1A; --bg-subtle: #131211; --bg-live: #1E1A16;
+  --line: #2A2620; --line-strong: #3D362C; --line-row: #1D1A16;
+  --fg: #F5F1EA; --fg-muted: #A7A5A0; --fg-dim: #716F6C;
+  --marca: #56DB8F; --marca-deep: #35C177; --marca-ink: #04160C;
+  --directo: #FF6B00; --amber: #F0B135;
+  --sans: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-block: 40px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* ---------- Página ---------- */
+.eyebrow {
+  margin: 0 0 12px;
+  font-family: var(--mono); font-weight: 600; font-size: 11px; line-height: 1;
+  letter-spacing: 0.15em; text-transform: uppercase; color: var(--marca);
+}
+h1 {
+  margin: 0 0 12px;
+  font-weight: 800; font-size: clamp(26px, 4vw, 36px); line-height: 1.05;
+  letter-spacing: -0.035em; text-wrap: balance;
+}
+.lede {
+  margin: 0 0 36px; max-width: 62ch;
+  font-size: 15px; line-height: 1.5; color: var(--fg-muted);
+}
+.variants {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 328px), 360px));
+  gap: 40px 24px;
+  align-items: start;
+}
+.variant { min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+.tag {
+  display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+  font-family: var(--mono); font-weight: 600; font-size: 11px; line-height: 1.2;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-dim);
+}
+.tag strong { color: var(--fg); font-weight: 600; }
+.tag .pick {
+  padding: 2px 7px; border-radius: 999px;
+  background: color-mix(in srgb, var(--marca) 14%, transparent); color: var(--marca);
+  letter-spacing: 0.06em;
+}
+.notes {
+  margin: 4px 0 0; padding: 0; list-style: none;
+  display: flex; flex-direction: column; gap: 8px;
+  font-size: 13px; line-height: 1.45; color: var(--fg-muted);
+}
+.notes li { padding-left: 14px; position: relative; }
+.notes li::before {
+  content: ""; position: absolute; left: 0; top: 0.62em;
+  width: 5px; height: 1px; background: var(--fg-dim);
+}
+.notes strong { color: var(--fg); font-weight: 600; }
+.foot {
+  margin: 40px 0 0; padding-top: 16px; border-top: 1px solid var(--line); max-width: 78ch;
+  font-family: var(--mono); font-weight: 500; font-size: 11px; line-height: 1.6; color: var(--fg-dim);
+}
+
+/* ---------- Columna del tablero (métrica de Xornada.module.css) ---------- */
+.board { border: 1px solid var(--line); background: var(--bg); }
+.head {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+  padding: 9px 16px; background: var(--bg-elev); border-bottom: 1px solid var(--line);
+}
+.head .name {
+  font-family: var(--mono); font-weight: 600; font-size: 11px; line-height: 1.2;
+  letter-spacing: 0.11em; text-transform: uppercase; color: var(--marca);
+}
+.head .round { font-family: var(--mono); font-weight: 500; font-size: 11px; line-height: 1.2; color: var(--fg-dim); }
+.head .total { margin-left: auto; font-family: var(--mono); font-weight: 500; font-size: 10px; line-height: 1.2; color: var(--fg-dim); }
+.rows { list-style: none; margin: 0; padding: 0; }
+.row {
+  display: grid; grid-template-columns: 72px minmax(0, 1fr); align-items: center;
+  column-gap: 6px; min-height: 48px; padding: 7px 14px;
+  border-bottom: 1px solid var(--line-row);
+}
+.row:last-child { border-bottom: 0; }
+.row[role="button"] { cursor: pointer; }
+.row[role="button"]:hover { background: var(--bg-step); }
+.row[role="button"]:focus-visible { outline: 2px solid var(--marca); outline-offset: -2px; }
+.row.live { background: var(--bg-live); box-shadow: inset 2px 0 0 var(--directo); }
+.margin { align-self: start; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.m-main {
+  height: 15px; display: flex; align-items: center; gap: 5px;
+  font-family: var(--mono); font-weight: 600; font-size: 11px; line-height: 1.2; color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+.live .m-main { font-size: 12px; color: var(--directo); }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--directo); box-shadow: 0 0 8px var(--directo); }
+.m-sub { height: 12px; font-family: var(--mono); font-weight: 500; font-size: 10px; line-height: 1.2; color: var(--fg-dim); white-space: nowrap; }
+.chev { font-weight: 500; font-size: 10px; line-height: 1; color: var(--fg-dim); user-select: none; }
+.chev::before { content: "▸"; }
+.row[data-expanded="true"] .chev::before { content: "▾"; }
+.sides { display: grid; grid-template-columns: minmax(0, 1fr) 30px; align-items: baseline; column-gap: 6px; min-width: 0; }
+.team, .score { padding-block: 1.5px; }
+.team {
+  font-weight: 500; font-size: 14px; line-height: 1.25; letter-spacing: -0.01em;
+  color: var(--fg); overflow-wrap: break-word;
+}
+.score {
+  text-align: right; font-family: var(--mono); font-weight: 600; font-size: 14px; line-height: 1.25;
+  font-variant-numeric: tabular-nums; color: var(--fg);
+}
+.winner { font-weight: 600; }
+.loser { color: var(--fg-muted); }
+.galician { font-weight: 600; color: var(--marca); }
+.galician-deep { font-weight: 600; color: var(--marca-deep); }
+.badge {
+  display: inline-flex; align-items: center; margin-left: 6px; padding: 1px 4px; vertical-align: 1px;
+  background: var(--directo); color: var(--marca-ink); border-radius: 999px;
+  font-family: var(--mono); font-weight: 700; font-size: 9px; line-height: 1; letter-spacing: 0.05em;
+  animation: pulse 1s ease-in-out 6;
+}
+@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.1); } }
+@media (prefers-reduced-motion: reduce) { .badge { animation: none; } .fold { transition: none !important; } }
+
+/* Plegado común: alto 0fr → 1fr, sin saltos (SPEC-056 CA-4). */
+.fold {
+  display: grid; grid-template-rows: 0fr; opacity: 0;
+  transition: grid-template-rows 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease-out;
+}
+.row[data-expanded="true"] .fold { grid-template-rows: 1fr; opacity: 1; }
+.clip { min-height: 0; overflow: hidden; }
+
+/* ---------- HOY ---------- */
+.now-drawer { grid-column: 2; }
+.now-inner { margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--line); display: flex; flex-direction: column; gap: 8px; }
+.now-team { display: flex; flex-direction: column; gap: 3px; }
+.now-name {
+  font-weight: 600; font-size: 11px; line-height: 1.2; color: var(--fg-muted);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.now-goal { font-family: var(--mono); font-weight: 500; font-size: 11px; line-height: 1.3; color: var(--fg-muted); }
+.now-goal.recent { color: var(--fg); font-weight: 600; }
+.now-pen { color: var(--amber); font-style: italic; }
+
+/* ---------- A · colgados de su equipo ---------- */
+.a-fold { grid-column: 1 / -1; }
+.a-list { display: flex; flex-direction: column; gap: 1px; padding: 1px 0 6px; }
+.a-fold.last .a-list { padding-bottom: 1px; }
+.a-goal { display: grid; grid-template-columns: 4ch minmax(0, 1fr); column-gap: 8px; align-items: baseline; }
+.a-min {
+  text-align: right; font-family: var(--mono); font-weight: 500; font-size: 11px; line-height: 1.4;
+  font-variant-numeric: tabular-nums; color: var(--fg-dim);
+}
+.a-who { font-weight: 400; font-size: 12px; line-height: 1.4; color: var(--fg-muted); overflow-wrap: break-word; }
+.a-goal.recent .a-who { color: var(--fg); font-weight: 500; }
+.a-goal.recent .a-min { color: var(--fg-muted); }
+.kind { margin-left: 5px; font-family: var(--mono); font-weight: 500; font-size: 10px; color: var(--fg-dim); }
+
+/* ---------- B · cronología con parcial ---------- */
+.b-fold { grid-column: 1 / -1; }
+.b-inner { margin-top: 7px; padding: 6px 0 1px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 1px; }
+.b-goal { display: grid; grid-template-columns: 72px minmax(0, 1fr) 30px; column-gap: 6px; align-items: baseline; }
+.b-min {
+  font-family: var(--mono); font-weight: 500; font-size: 11px; line-height: 1.4;
+  font-variant-numeric: tabular-nums; color: var(--fg-dim);
+}
+.b-who { font-weight: 400; font-size: 12px; line-height: 1.4; color: var(--fg-muted); overflow-wrap: break-word; }
+.b-part {
+  text-align: right; font-family: var(--mono); font-weight: 500; font-size: 11px; line-height: 1.4;
+  font-variant-numeric: tabular-nums; color: var(--fg-dim); white-space: nowrap;
+}
+.b-part b { font-weight: 600; color: var(--fg); }
+.b-goal.recent .b-who { color: var(--fg); font-weight: 500; }
+</style>
+
+<div class="wrap">
+  <p class="eyebrow">marcador.gal · revisión de diseño</p>
+  <h1>Goleadores en la fila de partido</h1>
+  <p class="lede">El cajón actual repite el nombre de cada equipo, mete un emoji por gol y deja el minuto suelto cuando el nombre no cabe. Abajo, la misma columna de Segunda División con el diseño de hoy y dos alternativas. Las filas con goles se pliegan y despliegan al pulsarlas.</p>
+
+  <div class="variants">
+    <section class="variant">
+      <div class="tag"><strong>Hoy</strong> <span>SPEC-056</span></div>
+      <div class="board"><div class="head"><span class="name">Segunda División</span><span class="round">xornada 13</span><span class="total">11 partidos</span></div><ul class="rows" data-variant="now"></ul></div>
+      <ul class="notes">
+        <li>El equipo se repite en mayúsculas justo debajo de su propio nombre.</li>
+        <li>Un emoji por gol: color ajeno a los tokens y distinto en cada sistema.</li>
+        <li>El minuto va detrás del nombre y cae solo a la línea siguiente.</li>
+        <li>«(p.)» en ámbar: ese color está reservado a lo que espera a una persona (ADR-005).</li>
+        <li>Burgos–Celta Fortuna ocupa <strong>6 líneas</strong> más el filete discontinuo.</li>
+      </ul>
+    </section>
+
+    <section class="variant">
+      <div class="tag"><strong>A · Colgados de su equipo</strong> <span class="pick">recomendada</span></div>
+      <div class="board"><div class="head"><span class="name">Segunda División</span><span class="round">xornada 13</span><span class="total">11 partidos</span></div><ul class="rows" data-variant="a"></ul></div>
+      <ul class="notes">
+        <li>Cada goleador cuelga de su equipo: <strong>la posición lo atribuye</strong>, sin rótulos, iconos ni filetes.</li>
+        <li>Minuto delante, en columna tabular: los nombres arrancan alineados y el minuto nunca queda huérfano.</li>
+        <li>Nombre en sans, cifra en mono: el mismo reparto que el resto de la fila.</li>
+        <li>Penalti y propia puerta en gris, como anotación, no como estado.</li>
+        <li><strong>3 líneas</strong> en vez de 6. No deriva ningún dato: aguanta una lista de goles incompleta.</li>
+      </ul>
+    </section>
+
+    <section class="variant">
+      <div class="tag"><strong>B · Cronología con parcial</strong> <span>alternativa</span></div>
+      <div class="board"><div class="head"><span class="name">Segunda División</span><span class="round">xornada 13</span><span class="total">11 partidos</span></div><ul class="rows" data-variant="b"></ul></div>
+      <ul class="notes">
+        <li>Orden cronológico con el parcial tras cada gol: se lee la historia del partido (0–1, 1–1, 2–1).</li>
+        <li>Prolonga las tres columnas de la fila: minuto en el margen, nombre, parcial bajo el marcador.</li>
+        <li>Quién marca se deduce del dígito resaltado: un paso de lectura más que en A.</li>
+        <li>El parcial es un <strong>dato derivado</strong>: si a la lista le falta un gol, deja de cuadrar con el marcador y hace falta una regla de reserva.</li>
+      </ul>
+    </section>
+  </div>
+
+  <p class="foot">Datos de la captura (Segunda División, xornada 13). La última fila de cada columna, Girona–Almería en xogo, es un ejemplo inventado para enseñar la marca «GOL» del goleador reciente. Cádiz–Oviedo y Córdoba–Ceuta van sin goleadores para ver el ritmo de las filas cerradas.</p>
+</div>
+
+<script>
+const MATCHES = [
+  { status: "Rematado", date: "sáb 7 nov", home: "Burgos", away: "Celta Fortuna", hs: 2, as: 1,
+    homeCls: "winner", awayCls: "galician-deep", open: true,
+    goals: [
+      { t: "away", m: 12, p: "Álvaro Marín Sesma" },
+      { t: "home", m: 68, p: "Francisco José Sánchez Rodríguez" },
+      { t: "home", m: 86, p: "Alex Fores Mendoza" },
+    ] },
+  { status: "Rematado", date: "sáb 7 nov", home: "Cádiz", away: "Oviedo", hs: 1, as: 2,
+    homeCls: "loser", awayCls: "winner", goals: [] },
+  { status: "Rematado", date: "sáb 7 nov", home: "Córdoba", away: "Ceuta", hs: 3, as: 0,
+    homeCls: "winner", awayCls: "loser", goals: [] },
+  { status: "Rematado", date: "sáb 7 nov", home: "Leganés", away: "Albacete", hs: 1, as: 3,
+    homeCls: "loser", awayCls: "winner", open: true,
+    goals: [
+      { t: "away", m: 20, p: "Antonio Pacheco Ruiz" },
+      { t: "away", m: 48, p: "Álex Rubio" },
+      { t: "away", m: 59, p: "Higinio Marín", pen: true },
+      { t: "home", m: 68, p: "Álvaro Morata" },
+    ] },
+  { live: true, minute: "63'", part: "2ª", home: "Girona", away: "Almería", hs: 0, as: 1,
+    homeCls: "", awayCls: "", open: true, recent: "away",
+    goals: [{ t: "away", m: 61, p: "Sergio Arribas Calvo" }] },
+];
+
+const kind = (g) => (g.pen ? '<span class="kind">(p.)</span>' : g.own ? '<span class="kind">(p.p.)</span>' : "");
+const badge = '<span class="badge">GOL</span>';
+const isRecent = (m, g) => m.recent === g.t && g === m.goals.filter((x) => x.t === g.t).at(-1);
+
+function margin(m) {
+  const main = m.live ? `<span class="dot" aria-hidden="true"></span>${m.minute}` : m.status;
+  const sub = m.live ? m.part : m.date;
+  const chev = m.goals.length ? '<span class="chev" aria-hidden="true"></span>' : "";
+  return `<div class="margin"><span class="m-main">${main}</span><span class="m-sub">${sub}</span>${chev}</div>`;
+}
+const team = (m, side) => `<span class="team ${m[side + "Cls"]}">${m[side]}</span><span class="score ${m[side + "Cls"] === "loser" ? "loser" : ""}">${side === "home" ? m.hs : m.as}</span>`;
+
+function bodyNow(m) {
+  const block = (side) => {
+    const gs = m.goals.filter((g) => g.t === side);
+    if (!gs.length) return "";
+    return `<div class="now-team"><span class="now-name">${m[side]}</span>${gs.map((g) =>
+      `<span class="now-goal ${isRecent(m, g) ? "recent" : ""}">⚽ ${g.p} ${g.m}'${g.pen ? ' <span class="now-pen">(p.)</span>' : ""}${isRecent(m, g) ? badge : ""}</span>`).join("")}</div>`;
+  };
+  const drawer = m.goals.length
+    ? `<div class="fold now-drawer"><div class="clip"><div class="now-inner">${block("home")}${block("away")}</div></div></div>` : "";
+  return `<div class="sides">${team(m, "home")}${team(m, "away")}</div>${drawer}`;
+}
+
+function bodyA(m) {
+  const list = (side) => {
+    const gs = m.goals.filter((g) => g.t === side);
+    if (!gs.length) return "";
+    return `<div class="fold a-fold ${side === "away" ? "last" : ""}"><div class="clip"><div class="a-list">${gs.map((g) =>
+      `<div class="a-goal ${isRecent(m, g) ? "recent" : ""}"><span class="a-min">${g.m}'</span><span class="a-who">${g.p}${kind(g)}${isRecent(m, g) ? badge : ""}</span></div>`).join("")}</div></div></div>`;
+  };
+  return `<div class="sides">${team(m, "home")}${list("home")}${team(m, "away")}${list("away")}</div>`;
+}
+
+function bodyB(m) {
+  let h = 0, a = 0;
+  const lines = [...m.goals].sort((x, y) => x.m - y.m).map((g) => {
+    if (g.t === "home") h++; else a++;
+    const part = g.t === "home" ? `<b>${h}</b>–${a}` : `${h}–<b>${a}</b>`;
+    return `<div class="b-goal ${isRecent(m, g) ? "recent" : ""}"><span class="b-min">${g.m}'</span><span class="b-who">${g.p}${kind(g)}${isRecent(m, g) ? badge : ""}</span><span class="b-part">${part}</span></div>`;
+  }).join("");
+  const tl = m.goals.length ? `<div class="fold b-fold"><div class="clip"><div class="b-inner">${lines}</div></div></div>` : "";
+  return `<div class="sides">${team(m, "home")}${team(m, "away")}</div>${tl}`;
+}
+
+const BODY = { now: bodyNow, a: bodyA, b: bodyB };
+document.querySelectorAll(".rows").forEach((ul) => {
+  const body = BODY[ul.dataset.variant];
+  ul.innerHTML = MATCHES.map((m) => {
+    const has = m.goals.length > 0;
+    const attrs = has
+      ? ` role="button" tabindex="0" aria-expanded="${!!m.open}" data-expanded="${!!m.open}" aria-label="${m.home} ${m.hs}, ${m.away} ${m.as}. Goleadores"`
+      : "";
+    return `<li class="row ${m.live ? "live" : ""}"${attrs}>${margin(m)}${body(m)}</li>`;
+  }).join("");
+});
+
+function toggle(row) {
+  const open = row.dataset.expanded !== "true";
+  row.dataset.expanded = String(open);
+  row.setAttribute("aria-expanded", String(open));
+}
+document.addEventListener("click", (e) => {
+  const row = e.target.closest('.row[role="button"]');
+  if (row) toggle(row);
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Enter" && e.key !== " ") return;
+  const row = e.target.closest('.row[role="button"]');
+  if (!row) return;
+  e.preventDefault();
+  toggle(row);
+});
+</script>

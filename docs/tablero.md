@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-11-08
+Actualizado: 2026-11-09
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -56,6 +56,7 @@ Actualizado: 2026-11-08
 | SPEC-061 — tira-de-dias-configurable-e-oculta-por-defecto | hecho | 2026-11-08 (sdd-verificador) |
 | SPEC-064 — assets-de-redes-sociales-y-og-png-con-la-identidad-celeste | hecho | 2026-11-08 (sdd-verificador) |
 | SPEC-065 — identidad-celeste-tokens-wordmark-con-bloque-dibujado-e-icono-de-barra-sola | hecho | 2026-11-08 (sdd-verificador) |
+| SPEC-068 — goleadores-colgados-de-su-equipo-en-la-fila-de-partido | hecho | 2026-11-09 (sdd-verificador) |
 
 ## EPIC-004 — fuente-rfef (aprobada)
 
@@ -89,6 +90,7 @@ Actualizado: 2026-11-08
 | SPEC-044 — recuperacion-de-finales-fuera-de-ventana-por-la-rfef-herramienta-de-recuperacion-y-horizonte-por-fuente | hecho | 2026-11-02 (sdd-verificador) |
 | SPEC-045 — cabos-sueltos-de-la-xornada-diseno-de-escritorio-contexto-nombres-de-competicion-y-suites-con-base | hecho | 2026-11-03 (sdd-verificador) |
 | SPEC-048 — la-rfef-observa-sin-decidir-el-directo-de-primera-y-segunda-division | en-revision | 2026-11-03 (sdd-implementador) |
+| SPEC-069 — la-rfef-acepta-cualquier-liveprovider-de-explorer | en-revision | 2026-11-09 (sdd-implementador) |
 
 ## EPIC-MANT — mantenimiento (borrador)
 
@@ -138,8 +140,8 @@ Actualizado: 2026-11-08
 
 ## Resumen
 
-- hecho: 55
-- en-revision: 3
+- hecho: 56
+- en-revision: 4
 - borrador: 2
 - feito: 1
 - implementada: 2

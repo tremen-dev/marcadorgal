@@ -1,0 +1,1866 @@
+{
+  "360": {
+    "plain": [
+      {
+        "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          10,
+          31
+        ],
+        "scores": [
+          10,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          10,
+          31
+        ],
+        "scores": [
+          10,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          10,
+          31
+        ],
+        "scores": [
+          10,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          10,
+          31
+        ],
+        "scores": [
+          10,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      }
+    ],
+    "noBlocks": [
+      {
+        "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          10,
+          31
+        ],
+        "scores": [
+          10,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          10,
+          31
+        ],
+        "scores": [
+          10,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          10,
+          31
+        ],
+        "scores": [
+          10,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          10,
+          31
+        ],
+        "scores": [
+          10,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      }
+    ],
+    "noBlocksNoAffordance": [
+      {
+        "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          10,
+          31
+        ],
+        "scores": [
+          10,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          10,
+          31
+        ],
+        "scores": [
+          10,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          10,
+          31
+        ],
+        "scores": [
+          10,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          10,
+          31
+        ],
+        "scores": [
+          10,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          27
+        ],
+        "scores": [
+          7,
+          27
+        ],
+        "affordance": false
+      }
+    ]
+  },
+  "1440": {
+    "plain": [
+      {
+        "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      }
+    ],
+    "noBlocks": [
+      {
+        "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      }
+    ],
+    "noBlocksNoAffordance": [
+      {
+        "id": "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-division-2026-27-j8-rc-celta-real-madrid",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-division-2026-27-j8-real-betis-rc-deportivo",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-division-2026-27-j8-athletic-club-real-sociedad",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-real-oviedo-real-sporting",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-albacete-balompie-cadiz-cf",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-real-sociedad-b-burgos-cf",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-girona-fc-cd-tenerife",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-granada-cf-fc-andorra",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-pontevedra-cf-zamora-cf",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-racing-de-ferrol-cd-lugo",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "primera-rfef-g1-2026-27-j6-unionistas-de-salamanca-cf-real-aviles-industrial",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-sestao-river-club-rs-gimnastica-de-torrelavega",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-arosa-sc-bergantinos-fc",
+        "hasGoals": false,
+        "height": 60,
+        "names": [
+          11,
+          31
+        ],
+        "scores": [
+          11,
+          31
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-coruxo-fc-rayo-cantabria",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "segunda-rfef-g1-2026-27-j5-sd-compostela-ourense-cf",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-silva-sd-ud-somozas",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-cd-barco-atletico-coruna-montaneros",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-racing-villalbes-cd-estradense",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      },
+      {
+        "id": "tercera-rfef-g1-2026-27-j5-portonovo-sd-pontevedra-cf-b",
+        "hasGoals": false,
+        "height": 53,
+        "names": [
+          7,
+          28
+        ],
+        "scores": [
+          7,
+          28
+        ],
+        "affordance": false
+      }
+    ]
+  }
+}
