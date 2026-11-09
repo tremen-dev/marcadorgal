@@ -90,6 +90,7 @@ Actualizado: 2026-11-09
 | SPEC-044 — recuperacion-de-finales-fuera-de-ventana-por-la-rfef-herramienta-de-recuperacion-y-horizonte-por-fuente | hecho | 2026-11-02 (sdd-verificador) |
 | SPEC-045 — cabos-sueltos-de-la-xornada-diseno-de-escritorio-contexto-nombres-de-competicion-y-suites-con-base | hecho | 2026-11-03 (sdd-verificador) |
 | SPEC-048 — la-rfef-observa-sin-decidir-el-directo-de-primera-y-segunda-division | en-revision | 2026-11-03 (sdd-implementador) |
+| SPEC-069 — la-rfef-acepta-cualquier-liveprovider-de-explorer | en-revision | 2026-11-09 (sdd-implementador) |
 
 ## EPIC-MANT — mantenimiento (borrador)
 
@@ -140,7 +141,7 @@ Actualizado: 2026-11-09
 ## Resumen
 
 - hecho: 56
-- en-revision: 3
+- en-revision: 4
 - borrador: 2
 - feito: 1
 - implementada: 2
