@@ -2,12 +2,13 @@
 id: SPEC-068
 tipo: spec
 epica: EPIC-003
-estado: en-progreso
+estado: en-revision
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-09, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-11-08, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-11-09, por: sdd-implementador}
+  - {estado: en-revision, fecha: 2026-11-09, por: sdd-implementador}
 ---
 # SPEC-068 — Goleadores colgados de su equipo en la fila de partido
 
