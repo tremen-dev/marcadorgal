@@ -2,11 +2,16 @@
 id: SPEC-039
 tipo: spec
 epica: EPIC-004
-estado: aprobada
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-01, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-11-01, por: Alberto Fojo}
+  - {estado: en-progreso, fecha: 2026-11-02, por: sdd-implementador}
+  - {estado: en-progreso, fecha: 2026-11-03, por: sdd-arquitecto — refinamiento de CA-1 b/c y CA-2 y CA-4 por F-SPEC-039-6 y F-SPEC-039-7 (H-5)}
+  - {estado: en-progreso, fecha: 2026-11-09, por: sdd-arquitecto — enmienda de CA-3 a no aplicable por decisión del titular (Alberto Fojo 2026-11-09) — superado por ADR-026 (F-SPEC-039-10)}
+  - {estado: en-revision, fecha: 2026-11-09, por: sdd-verificador}
+  - {estado: hecho, fecha: 2026-11-09, por: sdd-verificador}
 ---
 # SPEC-039 — Jornada de observación de la rfef vía explorer con prioridad 5
 
@@ -33,9 +38,15 @@ prioridad: lo hará un ADR posterior con sus criterios (CA-4).
   `api-football`; (b) **desfase por gol**: para cada cambio de marcador que
   vieron las dos fuentes, Δ = `recorded_at` de la primera observación rfef con
   ese marcador − `recorded_at` de la primera de API-Football (segundo reloj,
-  ADR-016), con mediana, p95 y n; (c) **cobertura**: partidos con `live`
+  ADR-016), con mediana, p95 y n; sin observaciones de API-Football en la
+  competición dice `sin datos`, no n=0; (c) **cobertura**: partidos con `live`
   `provisional` de rfef mientras API-Football no daba directo (`sen_sinal` o
-  `scheduled` con kickoff pasado) y minutos cubiertos; (d) `conflict` y RN-03
+  `scheduled` con kickoff pasado) y minutos cubiertos, en dos cifras:
+  *observado* (desde `observations`) y *publicado* (Decision vigente `live`
+  con `winner` rfef). Solo suman partidos con acta y sin `≠ acta en directo`
+  (CA-2); los demás se listan aparte. Con rfef `live` observado > 0 y publicado
+  0, la fila dice «la rfef observó sin decidir»: así se lee la competición con
+  o sin `liveObservedOnly` (SPEC-048), sin leer el registro; (d) `conflict` y RN-03
   con la rfef como parte, con partido y duración; (e) intentos `rfef`
   `ok = false` por motivo y observaciones descartadas por `fueraDeVentana` o
   por `observedAt` futuro; (f) `strategy` y `discardedReadings` por fila del
@@ -45,28 +56,39 @@ prioridad: lo hará un ADR posterior con sus criterios (CA-4).
   `finished` de API-Football y Decision vigente. Cuenta: coincidencias
   triples, discrepancias por fuente y **dígitos falsos**: observaciones rfef
   (`live` o `finished`) con un lado por encima del acta. 0 dígitos falsos es la
-  condición de CA-4. Un partido sin acta al día siguiente queda `sin acta`,
-  nunca coincide por omisión.
-- **CA-3 Jornada real.** Una jornada completa (viernes a lunes) con las cinco
-  competiciones, la rfef registrada con 5 (SPEC-038 CA-10) y **cero
-  intervenciones manuales** por alias, parseo u ofuscación. Evidencia en
-  `_qa/SPEC-039/`: el informe de CA-1, el de `informe:jornada --contrastar`
-  (SPEC-017) con las alertas `conflict` atribuibles a la rfef explicadas en su
-  texto (CA-9 de SPEC-017 las espera en cero), los exports del día y del día
-  siguiente, y la **evidencia externa** de explorer al cierre: `/api/health`,
-  sesiones abiertas, soft-blocks, segundos en cooldown dentro de la ventana de
-  cada competición, sondeos saltados y anomalías (anotado en el ledger; explorer
-  no es de este repo).
+  condición de CA-4. **≠ acta en directo**: partidos con acta cuya última
+  observación rfef `live` difiere del acta, haya o no `finished` de rfef; el
+  apéndice da ese marcador, el acta y los minutos desde su último cambio (el
+  0-0 congelado de Deportivo–Osasuna del 2026-11-02 sale aquí). Un partido sin
+  acta al día siguiente queda `sin acta`; uno sin `finished` de API-Football,
+  `sin api-football`: ninguno coincide ni discrepa por omisión, y si la
+  competición no tiene `finished` de API-Football, «Triples» y
+  «≠ api-football» dicen `sin datos`.
+- **CA-3 Jornada real — no aplicable (enmienda del titular, 2026-11-09).**
+  _Histórico:_ una jornada completa (viernes a lunes) con las cinco
+  competiciones, la rfef registrada con 5 (SPEC-038 CA-10), cero intervenciones
+  manuales y su evidencia en `_qa/SPEC-039/`. **Vigente:** superado por
+  ADR-026, que ya respondió la pregunta de la prioridad (rfef a 50 desde el
+  2026-11-06, SPEC-049). La jornada 2026-11-06/09 no se jugó en las premisas
+  de la spec (rfef con 50, SPEC-048 retirada, explorer multi-proveedor,
+  API-Football fuera del registro; F-SPEC-039-10). Se cumple con la medida ya
+  ejecutada: `_qa/SPEC-039/2026-11-06-informe.md` existe, lo generó
+  `informe:rfef` (CA-1) sobre esa jornada y queda como evidencia; no se exige
+  otra jornada, `--contrastar` ni la evidencia de explorer.
 - **CA-4 Criterio de subida por competición.** El informe acaba con una tabla,
   una fila por competición, con estas condiciones y la recomendación `5` o `50`:
-  (i) acta: 100 % de los `finished` de rfef iguales al acta y 0 dígitos falsos,
-  sobre ≥ 6 partidos; (ii) desfase: mediana Δ ≤ 0 s y p95 Δ ≤ 45 s con n ≥ 5
-  goles (criterio 3 de la épica: con 50 la latencia pública es la de la rfef);
+  (i) acta: sobre ≥ 6 partidos con acta y alguna observación rfef, 100 % de
+  los `finished` de rfef iguales al acta, 0 dígitos falsos y 0 `≠ acta en
+  directo`; (ii) desfase: mediana Δ ≤ 0 s y p95 Δ ≤ 45 s con n ≥ 5 goles
+  (criterio 3 de la épica: con 50 la latencia pública es la de la rfef), y
+  `sin datos` si (b) lo es;
   (iii) bloqueo: cooldown < 10 % del tiempo en ventana de esa competición y 0
   anomalías; (iv) ≥ 95 % de sus filas resueltas por estrategias estáticas; (v)
-  0 intervenciones. `50` solo con las cinco; si falla solo (ii), la fila dice
-  «reserva útil, sin subir» y cuantifica el directo ganado en (c). La tabla es
-  salida de la función pura (un test por condición). La decisión es del titular
+  0 intervenciones. `50` solo con las cinco en «sí»; si falla solo (ii), la
+  fila dice «reserva útil, sin subir»; si (ii) es `sin datos` y las demás
+  pasan, «5 — sin referencia de desfase»; ambas cuantifican el directo ganado
+  de (c). La tabla es salida de la función pura (un test por condición y por
+  cada `sin datos`). La decisión es del titular
   y se registra en un ADR que supersede ADR-023 §1 para esa competición.
 - **CA-5 Una página y sin código de producto.** Informe ≤ 80 líneas antes del
   apéndice. El diff de la spec toca `src/ingest/informe-rfef*.ts`, `tools/` y
@@ -99,3 +121,11 @@ RN-03, RN-04, RN-05, RN-11; D-9; ADR-004, ADR-011, ADR-016, ADR-017 §5,
 - **H-4 Fecha.** Primer fin de semana con SPEC-038 en producción
   (propuesta: 2026-11-07/08). Si explorer entra en cooldown largo o cambia la
   ofuscación a mitad, la jornada vale igual: el informe lo cuenta. *Resuelta por el titular (2026-11-01):* 2026-11-07/08.
+- **H-5 Refinamiento 2026-11-03 (F-SPEC-039-6/7), a ratificar.** API-Football
+  seguirá sin datos: (ii) sale `sin datos` y esta jornada **no puede recomendar
+  50** en ninguna competición; buscar otra referencia de desfase es otra spec.
+  Un marcador congelado por debajo del acta ahora cuenta contra (i) y no como
+  directo ganado; coste: un gol tras el último sondeo `live` también sale
+  `≠ acta en directo` (el apéndice deja juzgarlo). Con SPEC-048, en Primera y
+  Segunda (c) *publicado* y `conflict`/RN-03 saldrán 0 por diseño, y (i) mide
+  igual con las observaciones guardadas.

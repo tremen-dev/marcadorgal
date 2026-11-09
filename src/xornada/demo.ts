@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { type Instant, PublicMatch } from "@/model";
+import { type Instant, type PublicGoal, PublicMatch } from "@/model";
 
 // Demonstration data for /demo/xornada (SPEC-019 CA-5): the five competitions
 // of D-3 with the real names of the declared calendar (data/calendario/2026-27)
@@ -125,6 +125,8 @@ function demoMatch(
   away: Side,
   state: State,
   qualifier: "confirmado" | "provisional" | "sen_sinal" = "confirmado",
+  // SPEC-068 CA-8: the scorers, as many per side as the score says.
+  goals?: PublicGoal[],
 ): unknown {
   const undecided = state.status === "scheduled" && qualifier === "confirmado";
   return {
@@ -140,8 +142,23 @@ function demoMatch(
     decidedAt: undecided ? null : DECIDED,
     homeScoredAt: null,
     awayScoredAt: null,
+    ...(goals === undefined ? {} : { goals }),
   };
 }
+
+// SPEC-068 CA-8: invented scorers (the results are invented too). Given out
+// of minute order on purpose: the row sorts them.
+const goal = (
+  team: "home" | "away",
+  minute: number,
+  player: string,
+  kind?: "penalty" | "ownGoal",
+): PublicGoal => ({
+  team,
+  player,
+  minute,
+  ...(kind === undefined ? {} : { [kind]: true }),
+});
 
 const RAW: unknown[] = [
   // Deliberately shuffled: buildXornada orders competitions and rows.
@@ -182,6 +199,8 @@ const RAW: unknown[] = [
     team("RC Celta", "Celta"),
     team("Real Madrid"),
     live(1, 0, 45, 3),
+    "confirmado",
+    [goal("home", 44, "Borja Iglesias")],
   ),
   demoMatch(
     PRIMERA,
@@ -192,12 +211,20 @@ const RAW: unknown[] = [
     "provisional",
   ),
   // SPEC-033 CA-7: an Equipo galego that loses to a non-galician.
+  // SPEC-068 CA-8: both sides score, a penalty, an own goal and a name that
+  // does not fit one line at 360 px.
   demoMatch(
     PRIMERA,
     "2026-10-04T10:00:00Z",
     team("Real Betis", "Betis"),
     team("RC Deportivo", "Deportivo"),
     finished(2, 1),
+    "confirmado",
+    [
+      goal("home", 67, "Francisco José Sánchez Rodríguez de la Fuente"),
+      goal("away", 80, "Natan Bernardo de Souza", "ownGoal"),
+      goal("home", 23, "Isco Alarcón", "penalty"),
+    ],
   ),
   demoMatch(
     PRIMERA,
@@ -266,6 +293,9 @@ const RAW: unknown[] = [
     team("Real Oviedo", "Oviedo"),
     team("Real Sporting", "Sporting"),
     finished(0, 1),
+    "confirmado",
+    // SPEC-041 CA-6 (H-6): the away side scored 1 min ago (RECENT_GOALS).
+    [goal("away", 88, "Jonathan Dubasin")],
   ),
   demoMatch(
     SEGUNDA,
@@ -290,8 +320,10 @@ const RAW: unknown[] = [
     team("Bilbao Athletic"),
     team("UD Ourense"),
     // SPEC-041 CA-6: the longest name, on the side that just scored.
+    // SPEC-068 CA-8: its scorer, the recent one; goals of one side only.
     live(1, 0, 67),
     "sen_sinal",
+    [goal("home", 66, "Unai Gómez")],
   ),
   demoMatch(
     PRIMERA_RFEF,

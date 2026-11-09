@@ -1,0 +1,34 @@
+{
+  "explorer": {
+    "capturadoEn": "2026-11-09T20:34:48.807Z",
+    "health": {"status":"ok","cooldown":{"inCooldown":false,"consecutiveSoftBlocks":0},"rfefSessions":4,"providers":["rfef","marca","footballData","espn"],"integrity":{"liveMatchesCount":5,"marcaControlledCount":5,"rfefControlledCount":61,"totalDiscardedReadings":0,"unmappedMatchesCount":93},"nota":"/api/health es por instancia serverless; las cifras de la ventana salen de explorer.operational_logs y explorer.raw_readings"},
+    "sesiones": 4,
+    "softBlocks": 10,
+    "sondeosSaltados": 32,
+    "cooldowns": [
+      {"inicio":"2026-11-06T20:00:37.802Z","fin":"2026-11-06T20:06:37.802Z"},
+      {"inicio":"2026-11-07T18:23:40.188Z","fin":"2026-11-07T18:29:40.188Z"},
+      {"inicio":"2026-11-07T19:16:09.876Z","fin":"2026-11-07T19:22:09.876Z"},
+      {"inicio":"2026-11-07T20:19:41.453Z","fin":"2026-11-07T20:27:22.403Z"},
+      {"inicio":"2026-11-07T20:42:44.401Z","fin":"2026-11-07T20:48:44.401Z"},
+      {"inicio":"2026-11-08T15:29:03.902Z","fin":"2026-11-08T15:35:03.902Z"},
+      {"inicio":"2026-11-08T17:26:36.815Z","fin":"2026-11-08T17:32:36.815Z"},
+      {"inicio":"2026-11-08T17:49:51.619Z","fin":"2026-11-08T17:55:51.619Z"},
+      {"inicio":"2026-11-09T20:19:05.895Z","fin":"2026-11-09T20:25:05.895Z"}
+    ],
+    "anomalias": []
+  },
+  "intervenciones": [
+    {"instante":"2026-11-06T22:22:21.869Z","competicion":null,"motivo":"explorer en producción (0ea034d): motor multi-proveedor MARCA/Opta + RFEF con arbitraje y entity-resolver nuevo; el export que lee la fuente rfef deja de ser solo RFEF (liveProvider)"},
+    {"instante":"2026-11-06T23:17:33.827Z","competicion":null,"motivo":"marcadorgal en producción (375b357, SPEC-049/ADR-026): rfef pasa de prioridad 5 a 50 en las cinco competiciones"},
+    {"instante":"2026-11-06T23:38:40.977Z","competicion":null,"motivo":"marcadorgal en producción (10e8400): se levanta liveObservedOnly de Primera y Segunda (SPEC-048 revertida)"},
+    {"instante":"2026-11-07T00:52:14.823Z","competicion":null,"motivo":"marcadorgal en producción (5a9e561, 93c8e0d): alias de explorer y filiales en la sincronización de calendario (alias)"},
+    {"instante":"2026-11-07T13:56:08.673Z","competicion":null,"motivo":"explorer en producción (512459f): corrige resolución de equipos (Espanyol→fc-barcelona, Osasuna→atletico-madrid) y falso en vivo de MARCA; purga de filas espurias (alias, parseo)"},
+    {"instante":"2026-11-07T14:00:23.870Z","competicion":null,"motivo":"marcadorgal en producción (2ee1d53, SPEC-049): resolución de la fuente rfef con campos canónicos de explorer (alias)"},
+    {"instante":"2026-11-07T14:44:11.502Z","competicion":null,"motivo":"explorer en producción (d77a35c): cambios en paneles-parser y jornada-parser (minuto y descanso) con partidos en juego (parseo)"},
+    {"instante":"2026-11-07T15:30:16.249Z","competicion":null,"motivo":"marcadorgal en producción (6c7f69a, SPEC-054): resolución de equipos rfef priorizando emparejamientos de calendario (alias)"},
+    {"instante":"2026-11-07T19:11:49.089Z","competicion":null,"motivo":"explorer en producción (54bfcfe): entity-resolver ampliado (alias)"},
+    {"instante":"2026-11-08T18:28:16.310Z","competicion":null,"motivo":"marcadorgal en producción (40f1aa6, SPEC-062): api-football sale del registro de fuentes"},
+    {"instante":"2026-11-08T21:19:18.111Z","competicion":"segunda-division","motivo":"explorer en producción (33bdb70+bb96252): Hypermotion clasificada como Primera, unificación de slugs de equipos RFEF/MARCA, POSTPONED por arbitraje, ESPN y Football-Data como proveedores (alias, parseo)"}
+  ]
+}

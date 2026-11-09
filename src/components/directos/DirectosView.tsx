@@ -1,5 +1,6 @@
 import { type Locale, t } from "../../i18n/index.ts";
 import type { GroupedCompetitionMatches } from "../../lib/explorer-matches.ts";
+import { TeamGoals } from "../goals/TeamGoals.tsx";
 import { CompetitionNav } from "../navigation/CompetitionNav.tsx";
 import styles from "./DirectosView.module.css";
 
@@ -151,6 +152,14 @@ export function DirectosView({ date, groupedCompetitions, locale }: Props) {
                           {m.homeScore !== null ? m.homeScore : "–"}
                         </span>
                       </div>
+                      {/* SPEC-068 CA-7: each side's scorers under its line,
+                          always open, by the component MatchRow uses. */}
+                      <TeamGoals
+                        team="home"
+                        goals={m.goals}
+                        locale={locale}
+                        id={`goals-${m.id}-home`}
+                      />
 
                       <div className={styles.teamLine}>
                         <div className={styles.teamNameWrap}>
@@ -175,30 +184,14 @@ export function DirectosView({ date, groupedCompetitions, locale }: Props) {
                           {m.awayScore !== null ? m.awayScore : "–"}
                         </span>
                       </div>
+                      <TeamGoals
+                        team="away"
+                        goals={m.goals}
+                        locale={locale}
+                        id={`goals-${m.id}-away`}
+                      />
                     </div>
                   </div>
-
-                  {/* Embedded Goals from explorer */}
-                  {m.goals.length > 0 && (
-                    <div className={styles.goalsBox} data-testid="match-goals">
-                      {m.goals.map((g, idx) => (
-                        <span
-                          // biome-ignore lint/suspicious/noArrayIndexKey: goals have no id
-                          key={`${g.team}-${g.minute}-${g.player}-${idx}`}
-                          className={styles.goalItem}
-                          data-team={g.team}
-                        >
-                          ⚽ {g.player} {g.minute}&apos;
-                          {g.penalty && (
-                            <span className={styles.goalPenalty}> (p.)</span>
-                          )}
-                          {g.ownGoal && (
-                            <span className={styles.goalPenalty}> (p.p.)</span>
-                          )}
-                        </span>
-                      ))}
-                    </div>
-                  )}
                 </div>
               );
             })}
