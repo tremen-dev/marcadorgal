@@ -35,4 +35,7 @@ Nada que la rfef dé en directo en Primera/Segunda llega al público; los finale
 - **Prioridad por estado dentro del motor**: cambia la firma de `decide` y los fixtures de replay; más caro y toca la parte pura sin necesidad.
 - **Bajar la prioridad de la rfef a 1 en esas competiciones**: con API-Football muda, sigue ganando sola.
 
+## Nota (2026-11-09): vigencia de la salvaguarda
+Sin alterar lo decidido. La lista de §3 estuvo vigente en producción del 2026-11-03 (702e209, SPEC-048) al 2026-11-06T23:38:56Z: el titular la vació (PR #99, 885e4c0) tras el despliegue de explorer v2.0 con MARCA, antes de la jornada del 07. El mecanismo de §1-§2 (`liveObservedOnly` y su filtro) se queda en el código con la lista vacía, listo para volver a usarse con una línea del registro. Registrado al cerrar SPEC-048 CA-7 (F-SPEC-048-6).
+
 <!-- REGLA: un ADR aceptado es INMUTABLE. Para cambiar la decisión, escribe otro ADR que lo supersede (estado del viejo -> bloqueada + nota "superseded por ADR-NNN"). -->

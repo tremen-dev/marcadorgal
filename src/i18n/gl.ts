@@ -78,6 +78,9 @@ export const gl = {
     // SPEC-056: expand/collapse goals drawer
     expandGoals: "Despregar goleadores",
     collapseGoals: "Pregar goleadores",
+    // SPEC-068 CA-3: the note after a scorer's name, penalty or own goal.
+    goalPenalty: "(p.)",
+    goalOwnGoal: "(p.p.)",
   },
   weekday: {
     mon: "lun",
