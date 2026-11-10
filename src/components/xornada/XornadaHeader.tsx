@@ -20,7 +20,7 @@ type Props = {
   arrows?: Neighbours;
 };
 
-// The top bar: logo, the visible title and gl·es. SPEC-028 CA-6 (H-6 = A):
+// The top bar: logo and motto, the visible title and gl·es. SPEC-028 CA-6 (H-6 = A):
 // on desktop the title sits where Escritorio.tpl.html has the «Xornada» tab;
 // on mobile it is the 42 px row of Movil.tpl.html's segment, under the strip.
 // SPEC-072: the row is the title's room; the arrows are siblings of the
@@ -34,14 +34,26 @@ export function XornadaHeader({
 }: Props) {
   return (
     <header className={styles.bar} data-strip={strip ? "true" : undefined}>
-      <a
-        className={styles.logo}
-        href={HOME[locale]}
-        aria-label={t(locale, "xornada.home")}
-        data-testid="home-link"
-      >
-        <Wordmark />
-      </a>
+      {/* SPEC-081 (ADR-035): the motto beside the wordmark (desktop) or
+          under it (mobile), outside the link, so the link's name stays
+          xornada.home (WCAG 2.5.3). Always Galician, also in /es. Its box
+          is the container that hides it whole when the title needs the
+          room (CA-4), with no JavaScript. */}
+      <div className={styles.brand}>
+        <a
+          className={styles.logo}
+          href={HOME[locale]}
+          aria-label={t(locale, "xornada.home")}
+          data-testid="home-link"
+        >
+          <Wordmark />
+        </a>
+        <div className={styles.lemaBox}>
+          <span className={styles.lema} lang="gl" data-testid="xornada-lema">
+            {t(locale, "xornada.lema")}
+          </span>
+        </div>
+      </div>
       <div
         className={styles.title}
         data-arrows={arrows ? "true" : undefined}

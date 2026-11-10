@@ -214,6 +214,8 @@ a.weekArrow:focus-visible {
 }
 
 .logo {
+  flex: none;
+  white-space: nowrap;
   font-family: var(--sans);
   font-weight: 800;
   font-size: 18px;
@@ -221,6 +223,50 @@ a.weekArrow:focus-visible {
   letter-spacing: var(--tracking-display);
   font-synthesis: none;
   color: var(--fg);
+}
+
+/* SPEC-081 (ADR-035): the wordmark and its motto. Mobile: the motto under
+   the wordmark, aligned to its left edge, 18 + 2 + 16 = 36 px inside the
+   52 px bar (CA-5). Desktop: beside it, on its baseline (CA-3). It is the
+   first to give way (CA-4): its shrink factor dwarfs the title's. */
+.brand {
+  flex: 0 1000 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+/* The motto's reserved box (CA-7: the swap moves nothing) and the
+   container its query measures: 124 px, the motto in Caveat 19 px (122 px)
+   and a little air; repeated in the desktop track and in the query below. */
+.lemaBox {
+  width: 124px;
+  min-width: 0;
+  container-type: inline-size;
+  /* While Caveat loads, the fallback (Geist, ~176 px) stays in the box and
+     never runs over the title; descenders stay visible below it. */
+  overflow-x: clip;
+}
+
+/* ADR-035: --hand only here; --fg at 72 % (≈ 8.9:1 on --bg, CA-6). */
+.lema {
+  display: block;
+  white-space: nowrap;
+  font-family: var(--hand);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--fg);
+  opacity: 0.72;
+}
+
+/* CA-4: squeezed below its full width, the motto goes whole (out of the
+   accessibility tree too), never cut half-way. Pure CSS. */
+@container (width < 124px) {
+  .lema {
+    display: none;
+  }
 }
 
 /* SPEC-028 CA-6 (H-6 = A): the one <h1>, visible. Mobile: the 42 px row of
@@ -868,6 +914,24 @@ section.competition[data-user-hidden="true"] {
 
   .logo {
     font-size: 21px;
+  }
+
+  /* SPEC-081 CA-3: beside the wordmark, on its baseline, 10 px apart. A
+     grid, so the motto's track is all the brand can give up: its min-content
+     is the wordmark alone, its max-content the wordmark and 124 px. */
+  .brand {
+    display: grid;
+    grid-template-columns: auto minmax(0, 124px);
+    align-items: baseline;
+    column-gap: 10px;
+  }
+
+  .lemaBox {
+    width: auto;
+  }
+
+  .lema {
+    font-size: 19px;
   }
 
   /* In the header, 28 px after the logo (8 of gap + 20). SPEC-072: the
