@@ -2,7 +2,7 @@
 id: SPEC-072
 tipo: spec
 epica: EPIC-FIX
-estado: en-progreso
+estado: en-revision
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-10, por: sdd-arquitecto}
@@ -10,6 +10,7 @@ historial:
   - {estado: en-progreso, fecha: 2026-11-10, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-11-10, por: sdd-implementador}
   - {estado: en-progreso, fecha: 2026-11-10, por: sdd-verificador}
+  - {estado: en-revision, fecha: 2026-11-10, por: sdd-implementador}
 ---
 # SPEC-072 — Navegación entre semanas de la xornada
 
