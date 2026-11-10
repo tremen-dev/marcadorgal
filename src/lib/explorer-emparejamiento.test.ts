@@ -81,9 +81,8 @@ function localMatch(pm: PublicMatch, home: string, away: string): MatchToSync {
     awayName: pm.away.name,
     awayShortName: null,
     status: "scheduled",
-    homeScore: null,
-    awayScore: null,
-    version: 0,
+    score: null,
+    goals: [],
   };
 }
 
@@ -126,11 +125,11 @@ describe("SPEC-070 CA-1 the real case of 2026-11-08", () => {
       [juvenil, sportingValladolid],
       [sportingValladolid, juvenil],
     ]) {
-      const plan = planDaySync("2026-11-08", [lm], rows, aliases);
-      expect(plan.matches).toHaveLength(1);
-      expect(plan.matches[0]?.explorerMatch.codActa).toBe("70695047");
-      expect(plan.matches[0]?.finalScore).toEqual({ home: 1, away: 2 });
-      expect(plan.matches[0]?.goals).toHaveLength(3);
+      const [plan] = planDaySync("2026-11-08", [lm], rows, aliases);
+      if (plan?.kind !== "finished") throw new Error(`plan ${plan?.kind}`);
+      expect(plan.row.codActa).toBe("70695047");
+      expect(plan.score).toEqual({ home: 1, away: 2 });
+      expect(plan.goals).toHaveLength(3);
     }
   });
 
@@ -212,7 +211,12 @@ describe("SPEC-070 CA-2 two «Real» of Segunda the same day", () => {
       aliases,
     );
     expect(
-      plan.matches.map((p) => [p.match.matchId, p.explorerMatch.codActa]),
+      plan.map((p) => [
+        p.match.matchId,
+        p.kind === "finished" || p.kind === "not-finished"
+          ? p.row.codActa
+          : p.kind,
+      ]),
     ).toEqual([
       [oviedoPm.matchId, "1"],
       [realSocPm.matchId, "2"],
@@ -344,10 +348,10 @@ describe("SPEC-070 CA-5 ambiguity", () => {
       [sportingValladolid, twin],
       aliases,
     );
-    expect(plan.matches).toEqual([]);
-    expect(plan.ambiguous).toEqual([
+    expect(plan).toEqual([
       {
-        matchId: sportingPm.matchId,
+        kind: "ambiguous",
+        match: lm,
         candidates: [
           {
             codActa: "70695047",
@@ -387,8 +391,10 @@ describe("SPEC-070 CA-5 ambiguity", () => {
       [early, sportingValladolid],
       aliases,
     );
-    expect(plan.ambiguous).toEqual([]);
-    expect(plan.matches[0]?.explorerMatch.codActa).toBe("70695047");
+    expect(plan.map((p) => p.kind)).toEqual(["finished"]);
+    const [paired] = plan;
+    if (paired?.kind !== "finished") throw new Error("unreachable");
+    expect(paired.row.codActa).toBe("70695047");
 
     const [enriched] = await enrichMatchesWithGoals(
       [sportingPm],
