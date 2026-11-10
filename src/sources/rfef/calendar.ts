@@ -54,45 +54,16 @@ export const RawCalendarExport = z.looseObject({
 });
 export type RawCalendarExport = z.infer<typeof RawCalendarExport>;
 
+// Explorer exports Rayo Cantabria in segunda-rfef-g1 under Racing de Ferrol's
+// id and name. Every other filial now arrives with its own id and is resolved
+// by the alias (data/alias/2026-27/rfef.json); see SPEC-074 F-SPEC-074-1.
 export const COMPETITION_TEAM_OVERRIDES: Readonly<
   Record<
     string,
     Readonly<Record<string, { externalId: string; externalName: string }>>
   >
 > = {
-  "segunda-division": {
-    "real-sociedad": {
-      externalId: "real-sociedad-b",
-      externalName: "Real Sociedad B",
-    },
-  },
-  "primera-rfef-g1": {
-    "athletic-club": {
-      externalId: "bilbao-athletic",
-      externalName: "Bilbao Athletic",
-    },
-    "ourense-cf": {
-      externalId: "ud-ourense",
-      externalName: "UD Ourense",
-    },
-  },
   "segunda-rfef-g1": {
-    alaves: {
-      externalId: "alaves-b",
-      externalName: "Deportivo Alavés B",
-    },
-    "atletico-madrid": {
-      externalId: "astorga",
-      externalName: "Atlético Astorga FC",
-    },
-    "real-oviedo": {
-      externalId: "oviedo-vetusta",
-      externalName: "Real Oviedo Vetusta",
-    },
-    eibar: {
-      externalId: "eibar-b",
-      externalName: "SD Eibar B",
-    },
     "racing-ferrol": {
       externalId: "rayo-cantabria",
       externalName: "Rayo Cantabria",
