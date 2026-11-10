@@ -17,6 +17,7 @@
 // With GITHUB_OUTPUT set, appends partidos=<n> and veredicto=<OK|DESVIACIONES|SIN_PARTIDOS>.
 // Exit 0 even with deviations (the issue is the channel); 1 without
 // DATABASE_URL, on bad arguments or when the database fails.
+import { execFileSync } from "node:child_process";
 import { appendFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import { createSql } from "../src/db/connect.ts";
@@ -24,6 +25,8 @@ import { socialConfig, watchedTeams } from "../src/social/config.ts";
 import { reportRows } from "../src/social/report-db.ts";
 import { buildReport, renderMarkdown } from "../src/social/report.ts";
 
+export const ETIQUETA = "redes";
+export const TITULAR = "albertofojo";
 const DAY_MS = 24 * 60 * 60 * 1000;
 const USAGE =
   "Uso: npm run social:informe -- [--dias N | --desde <ISO> --hasta <ISO>] [--json] [--issue]";
@@ -85,6 +88,96 @@ export function githubOutput(report) {
   return `partidos=${report.matches}\nveredicto=${veredicto}\n`;
 }
 
+/** The title of the issue of a UTC date (AAAA-MM-DD). */
+export const issueTitle = (today) => `Informe de redes: ${today}`;
+
+/** The body: verdict first, the Markdown of CA-3, the link to the run. */
+export function issueBody({ report, markdown, run }) {
+  return `Veredicto: **${report.verdict}** (modo ${report.mode}, ${report.matches} partidos)
+
+${markdown}
+---
+Ejecución: ${run}
+`;
+}
+
+/**
+ * Parses the JSON of a gh list command. With no matches, gh list --json
+ * prints nothing at all instead of [] (gh 2.83), so empty output is [].
+ */
+const listaJson = (salida) => (salida.trim() === "" ? [] : JSON.parse(salida));
+
+function asegurarEtiqueta(gh) {
+  const etiquetas = listaJson(
+    gh(["label", "list", "--search", ETIQUETA, "--limit", "100", "--json", "name"]),
+  );
+  if (etiquetas.some((e) => e.name === ETIQUETA)) return;
+  gh([
+    "label",
+    "create",
+    ETIQUETA,
+    "--color",
+    "1D76DB",
+    "--description",
+    "Informe de la cola de redes tras cada jornada (SPEC-079, ADR-032)",
+  ]);
+}
+
+/**
+ * CA-4: with no match in the window, nothing. Otherwise the OPEN issue of the
+ * day (label `redes`, exact title) is edited, which does not notify; without
+ * one, a new issue is created, labelled and assigned to the owner. Returns
+ * the action and the number.
+ */
+export function publishIssue({ gh, report, markdown, today, run }) {
+  if (report.matches === 0) return { accion: "nada" };
+  const title = issueTitle(today);
+  const body = issueBody({ report, markdown, run });
+  asegurarEtiqueta(gh);
+  const abiertas = listaJson(
+    gh([
+      "issue",
+      "list",
+      "--label",
+      ETIQUETA,
+      "--state",
+      "open",
+      "--limit",
+      "100",
+      "--json",
+      "number,title",
+    ]),
+  );
+  const abierta = abiertas.find((i) => i.title === title);
+  if (abierta !== undefined) {
+    gh(["issue", "edit", String(abierta.number), "--body", body]);
+    return { accion: "editar", numero: abierta.number };
+  }
+  const url = gh([
+    "issue",
+    "create",
+    "--title",
+    title,
+    "--label",
+    ETIQUETA,
+    "--assignee",
+    TITULAR,
+    "--body",
+    body,
+  ]).trim();
+  const numero = Number(url.split("/").pop());
+  return { accion: "crear", numero: Number.isFinite(numero) ? numero : undefined };
+}
+
+/** URL of the current Actions run, or a placeholder outside Actions. */
+export function enlaceEjecucion(env) {
+  if (!env.GITHUB_RUN_ID) return "(ejecución local)";
+  return `${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}`;
+}
+
+const ghReal = (args) =>
+  execFileSync("gh", args, { encoding: "utf8", maxBuffer: 16 * 1024 * 1024 });
+
 // Nothing of the connection string ever reaches a message: the error of the
 // driver is printed with the URL, its password and its user redacted.
 function redact(text, env) {
@@ -133,6 +226,18 @@ async function main(argv, env) {
   const markdown = renderMarkdown(report);
   console.log(args.json ? JSON.stringify(report, null, 2) : markdown);
   if (env.GITHUB_OUTPUT) appendFileSync(env.GITHUB_OUTPUT, githubOutput(report));
+  if (args.issue) {
+    const r = publishIssue({
+      gh: ghReal,
+      report,
+      markdown,
+      today: new Date().toISOString().slice(0, 10),
+      run: enlaceEjecucion(env),
+    });
+    console.error(
+      r.numero === undefined ? `Issue: ${r.accion}` : `Issue: ${r.accion} #${r.numero}`,
+    );
+  }
   return 0;
 }
 
