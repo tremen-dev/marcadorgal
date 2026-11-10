@@ -54,22 +54,18 @@ export const RawCalendarExport = z.looseObject({
 });
 export type RawCalendarExport = z.infer<typeof RawCalendarExport>;
 
-// Explorer exports Rayo Cantabria in segunda-rfef-g1 under Racing de Ferrol's
-// id and name. Every other filial now arrives with its own id and is resolved
-// by the alias (data/alias/2026-27/rfef.json); see SPEC-074 F-SPEC-074-1.
+// Per-competition rewrites of explorer team ids, for when explorer exports a
+// team under another team's id. Empty: the last entry (racing-ferrol ->
+// rayo-cantabria in segunda-rfef-g1, F-SPEC-074-3) was retired by SPEC-076
+// once explorer fixed it; the filiales are resolved by the alias
+// (data/alias/2026-27/rfef.json, F-SPEC-074-1). Kept for the next explorer
+// bug.
 export const COMPETITION_TEAM_OVERRIDES: Readonly<
   Record<
     string,
     Readonly<Record<string, { externalId: string; externalName: string }>>
   >
-> = {
-  "segunda-rfef-g1": {
-    "racing-ferrol": {
-      externalId: "rayo-cantabria",
-      externalName: "Rayo Cantabria",
-    },
-  },
-};
+> = {};
 
 export function createRfefCalendar(baseUrl?: string): CalendarImporter {
   const origin = (

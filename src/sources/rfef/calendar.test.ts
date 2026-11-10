@@ -1,6 +1,11 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { ImportedCalendar } from "../../model/index.ts";
-import { createRfefCalendar, rfefCalendar } from "./calendar.ts";
+import {
+  COMPETITION_TEAM_OVERRIDES,
+  createRfefCalendar,
+  rfefCalendar,
+} from "./calendar.ts";
 
 const samplePayload = {
   competition: "segunda-division",
@@ -83,35 +88,81 @@ describe("CA-1 rfefCalendar", () => {
     });
   });
 
-  it("applies COMPETITION_TEAM_OVERRIDES only in its competition", () => {
+  it("SPEC-076 CA-1 COMPETITION_TEAM_OVERRIDES is empty: no segunda-rfef-g1, no racing-ferrol", () => {
+    expect(COMPETITION_TEAM_OVERRIDES).toEqual({});
+    expect(Object.keys(COMPETITION_TEAM_OVERRIDES)).not.toContain(
+      "segunda-rfef-g1",
+    );
+    expect(JSON.stringify(COMPETITION_TEAM_OVERRIDES)).not.toContain(
+      "racing-ferrol",
+    );
+  });
+
+  describe("SPEC-076 CA-2 parse rewrites no team", () => {
     const calendar = createRfefCalendar("https://test-explorer.vercel.app");
-    const raw = (competition: string) => ({
+    const raw = (
+      competition: string,
+      team: { externalId: string; externalName: string },
+    ) => ({
       ...samplePayload,
       competition,
-      teams: [
-        { externalId: "racing-ferrol", externalName: "Racing Club de Ferrol" },
-      ],
+      teams: [team],
       matches: [
         {
           externalId: "m1",
           round: 1,
           kickoff: "2026-08-30T10:00:00Z",
-          home: "racing-ferrol",
+          home: team.externalId,
           away: "sestao",
           timeConfirmed: true,
         },
       ],
     });
-    const segundaRfef = calendar.parse(raw("segunda-rfef-g1"));
-    expect(segundaRfef.teams[0].externalId).toBe("rayo-cantabria");
-    expect(segundaRfef.teams[0].externalName).toBe("Rayo Cantabria");
-    expect(segundaRfef.matches[0].home).toBe("rayo-cantabria");
-    expect(segundaRfef.matches[0].away).toBe("sestao");
+    const rayo = {
+      externalId: "rayo-cantabria",
+      externalName: "Rayo Cantabria",
+    };
+    const ferrol = {
+      externalId: "racing-ferrol",
+      externalName: "Racing Club de Ferrol",
+    };
 
-    const primeraRfef = calendar.parse(raw("primera-rfef-g1"));
-    expect(primeraRfef.teams[0].externalId).toBe("racing-ferrol");
-    expect(primeraRfef.teams[0].externalName).toBe("Racing Club de Ferrol");
-    expect(primeraRfef.matches[0].home).toBe("racing-ferrol");
+    it("segunda-rfef-g1 fixture of the repo: rayo-cantabria team and matches stay rayo-cantabria", () => {
+      const fixture = JSON.parse(
+        readFileSync(
+          new URL(
+            "./fixtures/export/calendar-segunda-rfef-g1-2026-27-2026-11-10T1407Z.json",
+            import.meta.url,
+          ),
+          "utf8",
+        ),
+      );
+      const parsed = calendar.parse(fixture);
+      expect(parsed.teams).toContainEqual(rayo);
+      const rayoMatches = parsed.matches.filter(
+        (m) => m.home === "rayo-cantabria" || m.away === "rayo-cantabria",
+      );
+      expect(rayoMatches).toHaveLength(34);
+      expect(JSON.stringify(parsed)).not.toContain("racing-ferrol");
+
+      const fromRaw = calendar.parse(raw("segunda-rfef-g1", rayo));
+      expect(fromRaw.teams).toEqual([rayo]);
+      expect(fromRaw.matches[0].home).toBe("rayo-cantabria");
+    });
+
+    it("primera-rfef-g1 with racing-ferrol stays racing-ferrol «Racing Club de Ferrol»", () => {
+      const parsed = calendar.parse(raw("primera-rfef-g1", ferrol));
+      expect(parsed.teams).toEqual([ferrol]);
+      expect(parsed.matches[0].home).toBe("racing-ferrol");
+      expect(parsed.matches[0].away).toBe("sestao");
+    });
+
+    it("segunda-rfef-g1 with racing-ferrol stays racing-ferrol: no rewrite any more", () => {
+      const parsed = calendar.parse(raw("segunda-rfef-g1", ferrol));
+      expect(parsed.teams).toEqual([ferrol]);
+      expect(parsed.matches[0].home).toBe("racing-ferrol");
+      expect(parsed.matches[0].away).toBe("sestao");
+    });
   });
 
   it("keeps the filial ids explorer exports today", () => {
