@@ -1,0 +1,393 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "D:\\src\\tremen-dev\\marcadorgal\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "e2e/analytics.spec.ts",
+      "--reporter=json"
+    ],
+    "configFile": "D:\\src\\tremen-dev\\marcadorgal\\playwright.config.ts",
+    "rootDir": "D:/src/tremen-dev/marcadorgal/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 8
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/src/tremen-dev/marcadorgal/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 8
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "D:/src/tremen-dev/marcadorgal/e2e",
+        "testIgnore": ["**/*.db.spec.ts"],
+        "testMatch": ["**/*.@(spec|test).?(c|m)[jt]s?(x)"],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [["json"]],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 8,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "analytics.spec.ts",
+      "file": "analytics.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "SPEC-077 a visitor's browser",
+          "file": "analytics.spec.ts",
+          "line": 61,
+          "column": 6,
+          "specs": [
+            {
+              "title": "CA-3 /: one view, same origin, no cookie, no storage",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "storage",
+                      "description": "/ {\"localStorage\":[],\"sessionStorage\":[]}"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3973,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-10T13:15:11.487Z",
+                      "annotations": [
+                        {
+                          "type": "storage",
+                          "description": "/ {\"localStorage\":[],\"sessionStorage\":[]}"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "634c82c6846b68aa8d60-db51ff764aa2bfe5caf2",
+              "file": "analytics.spec.ts",
+              "line": 74,
+              "column": 9
+            },
+            {
+              "title": "CA-3 /es: one view, same origin, no cookie, no storage",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "storage",
+                      "description": "/es {\"localStorage\":[],\"sessionStorage\":[]}"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 4072,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-10T13:15:11.480Z",
+                      "annotations": [
+                        {
+                          "type": "storage",
+                          "description": "/es {\"localStorage\":[],\"sessionStorage\":[]}"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "634c82c6846b68aa8d60-ebc596494ef6987d71fb",
+              "file": "analytics.spec.ts",
+              "line": 74,
+              "column": 9
+            },
+            {
+              "title": "CA-3 /xornada/2026-12-12: one view, same origin, no cookie, no storage",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "storage",
+                      "description": "/xornada/2026-12-12 {\"localStorage\":[],\"sessionStorage\":[]}"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 4034,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-10T13:15:11.460Z",
+                      "annotations": [
+                        {
+                          "type": "storage",
+                          "description": "/xornada/2026-12-12 {\"localStorage\":[],\"sessionStorage\":[]}"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "634c82c6846b68aa8d60-1710869fef526e4b093c",
+              "file": "analytics.spec.ts",
+              "line": 74,
+              "column": 9
+            },
+            {
+              "title": "CA-3 the view leaves with the query filtered by beforeSend",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 3787,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-10T13:15:11.500Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "634c82c6846b68aa8d60-9f0c5e06492de2df05df",
+              "file": "analytics.spec.ts",
+              "line": 101,
+              "column": 7
+            },
+            {
+              "title": "CA-5 the HTML of / carries no new script; the injected one is deferred",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 4231,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-10T13:15:11.495Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "634c82c6846b68aa8d60-4f1fbdd6fd58c479ab1b",
+              "file": "analytics.spec.ts",
+              "line": 111,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "SPEC-077 our probes (navigator.webdriver untouched)",
+          "file": "analytics.spec.ts",
+          "line": 143,
+          "column": 6,
+          "specs": [
+            {
+              "title": "CA-4 /: zero views",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 3988,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-10T13:15:11.477Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "634c82c6846b68aa8d60-f6d582573520500f811d",
+              "file": "analytics.spec.ts",
+              "line": 145,
+              "column": 9
+            },
+            {
+              "title": "CA-4 /es: zero views",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 3716,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-10T13:15:11.578Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "634c82c6846b68aa8d60-6a41ea0ee40102f02c9e",
+              "file": "analytics.spec.ts",
+              "line": 145,
+              "column": 9
+            },
+            {
+              "title": "CA-4 /xornada/2026-12-12: zero views",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 7,
+                      "status": "passed",
+                      "duration": 3584,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-10T13:15:11.548Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "634c82c6846b68aa8d60-4ad5108467bf8a1c8024",
+              "file": "analytics.spec.ts",
+              "line": 145,
+              "column": 9
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-10T13:14:51.371Z",
+    "duration": 27396.85,
+    "expected": 8,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

@@ -86,6 +86,12 @@ Actualizado: 2026-11-10
 | SPEC-066 — goles-a-la-cola-de-redes-deteccion-outbox-publicador-con-doble-plantillas-y-configuracion | hecho | 2026-11-09 (sdd-verificador) |
 | SPEC-067 — publicador-de-buffer-cliente-graphql-sonda-contra-la-api-real-y-encendido | hecho | 2026-11-10 (sdd-verificador) |
 
+## EPIC-009 — produccion-con-publico-capacidad-y-visitas-medidas (aprobada)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
+| SPEC-077 — medicion-de-visitas-en-produccion-sin-cookie | hecho | 2026-11-10 (sdd-verificador) |
+
 ## EPIC-FIX (aprobada)
 
 | Spec | Estado | Último cambio |
@@ -103,6 +109,7 @@ Actualizado: 2026-11-10
 | SPEC-072 — navegacion-entre-semanas-de-la-xornada | hecho | 2026-11-10 (sdd-verificador) |
 | SPEC-074 — calendario-sync-vuelve-a-funcionar | hecho | 2026-11-10 (sdd-verificador) |
 | SPEC-075 — aviso-cuando-falla-el-bot-del-calendario | hecho | 2026-11-10 (sdd-verificador) |
+| SPEC-076 — retirar-override-rayo-cantabria | aprobada | 2026-11-10 (Alberto Fojo) |
 | SPEC-078 — el-test-de-spec-069-no-depende-del-calendario-vivo | hecho | 2026-11-10 (sdd-verificador) |
 
 ## EPIC-MANT — mantenimiento (borrador)
@@ -153,6 +160,7 @@ Actualizado: 2026-11-10
 | ADR-030 | aprobada | integracion-saliente-de-redes-outbox-de-goles-en-la-transaccion-del-motor-y-publicador-al-final-del-tick | 2026-11-09 (Alberto Fojo) |
 | ADR-031 | aprobada | el-calendario-corrige-el-kickoff-de-los-partidos-ya-jugados-con-el-export-de-partidos-de-explorer | 2026-11-10 (Alberto Fojo) |
 | ADR-032 | aprobada | las-alertas-internas-de-los-workflows-son-un-issue-de-github-por-incidente | 2026-11-10 (Alberto Fojo) |
+| ADR-033 | aprobada | medicion-de-visitas-con-vercel-web-analytics-sin-cookie | 2026-11-10 (Alberto Fojo) |
 
 ## Resumen
 
@@ -161,3 +169,4 @@ Actualizado: 2026-11-10
 - borrador: 2
 - feito: 1
 - implementada: 2
+- aprobada: 1
