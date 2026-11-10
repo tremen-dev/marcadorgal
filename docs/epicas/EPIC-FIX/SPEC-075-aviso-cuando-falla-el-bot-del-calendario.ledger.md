@@ -6,7 +6,7 @@ epica: EPIC-FIX
 # Ledger — SPEC-075 Aviso cuando falla el bot del calendario
 
 ## Resumen
-- Fase: hecho (CA-5 pendiente tras fusionar)
+- Fase: hecho
 - Rama: `ft/SPEC-075-aviso-cuando-falla-el-bot-del-calendario`
 
 ## Matriz de criterios de aceptación
@@ -19,7 +19,7 @@ epica: EPIC-FIX
 | CA-2 | `tools/aviso-bot-calendario.mjs` (`avisar`, `enlaceEjecucion`) | `src/calendar/aviso-bot-calendario.test.ts` «SPEC-075 CA-2 one alert per incident» (gh falso: 1 create, 2 edit, 1 comment, 1 close; fallo posterior abre issue nuevo, 0 reopen) | gh falso: 1 create, 2 edit, 1 comment, 1 close, 0 reopen; fallo posterior abre #2. Import real con Node 22.19 (type stripping) + gh inyectado → `abrir #7` tras `label create`. `gh api …/collaborators/albertofojo/permission` → admin | ✅ |
 | CA-3 | `.github/workflows/calendario-semanal.yml` job `aviso`; `src/calendar/aviso.ts` `observacionDeJob`; `tools/aviso-bot-calendario.mjs` `observacionesDeJobs` | `src/arch/aviso-calendario-workflow.test.ts` «SPEC-075 CA-3 …»; `aviso.test.ts` «CA-3 job result → observation»; `aviso-bot-calendario.test.ts` «inputs of the executor» | test estructural en verde; `git diff origin/main` del workflow: solo 31 líneas añadidas al final; PyYAML: jobs `[sync, load, aviso]`; sin filtro de evento | ✅ |
 | CA-4 | `.github/workflows/vigia-calendario.yml`; `src/calendar/aviso.ts` `observarSchedule` (umbral 96 h); `tools/aviso-bot-calendario.mjs` `observacionesVigia` | `aviso.test.ts` «SPEC-075 CA-4 observarSchedule» (martes 23:00Z ok, miércoles 13:00Z fallo, sin ejecuciones fallo); `aviso-calendario-workflow.test.ts` «CA-4/CA-5 vigia-calendario.yml» | tests martes 23:00Z ok / miércoles 13:00Z fallo / vacío fallo en verde; `gh run list --event schedule --json createdAt` real devuelve el formato esperado (últimas llegan 09:11–12:49Z: sin falso positivo en semana normal) | ✅ |
-| CA-5 | Preparado, no ejecutado (tras fusionar): input `simular` (`'no'`/`fallo`) en `vigia-calendario.yml`; `observacionesVigia` con `simular=fallo` no consulta `gh` | `aviso-bot-calendario.test.ts` «simular=fallo forces the failure without asking gh»; `aviso-calendario-workflow.test.ts` «accepts simular…», «never touches explorer or the database». Prueba real: ver handoff | Preparado y documentado (input `simular`, test sin gh, workflow sin `npm ci`/`DATABASE_URL`/`RFEF_EXPLORER`). **Prueba real pendiente tras fusionar** (pasos en handoff), por decisión del titular | ⚠️ |
+| CA-5 | input `simular` en `vigia-calendario.yml`; `observacionesVigia`; `listaJson` (PR #122: salida vacía de `gh` → `[]`) | `aviso-bot-calendario.test.ts` «simular=fallo…» y test de salida vacía (PR #122); prueba real contra GitHub | Run 42807044696 (simular=fallo) `failure`: `gh label list --json` vacío → `JSON.parse("")` (arreglado en PR #122, `MERGED`, v0.5.7). Run 42812302821 (simular=fallo) `success` → issue https://github.com/tremen-dev/marcadorgal/issues/123, etiqueta `bot-calendario`, asignado `albertofojo`, causa «sin-ejecuciones». Run 42812372735 (sin simular) `success` → #123 `CLOSED` con https://github.com/tremen-dev/marcadorgal/issues/123#issuecomment-6766787943 «Resuelto: …». Email de creación, asignación y cierre recibido (captura del titular). Contrastado con `gh run view`/`gh issue view 123`/`gh pr view 122` | ✅ |
 | CA-6 | `package.json`/`package-lock.json` 0.5.4 → 0.5.5 (`npm version patch --no-git-tag-version`) | `npm run gates`: typecheck y lint OK; test 158/159 ficheros, 2623 pasan, 1 falla (ajeno conocido: `src/db/test-db.test.ts` «wins over a .env file in the cwd too»); `npm run build` → 0 por separado; `src/arch/deploy.test.ts` 27/27; `node tools/version-gate.mjs --base origin/main` → «ok — 0.5.4 → 0.5.5, package-lock.json coherente» | `tsc` 0, `biome` 0, `vitest` 2623 ok / 1 ajeno conocido (`test-db` «wins over a .env…»), `next build` 0; deploy.test 27/27 (4 ficheros, 82 tests); `version-gate` 0.5.4 → 0.5.5 ok | ✅ |
 
 Respuestas del titular a las preguntas abiertas de la spec (2026-11-10, vía orquestador): (1) el vigía CA-4 va en esta spec; (2) umbral 96 h; (3) el issue se **asigna** a `albertofojo`; (4) avisa con cualquier evento, también `workflow_dispatch`.
@@ -29,6 +29,7 @@ Evidencia «los pasos de `sync` y `load` no cambian» (CA-3): `git diff main -- 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
 **GREEN — 2026-11-10 (sdd-verificador).** CA-1..CA-4 y CA-6 ✅ con tests no vacíos y ejecución real del ejecutor bajo Node con `gh` inyectado. CA-5 ⚠️: **verificación posterior al merge**, aceptada por el titular; la lanza él con los pasos del handoff y el resultado (URL del issue, email recibido, cierre con comentario) se anota aquí. Si CA-5 falla, se reabre como fix.
+**CA-5 ✅ — 2026-11-10 (sdd-verificador).** Prueba real tras fusionar: issue #123 abierto, asignado, notificado por email y cerrado con comentario (detalle en la matriz). Cierra F-SPEC-075-3: el primer intento destapó la salida vacía de `gh label list --json`, corregida en PR #122.
 Observaciones menores, no bloqueantes: (a) Node avisa `MODULE_TYPELESS_PACKAGE_JSON` al importar `src/calendar/aviso.ts` desde el `.mjs` (solo ruido en el log); (b) si alguien borra a mano el marcador del cuerpo, la siguiente ejecución sin fallos cierra el incidente (caso «marcador perdido» de la tabla, deliberado).
 
 ## Evidencia visual
@@ -45,7 +46,7 @@ n-a: la spec no tiene UI. Evidencia por comando en la matriz.
 ## Cómo retomar (handoff)
 <!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->
 - Hecho (sdd-implementador, 2026-11-10): CA-1..CA-4 y CA-6 con tests; CA-5 preparado. Spec en `en-revision`. Sin red ni producción: ningún workflow lanzado ni issue creado.
-- Falta: verificación; después, fusionar y ejecutar CA-5 a mano (el titular o el orquestador):
+- CA-5 ejecutado y ✅ (2026-11-10); pasos originales, como referencia (el titular o el orquestador):
   1. `gh workflow run vigia-calendario.yml --ref main -f simular=fallo` → debe abrirse un issue con la etiqueta `bot-calendario`, asignado a `albertofojo`, causa «sin-ejecuciones». Anotar aquí su URL (`gh issue list --label bot-calendario`).
   2. El titular confirma que le llegó el email (GitHub → Settings → Notifications, *Participating*).
   3. `gh workflow run vigia-calendario.yml --ref main` (simular=no) → mientras la última ejecución `schedule` de `calendario-semanal.yml` tenga menos de 96 h, el issue se cierra con el comentario «Resuelto: …». Anotar el enlace del comentario.
