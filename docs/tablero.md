@@ -112,6 +112,7 @@ Actualizado: 2026-11-10
 | SPEC-075 — aviso-cuando-falla-el-bot-del-calendario | hecho | 2026-11-10 (sdd-verificador) |
 | SPEC-076 — retirar-override-rayo-cantabria | hecho | 2026-11-10 (sdd-verificador) |
 | SPEC-078 — el-test-de-spec-069-no-depende-del-calendario-vivo | hecho | 2026-11-10 (sdd-verificador) |
+| SPEC-080 — test-db-path-delimiter-windows | hecho | 2026-11-10 (sdd-verificador) |
 
 ## EPIC-MANT — mantenimiento (borrador)
 
@@ -166,7 +167,7 @@ Actualizado: 2026-11-10
 
 ## Resumen
 
-- hecho: 70
+- hecho: 71
 - en-revision: 3
 - borrador: 2
 - feito: 1
