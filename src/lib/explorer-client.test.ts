@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   getDayMatches,
+  getDayMatchesRaw,
   getGoalkeepers,
   getOfficialCalendar,
   getScorers,
@@ -68,5 +69,25 @@ describe("CA-5 explorer-client", () => {
     await expect(getDayMatches("2026-11-08", errorStub)).rejects.toThrow(
       "[explorer] Error 401",
     );
+  });
+
+  // SPEC-060 CA-2 (ADR-034 §4): the raw of the reading, whatever the status,
+  // with no token in the url that will be stored.
+  it("getDayMatchesRaw returns status, content type and body without throwing", async () => {
+    calls.length = 0;
+    const raw = await getDayMatchesRaw("2026-11-08", stub);
+    expect(calls[0].url).toContain("/api/export/matches?date=2026-11-08");
+    expect(raw).toMatchObject({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ ok: true, data: [] }),
+    });
+    const denied = await getDayMatchesRaw(
+      "2026-11-08",
+      (async () =>
+        new Response("Unauthorized", { status: 401 })) as typeof fetch,
+    );
+    expect(denied).toMatchObject({ status: 401, body: "Unauthorized" });
+    expect(denied.url).not.toMatch(/token|Bearer/i);
   });
 });

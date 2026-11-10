@@ -1,0 +1,44 @@
+{
+  "capturedAt": "2026-11-10T17:17:17.640Z",
+  "steps": [
+    {
+      "requestedAt": "2026-11-10T17:17:17.360Z",
+      "request": {
+        "query": "query Type($name: String!) {\n  __type(name: $name) {\n    name kind\n    possibleTypes { name }\n    enumValues { name description }\n    inputFields { name description type { name kind ofType { name kind ofType { name kind } } } }\n    fields { name type { name kind ofType { name kind ofType { name kind } } } }\n  }\n}",
+        "variables": {
+          "name": "MutationError"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "access-control-allow-credentials": "true",
+          "alt-svc": "h3=\":443\"; ma=86400",
+          "cf-cache-status": "DYNAMIC",
+          "cf-ray": "a586b5bd9cb8e3bc-LIS",
+          "connection": "keep-alive",
+          "content-encoding": "br",
+          "content-type": "application/json; charset=utf-8",
+          "cross-origin-opener-policy": "same-origin",
+          "cross-origin-resource-policy": "same-origin",
+          "date": "Tue, 10 Nov 2026 17:17:18 GMT",
+          "origin-agent-cluster": "?1",
+          "referrer-policy": "no-referrer",
+          "server": "cloudflare",
+          "set-cookie": "AWSALBTGCORS=r1r/3K4ANaFbKFCfaJroShHf58OZtW2N+tSReHPMOR0xdanMDlmOfs2w+Kf3RfUd7e9meCA59KnwOi5NNy3j+xHxMK1mtPURaswZx2w3ipirbQEAtseMrgDNbfPsb88a6PDRAoyyj/+Ohuuydhh0R534qdWUKBOsiWvJfUO0rO2e; Expires=Tue, 17 Nov 2026 17:17:18 GMT; Path=/; SameSite=None; Secure",
+          "strict-transport-security": "max-age=15552000",
+          "transfer-encoding": "chunked",
+          "vary": "Origin, accept-encoding",
+          "x-content-type-options": "nosniff",
+          "x-dns-prefetch-control": "off",
+          "x-download-options": "noopen",
+          "x-frame-options": "DENY",
+          "x-permitted-cross-domain-policies": "none",
+          "x-xss-protection": "0"
+        },
+        "body": "{\"data\":{\"__type\":{\"name\":\"MutationError\",\"kind\":\"INTERFACE\",\"possibleTypes\":[{\"name\":\"VoidMutationError\"},{\"name\":\"InvalidInputError\"},{\"name\":\"NotFoundError\"},{\"name\":\"UnauthorizedError\"},{\"name\":\"UnexpectedError\"},{\"name\":\"LimitReachedError\"},{\"name\":\"DuplicateError\"},{\"name\":\"ChannelRefreshRequired\"},{\"name\":\"RestProxyError\"},{\"name\":\"CollaborationNoteThreadClosedError\"},{\"name\":\"CreateContentItemVariantInvalidInputError\"},{\"name\":\"CreateContentItemVariantLimitReachedError\"},{\"name\":\"CreateContentItemVariantNotFoundError\"},{\"name\":\"CreateContentItemFailure\"},{\"name\":\"CreateContentItemDraftFailure\"},{\"name\":\"UpdateContentItemFailure\"},{\"name\":\"ContentItemStateError\"},{\"name\":\"UpdateContentItemDraftFailure\"},{\"name\":\"PostChannelNotFoundError\"},{\"name\":\"PostInvalidInputError\"},{\"name\":\"PostLimitReachedError\"},{\"name\":\"PromoteContentItemDraftToPostsFailure\"},{\"name\":\"PostNotDeletableError\"},{\"name\":\"DeleteContentItemFailure\"}],\"enumValues\":null,\"inputFields\":null,\"fields\":[{\"name\":\"message\",\"type\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":\"String\",\"kind\":\"SCALAR\",\"ofType\":null}}}]}}}",
+        "ms": 279
+      }
+    }
+  ]
+}

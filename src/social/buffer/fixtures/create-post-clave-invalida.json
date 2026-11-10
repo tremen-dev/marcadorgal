@@ -1,0 +1,52 @@
+{
+  "capturedAt": "2026-11-10T17:17:26.222Z",
+  "steps": [
+    {
+      "requestedAt": "2026-11-10T17:17:25.933Z",
+      "request": {
+        "query": "mutation CreatePost($input: CreatePostInput!) {\n  createPost(input: $input) {\n    __typename\n    ... on PostActionSuccess { post { id status dueAt sentAt externalLink } }\n    ... on MutationError { message }\n  }\n}",
+        "variables": {
+          "input": {
+            "text": "Proba clave invalida",
+            "channelId": "<CHANNEL>",
+            "schedulingType": "automatic",
+            "mode": "shareNow",
+            "needsApproval": false,
+            "tagIds": [],
+            "assets": []
+          }
+        }
+      },
+      "response": {
+        "status": 401,
+        "headers": {
+          "access-control-allow-credentials": "true",
+          "alt-svc": "h3=\":443\"; ma=86400",
+          "cf-cache-status": "DYNAMIC",
+          "cf-ray": "a586b5f349e3bc1d-LIS",
+          "connection": "keep-alive",
+          "content-length": "92",
+          "content-type": "application/json; charset=utf-8",
+          "cross-origin-opener-policy": "same-origin",
+          "cross-origin-resource-policy": "same-origin",
+          "date": "Tue, 10 Nov 2026 17:17:27 GMT",
+          "etag": "W/\"5c-W0agn9Eg0CkvHStl5hS8v5O45Ns\"",
+          "origin-agent-cluster": "?1",
+          "referrer-policy": "no-referrer",
+          "server": "cloudflare",
+          "set-cookie": "AWSALBTGCORS=R3ss+GaDHV0tGzlWeCXRddBJhhowXP5Vtmjkh/P90MY0LBLSRmIaNJJYwJD92/M64Nfm7LjxRDYJYi+KEWDWsDputfrsv1BSXb314QR+NjJ7mKM0s2IeOubE4ESj5Xo8LUMs4NQaQz0wYYN3QlpZt7nHwCIbgDwKuVYewroCB+kw; Expires=Tue, 17 Nov 2026 17:17:26 GMT; Path=/; SameSite=None; Secure",
+          "strict-transport-security": "max-age=15552000",
+          "vary": "Origin, accept-encoding",
+          "x-content-type-options": "nosniff",
+          "x-dns-prefetch-control": "off",
+          "x-download-options": "noopen",
+          "x-frame-options": "DENY",
+          "x-permitted-cross-domain-policies": "none",
+          "x-xss-protection": "0"
+        },
+        "body": "{\"errors\":[{\"message\":\"Access token is not valid\",\"extensions\":{\"code\":\"UNAUTHENTICATED\"}}]}",
+        "ms": 287
+      }
+    }
+  ]
+}

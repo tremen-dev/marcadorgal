@@ -52,7 +52,7 @@ Actualizado: 2026-11-10
 | SPEC-057 — panel-preferencias-ligas-e-enlaces-clasificacion | borrador | 2026-11-07 (sdd-arquitecto) |
 | SPEC-058 — footer-de-produccion-version-identidad-tremen-dev-e-informacion-legal | hecho | 2026-11-07 (sdd-verificador) |
 | SPEC-059 — enriquecemento-de-goleadores-da-xornada-desde-explorer | feito | 2026-11-08 (sdd-implementador) |
-| SPEC-060 — ingesta-historica-resultados-y-goleadores | implementada | 2026-11-08 (sdd-implementador) |
+| SPEC-060 — ingesta-historica-resultados-y-goleadores | hecho | 2026-11-10 (titular) |
 | SPEC-061 — tira-de-dias-configurable-e-oculta-por-defecto | hecho | 2026-11-08 (sdd-verificador) |
 | SPEC-064 — assets-de-redes-sociales-y-og-png-con-la-identidad-celeste | hecho | 2026-11-08 (sdd-verificador) |
 | SPEC-065 — identidad-celeste-tokens-wordmark-con-bloque-dibujado-e-icono-de-barra-sola | hecho | 2026-11-08 (sdd-verificador) |
@@ -84,7 +84,13 @@ Actualizado: 2026-11-10
 | Spec | Estado | Último cambio |
 |---|---|---|
 | SPEC-066 — goles-a-la-cola-de-redes-deteccion-outbox-publicador-con-doble-plantillas-y-configuracion | hecho | 2026-11-09 (sdd-verificador) |
-| SPEC-067 — publicador-de-buffer-cliente-graphql-sonda-contra-la-api-real-y-encendido | borrador | 2026-11-09 (sdd-arquitecto) |
+| SPEC-067 — publicador-de-buffer-cliente-graphql-sonda-contra-la-api-real-y-encendido | hecho | 2026-11-10 (sdd-verificador) |
+
+## EPIC-009 — produccion-con-publico-capacidad-y-visitas-medidas (aprobada)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
+| SPEC-077 — medicion-de-visitas-en-produccion-sin-cookie | hecho | 2026-11-10 (sdd-verificador) |
 
 ## EPIC-FIX (aprobada)
 
@@ -103,6 +109,8 @@ Actualizado: 2026-11-10
 | SPEC-072 — navegacion-entre-semanas-de-la-xornada | hecho | 2026-11-10 (sdd-verificador) |
 | SPEC-074 — calendario-sync-vuelve-a-funcionar | hecho | 2026-11-10 (sdd-verificador) |
 | SPEC-075 — aviso-cuando-falla-el-bot-del-calendario | hecho | 2026-11-10 (sdd-verificador) |
+| SPEC-076 — retirar-override-rayo-cantabria | aprobada | 2026-11-10 (Alberto Fojo) |
+| SPEC-078 — el-test-de-spec-069-no-depende-del-calendario-vivo | hecho | 2026-11-10 (sdd-verificador) |
 
 ## EPIC-MANT — mantenimiento (borrador)
 
@@ -152,11 +160,14 @@ Actualizado: 2026-11-10
 | ADR-030 | aprobada | integracion-saliente-de-redes-outbox-de-goles-en-la-transaccion-del-motor-y-publicador-al-final-del-tick | 2026-11-09 (Alberto Fojo) |
 | ADR-031 | aprobada | el-calendario-corrige-el-kickoff-de-los-partidos-ya-jugados-con-el-export-de-partidos-de-explorer | 2026-11-10 (Alberto Fojo) |
 | ADR-032 | aprobada | las-alertas-internas-de-los-workflows-son-un-issue-de-github-por-incidente | 2026-11-10 (Alberto Fojo) |
+| ADR-033 | aprobada | medicion-de-visitas-con-vercel-web-analytics-sin-cookie | 2026-11-10 (Alberto Fojo) |
+| ADR-034 | aprobada | back-fill-historico-explorer-manda-en-jornadas-pasadas-y-el-operador-corrige-el-cierre | 2026-11-10 (sdd-orquestador) |
 
 ## Resumen
 
-- hecho: 64
+- hecho: 68
 - en-revision: 3
-- borrador: 3
+- borrador: 2
 - feito: 1
-- implementada: 2
+- implementada: 1
+- aprobada: 1

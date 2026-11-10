@@ -1,0 +1,43 @@
+{
+  "capturedAt": "2026-11-10T17:14:30.203Z",
+  "steps": [
+    {
+      "request": {
+        "query": "query Type($name: String!) {\n  __type(name: $name) {\n    name kind\n    enumValues { name description }\n    inputFields { name description type { name kind ofType { name kind ofType { name kind } } } }\n    fields { name type { name kind ofType { name kind ofType { name kind } } } }\n  }\n}",
+        "variables": {
+          "name": "SchedulingType"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "access-control-allow-credentials": "true",
+          "alt-svc": "h3=\":443\"; ma=86400",
+          "cf-cache-status": "DYNAMIC",
+          "cf-ray": "a586b1a5df847113-LIS",
+          "connection": "keep-alive",
+          "content-encoding": "br",
+          "content-type": "application/json; charset=utf-8",
+          "cross-origin-opener-policy": "same-origin",
+          "cross-origin-resource-policy": "same-origin",
+          "date": "Tue, 10 Nov 2026 17:14:31 GMT",
+          "origin-agent-cluster": "?1",
+          "referrer-policy": "no-referrer",
+          "server": "cloudflare",
+          "set-cookie": "AWSALBTGCORS=U9148Qw/qlsadFUKtBnpsnt/J7Kxkq8OTAj4dkjz/tdhY5togS4Phg4f8JMhE3xbvALhDk0q5tO3owVuvaoxT7gwmE3paOMoZ8wcpuTLOCgRyKbjSP7QDC7ev4Y6Ugt8me7Tdf8nKHs76EKcTf/AnxoXwbjW9/XUo5f6B6zBpeDF; Expires=Tue, 17 Nov 2026 17:14:30 GMT; Path=/; SameSite=None; Secure",
+          "strict-transport-security": "max-age=15552000",
+          "transfer-encoding": "chunked",
+          "vary": "Origin, accept-encoding",
+          "x-content-type-options": "nosniff",
+          "x-dns-prefetch-control": "off",
+          "x-download-options": "noopen",
+          "x-frame-options": "DENY",
+          "x-permitted-cross-domain-policies": "none",
+          "x-xss-protection": "0"
+        },
+        "body": "{\"data\":{\"__type\":{\"name\":\"SchedulingType\",\"kind\":\"ENUM\",\"enumValues\":[{\"name\":\"automatic\",\"description\":\"Buffer's publishing workers send the post, with nobody having to act\"},{\"name\":\"notification\",\"description\":\"Buffer reminds someone to publish the post by hand\"}],\"inputFields\":null,\"fields\":null}}}",
+        "ms": 489
+      }
+    }
+  ]
+}
