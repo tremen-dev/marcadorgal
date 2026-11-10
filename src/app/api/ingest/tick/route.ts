@@ -41,8 +41,11 @@ export const POST = createTickHandler({
       sweep: createEngineSweep(db, SOURCES, now),
       // The third hook (SPEC-066 CA-11, ADR-030 §3): the social dispatch,
       // after the sweep and in every tick, dry while SOCIAL_PUBLISHER names
-      // no publisher of the registry.
-      social: createSocialDispatch(process.env, createSocialDb(sql), now),
+      // no publisher of the registry, Buffer with SOCIAL_PUBLISHER=buffer
+      // and its two secrets (SPEC-067 CA-4).
+      social: createSocialDispatch(process.env, createSocialDb(sql), now, {
+        fetch,
+      }),
     });
   },
 });
