@@ -83,43 +83,51 @@ describe("CA-1 rfefCalendar", () => {
     });
   });
 
-  it("applies COMPETITION_TEAM_OVERRIDES for filials in parse", () => {
+  it("applies COMPETITION_TEAM_OVERRIDES only in its competition", () => {
     const calendar = createRfefCalendar("https://test-explorer.vercel.app");
-    const rawSegunda = {
+    const raw = (competition: string) => ({
       ...samplePayload,
-      competition: "segunda-division",
+      competition,
       teams: [
-        {
-          externalId: "real-sociedad",
-          externalName: "Real Sociedad de Fútbol, S.A.D.",
-        },
+        { externalId: "racing-ferrol", externalName: "Racing Club de Ferrol" },
       ],
       matches: [
         {
           externalId: "m1",
           round: 1,
-          kickoff: "2026-08-16T18:00:00Z",
-          home: "real-sociedad",
-          away: "castellon",
+          kickoff: "2026-08-30T10:00:00Z",
+          home: "racing-ferrol",
+          away: "sestao",
           timeConfirmed: true,
         },
       ],
-    };
-    const parsedSegunda = calendar.parse(rawSegunda);
-    expect(parsedSegunda.teams[0].externalId).toBe("real-sociedad-b");
-    expect(parsedSegunda.teams[0].externalName).toBe("Real Sociedad B");
-    expect(parsedSegunda.matches[0].home).toBe("real-sociedad-b");
-    expect(parsedSegunda.matches[0].away).toBe("castellon");
+    });
+    const segundaRfef = calendar.parse(raw("segunda-rfef-g1"));
+    expect(segundaRfef.teams[0].externalId).toBe("rayo-cantabria");
+    expect(segundaRfef.teams[0].externalName).toBe("Rayo Cantabria");
+    expect(segundaRfef.matches[0].home).toBe("rayo-cantabria");
+    expect(segundaRfef.matches[0].away).toBe("sestao");
 
-    const raw1Rfef = {
+    const primeraRfef = calendar.parse(raw("primera-rfef-g1"));
+    expect(primeraRfef.teams[0].externalId).toBe("racing-ferrol");
+    expect(primeraRfef.teams[0].externalName).toBe("Racing Club de Ferrol");
+    expect(primeraRfef.matches[0].home).toBe("racing-ferrol");
+  });
+
+  it("keeps the filial ids explorer exports today", () => {
+    const calendar = createRfefCalendar("https://test-explorer.vercel.app");
+    const parsed = calendar.parse({
       ...samplePayload,
-      competition: "primera-rfef-g1",
-      teams: [{ externalId: "athletic-club", externalName: "Athletic Club" }],
+      competition: "segunda-division",
+      teams: [
+        { externalId: "real-sociedad-b", externalName: "Real Sociedad B" },
+      ],
       matches: [],
-    };
-    const parsed1Rfef = calendar.parse(raw1Rfef);
-    expect(parsed1Rfef.teams[0].externalId).toBe("bilbao-athletic");
-    expect(parsed1Rfef.teams[0].externalName).toBe("Bilbao Athletic");
+    });
+    expect(parsed.teams[0]).toEqual({
+      externalId: "real-sociedad-b",
+      externalName: "Real Sociedad B",
+    });
   });
 
   it("preserves declared benchmark calendar for tercera-rfef-g1", () => {
