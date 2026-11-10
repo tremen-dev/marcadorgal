@@ -1,0 +1,13 @@
+$ git grep -nE "PATH[\"']?\s*:\s*\`" -- 'src/**/*.test.ts' 'tools/**' 'scripts/**'
+src/db/test-db.test.ts:43:      PATH: `${dir}${path.delimiter}${process.env.PATH}`,
+src/db/test-db.test.ts:167:      PATH: `${f.dir}${path.delimiter}${process.env.PATH}`,
+src/db/test-db.test.ts:211:      env: { ...base, PATH: `${f.dir}${path.delimiter}${process.env.PATH}` },
+exit=0
+
+$ git grep -nE "PATH.*\}:\\$\{" -- src tools scripts   # concatenación con : literal
+exit=1
+
+$ git grep -nE (mismo patrón) 5d94776   # antes
+5d94776:src/db/test-db.test.ts:43:      PATH: `${dir}${path.delimiter}${process.env.PATH}`,
+5d94776:src/db/test-db.test.ts:167:      PATH: `${f.dir}${path.delimiter}${process.env.PATH}`,
+5d94776:src/db/test-db.test.ts:211:      env: { ...base, PATH: `${f.dir}:${process.env.PATH}` },

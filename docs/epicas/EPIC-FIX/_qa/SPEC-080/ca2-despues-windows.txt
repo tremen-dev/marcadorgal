@@ -1,0 +1,9 @@
+
+ RUN  v5.0.1 D:/src/tremen-dev/wt-080
+
+
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+   Start at  20:54:11
+   Duration  3.31s (tests 96%, transform 2%, import 1%)
+

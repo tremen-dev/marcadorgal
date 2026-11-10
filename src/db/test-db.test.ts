@@ -208,7 +208,7 @@ describe("SPEC-022 CA-1 local Storage forced over the .env", () => {
     for (const k of Object.keys(PROD_ENV)) delete base[k];
     const r = spawnSync(process.execPath, [script], {
       cwd: f.dir,
-      env: { ...base, PATH: `${f.dir}:${process.env.PATH}` },
+      env: { ...base, PATH: `${f.dir}${path.delimiter}${process.env.PATH}` },
       encoding: "utf8",
     });
     expect(r.status).toBe(0);
