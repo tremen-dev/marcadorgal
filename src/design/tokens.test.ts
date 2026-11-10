@@ -97,10 +97,11 @@ describe("CA-2 state colour semantics", () => {
 });
 
 describe("CA-3 typography", () => {
-  it("has the two families of _tokens.css", () => {
+  it("has the three families of _tokens.css (ADR-035: --hand)", () => {
     expect(FAMILIES).toEqual({
       sans: "'Geist',ui-sans-serif,system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif",
       mono: "'Geist Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace",
+      hand: "'Caveat','Geist',ui-sans-serif,system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif",
     });
   });
 

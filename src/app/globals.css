@@ -42,6 +42,15 @@
   font-display: swap;
   src: url(/fonts/GeistMono-SemiBold.woff2) format("woff2");
 }
+/* ADR-035: the motto's hand. Swap and no preload: it never competes with the
+   first paint (SPEC-026); its box is reserved, so the swap moves nothing. */
+@font-face {
+  font-family: "Caveat";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url(/fonts/Caveat-Regular.woff2) format("woff2");
+}
 
 html {
   color-scheme: dark;

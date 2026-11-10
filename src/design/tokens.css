@@ -20,6 +20,7 @@
   --victoria: #4CC38A;
   --sans: 'Geist',ui-sans-serif,system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
   --mono: 'Geist Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  --hand: 'Caveat','Geist',ui-sans-serif,system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
   --font-display: 800 44px/1 var(--sans);
   --tracking-display: -0.045em;
   --font-score: 600 20px/1 var(--mono);

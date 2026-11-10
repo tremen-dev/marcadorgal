@@ -2,11 +2,12 @@
 id: SPEC-081
 tipo: spec
 epica: EPIC-003
-estado: aprobada
+estado: en-progreso
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-10, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-11-10, por: Alberto Fojo}
+  - {estado: en-progreso, fecha: 2026-11-10, por: sdd-implementador}
 ---
 # SPEC-081 — Lema manuscrito «todo o fútbol galego» junto al logo
 
