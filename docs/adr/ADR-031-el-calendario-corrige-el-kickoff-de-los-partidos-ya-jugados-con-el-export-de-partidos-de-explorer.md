@@ -1,9 +1,11 @@
 ---
 id: ADR-031
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-11-10, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-11-10, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # ADR-031: El calendario corrige el kickoff de los partidos ya jugados con el export de partidos de explorer
 
