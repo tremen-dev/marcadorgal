@@ -85,6 +85,7 @@ Actualizado: 2026-11-10
 |---|---|---|
 | SPEC-066 — goles-a-la-cola-de-redes-deteccion-outbox-publicador-con-doble-plantillas-y-configuracion | hecho | 2026-11-09 (sdd-verificador) |
 | SPEC-067 — publicador-de-buffer-cliente-graphql-sonda-contra-la-api-real-y-encendido | hecho | 2026-11-10 (sdd-verificador) |
+| SPEC-079 — informe-automatico-de-la-cola-de-redes-tras-cada-jornada | hecho | 2026-11-10 (sdd-verificador) |
 
 ## EPIC-009 — produccion-con-publico-capacidad-y-visitas-medidas (aprobada)
 
@@ -165,7 +166,7 @@ Actualizado: 2026-11-10
 
 ## Resumen
 
-- hecho: 68
+- hecho: 69
 - en-revision: 3
 - borrador: 2
 - feito: 1
