@@ -1,13 +1,14 @@
 ---
-id: ADR-031
+id: ADR-033
 tipo: adr
 estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-11-09, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-11-09, por: Alberto Fojo}
+  - {estado: aprobada, fecha: 2026-11-10, por: titular, nota: "renumerado de ADR-031 a ADR-033 al fusionar con main, que ya tenía ADR-031 y ADR-032; sin cambio de decisión"}
 aprobada-por: Alberto Fojo
 ---
-# ADR-031: Back-fill histórico: Explorer manda en las jornadas pasadas y el operador corrige el cierre
+# ADR-033: Back-fill histórico: Explorer manda en las jornadas pasadas y el operador corrige el cierre
 
 - Deciders: **Alberto Fojo (titular)** decide el 2026-11-09 que, en las jornadas ya disputadas, Explorer es la verdad («hay marcadores que se guardaron mal porque el código en aquel entonces no estaba bien del todo […] sobreescribirlos con los datos de este script, si puede ser con goleadores mejor»). sdd-arquitecto lo redacta a raíz del RED de SPEC-060 (V-2, V-3). Lo aprueba el titular en el gate.
 - Specs relacionadas: SPEC-060 (lo ejecuta). **Precisa, sin superseder:** ADR-025 §6, que sigue rigiendo `rfef:recuperar`; este ADR abre un segundo camino manual, distinto y acotado. Se apoya en RN-01 («el operador tiene siempre la prioridad máxima»), RN-06 (orden: operador primero), D-6 y ADR-006 §3 (append-only, versión por trigger) y ADR-007 (raw store).

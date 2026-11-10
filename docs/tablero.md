@@ -52,7 +52,7 @@ Actualizado: 2026-11-10
 | SPEC-057 — panel-preferencias-ligas-e-enlaces-clasificacion | borrador | 2026-11-07 (sdd-arquitecto) |
 | SPEC-058 — footer-de-produccion-version-identidad-tremen-dev-e-informacion-legal | hecho | 2026-11-07 (sdd-verificador) |
 | SPEC-059 — enriquecemento-de-goleadores-da-xornada-desde-explorer | feito | 2026-11-08 (sdd-implementador) |
-| SPEC-060 — ingesta-historica-resultados-y-goleadores | implementada | 2026-11-08 (sdd-implementador) |
+| SPEC-060 — ingesta-historica-resultados-y-goleadores | hecho | 2026-11-10 (titular) |
 | SPEC-061 — tira-de-dias-configurable-e-oculta-por-defecto | hecho | 2026-11-08 (sdd-verificador) |
 | SPEC-064 — assets-de-redes-sociales-y-og-png-con-la-identidad-celeste | hecho | 2026-11-08 (sdd-verificador) |
 | SPEC-065 — identidad-celeste-tokens-wordmark-con-bloque-dibujado-e-icono-de-barra-sola | hecho | 2026-11-08 (sdd-verificador) |
@@ -152,11 +152,12 @@ Actualizado: 2026-11-10
 | ADR-030 | aprobada | integracion-saliente-de-redes-outbox-de-goles-en-la-transaccion-del-motor-y-publicador-al-final-del-tick | 2026-11-09 (Alberto Fojo) |
 | ADR-031 | aprobada | el-calendario-corrige-el-kickoff-de-los-partidos-ya-jugados-con-el-export-de-partidos-de-explorer | 2026-11-10 (Alberto Fojo) |
 | ADR-032 | aprobada | las-alertas-internas-de-los-workflows-son-un-issue-de-github-por-incidente | 2026-11-10 (Alberto Fojo) |
+| ADR-033 | aprobada | back-fill-historico-explorer-manda-en-jornadas-pasadas-y-el-operador-corrige-el-cierre | 2026-11-10 (titular) |
 
 ## Resumen
 
-- hecho: 64
+- hecho: 65
 - en-revision: 3
 - borrador: 3
 - feito: 1
-- implementada: 2
+- implementada: 1

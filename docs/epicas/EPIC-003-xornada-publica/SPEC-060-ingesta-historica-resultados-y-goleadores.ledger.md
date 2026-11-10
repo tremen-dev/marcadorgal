@@ -48,7 +48,7 @@ Entorno: worktree LF de `origin/main` (6148242), Supabase local (`127.0.0.1:5432
 - **Riesgo, no bloquea.** `src/ingest/historico-db.ts:191`: el `delete from match_goals` corre para todo partido emparejado aunque Explorer no lo dé por `FINISHED` o devuelva `goals: []`. P2: Explorer devuelve el partido como `LIVE_PROVISIONAL` con `goals: []` y el gol que había guardado se borra.
 - **Conforme.** RLS sin políticas: `web_reader` recibe `42501` al leer `match_goals` y lee los goles por `web.xornada`, que se ejecuta con los permisos de su propietario (ADR-015). Es más estricto que la letra de CA-1. Placeholders de SPEC-059: P3 descarta «Goleador Local», «Goleador Visitante» y los nombres en blanco. La idempotencia de `match_goals` (borrar e insertar por partido dentro de la transacción del día) también está bien.
 
-## Enmienda 2026-11-09 (ADR-031) — matriz CA-1..CA-7
+## Enmienda 2026-11-09 (ADR-033) — matriz CA-1..CA-7
 
 La tabla de arriba es la de la versión anterior (CA-1..CA-5) con el RED. Esta es la de la spec enmendada; Verif. y Estado son del verificador.
 
@@ -83,9 +83,9 @@ Fallos ajenos de la suite db (23, presentes igual en la base): `engine.db.test.t
 
 ### Salvedades / follow-ups
 
-- **F-SPEC-060-1** «Una segunda ejecución igual escribe 0 filas» (CA-2): interpretado como 0 filas en `observations`, `decisions`, `match_goals` y `alerts`. Cada fecha consultada abre su `ingest_attempt` (ADR-031 §4) y guarda su crudo, también en la segunda ejecución; el test lo afirma (`ingest_attempts + 1`).
+- **F-SPEC-060-1** «Una segunda ejecución igual escribe 0 filas» (CA-2): interpretado como 0 filas en `observations`, `decisions`, `match_goals` y `alerts`. Cada fecha consultada abre su `ingest_attempt` (ADR-033 §4) y guarda su crudo, también en la segunda ejecución; el test lo afirma (`ingest_attempts + 1`).
 - **F-SPEC-060-2** La línea de cambio de CA-4 añade « (incompletos)» tras `goles <n> → <n>` cuando los goles de Explorer no suman el marcador, para que no parezca que se van a escribir.
-- **F-SPEC-060-3** `informe:*`/`salud` aún no tratan las filas `operator` (follow-up de ADR-031, fuera de alcance).
+- **F-SPEC-060-3** `informe:*`/`salud` aún no tratan las filas `operator` (follow-up de ADR-033, fuera de alcance).
 - **F-SPEC-060-4** `e2e/db-teardown.ts` y `tools/test-db.mjs` fallan en Windows por `spawnSync` sin shell (ajeno; ya conocido).
 - La herramienta comprueba que el motor publica una Decision por cada observación del operador; si no, deshace la fecha (fallo visible).
 
@@ -113,7 +113,7 @@ Entorno: worktree `D:/src/tremen-dev/wt-060` en `4b2803c` (LF, `npm ci`), Supaba
 
 ### Salvedades aceptadas
 
-- **S-1 (CA-2, F-SPEC-060-1).** Coherente con la spec y el ADR: CA-2 (a) y ADR-031 §4 exigen intento + crudo en *cada* fecha consultada; el «no escribe nada» de (c) y ADR-031 §3 es por partido (observación, Decision). Las tablas de verdad (`observations`, `decisions`, `match_goals`, `alerts`) quedan a 0 filas (E-5, E-7). No es RED.
+- **S-1 (CA-2, F-SPEC-060-1).** Coherente con la spec y el ADR: CA-2 (a) y ADR-033 §4 exigen intento + crudo en *cada* fecha consultada; el «no escribe nada» de (c) y ADR-033 §3 es por partido (observación, Decision). Las tablas de verdad (`observations`, `decisions`, `match_goals`, `alerts`) quedan a 0 filas (E-5, E-7). No es RED.
 - **S-2 (CA-7).** `npm run gates` no termina en verde en Windows por `src/db/test-db.test.ts` (ajeno, preexistente, fichero no tocado); typecheck, lint, resto de tests y build en verde por separado. Condición: CI (Linux) en verde en el PR.
 
 ### Riesgos para la ejecución real (no bloquean)
@@ -122,3 +122,27 @@ Entorno: worktree `D:/src/tremen-dev/wt-060` en `4b2803c` (LF, `npm ci`), Supaba
 - **R-2** El emparejado (`isMatchEqual`, `planDaySync` con `find`) es por subcadena de slug y no es exclusivo: dos partidos locales pueden emparejar el mismo de Explorer, y sin `canonicalCompetitionId` puede cruzar competiciones. El control es la revisión línea a línea del dry-run.
 - **R-3** Un partido `postponed`/`suspended` que Explorer dé `FINISHED` se cierra `operator · confirmado`; un `FINISHED 0-0` borra los goles guardados (suma = 0). Buscar `postponed →`, `suspended →` y `goles n → 0` en el dry-run.
 - **R-4** Cada re-ejecución añade un intento y un crudo por fecha (S-1); `informe:*`/`salud` aún no separan `operator` (F-SPEC-060-3).
+
+## Rebase sobre `main` (2026-11-10) — SPEC-070, SPEC-071 y SPEC-068
+
+La rama partía de `6148242`; `main` había reescrito el emparejamiento de `historico:sync` (SPEC-070: identidad por alias rfef; SPEC-071: ventana ±3, un GET por día) y el marcado de goles de `MatchRow` (SPEC-068). Fusión a mano: la escritura de esta spec (operador → motor, crudo, intento, fallos) con el emparejamiento de `main`.
+
+- **Plan.** `planDaySync(fecha, locales, filas | filas por día, alias)` → un `MatchPlan` por partido: `unpaired` (con motivo `no_identity`/`no_competition_rows`), `ambiguous` (candidatas), `not-finished` y `finished` (con `rowDate`). `isMatchEqual` (subcadena de slug, primera que encaja) deja de usarse aquí: **cierra R-2**.
+- **Crudo.** Una captura por fecha con las siete peticiones de su ventana; cada día se pide una vez por ejecución (caché por ejecución).
+- **CA-5 afinado.** La fecha falla si su propio día viene vacío y ninguno de sus partidos se emparejó en la ventana (Explorer no dijo nada); un día vacío cuyos partidos se jugaron en un día vecino no falla. Un 401/403 corta la ventana en el acto.
+- **Informe.** Añade ambiguos y emparejados (línea de SPEC-070 CA-7, `fecha → fecha de la fila`) y el nº en otro día.
+- **ADR.** El ADR-031 de esta rama pasa a **ADR-033** (`main` ya tenía ADR-031 calendario y ADR-032 alertas). Sin cambio de decisión.
+- **E2e CA-6** reescrito para SPEC-068: `team-goals` por equipo, `data-expanded` en la fila, `goal-player`/`goal-minute`/`goal-kind`.
+- **Social.** El motor de la recuperación no encola en `social_posts` (ADR-030 §1); el test db lo afirma.
+
+| # | Comando | Salida clave |
+| :--- | :--- | :--- |
+| R-E1 | `npm run typecheck` · `npm run lint` · `npm run build` | limpio · `Checked 445 files … No fixes applied` · build completo |
+| R-E2 | `npx vitest run` | `2 failed \| 2636 passed`: `src/db/test-db.test.ts` (Windows, F-SPEC-060-4) y `src/sources/rfef/explorer.test.ts` SPEC-069 CA-2, que falla igual en `origin/main` desde `cdaad54` (el bot del calendario movió Las Palmas–Eldense y el test lee `data/calendario`) |
+| R-E3 | `historico.test.ts` + `explorer-emparejamiento.test.ts` | `46 passed`, con los tests de SPEC-070 CA-7 y SPEC-071 CA-1..CA-4 portados y CA-5 (día vacío, 401 en la ventana) nuevos |
+| R-E4 | `npm run test:db` con la BD local reseteada (`db reset --local` + competiciones), `origin/main` y la rama | `main`: 23 fallos; rama: 24 = los mismos 23 + `informe.db.test` «dos partidos en board…», flaky en ambos (aislado: `main` 2/3 rojo, rama 1/3). `historico.db.test.ts` 7/7 y `schema.db.test.ts` verdes. **Sin fallos nuevos** (CA-7) |
+| R-E5 | `playwright test --config playwright.db.config.ts e2e/xornada-goleadores-historico.db.spec.ts` | `1 passed`; el teardown falla en Windows (F-SPEC-060-4) y se hizo a mano |
+| R-E6 | `package.json` | `0.5.7` → `0.5.8` (patch, ADR-028) |
+
+Pendiente antes de la ejecución real: **dry-run contra prod** con el emparejamiento nuevo (los números de E-8 son de antes del rebase) y revisión de R-1 y R-3.
+
