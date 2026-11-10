@@ -9,6 +9,9 @@ import { localAnonKey, REMOTE_SECRETS } from "./src/db/env.ts";
 // the remote secrets go empty: Next does not overwrite an empty variable with
 // the .env (SPEC-022 CA-7).
 const port = 3110;
+// SPEC-072 CA-4: the same build served without the strip of days, as in
+// production (SHOW_DAY_STRIP empty, whatever the .env says).
+export const noStripPort = 3111;
 export const LOCAL_DATABASE_URL =
   "postgresql://postgres:postgres@127.0.0.1:54322/postgres";
 const password = randomBytes(24).toString("hex");
@@ -23,6 +26,17 @@ const status = spawnSync("supabase", ["status", "-o", "env"], {
 export const LOCAL_ANON_KEY =
   status.status === 0 ? (localAnonKey(status.stdout ?? "") ?? "") : "";
 
+const serverEnv = {
+  DATABASE_URL: LOCAL_DATABASE_URL,
+  WEB_READER_PASSWORD: password,
+  DATABASE_URL_PUBLIC: `postgresql://web_reader:${password}@127.0.0.1:54322/postgres`,
+  NEXT_PUBLIC_SUPABASE_URL: "http://127.0.0.1:54321",
+  SUPABASE_SERVICE_ROLE_KEY: "",
+  ...Object.fromEntries(REMOTE_SECRETS.map((name) => [name, ""])),
+  NEXT_PUBLIC_REALTIME: "on",
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: LOCAL_ANON_KEY,
+};
+
 export default defineConfig({
   testDir: "./e2e",
   testMatch: "**/*.db.spec.ts",
@@ -36,21 +50,21 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
-  webServer: {
-    command: `node tools/e2e-db-seed.mjs && npm run build && npm run start -- --port ${port}`,
-    url: `http://localhost:${port}/`,
-    reuseExistingServer: false,
-    timeout: 240_000,
-    env: {
-      DATABASE_URL: LOCAL_DATABASE_URL,
-      WEB_READER_PASSWORD: password,
-      DATABASE_URL_PUBLIC: `postgresql://web_reader:${password}@127.0.0.1:54322/postgres`,
-      NEXT_PUBLIC_SUPABASE_URL: "http://127.0.0.1:54321",
-      SUPABASE_SERVICE_ROLE_KEY: "",
-      ...Object.fromEntries(REMOTE_SECRETS.map((name) => [name, ""])),
-      NEXT_PUBLIC_REALTIME: "on",
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: LOCAL_ANON_KEY,
-      SHOW_DAY_STRIP: "true",
+  webServer: [
+    {
+      command: `node tools/e2e-db-seed.mjs && npm run build && npm run start -- --port ${port}`,
+      url: `http://localhost:${port}/`,
+      reuseExistingServer: false,
+      timeout: 240_000,
+      env: { ...serverEnv, SHOW_DAY_STRIP: "true" },
     },
-  },
+    {
+      // Started once the first is up: the seed and the build are done.
+      command: `npm run start -- --port ${noStripPort}`,
+      url: `http://localhost:${noStripPort}/`,
+      reuseExistingServer: false,
+      timeout: 60_000,
+      env: { ...serverEnv, SHOW_DAY_STRIP: "" },
+    },
+  ],
 });

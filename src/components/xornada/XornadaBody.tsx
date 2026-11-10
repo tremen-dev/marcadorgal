@@ -30,7 +30,7 @@ export type XornadaBodyProps = {
   freshness?: ReactNode;
   // SPEC-024 CA-9: matchId → minutes since its last observation.
   ages?: ReadonlyMap<string, number>;
-  // SPEC-027 CA-6: ‹ and › of the strip (the public pages only).
+  // SPEC-027 CA-6, SPEC-072: ‹ and › (the public pages only).
   arrows?: Neighbours;
   // SPEC-034 CA-5: the mode of the web's configuration, for the legend.
   provisionalDisplay: ProvisionalDisplay;
@@ -68,6 +68,9 @@ export function XornadaBody({
         paths={paths}
         heading={xornadaHeading(days, locale)}
         strip={hasRows && showDayStrip}
+        // SPEC-072 CA-1: with the strip, the arrows stay at its ends
+        // (SPEC-027 CA-6); without it, they flank the title. Never both.
+        arrows={hasRows && !showDayStrip ? arrows : undefined}
       />
       {!hasRows && <div className={styles.titleSpace} />}
       {hasRows && (
