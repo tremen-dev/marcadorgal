@@ -45,7 +45,7 @@ test.beforeAll(async () => {
   expect(candidates.length).toBeGreaterThan(0);
   matchId = candidates[0];
 
-  // The final 2-1 the operator published (ADR-033) and its three goals.
+  // The final 2-1 the operator published (ADR-034) and its three goals.
   await sql.begin(async (tx) => {
     const [{ id }] = await tx`insert into observations ${tx({
       match_id: matchId,

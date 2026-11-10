@@ -1,0 +1,46 @@
+{
+  "capturedAt": "2026-11-10T17:17:25.715Z",
+  "steps": [
+    {
+      "requestedAt": "2026-11-10T17:17:25.397Z",
+      "request": {
+        "query": "query DailyPostingLimits($channelIds: [ChannelId!]!) {\n  dailyPostingLimits(input: { channelIds: $channelIds }) {\n    channelId isAtLimit limit scheduled sent\n  }\n}",
+        "variables": {
+          "channelIds": [
+            "<CHANNEL>"
+          ]
+        }
+      },
+      "response": {
+        "status": 401,
+        "headers": {
+          "access-control-allow-credentials": "true",
+          "alt-svc": "h3=\":443\"; ma=86400",
+          "cf-cache-status": "DYNAMIC",
+          "cf-ray": "a586b5f0188c0ae4-MAD",
+          "connection": "keep-alive",
+          "content-length": "92",
+          "content-type": "application/json; charset=utf-8",
+          "cross-origin-opener-policy": "same-origin",
+          "cross-origin-resource-policy": "same-origin",
+          "date": "Tue, 10 Nov 2026 17:17:26 GMT",
+          "etag": "W/\"5c-W0agn9Eg0CkvHStl5hS8v5O45Ns\"",
+          "origin-agent-cluster": "?1",
+          "referrer-policy": "no-referrer",
+          "server": "cloudflare",
+          "set-cookie": "AWSALBTGCORS=ljPqWDCSJ9x8IyKJlXTL93s3CHyAw65JGCuYlCjzeAyCjS5L2mk+VjCgfubdnwuQqMOmtsbNNagAKm6ns54Q5gntFQZ7y40obBZ+eI13o2IAz0Ur5xt3NvXaL+MB2O/ThcKs4LSDnJyvtDKW+b6l0rrMKnmvwlVQRavyZ0OcWWnR; Expires=Tue, 17 Nov 2026 17:17:26 GMT; Path=/; SameSite=None; Secure",
+          "strict-transport-security": "max-age=15552000",
+          "vary": "Origin, accept-encoding",
+          "x-content-type-options": "nosniff",
+          "x-dns-prefetch-control": "off",
+          "x-download-options": "noopen",
+          "x-frame-options": "DENY",
+          "x-permitted-cross-domain-policies": "none",
+          "x-xss-protection": "0"
+        },
+        "body": "{\"errors\":[{\"message\":\"Access token is not valid\",\"extensions\":{\"code\":\"UNAUTHENTICATED\"}}]}",
+        "ms": 315
+      }
+    }
+  ]
+}

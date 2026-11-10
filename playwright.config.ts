@@ -8,6 +8,9 @@ export const boxPort = 3101;
 // (e2e/fixtures/explorer-mock.mjs), for a standings table with a form guide.
 export const explorerAppPort = 3102;
 const explorerMockPort = 3103;
+// SPEC-077 CA-3, CA-4, CA-5: the same build with VERCEL_ENV=production, so
+// SiteAnalytics mounts Web Analytics (the script itself is a repo fixture).
+export const analyticsPort = 3104;
 
 export default defineConfig({
   testDir: "./e2e",
@@ -72,6 +75,18 @@ export default defineConfig({
         EXPLORER_BASE_URL: `http://127.0.0.1:${explorerMockPort}`,
         RFEF_EXPLORER_TOKEN: "e2e",
         VERCEL_ENV: "development",
+      },
+      timeout: 60_000,
+    },
+    {
+      command: `npm run start -- --port ${analyticsPort}`,
+      url: `http://localhost:${analyticsPort}/`,
+      reuseExistingServer: false,
+      env: {
+        DATABASE_URL_PUBLIC: "",
+        NEXT_PUBLIC_REALTIME: "",
+        RECENT_GOAL_MARK: "",
+        VERCEL_ENV: "production",
       },
       timeout: 60_000,
     },

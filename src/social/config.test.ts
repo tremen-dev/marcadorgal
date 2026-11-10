@@ -18,8 +18,10 @@ describe("SPEC-066 CA-10 socialConfig: SOCIAL_PUBLISHER", () => {
     expect(socialConfig(env, ["buffer"]).publisher).toBe(publisher);
   });
 
-  it("with the registry of this spec (empty) every value is off", () => {
-    expect(socialConfig({ SOCIAL_PUBLISHER: "buffer" }).publisher).toBeNull();
+  it("with the real registry only buffer is on (SPEC-067 CA-4)", () => {
+    expect(socialConfig({ SOCIAL_PUBLISHER: "buffer" }).publisher).toBe(
+      "buffer",
+    );
     expect(socialConfig({ SOCIAL_PUBLISHER: "memory" }).publisher).toBeNull();
   });
 });
@@ -103,5 +105,17 @@ describe("SPEC-066 CA-10 .env.example", () => {
       "SOCIAL_LINK_URL",
     ])
       expect(example).toMatch(new RegExp(`^${name}=`, "m"));
+  });
+});
+
+describe("SPEC-067 CA-4 .env.example", () => {
+  it("documents BUFFER_API_KEY and BUFFER_CHANNEL_ID as Production only", () => {
+    const example = readFileSync(
+      path.resolve(__dirname, "../../.env.example"),
+      "utf8",
+    );
+    for (const name of ["BUFFER_API_KEY", "BUFFER_CHANNEL_ID"])
+      expect(example).toMatch(new RegExp(`^${name}=`, "m"));
+    expect(example).toMatch(/Production/);
   });
 });

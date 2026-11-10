@@ -84,6 +84,20 @@ tipo: roadmap
   investigación de vías gratuitas descartó la automatización por navegador
   (X la castiga con suspensión permanente).
 
+- **EPIC-009 — Producción con público: capacidad y visitas medidas.**
+  *(Aprobada por el titular el 2026-11-10.)* Medir visitas sin cookie ni
+  terceros (únicos, páginas, origen, dispositivo), con un informe
+  reproducible por jornada y una prueba de carga a 1.000 visitantes a la vez.
+  Se cierra cuando una jornada real queda medida y la prueba pasa sin
+  errores.
+  *Por qué ahora:* es el primer entregable que desbloquea EPIC-008 (la cifra
+  de audiencia) y el que dirá si las campañas de EPIC-007 traen gente. No
+  compite por el dato con EPIC-003/004. La invalidación de caché en cada
+  cambio queda fuera: el titular da por buena la antigüedad de ≤ 40 s.
+  *Estado (2026-11-10):* SPEC-077 hecha. Mide con Vercel Web Analytics
+  (ADR-033). Faltan el informe y el pico, que dependen de G-2 de ADR-033, y
+  la prueba de carga.
+
 ## Después (comprometido, sin empezar)
 
 - **EPIC-005 — Operador y fuentes push.** Panel mínimo con Auth, webhook
@@ -160,7 +174,7 @@ tipo: roadmap
   *Por qué aquí:* sin visitas medidas no hay precio alto que pedir, y el
   criterio de corte aparca lo que depende de un acuerdo sin firmar. Sube a
   «Después» cuando el titular decida medir la audiencia (su primer
-  entregable); depende de que EPIC-007 tenga publicador.
+  entregable, que ahora es EPIC-009); depende de que EPIC-007 tenga publicador.
 
 ## Criterios de corte
 

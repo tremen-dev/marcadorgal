@@ -86,7 +86,7 @@ export const LEGAL_DOCS_GL: Record<
     title: "Política de privacidade",
     description:
       "Información sobre o tratamento de datos persoais en marcador.gal.",
-    lastUpdated: "Novembro de 2026",
+    lastUpdated: "10 de novembro de 2026",
     sections: [
       {
         title: "1. Compromiso de privacidade: cero rastrexo",
@@ -102,7 +102,16 @@ export const LEGAL_DOCS_GL: Record<
         ],
       },
       {
-        title: "3. Responsable e exercicio de dereitos",
+        title: "3. Medición de audiencia",
+        content: [
+          "Para saber canta xente consulta marcador.gal contamos as visitas con Vercel Web Analytics. Só se contan páxinas vistas agregadas por ruta, tipo de dispositivo, país e sitio de orixe da visita; non se constrúen perfís nin se segue a ninguén entre sitios.",
+          "Vercel é o provedor que aloxa esta web e actúa como encargado do tratamento. A medición viaxa polo propio dominio marcador.gal, sen peticións a dominios de terceiros.",
+          "Non se usa ningunha cookie nin se garda nada no teu navegador. Vercel non garda o teu enderezo IP: distingue as visitas cun identificador calculado en cada petición que descarta ás 24 horas, así que non pode recoñecerte dun día para outro.",
+          "Os navegadores automatizados (como as nosas propias sondas de proba) non contan, e dos enderezos só se conservan os parámetros de campaña (utm_*).",
+        ],
+      },
+      {
+        title: "4. Responsable e exercicio de dereitos",
         content: [
           `O responsable do tratamento é ${TITULAR.nombre}. Podes exercer os teus dereitos de acceso, rectificación, supresión e limitación escribindo a ${TITULAR.contacto}.`,
         ],
@@ -113,12 +122,13 @@ export const LEGAL_DOCS_GL: Record<
     title: "Política de cookies",
     description:
       "Compromiso de ausencia de cookies de rastrexo e uso exclusivo de almacenamento técnico local.",
-    lastUpdated: "Novembro de 2026",
+    lastUpdated: "10 de novembro de 2026",
     sections: [
       {
-        title: "1. Sen cookies de terceiros nin analítica invasiva",
+        title: "1. Sen cookies nin rastrexo",
         content: [
-          "marcador.gal cumpre unha regra estrita: sen cookies de publicidade, sen píxeles de seguimento e sen analítica invasiva de terceiros.",
+          "marcador.gal cumpre unha regra estrita: sen cookies, sen píxeles de seguimento e sen servizos que te sigan entre sitios.",
+          "A única medición de audiencia é Vercel Web Analytics, do mesmo provedor que aloxa a web: non usa cookies, non garda nada no teu navegador e só conta páxinas vistas agregadas. Detállase na política de privacidade.",
           "Non rastrexamos a túa navegación nin compartimos os teus hábitos de consumo con redes sociais nin anunciantes.",
         ],
       },
@@ -187,7 +197,7 @@ export const LEGAL_DOCS_ES: Record<
     title: "Política de privacidad",
     description:
       "Información sobre el tratamiento de datos personales en marcador.gal.",
-    lastUpdated: "Noviembre de 2026",
+    lastUpdated: "10 de noviembre de 2026",
     sections: [
       {
         title: "1. Compromiso de privacidad: cero rastreo",
@@ -203,7 +213,16 @@ export const LEGAL_DOCS_ES: Record<
         ],
       },
       {
-        title: "3. Responsable y ejercicio de derechos",
+        title: "3. Medición de audiencia",
+        content: [
+          "Para saber cuánta gente consulta marcador.gal contamos las visitas con Vercel Web Analytics. Solo se cuentan páginas vistas agregadas por ruta, tipo de dispositivo, país y sitio de origen de la visita; no se construyen perfiles ni se sigue a nadie entre sitios.",
+          "Vercel es el proveedor que aloja esta web y actúa como encargado del tratamiento. La medición viaja por el propio dominio marcador.gal, sin peticiones a dominios de terceros.",
+          "No se usa ninguna cookie ni se guarda nada en tu navegador. Vercel no guarda tu dirección IP: distingue las visitas con un identificador calculado en cada petición que descarta a las 24 horas, así que no puede reconocerte de un día para otro.",
+          "Los navegadores automatizados (como nuestras propias sondas de prueba) no cuentan, y de las direcciones solo se conservan los parámetros de campaña (utm_*).",
+        ],
+      },
+      {
+        title: "4. Responsable y ejercicio de derechos",
         content: [
           `El responsable del tratamiento es ${TITULAR.nombre}. Puedes ejercer tus derechos de acceso, rectificación, supresión y limitación escribiendo a ${TITULAR.contacto}.`,
         ],
@@ -214,12 +233,13 @@ export const LEGAL_DOCS_ES: Record<
     title: "Política de cookies",
     description:
       "Compromiso de ausencia de cookies de rastreo y uso exclusivo de almacenamiento técnico local.",
-    lastUpdated: "Noviembre de 2026",
+    lastUpdated: "10 de noviembre de 2026",
     sections: [
       {
-        title: "1. Sin cookies de terceros ni analítica invasiva",
+        title: "1. Sin cookies ni rastreo",
         content: [
-          "marcador.gal cumple una regla estricta: sin cookies de publicidad, sin píxeles de seguimiento y sin analítica invasiva de terceros.",
+          "marcador.gal cumple una regla estricta: sin cookies, sin píxeles de seguimiento y sin servicios que te sigan entre sitios.",
+          "La única medición de audiencia es Vercel Web Analytics, del mismo proveedor que aloja la web: no usa cookies, no guarda nada en tu navegador y solo cuenta páginas vistas agregadas. Se detalla en la política de privacidad.",
           "No rastreamos tu navegación ni compartimos tus hábitos de consumo con redes sociales ni anunciantes.",
         ],
       },

@@ -21,7 +21,7 @@ import {
 import { historicoSync } from "./historico-db.ts";
 
 // 2026-11-09 at 00:30 in Europe/Madrid is still 2026-11-08 in UTC: "today"
-// is the Madrid date (ADR-033 §1), so yesterday is 2026-11-08.
+// is the Madrid date (ADR-034 §1), so yesterday is 2026-11-08.
 const NOW = "2026-11-08T23:30:00.000Z" as Instant;
 
 describe("SPEC-060 CA-2 parseHistoricoArgs", () => {
@@ -426,7 +426,7 @@ describe("SPEC-060 CA-5 historicoFailed (the exit code of the tool)", () => {
   });
 });
 
-// ADR-033 §2: the tool never writes a Decision; the engine does.
+// ADR-034 §2: the tool never writes a Decision; the engine does.
 describe("SPEC-060 CA-2 no INSERT into decisions from the tool", () => {
   it("historico-db.ts and the shell have no statement on decisions but reads", () => {
     for (const file of [

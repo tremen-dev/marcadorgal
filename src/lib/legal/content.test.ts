@@ -40,3 +40,62 @@ describe("legal content", () => {
     expect(esText).toContain("localStorage");
   });
 });
+
+describe("audience measurement (SPEC-077 CA-6)", () => {
+  const section = (doc: (typeof LEGAL_DOCS_GL)["privacidade"]) =>
+    doc.sections.find((s) => s.title.includes("Medición de audiencia"));
+
+  it("privacy has the section in gl and es with the same paragraphs", () => {
+    const gl = section(LEGAL_DOCS_GL.privacidade);
+    const es = section(LEGAL_DOCS_ES.privacidade);
+    expect(gl).toBeDefined();
+    expect(es).toBeDefined();
+    expect(gl?.content.length).toBe(es?.content.length);
+    expect(gl?.content.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it.each([
+    ["gl", LEGAL_DOCS_GL],
+    ["es", LEGAL_DOCS_ES],
+  ] as const)(
+    "%s says what, who, without cookie, IP or lasting id, and that robots do not count",
+    (_, docs) => {
+      const text = JSON.stringify(section(docs.privacidade));
+      for (const needle of [
+        "Vercel",
+        "ruta",
+        "país",
+        "cookie",
+        "IP",
+        "24 horas",
+        "automatizados",
+      ])
+        expect(text, needle).toContain(needle);
+      expect(text).toMatch(/dispositivo/);
+      expect(text).toMatch(/orixe|origen/);
+      expect(text).toMatch(
+        /encargad[oa] do tratamento|encargado del tratamiento/,
+      );
+    },
+  );
+
+  it("privacy and cookies carry a new lastUpdated", () => {
+    expect(LEGAL_DOCS_GL.privacidade.lastUpdated).toBe(
+      "10 de novembro de 2026",
+    );
+    expect(LEGAL_DOCS_ES.privacidade.lastUpdated).toBe(
+      "10 de noviembre de 2026",
+    );
+    expect(LEGAL_DOCS_GL.cookies.lastUpdated).toBe("10 de novembro de 2026");
+    expect(LEGAL_DOCS_ES.cookies.lastUpdated).toBe("10 de noviembre de 2026");
+  });
+
+  it("cookies no longer promises no third-party analytics and names the measurement", () => {
+    const gl = JSON.stringify(LEGAL_DOCS_GL.cookies);
+    const es = JSON.stringify(LEGAL_DOCS_ES.cookies);
+    expect(gl).not.toMatch(/analítica[^"]*de terceiros/);
+    expect(es).not.toMatch(/analítica[^"]*de terceros/);
+    expect(gl).toContain("Vercel Web Analytics");
+    expect(es).toContain("Vercel Web Analytics");
+  });
+});

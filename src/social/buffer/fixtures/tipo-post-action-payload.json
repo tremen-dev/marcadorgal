@@ -1,0 +1,44 @@
+{
+  "capturedAt": "2026-11-10T17:17:17.155Z",
+  "steps": [
+    {
+      "requestedAt": "2026-11-10T17:17:16.791Z",
+      "request": {
+        "query": "query Type($name: String!) {\n  __type(name: $name) {\n    name kind\n    possibleTypes { name }\n    enumValues { name description }\n    inputFields { name description type { name kind ofType { name kind ofType { name kind } } } }\n    fields { name type { name kind ofType { name kind ofType { name kind } } } }\n  }\n}",
+        "variables": {
+          "name": "PostActionPayload"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "access-control-allow-credentials": "true",
+          "alt-svc": "h3=\":443\"; ma=86400",
+          "cf-cache-status": "DYNAMIC",
+          "cf-ray": "a586b5ba6f55de22-LIS",
+          "connection": "keep-alive",
+          "content-encoding": "br",
+          "content-type": "application/json; charset=utf-8",
+          "cross-origin-opener-policy": "same-origin",
+          "cross-origin-resource-policy": "same-origin",
+          "date": "Tue, 10 Nov 2026 17:17:17 GMT",
+          "origin-agent-cluster": "?1",
+          "referrer-policy": "no-referrer",
+          "server": "cloudflare",
+          "set-cookie": "AWSALBTGCORS=o8Bww1AhLBgO6v1WdmWLFJxtQitqkQ0UUbcaTp846xM2yv0IxddaBIm71y+SBtnRYrZZ886mgRqGBYmsRtqt3zFr70fOtSOGEFAkgcqdx7Eje2AQYnSq1sRkB6mNphh7bjrmEqEQh+vAQpZ/c3POfG/Yc32k41ozME2x96yQa4Jv; Expires=Tue, 17 Nov 2026 17:17:17 GMT; Path=/; SameSite=None; Secure",
+          "strict-transport-security": "max-age=15552000",
+          "transfer-encoding": "chunked",
+          "vary": "Origin, accept-encoding",
+          "x-content-type-options": "nosniff",
+          "x-dns-prefetch-control": "off",
+          "x-download-options": "noopen",
+          "x-frame-options": "DENY",
+          "x-permitted-cross-domain-policies": "none",
+          "x-xss-protection": "0"
+        },
+        "body": "{\"data\":{\"__type\":{\"name\":\"PostActionPayload\",\"kind\":\"UNION\",\"possibleTypes\":[{\"name\":\"PostActionSuccess\"},{\"name\":\"NotFoundError\"},{\"name\":\"UnauthorizedError\"},{\"name\":\"UnexpectedError\"},{\"name\":\"RestProxyError\"},{\"name\":\"LimitReachedError\"},{\"name\":\"InvalidInputError\"}],\"enumValues\":null,\"inputFields\":null,\"fields\":null}}}",
+        "ms": 359
+      }
+    }
+  ]
+}

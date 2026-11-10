@@ -66,6 +66,10 @@
   registro (RN-08).
 - **Sin cookies, sin analítica de terceros, sin datos de quien mira** la
   pantalla pública.
+  *Enmendado el 2026-11-10 por decisión del titular (Alberto Fojo), ADR-033:
+  Vercel Web Analytics no cuenta como analítica de terceros. Vercel ya aloja la
+  web y es el encargado del tratamiento, la medición no usa cookie y no pide a
+  ningún dominio ajeno.*
 - **El código de `src/sources/*` solo importa de `src/model`.** Un test de
   arquitectura lo comprueba.
 

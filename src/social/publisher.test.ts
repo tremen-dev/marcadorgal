@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   createMemoryPublisher,
   PUBLISHER_IDS,
+  PUBLISHERS,
   type PublishResult,
   type SocialPublisher,
 } from "./publisher.ts";
@@ -54,8 +55,36 @@ describe("SPEC-066 CA-4 SocialPublisher and the memory double", () => {
     const double = createMemoryPublisher([]);
     await expect(double.publish("a")).rejects.toThrow(/script/);
   });
+});
 
-  it("the registry of publishers is empty in this spec (SPEC-067 adds Buffer)", () => {
-    expect(PUBLISHER_IDS).toEqual([]);
+// SPEC-067 CA-4: the registry gains `buffer`, a factory over the environment
+// that answers null (unconfigured) without the key or the channel.
+describe("SPEC-067 CA-4 the registry of publishers", () => {
+  const noFetch = (() => {
+    throw new Error("no network in this test");
+  }) as unknown as typeof fetch;
+
+  it("knows buffer and nothing else", () => {
+    expect(PUBLISHER_IDS).toEqual(["buffer"]);
+  });
+
+  it("buffer with key and channel is the Buffer publisher", () => {
+    const publisher = PUBLISHERS.buffer(
+      { BUFFER_API_KEY: "sk-x", BUFFER_CHANNEL_ID: "ch-1" },
+      noFetch,
+    );
+    expect(publisher?.id).toBe("buffer");
+  });
+
+  it.each([
+    ["without the key", { BUFFER_CHANNEL_ID: "ch-1" }],
+    ["with an empty key", { BUFFER_API_KEY: " ", BUFFER_CHANNEL_ID: "ch-1" }],
+    ["without the channel", { BUFFER_API_KEY: "sk-x" }],
+    [
+      "with an empty channel",
+      { BUFFER_API_KEY: "sk-x", BUFFER_CHANNEL_ID: "" },
+    ],
+  ])("%s it is unconfigured: null", (_, env) => {
+    expect(PUBLISHERS.buffer(env, noFetch)).toBeNull();
   });
 });

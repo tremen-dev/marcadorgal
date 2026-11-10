@@ -29,13 +29,13 @@ import {
 } from "./historico.ts";
 import { errorMessage } from "./purge.ts";
 
-// SPEC-060 (ADR-033), the database half of npm run historico:sync. Per
+// SPEC-060 (ADR-034), the database half of npm run historico:sync. Per
 // Europe/Madrid date with declared matches: one ingest_attempt of the
 // operator, one GET to Explorer whose raw is stored before it is parsed
-// (ADR-033 §4, RN-09) and, in one transaction, the operator observations
+// (ADR-034 §4, RN-09) and, in one transaction, the operator observations
 // of the finals that disagree, the engine at the instant of the reading
 // (decideRecovered, ADR-025 §4) and the goals of the complete matches.
-// Nothing here writes a Decision: the engine does (D-5, ADR-033 §2).
+// Nothing here writes a Decision: the engine does (D-5, ADR-034 §2).
 
 export const OPERATOR_SOURCE = "operator";
 
@@ -202,7 +202,7 @@ async function applyDate(
   );
   await tx.insertObservations(observations);
   const decided = await decideRecovered(tx, observations, sources);
-  // ADR-033 §2: the operator always wins, so every observation must have
+  // ADR-034 §2: the operator always wins, so every observation must have
   // been published. If not, the date is undone rather than half applied.
   if (decided.decisions !== observations.length)
     throw new Error(
@@ -324,7 +324,7 @@ export async function historicoSync(
     let rawRef: string | undefined;
     try {
       const window = await windowOf(date);
-      // Raw before parse, in the strong sense (ADR-007 §6, ADR-033 §4): the
+      // Raw before parse, in the strong sense (ADR-007 §6, ADR-034 §4): the
       // seven days the plan of this date reads, in one capture of its
       // attempt, even if a neighbour date already stored some of them.
       rawRef = await storeCapture(

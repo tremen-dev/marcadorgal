@@ -1,0 +1,52 @@
+{
+  "capturedAt": "2026-11-10T17:15:07.279Z",
+  "steps": [
+    {
+      "request": {
+        "query": "query DailyPostingLimits($channelIds: [ChannelId!]!) {\n  dailyPostingLimits(input: { channelIds: $channelIds }) {\n    channelId isAtLimit limit scheduled sent\n  }\n}",
+        "variables": {
+          "channelIds": [
+            "<CHANNEL>"
+          ]
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "access-control-allow-credentials": "true",
+          "alt-svc": "h3=\":443\"; ma=86400",
+          "buffer-ratelimit-upgrade": "\"15m\", \"24h\", \"30d\"",
+          "buffer-ratelimit-upgrade-link": "https://publish.buffer.com/settings/api?cta=publicApi-rateLimit-hint-upgrade-1&upgradePathName=apiRateLimit-upgrade",
+          "cf-cache-status": "DYNAMIC",
+          "cf-ray": "a586b28dacc72f61-LIS",
+          "connection": "keep-alive",
+          "content-encoding": "br",
+          "content-type": "application/json; charset=utf-8",
+          "cross-origin-opener-policy": "same-origin",
+          "cross-origin-resource-policy": "same-origin",
+          "date": "Tue, 10 Nov 2026 17:15:08 GMT",
+          "origin-agent-cluster": "?1",
+          "ratelimit": "\"15m\"; r=147; t=847, \"24h\"; r=581; t=84996, \"30d\"; r=1981; t=2590596",
+          "ratelimit-policy": "\"15m\"; q=150; w=900; pk=:MGY5MzYxMDdhNDI2:, \"24h\"; q=600; w=86400; pk=:MGY5MzYxMDdhNDI2:, \"30d\"; q=2000; w=2592000; pk=:MGY5MzYxMDdhNDI2:",
+          "referrer-policy": "no-referrer",
+          "server": "cloudflare",
+          "set-cookie": "AWSALBTGCORS=9cUjHg4+N2adbi6qRgLRCGcSWrntRvySYP0Mw6BV+iRjlzxlgK2Qj+NXMCt0awU9Gaon5szHCz+a/izFFp40Ov5Lr4HPsWZPJdlNZRL4VuJreRHpmUs+oge1CNM81RJDJR3tbv9rmnLU/gSotqtUoezUwZJr6+XAR2wiYilhmbrz; Expires=Tue, 17 Nov 2026 17:15:07 GMT; Path=/; SameSite=None; Secure",
+          "strict-transport-security": "max-age=15552000",
+          "transfer-encoding": "chunked",
+          "vary": "Origin, accept-encoding",
+          "x-content-type-options": "nosniff",
+          "x-dns-prefetch-control": "off",
+          "x-download-options": "noopen",
+          "x-frame-options": "DENY",
+          "x-permitted-cross-domain-policies": "none",
+          "x-ratelimit-limit": "2000",
+          "x-ratelimit-remaining": "1981",
+          "x-ratelimit-reset": "1796921504",
+          "x-xss-protection": "0"
+        },
+        "body": "{\"data\":{\"dailyPostingLimits\":[{\"channelId\":\"<CHANNEL>\",\"isAtLimit\":false,\"limit\":100,\"scheduled\":0,\"sent\":0}]}}",
+        "ms": 528
+      }
+    }
+  ]
+}

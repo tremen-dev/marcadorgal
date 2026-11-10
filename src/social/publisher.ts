@@ -4,6 +4,8 @@
 // the memory double below, Buffer (SPEC-067) and, in reserve, the X API.
 // src/social/ never imports src/decide, src/sources or src/ingest (CA-12).
 
+import { createBufferPublisher } from "./buffer/publisher.ts";
+
 export type PublishResult =
   // Accepted by the provider, with its id.
   | { outcome: "sent"; providerPostId: string }
@@ -20,15 +22,24 @@ export interface SocialPublisher {
   publish(text: string): Promise<PublishResult>;
 }
 
-// The registry of publishers, by the id SOCIAL_PUBLISHER names (CA-10).
-// Empty in SPEC-066: every value of the variable is "off". SPEC-067 adds
-// Buffer here, as a factory over the environment.
-export const PUBLISHERS: Readonly<
-  Record<
-    string,
-    (env: Readonly<Record<string, string | undefined>>) => SocialPublisher
-  >
-> = {};
+// The registry of publishers, by the id SOCIAL_PUBLISHER names (CA-10). A
+// factory over the environment and the fetch of the route; null means the
+// id is named but its secrets are missing (SPEC-067 CA-4, `unconfigured`):
+// the dispatch then runs dry and the tick says so. Only Buffer so far
+// (SPEC-067); the X API stays in reserve (ADR-030 §5).
+export type PublisherFactory = (
+  env: Readonly<Record<string, string | undefined>>,
+  fetchImpl: typeof fetch,
+) => SocialPublisher | null;
+
+export const PUBLISHERS: Readonly<Record<string, PublisherFactory>> = {
+  buffer: (env, fetchImpl) => {
+    const apiKey = env.BUFFER_API_KEY?.trim() ?? "";
+    const channelId = env.BUFFER_CHANNEL_ID?.trim() ?? "";
+    if (apiKey === "" || channelId === "") return null;
+    return createBufferPublisher({ apiKey, channelId, fetch: fetchImpl });
+  },
+};
 
 export const PUBLISHER_IDS: readonly string[] = Object.keys(PUBLISHERS);
 

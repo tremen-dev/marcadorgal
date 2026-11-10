@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { SiteAnalytics } from "@/analytics/SiteAnalytics";
 import { Footer } from "@/components/layout/Footer";
 import "../../globals.css";
 import { siteMetadata, siteViewport } from "../../metadata";
@@ -12,6 +13,7 @@ export default function EsLayout({ children }: { children: ReactNode }) {
       <body>
         {children}
         <Footer locale="es" />
+        <SiteAnalytics />
       </body>
     </html>
   );

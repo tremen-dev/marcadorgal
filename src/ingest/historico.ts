@@ -20,7 +20,7 @@ import type {
 } from "../model/index.ts";
 import { madridDateOf } from "../sources/rfef/explorer.ts";
 
-// SPEC-060 (ADR-033), the pure half of npm run historico:sync: the arguments,
+// SPEC-060 (ADR-034), the pure half of npm run historico:sync: the arguments,
 // the plan of each date against what Explorer says and the report the
 // titular reviews before writing. No clock (the shell passes now), no
 // network, no database: src/ingest/historico-db.ts does all of that.
@@ -45,7 +45,7 @@ const previousDate = (date: string): string =>
   new Date(dayNumber(date) - DAY_MS).toISOString().slice(0, 10);
 
 // CA-2: --hasta defaults to yesterday in Europe/Madrid and a --hasta of today
-// or later is refused (ADR-033 §1: only matchdays already played).
+// or later is refused (ADR-034 §1: only matchdays already played).
 export function parseHistoricoArgs(
   argv: readonly string[],
   now: Instant,
@@ -157,7 +157,7 @@ export type MatchPlan =
       row: ExplorerMatch;
       rowDate: string;
       score: Score;
-      // ADR-033 §2-§3: the current is not finished with this score.
+      // ADR-034 §2-§3: the current is not finished with this score.
       correct: boolean;
       // Valid goals of Explorer (placeholders of SPEC-059 dropped).
       goals: PublicGoal[];
