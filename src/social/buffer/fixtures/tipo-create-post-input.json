@@ -1,0 +1,43 @@
+{
+  "capturedAt": "2026-11-10T17:14:20.822Z",
+  "steps": [
+    {
+      "request": {
+        "query": "query Type($name: String!) {\n  __type(name: $name) {\n    name kind\n    enumValues { name description }\n    inputFields { name description type { name kind ofType { name kind ofType { name kind } } } }\n    fields { name type { name kind ofType { name kind ofType { name kind } } } }\n  }\n}",
+        "variables": {
+          "name": "CreatePostInput"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "access-control-allow-credentials": "true",
+          "alt-svc": "h3=\":443\"; ma=86400",
+          "cf-cache-status": "DYNAMIC",
+          "cf-ray": "a586b16c8871013f-MAD",
+          "connection": "keep-alive",
+          "content-encoding": "br",
+          "content-type": "application/json; charset=utf-8",
+          "cross-origin-opener-policy": "same-origin",
+          "cross-origin-resource-policy": "same-origin",
+          "date": "Tue, 10 Nov 2026 17:14:21 GMT",
+          "origin-agent-cluster": "?1",
+          "referrer-policy": "no-referrer",
+          "server": "cloudflare",
+          "set-cookie": "AWSALBTGCORS=ke8NUyePTjM9jbgW+BZ/AgJkxYprivDils6pDCJvW4CoqVegl3YS/5JGj4gEZurdrrjqiWBciq7S+n0c0CPhppDkyijUgnwCQyw+Ym5AqsveJSNWCGNtboKwOzZdQ2IQaRNssg4HymfiRvnc8UOhbIu6epiMQVKAaklXS7u+u9uh; Expires=Tue, 17 Nov 2026 17:14:21 GMT; Path=/; SameSite=None; Secure",
+          "strict-transport-security": "max-age=15552000",
+          "transfer-encoding": "chunked",
+          "vary": "Origin, accept-encoding",
+          "x-content-type-options": "nosniff",
+          "x-dns-prefetch-control": "off",
+          "x-download-options": "noopen",
+          "x-frame-options": "DENY",
+          "x-permitted-cross-domain-policies": "none",
+          "x-xss-protection": "0"
+        },
+        "body": "{\"data\":{\"__type\":{\"name\":\"CreatePostInput\",\"kind\":\"INPUT_OBJECT\",\"enumValues\":null,\"inputFields\":[{\"name\":\"aiAssisted\",\"description\":\"If this post was created with the help of AI\",\"type\":{\"name\":\"Boolean\",\"kind\":\"SCALAR\",\"ofType\":null}},{\"name\":\"assets\",\"description\":\"Ordered list of assets on this post.\",\"type\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":null,\"kind\":\"LIST\",\"ofType\":{\"name\":null,\"kind\":\"NON_NULL\"}}}},{\"name\":\"channelId\",\"description\":\"Channel's Id for which we want to create the post\",\"type\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":\"ChannelId\",\"kind\":\"SCALAR\",\"ofType\":null}}},{\"name\":\"draftId\",\"description\":\"Is set when the Post is generated from a Draft\",\"type\":{\"name\":\"DraftId\",\"kind\":\"SCALAR\",\"ofType\":null}},{\"name\":\"dueAt\",\"description\":\"Date when the post is scheduled to be published\",\"type\":{\"name\":\"DateTime\",\"kind\":\"SCALAR\",\"ofType\":null}},{\"name\":\"ideaId\",\"description\":\"Is set when the Post is generated from an Idea\",\"type\":{\"name\":\"IdeaId\",\"kind\":\"SCALAR\",\"ofType\":null}},{\"name\":\"metadata\",\"description\":\"Metadata of the post which differs based on the social network/service\",\"type\":{\"name\":\"PostInputMetaData\",\"kind\":\"INPUT_OBJECT\",\"ofType\":null}},{\"name\":\"mode\",\"description\":\"How the post is being scheduled.\",\"type\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":\"ShareMode\",\"kind\":\"ENUM\",\"ofType\":null}}},{\"name\":\"needsApproval\",\"description\":\"Submit the post for approval instead of scheduling it. A post submitted for\\napproval is always a draft, so this conflicts with turning `saveToDraft` off.\\n\\nOnly valid when your posting policy on the target channel requires approval.\",\"type\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":\"Boolean\",\"kind\":\"SCALAR\",\"ofType\":null}}},{\"name\":\"saveToDraft\",\"description\":\"If true, saves the post as a draft instead of scheduling it.\\nWhen saving as draft:\\n- Post status will be 'draft' instead of 'buffer'\\n- Posting limits are not checked\\n- The post will not be published until explicitly scheduled\",\"type\":{\"name\":\"Boolean\",\"kind\":\"SCALAR\",\"ofType\":null}},{\"name\":\"schedulingType\",\"description\":\"Scheduling type to indicate notification publishing or automatic publishing\",\"type\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":\"SchedulingType\",\"kind\":\"ENUM\",\"ofType\":null}}},{\"name\":\"source\",\"description\":\"source where the composer was initiated from, used for tracking.\",\"type\":{\"name\":\"String\",\"kind\":\"SCALAR\",\"ofType\":null}},{\"name\":\"tagIds\",\"description\":\"List of tag IDs\",\"type\":{\"name\":null,\"kind\":\"LIST\",\"ofType\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":\"TagId\",\"kind\":\"SCALAR\"}}}},{\"name\":\"text\",\"description\":\"Text content of the Post.\\n\\nNote: for threaded posts, this needs to match the first item in the `thread` array.\",\"type\":{\"name\":\"String\",\"kind\":\"SCALAR\",\"ofType\":null}}],\"fields\":null}}}",
+        "ms": 272
+      }
+    }
+  ]
+}

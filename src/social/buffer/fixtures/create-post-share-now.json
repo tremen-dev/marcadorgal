@@ -1,0 +1,58 @@
+{
+  "capturedAt": "2026-11-10T17:15:19.196Z",
+  "steps": [
+    {
+      "request": {
+        "query": "mutation CreatePost($input: CreatePostInput!) {\n  createPost(input: $input) {\n    __typename\n    ... on PostActionSuccess { post { id status dueAt sentAt externalLink } }\n    ... on MutationError { message }\n  }\n}",
+        "variables": {
+          "input": {
+            "text": "Proba marcador.gal 1/5 2026-11-10T17:15:17Z",
+            "channelId": "<CHANNEL>",
+            "schedulingType": "automatic",
+            "mode": "shareNow",
+            "needsApproval": false,
+            "tagIds": [],
+            "assets": []
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "access-control-allow-credentials": "true",
+          "alt-svc": "h3=\":443\"; ma=86400",
+          "buffer-ratelimit-upgrade": "\"15m\", \"24h\", \"30d\"",
+          "buffer-ratelimit-upgrade-link": "https://publish.buffer.com/settings/api?cta=publicApi-rateLimit-hint-upgrade-1&upgradePathName=apiRateLimit-upgrade",
+          "cf-cache-status": "DYNAMIC",
+          "cf-ray": "a586b2d23fcedd7b-MAD",
+          "connection": "keep-alive",
+          "content-encoding": "br",
+          "content-type": "application/json; charset=utf-8",
+          "cross-origin-opener-policy": "same-origin",
+          "cross-origin-resource-policy": "same-origin",
+          "date": "Tue, 10 Nov 2026 17:15:19 GMT",
+          "origin-agent-cluster": "?1",
+          "ratelimit": "\"15m\"; r=146; t=836, \"24h\"; r=580; t=84985, \"30d\"; r=1980; t=2590585",
+          "ratelimit-policy": "\"15m\"; q=150; w=900; pk=:MGY5MzYxMDdhNDI2:, \"24h\"; q=600; w=86400; pk=:MGY5MzYxMDdhNDI2:, \"30d\"; q=2000; w=2592000; pk=:MGY5MzYxMDdhNDI2:",
+          "referrer-policy": "no-referrer",
+          "server": "cloudflare",
+          "set-cookie": "AWSALBTGCORS=Y7t4JB7rIyUixIGhmLrl2e76LMvtYbu9i9relQNknKWSTM+SYjCXU2GXb0vlmAUUp086iFUs00dhSg6qswluHcUM8bu0ywfokyQpiu7YjICgUFp1czFuUrFfjdG6Fh8DKKbV0bDl11ywzNxAnO+QKujBD4dlMfGFfLl1Tf/9BkXh; Expires=Tue, 17 Nov 2026 17:15:18 GMT; Path=/; SameSite=None; Secure",
+          "strict-transport-security": "max-age=15552000",
+          "transfer-encoding": "chunked",
+          "vary": "Origin, accept-encoding",
+          "x-content-type-options": "nosniff",
+          "x-dns-prefetch-control": "off",
+          "x-download-options": "noopen",
+          "x-frame-options": "DENY",
+          "x-permitted-cross-domain-policies": "none",
+          "x-ratelimit-limit": "2000",
+          "x-ratelimit-remaining": "1980",
+          "x-ratelimit-reset": "1796921504",
+          "x-xss-protection": "0"
+        },
+        "body": "{\"data\":{\"createPost\":{\"__typename\":\"PostActionSuccess\",\"post\":{\"id\":\"6af351260649793ed2f934c5\",\"status\":\"sent\",\"dueAt\":\"2026-11-10T17:15:18.877Z\",\"sentAt\":\"2026-11-10T17:15:19.178Z\",\"externalLink\":\"https://twitter.com/minhaproba/status/2120203661427036480\"}}}}",
+        "ms": 1417
+      }
+    }
+  ]
+}

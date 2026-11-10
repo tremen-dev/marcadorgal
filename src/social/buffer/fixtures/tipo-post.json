@@ -1,0 +1,43 @@
+{
+  "capturedAt": "2026-11-10T17:14:36.980Z",
+  "steps": [
+    {
+      "request": {
+        "query": "query Type($name: String!) {\n  __type(name: $name) {\n    name kind\n    enumValues { name description }\n    inputFields { name description type { name kind ofType { name kind ofType { name kind } } } }\n    fields { name type { name kind ofType { name kind ofType { name kind } } } }\n  }\n}",
+        "variables": {
+          "name": "Post"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "access-control-allow-credentials": "true",
+          "alt-svc": "h3=\":443\"; ma=86400",
+          "cf-cache-status": "DYNAMIC",
+          "cf-ray": "a586b1d17b2d4842-LIS",
+          "connection": "keep-alive",
+          "content-encoding": "br",
+          "content-type": "application/json; charset=utf-8",
+          "cross-origin-opener-policy": "same-origin",
+          "cross-origin-resource-policy": "same-origin",
+          "date": "Tue, 10 Nov 2026 17:14:37 GMT",
+          "origin-agent-cluster": "?1",
+          "referrer-policy": "no-referrer",
+          "server": "cloudflare",
+          "set-cookie": "AWSALBTGCORS=8bO1Ymk1Qs7lVYX8pl/8czdLtq7lSw2WI/Cj6ToS9+jFwfXJRfFlXk3eAgNjBNplHnNi2VBdHrKeuL3G3+esCz6A9pf2kWO+M9QdS/Llxr1EryaONsF5IKAagwgVN+42bU52XpYtw1qb3cqPKuDn9bIoZ1o46xfH9DgC+oHnH2X/; Expires=Tue, 17 Nov 2026 17:14:37 GMT; Path=/; SameSite=None; Secure",
+          "strict-transport-security": "max-age=15552000",
+          "transfer-encoding": "chunked",
+          "vary": "Origin, accept-encoding",
+          "x-content-type-options": "nosniff",
+          "x-dns-prefetch-control": "off",
+          "x-download-options": "noopen",
+          "x-frame-options": "DENY",
+          "x-permitted-cross-domain-policies": "none",
+          "x-xss-protection": "0"
+        },
+        "body": "{\"data\":{\"__type\":{\"name\":\"Post\",\"kind\":\"OBJECT\",\"enumValues\":null,\"inputFields\":null,\"fields\":[{\"name\":\"id\",\"type\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":\"PostId\",\"kind\":\"SCALAR\",\"ofType\":null}}},{\"name\":\"allowedActions\",\"type\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":null,\"kind\":\"LIST\",\"ofType\":{\"name\":null,\"kind\":\"NON_NULL\"}}}},{\"name\":\"assets\",\"type\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":null,\"kind\":\"LIST\",\"ofType\":{\"name\":null,\"kind\":\"NON_NULL\"}}}},{\"name\":\"author\",\"type\":{\"name\":\"Author\",\"kind\":\"OBJECT\",\"ofType\":null}},{\"name\":\"channel\",\"type\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":\"Channel\",\"kind\":\"OBJECT\",\"ofType\":null}}},{\"name\":\"channelId\",\"type\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":\"ChannelId\",\"kind\":\"SCALAR\",\"ofType\":null}}},{\"name\":\"channelService\",\"type\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":\"Service\",\"kind\":\"ENUM\",\"ofType\":null}}},{\"name\":\"contentItemId\",\"type\":{\"name\":\"ContentItemId\",\"kind\":\"SCALAR\",\"ofType\":null}},{\"name\":\"dueAt\",\"type\":{\"name\":\"DateTime\",\"kind\":\"SCALAR\",\"ofType\":null}},{\"name\":\"error\",\"type\":{\"name\":\"PostPublishingError\",\"kind\":\"OBJECT\",\"ofType\":null}},{\"name\":\"externalLink\",\"type\":{\"name\":\"String\",\"kind\":\"SCALAR\",\"ofType\":null}},{\"name\":\"ideaId\",\"type\":{\"name\":\"IdeaId\",\"kind\":\"SCALAR\",\"ofType\":null}},{\"name\":\"isCustomScheduled\",\"type\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":\"Boolean\",\"kind\":\"SCALAR\",\"ofType\":null}}},{\"name\":\"metadata\",\"type\":{\"name\":\"PostMetadata\",\"kind\":\"UNION\",\"ofType\":null}},{\"name\":\"metrics\",\"type\":{\"name\":null,\"kind\":\"LIST\",\"ofType\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":\"PostMetric\",\"kind\":\"OBJECT\"}}}},{\"name\":\"metricsUpdatedAt\",\"type\":{\"name\":\"DateTime\",\"kind\":\"SCALAR\",\"ofType\":null}},{\"name\":\"notificationStatus\",\"type\":{\"name\":\"NotificationStatus\",\"kind\":\"ENUM\",\"ofType\":null}},{\"name\":\"schedulingType\",\"type\":{\"name\":\"SchedulingType\",\"kind\":\"ENUM\",\"ofType\":null}},{\"name\":\"sentAt\",\"type\":{\"name\":\"DateTime\",\"kind\":\"SCALAR\",\"ofType\":null}},{\"name\":\"sharedNow\",\"type\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":\"Boolean\",\"kind\":\"SCALAR\",\"ofType\":null}}},{\"name\":\"shareMode\",\"type\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":\"ShareMode\",\"kind\":\"ENUM\",\"ofType\":null}}},{\"name\":\"status\",\"type\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":\"PostStatus\",\"kind\":\"ENUM\",\"ofType\":null}}},{\"name\":\"tags\",\"type\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":null,\"kind\":\"LIST\",\"ofType\":{\"name\":null,\"kind\":\"NON_NULL\"}}}},{\"name\":\"text\",\"type\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":\"String\",\"kind\":\"SCALAR\",\"ofType\":null}}},{\"name\":\"via\",\"type\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":\"PostVia\",\"kind\":\"ENUM\",\"ofType\":null}}},{\"name\":\"createdAt\",\"type\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":\"DateTime\",\"kind\":\"SCALAR\",\"ofType\":null}}},{\"name\":\"updatedAt\",\"type\":{\"name\":null,\"kind\":\"NON_NULL\",\"ofType\":{\"name\":\"DateTime\",\"kind\":\"SCALAR\",\"ofType\":null}}}]}}}",
+        "ms": 281
+      }
+    }
+  ]
+}
