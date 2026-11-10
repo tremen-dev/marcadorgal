@@ -44,3 +44,12 @@ Lo que **no** se hereda está enumerado en `docs/adr/ADR-005-sistema-de-diseno-h
   14/15 px, `--fg-dim`). La tira de días sigue dibujada como opcional
   (SPEC-061, `SHOW_DAY_STRIP`) y sin flechas: si se sirve, las ‹ › vuelven a
   sus extremos y no al título; nunca están en los dos sitios.
+- **2026-11-11 (SPEC-081 CA-8, ADR-035).** Tercera familia, solo para el
+  lema: `_tokens.css` gana `--hand` (Caveat y, detrás, la pila de `--sans`) y
+  Caveat 400 en su `@import` de referencia. Cambian `Movil.tpl.html` y
+  `Escritorio.tpl.html`, y con `node build.mjs` sus `.dc.html` (y
+  `Global.dc.html`, sin cambios de contenido): la cabecera dibuja «todo o
+  fútbol galego» en Caveat 400, `--fg` al 72 %; en móvil, 16 px debajo del
+  wordmark y alineado a su izquierda (18 + 2 + 16 px en la barra de 52); en
+  escritorio, 19 px a su derecha, en su línea base y a 10 px. Siempre en
+  galego, también en `/es`.

@@ -85,9 +85,10 @@ describe("CA-7 fonts and digits", () => {
 
 // The cmap of a .woff2 (WOFF2 §5): the table directory, then one Brotli
 // stream with every table in directory order. cmap is never transformed.
-const TAGS = "cmap head hhea hmtx maxp name OS/2 post cvt  fpgm glyf loca prep CFF  VORG EBDT EBLC gasp hdmx kern LTSH PCLT VDMX vhea vmtx BASE GDEF GPOS GSUB EBSC JSTF MATH CBDT CBLC COLR CPAL SVG  sbix acnt avar bdat bloc bsln cvar fdsc feat fmtx fvar gvar hsty just lcar mort morx opbd prop trak Zapf Silf Glat Gloc Feat Sill".match(
-  /.{4}\s?/g,
-)?.map((tag) => tag.slice(0, 4)) ?? [];
+const TAGS =
+  "cmap head hhea hmtx maxp name OS/2 post cvt  fpgm glyf loca prep CFF  VORG EBDT EBLC gasp hdmx kern LTSH PCLT VDMX vhea vmtx BASE GDEF GPOS GSUB EBSC JSTF MATH CBDT CBLC COLR CPAL SVG  sbix acnt avar bdat bloc bsln cvar fdsc feat fmtx fvar gvar hsty just lcar mort morx opbd prop trak Zapf Silf Glat Gloc Feat Sill"
+    .match(/.{4}\s?/g)
+    ?.map((tag) => tag.slice(0, 4)) ?? [];
 
 const woff2Cmap = (file: string): Buffer => {
   const b = readFileSync(file);

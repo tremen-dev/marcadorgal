@@ -123,3 +123,46 @@ describe("SPEC-045 CA-2 the templates rebuild the artboards", () => {
     },
   );
 });
+
+// SPEC-081 CA-8 (ADR-035): the headers of both artboards draw the motto.
+describe("SPEC-081 CA-8 the motto in the artboards", () => {
+  const cases = [
+    { name: "Movil.dc.html", size: 16, wordmark: 18 },
+    { name: "Escritorio.dc.html", size: 19, wordmark: 21 },
+  ] as const;
+
+  it.each(cases)(
+    "$name: Caveat (--hand) 400 $size px, --fg at 72 %, by the wordmark",
+    ({ name, size, wordmark }) => {
+      const html = read(name);
+      expect(html).toContain(">todo o fútbol galego</span>");
+      const motto = styleWith(html, "var(--hand)");
+      expect(motto.get("font-weight")).toBe("400");
+      expect(px(motto.get("font-size"))).toBe(size);
+      expect(motto.get("color")).toBe("#F5F1EA");
+      expect(motto.get("opacity")).toBe(".72");
+      // The wordmark and the motto share one wrapper, right after the bar.
+      const brand = html.match(
+        /<div style="([^"]*)">\s*<span style="font: 800 (\d+)px[^>]*>marcador[\s\S]*?<!-- SPEC-081[^>]*>\s*<span style="font-family: var\(--hand\)/,
+      );
+      expect(brand?.[2]).toBe(String(wordmark));
+      expect(brand?.[1]).toMatch(
+        name.startsWith("Movil")
+          ? /flex-direction: column; align-items: flex-start; gap: 2px/
+          : /align-items: baseline; gap: 10px/,
+      );
+    },
+  );
+
+  it("_tokens.css declares --hand and imports Caveat for the artboards", () => {
+    const tokens = read("_tokens.css");
+    expect(tokens).toMatch(/--hand:'Caveat',/);
+    expect(tokens).toMatch(/family=Caveat:wght@400/);
+  });
+
+  it("HERENCIA.md records the change", () => {
+    expect(read("HERENCIA.md")).toMatch(
+      /2026-11-\d\d \(SPEC-081 CA-8, ADR-035\)/,
+    );
+  });
+});
