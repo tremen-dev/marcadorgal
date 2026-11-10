@@ -216,3 +216,34 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: npm run calendario:load -- "$TEMPORADA"
+
+  # Aviso al titular cuando falla el bot (SPEC-075, ADR-032): un issue por
+  # incidente, con la etiqueta bot-calendario y asignado al titular. Abrir y
+  # cerrar notifican; cada ejecución intermedia solo edita el cuerpo. Corre
+  # siempre y con cualquier evento: failure o cancelled es un fallo, success
+  # es ok y skipped no observa nada.
+  aviso:
+    needs: [sync, load]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+      contents: read
+    # El mismo grupo que vigia-calendario.yml: dos ejecuciones a la vez
+    # abrirían dos issues.
+    concurrency:
+      group: aviso-bot-calendario
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Abrir, actualizar o cerrar el incidente
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          SYNC_RESULT: ${{ needs.sync.result }}
+          LOAD_RESULT: ${{ needs.load.result }}
+        run: node tools/aviso-bot-calendario.mjs --jobs

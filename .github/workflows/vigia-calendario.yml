@@ -1,0 +1,44 @@
+# Vigía del schedule del bot del calendario (SPEC-075 CA-4, ADR-032).
+# calendario-semanal.yml corre de martes a sábado; si sus ejecuciones
+# programadas dejan de llegar (GitHub las retrasa o las deshabilita), su job
+# `aviso` no corre y nadie se entera. Este vigía mira cada día la creación de
+# la última ejecución `schedule` y abre el incidente `sin-ejecuciones` si
+# tiene más de 96 h. No ve que GitHub deshabilite todos los schedules del
+# repo: el vigía muere con ellos (fuera de alcance).
+name: vigia-calendario
+on:
+  schedule:
+    - cron: '0 13 * * *'
+  workflow_dispatch:
+    inputs:
+      simular:
+        description: "fallo: fuerza sin-ejecuciones = fallo para probar el aviso (SPEC-075 CA-5)"
+        type: choice
+        options:
+          - 'no'
+          - fallo
+        default: 'no'
+
+jobs:
+  vigia:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+      contents: read
+      actions: read
+    # El mismo grupo que el job `aviso` de calendario-semanal.yml.
+    concurrency:
+      group: aviso-bot-calendario
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: ¿Llegan las ejecuciones programadas del calendario?
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          SIMULAR: ${{ inputs.simular || 'no' }}
+        run: node tools/aviso-bot-calendario.mjs --vigia
