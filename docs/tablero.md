@@ -101,6 +101,7 @@ Actualizado: 2026-11-10
 | SPEC-070 — emparejamiento-estricto-con-el-export-de-explorer | hecho | 2026-11-09 (sdd-verificador) |
 | SPEC-071 — sync-historico-con-ventana-y-kickoffs-reales-en-el-calendario | hecho | 2026-11-10 (sdd-verificador) |
 | SPEC-072 — navegacion-entre-semanas-de-la-xornada | hecho | 2026-11-10 (sdd-verificador) |
+| SPEC-074 — calendario-sync-vuelve-a-funcionar | hecho | 2026-11-10 (sdd-verificador) |
 
 ## EPIC-MANT — mantenimiento (borrador)
 
@@ -152,7 +153,7 @@ Actualizado: 2026-11-10
 
 ## Resumen
 
-- hecho: 62
+- hecho: 63
 - en-revision: 3
 - borrador: 3
 - feito: 1

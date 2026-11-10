@@ -913,3 +913,94 @@ describe("SPEC-071 CA-6 syncCalendar applies the real kickoffs", () => {
     expect(r.diff.rescheduled).toEqual([]);
   });
 });
+
+describe("SPEC-074 CA-2 a name the alias already knows is not a rename", () => {
+  const rfefCompetition = Competition.parse({
+    id: "segunda-rfef-g1",
+    season: "2026-27",
+    name: "Segunda RFEF Grupo 1",
+    tier: 4,
+  });
+  const aliases = AliasFile.parse({
+    source: "rfef",
+    season: "2026-27",
+    competitions: { "33836092": "segunda-rfef-g1" },
+    teams: [
+      { externalId: "girona", externalName: "Girona", teamId: "girona" },
+      { externalId: "girona fc", externalName: "Girona FC", teamId: "girona" },
+      {
+        externalId: 'athletic club "b"',
+        externalName: 'Athletic Club "B"',
+        teamId: "bilbao-athletic",
+      },
+      { externalId: "ourense", externalName: "Ourense", teamId: "ourense" },
+      {
+        externalId: "ourense cf",
+        externalName: "Ourense CF",
+        teamId: "ourense-cf",
+      },
+    ],
+  });
+  const current = CalendarFile.parse({
+    competition: rfefCompetition,
+    teams: [
+      { id: "girona", name: "Girona" },
+      { id: "bilbao-athletic", name: "Bilbao Athletic" },
+      { id: "ourense", name: "Ourense" },
+    ],
+    matches: [
+      {
+        round: 1,
+        kickoff: "2026-09-06T16:00:00Z",
+        home: "girona",
+        away: "bilbao-athletic",
+      },
+    ],
+  });
+  const run = (teams: ImportedCalendar["teams"]) =>
+    syncCalendar({
+      current,
+      aliases,
+      imported: { teams, matches: [], ignoredRounds: {} },
+      competition: rfefCompetition,
+      sourceId: "rfef",
+    }).diff;
+
+  it("same teamId, other entry with that exact name: no rename", () => {
+    const diff = run([{ externalId: "girona", externalName: "Girona FC" }]);
+    expect(diff.renamedAtProvider).toEqual([]);
+    expect(diff.newTeams).toEqual([]);
+  });
+
+  it("same teamId, other entry equal by slug: no rename", () => {
+    const diff = run([
+      { externalId: "athletic-club-b", externalName: "Athletic Club B" },
+    ]);
+    expect(diff.renamedAtProvider).toEqual([]);
+    expect(diff.newTeams).toEqual([]);
+  });
+
+  it("a name only known for another teamId is still reported", () => {
+    const diff = run([{ externalId: "ourense", externalName: "Ourense CF" }]);
+    expect(diff.renamedAtProvider).toEqual([
+      {
+        externalId: "ourense",
+        from: "Ourense",
+        to: "Ourense CF",
+        teamId: "ourense",
+      },
+    ]);
+  });
+
+  it("a brand new name is still reported", () => {
+    const diff = run([{ externalId: "girona", externalName: "Girona Futbol" }]);
+    expect(diff.renamedAtProvider).toEqual([
+      {
+        externalId: "girona",
+        from: "Girona",
+        to: "Girona Futbol",
+        teamId: "girona",
+      },
+    ]);
+  });
+});

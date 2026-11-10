@@ -102,6 +102,13 @@ export function syncCalendar(input: SyncInput): SyncResult {
   const aliasByName = new Map(
     aliasEntries.map((a) => [slugify(a.externalName), a]),
   );
+  // Every name the alias already knows for a team, by slug (SPEC-074 CA-2):
+  // a provider that switches between two of them renames nothing.
+  const knownName = (teamId: string, name: string) =>
+    `${teamId}|${slugify(name)}`;
+  const knownNames = new Set(
+    aliasEntries.map((a) => knownName(a.teamId, a.externalName)),
+  );
   const diff: SyncDiff = {
     newTeams: [],
     added: [],
@@ -134,7 +141,10 @@ export function syncCalendar(input: SyncInput): SyncResult {
       }
     }
     if (alias) {
-      if (alias.externalName !== ext.externalName)
+      if (
+        alias.externalName !== ext.externalName &&
+        !knownNames.has(knownName(alias.teamId, ext.externalName))
+      )
         diff.renamedAtProvider.push({
           externalId: ext.externalId,
           from: alias.externalName,

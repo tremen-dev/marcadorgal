@@ -221,6 +221,31 @@ describe("CA-5 data/alias/2026-27/rfef.json", () => {
     expect(regenerated).toEqual(real);
   });
 
+  it("SPEC-074 CA-1: buildRfefAlias keeps the new names of the filiales from the file", () => {
+    const regenerated = buildRfefAlias({
+      season: "2026-27",
+      competitions: testAlias.competitions ?? {},
+      calendars,
+      validated: [],
+      existing: real.teams,
+    });
+    expect(regenerated.teams).toEqual(
+      expect.arrayContaining([
+        {
+          externalId: "alavés b",
+          externalName: "Alavés B",
+          teamId: "alaves-b",
+        },
+        { externalId: "eibar b", externalName: "Eibar B", teamId: "eibar-b" },
+        {
+          externalId: "atlético astorga",
+          externalName: "Atlético Astorga",
+          teamId: "astorga",
+        },
+      ]),
+    );
+  });
+
   it("resolves every name of the five competitions in the export fixtures (CA-1)", () => {
     for (const body of exports)
       expect(unresolvedExportNames(real, body)).toEqual([]);
