@@ -2,10 +2,11 @@
 id: SPEC-074
 tipo: spec
 epica: EPIC-FIX
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-10, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-11-10, por: Alberto Fojo}
 ---
 # SPEC-074 — calendario:sync vuelve a funcionar
 
