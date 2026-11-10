@@ -7,7 +7,7 @@ epica: EPIC-007
 
 ## Resumen
 - Fase: <!-- refleja el estado de la spec; la fuente de verdad es el frontmatter de la spec -->
-- Rama: `ft/SPEC-067-publicador-de-buffer-cliente-graphql-sonda-contra-la-api-real-y-encendido`
+- Rama: `ft/SPEC-067-publicador-de-buffer`
 
 ## Matriz de criterios de aceptación
 <!-- Escritores: sdd-implementador rellena Implementado y Test; sdd-verificador rellena Verif. y Estado. Nunca al revés. -->

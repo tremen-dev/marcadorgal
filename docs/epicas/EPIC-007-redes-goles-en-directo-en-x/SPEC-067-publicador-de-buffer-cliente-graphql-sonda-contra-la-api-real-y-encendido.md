@@ -2,10 +2,11 @@
 id: SPEC-067
 tipo: spec
 epica: EPIC-007
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-09, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-11-10, por: Alberto Fojo}
 ---
 # SPEC-067 — Publicador de Buffer: cliente GraphQL, sonda contra la API real y encendido
 
@@ -33,7 +34,7 @@ ADR-030 §4-§5, §7-§8. SPEC-066 (puerto, despacho, modo seco). D-7 (por analo
 Jornada medida de los criterios 1, 2 y 4 de la épica (spec siguiente, sin escribir: compara `social_posts` con los tweets de la cuenta). Cliente de la X API (reserva). Consultar después si X publicó cada post. Tope diario propio. Imágenes, hilos, respuestas.
 
 ## Notas para el gate humano
-- **H-1 Cuenta de Buffer.** El titular crea la cuenta (plan Free), conecta la cuenta de X de marcador.gal y genera la clave en `publish.buffer.com/settings/api`. Sin esto no arranca CA-2. *Cuenta Free creada por el titular el 2026-11-09; falta conectar X y generar la clave.*
+- **H-1 Cuenta de Buffer.** El titular crea la cuenta (plan Free), conecta la cuenta de X de marcador.gal y genera la clave en `publish.buffer.com/settings/api`. Sin esto no arranca CA-2. *Resuelta 2026-11-10: cuenta Free creada, canales «marcadorgal» y «minhaproba» (pruebas) conectados, clave generada; `dailyPostingLimits` del canal de pruebas = 100/24 h.*
 - **H-2 Canal de pruebas.** *Recomendación:* una segunda cuenta de X, protegida, como segundo canal del mismo Buffer (Free admite 3): los tweets de prueba no los ve nadie y los límites son por canal. La alternativa es probar en la cuenta real y borrar. *Resuelta 2026-11-09 por el titular: segunda cuenta de X protegida como canal de pruebas.*
 - **H-3 Normas de X.** Antes de CA-7, la cuenta lleva la etiqueta «Automated» (pide una cuenta humana asociada) y una bio que dice quién la opera. Las plantillas no llevan `@` ni se repiten idénticas (SPEC-066 CA-8, CA-9).
 - **H-4 Custodia de la clave.** *Recomendación:* la sonda de CA-2 la ejecuta el titular, o el implementador con la clave en un `.env.local` sin versionar; en Vercel, solo en Production.
