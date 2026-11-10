@@ -115,9 +115,9 @@ test.describe("SPEC-077 a visitor's browser", () => {
   }) => {
     const blockingIn = async (origin: string) => {
       const html = await (await request.get(`${origin}/`)).text();
-      const tags = [...html.matchAll(/<script[^>]*src="[^"]*"[^>]*>/g)]
+      const tags = [...html.matchAll(/<script\b[^>]*\bsrc="[^"]*"[^>]*>/g)]
         .map((m) => m[0])
-        .filter((tag) => !/async|defer|type="module"/.test(tag));
+        .filter((tag) => !/\basync\b|\bdefer\b|type="module"/.test(tag));
       return { html, tags };
     };
     // The same build without Web Analytics (VERCEL_ENV=development).
