@@ -1,0 +1,34 @@
+
+ RUN  v5.0.1 D:/src/tremen-dev/wt-080
+
+ ❯ src/db/test-db.test.ts (11 tests | 1 failed) 3654ms
+   ❯ SPEC-022 CA-1 local Storage forced over the .env (3)
+     × wins over a .env file in the cwd too 1784ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/db/test-db.test.ts > SPEC-022 CA-1 local Storage forced over the .env > wins over a .env file in the cwd too
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ src/db/test-db.test.ts:214:22
+    212|       encoding: "utf8",
+    213|     });
+    214|     expect(r.status).toBe(0);
+       |                      ^
+    215|     const env = JSON.parse(readFileSync(f.npxEnv, "utf8"));
+    216|     expect(env.NEXT_PUBLIC_SUPABASE_URL).toBe("http://127.0.0.1:54321"…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 10 passed (11)
+   Start at  20:53:58
+   Duration  3.89s (tests 98%, transform 1%)
+
