@@ -13,10 +13,12 @@ import {
 } from "./schema.ts";
 import { syncCalendar } from "./sync.ts";
 
-// SPEC-074 CA-1: the raw calendar export of segunda-rfef-g1 that explorer
-// served on 2026-11-10 (filiales under their new names: «Alavés B»,
-// «Eibar B», «Atlético Astorga»), synced against the calendar and the rfef
-// alias of the repo, adds no team and no match.
+// SPEC-074 CA-1 / SPEC-076 CA-3: the raw calendar export of segunda-rfef-g1
+// that explorer served on 2026-11-10 at 14:07Z, after it fixed Rayo Cantabria
+// (`rayo-cantabria` «Rayo Cantabria», no longer Racing de Ferrol's id), with
+// the filiales under their new names («Alavés B», «Eibar B», «Atlético
+// Astorga»). Synced against the calendar and the rfef alias of the repo, with
+// no team override, it adds no team and no match.
 
 const root = fileURLToPath(new URL("../..", import.meta.url));
 const readJson = (rel: string): unknown =>
@@ -24,7 +26,7 @@ const readJson = (rel: string): unknown =>
 const SEASON = "2026-27";
 const COMPETITION_ID = "segunda-rfef-g1";
 const FIXTURE =
-  "src/sources/rfef/fixtures/export/calendar-segunda-rfef-g1-2026-27-2026-11-10.json";
+  "src/sources/rfef/fixtures/export/calendar-segunda-rfef-g1-2026-27-2026-11-10T1407Z.json";
 
 const calendarOf = (id: string) =>
   CalendarFile.parse(readJson(`data/calendario/${SEASON}/${id}.json`));
@@ -68,6 +70,21 @@ describe("SPEC-074 CA-1 the filiales under their new names resolve to the alias"
     expect(diff.newTeams).toEqual([]);
     expect(diff.added).toEqual([]);
     expect(diff.missing).toEqual([]);
+    expect(diff.rematched).toEqual([]);
+  });
+
+  it("SPEC-076 CA-3 the 34 rayo-cantabria ids match the calendar of the repo", () => {
+    expect(imported.teams).toContainEqual({
+      externalId: "rayo-cantabria",
+      externalName: "Rayo Cantabria",
+    });
+    expect(JSON.stringify(imported)).not.toContain("racing-ferrol");
+    const rayo = (f: CalendarFile) =>
+      derivedIds(COMPETITION_ID, f).filter((id) =>
+        id.includes("rayo-cantabria"),
+      );
+    expect(rayo(calendar)).toHaveLength(34);
+    expect(rayo(calendar).sort()).toEqual(rayo(current).sort());
   });
 
   it("no teamId ends in -<n>", () => {
