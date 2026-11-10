@@ -211,7 +211,15 @@ async function main(argv, env) {
 
   const config = socialConfig(env);
   const watched = (season) => watchedTeams(config, season);
-  const sql = createSql(env);
+  // An unparsable DATABASE_URL would be echoed back by the driver's error
+  // (`Invalid URL ... input: ...`): never print that message.
+  let sql;
+  try {
+    sql = createSql(env);
+  } catch {
+    console.error("DATABASE_URL is not a valid connection string");
+    return 1;
+  }
   let report;
   try {
     const rows = await reportRows(sql, args.window);
