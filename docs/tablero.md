@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-11-09
+Actualizado: 2026-11-10
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -99,6 +99,7 @@ Actualizado: 2026-11-09
 | SPEC-048 — la-rfef-observa-sin-decidir-el-directo-de-primera-y-segunda-division | hecho | 2026-11-09 (sdd-verificador) |
 | SPEC-069 — la-rfef-acepta-cualquier-liveprovider-de-explorer | en-revision | 2026-11-09 (sdd-implementador) |
 | SPEC-070 — emparejamiento-estricto-con-el-export-de-explorer | hecho | 2026-11-09 (sdd-verificador) |
+| SPEC-071 — sync-historico-con-ventana-y-kickoffs-reales-en-el-calendario | hecho | 2026-11-10 (sdd-verificador) |
 
 ## EPIC-MANT — mantenimiento (borrador)
 
@@ -146,10 +147,11 @@ Actualizado: 2026-11-09
 | ADR-028 | borrador | cada-pr-sube-la-version-de-la-app-exigido-por-un-gate-de-ci | 2026-11-08 (sdd-arquitecto) |
 | ADR-029 | aprobada | celeste-de-galicia-como-color-de-marca-y-barra-sola-como-icono-enmienda-adr-005 | 2026-11-08 (Alberto Fojo) |
 | ADR-030 | aprobada | integracion-saliente-de-redes-outbox-de-goles-en-la-transaccion-del-motor-y-publicador-al-final-del-tick | 2026-11-09 (Alberto Fojo) |
+| ADR-031 | aprobada | el-calendario-corrige-el-kickoff-de-los-partidos-ya-jugados-con-el-export-de-partidos-de-explorer | 2026-11-10 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 60
+- hecho: 61
 - en-revision: 3
 - borrador: 3
 - feito: 1
