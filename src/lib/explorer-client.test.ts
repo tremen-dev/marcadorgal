@@ -71,7 +71,7 @@ describe("CA-5 explorer-client", () => {
     );
   });
 
-  // SPEC-060 CA-2 (ADR-031 §4): the raw of the reading, whatever the status,
+  // SPEC-060 CA-2 (ADR-033 §4): the raw of the reading, whatever the status,
   // with no token in the url that will be stored.
   it("getDayMatchesRaw returns status, content type and body without throwing", async () => {
     calls.length = 0;

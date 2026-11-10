@@ -21,7 +21,7 @@ import {
 import { historicoSync } from "./historico-db.ts";
 
 // 2026-11-09 at 00:30 in Europe/Madrid is still 2026-11-08 in UTC: "today"
-// is the Madrid date (ADR-031 §1), so yesterday is 2026-11-08.
+// is the Madrid date (ADR-033 §1), so yesterday is 2026-11-08.
 const NOW = "2026-11-08T23:30:00.000Z" as Instant;
 
 describe("SPEC-060 CA-2 parseHistoricoArgs", () => {
@@ -426,7 +426,7 @@ describe("SPEC-060 CA-5 historicoFailed (the exit code of the tool)", () => {
   });
 });
 
-// ADR-031 §2: the tool never writes a Decision; the engine does.
+// ADR-033 §2: the tool never writes a Decision; the engine does.
 describe("SPEC-060 CA-2 no INSERT into decisions from the tool", () => {
   it("historico-db.ts and the shell have no statement on decisions but reads", () => {
     for (const file of [
@@ -793,7 +793,9 @@ describe("SPEC-071 historico with the window", () => {
     ]);
     expect(paired(report.entries.map((e) => e.plan))).toHaveLength(2);
     const lines = formatHistoricoReport(report);
-    const at = lines.indexOf("Emparejados (2, 1 en otro día de la ventana ±3):");
+    const at = lines.indexOf(
+      "Emparejados (2, 1 en otro día de la ventana ±3):",
+    );
     expect(lines.slice(at + 1, at + 3)).toEqual([
       "  2026-10-31 · segunda-division-2026-27-j12-eibar-almeria · 70695030 · SD Eibar–UD Almería · 1-1 · 2 goles",
       "  2026-11-01 → 2026-10-31 · segunda-division-2026-27-j12-celta-fortuna-cordoba · 70695028 · RC Celta Fortuna–Córdoba CF · 2-2 · 4 goles",

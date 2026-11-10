@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Back-fill of the matchdays already played from Explorer (SPEC-060,
-// ADR-031): a manual tool the titular runs after reviewing the dry run, never
+// ADR-033): a manual tool the titular runs after reviewing the dry run, never
 // periodic. The shell and nothing more: the plan and the report are
 // src/ingest/historico.ts and every statement src/ingest/historico-db.ts.
 // Per date: one attempt of the operator, the raw of Explorer stored before it

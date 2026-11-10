@@ -45,7 +45,7 @@ test.beforeAll(async () => {
   expect(candidates.length).toBeGreaterThan(0);
   matchId = candidates[0];
 
-  // The final 2-1 the operator published (ADR-031) and its three goals.
+  // The final 2-1 the operator published (ADR-033) and its three goals.
   await sql.begin(async (tx) => {
     const [{ id }] = await tx`insert into observations ${tx({
       match_id: matchId,
@@ -91,15 +91,22 @@ test("SPEC-060 CA-6 a past week shows the scorers and minutes of match_goals in 
     });
   }).toPass({ timeout: 60_000, intervals: [1_000, 5_000, 11_000] });
 
-  const goals = row.getByTestId("match-goals");
-  await expect(goals).toHaveAttribute("data-expanded", "false");
+  // SPEC-068: the goals hang from their team (team-goals), folded until the
+  // row is opened; the row carries data-expanded.
+  await expect(row).toHaveAttribute("data-expanded", "false");
   await row.click();
   await expect(row).toHaveAttribute("aria-expanded", "true");
-  await expect(goals).toHaveAttribute("data-expanded", "true");
-  await expect(goals.locator('[data-team="home"]').first()).toBeVisible();
-  await expect(goals).toContainText("Aspas E2E 23'");
-  await expect(goals).toContainText("Budimir E2E 60'");
-  await expect(goals).toContainText("(p.)");
-  await expect(goals).toContainText("Swedberg E2E 85'");
+  await expect(row).toHaveAttribute("data-expanded", "true");
+  const home = row.locator('[data-testid="team-goals"][data-team="home"]');
+  const away = row.locator('[data-testid="team-goals"][data-team="away"]');
+  await expect(home).toBeVisible();
+  await expect(home.getByTestId("goal-player")).toHaveText([
+    "Aspas E2E",
+    "Swedberg E2E",
+  ]);
+  await expect(home.getByTestId("goal-minute")).toHaveText(["23'", "85'"]);
+  await expect(away.getByTestId("goal-player")).toHaveText(["Budimir E2E"]);
+  await expect(away.getByTestId("goal-minute")).toHaveText(["60'"]);
+  await expect(away.getByTestId("goal-kind")).toHaveText(["(p.)"]);
   await expect(row).toHaveAttribute("data-status", "finished");
 });

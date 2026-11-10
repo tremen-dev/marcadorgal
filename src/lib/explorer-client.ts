@@ -177,7 +177,7 @@ export async function getDayMatches(
 }
 
 // The same request as getDayMatches, unparsed, whatever the status (SPEC-060,
-// ADR-031 §4): the caller keeps the raw before it reads it. The token goes
+// ADR-033 §4): the caller keeps the raw before it reads it. The token goes
 // only in the header, never in the url that is stored.
 export type ExplorerRawResponse = {
   url: string;

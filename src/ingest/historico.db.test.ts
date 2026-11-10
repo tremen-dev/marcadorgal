@@ -6,15 +6,15 @@ import type {
   DayMatchesResponse,
   ExplorerRawResponse,
 } from "../lib/explorer-client.ts";
+import { windowDaysOf } from "../lib/explorer-window.ts";
 import type { Instant } from "../model/index.ts";
 import { createMemoryRawStore, type MemoryRawStore } from "../raw/memory.ts";
 import { SOURCES } from "../sources/registry.ts";
-import { windowDaysOf } from "../lib/explorer-window.ts";
 import { createIngestDb } from "./db.ts";
 import { formatHistoricoReport, historicoFailed } from "./historico.ts";
 import { historicoSync } from "./historico-db.ts";
 
-// SPEC-060 CA-2..CA-5 (ADR-031) against the real schema, always rolled back.
+// SPEC-060 CA-2..CA-5 (ADR-033) against the real schema, always rolled back.
 // The dates are of July 2026, before the season, so no declared match of the
 // calendar shares them with the seeded ones.
 const sql = createSql(process.env);
@@ -268,7 +268,7 @@ describe("SPEC-060 CA-2 the operator corrects the close through the engine", () 
         },
       ]);
 
-      // A second identical run writes 0 rows (only its attempt, ADR-031 §4).
+      // A second identical run writes 0 rows (only its attempt, ADR-033 §4).
       const before = await counts(tx);
       const again = await run(tx, fetchDay, store, DAY1, DAY1);
       expect(again.failed).toEqual([]);
