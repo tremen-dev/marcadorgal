@@ -1,9 +1,11 @@
 ---
 id: ADR-032
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-11-10, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-11-10, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # ADR-032: Las alertas internas de los workflows son un issue de GitHub por incidente
 
