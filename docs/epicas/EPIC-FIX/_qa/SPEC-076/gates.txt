@@ -1,0 +1,17 @@
+$ npm run gates   # rama ft/SPEC-076, Windows local, 2026-11-10T14:12:38Z -> exit 1 (typecheck ok, lint ok, test 2 fallos preexistentes en origin/main)
+Checked 444 files in 1585ms. No fixes applied.
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  src/db/test-db.test.ts > SPEC-022 CA-1 local Storage forced over the .env > wins over a .env file in the cwd too
+ FAIL  src/sources/rfef/explorer.test.ts > SPEC-069 liveProvider is open; estado and goals[].team stay closed > CA-2 all its observations come out: the same result as the same export without liveProvider
+ Test Files  2 failed | 157 passed (159)
+      Tests  2 failed | 2628 passed | 3 skipped (2633)
+
+$ npm run build -> exit 0
+
+$ git checkout origin/main (b21e4d6) && npx vitest run src/db/test-db.test.ts src/sources/rfef/explorer.test.ts
+  x CA-2 all its observations come out: the same result as the same export without liveProvider
+  x wins over a .env file in the cwd too
+  Tests  2 failed | 82 passed (84)
+
+$ node tools/version-gate.mjs --base origin/main
+version-gate: ok — 0.5.7 → 0.5.8, package-lock.json coherente.
