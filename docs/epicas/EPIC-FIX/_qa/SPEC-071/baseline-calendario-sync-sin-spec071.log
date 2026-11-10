@@ -1,0 +1,759 @@
+== primera-division
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 1  urgentes: 0
+   TBD/PST: primera-division-2026-27-j8-rayo-vallecano-athletic-club
+== segunda-division
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 2  rematched: 0  unconfirmed: 3  urgentes: 0
+   ! el proveedor renombró girona: "Girona" -> "Girona FC" (externalId girona)
+   ! el proveedor renombró sabadell: "Sabadell" -> "CE Sabadell FC" (externalId sabadell)
+   TBD/PST: segunda-division-2026-27-j13-castellon-eibar
+   TBD/PST: segunda-division-2026-27-j13-granada-tenerife
+   TBD/PST: segunda-division-2026-27-j13-andorra-mallorca
+== primera-rfef-g1
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 1  rematched: 0  unconfirmed: 250  urgentes: 0
+   ! el proveedor renombró bilbao-athletic: "Athletic Club "B"" -> "Athletic Club B" (externalId bilbao-athletic)
+   TBD/PST: primera-rfef-g1-2026-27-j14-bilbao-athletic-cultural-leonesa
+   TBD/PST: primera-rfef-g1-2026-27-j14-coria-ponferradina
+   TBD/PST: primera-rfef-g1-2026-27-j14-extremadura-cacereno
+   TBD/PST: primera-rfef-g1-2026-27-j14-racing-ferrol-merida
+   TBD/PST: primera-rfef-g1-2026-27-j14-lugo-ud-ourense
+   TBD/PST: primera-rfef-g1-2026-27-j14-aviles-mirandes
+   TBD/PST: primera-rfef-g1-2026-27-j14-real-union-arenas
+   TBD/PST: primera-rfef-g1-2026-27-j14-logrones-barakaldo
+   TBD/PST: primera-rfef-g1-2026-27-j14-unionistas-deportivo-fabril
+   TBD/PST: primera-rfef-g1-2026-27-j14-zamora-pontevedra
+   TBD/PST: primera-rfef-g1-2026-27-j15-arenas-lugo
+   TBD/PST: primera-rfef-g1-2026-27-j15-barakaldo-bilbao-athletic
+   TBD/PST: primera-rfef-g1-2026-27-j15-cacereno-real-union
+   TBD/PST: primera-rfef-g1-2026-27-j15-cultural-leonesa-racing-ferrol
+   TBD/PST: primera-rfef-g1-2026-27-j15-deportivo-fabril-aviles
+   TBD/PST: primera-rfef-g1-2026-27-j15-merida-zamora
+   TBD/PST: primera-rfef-g1-2026-27-j15-mirandes-extremadura
+   TBD/PST: primera-rfef-g1-2026-27-j15-ud-ourense-coria
+   TBD/PST: primera-rfef-g1-2026-27-j15-pontevedra-unionistas
+   TBD/PST: primera-rfef-g1-2026-27-j15-ponferradina-logrones
+   TBD/PST: primera-rfef-g1-2026-27-j16-bilbao-athletic-ud-ourense
+   TBD/PST: primera-rfef-g1-2026-27-j16-coria-logrones
+   TBD/PST: primera-rfef-g1-2026-27-j16-extremadura-arenas
+   TBD/PST: primera-rfef-g1-2026-27-j16-racing-ferrol-cacereno
+   TBD/PST: primera-rfef-g1-2026-27-j16-lugo-cultural-leonesa
+   TBD/PST: primera-rfef-g1-2026-27-j16-mirandes-deportivo-fabril
+   TBD/PST: primera-rfef-g1-2026-27-j16-aviles-merida
+   TBD/PST: primera-rfef-g1-2026-27-j16-real-union-pontevedra
+   TBD/PST: primera-rfef-g1-2026-27-j16-unionistas-ponferradina
+   TBD/PST: primera-rfef-g1-2026-27-j16-zamora-barakaldo
+   TBD/PST: primera-rfef-g1-2026-27-j17-arenas-unionistas
+   TBD/PST: primera-rfef-g1-2026-27-j17-cacereno-coria
+   TBD/PST: primera-rfef-g1-2026-27-j17-cultural-leonesa-aviles
+   TBD/PST: primera-rfef-g1-2026-27-j17-racing-ferrol-zamora
+   TBD/PST: primera-rfef-g1-2026-27-j17-lugo-barakaldo
+   TBD/PST: primera-rfef-g1-2026-27-j17-merida-extremadura
+   TBD/PST: primera-rfef-g1-2026-27-j17-ud-ourense-deportivo-fabril
+   TBD/PST: primera-rfef-g1-2026-27-j17-pontevedra-mirandes
+   TBD/PST: primera-rfef-g1-2026-27-j17-ponferradina-bilbao-athletic
+   TBD/PST: primera-rfef-g1-2026-27-j17-logrones-real-union
+   TBD/PST: primera-rfef-g1-2026-27-j18-bilbao-athletic-lugo
+   TBD/PST: primera-rfef-g1-2026-27-j18-barakaldo-merida
+   TBD/PST: primera-rfef-g1-2026-27-j18-coria-racing-ferrol
+   TBD/PST: primera-rfef-g1-2026-27-j18-deportivo-fabril-pontevedra
+   TBD/PST: primera-rfef-g1-2026-27-j18-extremadura-ud-ourense
+   TBD/PST: primera-rfef-g1-2026-27-j18-mirandes-cultural-leonesa
+   TBD/PST: primera-rfef-g1-2026-27-j18-aviles-cacereno
+   TBD/PST: primera-rfef-g1-2026-27-j18-ponferradina-arenas
+   TBD/PST: primera-rfef-g1-2026-27-j18-unionistas-logrones
+   TBD/PST: primera-rfef-g1-2026-27-j18-zamora-real-union
+   TBD/PST: primera-rfef-g1-2026-27-j19-arenas-mirandes
+   TBD/PST: primera-rfef-g1-2026-27-j19-cacereno-barakaldo
+   TBD/PST: primera-rfef-g1-2026-27-j19-cultural-leonesa-deportivo-fabril
+   TBD/PST: primera-rfef-g1-2026-27-j19-racing-ferrol-aviles
+   TBD/PST: primera-rfef-g1-2026-27-j19-lugo-extremadura
+   TBD/PST: primera-rfef-g1-2026-27-j19-merida-unionistas
+   TBD/PST: primera-rfef-g1-2026-27-j19-ud-ourense-zamora
+   TBD/PST: primera-rfef-g1-2026-27-j19-pontevedra-coria
+   TBD/PST: primera-rfef-g1-2026-27-j19-real-union-ponferradina
+   TBD/PST: primera-rfef-g1-2026-27-j19-logrones-bilbao-athletic
+   TBD/PST: primera-rfef-g1-2026-27-j20-bilbao-athletic-arenas
+   TBD/PST: primera-rfef-g1-2026-27-j20-barakaldo-racing-ferrol
+   TBD/PST: primera-rfef-g1-2026-27-j20-coria-lugo
+   TBD/PST: primera-rfef-g1-2026-27-j20-deportivo-fabril-merida
+   TBD/PST: primera-rfef-g1-2026-27-j20-extremadura-logrones
+   TBD/PST: primera-rfef-g1-2026-27-j20-pontevedra-cultural-leonesa
+   TBD/PST: primera-rfef-g1-2026-27-j20-aviles-real-union
+   TBD/PST: primera-rfef-g1-2026-27-j20-ponferradina-ud-ourense
+   TBD/PST: primera-rfef-g1-2026-27-j20-unionistas-mirandes
+   TBD/PST: primera-rfef-g1-2026-27-j20-zamora-cacereno
+   TBD/PST: primera-rfef-g1-2026-27-j21-arenas-coria
+   TBD/PST: primera-rfef-g1-2026-27-j21-cacereno-bilbao-athletic
+   TBD/PST: primera-rfef-g1-2026-27-j21-cultural-leonesa-barakaldo
+   TBD/PST: primera-rfef-g1-2026-27-j21-racing-ferrol-deportivo-fabril
+   TBD/PST: primera-rfef-g1-2026-27-j21-lugo-aviles
+   TBD/PST: primera-rfef-g1-2026-27-j21-merida-pontevedra
+   TBD/PST: primera-rfef-g1-2026-27-j21-mirandes-ponferradina
+   TBD/PST: primera-rfef-g1-2026-27-j21-ud-ourense-unionistas
+   TBD/PST: primera-rfef-g1-2026-27-j21-real-union-extremadura
+   TBD/PST: primera-rfef-g1-2026-27-j21-logrones-zamora
+   TBD/PST: primera-rfef-g1-2026-27-j22-bilbao-athletic-merida
+   TBD/PST: primera-rfef-g1-2026-27-j22-coria-cultural-leonesa
+   TBD/PST: primera-rfef-g1-2026-27-j22-deportivo-fabril-arenas
+   TBD/PST: primera-rfef-g1-2026-27-j22-extremadura-aviles
+   TBD/PST: primera-rfef-g1-2026-27-j22-ud-ourense-real-union
+   TBD/PST: primera-rfef-g1-2026-27-j22-pontevedra-barakaldo
+   TBD/PST: primera-rfef-g1-2026-27-j22-ponferradina-racing-ferrol
+   TBD/PST: primera-rfef-g1-2026-27-j22-logrones-lugo
+   TBD/PST: primera-rfef-g1-2026-27-j22-unionistas-cacereno
+   TBD/PST: primera-rfef-g1-2026-27-j22-zamora-mirandes
+   TBD/PST: primera-rfef-g1-2026-27-j23-bilbao-athletic-coria
+   TBD/PST: primera-rfef-g1-2026-27-j23-barakaldo-deportivo-fabril
+   TBD/PST: primera-rfef-g1-2026-27-j23-cacereno-pontevedra
+   TBD/PST: primera-rfef-g1-2026-27-j23-cultural-leonesa-extremadura
+   TBD/PST: primera-rfef-g1-2026-27-j23-racing-ferrol-ud-ourense
+   TBD/PST: primera-rfef-g1-2026-27-j23-lugo-zamora
+   TBD/PST: primera-rfef-g1-2026-27-j23-merida-ponferradina
+   TBD/PST: primera-rfef-g1-2026-27-j23-mirandes-logrones
+   TBD/PST: primera-rfef-g1-2026-27-j23-aviles-arenas
+   TBD/PST: primera-rfef-g1-2026-27-j23-real-union-unionistas
+   TBD/PST: primera-rfef-g1-2026-27-j24-arenas-cultural-leonesa
+   TBD/PST: primera-rfef-g1-2026-27-j24-coria-real-union
+   TBD/PST: primera-rfef-g1-2026-27-j24-deportivo-fabril-bilbao-athletic
+   TBD/PST: primera-rfef-g1-2026-27-j24-extremadura-barakaldo
+   TBD/PST: primera-rfef-g1-2026-27-j24-mirandes-cacereno
+   TBD/PST: primera-rfef-g1-2026-27-j24-ud-ourense-lugo
+   TBD/PST: primera-rfef-g1-2026-27-j24-pontevedra-racing-ferrol
+   TBD/PST: primera-rfef-g1-2026-27-j24-ponferradina-zamora
+   TBD/PST: primera-rfef-g1-2026-27-j24-logrones-merida
+   TBD/PST: primera-rfef-g1-2026-27-j24-unionistas-aviles
+   TBD/PST: primera-rfef-g1-2026-27-j25-bilbao-athletic-mirandes
+   TBD/PST: primera-rfef-g1-2026-27-j25-barakaldo-logrones
+   TBD/PST: primera-rfef-g1-2026-27-j25-cacereno-ponferradina
+   TBD/PST: primera-rfef-g1-2026-27-j25-cultural-leonesa-unionistas
+   TBD/PST: primera-rfef-g1-2026-27-j25-racing-ferrol-arenas
+   TBD/PST: primera-rfef-g1-2026-27-j25-lugo-pontevedra
+   TBD/PST: primera-rfef-g1-2026-27-j25-merida-ud-ourense
+   TBD/PST: primera-rfef-g1-2026-27-j25-aviles-coria
+   TBD/PST: primera-rfef-g1-2026-27-j25-real-union-deportivo-fabril
+   TBD/PST: primera-rfef-g1-2026-27-j25-zamora-extremadura
+   TBD/PST: primera-rfef-g1-2026-27-j26-arenas-real-union
+   TBD/PST: primera-rfef-g1-2026-27-j26-cacereno-racing-ferrol
+   TBD/PST: primera-rfef-g1-2026-27-j26-deportivo-fabril-lugo
+   TBD/PST: primera-rfef-g1-2026-27-j26-extremadura-coria
+   TBD/PST: primera-rfef-g1-2026-27-j26-mirandes-merida
+   TBD/PST: primera-rfef-g1-2026-27-j26-ud-ourense-bilbao-athletic
+   TBD/PST: primera-rfef-g1-2026-27-j26-ponferradina-pontevedra
+   TBD/PST: primera-rfef-g1-2026-27-j26-logrones-aviles
+   TBD/PST: primera-rfef-g1-2026-27-j26-unionistas-barakaldo
+   TBD/PST: primera-rfef-g1-2026-27-j26-zamora-cultural-leonesa
+   TBD/PST: primera-rfef-g1-2026-27-j27-bilbao-athletic-ponferradina
+   TBD/PST: primera-rfef-g1-2026-27-j27-barakaldo-ud-ourense
+   TBD/PST: primera-rfef-g1-2026-27-j27-coria-deportivo-fabril
+   TBD/PST: primera-rfef-g1-2026-27-j27-cultural-leonesa-logrones
+   TBD/PST: primera-rfef-g1-2026-27-j27-racing-ferrol-mirandes
+   TBD/PST: primera-rfef-g1-2026-27-j27-lugo-unionistas
+   TBD/PST: primera-rfef-g1-2026-27-j27-merida-arenas
+   TBD/PST: primera-rfef-g1-2026-27-j27-pontevedra-extremadura
+   TBD/PST: primera-rfef-g1-2026-27-j27-aviles-zamora
+   TBD/PST: primera-rfef-g1-2026-27-j27-real-union-cacereno
+   TBD/PST: primera-rfef-g1-2026-27-j28-arenas-barakaldo
+   TBD/PST: primera-rfef-g1-2026-27-j28-coria-cacereno
+   TBD/PST: primera-rfef-g1-2026-27-j28-cultural-leonesa-lugo
+   TBD/PST: primera-rfef-g1-2026-27-j28-deportivo-fabril-unionistas
+   TBD/PST: primera-rfef-g1-2026-27-j28-extremadura-ponferradina
+   TBD/PST: primera-rfef-g1-2026-27-j28-mirandes-pontevedra
+   TBD/PST: primera-rfef-g1-2026-27-j28-ud-ourense-aviles
+   TBD/PST: primera-rfef-g1-2026-27-j28-real-union-bilbao-athletic
+   TBD/PST: primera-rfef-g1-2026-27-j28-logrones-racing-ferrol
+   TBD/PST: primera-rfef-g1-2026-27-j28-zamora-merida
+   TBD/PST: primera-rfef-g1-2026-27-j29-arenas-extremadura
+   TBD/PST: primera-rfef-g1-2026-27-j29-barakaldo-zamora
+   TBD/PST: primera-rfef-g1-2026-27-j29-cacereno-ud-ourense
+   TBD/PST: primera-rfef-g1-2026-27-j29-racing-ferrol-bilbao-athletic
+   TBD/PST: primera-rfef-g1-2026-27-j29-merida-lugo
+   TBD/PST: primera-rfef-g1-2026-27-j29-mirandes-real-union
+   TBD/PST: primera-rfef-g1-2026-27-j29-pontevedra-logrones
+   TBD/PST: primera-rfef-g1-2026-27-j29-aviles-deportivo-fabril
+   TBD/PST: primera-rfef-g1-2026-27-j29-ponferradina-cultural-leonesa
+   TBD/PST: primera-rfef-g1-2026-27-j29-unionistas-coria
+   TBD/PST: primera-rfef-g1-2026-27-j30-bilbao-athletic-pontevedra
+   TBD/PST: primera-rfef-g1-2026-27-j30-coria-zamora
+   TBD/PST: primera-rfef-g1-2026-27-j30-deportivo-fabril-cultural-leonesa
+   TBD/PST: primera-rfef-g1-2026-27-j30-extremadura-merida
+   TBD/PST: primera-rfef-g1-2026-27-j30-lugo-ponferradina
+   TBD/PST: primera-rfef-g1-2026-27-j30-ud-ourense-mirandes
+   TBD/PST: primera-rfef-g1-2026-27-j30-aviles-barakaldo
+   TBD/PST: primera-rfef-g1-2026-27-j30-real-union-racing-ferrol
+   TBD/PST: primera-rfef-g1-2026-27-j30-logrones-cacereno
+   TBD/PST: primera-rfef-g1-2026-27-j30-unionistas-arenas
+   TBD/PST: primera-rfef-g1-2026-27-j31-bilbao-athletic-logrones
+   TBD/PST: primera-rfef-g1-2026-27-j31-barakaldo-coria
+   TBD/PST: primera-rfef-g1-2026-27-j31-cacereno-extremadura
+   TBD/PST: primera-rfef-g1-2026-27-j31-cultural-leonesa-ud-ourense
+   TBD/PST: primera-rfef-g1-2026-27-j31-racing-ferrol-lugo
+   TBD/PST: primera-rfef-g1-2026-27-j31-merida-aviles
+   TBD/PST: primera-rfef-g1-2026-27-j31-mirandes-arenas
+   TBD/PST: primera-rfef-g1-2026-27-j31-pontevedra-deportivo-fabril
+   TBD/PST: primera-rfef-g1-2026-27-j31-ponferradina-real-union
+   TBD/PST: primera-rfef-g1-2026-27-j31-zamora-unionistas
+   TBD/PST: primera-rfef-g1-2026-27-j32-arenas-cacereno
+   TBD/PST: primera-rfef-g1-2026-27-j32-coria-merida
+   TBD/PST: primera-rfef-g1-2026-27-j32-deportivo-fabril-zamora
+   TBD/PST: primera-rfef-g1-2026-27-j32-extremadura-mirandes
+   TBD/PST: primera-rfef-g1-2026-27-j32-lugo-bilbao-athletic
+   TBD/PST: primera-rfef-g1-2026-27-j32-ud-ourense-pontevedra
+   TBD/PST: primera-rfef-g1-2026-27-j32-aviles-cultural-leonesa
+   TBD/PST: primera-rfef-g1-2026-27-j32-real-union-barakaldo
+   TBD/PST: primera-rfef-g1-2026-27-j32-logrones-ponferradina
+   TBD/PST: primera-rfef-g1-2026-27-j32-unionistas-racing-ferrol
+   TBD/PST: primera-rfef-g1-2026-27-j33-bilbao-athletic-barakaldo
+   TBD/PST: primera-rfef-g1-2026-27-j33-cacereno-merida
+   TBD/PST: primera-rfef-g1-2026-27-j33-cultural-leonesa-real-union
+   TBD/PST: primera-rfef-g1-2026-27-j33-extremadura-deportivo-fabril
+   TBD/PST: primera-rfef-g1-2026-27-j33-racing-ferrol-coria
+   TBD/PST: primera-rfef-g1-2026-27-j33-mirandes-lugo
+   TBD/PST: primera-rfef-g1-2026-27-j33-pontevedra-aviles
+   TBD/PST: primera-rfef-g1-2026-27-j33-ponferradina-unionistas
+   TBD/PST: primera-rfef-g1-2026-27-j33-logrones-ud-ourense
+   TBD/PST: primera-rfef-g1-2026-27-j33-zamora-arenas
+   TBD/PST: primera-rfef-g1-2026-27-j34-arenas-logrones
+   TBD/PST: primera-rfef-g1-2026-27-j34-barakaldo-ponferradina
+   TBD/PST: primera-rfef-g1-2026-27-j34-coria-pontevedra
+   TBD/PST: primera-rfef-g1-2026-27-j34-cultural-leonesa-mirandes
+   TBD/PST: primera-rfef-g1-2026-27-j34-deportivo-fabril-ud-ourense
+   TBD/PST: primera-rfef-g1-2026-27-j34-lugo-cacereno
+   TBD/PST: primera-rfef-g1-2026-27-j34-merida-racing-ferrol
+   TBD/PST: primera-rfef-g1-2026-27-j34-aviles-bilbao-athletic
+   TBD/PST: primera-rfef-g1-2026-27-j34-real-union-zamora
+   TBD/PST: primera-rfef-g1-2026-27-j34-unionistas-extremadura
+   TBD/PST: primera-rfef-g1-2026-27-j35-bilbao-athletic-unionistas
+   TBD/PST: primera-rfef-g1-2026-27-j35-cacereno-aviles
+   TBD/PST: primera-rfef-g1-2026-27-j35-racing-ferrol-extremadura
+   TBD/PST: primera-rfef-g1-2026-27-j35-lugo-real-union
+   TBD/PST: primera-rfef-g1-2026-27-j35-merida-cultural-leonesa
+   TBD/PST: primera-rfef-g1-2026-27-j35-mirandes-barakaldo
+   TBD/PST: primera-rfef-g1-2026-27-j35-ud-ourense-arenas
+   TBD/PST: primera-rfef-g1-2026-27-j35-pontevedra-zamora
+   TBD/PST: primera-rfef-g1-2026-27-j35-ponferradina-deportivo-fabril
+   TBD/PST: primera-rfef-g1-2026-27-j35-logrones-coria
+   TBD/PST: primera-rfef-g1-2026-27-j36-arenas-ponferradina
+   TBD/PST: primera-rfef-g1-2026-27-j36-barakaldo-lugo
+   TBD/PST: primera-rfef-g1-2026-27-j36-coria-mirandes
+   TBD/PST: primera-rfef-g1-2026-27-j36-cultural-leonesa-cacereno
+   TBD/PST: primera-rfef-g1-2026-27-j36-deportivo-fabril-logrones
+   TBD/PST: primera-rfef-g1-2026-27-j36-extremadura-bilbao-athletic
+   TBD/PST: primera-rfef-g1-2026-27-j36-aviles-racing-ferrol
+   TBD/PST: primera-rfef-g1-2026-27-j36-real-union-merida
+   TBD/PST: primera-rfef-g1-2026-27-j36-unionistas-pontevedra
+   TBD/PST: primera-rfef-g1-2026-27-j36-zamora-ud-ourense
+   TBD/PST: primera-rfef-g1-2026-27-j37-bilbao-athletic-zamora
+   TBD/PST: primera-rfef-g1-2026-27-j37-cacereno-deportivo-fabril
+   TBD/PST: primera-rfef-g1-2026-27-j37-racing-ferrol-cultural-leonesa
+   TBD/PST: primera-rfef-g1-2026-27-j37-lugo-arenas
+   TBD/PST: primera-rfef-g1-2026-27-j37-merida-barakaldo
+   TBD/PST: primera-rfef-g1-2026-27-j37-mirandes-aviles
+   TBD/PST: primera-rfef-g1-2026-27-j37-ud-ourense-extremadura
+   TBD/PST: primera-rfef-g1-2026-27-j37-pontevedra-real-union
+   TBD/PST: primera-rfef-g1-2026-27-j37-ponferradina-coria
+   TBD/PST: primera-rfef-g1-2026-27-j37-logrones-unionistas
+   TBD/PST: primera-rfef-g1-2026-27-j38-arenas-pontevedra
+   TBD/PST: primera-rfef-g1-2026-27-j38-barakaldo-cacereno
+   TBD/PST: primera-rfef-g1-2026-27-j38-coria-ud-ourense
+   TBD/PST: primera-rfef-g1-2026-27-j38-cultural-leonesa-bilbao-athletic
+   TBD/PST: primera-rfef-g1-2026-27-j38-deportivo-fabril-mirandes
+   TBD/PST: primera-rfef-g1-2026-27-j38-extremadura-lugo
+   TBD/PST: primera-rfef-g1-2026-27-j38-aviles-ponferradina
+   TBD/PST: primera-rfef-g1-2026-27-j38-real-union-logrones
+   TBD/PST: primera-rfef-g1-2026-27-j38-unionistas-merida
+   TBD/PST: primera-rfef-g1-2026-27-j38-zamora-racing-ferrol
+== segunda-rfef-g1
+   newTeams: 3  added: 96  rescheduled: 0  missing: 96  renamedAtProvider: 0  rematched: 0  unconfirmed: 203  urgentes: 6
+   REVISAR nuevo equipo: alaves-b-2 <- "Alavés B" (externalId alaves-b)
+   REVISAR nuevo equipo: atletico-astorga <- "Atlético Astorga" (externalId astorga)
+   REVISAR nuevo equipo: eibar-b-2 <- "Eibar B" (externalId eibar-b)
+   + segunda-rfef-g1-2026-27-j1-alaves-b-2-coruxo  PASADO
+   + segunda-rfef-g1-2026-27-j1-oviedo-vetusta-eibar-b-2  PASADO
+   + segunda-rfef-g1-2026-27-j1-atletico-astorga-portugalete  PASADO
+   + segunda-rfef-g1-2026-27-j2-eibar-b-2-gimnastica  PASADO
+   + segunda-rfef-g1-2026-27-j2-llanera-alaves-b-2  PASADO
+   + segunda-rfef-g1-2026-27-j2-basconia-atletico-astorga  PASADO
+   + segunda-rfef-g1-2026-27-j3-atletico-astorga-marino  PASADO
+   + segunda-rfef-g1-2026-27-j3-ourense-cf-eibar-b-2  PASADO
+   + segunda-rfef-g1-2026-27-j3-alaves-b-2-oviedo-vetusta  PASADO
+   + segunda-rfef-g1-2026-27-j4-sestao-river-atletico-astorga  PASADO
+   + segunda-rfef-g1-2026-27-j4-eibar-b-2-compostela  PASADO
+   + segunda-rfef-g1-2026-27-j4-arosa-alaves-b-2  PASADO
+   + segunda-rfef-g1-2026-27-j5-rayo-cantabria-eibar-b-2  PASADO
+   + segunda-rfef-g1-2026-27-j5-atletico-astorga-amorebieta  PASADO
+   + segunda-rfef-g1-2026-27-j5-portugalete-alaves-b-2  PASADO
+   + segunda-rfef-g1-2026-27-j6-eibar-b-2-basconia  PASADO
+   + segunda-rfef-g1-2026-27-j6-atletico-astorga-ourense-cf  PASADO
+   + segunda-rfef-g1-2026-27-j6-alaves-b-2-gernika  PASADO
+   + segunda-rfef-g1-2026-27-j7-compostela-atletico-astorga  PASADO
+   + segunda-rfef-g1-2026-27-j7-portugalete-eibar-b-2  PASADO
+   + segunda-rfef-g1-2026-27-j7-gimnastica-alaves-b-2  PASADO
+   + segunda-rfef-g1-2026-27-j8-eibar-b-2-bergantinos  PASADO
+   + segunda-rfef-g1-2026-27-j8-alaves-b-2-rayo-cantabria  PASADO
+   + segunda-rfef-g1-2026-27-j8-atletico-astorga-gernika  PASADO
+   + segunda-rfef-g1-2026-27-j9-rayo-cantabria-atletico-astorga  PASADO
+   + segunda-rfef-g1-2026-27-j9-alaves-b-2-eibar-b-2  PASADO
+   + segunda-rfef-g1-2026-27-j10-eibar-b-2-atletico-astorga  PASADO
+   + segunda-rfef-g1-2026-27-j10-sestao-river-alaves-b-2  PASADO
+   + segunda-rfef-g1-2026-27-j11-amorebieta-eibar-b-2  URGENTE
+   + segunda-rfef-g1-2026-27-j11-atletico-astorga-arosa  URGENTE
+   + segunda-rfef-g1-2026-27-j11-basconia-alaves-b-2  URGENTE
+   + segunda-rfef-g1-2026-27-j12-alaves-b-2-compostela
+   + segunda-rfef-g1-2026-27-j12-arosa-eibar-b-2
+   + segunda-rfef-g1-2026-27-j12-oviedo-vetusta-atletico-astorga
+   + segunda-rfef-g1-2026-27-j13-atletico-astorga-alaves-b-2
+   + segunda-rfef-g1-2026-27-j13-eibar-b-2-marino
+   + segunda-rfef-g1-2026-27-j14-alaves-b-2-bergantinos
+   + segunda-rfef-g1-2026-27-j14-coruxo-eibar-b-2
+   + segunda-rfef-g1-2026-27-j14-llanera-atletico-astorga
+   + segunda-rfef-g1-2026-27-j15-atletico-astorga-coruxo
+   + segunda-rfef-g1-2026-27-j15-eibar-b-2-sestao-river
+   + segunda-rfef-g1-2026-27-j15-ourense-cf-alaves-b-2
+   + segunda-rfef-g1-2026-27-j16-alaves-b-2-amorebieta
+   + segunda-rfef-g1-2026-27-j16-atletico-astorga-gimnastica
+   + segunda-rfef-g1-2026-27-j16-llanera-eibar-b-2
+   + segunda-rfef-g1-2026-27-j17-alaves-b-2-marino
+   + segunda-rfef-g1-2026-27-j17-bergantinos-atletico-astorga
+   + segunda-rfef-g1-2026-27-j17-eibar-b-2-gernika
+   + segunda-rfef-g1-2026-27-j18-bergantinos-eibar-b-2
+   + segunda-rfef-g1-2026-27-j18-gernika-alaves-b-2
+   + segunda-rfef-g1-2026-27-j18-ourense-cf-atletico-astorga
+   + segunda-rfef-g1-2026-27-j19-alaves-b-2-gimnastica
+   + segunda-rfef-g1-2026-27-j19-atletico-astorga-basconia
+   + segunda-rfef-g1-2026-27-j19-eibar-b-2-amorebieta
+   + segunda-rfef-g1-2026-27-j20-eibar-b-2-alaves-b-2
+   + segunda-rfef-g1-2026-27-j20-marino-atletico-astorga
+   + segunda-rfef-g1-2026-27-j21-alaves-b-2-basconia
+   + segunda-rfef-g1-2026-27-j21-atletico-astorga-sestao-river
+   + segunda-rfef-g1-2026-27-j21-marino-eibar-b-2
+   + segunda-rfef-g1-2026-27-j22-gimnastica-eibar-b-2
+   + segunda-rfef-g1-2026-27-j22-rayo-cantabria-alaves-b-2
+   + segunda-rfef-g1-2026-27-j22-amorebieta-atletico-astorga
+   + segunda-rfef-g1-2026-27-j23-alaves-b-2-sestao-river
+   + segunda-rfef-g1-2026-27-j23-atletico-astorga-rayo-cantabria
+   + segunda-rfef-g1-2026-27-j23-eibar-b-2-arosa
+   + segunda-rfef-g1-2026-27-j24-basconia-eibar-b-2
+   + segunda-rfef-g1-2026-27-j24-gimnastica-atletico-astorga
+   + segunda-rfef-g1-2026-27-j24-amorebieta-alaves-b-2
+   + segunda-rfef-g1-2026-27-j25-atletico-astorga-compostela
+   + segunda-rfef-g1-2026-27-j25-eibar-b-2-rayo-cantabria
+   + segunda-rfef-g1-2026-27-j25-oviedo-vetusta-alaves-b-2
+   + segunda-rfef-g1-2026-27-j26-alaves-b-2-atletico-astorga
+   + segunda-rfef-g1-2026-27-j26-eibar-b-2-llanera
+   + segunda-rfef-g1-2026-27-j27-atletico-astorga-oviedo-vetusta
+   + segunda-rfef-g1-2026-27-j27-bergantinos-alaves-b-2
+   + segunda-rfef-g1-2026-27-j27-sestao-river-eibar-b-2
+   + segunda-rfef-g1-2026-27-j28-alaves-b-2-ourense-cf
+   + segunda-rfef-g1-2026-27-j28-arosa-atletico-astorga
+   + segunda-rfef-g1-2026-27-j28-eibar-b-2-portugalete
+   + segunda-rfef-g1-2026-27-j29-compostela-alaves-b-2
+   + segunda-rfef-g1-2026-27-j29-coruxo-atletico-astorga
+   + segunda-rfef-g1-2026-27-j29-gernika-eibar-b-2
+   + segunda-rfef-g1-2026-27-j30-alaves-b-2-portugalete
+   + segunda-rfef-g1-2026-27-j30-atletico-astorga-bergantinos
+   + segunda-rfef-g1-2026-27-j30-eibar-b-2-coruxo
+   + segunda-rfef-g1-2026-27-j31-eibar-b-2-ourense-cf
+   + segunda-rfef-g1-2026-27-j31-portugalete-atletico-astorga
+   + segunda-rfef-g1-2026-27-j31-marino-alaves-b-2
+   + segunda-rfef-g1-2026-27-j32-alaves-b-2-arosa
+   + segunda-rfef-g1-2026-27-j32-atletico-astorga-llanera
+   + segunda-rfef-g1-2026-27-j32-compostela-eibar-b-2
+   + segunda-rfef-g1-2026-27-j33-coruxo-alaves-b-2
+   + segunda-rfef-g1-2026-27-j33-eibar-b-2-oviedo-vetusta
+   + segunda-rfef-g1-2026-27-j33-gernika-atletico-astorga
+   + segunda-rfef-g1-2026-27-j34-alaves-b-2-llanera
+   + segunda-rfef-g1-2026-27-j34-atletico-astorga-eibar-b-2
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j1-alaves-b-coruxo  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j1-astorga-portugalete  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j1-oviedo-vetusta-eibar-b  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j2-basconia-astorga  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j2-eibar-b-gimnastica  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j2-llanera-alaves-b  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j3-alaves-b-oviedo-vetusta  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j3-astorga-marino  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j3-ourense-cf-eibar-b  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j4-arosa-alaves-b  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j4-eibar-b-compostela  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j4-sestao-river-astorga  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j5-astorga-amorebieta  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j5-portugalete-alaves-b  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j5-rayo-cantabria-eibar-b  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j6-alaves-b-gernika  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j6-astorga-ourense-cf  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j6-eibar-b-basconia  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j7-compostela-astorga  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j7-gimnastica-alaves-b  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j7-portugalete-eibar-b  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j8-alaves-b-rayo-cantabria  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j8-astorga-gernika  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j8-eibar-b-bergantinos  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j9-alaves-b-eibar-b  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j9-rayo-cantabria-astorga  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j10-eibar-b-astorga  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j10-sestao-river-alaves-b  PASADO
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j11-amorebieta-eibar-b  URGENTE
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j11-astorga-arosa  URGENTE
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j11-basconia-alaves-b  URGENTE
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j12-alaves-b-compostela
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j12-arosa-eibar-b
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j12-oviedo-vetusta-astorga
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j13-astorga-alaves-b
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j13-eibar-b-marino
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j14-alaves-b-bergantinos
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j14-coruxo-eibar-b
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j14-llanera-astorga
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j15-astorga-coruxo
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j15-eibar-b-sestao-river
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j15-ourense-cf-alaves-b
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j16-alaves-b-amorebieta
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j16-astorga-gimnastica
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j16-llanera-eibar-b
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j17-alaves-b-marino
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j17-bergantinos-astorga
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j17-eibar-b-gernika
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j18-bergantinos-eibar-b
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j18-gernika-alaves-b
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j18-ourense-cf-astorga
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j19-alaves-b-gimnastica
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j19-astorga-basconia
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j19-eibar-b-amorebieta
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j20-eibar-b-alaves-b
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j20-marino-astorga
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j21-alaves-b-basconia
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j21-astorga-sestao-river
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j21-marino-eibar-b
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j22-amorebieta-astorga
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j22-gimnastica-eibar-b
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j22-rayo-cantabria-alaves-b
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j23-alaves-b-sestao-river
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j23-astorga-rayo-cantabria
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j23-eibar-b-arosa
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j24-amorebieta-alaves-b
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j24-basconia-eibar-b
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j24-gimnastica-astorga
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j25-astorga-compostela
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j25-eibar-b-rayo-cantabria
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j25-oviedo-vetusta-alaves-b
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j26-alaves-b-astorga
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j26-eibar-b-llanera
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j27-astorga-oviedo-vetusta
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j27-bergantinos-alaves-b
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j27-sestao-river-eibar-b
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j28-alaves-b-ourense-cf
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j28-arosa-astorga
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j28-eibar-b-portugalete
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j29-compostela-alaves-b
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j29-coruxo-astorga
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j29-gernika-eibar-b
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j30-alaves-b-portugalete
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j30-astorga-bergantinos
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j30-eibar-b-coruxo
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j31-eibar-b-ourense-cf
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j31-marino-alaves-b
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j31-portugalete-astorga
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j32-alaves-b-arosa
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j32-astorga-llanera
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j32-compostela-eibar-b
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j33-coruxo-alaves-b
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j33-eibar-b-oviedo-vetusta
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j33-gernika-astorga
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j34-alaves-b-llanera
+   ? ausente en el proveedor: segunda-rfef-g1-2026-27-j34-astorga-eibar-b
+   TBD/PST: segunda-rfef-g1-2026-27-j12-alaves-b-2-compostela
+   TBD/PST: segunda-rfef-g1-2026-27-j12-arosa-eibar-b-2
+   TBD/PST: segunda-rfef-g1-2026-27-j12-llanera-ourense-cf
+   TBD/PST: segunda-rfef-g1-2026-27-j12-marino-coruxo
+   TBD/PST: segunda-rfef-g1-2026-27-j12-oviedo-vetusta-atletico-astorga
+   TBD/PST: segunda-rfef-g1-2026-27-j13-atletico-astorga-alaves-b-2
+   TBD/PST: segunda-rfef-g1-2026-27-j13-arosa-oviedo-vetusta
+   TBD/PST: segunda-rfef-g1-2026-27-j13-basconia-sestao-river
+   TBD/PST: segunda-rfef-g1-2026-27-j13-compostela-bergantinos
+   TBD/PST: segunda-rfef-g1-2026-27-j13-coruxo-gimnastica
+   TBD/PST: segunda-rfef-g1-2026-27-j13-eibar-b-2-marino
+   TBD/PST: segunda-rfef-g1-2026-27-j13-portugalete-rayo-cantabria
+   TBD/PST: segunda-rfef-g1-2026-27-j13-ourense-cf-gernika
+   TBD/PST: segunda-rfef-g1-2026-27-j13-amorebieta-llanera
+   TBD/PST: segunda-rfef-g1-2026-27-j14-alaves-b-2-bergantinos
+   TBD/PST: segunda-rfef-g1-2026-27-j14-coruxo-eibar-b-2
+   TBD/PST: segunda-rfef-g1-2026-27-j14-gernika-portugalete
+   TBD/PST: segunda-rfef-g1-2026-27-j14-llanera-atletico-astorga
+   TBD/PST: segunda-rfef-g1-2026-27-j14-marino-amorebieta
+   TBD/PST: segunda-rfef-g1-2026-27-j14-oviedo-vetusta-basconia
+   TBD/PST: segunda-rfef-g1-2026-27-j14-gimnastica-compostela
+   TBD/PST: segunda-rfef-g1-2026-27-j14-rayo-cantabria-arosa
+   TBD/PST: segunda-rfef-g1-2026-27-j14-sestao-river-ourense-cf
+   TBD/PST: segunda-rfef-g1-2026-27-j15-atletico-astorga-coruxo
+   TBD/PST: segunda-rfef-g1-2026-27-j15-arosa-gimnastica
+   TBD/PST: segunda-rfef-g1-2026-27-j15-basconia-gernika
+   TBD/PST: segunda-rfef-g1-2026-27-j15-bergantinos-marino
+   TBD/PST: segunda-rfef-g1-2026-27-j15-compostela-rayo-cantabria
+   TBD/PST: segunda-rfef-g1-2026-27-j15-eibar-b-2-sestao-river
+   TBD/PST: segunda-rfef-g1-2026-27-j15-portugalete-llanera
+   TBD/PST: segunda-rfef-g1-2026-27-j15-ourense-cf-alaves-b-2
+   TBD/PST: segunda-rfef-g1-2026-27-j15-amorebieta-oviedo-vetusta
+   TBD/PST: segunda-rfef-g1-2026-27-j16-alaves-b-2-amorebieta
+   TBD/PST: segunda-rfef-g1-2026-27-j16-atletico-astorga-gimnastica
+   TBD/PST: segunda-rfef-g1-2026-27-j16-coruxo-basconia
+   TBD/PST: segunda-rfef-g1-2026-27-j16-gernika-compostela
+   TBD/PST: segunda-rfef-g1-2026-27-j16-llanera-eibar-b-2
+   TBD/PST: segunda-rfef-g1-2026-27-j16-marino-arosa
+   TBD/PST: segunda-rfef-g1-2026-27-j16-oviedo-vetusta-ourense-cf
+   TBD/PST: segunda-rfef-g1-2026-27-j16-rayo-cantabria-bergantinos
+   TBD/PST: segunda-rfef-g1-2026-27-j16-sestao-river-portugalete
+   TBD/PST: segunda-rfef-g1-2026-27-j17-alaves-b-2-marino
+   TBD/PST: segunda-rfef-g1-2026-27-j17-arosa-coruxo
+   TBD/PST: segunda-rfef-g1-2026-27-j17-bergantinos-atletico-astorga
+   TBD/PST: segunda-rfef-g1-2026-27-j17-eibar-b-2-gernika
+   TBD/PST: segunda-rfef-g1-2026-27-j17-portugalete-oviedo-vetusta
+   TBD/PST: segunda-rfef-g1-2026-27-j17-ourense-cf-rayo-cantabria
+   TBD/PST: segunda-rfef-g1-2026-27-j17-gimnastica-basconia
+   TBD/PST: segunda-rfef-g1-2026-27-j17-amorebieta-compostela
+   TBD/PST: segunda-rfef-g1-2026-27-j17-sestao-river-llanera
+   TBD/PST: segunda-rfef-g1-2026-27-j18-basconia-rayo-cantabria
+   TBD/PST: segunda-rfef-g1-2026-27-j18-bergantinos-eibar-b-2
+   TBD/PST: segunda-rfef-g1-2026-27-j18-compostela-arosa
+   TBD/PST: segunda-rfef-g1-2026-27-j18-coruxo-portugalete
+   TBD/PST: segunda-rfef-g1-2026-27-j18-gernika-alaves-b-2
+   TBD/PST: segunda-rfef-g1-2026-27-j18-marino-llanera
+   TBD/PST: segunda-rfef-g1-2026-27-j18-ourense-cf-atletico-astorga
+   TBD/PST: segunda-rfef-g1-2026-27-j18-oviedo-vetusta-sestao-river
+   TBD/PST: segunda-rfef-g1-2026-27-j18-gimnastica-amorebieta
+   TBD/PST: segunda-rfef-g1-2026-27-j19-alaves-b-2-gimnastica
+   TBD/PST: segunda-rfef-g1-2026-27-j19-atletico-astorga-basconia
+   TBD/PST: segunda-rfef-g1-2026-27-j19-arosa-sestao-river
+   TBD/PST: segunda-rfef-g1-2026-27-j19-coruxo-ourense-cf
+   TBD/PST: segunda-rfef-g1-2026-27-j19-eibar-b-2-amorebieta
+   TBD/PST: segunda-rfef-g1-2026-27-j19-portugalete-bergantinos
+   TBD/PST: segunda-rfef-g1-2026-27-j19-llanera-gernika
+   TBD/PST: segunda-rfef-g1-2026-27-j19-oviedo-vetusta-compostela
+   TBD/PST: segunda-rfef-g1-2026-27-j19-rayo-cantabria-marino
+   TBD/PST: segunda-rfef-g1-2026-27-j20-basconia-ourense-cf
+   TBD/PST: segunda-rfef-g1-2026-27-j20-bergantinos-arosa
+   TBD/PST: segunda-rfef-g1-2026-27-j20-compostela-portugalete
+   TBD/PST: segunda-rfef-g1-2026-27-j20-eibar-b-2-alaves-b-2
+   TBD/PST: segunda-rfef-g1-2026-27-j20-llanera-coruxo
+   TBD/PST: segunda-rfef-g1-2026-27-j20-marino-atletico-astorga
+   TBD/PST: segunda-rfef-g1-2026-27-j20-gimnastica-oviedo-vetusta
+   TBD/PST: segunda-rfef-g1-2026-27-j20-amorebieta-rayo-cantabria
+   TBD/PST: segunda-rfef-g1-2026-27-j20-sestao-river-gernika
+   TBD/PST: segunda-rfef-g1-2026-27-j21-alaves-b-2-basconia
+   TBD/PST: segunda-rfef-g1-2026-27-j21-atletico-astorga-sestao-river
+   TBD/PST: segunda-rfef-g1-2026-27-j21-coruxo-amorebieta
+   TBD/PST: segunda-rfef-g1-2026-27-j21-portugalete-gimnastica
+   TBD/PST: segunda-rfef-g1-2026-27-j21-gernika-arosa
+   TBD/PST: segunda-rfef-g1-2026-27-j21-marino-eibar-b-2
+   TBD/PST: segunda-rfef-g1-2026-27-j21-ourense-cf-compostela
+   TBD/PST: segunda-rfef-g1-2026-27-j21-oviedo-vetusta-bergantinos
+   TBD/PST: segunda-rfef-g1-2026-27-j21-rayo-cantabria-llanera
+   TBD/PST: segunda-rfef-g1-2026-27-j22-arosa-portugalete
+   TBD/PST: segunda-rfef-g1-2026-27-j22-basconia-marino
+   TBD/PST: segunda-rfef-g1-2026-27-j22-bergantinos-compostela
+   TBD/PST: segunda-rfef-g1-2026-27-j22-gernika-ourense-cf
+   TBD/PST: segunda-rfef-g1-2026-27-j22-llanera-oviedo-vetusta
+   TBD/PST: segunda-rfef-g1-2026-27-j22-gimnastica-eibar-b-2
+   TBD/PST: segunda-rfef-g1-2026-27-j22-rayo-cantabria-alaves-b-2
+   TBD/PST: segunda-rfef-g1-2026-27-j22-amorebieta-atletico-astorga
+   TBD/PST: segunda-rfef-g1-2026-27-j22-sestao-river-coruxo
+   TBD/PST: segunda-rfef-g1-2026-27-j23-alaves-b-2-sestao-river
+   TBD/PST: segunda-rfef-g1-2026-27-j23-atletico-astorga-rayo-cantabria
+   TBD/PST: segunda-rfef-g1-2026-27-j23-compostela-gimnastica
+   TBD/PST: segunda-rfef-g1-2026-27-j23-coruxo-bergantinos
+   TBD/PST: segunda-rfef-g1-2026-27-j23-eibar-b-2-arosa
+   TBD/PST: segunda-rfef-g1-2026-27-j23-portugalete-basconia
+   TBD/PST: segunda-rfef-g1-2026-27-j23-marino-gernika
+   TBD/PST: segunda-rfef-g1-2026-27-j23-ourense-cf-llanera
+   TBD/PST: segunda-rfef-g1-2026-27-j23-oviedo-vetusta-amorebieta
+   TBD/PST: segunda-rfef-g1-2026-27-j24-arosa-ourense-cf
+   TBD/PST: segunda-rfef-g1-2026-27-j24-basconia-eibar-b-2
+   TBD/PST: segunda-rfef-g1-2026-27-j24-bergantinos-gernika
+   TBD/PST: segunda-rfef-g1-2026-27-j24-compostela-coruxo
+   TBD/PST: segunda-rfef-g1-2026-27-j24-llanera-portugalete
+   TBD/PST: segunda-rfef-g1-2026-27-j24-gimnastica-atletico-astorga
+   TBD/PST: segunda-rfef-g1-2026-27-j24-rayo-cantabria-oviedo-vetusta
+   TBD/PST: segunda-rfef-g1-2026-27-j24-amorebieta-alaves-b-2
+   TBD/PST: segunda-rfef-g1-2026-27-j24-sestao-river-marino
+   TBD/PST: segunda-rfef-g1-2026-27-j25-atletico-astorga-compostela
+   TBD/PST: segunda-rfef-g1-2026-27-j25-eibar-b-2-rayo-cantabria
+   TBD/PST: segunda-rfef-g1-2026-27-j25-portugalete-sestao-river
+   TBD/PST: segunda-rfef-g1-2026-27-j25-gernika-coruxo
+   TBD/PST: segunda-rfef-g1-2026-27-j25-llanera-arosa
+   TBD/PST: segunda-rfef-g1-2026-27-j25-marino-gimnastica
+   TBD/PST: segunda-rfef-g1-2026-27-j25-ourense-cf-bergantinos
+   TBD/PST: segunda-rfef-g1-2026-27-j25-oviedo-vetusta-alaves-b-2
+   TBD/PST: segunda-rfef-g1-2026-27-j25-amorebieta-basconia
+   TBD/PST: segunda-rfef-g1-2026-27-j26-alaves-b-2-atletico-astorga
+   TBD/PST: segunda-rfef-g1-2026-27-j26-arosa-rayo-cantabria
+   TBD/PST: segunda-rfef-g1-2026-27-j26-basconia-oviedo-vetusta
+   TBD/PST: segunda-rfef-g1-2026-27-j26-compostela-amorebieta
+   TBD/PST: segunda-rfef-g1-2026-27-j26-coruxo-marino
+   TBD/PST: segunda-rfef-g1-2026-27-j26-eibar-b-2-llanera
+   TBD/PST: segunda-rfef-g1-2026-27-j26-portugalete-gernika
+   TBD/PST: segunda-rfef-g1-2026-27-j26-gimnastica-ourense-cf
+   TBD/PST: segunda-rfef-g1-2026-27-j26-sestao-river-bergantinos
+   TBD/PST: segunda-rfef-g1-2026-27-j27-atletico-astorga-oviedo-vetusta
+   TBD/PST: segunda-rfef-g1-2026-27-j27-bergantinos-alaves-b-2
+   TBD/PST: segunda-rfef-g1-2026-27-j27-coruxo-arosa
+   TBD/PST: segunda-rfef-g1-2026-27-j27-gernika-basconia
+   TBD/PST: segunda-rfef-g1-2026-27-j27-llanera-gimnastica
+   TBD/PST: segunda-rfef-g1-2026-27-j27-marino-portugalete
+   TBD/PST: segunda-rfef-g1-2026-27-j27-ourense-cf-amorebieta
+   TBD/PST: segunda-rfef-g1-2026-27-j27-rayo-cantabria-compostela
+   TBD/PST: segunda-rfef-g1-2026-27-j27-sestao-river-eibar-b-2
+   TBD/PST: segunda-rfef-g1-2026-27-j28-alaves-b-2-ourense-cf
+   TBD/PST: segunda-rfef-g1-2026-27-j28-arosa-atletico-astorga
+   TBD/PST: segunda-rfef-g1-2026-27-j28-basconia-gimnastica
+   TBD/PST: segunda-rfef-g1-2026-27-j28-compostela-llanera
+   TBD/PST: segunda-rfef-g1-2026-27-j28-eibar-b-2-portugalete
+   TBD/PST: segunda-rfef-g1-2026-27-j28-marino-bergantinos
+   TBD/PST: segunda-rfef-g1-2026-27-j28-oviedo-vetusta-gernika
+   TBD/PST: segunda-rfef-g1-2026-27-j28-rayo-cantabria-coruxo
+   TBD/PST: segunda-rfef-g1-2026-27-j28-amorebieta-sestao-river
+   TBD/PST: segunda-rfef-g1-2026-27-j29-arosa-marino
+   TBD/PST: segunda-rfef-g1-2026-27-j29-bergantinos-llanera
+   TBD/PST: segunda-rfef-g1-2026-27-j29-compostela-alaves-b-2
+   TBD/PST: segunda-rfef-g1-2026-27-j29-coruxo-atletico-astorga
+   TBD/PST: segunda-rfef-g1-2026-27-j29-portugalete-amorebieta
+   TBD/PST: segunda-rfef-g1-2026-27-j29-gernika-eibar-b-2
+   TBD/PST: segunda-rfef-g1-2026-27-j29-ourense-cf-oviedo-vetusta
+   TBD/PST: segunda-rfef-g1-2026-27-j29-gimnastica-rayo-cantabria
+   TBD/PST: segunda-rfef-g1-2026-27-j29-sestao-river-basconia
+   TBD/PST: segunda-rfef-g1-2026-27-j30-alaves-b-2-portugalete
+   TBD/PST: segunda-rfef-g1-2026-27-j30-atletico-astorga-bergantinos
+   TBD/PST: segunda-rfef-g1-2026-27-j30-basconia-compostela
+   TBD/PST: segunda-rfef-g1-2026-27-j30-eibar-b-2-coruxo
+   TBD/PST: segunda-rfef-g1-2026-27-j30-llanera-sestao-river
+   TBD/PST: segunda-rfef-g1-2026-27-j30-oviedo-vetusta-marino
+   TBD/PST: segunda-rfef-g1-2026-27-j30-gimnastica-arosa
+   TBD/PST: segunda-rfef-g1-2026-27-j30-rayo-cantabria-ourense-cf
+   TBD/PST: segunda-rfef-g1-2026-27-j30-amorebieta-gernika
+   TBD/PST: segunda-rfef-g1-2026-27-j31-arosa-amorebieta
+   TBD/PST: segunda-rfef-g1-2026-27-j31-bergantinos-rayo-cantabria
+   TBD/PST: segunda-rfef-g1-2026-27-j31-coruxo-oviedo-vetusta
+   TBD/PST: segunda-rfef-g1-2026-27-j31-eibar-b-2-ourense-cf
+   TBD/PST: segunda-rfef-g1-2026-27-j31-portugalete-atletico-astorga
+   TBD/PST: segunda-rfef-g1-2026-27-j31-gernika-gimnastica
+   TBD/PST: segunda-rfef-g1-2026-27-j31-llanera-basconia
+   TBD/PST: segunda-rfef-g1-2026-27-j31-marino-alaves-b-2
+   TBD/PST: segunda-rfef-g1-2026-27-j31-sestao-river-compostela
+   TBD/PST: segunda-rfef-g1-2026-27-j32-alaves-b-2-arosa
+   TBD/PST: segunda-rfef-g1-2026-27-j32-atletico-astorga-llanera
+   TBD/PST: segunda-rfef-g1-2026-27-j32-basconia-bergantinos
+   TBD/PST: segunda-rfef-g1-2026-27-j32-compostela-eibar-b-2
+   TBD/PST: segunda-rfef-g1-2026-27-j32-ourense-cf-sestao-river
+   TBD/PST: segunda-rfef-g1-2026-27-j32-oviedo-vetusta-portugalete
+   TBD/PST: segunda-rfef-g1-2026-27-j32-gimnastica-coruxo
+   TBD/PST: segunda-rfef-g1-2026-27-j32-rayo-cantabria-gernika
+   TBD/PST: segunda-rfef-g1-2026-27-j32-amorebieta-marino
+   TBD/PST: segunda-rfef-g1-2026-27-j33-arosa-basconia
+   TBD/PST: segunda-rfef-g1-2026-27-j33-bergantinos-gimnastica
+   TBD/PST: segunda-rfef-g1-2026-27-j33-coruxo-alaves-b-2
+   TBD/PST: segunda-rfef-g1-2026-27-j33-eibar-b-2-oviedo-vetusta
+   TBD/PST: segunda-rfef-g1-2026-27-j33-portugalete-ourense-cf
+   TBD/PST: segunda-rfef-g1-2026-27-j33-gernika-atletico-astorga
+   TBD/PST: segunda-rfef-g1-2026-27-j33-llanera-amorebieta
+   TBD/PST: segunda-rfef-g1-2026-27-j33-marino-compostela
+   TBD/PST: segunda-rfef-g1-2026-27-j33-sestao-river-rayo-cantabria
+   TBD/PST: segunda-rfef-g1-2026-27-j34-alaves-b-2-llanera
+   TBD/PST: segunda-rfef-g1-2026-27-j34-atletico-astorga-eibar-b-2
+   TBD/PST: segunda-rfef-g1-2026-27-j34-basconia-coruxo
+   TBD/PST: segunda-rfef-g1-2026-27-j34-compostela-gernika
+   TBD/PST: segunda-rfef-g1-2026-27-j34-ourense-cf-marino
+   TBD/PST: segunda-rfef-g1-2026-27-j34-oviedo-vetusta-arosa
+   TBD/PST: segunda-rfef-g1-2026-27-j34-gimnastica-sestao-river
+   TBD/PST: segunda-rfef-g1-2026-27-j34-rayo-cantabria-portugalete
+   TBD/PST: segunda-rfef-g1-2026-27-j34-amorebieta-bergantinos
+D:\src\tremen-dev\wt-071\data\calendario\2026-27\segunda-rfef-g1.json: 90 problema(s)
+  matches.1.away: coruxo plays twice in round 1
+  matches.4.away: portugalete plays twice in round 1
+  matches.10.home: oviedo-vetusta plays twice in round 1
+  matches.14.home: basconia plays twice in round 2
+  matches.18.away: gimnastica plays twice in round 2
+  matches.20.home: llanera plays twice in round 2
+  matches.25.away: oviedo-vetusta plays twice in round 3
+  matches.27.away: marino plays twice in round 3
+  matches.33.home: ourense-cf plays twice in round 3
+  matches.38.home: arosa plays twice in round 4
+  matches.42.away: compostela plays twice in round 4
+  matches.47.home: sestao-river plays twice in round 4
+  matches.49.away: amorebieta plays twice in round 5
+  matches.57.home: portugalete plays twice in round 5
+  matches.59.home: rayo-cantabria plays twice in round 5
+  matches.61.away: gernika plays twice in round 6
+  matches.65.away: ourense-cf plays twice in round 6
+  matches.68.away: basconia plays twice in round 6
+  matches.75.home: compostela plays twice in round 7
+  matches.78.home: gimnastica plays twice in round 7
+  matches.82.home: portugalete plays twice in round 7
+  matches.85.away: rayo-cantabria plays twice in round 8
+  matches.88.away: gernika plays twice in round 8
+  matches.91.away: bergantinos plays twice in round 8
+  matches.106.home: rayo-cantabria plays twice in round 9
+  matches.117.home: sestao-river plays twice in round 10
+  matches.119.home: amorebieta plays twice in round 11
+  matches.121.away: arosa plays twice in round 11
+  matches.123.home: basconia plays twice in round 11
+  matches.131.away: compostela plays twice in round 12
+  matches.133.home: arosa plays twice in round 12
+  matches.140.home: oviedo-vetusta plays twice in round 12
+  matches.150.away: marino plays twice in round 13
+  matches.154.away: bergantinos plays twice in round 14
+  matches.156.home: coruxo plays twice in round 14
+  matches.160.home: llanera plays twice in round 14
+  matches.168.away: coruxo plays twice in round 15
+  matches.173.away: sestao-river plays twice in round 15
+  matches.175.home: ourense-cf plays twice in round 15
+  matches.178.away: amorebieta plays twice in round 16
+  matches.180.away: gimnastica plays twice in round 16
+  matches.184.home: llanera plays twice in round 16
+  matches.190.away: marino plays twice in round 17
+  matches.194.home: bergantinos plays twice in round 17
+  matches.196.away: gernika plays twice in round 17
+  matches.203.home: bergantinos plays twice in round 18
+  matches.207.home: gernika plays twice in round 18
+  matches.211.home: ourense-cf plays twice in round 18
+  matches.214.away: gimnastica plays twice in round 19
+  matches.217.away: basconia plays twice in round 19
+  matches.220.away: amorebieta plays twice in round 19
+  matches.234.home: marino plays twice in round 20
+  matches.237.away: basconia plays twice in round 21
+  matches.239.away: sestao-river plays twice in round 21
+  matches.243.home: marino plays twice in round 21
+  matches.249.home: amorebieta plays twice in round 22
+  matches.255.home: gimnastica plays twice in round 22
+  matches.258.home: rayo-cantabria plays twice in round 22
+  matches.261.away: sestao-river plays twice in round 23
+  matches.263.away: rayo-cantabria plays twice in round 23
+  matches.267.away: arosa plays twice in round 23
+  matches.273.home: amorebieta plays twice in round 24
+  matches.276.home: basconia plays twice in round 24
+  matches.280.home: gimnastica plays twice in round 24
+  matches.286.away: compostela plays twice in round 25
+  matches.288.away: rayo-cantabria plays twice in round 25
+  matches.294.home: oviedo-vetusta plays twice in round 25
+  matches.303.away: llanera plays twice in round 26
+  matches.308.away: oviedo-vetusta plays twice in round 27
+  matches.310.home: bergantinos plays twice in round 27
+  matches.318.home: sestao-river plays twice in round 27
+  matches.320.away: ourense-cf plays twice in round 28
+  matches.323.home: arosa plays twice in round 28
+  matches.327.away: portugalete plays twice in round 28
+  matches.334.home: compostela plays twice in round 29
+  matches.336.home: coruxo plays twice in round 29
+  matches.338.home: gernika plays twice in round 29
+  matches.344.away: portugalete plays twice in round 30
+  matches.347.away: bergantinos plays twice in round 30
+  matches.350.away: coruxo plays twice in round 30
+  matches.359.away: ourense-cf plays twice in round 31
+  matches.363.home: marino plays twice in round 31
+  matches.365.home: portugalete plays twice in round 31
+  matches.368.away: arosa plays twice in round 32
+  matches.371.away: llanera plays twice in round 32
+  matches.374.home: compostela plays twice in round 32
+  matches.382.home: coruxo plays twice in round 33
+  matches.384.away: oviedo-vetusta plays twice in round 33
+  matches.386.home: gernika plays twice in round 33
+  matches.392.away: llanera plays twice in round 34
+== tercera-rfef-g1
+   newTeams: 0  added: 0  rescheduled: 0  missing: 0  renamedAtProvider: 0  rematched: 0  unconfirmed: 0  urgentes: 0
+urgentes: 6
+auto-aplicable: no
+(--dry-run: no se ha escrito nada)
