@@ -99,7 +99,12 @@ export type EngineSweep = (matches: WindowRow[]) => Promise<EngineCounts>;
 // The third hook (SPEC-066 CA-11, ADR-030 §3): the social dispatch, after
 // the sweep, outside every transaction of the engine and in every tick,
 // window or not. The route wires it; npm run ingest:tick does not.
-export type SocialDispatch = () => Promise<SocialCounts>;
+// What the hook answers: its counters and, when the publisher is named but
+// unconfigured (SPEC-067 CA-4), an error for the summary. A thrown error is
+// the other way to the same line.
+export type SocialOutcome = { counts: SocialCounts; error?: string };
+
+export type SocialDispatch = () => Promise<SocialOutcome>;
 
 export type TickInput = {
   db: IngestDb;
@@ -162,7 +167,9 @@ export async function runTick(input: TickInput): Promise<TickSummary> {
   // the tick's: the Decisions are already committed when it starts.
   if (input.social !== undefined) {
     try {
-      summary.social = await input.social();
+      const outcome = await input.social();
+      summary.social = outcome.counts;
+      if (outcome.error !== undefined) summary.socialError = outcome.error;
     } catch (e) {
       summary.socialError = errorMessage(e);
     }

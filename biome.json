@@ -13,6 +13,7 @@
       "!.sdd.json",
       "!src/sources/rfef/fixtures/*.html",
       "!src/sources/rfef/fixtures/export/*.json",
+      "!src/social/buffer/fixtures/*.json",
       "!e2e/fixtures/vercel-insights-script.js"
     ]
   },

@@ -1815,7 +1815,7 @@ describe("SPEC-066 CA-11 the social dispatch", () => {
 
   it("runs in a tick with nothing in window and reports its counters", async () => {
     const { db, store } = harness();
-    const social = vi.fn(async () => counts);
+    const social = vi.fn(async () => ({ counts }));
     const summary = await runTick({
       db,
       store,
@@ -1848,7 +1848,7 @@ describe("SPEC-066 CA-11 the social dispatch", () => {
       },
       social: async () => {
         log.push("social");
-        return counts;
+        return { counts };
       },
     });
     expect(log.indexOf("social")).toBe(log.length - 1);
@@ -1879,6 +1879,21 @@ describe("SPEC-066 CA-11 the social dispatch", () => {
     expect(summary.social).toBeUndefined();
     expect(summary.engine).toEqual(engine);
     expect(summary.attempts[0]).toMatchObject({ ok: true });
+  });
+
+  it("an error the hook reports (SPEC-067 CA-4 unconfigured) goes to socialError next to its counters", async () => {
+    const { db, store } = harness();
+    const summary = await runTick({
+      db,
+      store,
+      sources: [PRIMERA],
+      adapterFor: () => stubAdapter(),
+      fetch: forbiddenFetch,
+      now: NOW,
+      social: async () => ({ counts, error: "unconfigured" }),
+    });
+    expect(summary.social).toEqual(counts);
+    expect(summary.socialError).toBe("unconfigured");
   });
 
   it("without the hook (npm run ingest:tick) nothing is dispatched", async () => {

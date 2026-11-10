@@ -1,0 +1,51 @@
+{
+  "capturedAt": "2026-11-10T17:17:37.970Z",
+  "steps": [
+    {
+      "requestedAt": "2026-11-10T17:17:37.657Z",
+      "request": {
+        "query": "query Post($id: PostId!) {\n  post(input: { id: $id }) {\n    id status dueAt sentAt createdAt externalLink\n    error { message }\n  }\n}",
+        "variables": {
+          "id": "6af351260649793ed2f934c5"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "access-control-allow-credentials": "true",
+          "alt-svc": "h3=\":443\"; ma=86400",
+          "buffer-ratelimit-upgrade": "\"15m\", \"24h\", \"30d\"",
+          "buffer-ratelimit-upgrade-link": "https://publish.buffer.com/settings/api?cta=publicApi-rateLimit-hint-upgrade-1&upgradePathName=apiRateLimit-upgrade",
+          "cf-cache-status": "DYNAMIC",
+          "cf-ray": "a586b63c7c5e038a-MAD",
+          "connection": "keep-alive",
+          "content-encoding": "br",
+          "content-type": "application/json; charset=utf-8",
+          "cross-origin-opener-policy": "same-origin",
+          "cross-origin-resource-policy": "same-origin",
+          "date": "Tue, 10 Nov 2026 17:17:38 GMT",
+          "origin-agent-cluster": "?1",
+          "ratelimit": "\"15m\"; r=138; t=696, \"24h\"; r=572; t=84845, \"30d\"; r=1972; t=2590445",
+          "ratelimit-policy": "\"15m\"; q=150; w=900; pk=:MGY5MzYxMDdhNDI2:, \"24h\"; q=600; w=86400; pk=:MGY5MzYxMDdhNDI2:, \"30d\"; q=2000; w=2592000; pk=:MGY5MzYxMDdhNDI2:",
+          "referrer-policy": "no-referrer",
+          "server": "cloudflare",
+          "set-cookie": "AWSALBTGCORS=Se84/wELk/c5+kaM6NeJ/we4WoJ/WM7bCTpOy4X1ek930wQUDiFgUUFlIM4gdgbDWB/Jzok2iS9H6EeMg8dLnzhy9P/p++MSclevh/ppaCaSqcURzB0JDEMzzmuB411LjZzLku8GUd3ySbCuWjdiI3q1LKJTUer+5JC4sjMZw07r; Expires=Tue, 17 Nov 2026 17:17:38 GMT; Path=/; SameSite=None; Secure",
+          "strict-transport-security": "max-age=15552000",
+          "transfer-encoding": "chunked",
+          "vary": "Origin, accept-encoding",
+          "x-content-type-options": "nosniff",
+          "x-dns-prefetch-control": "off",
+          "x-download-options": "noopen",
+          "x-frame-options": "DENY",
+          "x-permitted-cross-domain-policies": "none",
+          "x-ratelimit-limit": "2000",
+          "x-ratelimit-remaining": "1972",
+          "x-ratelimit-reset": "1796921504",
+          "x-xss-protection": "0"
+        },
+        "body": "{\"data\":{\"post\":{\"id\":\"6af351260649793ed2f934c5\",\"status\":\"sent\",\"dueAt\":\"2026-11-10T17:15:18.877Z\",\"sentAt\":\"2026-11-10T17:15:19.178Z\",\"createdAt\":\"2026-11-10T17:15:18.847Z\",\"externalLink\":\"https://x.com/2120175963019333632/status/2120203661427036480\",\"error\":null}}}",
+        "ms": 311
+      }
+    }
+  ]
+}

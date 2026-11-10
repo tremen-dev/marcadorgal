@@ -1,0 +1,59 @@
+{
+  "capturedAt": "2026-11-10T17:16:49.824Z",
+  "steps": [
+    {
+      "requestedAt": "2026-11-10T17:16:49.449Z",
+      "request": {
+        "query": "mutation CreatePost($input: CreatePostInput!) {\n  createPost(input: $input) {\n    __typename\n    ... on PostActionSuccess { post { id status dueAt sentAt externalLink } }\n    ... on MutationError { message }\n  }\n}",
+        "variables": {
+          "input": {
+            "text": "Proba marcador.gal duplicado 2026-11-10T17:17Z",
+            "channelId": "<CHANNEL>",
+            "schedulingType": "automatic",
+            "mode": "shareNow",
+            "needsApproval": false,
+            "tagIds": [],
+            "assets": []
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "access-control-allow-credentials": "true",
+          "alt-svc": "h3=\":443\"; ma=86400",
+          "buffer-ratelimit-upgrade": "\"15m\", \"24h\", \"30d\"",
+          "buffer-ratelimit-upgrade-link": "https://publish.buffer.com/settings/api?cta=publicApi-rateLimit-hint-upgrade-1&upgradePathName=apiRateLimit-upgrade",
+          "cf-cache-status": "DYNAMIC",
+          "cf-ray": "a586b50f6ee96d3e-LIS",
+          "connection": "keep-alive",
+          "content-encoding": "br",
+          "content-type": "application/json; charset=utf-8",
+          "cross-origin-opener-policy": "same-origin",
+          "cross-origin-resource-policy": "same-origin",
+          "date": "Tue, 10 Nov 2026 17:16:50 GMT",
+          "origin-agent-cluster": "?1",
+          "ratelimit": "\"15m\"; r=140; t=744, \"24h\"; r=574; t=84893, \"30d\"; r=1974; t=2590493",
+          "ratelimit-policy": "\"15m\"; q=150; w=900; pk=:MGY5MzYxMDdhNDI2:, \"24h\"; q=600; w=86400; pk=:MGY5MzYxMDdhNDI2:, \"30d\"; q=2000; w=2592000; pk=:MGY5MzYxMDdhNDI2:",
+          "referrer-policy": "no-referrer",
+          "server": "cloudflare",
+          "set-cookie": "AWSALBTGCORS=6TqpW4UT++RiEZYkYiSeFF3X64qjN7bhdevwNXGHm4Frj2xgSJecr9yXq3IpRft9Md8R/XwOwBHTPIqVMftAE6QDYOJ8fiMTmvg8v+8jW7kdqsRKH6T3f28xAC/4gJzfvl/CSvi49oiOPKjsHqArTkx4Gaxe+/ErXhG1yt41vuF/; Expires=Tue, 17 Nov 2026 17:16:50 GMT; Path=/; SameSite=None; Secure",
+          "strict-transport-security": "max-age=15552000",
+          "transfer-encoding": "chunked",
+          "vary": "Origin, accept-encoding",
+          "x-content-type-options": "nosniff",
+          "x-dns-prefetch-control": "off",
+          "x-download-options": "noopen",
+          "x-frame-options": "DENY",
+          "x-permitted-cross-domain-policies": "none",
+          "x-ratelimit-limit": "2000",
+          "x-ratelimit-remaining": "1974",
+          "x-ratelimit-reset": "1796921504",
+          "x-xss-protection": "0"
+        },
+        "body": "{\"data\":{\"createPost\":{\"__typename\":\"InvalidInputError\",\"message\":\"Invalid post: Whoops, it looks like you've already got this one scheduled or posted around the same time. We're not able to post the same thing twice so close together.\"}}}",
+        "ms": 372
+      }
+    }
+  ]
+}

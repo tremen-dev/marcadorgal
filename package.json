@@ -1,6 +1,6 @@
 {
   "name": "marcadorgal",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "engines": {
     "node": "24.x"
@@ -38,7 +38,8 @@
     "rfef:calibrar": "node tools/calibrar-rfef.mjs",
     "rfef:recuperar": "node tools/rfef-recuperar.mjs",
     "alias:rfef": "node tools/alias-rfef.mjs",
-    "historico:sync": "node tools/historico-sync.mjs"
+    "historico:sync": "node tools/historico-sync.mjs",
+    "social:probar": "node tools/social-probar.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.117.3",
