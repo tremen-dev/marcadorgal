@@ -1,4 +1,4 @@
- tsc 0, biome 0, test 1 fallo tolerado (test-db Windows; CI 42812274857 en 197ee71: test-db 11/11), build 0; diff solo test+fixtures+package*; 0.5.7→0.5.8 | ⚠️ |reproducido: kickoff→2027-01-01 + alias −6 (Palmas/Sabadell/Eldense) → 74/74; además `matches: []` → 74/74; restaurado, data/ limpio; vivo → 74/74 | ✅ |`git diff origin/main...HEAD`: en ese `it` solo +3 líneas de comentario; aserciones intactas; verde | ✅ |6/6 `git hash-object` = `git rev-parse 197ee71:<origen>`; README con origen+blob; test estructural presente y verde | ✅ |---
+---
 id: SPEC-078
 tipo: ledger
 epica: EPIC-FIX
