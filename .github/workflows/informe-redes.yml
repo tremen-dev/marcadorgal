@@ -1,0 +1,88 @@
+# Informe de la cola de redes tras cada jornada (SPEC-079, ADR-030, ADR-032).
+# Calcula, contra la base de producción y solo leyendo, los goles esperados de
+# los equipos vigilados frente a las filas de social_posts de la ventana, y
+# lo lleva al titular como issue de GitHub: una por fecha UTC, etiqueta
+# `redes`; la primera ejecución del día la crea (notifica) y las siguientes
+# solo editan el cuerpo. Es informe, no incidente: no se cierra sola. Sin
+# partidos en la ventana no abre nada. Nada se despliega ni se escribe.
+name: informe-redes
+on:
+  schedule:
+    # Martes y viernes a las 06:00Z con 4 días (H-1): el martes cubre de
+    # viernes a lunes noche (jornada de liga) y el viernes de martes a
+    # jueves (intersemanales y Copa). El schedule de GitHub llega tarde;
+    # aquí no importa.
+    - cron: '0 6 * * 2,5'
+  workflow_dispatch:
+    inputs:
+      dias:
+        description: "ventana = [ahora − N días, ahora)"
+        default: '4'
+      desde:
+        description: "instante ISO-8601 (opcional, con hasta; manda sobre dias)"
+        default: ''
+      hasta:
+        description: "instante ISO-8601 (opcional, con desde)"
+        default: ''
+
+# Dos ejecuciones a la vez abrirían dos issues del mismo día.
+concurrency:
+  group: informe-redes
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  informe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        # "bash --noprofile --norc -eo pipefail {0}": el estado del paso es
+        # el de la herramienta, no el de tee.
+        shell: bash
+    env:
+      DIAS: ${{ inputs.dias || '4' }}
+      DESDE: ${{ inputs.desde }}
+      HASTA: ${{ inputs.hasta }}
+      # Variable de repositorio, opcional (H-3): vacía = data/galegos.
+      # Espeja la de Vercel; si difieren, los goles de los equipos recortados
+      # salen como skipped/not_watched sobre un esperado: DESVIACIONES.
+      SOCIAL_WATCHED_TEAMS: ${{ vars.SOCIAL_WATCHED_TEAMS }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Enmascarar host, usuario y contraseña
+        # Antes del primer paso que ve DATABASE_URL (SPEC-043 CA-3, ADR-024 §4).
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: node tools/mascara-db-url.mjs
+      - name: Informe (Markdown en el log; partidos y veredicto en outputs)
+        id: informe
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          if [ -n "$DESDE" ] || [ -n "$HASTA" ]; then
+            node tools/social-informe.mjs --desde "$DESDE" --hasta "$HASTA"
+          else
+            node tools/social-informe.mjs --dias "$DIAS"
+          fi
+      - name: Issue del día (crear o editar; nada sin partidos)
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if [ -n "$DESDE" ] || [ -n "$HASTA" ]; then
+            node tools/social-informe.mjs --issue --desde "$DESDE" --hasta "$HASTA" > /dev/null
+          else
+            node tools/social-informe.mjs --issue --dias "$DIAS" > /dev/null
+          fi

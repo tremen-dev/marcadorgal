@@ -1,6 +1,6 @@
 {
   "name": "marcadorgal",
-  "version": "0.7.2",
+  "version": "0.8.1",
   "private": true,
   "engines": {
     "node": "24.x"
@@ -31,6 +31,7 @@
     "informe:jornada": "node tools/informe-jornada.mjs",
     "informe:latencia": "node tools/informe-latencia.mjs",
     "informe:rfef": "node tools/informe-rfef.mjs",
+    "social:informe": "node tools/social-informe.mjs",
     "replay:jornada": "node tools/replay-jornada.mjs",
     "reconciliar:cierre": "node tools/reconciliar-cierre.mjs",
     "reconciliar:sin-directo": "node tools/reconciliar-sin-directo.mjs",
