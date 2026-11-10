@@ -1,0 +1,14 @@
+walk /: ‹ href=/xornada/2026-10-31 -> /xornada/2026-10-31 (h1 «Xornada · 30 out – 2 nov») -> › -> /
+walk /es: ‹ href=/es/xornada/2026-10-31 -> /es/xornada/2026-10-31 (h1 «Jornada · 30 oct – 2 nov») -> › -> /es
+portada-gl@390: {"focused":"week-previous","outline":"solid 2px","hscroll":false,"prev":{"x":4,"y":52,"w":26,"h":42},"text":{"x":30,"y":65,"w":110,"h":17},"next":{"x":140,"y":52,"w":26,"h":42},"mainY":166,"h1":"Xornada · 6–9 nov","truncated":false}
+portada-es@390: {"focused":"week-previous","outline":"solid 2px","hscroll":false,"prev":{"x":4,"y":52,"w":26,"h":42},"text":{"x":30,"y":65,"w":110,"h":17},"next":{"x":140,"y":52,"w":26,"h":42},"mainY":166,"h1":"Jornada · 6–9 nov","truncated":false}
+semana-gl@390: {"focused":"week-previous","outline":"solid 2px","hscroll":false,"prev":{"x":4,"y":52,"w":26,"h":42},"text":{"x":30,"y":65,"w":148,"h":17},"next":{"x":178,"y":52,"w":26,"h":42},"mainY":166,"h1":"Xornada · 30 out – 2 nov","truncated":false}
+semana-es@390: {"focused":"week-previous","outline":"solid 2px","hscroll":false,"prev":{"x":4,"y":52,"w":26,"h":42},"text":{"x":30,"y":65,"w":148,"h":17},"next":{"x":178,"y":52,"w":26,"h":42},"mainY":166,"h1":"Jornada · 30 oct – 2 nov","truncated":false}
+portada-gl@1440: {"focused":"week-previous","outline":"solid 2px","hscroll":false,"prev":{"x":168,"y":0,"w":24,"h":55},"text":{"x":192,"y":19,"w":110,"h":17},"next":{"x":302,"y":0,"w":24,"h":55},"mainY":100,"h1":"Xornada · 6–9 nov","truncated":false}
+portada-es@1440: {"focused":"week-previous","outline":"solid 2px","hscroll":false,"prev":{"x":168,"y":0,"w":24,"h":55},"text":{"x":192,"y":19,"w":110,"h":17},"next":{"x":302,"y":0,"w":24,"h":55},"mainY":100,"h1":"Jornada · 6–9 nov","truncated":false}
+semana-gl@1440: {"focused":"week-previous","outline":"solid 2px","hscroll":false,"prev":{"x":168,"y":0,"w":24,"h":55},"text":{"x":192,"y":19,"w":148,"h":17},"next":{"x":340,"y":0,"w":24,"h":55},"mainY":100,"h1":"Xornada · 30 out – 2 nov","truncated":false}
+semana-es@1440: {"focused":"week-previous","outline":"solid 2px","hscroll":false,"prev":{"x":168,"y":0,"w":24,"h":55},"text":{"x":192,"y":19,"w":148,"h":17},"next":{"x":340,"y":0,"w":24,"h":55},"mainY":100,"h1":"Jornada · 30 oct – 2 nov","truncated":false}
+main.y prod(antes) @360 = 166
+main.y preview(despues) @360 = 166
+main.y prod(antes) @390 = 166
+main.y preview(despues) @390 = 166
