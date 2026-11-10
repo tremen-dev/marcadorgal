@@ -2,11 +2,12 @@
 id: SPEC-078
 tipo: spec
 epica: EPIC-FIX
-estado: aprobada
+estado: en-progreso
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-10, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-11-10, por: Alberto Fojo}
+  - {estado: en-progreso, fecha: 2026-11-10, por: sdd-implementador}
 ---
 # SPEC-078 — El test de SPEC-069 no depende del calendario vivo
 

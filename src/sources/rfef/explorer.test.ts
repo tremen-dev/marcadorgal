@@ -38,8 +38,11 @@ const FIVE = [
   "tercera-rfef-g1",
 ];
 // The declared calendar of 2026-27, as the core injects it (ADR-008 §8).
+// Frozen copies taken at 197ee71 (SPEC-078, README of fixtures/): the bot of
+// the calendar rewrites the live data and must not move these expectations.
+const FROZEN = "src/sources/rfef/fixtures";
 const calendar: DeclaredFixture[] = FIVE.flatMap((competition) => {
-  const file = readJson(`data/calendario/2026-27/${competition}.json`) as {
+  const file = readJson(`${FROZEN}/calendario-2026-27/${competition}.json`) as {
     matches: { round: number; kickoff: string; home: string; away: string }[];
   };
   return file.matches.map(
@@ -55,7 +58,7 @@ const calendar: DeclaredFixture[] = FIVE.flatMap((competition) => {
   );
 });
 
-const aliases = AliasFile.parse(readJson("data/alias/2026-27/rfef.json"));
+const aliases = AliasFile.parse(readJson(`${FROZEN}/alias-2026-27-rfef.json`));
 const testAliases = AliasFile.parse(
   readJson("src/sources/rfef/fixtures/alias-test.json"),
 );
@@ -144,6 +147,16 @@ const PORTUGALETE_SCHEDULED = rowLocal(
   "Club Portugalete",
   "SCHEDULED",
 );
+
+// SPEC-078 CA-1: the calendar bot (SPEC-015, ADR-031) rewrites data/ on its
+// own, so this file reads its frozen copies of fixtures/, never the live data.
+describe("SPEC-078 the calendar and the alias are frozen copies", () => {
+  it("this file reads neither the live calendar nor the live alias", () => {
+    const self = readText("src/sources/rfef/explorer.test.ts");
+    expect(self).not.toContain(["data", "calendario"].join("/"));
+    expect(self).not.toContain(["data", "alias"].join("/"));
+  });
+});
 
 describe("CA-1 contract and real fixtures", () => {
   it.each(FIXTURES)(
@@ -1185,7 +1198,9 @@ describe("SPEC-069 liveProvider is open; estado and goals[].team stay closed", (
     // Sabadell–Real Sociedad B ("espn") is live at half-time; Las Palmas–
     // Eldense ("proveedor-inventado") was postponed on 11-08 and replayed on
     // 11-09, so against its declared kickoff it is ambiguous_state; the Liga F
-    // row ("marca") is outside the five competitions' calendar.
+    // row ("marca") is outside the five competitions' calendar. That kickoff
+    // (2026-11-08T17:30Z) comes from the frozen calendar of fixtures/
+    // (SPEC-078), not from the live one the bot moved to 11-09.
     expect(result.observations).toEqual([
       {
         matchId: "segunda-division-2026-27-j13-sabadell-real-sociedad-b",
