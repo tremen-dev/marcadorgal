@@ -10,6 +10,7 @@ import {
   TeamId,
 } from "../model/index.ts";
 import { matchId } from "./match-id.ts";
+import type { KickoffCorrection } from "./real-kickoffs.ts";
 import type {
   AliasEntry,
   AliasFile,
@@ -24,6 +25,9 @@ export type SyncInput = {
   competition: Competition;
   sourceId: string;
   now?: Instant;
+  // The real kickoffs of matches already played (SPEC-071 CA-6, ADR-031):
+  // the only thing that rewrites the past of the calendar.
+  realKickoffs?: readonly KickoffCorrection[];
 };
 
 export type SyncDiff = {
@@ -226,6 +230,15 @@ export function syncCalendar(input: SyncInput): SyncResult {
         existing.kickoff = next.kickoff;
       }
     }
+  }
+  // A real kickoff is a pure reschedule of the diff (ADR-031 §3); a later
+  // import does not revert it, because isPast keeps the importer out.
+  for (const r of input.realKickoffs ?? []) {
+    const existing = matches.get(r.id);
+    if (!existing || Date.parse(existing.kickoff) === Date.parse(r.to))
+      continue;
+    diff.rescheduled.push({ id: r.id, from: existing.kickoff, to: r.to });
+    existing.kickoff = r.to;
   }
   for (const [id, m] of matches)
     if (!seen.has(id)) {

@@ -65,7 +65,12 @@ describe("SPEC-060 historico:sync against the database", () => {
         ],
       };
 
-      const mockFetcher = async (_date: string) => fakeDayMatches;
+      // The export of 08-15 only: the window (SPEC-071) asks its six
+      // neighbours too, and they are empty.
+      const mockFetcher = async (date: string) =>
+        date === "2026-08-15"
+          ? fakeDayMatches
+          : { ...fakeDayMatches, date, matches: [] };
 
       // 2. Test --dry-run first: counts reported, no writes
       const dryReport = await historicoSync(

@@ -5,6 +5,7 @@
 // The fake answers what the repo already says, so a clean run is an empty
 // diff. FAKE_PROVIDER_KICKOFFS ({ matchId: kickoff }) moves matches and
 // FAKE_PROVIDER_RENAMES ({ externalId: name }) renames teams at the provider.
+// FAKE_EXPORT_MATCHES gives the export of matches by day (SPEC-071).
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -76,8 +77,23 @@ function explorerResponse(competitionId) {
   };
 }
 
+// The export of matches of explorer (SPEC-071): FAKE_EXPORT_MATCHES
+// ({ "YYYY-MM-DD": rows }) answers ?date=, every other day is empty.
+const exportMatches = JSON.parse(process.env.FAKE_EXPORT_MATCHES ?? "{}");
+
 globalThis.fetch = async (url) => {
   const parsed = new URL(url);
+  if (parsed.pathname === "/api/export/matches") {
+    const date = parsed.searchParams.get("date");
+    return new Response(
+      JSON.stringify({
+        date,
+        exportedAt: new Date().toISOString(),
+        matches: exportMatches[date] ?? [],
+      }),
+      { status: 200, headers: { "content-type": "application/json" } },
+    );
+  }
   const comp = parsed.searchParams.get("competition");
   const league = parsed.searchParams.get("league");
   const competitionId = comp || LEAGUES[league];

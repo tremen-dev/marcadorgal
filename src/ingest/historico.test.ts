@@ -240,25 +240,31 @@ describe("SPEC-070 CA-7 the dry-run report", () => {
     const report = await historicoSync(
       sql,
       { desde: "2026-11-08", hasta: "2026-11-08", dryRun: true },
-      async () => ({
+      // The export of 11-08 only: the window (SPEC-071) asks its six
+      // neighbours too, and they are empty.
+      async (date) => ({
         ...exportBody,
-        matches: [
-          ...exportBody.matches,
-          {
-            ...exportBody.matches[1],
-            codActa: "77",
-            equipoLocal: "Real Oviedo",
-            equipoVisitante: "Granada CF",
-            horaTexto: "12:00",
-          },
-          {
-            ...exportBody.matches[1],
-            codActa: "78",
-            equipoLocal: "Real Oviedo",
-            equipoVisitante: "Granada CF",
-            horaTexto: "13:00",
-          },
-        ],
+        date,
+        matches:
+          date !== "2026-11-08"
+            ? []
+            : [
+                ...exportBody.matches,
+                {
+                  ...exportBody.matches[1],
+                  codActa: "77",
+                  equipoLocal: "Real Oviedo",
+                  equipoVisitante: "Granada CF",
+                  horaTexto: "12:00",
+                },
+                {
+                  ...exportBody.matches[1],
+                  codActa: "78",
+                  equipoLocal: "Real Oviedo",
+                  equipoVisitante: "Granada CF",
+                  horaTexto: "13:00",
+                },
+              ],
       }),
       () => aliases,
     );
@@ -305,6 +311,242 @@ describe("SPEC-070 CA-7 the dry-run report", () => {
     const plan = planDaySync("2026-11-08", [lm], exportBody.matches, aliases);
     expect(plan.unpaired).toEqual([
       { matchId: lm.matchId, reason: "no_identity" },
+    ]);
+  });
+});
+
+// SPEC-071: the window (ADR-031 §1). A match declared on one day may have
+// been played another: the candidates are the rows of the Madrid days
+// [kickoff day − 3, + 3] that pass the identity of SPEC-070.
+describe("SPEC-071 historico with the window", () => {
+  const aliases = AliasFile.parse(
+    JSON.parse(
+      readFileSync(
+        path.resolve(__dirname, "../../data/alias/2026-27/rfef.json"),
+        "utf8",
+      ),
+    ),
+  );
+  // Raw capture of explorer (?date=2026-10-31), provenance in its README.
+  const export1031 = JSON.parse(
+    readFileSync(
+      path.resolve(
+        __dirname,
+        "../sources/rfef/fixtures/export/export-2026-10-31-celta-fortuna-cordoba.json",
+      ),
+      "utf8",
+    ),
+  ) as DayMatchesResponse;
+  const celtaRow = export1031.matches.find((r) => r.codActa === "70695028");
+  if (!celtaRow) throw new Error("fixture without 70695028");
+
+  const celtaCordoba: MatchToSync = {
+    matchId: "segunda-division-2026-27-j12-celta-fortuna-cordoba",
+    competitionId: "segunda-division",
+    round: 12,
+    kickoff: "2026-11-01T16:00:00.000Z",
+    homeTeamId: "celta-fortuna",
+    awayTeamId: "cordoba",
+    homeName: "Celta Fortuna",
+    homeShortName: null,
+    awayName: "Córdoba CF",
+    awayShortName: null,
+    status: "scheduled",
+    homeScore: null,
+    awayScore: null,
+    version: 0,
+  };
+  const byDay = (entries: [string, DayMatchesResponse["matches"]][]) =>
+    new Map(entries);
+  const postponed = {
+    ...celtaRow,
+    codActa: null,
+    estado: "POSTPONED" as const,
+    golesLocal: null,
+    golesVisitante: null,
+    goals: [],
+  };
+
+  it("CA-1 the match declared on 11-01 pairs with acta 70695028 of 10-31: 2-2 and its goals", () => {
+    const plan = planDaySync(
+      "2026-11-01",
+      [celtaCordoba],
+      byDay([
+        ["2026-10-31", export1031.matches],
+        ["2026-11-01", []],
+      ]),
+      aliases,
+    );
+    expect(plan.unpaired).toEqual([]);
+    expect(plan.ambiguous).toEqual([]);
+    expect(plan.matches).toHaveLength(1);
+    const p = plan.matches[0];
+    expect(p?.explorerMatch.codActa).toBe("70695028");
+    expect(p?.rowDate).toBe("2026-10-31");
+    expect(p?.finalScore).toEqual({ home: 2, away: 2 });
+    expect(p?.needsDecision).toBe(true);
+    expect(p?.goals).toEqual([
+      { team: "home", player: "Aldrine Kibet", minute: 24 },
+      { team: "away", player: "Diego Bri", minute: 27 },
+      { team: "home", player: "Alvaro Marin", minute: 56 },
+      { team: "away", player: "Victor Sánchez", minute: 72 },
+    ]);
+  });
+
+  it("CA-2 a POSTPONED and a FINISHED of the same identity: the FINISHED", () => {
+    const plan = planDaySync(
+      "2026-11-01",
+      [celtaCordoba],
+      byDay([
+        ["2026-11-01", [postponed]],
+        ["2026-10-31", [celtaRow]],
+      ]),
+      aliases,
+    );
+    expect(plan.matches[0]?.explorerMatch.codActa).toBe("70695028");
+    expect(plan.matches[0]?.finalScore).toEqual({ home: 2, away: 2 });
+  });
+
+  it("CA-2 two FINISHED: ambiguous, no plan", () => {
+    const plan = planDaySync(
+      "2026-11-01",
+      [celtaCordoba],
+      byDay([
+        ["2026-10-31", [celtaRow]],
+        ["2026-11-02", [{ ...celtaRow, codActa: "99" }]],
+      ]),
+      aliases,
+    );
+    expect(plan.matches).toEqual([]);
+    expect(plan.ambiguous).toEqual([
+      {
+        matchId: celtaCordoba.matchId,
+        candidates: [
+          { codActa: "70695028", home: "RC Celta Fortuna", away: "Córdoba CF" },
+          { codActa: "99", home: "RC Celta Fortuna", away: "Córdoba CF" },
+        ],
+      },
+    ]);
+  });
+
+  it("CA-2 only the POSTPONED: paired without finalScore nor decision", () => {
+    const plan = planDaySync(
+      "2026-11-01",
+      [celtaCordoba],
+      byDay([["2026-11-01", [postponed]]]),
+      aliases,
+    );
+    expect(plan.matches).toHaveLength(1);
+    expect(plan.matches[0]?.finalScore).toBeNull();
+    expect(plan.matches[0]?.needsDecision).toBe(false);
+  });
+
+  it("CA-3 a row with another team on a neighbour day does not pair: no_identity", () => {
+    const plan = planDaySync(
+      "2026-11-01",
+      [celtaCordoba],
+      byDay([
+        [
+          "2026-10-31",
+          [{ ...celtaRow, equipoVisitante: "Real Valladolid CF" }],
+        ],
+      ]),
+      aliases,
+    );
+    expect(plan.matches).toEqual([]);
+    expect(plan.unpaired).toEqual([
+      { matchId: celtaCordoba.matchId, reason: "no_identity" },
+    ]);
+  });
+
+  it("CA-3 the right row at day +4 or −4 does not pair; the reason looks at the whole window", () => {
+    for (const day of ["2026-10-28", "2026-11-05"]) {
+      const plan = planDaySync(
+        "2026-11-01",
+        [celtaCordoba],
+        byDay([[day, [celtaRow]]]),
+        aliases,
+      );
+      expect(plan.matches).toEqual([]);
+      expect(plan.unpaired).toEqual([
+        { matchId: celtaCordoba.matchId, reason: "no_competition_rows" },
+      ]);
+    }
+    // A row of Segunda on day −3 only: its competition has rows in the window.
+    const plan = planDaySync(
+      "2026-11-01",
+      [celtaCordoba],
+      byDay([
+        ["2026-10-29", [{ ...celtaRow, equipoLocal: "Real Oviedo" }]],
+        ["2026-11-05", [celtaRow]],
+      ]),
+      aliases,
+    );
+    expect(plan.unpaired).toEqual([
+      { matchId: celtaCordoba.matchId, reason: "no_identity" },
+    ]);
+  });
+
+  const dbRow = (m: MatchToSync, madridDate: string) => ({
+    match_id: m.matchId,
+    competition_id: m.competitionId,
+    round: m.round,
+    kickoff: new Date(m.kickoff),
+    madrid_date: madridDate,
+    home_team_id: m.homeTeamId,
+    away_team_id: m.awayTeamId,
+    home_name: m.homeName,
+    home_short_name: null,
+    away_name: m.awayName,
+    away_short_name: null,
+    status: m.status,
+    home_score: null,
+    away_score: null,
+    version: 0,
+  });
+
+  it("CA-4 the line says the day of the row, the report counts matchesOtherDay, and each day is asked once", async () => {
+    const sameDay: MatchToSync = {
+      ...celtaCordoba,
+      matchId: "segunda-division-2026-27-j12-eibar-almeria",
+      kickoff: "2026-10-31T15:15:00.000Z",
+      homeTeamId: "eibar",
+      awayTeamId: "almeria",
+    };
+    const rows = [
+      dbRow(sameDay, "2026-10-31"),
+      dbRow(celtaCordoba, "2026-11-01"),
+    ];
+    const sql = (() => Promise.resolve(rows)) as unknown as Sql;
+    const asked: string[] = [];
+    const report = await historicoSync(
+      sql,
+      { desde: "2026-10-31", hasta: "2026-11-01", dryRun: true },
+      async (date) => {
+        asked.push(date);
+        return {
+          date,
+          exportedAt: export1031.exportedAt,
+          matches: date === "2026-10-31" ? export1031.matches : [],
+        };
+      },
+      () => aliases,
+    );
+    expect(asked.toSorted()).toEqual([
+      "2026-10-28",
+      "2026-10-29",
+      "2026-10-30",
+      "2026-10-31",
+      "2026-11-01",
+      "2026-11-02",
+      "2026-11-03",
+      "2026-11-04",
+    ]);
+    expect(report.matchesPaired).toBe(2);
+    expect(report.matchesOtherDay).toBe(1);
+    expect(report.pairedLines).toEqual([
+      "2026-10-31 · segunda-division-2026-27-j12-eibar-almeria · 70695030 · SD Eibar–UD Almería · 1-1 · 2 goles",
+      "2026-11-01 → 2026-10-31 · segunda-division-2026-27-j12-celta-fortuna-cordoba · 70695028 · RC Celta Fortuna–Córdoba CF · 2-2 · 4 goles",
     ]);
   });
 });

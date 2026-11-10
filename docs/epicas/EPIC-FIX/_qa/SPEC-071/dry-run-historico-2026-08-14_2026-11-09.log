@@ -1,0 +1,582 @@
+
+> marcadorgal@0.5.1 historico:sync
+> node tools/historico-sync.mjs --dry-run --desde 2026-08-14 --hasta 2026-11-09
+
+[historico:sync] Iniciando sincronización histórica (2026-08-14 ata 2026-11-09) [DRY-RUN]...
+
+=======================================================
+Resumo de sincronización histórica (DRY-RUN - Sen escrituras):
+  Datas procesadas:       61
+  Partidos analizados:    553
+  Partidos consolidados:  8
+  Goles rexistrados:      723
+-------------------------------------------------------
+Desglose por competición:
+  - segunda-division    :   1 partidos | 379 goles
+  - primera-division    :   0 partidos | 344 goles
+  - primera-rfef-g1     :   0 partidos |   0 goles
+  - segunda-rfef-g1     :   0 partidos |   0 goles
+  - tercera-rfef-g1     :   7 partidos |   0 goles
+-------------------------------------------------------
+  Partidos emparejados:   552
+  Sen emparejar:          1
+  Ambiguos:               0
+  Noutro día (±3):        19
+Emparejados (fecha [→ fecha da fila] · matchId · codActa · local–visitante · marcador · goles):
+  2026-08-14 · segunda-division-2026-27-j1-real-sociedad-b-castellon · 70694914 · Real Sociedad de Fútbol SAD "B"–CD Castellón · 0-1 · 1 goles
+  2026-08-15 · segunda-division-2026-27-j1-andorra-ceuta · 70694906 · FC Andorra–AD Ceuta FC · 5-1 · 6 goles
+  2026-08-15 · segunda-division-2026-27-j1-cadiz-celta-fortuna · 70694908 · Cádiz CF–RC Celta Fortuna · 0-0 · 0 goles
+  2026-08-15 · segunda-division-2026-27-j1-oviedo-granada · 70694913 · Real Oviedo–Granada CF · 0-0 · 0 goles
+  2026-08-15 · primera-division-2026-27-j1-alaves-getafe · 70694525 · Deportivo Alavés–Getafe CF · 3-0 · 3 goles
+  2026-08-15 · primera-division-2026-27-j1-sevilla-rayo-vallecano · 70694533 · Sevilla FC–Rayo Vallecano de Madrid · 2-1 · 3 goles
+  2026-08-15 · segunda-division-2026-27-j1-mallorca-valladolid · 70694912 · RCD Mallorca–Real Valladolid CF · 2-0 · 2 goles
+  2026-08-16 · primera-division-2026-27-j1-racing-santander-villarreal · 70694531 · Real Racing Club de Santander–Villarreal CF · 2-2 · 4 goles
+  2026-08-16 · segunda-division-2026-27-j1-eibar-tenerife · 70694909 · SD Eibar–CD Tenerife · 1-3 · 4 goles
+  2026-08-16 · primera-division-2026-27-j1-espanyol-levante · 70694529 · RCD Espanyol de Barcelona–Levante UD · 3-0 · 3 goles
+  2026-08-16 · segunda-division-2026-27-j1-burgos-cordoba · 70694907 · Burgos CF–Córdoba CF · 3-2 · 5 goles
+  2026-08-16 · segunda-division-2026-27-j1-girona-leganes · 70694910 · Girona FC–CD Leganés · 1-1 · 2 goles
+  2026-08-16 · segunda-division-2026-27-j1-las-palmas-albacete · 70694911 · UD Las Palmas–Albacete Balompié · 2-1 · 3 goles
+  2026-08-17 · segunda-division-2026-27-j1-sporting-sabadell · 70694915 · Real Sporting de Gijón–CE Sabadell FC · 0-0 · 0 goles
+  2026-08-17 · primera-division-2026-27-j1-deportivo-elche · 70694528 · RC Deportivo–Elche CF · 1-1 · 2 goles
+  2026-08-17 · segunda-division-2026-27-j1-almeria-eldense · 70694905 · UD Almería–CD Eldense · 3-0 · 3 goles
+  2026-08-19 · primera-division-2026-27-j1-atletico-madrid-malaga · 70694526 · Club Atlético de Madrid–Málaga CF · 2-0 · 2 goles
+  2026-08-20 · primera-division-2026-27-j2-rayo-vallecano-alaves · 70694543 · Rayo Vallecano de Madrid–Deportivo Alavés · 1-1 · 2 goles
+  2026-08-21 · primera-division-2026-27-j2-real-betis-real-sociedad · 70694537 · Real Betis Balompié–Real Sociedad de Fútbol · 1-0 · 1 goles
+  2026-08-21 · segunda-division-2026-27-j2-cordoba-girona · 70694920 · Córdoba CF–Girona FC · 2-1 · 3 goles
+  2026-08-22 · primera-division-2026-27-j2-athletic-club-sevilla · 70694535 · Athletic Club–Sevilla FC · 1-3 · 4 goles
+  2026-08-22 · segunda-division-2026-27-j2-oviedo-leganes · 70694924 · Real Oviedo–CD Leganés · 0-1 · 1 goles
+  2026-08-22 · segunda-division-2026-27-j2-albacete-real-sociedad-b · 70694916 · Albacete Balompié–Real Sociedad de Fútbol SAD "B" · 1-2 · 3 goles
+  2026-08-22 · segunda-division-2026-27-j2-ceuta-las-palmas · 70694919 · AD Ceuta FC–UD Las Palmas · 0-2 · 2 goles
+  2026-08-22 · primera-division-2026-27-j2-valencia-celta · 70694544 · Valencia CF–RC Celta de Vigo · 0-0 · 0 goles
+  2026-08-22 · primera-division-2026-27-j2-espanyol-real-madrid · 70694539 · RCD Espanyol de Barcelona–Real Madrid CF · 1-2 · 3 goles
+  2026-08-22 · segunda-division-2026-27-j2-eldense-cadiz · 70694922 · CD Eldense–Cádiz CF · 2-2 · 4 goles
+  2026-08-23 · primera-division-2026-27-j2-atletico-madrid-villarreal · 70694536 · Club Atlético de Madrid–Villarreal CF · 2-2 · 4 goles
+  2026-08-23 · segunda-division-2026-27-j2-eibar-valladolid · 70694921 · SD Eibar–Real Valladolid CF · 1-0 · 1 goles
+  2026-08-23 · segunda-division-2026-27-j2-castellon-sabadell · 70694917 · CD Castellón–CE Sabadell FC · 0-0 · 0 goles
+  2026-08-23 · segunda-division-2026-27-j2-sporting-burgos · 70694925 · Real Sporting de Gijón–Burgos CF · 1-0 · 1 goles
+  2026-08-23 · primera-division-2026-27-j2-getafe-racing-santander · 70694540 · Getafe CF–Real Racing Club de Santander · 1-0 · 1 goles
+  2026-08-23 · primera-division-2026-27-j2-elche-barcelona · 70694538 · Elche CF–FC Barcelona · 0-5 · 5 goles
+  2026-08-23 · segunda-division-2026-27-j2-tenerife-almeria · 70694926 · CD Tenerife–UD Almería · 1-0 · 1 goles
+  2026-08-24 · segunda-division-2026-27-j2-celta-fortuna-andorra · 70694918 · RC Celta Fortuna–FC Andorra · 4-2 · 6 goles
+  2026-08-24 · primera-division-2026-27-j2-osasuna-levante · 70694542 · Club Atlético Osasuna–Levante UD · 0-0 · 0 goles
+  2026-08-24 · primera-division-2026-27-j2-malaga-deportivo · 70694541 · Málaga CF–RC Deportivo · 1-1 · 2 goles
+  2026-08-24 · segunda-division-2026-27-j2-granada-mallorca · 70694923 · Granada CF–RCD Mallorca · 2-0 · 2 goles
+  2026-08-25 · primera-division-2026-27-j1-valencia-real-betis · 70694534 · Valencia CF–Real Betis Balompié · 0-1 · 1 goles
+  2026-08-26 · primera-division-2026-27-j1-real-madrid-real-sociedad · 70694532 · Real Madrid CF–Real Sociedad de Fútbol · 4-1 · 5 goles
+  2026-08-27 · primera-division-2026-27-j1-celta-osasuna · 70699691 · RC Celta de Vigo–Club Atlético Osasuna · 1-2 · 3 goles
+  2026-08-27 · primera-division-2026-27-j1-barcelona-athletic-club · 70694530 · FC Barcelona–Athletic Club · 2-0 · 2 goles
+  2026-08-28 · primera-division-2026-27-j3-racing-santander-elche · 70694551 · Real Racing Club de Santander–Elche CF · 3-2 · 5 goles
+  2026-08-28 · primera-rfef-g1-2026-27-j1-aviles-pontevedra · 70695372 · Real Avilés Industrial–Pontevedra CF · 0-1 · 0 goles
+  2026-08-28 · segunda-division-2026-27-j3-tenerife-sporting · 70694937 · CD Tenerife–Real Sporting de Gijón · 0-1 · 1 goles
+  2026-08-28 · primera-rfef-g1-2026-27-j1-cacereno-mirandes · 70695369 · CP Cacereño–CD Mirandés · 1-0 · 0 goles
+  2026-08-28 · primera-division-2026-27-j3-alaves-villarreal · 70694545 · Deportivo Alavés–Villarreal CF · 1-0 · 1 goles
+  2026-08-29 · primera-division-2026-27-j3-levante-real-betis · 70694549 · Levante UD–Real Betis Balompié · 5-2 · 7 goles
+  2026-08-29 · primera-rfef-g1-2026-27-j1-ud-ourense-ponferradina · 70695371 · UD Ourense–SD Ponferradina · 0-1 · 0 goles
+  2026-08-29 · segunda-division-2026-27-j3-sabadell-almeria · 70694936 · CE Sabadell FC–UD Almería · 1-0 · 1 goles
+  2026-08-29 · primera-rfef-g1-2026-27-j1-arenas-racing-ferrol · 70695367 · Arenas Club–Racing Club Ferrol · 1-1 · 0 goles
+  2026-08-29 · primera-division-2026-27-j3-real-sociedad-espanyol · 70694553 · Real Sociedad de Fútbol–RCD Espanyol de Barcelona · 2-1 · 3 goles
+  2026-08-29 · segunda-division-2026-27-j3-albacete-oviedo · 70694927 · Albacete Balompié–Real Oviedo · 0-1 · 1 goles
+  2026-08-29 · segunda-division-2026-27-j3-leganes-eldense · 70694934 · CD Leganés–CD Eldense · 1-0 · 1 goles
+  2026-08-29 · primera-rfef-g1-2026-27-j1-merida-deportivo-fabril · 70695370 · AD Mérida–RC Deportivo Fabril · 1-0 · 0 goles
+  2026-08-29 · primera-rfef-g1-2026-27-j1-zamora-bilbao-athletic · 70695376 · Zamora CF–Athletic Club "B" · 1-1 · 0 goles
+  2026-08-29 · primera-division-2026-27-j3-sevilla-atletico-madrid · 70694554 · Sevilla FC–Club Atlético de Madrid · 1-3 · 4 goles
+  2026-08-29 · segunda-division-2026-27-j3-girona-las-palmas · 70694933 · Girona FC–UD Las Palmas · 5-2 · 7 goles
+  2026-08-30 · primera-division-2026-27-j3-real-madrid-malaga · 70694552 · Real Madrid CF–Málaga CF · 4-0 · 4 goles
+  2026-08-30 · primera-rfef-g1-2026-27-j1-barakaldo-cultural-leonesa · 70695368 · Barakaldo CF–CyD Leonesa · 0-0 · 0 goles
+  2026-08-30 · segunda-division-2026-27-j3-andorra-eibar · 70694928 · FC Andorra–SD Eibar · 0-1 · 1 goles
+  2026-08-30 · primera-rfef-g1-2026-27-j1-real-union-coria · 70695373 · Real Unión Club–CD Coria · 4-1 · 0 goles
+  2026-08-30 · segunda-division-2026-27-j3-cadiz-valladolid · 70694930 · Cádiz CF–Real Valladolid CF · 1-1 · 2 goles
+  2026-08-30 · segunda-division-2026-27-j3-mallorca-ceuta · 70694935 · RCD Mallorca–AD Ceuta FC · 3-0 · 3 goles
+  2026-08-30 · primera-rfef-g1-2026-27-j1-unionistas-lugo · 70695375 · Unionistas de Salamanca CF–CD Lugo · 1-3 · 0 goles
+  2026-08-30 · primera-division-2026-27-j3-deportivo-valencia · 70694547 · RC Deportivo–Valencia CF · 3-1 · 4 goles
+  2026-08-30 · primera-division-2026-27-j3-celta-athletic-club · 70694546 · RC Celta de Vigo–Athletic Club · 0-2 · 2 goles
+  2026-08-30 · segunda-division-2026-27-j3-cordoba-granada · 70694932 · Córdoba CF–Granada CF · 1-3 · 4 goles
+  2026-08-31 · primera-rfef-g1-2026-27-j1-logrones-extremadura · 70695374 · UD Logroñés–CD Extremadura · 2-1 · 0 goles
+  2026-08-31 · segunda-division-2026-27-j3-burgos-real-sociedad-b · 70694929 · Burgos CF–Real Sociedad de Fútbol SAD "B" · 2-2 · 4 goles
+  2026-08-31 · primera-division-2026-27-j3-osasuna-getafe · 70694550 · Club Atlético Osasuna–Getafe CF · 1-0 · 1 goles
+  2026-08-31 · primera-division-2026-27-j3-barcelona-rayo-vallecano · 70694548 · FC Barcelona–Rayo Vallecano de Madrid · 5-2 · 7 goles
+  2026-08-31 · segunda-division-2026-27-j3-celta-fortuna-castellon · 70694931 · RC Celta Fortuna–CD Castellón · 1-2 · 3 goles
+  2026-09-03 · primera-division-2026-27-j6-real-sociedad-celta · 70694584 · Real Sociedad de Fútbol–RC Celta de Vigo · 0-0 · 0 goles
+  2026-09-04 · segunda-division-2026-27-j4-las-palmas-leganes · 70694943 · UD Las Palmas–CD Leganés · 0-0 · 0 goles
+  2026-09-04 · primera-division-2026-27-j4-real-betis-real-madrid · 70694557 · Real Betis Balompié–Real Madrid CF · 1-0 · 1 goles
+  2026-09-04 · primera-rfef-g1-2026-27-j2-ponferradina-lugo · 70695384 · SD Ponferradina–CD Lugo · 0-0 · 0 goles
+  2026-09-05 · segunda-division-2026-27-j4-real-sociedad-b-tenerife · 70694945 · Real Sociedad de Fútbol SAD "B"–CD Tenerife · 1-1 · 2 goles
+  2026-09-05 · primera-division-2026-27-j4-athletic-club-atletico-madrid · 70694556 · Athletic Club–Club Atlético de Madrid · 3-0 · 3 goles
+  2026-09-05 · segunda-division-2026-27-j4-sporting-girona · 70694947 · Real Sporting de Gijón–Girona FC · 0-2 · 2 goles
+  2026-09-05 · primera-rfef-g1-2026-27-j2-mirandes-ud-ourense · 70695382 · CD Mirandés–UD Ourense · 2-0 · 0 goles
+  2026-09-05 · segunda-rfef-g1-2026-27-j1-alaves-b-coruxo · 70700058 · Deportivo Alavés "B"–Coruxo FC · 0-2 · 0 goles
+  2026-09-05 · segunda-rfef-g1-2026-27-j1-oviedo-vetusta-eibar-b · 70700063 · Real Oviedo Vetusta–SD Eibar "B" · 2-1 · 0 goles
+  2026-09-05 · segunda-rfef-g1-2026-27-j1-astorga-portugalete · 70700059 · Atlético Astorga FC–Club Portugalete · 0-1 · 0 goles
+  2026-09-05 · tercera-rfef-g1-2026-27-j1-alondras-pontevedra-b · 1427951 · ALONDRAS C.F.–PONTEVEDRA C.F. "B" · 2-6 · 0 goles
+  2026-09-05 · primera-division-2026-27-j4-rayo-vallecano-racing-santander · 70694562 · Rayo Vallecano de Madrid–Real Racing Club de Santander · 3-2 · 5 goles
+  2026-09-05 · segunda-division-2026-27-j4-ceuta-celta-fortuna · 70694940 · AD Ceuta FC–RC Celta Fortuna · 0-2 · 2 goles
+  2026-09-05 · segunda-division-2026-27-j4-valladolid-andorra · 70694948 · Real Valladolid CF–FC Andorra · 1-0 · 1 goles
+  2026-09-05 · tercera-rfef-g1-2026-27-j1-villalbes-atletico-arteixo · 1427954 · RACING CLUB VILLALBES–ATLETICO ARTEIXO · 0-0 · 0 goles
+  2026-09-05 · primera-rfef-g1-2026-27-j2-coria-barakaldo · 70695378 · CD Coria–Barakaldo CF · 4-1 · 0 goles
+  2026-09-05 · primera-rfef-g1-2026-27-j2-pontevedra-arenas · 70695383 · Pontevedra CF–Arenas Club · 4-1 · 0 goles
+  2026-09-05 · primera-rfef-g1-2026-27-j2-unionistas-real-union · 70695385 · Unionistas de Salamanca CF–Real Unión Club · 2-4 · 0 goles
+  2026-09-05 · segunda-rfef-g1-2026-27-j1-gimnastica-llanera · 70700064 · RS Gimnástica de Torrelavega–UD Llanera · 2-1 · 0 goles
+  2026-09-05 · primera-division-2026-27-j4-villarreal-deportivo · 70694564 · Villarreal CF–RC Deportivo · 2-3 · 5 goles
+  2026-09-05 · segunda-division-2026-27-j4-eldense-mallorca · 70694942 · CD Eldense–RCD Mallorca · 0-0 · 0 goles
+  2026-09-06 · primera-rfef-g1-2026-27-j2-deportivo-fabril-cacereno · 70695380 · RC Deportivo Fabril–CP Cacereño · 1-1 · 0 goles
+  2026-09-06 · segunda-rfef-g1-2026-27-j1-amorebieta-arosa · 70700066 · SD Amorebieta–Arosa SC · 2-2 · 0 goles
+  2026-09-06 · segunda-rfef-g1-2026-27-j1-compostela-marino · 70700060 · SD Compostela–Club Marino de Luanco · 0-3 · 0 goles
+  2026-09-06 · segunda-rfef-g1-2026-27-j1-gernika-bergantinos · 70700061 · SD Gernika Club–Bergantiños CF · 2-2 · 0 goles
+  2026-09-06 · segunda-rfef-g1-2026-27-j1-rayo-cantabria-sestao-river · 70700065 · Rayo Cantabria–Sestao River Club · 0-1 · 0 goles
+  2026-09-06 · tercera-rfef-g1-2026-27-j1-viveiro-antela · 1427952 · VIVEIRO C.F.–ANTELA F.C. · 0-1 · 0 goles
+  2026-09-06 · tercera-rfef-g1-2026-27-j1-silva-celtiga · 1427956 · SILVA S.D.–CELTIGA F.C. · 1-1 · 0 goles
+  2026-09-06 · segunda-division-2026-27-j4-eibar-granada · 70694941 · SD Eibar–Granada CF · 3-0 · 3 goles
+  2026-09-06 · primera-rfef-g1-2026-27-j2-cultural-leonesa-merida · 70695379 · CyD Leonesa–AD Mérida · 1-0 · 0 goles
+  2026-09-06 · primera-division-2026-27-j4-valencia-barcelona · 70694563 · Valencia CF–FC Barcelona · 0-5 · 5 goles
+  2026-09-06 · segunda-division-2026-27-j4-oviedo-burgos · 70694944 · Real Oviedo–Burgos CF · 0-0 · 0 goles
+  2026-09-06 · segunda-rfef-g1-2026-27-j1-ourense-cf-basconia · 70700062 · Ourense CF–CD Basconia · 2-1 · 0 goles
+  2026-09-06 · tercera-rfef-g1-2026-27-j1-boiro-montaneros · 1427955 · C.D. BOIRO–ATL. CORUÑA MONTAÑEROS C.F. · 3-2 · 0 goles
+  2026-09-06 · tercera-rfef-g1-2026-27-j1-celta-c-lalin · 1427950 · GRAN PEÑA F.C.–C.D. LALIN · 1-2 · 0 goles
+  2026-09-06 · tercera-rfef-g1-2026-27-j1-somozas-portonovo · 1427949 · U.D. SOMOZAS–PORTONOVO S.D. · 0-0 · 0 goles
+  2026-09-06 · primera-rfef-g1-2026-27-j2-bilbao-athletic-aviles · 70695377 · Athletic Club "B"–Real Avilés Industrial · 2-1 · 0 goles
+  2026-09-06 · primera-rfef-g1-2026-27-j2-extremadura-racing-ferrol · 70695381 · CD Extremadura–Racing Club Ferrol · 1-0 · 0 goles
+  2026-09-06 · primera-division-2026-27-j4-alaves-osasuna · 70694555 · Deportivo Alavés–Club Atlético Osasuna · 5-2 · 7 goles
+  2026-09-06 · primera-division-2026-27-j4-malaga-levante · 70694561 · Málaga CF–Levante UD · 0-0 · 0 goles
+  2026-09-06 · segunda-division-2026-27-j4-castellon-albacete · 70694939 · CD Castellón–Albacete Balompié · 2-0 · 2 goles
+  2026-09-06 · tercera-rfef-g1-2026-27-j1-estradense-sarriana · 1427953 · C.D. ESTRADENSE–S.D. SARRIANA · 1-3 · 0 goles
+  2026-09-06 · tercera-rfef-g1-2026-27-j1-arenteiro-barco · 1427948 · C.D. ARENTEIRO–C.D. BARCO · 0-1 · 0 goles
+  2026-09-06 · primera-rfef-g1-2026-27-j2-zamora-logrones · 70695386 · Zamora CF–UD Logroñés · 1-2 · 0 goles
+  2026-09-06 · primera-division-2026-27-j4-espanyol-sevilla · 70694559 · RCD Espanyol de Barcelona–Sevilla FC · 1-1 · 2 goles
+  2026-09-06 · segunda-division-2026-27-j4-almeria-cadiz · 70694938 · UD Almería–Cádiz CF · 3-2 · 5 goles
+  2026-09-07 · primera-division-2026-27-j4-getafe-celta · 70694560 · Getafe CF–RC Celta de Vigo · 1-1 · 2 goles
+  2026-09-07 · segunda-division-2026-27-j4-sabadell-cordoba · 70694946 · CE Sabadell FC–Córdoba CF · 3-2 · 5 goles
+  2026-09-07 · primera-division-2026-27-j4-elche-real-sociedad · 70694558 · Elche CF–Real Sociedad de Fútbol · 2-3 · 5 goles
+  2026-09-11 · primera-rfef-g1-2026-27-j3-barakaldo-extremadura · 70695388 · Barakaldo CF–CD Extremadura · 1-0 · 0 goles
+  2026-09-11 · segunda-division-2026-27-j5-burgos-ceuta · 70694950 · Burgos CF–AD Ceuta FC · 3-1 · 4 goles
+  2026-09-11 · primera-division-2026-27-j5-sevilla-valencia · 70694573 · Sevilla FC–Valencia CF · 1-0 · 1 goles
+  2026-09-12 · primera-division-2026-27-j5-racing-santander-alaves · 70694570 · Real Racing Club de Santander–Deportivo Alavés · 2-1 · 3 goles
+  2026-09-12 · segunda-division-2026-27-j5-andorra-real-sociedad-b · 70694949 · FC Andorra–Real Sociedad de Fútbol SAD "B" · 1-3 · 4 goles
+  2026-09-12 · segunda-rfef-g1-2026-27-j2-eibar-b-gimnastica · 70700071 · SD Eibar "B"–RS Gimnástica de Torrelavega · 1-0 · 0 goles
+  2026-09-12 · primera-division-2026-27-j5-osasuna-espanyol · 70694569 · Club Atlético Osasuna–RCD Espanyol de Barcelona · 0-2 · 2 goles
+  2026-09-12 · segunda-division-2026-27-j5-cadiz-las-palmas · 70694951 · Cádiz CF–UD Las Palmas · 0-1 · 1 goles
+  2026-09-12 · primera-rfef-g1-2026-27-j3-pontevedra-bilbao-athletic · 70695395 · Pontevedra CF–Athletic Club "B" · 1-3 · 0 goles
+  2026-09-12 · tercera-rfef-g1-2026-27-j2-atletico-arteixo-estradense · 1427963 · ATLETICO ARTEIXO–C.D. ESTRADENSE · 1-1 · 0 goles
+  2026-09-12 · primera-division-2026-27-j5-athletic-club-elche · 70694565 · Athletic Club–Elche CF · 1-1 · 2 goles
+  2026-09-12 · segunda-division-2026-27-j5-girona-castellon · 70694954 · Girona FC–CD Castellón · 1-2 · 3 goles
+  2026-09-12 · segunda-division-2026-27-j5-granada-albacete · 70694955 · Granada CF–Albacete Balompié · 1-1 · 2 goles
+  2026-09-12 · tercera-rfef-g1-2026-27-j2-celtiga-boiro · 1427965 · CELTIGA F.C.–C.D. BOIRO · 0-2 · 0 goles
+  2026-09-12 · primera-rfef-g1-2026-27-j3-aviles-unionistas · 70695396 · Real Avilés Industrial–Unionistas de Salamanca CF · 3-1 · 0 goles
+  2026-09-12 · primera-rfef-g1-2026-27-j3-ud-ourense-logrones · 70695394 · UD Ourense–UD Logroñés · 0-3 · 0 goles
+  2026-09-12 · tercera-rfef-g1-2026-27-j2-barco-silva · 1427957 · C.D. BARCO–SILVA S.D. · 1-2 · 0 goles
+  2026-09-12 · primera-division-2026-27-j5-real-madrid-rayo-vallecano · 70694571 · Real Madrid CF–Rayo Vallecano de Madrid · 4-1 · 5 goles
+  2026-09-12 · primera-rfef-g1-2026-27-j3-merida-mirandes · 70695393 · AD Mérida–CD Mirandés · 3-4 · 0 goles
+  2026-09-12 · segunda-division-2026-27-j5-cordoba-almeria · 70694953 · Córdoba CF–UD Almería · 0-2 · 2 goles
+  2026-09-13 · segunda-rfef-g1-2026-27-j2-portugalete-compostela · 70700072 · Club Portugalete–SD Compostela · 0-0 · 0 goles
+  2026-09-13 · primera-rfef-g1-2026-27-j3-arenas-zamora · 70695387 · Arenas Club–Zamora CF · 1-2 · 0 goles
+  2026-09-13 · primera-rfef-g1-2026-27-j3-racing-ferrol-real-union · 70695391 · Racing Club Ferrol–Real Unión Club · 3-2 · 0 goles
+  2026-09-13 · segunda-rfef-g1-2026-27-j2-llanera-alaves-b · 70700073 · UD Llanera–Deportivo Alavés "B" · 1-2 · 0 goles
+  2026-09-13 · tercera-rfef-g1-2026-27-j2-pontevedra-b-celta-c · 1427960 · PONTEVEDRA C.F. "B"–GRAN PEÑA F.C. · 1-2 · 0 goles
+  2026-09-13 · segunda-rfef-g1-2026-27-j2-basconia-astorga · 70700068 · CD Basconia–Atlético Astorga FC · 3-2 · 0 goles
+  2026-09-13 · tercera-rfef-g1-2026-27-j2-montaneros-villalbes · 1427964 · ATL. CORUÑA MONTAÑEROS C.F.–RACING CLUB VILLALBES · 2-3 · 0 goles
+  2026-09-13 · primera-division-2026-27-j5-celta-malaga · 70694566 · RC Celta de Vigo–Málaga CF · 1-1 · 2 goles
+  2026-09-13 · segunda-division-2026-27-j5-sporting-eldense · 70694957 · Real Sporting de Gijón–CD Eldense · 0-1 · 1 goles
+  2026-09-13 · primera-rfef-g1-2026-27-j3-deportivo-fabril-ponferradina · 70695390 · RC Deportivo Fabril–SD Ponferradina · 2-1 · 0 goles
+  2026-09-13 · primera-division-2026-27-j5-levante-barcelona · 70694568 · Levante UD–FC Barcelona · 2-4 · 6 goles
+  2026-09-13 · segunda-division-2026-27-j5-valladolid-oviedo · 70694959 · Real Valladolid CF–Real Oviedo · 0-3 · 3 goles
+  2026-09-13 · segunda-rfef-g1-2026-27-j2-arosa-gernika · 70700067 · Arosa SC–SD Gernika Club · 0-4 · 0 goles
+  2026-09-13 · segunda-rfef-g1-2026-27-j2-bergantinos-amorebieta · 70700069 · Bergantiños CF–SD Amorebieta · 1-0 · 0 goles
+  2026-09-13 · segunda-rfef-g1-2026-27-j2-coruxo-rayo-cantabria · 70700070 · Coruxo FC–Rayo Cantabria · 1-1 · 0 goles
+  2026-09-13 · segunda-rfef-g1-2026-27-j2-marino-ourense-cf · 70700074 · Club Marino de Luanco–Ourense CF · 0-2 · 0 goles
+  2026-09-13 · tercera-rfef-g1-2026-27-j2-antela-alondras · 1427961 · ANTELA F.C.–ALONDRAS C.F. · 0-2 · 0 goles
+  2026-09-13 · tercera-rfef-g1-2026-27-j2-lalin-somozas · 1427959 · C.D. LALIN–U.D. SOMOZAS · 1-0 · 0 goles
+  2026-09-13 · tercera-rfef-g1-2026-27-j2-portonovo-arenteiro · 1427958 · PORTONOVO S.D.–C.D. ARENTEIRO · 2-1 · 0 goles
+  2026-09-13 · tercera-rfef-g1-2026-27-j2-sarriana-viveiro · 1427962 · S.D. SARRIANA–VIVEIRO C.F. · 2-0 · 0 goles
+  2026-09-13 · primera-rfef-g1-2026-27-j3-cacereno-cultural-leonesa · 70695389 · CP Cacereño–CyD Leonesa · 1-0 · 0 goles
+  2026-09-13 · primera-rfef-g1-2026-27-j3-lugo-coria · 70695392 · CD Lugo–CD Coria · 1-0 · 0 goles
+  2026-09-13 · primera-division-2026-27-j5-getafe-deportivo · 70694567 · Getafe CF–RC Deportivo · 1-1 · 2 goles
+  2026-09-13 · segunda-division-2026-27-j5-mallorca-sabadell · 70694956 · RCD Mallorca–CE Sabadell FC · 2-0 · 2 goles
+  2026-09-13 · segunda-rfef-g1-2026-27-j2-sestao-river-oviedo-vetusta · 70700075 · Sestao River Club–Real Oviedo Vetusta · 2-0 · 0 goles
+  2026-09-13 · primera-division-2026-27-j5-real-sociedad-atletico-madrid · 70694572 · Real Sociedad de Fútbol–Club Atlético de Madrid · 0-3 · 3 goles
+  2026-09-13 · segunda-division-2026-27-j5-tenerife-leganes · 70694958 · CD Tenerife–CD Leganés · 2-0 · 2 goles
+  2026-09-14 · segunda-division-2026-27-j5-celta-fortuna-eibar · 70694952 · RC Celta Fortuna–SD Eibar · 0-4 · 4 goles
+  2026-09-14 · primera-division-2026-27-j5-villarreal-real-betis · 70694574 · Villarreal CF–Real Betis Balompié · 1-2 · 3 goles
+  2026-09-15 · primera-division-2026-27-j6-rayo-vallecano-espanyol · 70694583 · Rayo Vallecano de Madrid–RCD Espanyol de Barcelona · 2-1 · 3 goles
+  2026-09-15 · primera-division-2026-27-j6-alaves-valencia · 70694575 · Deportivo Alavés–Valencia CF · 0-1 · 1 goles
+  2026-09-15 · primera-division-2026-27-j6-elche-real-madrid · 70694579 · Elche CF–Real Madrid CF · 2-3 · 5 goles
+  2026-09-16 · primera-division-2026-27-j6-atletico-madrid-osasuna · 70694576 · Club Atlético de Madrid–Club Atlético Osasuna · 4-0 · 4 goles
+  2026-09-16 · primera-division-2026-27-j6-deportivo-sevilla · 70694578 · RC Deportivo–Sevilla FC · 0-1 · 1 goles
+  2026-09-16 · primera-division-2026-27-j6-barcelona-racing-santander · 70694580 · FC Barcelona–Real Racing Club de Santander · 7-2 · 9 goles
+  2026-09-17 · primera-division-2026-27-j6-real-betis-getafe · 70694577 · Real Betis Balompié–Getafe CF · 1-0 · 1 goles
+  2026-09-17 · primera-division-2026-27-j6-malaga-villarreal · 70694582 · Málaga CF–Villarreal CF · 1-3 · 4 goles
+  2026-09-18 · segunda-division-2026-27-j6-albacete-cordoba · 70694960 · Albacete Balompié–Córdoba CF · 1-2 · 3 goles
+  2026-09-18 · primera-division-2026-27-j7-espanyol-elche · 70694589 · RCD Espanyol de Barcelona–Elche CF · 1-3 · 4 goles
+  2026-09-18 · primera-rfef-g1-2026-27-j4-logrones-pontevedra · 70695404 · UD Logroñés–Pontevedra CF · 1-1 · 0 goles
+  2026-09-19 · segunda-rfef-g1-2026-27-j3-basconia-arosa · 70700078 · CD Basconia–Arosa SC · 2-2 · 0 goles
+  2026-09-19 · primera-rfef-g1-2026-27-j4-unionistas-ud-ourense · 70695405 · Unionistas de Salamanca CF–UD Ourense · 3-1 · 0 goles
+  2026-09-19 · primera-division-2026-27-j7-osasuna-rayo-vallecano · 70694591 · Club Atlético Osasuna–Rayo Vallecano de Madrid · 1-1 · 2 goles
+  2026-09-19 · segunda-division-2026-27-j6-real-sociedad-b-mallorca · 70694969 · Real Sociedad de Fútbol SAD "B"–RCD Mallorca · 0-1 · 1 goles
+  2026-09-19 · tercera-rfef-g1-2026-27-j3-silva-boiro · 1427974 · SILVA S.D.–C.D. BOIRO · 0-2 · 0 goles
+  2026-09-19 · primera-division-2026-27-j7-athletic-club-alaves · 70694585 · Athletic Club–Deportivo Alavés · 0-0 · 0 goles
+  2026-09-19 · segunda-division-2026-27-j6-andorra-sporting · 70694962 · FC Andorra–Real Sporting de Gijón · 1-3 · 4 goles
+  2026-09-19 · primera-rfef-g1-2026-27-j4-racing-ferrol-barakaldo · 70695401 · Racing Club Ferrol–Barakaldo CF · 1-0 · 0 goles
+  2026-09-19 · segunda-rfef-g1-2026-27-j3-astorga-marino · 70700077 · Atlético Astorga FC–Club Marino de Luanco · 3-0 · 0 goles
+  2026-09-19 · tercera-rfef-g1-2026-27-j3-villalbes-celtiga · 1427973 · RACING CLUB VILLALBES–CELTIGA F.C. · 3-2 · 0 goles
+  2026-09-19 · primera-division-2026-27-j7-celta-racing-santander · 70694587 · RC Celta de Vigo–Real Racing Club de Santander · 5-0 · 5 goles
+  2026-09-19 · segunda-division-2026-27-j6-castellon-tenerife · 70694964 · CD Castellón–CD Tenerife · 5-0 · 5 goles
+  2026-09-19 · segunda-division-2026-27-j6-eldense-eibar · 70694966 · CD Eldense–SD Eibar · 1-2 · 3 goles
+  2026-09-19 · primera-rfef-g1-2026-27-j4-coria-aviles · 70695398 · CD Coria–Real Avilés Industrial · 1-1 · 0 goles
+  2026-09-19 · primera-rfef-g1-2026-27-j4-ponferradina-merida · 70695403 · SD Ponferradina–AD Mérida · 1-0 · 0 goles
+  2026-09-19 · primera-rfef-g1-2026-27-j4-real-union-mirandes · 70695402 · Real Unión Club–CD Mirandés · 2-2 · 0 goles
+  2026-09-19 · segunda-rfef-g1-2026-27-j3-ourense-cf-eibar-b · 70700082 · Ourense CF–SD Eibar "B" · 0-2 · 0 goles
+  2026-09-19 · segunda-rfef-g1-2026-27-j3-portugalete-coruxo · 70700080 · Club Portugalete–Coruxo FC · 2-1 · 0 goles
+  2026-09-19 · primera-division-2026-27-j7-sevilla-barcelona · 70694592 · Sevilla FC–FC Barcelona · 1-3 · 4 goles
+  2026-09-19 · segunda-division-2026-27-j6-cadiz-girona · 70694963 · Cádiz CF–Girona FC · 1-2 · 3 goles
+  2026-09-20 · primera-rfef-g1-2026-27-j4-bilbao-athletic-deportivo-fabril · 70695397 · Athletic Club "B"–RC Deportivo Fabril · 2-2 · 0 goles
+  2026-09-20 · segunda-rfef-g1-2026-27-j3-alaves-b-oviedo-vetusta · 70700076 · Deportivo Alavés "B"–Real Oviedo Vetusta · 3-1 · 0 goles
+  2026-09-20 · segunda-rfef-g1-2026-27-j3-gimnastica-bergantinos · 70700083 · RS Gimnástica de Torrelavega–Bergantiños CF · 0-3 · 0 goles
+  2026-09-20 · tercera-rfef-g1-2026-27-j3-viveiro-atletico-arteixo · 1427971 · VIVEIRO C.F.–ATLETICO ARTEIXO · 0-1 · 0 goles
+  2026-09-20 · primera-division-2026-27-j7-getafe-malaga · 70694590 · Getafe CF–Málaga CF · 1-0 · 1 goles
+  2026-09-20 · segunda-division-2026-27-j6-sabadell-oviedo · 70694970 · CE Sabadell FC–Real Oviedo · 3-1 · 4 goles
+  2026-09-20 · primera-division-2026-27-j7-atletico-madrid-real-madrid · 70694586 · Club Atlético de Madrid–Real Madrid CF · 2-1 · 3 goles
+  2026-09-20 · segunda-division-2026-27-j6-ceuta-valladolid · 70694965 · AD Ceuta FC–Real Valladolid CF · 1-1 · 2 goles
+  2026-09-20 · segunda-rfef-g1-2026-27-j3-rayo-cantabria-amorebieta · 70700084 · Rayo Cantabria–SD Amorebieta · 0-2 · 0 goles
+  2026-09-20 · segunda-rfef-g1-2026-27-j3-compostela-sestao-river · 70700079 · SD Compostela–Sestao River Club · 2-0 · 0 goles
+  2026-09-20 · segunda-rfef-g1-2026-27-j3-gernika-llanera · 70700081 · SD Gernika Club–UD Llanera · 4-0 · 0 goles
+  2026-09-20 · tercera-rfef-g1-2026-27-j3-arenteiro-lalin · 1427967 · C.D. ARENTEIRO–C.D. LALIN · 1-0 · 0 goles
+  2026-09-20 · tercera-rfef-g1-2026-27-j3-barco-portonovo · 1427966 · C.D. BARCO–PORTONOVO S.D. · 2-1 · 0 goles
+  2026-09-20 · tercera-rfef-g1-2026-27-j3-celta-c-antela · 1427969 · GRAN PEÑA F.C.–ANTELA F.C. · 0-0 · 0 goles
+  2026-09-20 · tercera-rfef-g1-2026-27-j3-somozas-pontevedra-b · 1427968 · U.D. SOMOZAS–PONTEVEDRA C.F. "B" · 1-1 · 0 goles
+  2026-09-20 · primera-rfef-g1-2026-27-j4-zamora-lugo · 70695406 · Zamora CF–CD Lugo · 1-2 · 0 goles
+  2026-09-20 · primera-division-2026-27-j7-deportivo-real-betis · 70694588 · RC Deportivo–Real Betis Balompié · 1-1 · 2 goles
+  2026-09-20 · primera-division-2026-27-j7-villarreal-levante · 70694594 · Villarreal CF–Levante UD · 3-1 · 4 goles
+  2026-09-20 · segunda-division-2026-27-j6-almeria-celta-fortuna · 70694961 · UD Almería–RC Celta Fortuna · 2-0 · 2 goles
+  2026-09-20 · segunda-division-2026-27-j6-las-palmas-burgos · 70694968 · UD Las Palmas–Burgos CF · 1-2 · 3 goles
+  2026-09-20 · tercera-rfef-g1-2026-27-j3-alondras-sarriana · 1427970 · ALONDRAS C.F.–S.D. SARRIANA · 2-0 · 0 goles
+  2026-09-20 · primera-rfef-g1-2026-27-j4-cacereno-arenas · 70695399 · CP Cacereño–Arenas Club · 3-0 · 0 goles
+  2026-09-20 · tercera-rfef-g1-2026-27-j3-estradense-montaneros · 1427972 · C.D. ESTRADENSE–ATL. CORUÑA MONTAÑEROS C.F. · 3-1 · 0 goles
+  2026-09-20 · primera-rfef-g1-2026-27-j4-extremadura-cultural-leonesa · 70695400 · CD Extremadura–CyD Leonesa · 0-1 · 0 goles
+  2026-09-20 · primera-division-2026-27-j7-valencia-real-sociedad · 70694593 · Valencia CF–Real Sociedad de Fútbol · 2-3 · 5 goles
+  2026-09-20 · segunda-division-2026-27-j6-leganes-granada · 70694967 · CD Leganés–Granada CF · 3-2 · 5 goles
+  2026-09-25 · segunda-division-2026-27-j7-girona-albacete · 70694975 · Girona FC–Albacete Balompié · 2-0 · 2 goles
+  2026-09-26 · primera-rfef-g1-2026-27-j5-extremadura-zamora · 70695411 · CD Extremadura–Zamora CF · 0-1 · 0 goles
+  2026-09-26 · segunda-division-2026-27-j7-ceuta-real-sociedad-b · 70694973 · AD Ceuta FC–Real Sociedad de Fútbol SAD "B" · 3-1 · 4 goles
+  2026-09-26 · segunda-division-2026-27-j7-granada-andorra · 70694976 · Granada CF–FC Andorra · 2-3 · 5 goles
+  2026-09-26 · primera-rfef-g1-2026-27-j5-cultural-leonesa-coria · 70695409 · CyD Leonesa–CD Coria · 2-2 · 0 goles
+  2026-09-26 · primera-rfef-g1-2026-27-j5-lugo-racing-ferrol · 70695412 · CD Lugo–Racing Club Ferrol · 1-0 · 0 goles
+  2026-09-26 · segunda-rfef-g1-2026-27-j4-amorebieta-ourense-cf · 70700092 · SD Amorebieta–Ourense CF · 0-1 · 0 goles
+  2026-09-26 · tercera-rfef-g1-2026-27-j4-atletico-arteixo-alondras · 1427980 · ATLETICO ARTEIXO–ALONDRAS C.F. · 2-4 · 0 goles
+  2026-09-26 · tercera-rfef-g1-2026-27-j4-antela-somozas · 1427978 · ANTELA F.C.–U.D. SOMOZAS · 1-0 · 0 goles
+  2026-09-26 · segunda-division-2026-27-j7-celta-fortuna-sabadell · 70694972 · RC Celta Fortuna–CE Sabadell FC · 1-1 · 2 goles
+  2026-09-26 · segunda-division-2026-27-j7-tenerife-cadiz · 70694980 · CD Tenerife–Cádiz CF · 1-1 · 2 goles
+  2026-09-26 · segunda-rfef-g1-2026-27-j4-sestao-river-astorga · 70700093 · Sestao River Club–Atlético Astorga FC · 2-0 · 0 goles
+  2026-09-26 · primera-rfef-g1-2026-27-j5-arenas-bilbao-athletic · 70695407 · Arenas Club–Athletic Club "B" · 0-3 · 0 goles
+  2026-09-26 · primera-rfef-g1-2026-27-j5-deportivo-fabril-real-union · 70695410 · RC Deportivo Fabril–Real Unión Club · 2-0 · 0 goles
+  2026-09-26 · tercera-rfef-g1-2026-27-j4-sarriana-celta-c · 1427979 · S.D. SARRIANA–GRAN PEÑA F.C. · 3-2 · 0 goles
+  2026-09-27 · primera-rfef-g1-2026-27-j5-barakaldo-aviles · 70695408 · Barakaldo CF–Real Avilés Industrial · 3-3 · 0 goles
+  2026-09-27 · primera-rfef-g1-2026-27-j5-ud-ourense-cacereno · 70695415 · UD Ourense–CP Cacereño · 0-0 · 0 goles
+  2026-09-27 · segunda-rfef-g1-2026-27-j4-oviedo-vetusta-gimnastica · 70700091 · Real Oviedo Vetusta–RS Gimnástica de Torrelavega · 3-3 · 0 goles
+  2026-09-27 · segunda-rfef-g1-2026-27-j4-llanera-rayo-cantabria · 70700089 · UD Llanera–Rayo Cantabria · 2-1 · 0 goles
+  2026-09-27 · tercera-rfef-g1-2026-27-j4-montaneros-viveiro · 1427981 · ATL. CORUÑA MONTAÑEROS C.F.–VIVEIRO C.F. · 1-2 · 0 goles
+  2026-09-27 · segunda-division-2026-27-j7-valladolid-cordoba · 70694981 · Real Valladolid CF–Córdoba CF · 3-1 · 4 goles
+  2026-09-27 · segunda-rfef-g1-2026-27-j4-eibar-b-compostela · 70700088 · SD Eibar "B"–SD Compostela · 1-0 · 0 goles
+  2026-09-27 · primera-rfef-g1-2026-27-j5-mirandes-unionistas · 70695414 · CD Mirandés–Unionistas de Salamanca CF · 1-0 · 0 goles
+  2026-09-27 · tercera-rfef-g1-2026-27-j4-pontevedra-b-arenteiro · 1427977 · PONTEVEDRA C.F. "B"–C.D. ARENTEIRO · 1-0 · 0 goles
+  2026-09-27 · segunda-division-2026-27-j7-mallorca-almeria · 70694978 · RCD Mallorca–UD Almería · 0-1 · 1 goles
+  2026-09-27 · segunda-rfef-g1-2026-27-j4-arosa-alaves-b · 70700085 · Arosa SC–Deportivo Alavés "B" · 2-5 · 0 goles
+  2026-09-27 · segunda-rfef-g1-2026-27-j4-bergantinos-portugalete · 70700086 · Bergantiños CF–Club Portugalete · 3-2 · 0 goles
+  2026-09-27 · segunda-rfef-g1-2026-27-j4-coruxo-gernika · 70700087 · Coruxo FC–SD Gernika Club · 1-1 · 0 goles
+  2026-09-27 · segunda-rfef-g1-2026-27-j4-marino-basconia · 70700090 · Club Marino de Luanco–CD Basconia · 1-2 · 0 goles
+  2026-09-27 · tercera-rfef-g1-2026-27-j4-boiro-villalbes · 1427983 · C.D. BOIRO–RACING CLUB VILLALBES · 1-1 · 0 goles
+  2026-09-27 · tercera-rfef-g1-2026-27-j4-celtiga-estradense · 1427982 · CELTIGA F.C.–C.D. ESTRADENSE · 2-0 · 0 goles
+  2026-09-27 · tercera-rfef-g1-2026-27-j4-lalin-barco · 1427976 · C.D. LALIN–C.D. BARCO · 1-1 · 0 goles
+  2026-09-27 · tercera-rfef-g1-2026-27-j4-portonovo-silva · 1427975 · PORTONOVO S.D.–SILVA S.D. · 4-2 · 0 goles
+  2026-09-27 · primera-rfef-g1-2026-27-j5-merida-logrones · 70695413 · AD Mérida–UD Logroñés · 3-5 · 0 goles
+  2026-09-27 · primera-rfef-g1-2026-27-j5-pontevedra-ponferradina · 70695416 · Pontevedra CF–SD Ponferradina · 1-1 · 0 goles
+  2026-09-27 · segunda-division-2026-27-j7-burgos-eldense · 70694971 · Burgos CF–CD Eldense · 1-0 · 1 goles
+  2026-09-27 · segunda-division-2026-27-j7-eibar-las-palmas · 70694974 · SD Eibar–UD Las Palmas · 3-2 · 5 goles
+  2026-09-27 · segunda-division-2026-27-j7-oviedo-sporting · 70694979 · Real Oviedo–Real Sporting de Gijón · 2-0 · 2 goles
+  2026-09-28 · segunda-division-2026-27-j7-leganes-castellon · 70694977 · CD Leganés–CD Castellón · 0-2 · 2 goles
+  2026-10-02 · primera-rfef-g1-2026-27-j6-aviles-lugo · 70695421 · Real Avilés Industrial–CD Lugo · 1-2 · 0 goles
+  2026-10-02 · segunda-division-2026-27-j8-eldense-oviedo · 70694987 · CD Eldense–Real Oviedo · 4-1 · 5 goles
+  2026-10-03 · segunda-division-2026-27-j8-albacete-eibar · 70694982 · Albacete Balompié–SD Eibar · 1-3 · 4 goles
+  2026-10-03 · tercera-rfef-g1-2026-27-j5-silva-villalbes · 1427992 · SILVA S.D.–RACING CLUB VILLALBES · 0-0 · 0 goles
+  2026-10-03 · segunda-division-2026-27-j8-almeria-burgos · 70694983 · UD Almería–Burgos CF · 2-1 · 3 goles
+  2026-10-03 · primera-rfef-g1-2026-27-j6-barakaldo-arenas · 70695418 · Barakaldo CF–Arenas Club · 1-1 · 0 goles
+  2026-10-03 · primera-rfef-g1-2026-27-j6-racing-ferrol-pontevedra · 70695419 · Racing Club Ferrol–Pontevedra CF · 2-0 · 0 goles
+  2026-10-03 · primera-rfef-g1-2026-27-j6-real-union-ud-ourense · 70695422 · Real Unión Club–UD Ourense · 1-1 · 0 goles
+  2026-10-03 · segunda-rfef-g1-2026-27-j5-rayo-cantabria-eibar-b · 70700102 · Rayo Cantabria–SD Eibar "B" · 1-5 · 0 goles
+  2026-10-03 · tercera-rfef-g1-2026-27-j5-alondras-montaneros · 1427989 · ALONDRAS C.F.–ATL. CORUÑA MONTAÑEROS C.F. · 0-1 · 0 goles
+  2026-10-03 · segunda-rfef-g1-2026-27-j5-astorga-amorebieta · 70700094 · Atlético Astorga FC–SD Amorebieta · 0-1 · 0 goles
+  2026-10-03 · segunda-rfef-g1-2026-27-j5-basconia-llanera · 70700095 · CD Basconia–UD Llanera · 1-1 · 0 goles
+  2026-10-03 · segunda-rfef-g1-2026-27-j5-gimnastica-marino · 70700101 · RS Gimnástica de Torrelavega–Club Marino de Luanco · 1-2 · 0 goles
+  2026-10-03 · segunda-rfef-g1-2026-27-j5-portugalete-alaves-b · 70700098 · Club Portugalete–Deportivo Alavés "B" · 0-2 · 0 goles
+  2026-10-03 · segunda-division-2026-27-j8-cadiz-leganes · 70694984 · Cádiz CF–CD Leganés · 4-0 · 4 goles
+  2026-10-03 · primera-rfef-g1-2026-27-j6-unionistas-cultural-leonesa · 70695425 · Unionistas de Salamanca CF–CyD Leonesa · 2-0 · 0 goles
+  2026-10-03 · tercera-rfef-g1-2026-27-j5-arenteiro-antela · 1427986 · C.D. ARENTEIRO–ANTELA F.C. · 2-3 · 0 goles
+  2026-10-04 · primera-rfef-g1-2026-27-j6-bilbao-athletic-extremadura · 70695417 · Athletic Club "B"–CD Extremadura · 1-3 · 0 goles
+  2026-10-04 · primera-rfef-g1-2026-27-j6-logrones-deportivo-fabril · 70695424 · UD Logroñés–RC Deportivo Fabril · 2-1 · 0 goles
+  2026-10-04 · tercera-rfef-g1-2026-27-j5-viveiro-celtiga · 1427990 · VIVEIRO C.F.–CELTIGA F.C. · 0-0 · 0 goles
+  2026-10-04 · segunda-division-2026-27-j8-real-sociedad-b-granada · 70694990 · Real Sociedad de Fútbol SAD "B"–Granada CF · 2-3 · 5 goles
+  2026-10-04 · segunda-division-2026-27-j8-sporting-celta-fortuna · 70694992 · Real Sporting de Gijón–RC Celta Fortuna · 3-2 · 5 goles
+  2026-10-04 · primera-rfef-g1-2026-27-j6-ponferradina-mirandes · 70695423 · SD Ponferradina–CD Mirandés · 1-0 · 0 goles
+  2026-10-04 · primera-rfef-g1-2026-27-j6-zamora-coria · 70695426 · Zamora CF–CD Coria · 2-0 · 0 goles
+  2026-10-04 · segunda-rfef-g1-2026-27-j5-bergantinos-coruxo · 70700096 · Bergantiños CF–Coruxo FC · 3-1 · 0 goles
+  2026-10-04 · segunda-rfef-g1-2026-27-j5-compostela-oviedo-vetusta · 70700097 · SD Compostela–Real Oviedo Vetusta · 1-2 · 0 goles
+  2026-10-04 · segunda-rfef-g1-2026-27-j5-gernika-sestao-river · 70700099 · SD Gernika Club–Sestao River Club · 1-2 · 0 goles
+  2026-10-04 · segunda-rfef-g1-2026-27-j5-ourense-cf-arosa · 70700100 · Ourense CF–Arosa SC · 0-0 · 0 goles
+  2026-10-04 · tercera-rfef-g1-2026-27-j5-celta-c-atletico-arteixo · 1427988 · GRAN PEÑA F.C.–ATLETICO ARTEIXO · 3-2 · 0 goles
+  2026-10-04 · tercera-rfef-g1-2026-27-j5-portonovo-lalin · 1427984 · PORTONOVO S.D.–C.D. LALIN · 0-1 · 0 goles
+  2026-10-04 · tercera-rfef-g1-2026-27-j5-somozas-sarriana · 1427987 · U.D. SOMOZAS–S.D. SARRIANA · 2-1 · 0 goles
+  2026-10-04 · tercera-rfef-g1-2026-27-j5-barco-pontevedra-b · 1427985 · C.D. BARCO–PONTEVEDRA C.F. "B" · 1-0 · 0 goles
+  2026-10-04 · tercera-rfef-g1-2026-27-j5-estradense-boiro · 1427991 · C.D. ESTRADENSE–C.D. BOIRO · 3-2 · 0 goles
+  2026-10-04 · segunda-division-2026-27-j8-castellon-ceuta · 70694985 · CD Castellón–AD Ceuta FC · 1-1 · 2 goles
+  2026-10-04 · segunda-division-2026-27-j8-las-palmas-valladolid · 70694989 · UD Las Palmas–Real Valladolid CF · 2-2 · 4 goles
+  2026-10-04 · primera-rfef-g1-2026-27-j6-merida-cacereno · 70695420 · AD Mérida–CP Cacereño · 2-0 · 0 goles
+  2026-10-04 · segunda-division-2026-27-j8-girona-mallorca · 70694988 · Girona FC–RCD Mallorca · 0-0 · 0 goles
+  2026-10-04 · segunda-division-2026-27-j8-sabadell-andorra · 70705243 · CE Sabadell FC–FC Andorra · 0-0 · 0 goles
+  2026-10-05 · segunda-division-2026-27-j8-cordoba-tenerife · 70694986 · Córdoba CF–CD Tenerife · 3-2 · 5 goles
+  2026-10-09 · primera-division-2026-27-j8-malaga-espanyol · 70694600 · Málaga CF–RCD Espanyol de Barcelona · 1-1 · 2 goles
+  2026-10-10 · segunda-rfef-g1-2026-27-j6-eibar-b-basconia · 70700107 · SD Eibar "B"–CD Basconia · 1-1 · 0 goles
+  2026-10-10 · primera-division-2026-27-j8-alaves-atletico-madrid · 70694595 · Deportivo Alavés–Club Atlético de Madrid · 1-2 · 3 goles
+  2026-10-10 · segunda-division-2026-27-j9-ceuta-sabadell · 70694998 · AD Ceuta FC–CE Sabadell FC · 1-2 · 3 goles
+  2026-10-10 · primera-rfef-g1-2026-27-j7-deportivo-fabril-racing-ferrol · 70695431 · RC Deportivo Fabril–Racing Club Ferrol · 0-1 · 0 goles
+  2026-10-10 · segunda-rfef-g1-2026-27-j6-astorga-ourense-cf · 70700104 · Atlético Astorga FC–Ourense CF · 4-0 · 0 goles
+  2026-10-10 · tercera-rfef-g1-2026-27-j6-atletico-arteixo-somozas · 1427997 · ATLETICO ARTEIXO–U.D. SOMOZAS · 2-2 · 0 goles
+  2026-10-10 · segunda-rfef-g1-2026-27-j6-amorebieta-portugalete · 70700110 · SD Amorebieta–Club Portugalete · 1-2 · 0 goles
+  2026-10-10 · segunda-rfef-g1-2026-27-j6-llanera-marino · 70700108 · UD Llanera–Club Marino de Luanco · 4-2 · 0 goles
+  2026-10-10 · primera-division-2026-27-j8-barcelona-getafe · 70694598 · FC Barcelona–Getafe CF · 3-0 · 3 goles
+  2026-10-10 · segunda-division-2026-27-j9-eldense-cordoba · 70694999 · CD Eldense–Córdoba CF · 2-1 · 3 goles
+  2026-10-10 · segunda-rfef-g1-2026-27-j6-sestao-river-gimnastica · 70700111 · Sestao River Club–RS Gimnástica de Torrelavega · 0-0 · 0 goles
+  2026-10-10 · primera-rfef-g1-2026-27-j7-cacereno-unionistas · 70695429 · CP Cacereño–Unionistas de Salamanca CF · 1-1 · 0 goles
+  2026-10-10 · primera-rfef-g1-2026-27-j7-ud-ourense-barakaldo · 70695434 · UD Ourense–Barakaldo CF · 1-0 · 0 goles
+  2026-10-10 · primera-rfef-g1-2026-27-j7-coria-extremadura · 70695428 · CD Coria–CD Extremadura · 2-4 · 0 goles
+  2026-10-10 · tercera-rfef-g1-2026-27-j6-pontevedra-b-portonovo · 1427994 · PONTEVEDRA C.F. "B"–PORTONOVO S.D. · 0-1 · 0 goles
+  2026-10-10 · primera-division-2026-27-j8-real-madrid-villarreal · 70694603 · Real Madrid CF–Villarreal CF · 1-0 · 1 goles
+  2026-10-10 · primera-rfef-g1-2026-27-j7-mirandes-zamora · 70695433 · CD Mirandés–Zamora CF · 1-1 · 0 goles
+  2026-10-10 · segunda-division-2026-27-j9-celta-fortuna-real-sociedad-b · 70694997 · RC Celta Fortuna–Real Sociedad de Fútbol SAD "B" · 4-1 · 5 goles
+  2026-10-11 · primera-rfef-g1-2026-27-j7-bilbao-athletic-real-union · 70695427 · Athletic Club "B"–Real Unión Club · 0-0 · 0 goles
+  2026-10-11 · segunda-rfef-g1-2026-27-j6-alaves-b-gernika · 70700103 · Deportivo Alavés "B"–SD Gernika Club · 1-1 · 0 goles
+  2026-10-11 · segunda-rfef-g1-2026-27-j6-oviedo-vetusta-rayo-cantabria · 70700109 · Real Oviedo Vetusta–Rayo Cantabria · 2-1 · 0 goles
+  2026-10-11 · tercera-rfef-g1-2026-27-j6-montaneros-celta-c · 1427998 · ATL. CORUÑA MONTAÑEROS C.F.–GRAN PEÑA F.C. · 3-1 · 0 goles
+  2026-10-11 · primera-division-2026-27-j8-elche-celta · 70694597 · Elche CF–RC Celta de Vigo · 0-0 · 0 goles
+  2026-10-11 · segunda-division-2026-27-j9-andorra-castellon · 70694994 · FC Andorra–CD Castellón · 1-0 · 1 goles
+  2026-10-11 · primera-division-2026-27-j8-real-sociedad-deportivo · 70694604 · Real Sociedad de Fútbol–RC Deportivo · 3-2 · 5 goles
+  2026-10-11 · segunda-division-2026-27-j9-almeria-leganes · 70694993 · UD Almería–CD Leganés · 3-0 · 3 goles
+  2026-10-11 · primera-rfef-g1-2026-27-j7-ponferradina-aviles · 70695436 · SD Ponferradina–Real Avilés Industrial · 0-2 · 0 goles
+  2026-10-11 · primera-rfef-g1-2026-27-j7-pontevedra-merida · 70695435 · Pontevedra CF–AD Mérida · 1-2 · 0 goles
+  2026-10-11 · segunda-rfef-g1-2026-27-j6-arosa-bergantinos · 70700105 · Arosa SC–Bergantiños CF · 2-2 · 0 goles
+  2026-10-11 · segunda-rfef-g1-2026-27-j6-coruxo-compostela · 70700106 · Coruxo FC–SD Compostela · 0-1 · 0 goles
+  2026-10-11 · tercera-rfef-g1-2026-27-j6-villalbes-estradense · 1428001 · RACING CLUB VILLALBES–C.D. ESTRADENSE · 1-2 · 0 goles
+  2026-10-11 · tercera-rfef-g1-2026-27-j6-antela-barco · 1427995 · ANTELA F.C.–C.D. BARCO · 1-1 · 0 goles
+  2026-10-11 · tercera-rfef-g1-2026-27-j6-boiro-viveiro · 1428000 · C.D. BOIRO–VIVEIRO C.F. · 1-0 · 0 goles
+  2026-10-11 · tercera-rfef-g1-2026-27-j6-celtiga-alondras · 1427999 · CELTIGA F.C.–ALONDRAS C.F. · 0-0 · 0 goles
+  2026-10-11 · tercera-rfef-g1-2026-27-j6-lalin-silva · 1427993 · C.D. LALIN–SILVA S.D. · 1-3 · 0 goles
+  2026-10-11 · tercera-rfef-g1-2026-27-j6-sarriana-arenteiro · 1427996 · S.D. SARRIANA–C.D. ARENTEIRO · 3-3 · 0 goles
+  2026-10-11 · primera-division-2026-27-j8-real-betis-osasuna · 70694596 · Real Betis Balompié–Club Atlético Osasuna · 5-2 · 7 goles
+  2026-10-11 · segunda-division-2026-27-j9-mallorca-las-palmas · 70695000 · RCD Mallorca–UD Las Palmas · 3-1 · 4 goles
+  2026-10-11 · primera-division-2026-27-j8-racing-santander-valencia · 70694601 · Real Racing Club de Santander–Valencia CF · 2-2 · 4 goles
+  2026-10-11 · segunda-division-2026-27-j9-cadiz-sporting · 70694996 · Cádiz CF–Real Sporting de Gijón · 0-1 · 1 goles
+  2026-10-12 · segunda-division-2026-27-j9-valladolid-albacete · 70695003 · Real Valladolid CF–Albacete Balompié · 5-0 · 5 goles
+  2026-10-12 · primera-rfef-g1-2026-27-j7-cultural-leonesa-arenas · 70695430 · CyD Leonesa–Arenas Club · 4-1 · 0 goles
+  2026-10-12 · segunda-division-2026-27-j9-burgos-granada · 70694995 · Burgos CF–Granada CF · 0-1 · 1 goles
+  2026-10-12 · segunda-division-2026-27-j9-oviedo-eibar · 70695001 · Real Oviedo–SD Eibar · 3-1 · 4 goles
+  2026-10-12 · primera-rfef-g1-2026-27-j7-lugo-logrones · 70695432 · CD Lugo–UD Logroñés · 3-1 · 0 goles
+  2026-10-12 · primera-division-2026-27-j8-levante-sevilla · 70694599 · Levante UD–Sevilla FC · 3-3 · 6 goles
+  2026-10-12 · segunda-division-2026-27-j9-tenerife-girona · 70695002 · CD Tenerife–Girona FC · 1-1 · 2 goles
+  2026-10-16 · segunda-division-2026-27-j10-leganes-cordoba · 70695010 · CD Leganés–Córdoba CF · 0-1 · 1 goles
+  2026-10-16 · primera-division-2026-27-j9-deportivo-levante · 70694607 · RC Deportivo–Levante UD · 1-1 · 2 goles
+  2026-10-17 · primera-rfef-g1-2026-27-j8-racing-ferrol-unionistas · 70695441 · Racing Club Ferrol–Unionistas de Salamanca CF · 1-0 · 0 goles
+  2026-10-17 · primera-division-2026-27-j9-espanyol-atletico-madrid · 70694608 · RCD Espanyol de Barcelona–Club Atlético de Madrid · 0-1 · 1 goles
+  2026-10-17 · segunda-division-2026-27-j10-real-sociedad-b-almeria · 70695012 · Real Sociedad de Fútbol SAD "B"–UD Almería · 2-4 · 6 goles
+  2026-10-17 · segunda-rfef-g1-2026-27-j7-rayo-cantabria-basconia · 70700120 · Rayo Cantabria–CD Basconia · 3-1 · 0 goles
+  2026-10-17 · primera-division-2026-27-j9-villarreal-elche · 70694614 · Villarreal CF–Elche CF · 0-0 · 0 goles
+  2026-10-17 · segunda-division-2026-27-j10-eibar-mallorca · 70695007 · SD Eibar–RCD Mallorca · 1-1 · 2 goles
+  2026-10-17 · primera-rfef-g1-2026-27-j8-barakaldo-mirandes · 70695438 · Barakaldo CF–CD Mirandés · 2-0 · 0 goles
+  2026-10-17 · primera-rfef-g1-2026-27-j8-lugo-deportivo-fabril · 70695442 · CD Lugo–RC Deportivo Fabril · 3-0 · 0 goles
+  2026-10-17 · segunda-rfef-g1-2026-27-j7-compostela-astorga · 70700114 · SD Compostela–Atlético Astorga FC · 4-1 · 0 goles
+  2026-10-17 · segunda-rfef-g1-2026-27-j7-ourense-cf-coruxo · 70700118 · Ourense CF–Coruxo FC · 0-1 · 0 goles
+  2026-10-17 · segunda-rfef-g1-2026-27-j7-portugalete-eibar-b · 70700115 · Club Portugalete–SD Eibar "B" · 0-0 · 0 goles
+  2026-10-17 · tercera-rfef-g1-2026-27-j7-arenteiro-atletico-arteixo · 1428005 · C.D. ARENTEIRO–ATLETICO ARTEIXO · 1-3 · 0 goles
+  2026-10-17 · segunda-rfef-g1-2026-27-j7-gernika-amorebieta · 70700116 · SD Gernika Club–SD Amorebieta · 1-2 · 0 goles
+  2026-10-17 · primera-division-2026-27-j9-real-betis-barcelona · 70694605 · Real Betis Balompié–FC Barcelona · 2-5 · 7 goles
+  2026-10-17 · segunda-division-2026-27-j10-sporting-albacete · 70695013 · Real Sporting de Gijón–Albacete Balompié · 2-1 · 3 goles
+  2026-10-17 · primera-rfef-g1-2026-27-j8-extremadura-real-union · 70695440 · CD Extremadura–Real Unión Club · 2-2 · 0 goles
+  2026-10-17 · primera-rfef-g1-2026-27-j8-zamora-ponferradina · 70695446 · Zamora CF–SD Ponferradina · 1-1 · 0 goles
+  2026-10-17 · primera-division-2026-27-j9-valencia-athletic-club · 70694613 · Valencia CF–Athletic Club · 0-0 · 0 goles
+  2026-10-17 · segunda-division-2026-27-j10-las-palmas-castellon · 70695011 · UD Las Palmas–CD Castellón · 0-3 · 3 goles
+  2026-10-18 · tercera-rfef-g1-2026-27-j7-celta-c-celtiga · 1428007 · GRAN PEÑA F.C.–CELTIGA F.C. · 1-2 · 0 goles
+  2026-10-18 · primera-rfef-g1-2026-27-j8-arenas-merida · 70695437 · Arenas Club–AD Mérida · 0-4 · 0 goles
+  2026-10-18 · primera-rfef-g1-2026-27-j8-coria-bilbao-athletic · 70695439 · CD Coria–Athletic Club "B" · 2-1 · 0 goles
+  2026-10-18 · tercera-rfef-g1-2026-27-j7-viveiro-villalbes · 1428009 · VIVEIRO C.F.–RACING CLUB VILLALBES · 1-1 · 0 goles
+  2026-10-18 · tercera-rfef-g1-2026-27-j7-silva-estradense · 1428010 · SILVA S.D.–C.D. ESTRADENSE · 2-1 · 0 goles
+  2026-10-18 · primera-division-2026-27-j9-osasuna-racing-santander · 70694611 · Club Atlético Osasuna–Real Racing Club de Santander · 2-0 · 2 goles
+  2026-10-18 · segunda-division-2026-27-j10-ceuta-oviedo · 70695006 · AD Ceuta FC–Real Oviedo · 1-2 · 3 goles
+  2026-10-18 · primera-rfef-g1-2026-27-j8-pontevedra-cacereno · 70695443 · Pontevedra CF–CP Cacereño · 1-0 · 0 goles
+  2026-10-18 · primera-division-2026-27-j9-celta-alaves · 70694606 · RC Celta de Vigo–Deportivo Alavés · 2-1 · 3 goles
+  2026-10-18 · segunda-division-2026-27-j10-granada-cadiz · 70695009 · Granada CF–Cádiz CF · 2-0 · 2 goles
+  2026-10-18 · tercera-rfef-g1-2026-27-j7-alondras-boiro · 1428008 · ALONDRAS C.F.–C.D. BOIRO · 0-1 · 0 goles
+  2026-10-18 · segunda-rfef-g1-2026-27-j7-arosa-llanera · 70700112 · Arosa SC–UD Llanera · 4-1 · 0 goles
+  2026-10-18 · segunda-rfef-g1-2026-27-j7-bergantinos-oviedo-vetusta · 70700113 · Bergantiños CF–Real Oviedo Vetusta · 3-0 · 0 goles
+  2026-10-18 · segunda-rfef-g1-2026-27-j7-gimnastica-alaves-b · 70700119 · RS Gimnástica de Torrelavega–Deportivo Alavés "B" · 1-5 · 0 goles
+  2026-10-18 · segunda-rfef-g1-2026-27-j7-marino-sestao-river · 70700117 · Club Marino de Luanco–Sestao River Club · 0-1 · 0 goles
+  2026-10-18 · tercera-rfef-g1-2026-27-j7-portonovo-antela · 1428003 · PORTONOVO S.D.–ANTELA F.C. · 0-0 · 0 goles
+  2026-10-18 · tercera-rfef-g1-2026-27-j7-somozas-montaneros · 1428006 · U.D. SOMOZAS–ATL. CORUÑA MONTAÑEROS C.F. · 1-2 · 0 goles
+  2026-10-18 · tercera-rfef-g1-2026-27-j7-barco-sarriana · 1428004 · C.D. BARCO–S.D. SARRIANA · 1-1 · 0 goles
+  2026-10-18 · tercera-rfef-g1-2026-27-j7-lalin-pontevedra-b · 1428002 · C.D. LALIN–PONTEVEDRA C.F. "B" · 1-0 · 0 goles
+  2026-10-18 · primera-rfef-g1-2026-27-j8-aviles-ud-ourense · 70695444 · Real Avilés Industrial–UD Ourense · 3-0 · 0 goles
+  2026-10-18 · primera-division-2026-27-j9-malaga-real-sociedad · 70694610 · Málaga CF–Real Sociedad de Fútbol · 2-5 · 7 goles
+  2026-10-18 · segunda-division-2026-27-j10-girona-andorra · 70695008 · Girona FC–FC Andorra · 2-0 · 2 goles
+  2026-10-18 · segunda-division-2026-27-j10-valladolid-eldense · 70695014 · Real Valladolid CF–CD Eldense · 2-3 · 5 goles
+  2026-10-18 · primera-rfef-g1-2026-27-j8-logrones-cultural-leonesa · 70695445 · UD Logroñés–CyD Leonesa · 1-1 · 0 goles
+  2026-10-18 · primera-division-2026-27-j9-real-madrid-sevilla · 70694612 · Real Madrid CF–Sevilla FC · 4-1 · 5 goles
+  2026-10-18 · segunda-division-2026-27-j10-burgos-sabadell · 70695004 · Burgos CF–CE Sabadell FC · 1-0 · 1 goles
+  2026-10-19 · segunda-division-2026-27-j10-celta-fortuna-tenerife · 70695005 · RC Celta Fortuna–CD Tenerife · 1-1 · 2 goles
+  2026-10-19 · primera-division-2026-27-j9-getafe-rayo-vallecano · 70694609 · Getafe CF–Rayo Vallecano de Madrid · 1-1 · 2 goles
+  2026-10-21 · primera-division-2026-27-j6-levante-athletic-club · 70705015 · Levante UD–Athletic Club · 3-1 · 4 goles
+  2026-10-23 · primera-rfef-g1-2026-27-j9-real-union-lugo · 70695454 · Real Unión Club–CD Lugo · 4-1 · 0 goles
+  2026-10-23 · segunda-division-2026-27-j11-granada-valladolid · 70695022 · Granada CF–Real Valladolid CF · 2-1 · 3 goles
+  2026-10-23 · primera-division-2026-27-j10-alaves-malaga · 70694615 · Deportivo Alavés–Málaga CF · 1-1 · 2 goles
+  2026-10-24 · segunda-rfef-g1-2026-27-j8-eibar-b-bergantinos · 70700124 · SD Eibar "B"–Bergantiños CF · 3-2 · 0 goles
+  2026-10-24 · segunda-rfef-g1-2026-27-j8-alaves-b-rayo-cantabria · 70700121 · Deportivo Alavés "B"–Rayo Cantabria · 3-3 · 0 goles
+  2026-10-24 · primera-rfef-g1-2026-27-j9-deportivo-fabril-extremadura · 70695450 · RC Deportivo Fabril–CD Extremadura · 0-5 · 0 goles
+  2026-10-24 · primera-division-2026-27-j10-rayo-vallecano-elche · 70694621 · Rayo Vallecano de Madrid–Elche CF · 0-3 · 3 goles
+  2026-10-24 · segunda-division-2026-27-j11-cordoba-eibar · 70695020 · Córdoba CF–SD Eibar · 2-0 · 2 goles
+  2026-10-24 · primera-rfef-g1-2026-27-j9-arenas-ud-ourense · 70695447 · Arenas Club–UD Ourense · 2-0 · 0 goles
+  2026-10-24 · primera-division-2026-27-j10-racing-santander-espanyol · 70694620 · Real Racing Club de Santander–RCD Espanyol de Barcelona · 2-1 · 3 goles
+  2026-10-24 · segunda-division-2026-27-j11-leganes-mallorca · 70695023 · CD Leganés–RCD Mallorca · 1-1 · 2 goles
+  2026-10-24 · primera-rfef-g1-2026-27-j9-mirandes-racing-ferrol · 70695452 · CD Mirandés–Racing Club Ferrol · 2-0 · 0 goles
+  2026-10-24 · segunda-rfef-g1-2026-27-j8-astorga-gernika · 70700122 · Atlético Astorga FC–SD Gernika Club · 1-1 · 0 goles
+  2026-10-24 · segunda-rfef-g1-2026-27-j8-amorebieta-coruxo · 70700128 · SD Amorebieta–Coruxo FC · 2-1 · 0 goles
+  2026-10-24 · segunda-rfef-g1-2026-27-j8-llanera-compostela · 70700125 · UD Llanera–SD Compostela · 1-3 · 0 goles
+  2026-10-24 · primera-division-2026-27-j10-valencia-villarreal · 70694624 · Valencia CF–Villarreal CF · 1-2 · 3 goles
+  2026-10-24 · segunda-division-2026-27-j11-girona-celta-fortuna · 70695021 · Girona FC–RC Celta Fortuna · 5-1 · 6 goles
+  2026-10-24 · segunda-division-2026-27-j11-las-palmas-real-sociedad-b · 70695024 · UD Las Palmas–Real Sociedad de Fútbol SAD "B" · 1-0 · 1 goles
+  2026-10-24 · segunda-rfef-g1-2026-27-j8-sestao-river-arosa · 70700129 · Sestao River Club–Arosa SC · 1-0 · 0 goles
+  2026-10-24 · primera-rfef-g1-2026-27-j9-aviles-logrones · 70695453 · Real Avilés Industrial–UD Logroñés · 1-3 · 0 goles
+  2026-10-24 · primera-rfef-g1-2026-27-j9-cacereno-zamora · 70695448 · CP Cacereño–Zamora CF · 1-0 · 0 goles
+  2026-10-24 · primera-rfef-g1-2026-27-j9-ponferradina-barakaldo · 70695455 · SD Ponferradina–Barakaldo CF · 0-0 · 0 goles
+  2026-10-24 · primera-rfef-g1-2026-27-j9-unionistas-bilbao-athletic · 70695456 · Unionistas de Salamanca CF–Athletic Club "B" · 2-1 · 0 goles
+  2026-10-24 · primera-division-2026-27-j10-atletico-madrid-deportivo · 70694617 · Club Atlético de Madrid–RC Deportivo · 1-0 · 1 goles
+  2026-10-24 · primera-rfef-g1-2026-27-j9-cultural-leonesa-pontevedra · 70695449 · CyD Leonesa–Pontevedra CF · 1-2 · 0 goles
+  2026-10-24 · segunda-division-2026-27-j11-almeria-oviedo · 70695016 · UD Almería–Real Oviedo · 2-2 · 4 goles
+  2026-10-25 · primera-division-2026-27-j10-athletic-club-getafe · 70694616 · Athletic Club–Getafe CF · 4-0 · 4 goles
+  2026-10-25 · segunda-division-2026-27-j11-sabadell-tenerife · 70695025 · CE Sabadell FC–CD Tenerife · 1-1 · 2 goles
+  2026-10-25 · tercera-rfef-g1-2026-27-j8-pontevedra-b-silva · 1428011 · PONTEVEDRA C.F. "B"–SILVA S.D. · 3-1 · 0 goles
+  2026-10-25 · primera-division-2026-27-j10-celta-real-betis · 70694618 · RC Celta de Vigo–Real Betis Balompié · 0-0 · 0 goles
+  2026-10-25 · segunda-division-2026-27-j11-albacete-eldense · 70695015 · Albacete Balompié–CD Eldense · 2-0 · 2 goles
+  2026-10-25 · segunda-division-2026-27-j11-cadiz-ceuta · 70695018 · Cádiz CF–AD Ceuta FC · 3-1 · 4 goles
+  2026-10-25 · segunda-rfef-g1-2026-27-j8-marino-oviedo-vetusta · 70700126 · Club Marino de Luanco–Real Oviedo Vetusta · 0-0 · 0 goles
+  2026-10-25 · segunda-rfef-g1-2026-27-j8-ourense-cf-gimnastica · 70700127 · Ourense CF–RS Gimnástica de Torrelavega · 3-0 · 0 goles
+  2026-10-25 · segunda-rfef-g1-2026-27-j8-basconia-portugalete · 70700123 · CD Basconia–Club Portugalete · 2-2 · 0 goles
+  2026-10-25 · tercera-rfef-g1-2026-27-j8-antela-lalin · 1428012 · ANTELA F.C.–C.D. LALIN · 2-2 · 0 goles
+  2026-10-25 · tercera-rfef-g1-2026-27-j8-atletico-arteixo-barco · 1428014 · ATLETICO ARTEIXO–C.D. BARCO · 2-1 · 0 goles
+  2026-10-25 · tercera-rfef-g1-2026-27-j8-boiro-celta-c · 1428017 · C.D. BOIRO–GRAN PEÑA F.C. · 1-0 · 0 goles
+  2026-10-25 → 2026-10-24 · tercera-rfef-g1-2026-27-j8-celtiga-somozas · 1428016 · CELTIGA F.C.–U.D. SOMOZAS · 1-1 · 0 goles
+  2026-10-25 · tercera-rfef-g1-2026-27-j8-estradense-viveiro · 1428019 · C.D. ESTRADENSE–VIVEIRO C.F. · 3-2 · 0 goles
+  2026-10-25 · tercera-rfef-g1-2026-27-j8-montaneros-arenteiro · 1428015 · ATL. CORUÑA MONTAÑEROS C.F.–C.D. ARENTEIRO · 0-2 · 0 goles
+  2026-10-25 → 2026-10-24 · tercera-rfef-g1-2026-27-j8-sarriana-portonovo · 1428013 · S.D. SARRIANA–PORTONOVO S.D. · 2-1 · 0 goles
+  2026-10-25 · tercera-rfef-g1-2026-27-j8-villalbes-alondras · 1428018 · RACING CLUB VILLALBES–ALONDRAS C.F. · 1-1 · 0 goles
+  2026-10-25 · primera-division-2026-27-j10-real-sociedad-levante · 70694622 · Real Sociedad de Fútbol–Levante UD · 2-1 · 3 goles
+  2026-10-25 · segunda-division-2026-27-j11-castellon-sporting · 70695019 · CD Castellón–Real Sporting de Gijón · 4-0 · 4 goles
+  2026-10-25 · primera-rfef-g1-2026-27-j9-merida-coria · 70695451 · AD Mérida–CD Coria · 0-0 · 0 goles
+  2026-10-25 · primera-division-2026-27-j10-barcelona-real-madrid · 70694619 · FC Barcelona–Real Madrid CF · 1-2 · 3 goles
+  2026-10-26 · segunda-division-2026-27-j11-andorra-burgos · 70695017 · FC Andorra–Burgos CF · 2-3 · 5 goles
+  2026-10-26 · primera-division-2026-27-j10-sevilla-osasuna · 70694623 · Sevilla FC–Club Atlético Osasuna · 2-0 · 2 goles
+  2026-10-30 · primera-division-2026-27-j11-villarreal-espanyol · 70694634 · Villarreal CF–RCD Espanyol de Barcelona · 0-1 · 1 goles
+  2026-10-31 · primera-division-2026-27-j11-levante-atletico-madrid · 70694631 · Levante UD–Club Atlético de Madrid · 0-2 · 2 goles
+  2026-10-31 · segunda-rfef-g1-2026-27-j9-oviedo-vetusta-llanera · 70700136 · Real Oviedo Vetusta–UD Llanera · 2-1 · 0 goles
+  2026-10-31 · primera-division-2026-27-j11-rayo-vallecano-celta · 70694633 · Rayo Vallecano de Madrid–RC Celta de Vigo · 3-0 · 3 goles
+  2026-10-31 · primera-rfef-g1-2026-27-j10-bilbao-athletic-cacereno · 70695457 · Athletic Club "B"–CP Cacereño · 3-1 · 0 goles
+  2026-10-31 · primera-rfef-g1-2026-27-j10-logrones-mirandes · 70695465 · UD Logroñés–CD Mirandés · 0-1 · 0 goles
+  2026-10-31 · primera-rfef-g1-2026-27-j10-racing-ferrol-ponferradina · 70695461 · Racing Club Ferrol–SD Ponferradina · 0-0 · 0 goles
+  2026-10-31 · segunda-rfef-g1-2026-27-j9-gernika-marino · 70700135 · SD Gernika Club–Club Marino de Luanco · 0-0 · 0 goles
+  2026-10-31 · primera-division-2026-27-j11-real-betis-malaga · 70694626 · Real Betis Balompié–Málaga CF · 2-1 · 3 goles
+  2026-10-31 · primera-rfef-g1-2026-27-j10-real-union-aviles · 70695464 · Real Unión Club–Real Avilés Industrial · 0-3 · 0 goles
+  2026-10-31 · primera-division-2026-27-j11-barcelona-alaves · 70694629 · FC Barcelona–Deportivo Alavés · 6-1 · 7 goles
+  2026-11-01 · segunda-rfef-g1-2026-27-j9-portugalete-arosa · 70700134 · Club Portugalete–Arosa SC · 3-3 · 0 goles
+  2026-11-01 · segunda-rfef-g1-2026-27-j9-rayo-cantabria-astorga · 70700137 · Rayo Cantabria–Atlético Astorga FC · 2-0 · 0 goles
+  2026-11-01 · primera-rfef-g1-2026-27-j10-barakaldo-pontevedra · 70695458 · Barakaldo CF–Pontevedra CF · 0-0 · 0 goles
+  2026-11-01 · primera-division-2026-27-j11-getafe-sevilla · 70694630 · Getafe CF–Sevilla FC · 3-1 · 4 goles
+  2026-11-01 · segunda-rfef-g1-2026-27-j9-alaves-b-eibar-b · 70700130 · Deportivo Alavés "B"–SD Eibar "B" · 2-1 · 0 goles
+  2026-11-01 · tercera-rfef-g1-2026-27-j9-pontevedra-b-antela · sen acta · pontevedra c.f. "B"–antela f.c. · 1-0 · 0 goles
+  2026-11-01 · primera-division-2026-27-j11-racing-santander-real-madrid · 70694632 · Real Racing Club de Santander–Real Madrid CF · 0-3 · 3 goles
+  2026-11-01 · primera-rfef-g1-2026-27-j10-coria-arenas · 70695459 · CD Coria–Arenas Club · 0-1 · 0 goles
+  2026-11-01 · primera-rfef-g1-2026-27-j10-ud-ourense-cultural-leonesa · 70695463 · UD Ourense–CyD Leonesa · 1-0 · 0 goles
+  2026-11-01 → 2026-10-31 · segunda-division-2026-27-j12-albacete-sabadell · 70695026 · Albacete Balompié–CE Sabadell FC · 2-1 · 3 goles
+  2026-11-01 · segunda-division-2026-27-j12-burgos-castellon · 70695027 · Burgos CF–CD Castellón · 1-1 · 2 goles
+  2026-11-01 → 2026-10-31 · segunda-division-2026-27-j12-celta-fortuna-cordoba · 70695028 · RC Celta Fortuna–Córdoba CF · 2-2 · 4 goles
+  2026-11-01 · segunda-division-2026-27-j12-ceuta-sporting · 70695029 · AD Ceuta FC–Real Sporting de Gijón · 0-2 · 2 goles
+  2026-11-01 → 2026-10-31 · segunda-division-2026-27-j12-eibar-almeria · 70695030 · SD Eibar–UD Almería · 1-1 · 2 goles
+  2026-11-01 · segunda-division-2026-27-j12-eldense-granada · 70695031 · CD Eldense–Granada CF · 0-2 · 2 goles
+  2026-11-01 → 2026-11-02 · segunda-division-2026-27-j12-mallorca-cadiz · 70695032 · RCD Mallorca–Cádiz CF · 2-1 · 3 goles
+  2026-11-01 → 2026-11-02 · segunda-division-2026-27-j12-oviedo-las-palmas · 70695033 · Real Oviedo–UD Las Palmas · 2-3 · 5 goles
+  2026-11-01 → 2026-10-31 · segunda-division-2026-27-j12-real-sociedad-b-girona · 70695034 · Real Sociedad de Fútbol SAD "B"–Girona FC · 1-0 · 1 goles
+  2026-11-01 → 2026-11-02 · segunda-division-2026-27-j12-tenerife-andorra · 70705570 · CD Tenerife–FC Andorra · 2-2 · 4 goles
+  2026-11-01 → 2026-11-02 · segunda-division-2026-27-j12-valladolid-leganes · 70695036 · Real Valladolid CF–CD Leganés · 4-3 · 7 goles
+  2026-11-01 · segunda-rfef-g1-2026-27-j9-bergantinos-ourense-cf · 70700131 · Bergantiños CF–Ourense CF · 1-1 · 0 goles
+  2026-11-01 · segunda-rfef-g1-2026-27-j9-compostela-basconia · 70700132 · SD Compostela–CD Basconia · 0-0 · 0 goles
+  2026-11-01 · segunda-rfef-g1-2026-27-j9-coruxo-sestao-river · 70700133 · Coruxo FC–Sestao River Club · 0-2 · 0 goles
+  2026-11-01 · segunda-rfef-g1-2026-27-j9-amorebieta-gimnastica · 70700138 · SD Amorebieta–RS Gimnástica de Torrelavega · 1-0 · 0 goles
+  2026-11-01 · tercera-rfef-g1-2026-27-j9-alondras-estradense · sen acta · alondras c.f.–c.d. estradense · 1-1 · 0 goles
+  2026-11-01 · tercera-rfef-g1-2026-27-j9-arenteiro-celtiga · sen acta · c.d. arenteiro–celtiga f.c. · 2-0 · 0 goles
+  2026-11-01 → 2026-10-31 · tercera-rfef-g1-2026-27-j9-barco-montaneros · sen acta · c.d. barco–atl. coruña montañeros c.f. · 4-0 · 0 goles
+  2026-11-01 · tercera-rfef-g1-2026-27-j9-celta-c-villalbes · sen acta · gran peña f.c.–racing club villalbes · 0-1 · 0 goles
+  2026-11-01 · tercera-rfef-g1-2026-27-j9-lalin-sarriana · sen acta · c.d. lalin–s.d. sarriana · 0-0 · 0 goles
+  2026-11-01 · tercera-rfef-g1-2026-27-j9-portonovo-atletico-arteixo · sen acta · portonovo s.d.–atletico arteixo · 2-2 · 0 goles
+  2026-11-01 → 2026-10-31 · tercera-rfef-g1-2026-27-j9-silva-viveiro · sen acta · silva s.d.–viveiro c.f. · 2-0 · 0 goles
+  2026-11-01 · tercera-rfef-g1-2026-27-j9-somozas-boiro · sen acta · u.d. somozas–c.d. boiro · 1-1 · 0 goles
+  2026-11-01 · primera-division-2026-27-j11-elche-valencia · 70694628 · Elche CF–Valencia CF · 0-1 · 1 goles
+  2026-11-01 · primera-rfef-g1-2026-27-j10-lugo-merida · 70695462 · CD Lugo–AD Mérida · 2-1 · 0 goles
+  2026-11-01 · primera-rfef-g1-2026-27-j10-zamora-deportivo-fabril · 70695466 · Zamora CF–RC Deportivo Fabril · 1-3 · 0 goles
+  2026-11-01 · primera-division-2026-27-j11-athletic-club-real-sociedad · 70694625 · Athletic Club–Real Sociedad de Fútbol · 2-1 · 3 goles
+  2026-11-01 · primera-rfef-g1-2026-27-j10-extremadura-unionistas · 70695460 · CD Extremadura–Unionistas de Salamanca CF · 3-0 · 0 goles
+  2026-11-02 · primera-division-2026-27-j11-deportivo-osasuna · 70694627 · RC Deportivo–Club Atlético Osasuna · 2-1 · 3 goles
+  2026-11-06 · primera-rfef-g1-2026-27-j11-cacereno-lugo · 70695469 · CP Cacereño–CD Lugo · 0-1 · 0 goles
+  2026-11-06 · primera-division-2026-27-j12-sevilla-alaves · 70694642 · Sevilla FC–Deportivo Alavés · 0-0 · 0 goles
+  2026-11-06 · primera-rfef-g1-2026-27-j11-aviles-extremadura · 70695475 · Real Avilés Industrial–CD Extremadura · 5-2 · 0 goles
+  2026-11-07 · primera-rfef-g1-2026-27-j11-racing-ferrol-logrones · 70695471 · Racing Club Ferrol–UD Logroñés · 1-2 · 0 goles
+  2026-11-07 · primera-division-2026-27-j12-malaga-racing-santander · 70694639 · Málaga CF–Real Racing Club de Santander · 1-2 · 3 goles
+  2026-11-07 · segunda-division-2026-27-j13-burgos-celta-fortuna · 70695038 · Burgos CF–RC Celta Fortuna · 2-1 · 3 goles
+  2026-11-07 · segunda-rfef-g1-2026-27-j10-basconia-amorebieta · 70700140 · CD Basconia–SD Amorebieta · 2-1 · 0 goles
+  2026-11-07 · primera-division-2026-27-j12-espanyol-deportivo · 70694638 · RCD Espanyol de Barcelona–RC Deportivo · 0-0 · 0 goles
+  2026-11-07 · segunda-division-2026-27-j13-cadiz-oviedo · 70695039 · Cádiz CF–Real Oviedo · 1-2 · 3 goles
+  2026-11-07 · primera-rfef-g1-2026-27-j11-barakaldo-real-union · 70695468 · Barakaldo CF–Real Unión Club · 2-0 · 0 goles
+  2026-11-07 · primera-rfef-g1-2026-27-j11-pontevedra-ud-ourense · 70695474 · Pontevedra CF–UD Ourense · 1-0 · 0 goles
+  2026-11-07 · segunda-rfef-g1-2026-27-j10-eibar-b-astorga · 70700141 · SD Eibar "B"–Atlético Astorga FC · 4-1 · 0 goles
+  2026-11-07 · primera-division-2026-27-j12-osasuna-athletic-club · 70694640 · Club Atlético Osasuna–Athletic Club · 1-1 · 2 goles
+  2026-11-07 · segunda-division-2026-27-j13-cordoba-ceuta · 70695041 · Córdoba CF–AD Ceuta FC · 3-0 · 3 goles
+  2026-11-07 · segunda-division-2026-27-j13-leganes-albacete · 70695044 · CD Leganés–Albacete Balompié · 1-3 · 4 goles
+  2026-11-07 · primera-rfef-g1-2026-27-j11-unionistas-zamora · 70695476 · Unionistas de Salamanca CF–Zamora CF · 1-0 · 0 goles
+  2026-11-07 · primera-division-2026-27-j12-valencia-real-madrid · 70694643 · Valencia CF–Real Madrid CF · 0-3 · 3 goles
+  2026-11-08 · segunda-rfef-g1-2026-27-j10-oviedo-vetusta-coruxo · 70700145 · Real Oviedo Vetusta–Coruxo FC · 1-1 · 0 goles
+  2026-11-08 · primera-rfef-g1-2026-27-j11-arenas-deportivo-fabril · 70695467 · Arenas Club–RC Deportivo Fabril · 2-1 · 0 goles
+  2026-11-08 · primera-division-2026-27-j12-elche-real-betis · 70694637 · Elche CF–Real Betis Balompié · 0-2 · 2 goles
+  2026-11-08 · segunda-rfef-g1-2026-27-j10-llanera-bergantinos · 70700142 · UD Llanera–Bergantiños CF · 4-3 · 0 goles
+  2026-11-08 · primera-division-2026-27-j12-real-sociedad-rayo-vallecano · 70694641 · Real Sociedad de Fútbol–Rayo Vallecano de Madrid · 1-0 · 1 goles
+  2026-11-08 · segunda-division-2026-27-j13-girona-almeria · 70695042 · Girona FC–UD Almería · 0-1 · 1 goles
+  2026-11-08 · segunda-rfef-g1-2026-27-j10-marino-rayo-cantabria · 70700143 · Club Marino de Luanco–Rayo Cantabria · 0-1 · 0 goles
+  2026-11-08 · segunda-division-2026-27-j13-andorra-mallorca · sen acta · FC Andorra–RCD Mallorca · — · 0 goles
+  2026-11-08 → 2026-11-06 · segunda-division-2026-27-j13-castellon-eibar · sen acta · CD Castellón–SD Eibar · — · 0 goles
+  2026-11-08 → 2026-11-07 · segunda-division-2026-27-j13-granada-tenerife · sen acta · Granada CF–CD Tenerife · — · 0 goles
+  2026-11-08 · segunda-rfef-g1-2026-27-j10-arosa-compostela · 70700139 · Arosa SC–SD Compostela · 1-2 · 0 goles
+  2026-11-08 · segunda-rfef-g1-2026-27-j10-gimnastica-gernika · 70700146 · RS Gimnástica de Torrelavega–SD Gernika Club · 0-0 · 0 goles
+  2026-11-08 · segunda-rfef-g1-2026-27-j10-ourense-cf-portugalete · 70700144 · Ourense CF–Club Portugalete · 0-3 · 0 goles
+  2026-11-08 · segunda-rfef-g1-2026-27-j10-sestao-river-alaves-b · 70700147 · Sestao River Club–Deportivo Alavés "B" · 2-0 · 0 goles
+  2026-11-08 → 2026-11-07 · tercera-rfef-g1-2026-27-j10-antela-silva · sen acta · antela f.c.–silva s.d. · 0-1 · 0 goles
+  2026-11-08 → 2026-11-07 · tercera-rfef-g1-2026-27-j10-atletico-arteixo-lalin · sen acta · atletico arteixo–c.d. lalin · 2-0 · 0 goles
+  2026-11-08 · tercera-rfef-g1-2026-27-j10-boiro-arenteiro · sen acta · c.d. boiro–c.d. arenteiro · 3-0 · 0 goles
+  2026-11-08 → 2026-11-07 · tercera-rfef-g1-2026-27-j10-celtiga-barco · sen acta · celtiga f.c.–c.d. barco · 1-1 · 0 goles
+  2026-11-08 → 2026-11-07 · tercera-rfef-g1-2026-27-j10-estradense-celta-c · sen acta · c.d. estradense–gran peña f.c. · 1-1 · 0 goles
+  2026-11-08 → 2026-11-07 · tercera-rfef-g1-2026-27-j10-montaneros-portonovo · sen acta · atl. coruña montañeros c.f.–portonovo s.d. · 1-3 · 0 goles
+  2026-11-08 · tercera-rfef-g1-2026-27-j10-sarriana-pontevedra-b · sen acta · s.d. sarriana–pontevedra c.f. "B" · 3-1 · 0 goles
+  2026-11-08 · tercera-rfef-g1-2026-27-j10-villalbes-somozas · sen acta · racing club villalbes–u.d. somozas · 1-2 · 0 goles
+  2026-11-08 · tercera-rfef-g1-2026-27-j10-viveiro-alondras · sen acta · viveiro c.f.–alondras c.f. · 1-0 · 0 goles
+  2026-11-08 · primera-rfef-g1-2026-27-j11-cultural-leonesa-ponferradina · 70695470 · CyD Leonesa–SD Ponferradina · 1-1 · 0 goles
+  2026-11-08 · primera-rfef-g1-2026-27-j11-merida-bilbao-athletic · 70695472 · AD Mérida–Athletic Club "B" · 2-0 · 0 goles
+  2026-11-08 · primera-rfef-g1-2026-27-j11-mirandes-coria · 70695473 · CD Mirandés–CD Coria · 0-2 · 0 goles
+  2026-11-08 · primera-division-2026-27-j12-celta-levante · 70694636 · RC Celta de Vigo–Levante UD · 0-0 · 0 goles
+  2026-11-08 · primera-division-2026-27-j12-villarreal-getafe · 70694644 · Villarreal CF–Getafe CF · 2-0 · 2 goles
+  2026-11-08 · segunda-division-2026-27-j13-las-palmas-eldense · sen acta · UD Las Palmas–CD Eldense · — · 0 goles
+  2026-11-08 · segunda-division-2026-27-j13-sporting-valladolid · 70695047 · Real Sporting de Gijón–Real Valladolid CF · 1-2 · 3 goles
+  2026-11-08 · primera-division-2026-27-j12-atletico-madrid-barcelona · sen acta · Club Atlético de Madrid–FC Barcelona · 1-2 · 3 goles
+  2026-11-09 · segunda-division-2026-27-j13-sabadell-real-sociedad-b · 70695046 · CE Sabadell FC–Real Sociedad de Fútbol SAD "B" · 0-0 · 0 goles
+Sen emparejar (fecha · matchId · causa):
+  2026-10-10 · primera-division-2026-27-j8-rayo-vallecano-athletic-club · no_identity
+Ambiguos (fecha · matchId · candidatas):
+=======================================================
+
