@@ -86,11 +86,6 @@ Actualizado: 2026-11-10
 | SPEC-066 — goles-a-la-cola-de-redes-deteccion-outbox-publicador-con-doble-plantillas-y-configuracion | hecho | 2026-11-09 (sdd-verificador) |
 | SPEC-067 — publicador-de-buffer-cliente-graphql-sonda-contra-la-api-real-y-encendido | borrador | 2026-11-09 (sdd-arquitecto) |
 
-## EPIC-008 — patrocinio-en-pantalla-y-en-redes (borrador)
-
-| Spec | Estado | Último cambio |
-|---|---|---|
-
 ## EPIC-FIX (aprobada)
 
 | Spec | Estado | Último cambio |
