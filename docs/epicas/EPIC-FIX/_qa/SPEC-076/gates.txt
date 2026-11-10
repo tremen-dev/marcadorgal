@@ -15,3 +15,15 @@ $ git checkout origin/main (b21e4d6) && npx vitest run src/db/test-db.test.ts sr
 
 $ node tools/version-gate.mjs --base origin/main
 version-gate: ok — 0.5.7 → 0.5.8, package-lock.json coherente.
+
+# 2026-11-10, tras merge de origin/main (41f0e0f, incluye SPEC-078 que arregla F-SPEC-076-1) en 065749d; worktree LF D:/src/tremen-dev/wt-076, Windows
+$ npm run typecheck -> exit 0
+$ npx biome check . -> Checked 465 files. No fixes applied.
+$ npx vitest run
+ FAIL  src/db/test-db.test.ts > SPEC-022 CA-1 local Storage forced over the .env > wins over a .env file in the cwd too
+ Test Files  1 failed | 163 passed (164)
+      Tests  1 failed | 2720 passed | 3 skipped (2724)
+  (único fallo = F-SPEC-076-3, solo Windows: `ci` en main 41f0e0f y f6bb4ba = success en Linux con ese mismo test)
+$ node tools/version-gate.mjs --base origin/main
+version-gate: ok — 0.7.1 → 0.7.2, package-lock.json coherente.
+(build no medido aquí: Turbopack rechaza la junction de node_modules; lo cubre CI)
