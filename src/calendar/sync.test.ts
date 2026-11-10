@@ -833,3 +833,83 @@ describe("SPEC-015 CA-4 autoAplicable", () => {
     ).toBe(false);
   });
 });
+
+// SPEC-071 CA-6 (ADR-031 §2-§4): the real kickoff of a match already played
+// enters the calendar as a reschedule of the diff, PASADO, and a later sync
+// with the same import does not take it back (isPast stays for the importer).
+describe("SPEC-071 CA-6 syncCalendar applies the real kickoffs", () => {
+  const now: Instant = "2026-11-10T12:00:00Z";
+  const first = initial();
+  const played = MatchId.parse("tercera-rfef-g1-2026-27-j1-ourense-arenteiro");
+  const real = [
+    { id: played, from: "2026-09-06T16:00:00Z", to: "2026-09-05T15:00:00Z" },
+  ];
+  const corrected = syncCalendar({
+    current: first.calendar,
+    aliases: first.aliases,
+    imported,
+    competition,
+    sourceId,
+    now,
+    realKickoffs: real,
+  });
+
+  it("rewrites the kickoff and reports it as a reschedule, PASADO", () => {
+    expect(corrected.diff.rescheduled).toEqual([
+      { id: played, from: "2026-09-06T16:00:00Z", to: "2026-09-05T15:00:00Z" },
+    ]);
+    expect(
+      corrected.calendar.matches.find(
+        (m) => m.home === "ourense" && m.away === "arenteiro",
+      )?.kickoff,
+    ).toBe("2026-09-05T15:00:00Z");
+    const line =
+      formatSyncDiff(competition.id, corrected.diff, now)
+        .split("\n")
+        .find((l) => l.includes(played)) ?? "";
+    expect(line).toBe(
+      `   ~ ${played}: 2026-09-06T16:00:00Z -> 2026-09-05T15:00:00Z  PASADO`,
+    );
+  });
+
+  it("counts as a reschedule for autoAplicable", () => {
+    expect(autoAplicable([corrected.diff])).toBe(true);
+  });
+
+  it("a second sync with the same import does not revert it", () => {
+    const again = syncCalendar({
+      current: corrected.calendar,
+      aliases: corrected.aliases,
+      imported,
+      competition,
+      sourceId,
+      now,
+    });
+    expect(again.diff.rescheduled).toEqual([]);
+    expect(again.calendar).toEqual(corrected.calendar);
+  });
+
+  it("a correction of a match not in the calendar, or to the same instant, is no change", () => {
+    const r = syncCalendar({
+      current: corrected.calendar,
+      aliases: corrected.aliases,
+      imported,
+      competition,
+      sourceId,
+      now,
+      realKickoffs: [
+        {
+          id: played,
+          from: "2026-09-05T15:00:00Z",
+          to: "2026-09-05T15:00:00Z",
+        },
+        {
+          id: MatchId.parse("tercera-rfef-g1-2026-27-j9-ourense-arosa"),
+          from: "2026-09-06T16:00:00Z",
+          to: "2026-09-05T15:00:00Z",
+        },
+      ],
+    });
+    expect(r.diff.rescheduled).toEqual([]);
+  });
+});

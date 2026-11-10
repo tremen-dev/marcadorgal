@@ -3,7 +3,11 @@
 // merges it into data/calendario/<season>/<competition>.json and
 // data/alias/<season>/<source>.json (SPEC-004 CA-7, SPEC-045).
 //
-// Usage: npm run calendario:sync -- <season> [competition_id...] [--dry-run]
+// It also corrects the kickoff of the matches already played with the export
+// of matches of explorer (SPEC-071, ADR-031): every competition, Tercera
+// included, kickoffs in [now - 8 d, now), and from --reales-desde on demand.
+//
+// Usage: npm run calendario:sync -- <season> [competition_id...] [--dry-run] [--reales-desde YYYY-MM-DD]
 // Runs on Node's native type stripping: no tsx, no build step.
 import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
@@ -11,7 +15,10 @@ import { fileURLToPath } from "node:url";
 import { COMPETITIONS, IMPORTERS } from "../src/calendar/importers.ts";
 import { matchId } from "../src/calendar/match-id.ts";
 import { validateAliases, validateCalendar } from "../src/calendar/schema.ts";
+import { realKickoffDays, realKickoffs } from "../src/calendar/real-kickoffs.ts";
 import { autoAplicable, countUrgent, formatSyncDiff, syncCalendar } from "../src/calendar/sync.ts";
+import { getDayMatches } from "../src/lib/explorer-client.ts";
+import { madridKickoff } from "../src/lib/explorer-window.ts";
 
 try {
   process.loadEnvFile();
@@ -27,15 +34,31 @@ const dryRun = args.includes("--dry-run");
 const sourceArg = args.find((a) => a.startsWith("--source="))?.slice(9) ||
   (args.includes("--source") ? args[args.indexOf("--source") + 1] : undefined);
 
+const realesArg = args.find((a) => a.startsWith("--reales-desde="))?.slice(16) ||
+  (args.includes("--reales-desde") ? args[args.indexOf("--reales-desde") + 1] : undefined);
+
 const nonFlags = args.filter((a, idx) => {
   if (a.startsWith("--")) return false;
-  if (idx > 0 && args[idx - 1] === "--source") return false;
+  if (idx > 0 && (args[idx - 1] === "--source" || args[idx - 1] === "--reales-desde")) return false;
   return true;
 });
 const [season, ...requested] = nonFlags;
 
+const USAGE =
+  "Uso: npm run calendario:sync -- <temporada YYYY-YY> [competition_id...] [--dry-run] [--reales-desde YYYY-MM-DD]";
 if (!season || !/^\d{4}-\d{2}$/.test(season)) {
-  console.error("Uso: npm run calendario:sync -- <temporada YYYY-YY> [competition_id...] [--dry-run]");
+  console.error(USAGE);
+  process.exit(1);
+}
+// The start of the day in Europe/Madrid, as an instant.
+const realesDesde =
+  realesArg === undefined
+    ? undefined
+    : /^\d{4}-\d{2}-\d{2}$/.test(realesArg)
+      ? madridKickoff(realesArg, "00:00")
+      : null;
+if (realesDesde === null) {
+  console.error(`--reales-desde precisa una fecha YYYY-MM-DD\n${USAGE}`);
   process.exit(1);
 }
 
@@ -57,6 +80,43 @@ if (unknown.length) {
 // The clock of the sync: formatSyncDiff has none of its own (SPEC-015 CA-3).
 const now = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
 const diffs = [];
+
+// SPEC-071 CA-6: the real kickoffs of [since, now). Each day of the export is
+// asked once per run, whatever the competitions that need it.
+const EIGHT_DAYS_MS = 8 * 24 * 60 * 60 * 1000;
+const lastWeek = new Date(Date.parse(now) - EIGHT_DAYS_MS).toISOString().replace(/\.\d{3}Z$/, "Z");
+const since = realesDesde !== undefined && realesDesde < lastWeek ? realesDesde : lastWeek;
+console.log(`reales: kickoffs en [${since}, ${now})`);
+const exportDays = new Map();
+const exportOf = (day) => {
+  if (!exportDays.has(day)) {
+    exportDays.set(
+      day,
+      getDayMatches(day, globalThis.fetch).then((r) => r.matches ?? []),
+    );
+  }
+  return exportDays.get(day);
+};
+const correctionsOf = async (competitionId, calendar) => {
+  if (!calendar) return [];
+  const rowsByDay = new Map();
+  for (const day of realKickoffDays(calendar, now, since)) {
+    try {
+      rowsByDay.set(day, await exportOf(day));
+    } catch (e) {
+      // A missing day could hide the FINISHED row of a replayed match: no
+      // correction in this competition rather than a wrong one.
+      console.error(`${competitionId}: reales: el export de ${day} falló (${e.message}); sin correcciones`);
+      return [];
+    }
+  }
+  const r = realKickoffs({ calendar, aliases: aliasesFor("rfef"), now, since, rowsByDay });
+  for (const a of r.ambiguous)
+    console.log(
+      `   reales: ambiguo ${a.id}: ${a.candidates.map((c) => `${c.date} ${c.codActa ?? "sen acta"} ${c.home ?? "?"}–${c.away ?? "?"}`).join("; ")}`,
+    );
+  return r.corrections;
+};
 const competitions = COMPETITIONS.filter((c) => !requested.length || requested.includes(c.id));
 
 const calendarDir = path.join(root, "data", "calendario", season);
@@ -125,8 +185,10 @@ for (const competition of competitions) {
     continue;
   }
   const calendarFile = path.join(calendarDir, `${competition.id}.json`);
+  const current = readJson(calendarFile);
   const result = syncCalendar({
-    current: readJson(calendarFile),
+    current,
+    realKickoffs: await correctionsOf(competition.id, current),
     aliases: aliasesFor(importer.id),
     imported: importer.parse(raw),
     competition: { id: competition.id, season, name: competition.name, tier: competition.tier },
