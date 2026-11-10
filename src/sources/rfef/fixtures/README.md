@@ -114,3 +114,22 @@ errores **a propósito** para los casos de identidad: CP Cacereño sin alias
 (`unknown_team`), Barakaldo CF apuntando a `celta-c` (par sin partido:
 `unknown_match`) y CD Coria y CD Extremadura cruzados (el par existe en la
 jornada 26, no en la 7: `inconsistent_alias`).
+
+## Calendario y alias congelados (SPEC-078)
+
+`explorer.test.ts` no lee `data/`: el bot del calendario (SPEC-015, ADR-031)
+reescribe esos ficheros solo, y una sincronización movió el kickoff de Las
+Palmas–Eldense (Segunda, J13) del 11-08 al 11-09 y rompió SPEC-069 CA-2. Estas
+copias fijan el escenario de las capturas. Son copias íntegras, byte a byte, de
+**197ee71** (el último `main` verde antes de cdaad54); el blob de git coincide
+con el del origen. No se sincronizan: si un caso necesita otro calendario, se
+añade una copia nueva con su commit.
+
+| Fichero | Origen (`git show 197ee71:<origen>`) | Blob |
+|---|---|---|
+| `calendario-2026-27/primera-division.json` | `data/calendario/2026-27/primera-division.json` | `6bb3c1e4` |
+| `calendario-2026-27/segunda-division.json` | `data/calendario/2026-27/segunda-division.json` | `2643588a` |
+| `calendario-2026-27/primera-rfef-g1.json` | `data/calendario/2026-27/primera-rfef-g1.json` | `0859e5b0` |
+| `calendario-2026-27/segunda-rfef-g1.json` | `data/calendario/2026-27/segunda-rfef-g1.json` | `d3082b02` |
+| `calendario-2026-27/tercera-rfef-g1.json` | `data/calendario/2026-27/tercera-rfef-g1.json` | `2cad736c` |
+| `alias-2026-27-rfef.json` | `data/alias/2026-27/rfef.json` | `22ca97ea` |

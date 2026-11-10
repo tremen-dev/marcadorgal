@@ -109,6 +109,7 @@ Actualizado: 2026-11-10
 | SPEC-072 — navegacion-entre-semanas-de-la-xornada | hecho | 2026-11-10 (sdd-verificador) |
 | SPEC-074 — calendario-sync-vuelve-a-funcionar | hecho | 2026-11-10 (sdd-verificador) |
 | SPEC-075 — aviso-cuando-falla-el-bot-del-calendario | hecho | 2026-11-10 (sdd-verificador) |
+| SPEC-078 — el-test-de-spec-069-no-depende-del-calendario-vivo | hecho | 2026-11-10 (sdd-verificador) |
 
 ## EPIC-MANT — mantenimiento (borrador)
 
