@@ -20,6 +20,11 @@
       "teamId": "alaves"
     },
     {
+      "externalId": "alavés b",
+      "externalName": "Alavés B",
+      "teamId": "alaves-b"
+    },
+    {
       "externalId": "deportivo alavés \"b\"",
       "externalName": "Deportivo Alavés \"B\"",
       "teamId": "alaves-b"
@@ -93,6 +98,11 @@
       "externalId": "arosa sc",
       "externalName": "Arosa SC",
       "teamId": "arosa"
+    },
+    {
+      "externalId": "atlético astorga",
+      "externalName": "Atlético Astorga",
+      "teamId": "astorga"
     },
     {
       "externalId": "atlético astorga fc",
@@ -338,6 +348,11 @@
       "externalId": "sd eibar",
       "externalName": "SD Eibar",
       "teamId": "eibar"
+    },
+    {
+      "externalId": "eibar b",
+      "externalName": "Eibar B",
+      "teamId": "eibar-b"
     },
     {
       "externalId": "sd eibar \"b\"",

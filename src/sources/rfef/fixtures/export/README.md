@@ -124,6 +124,23 @@ Celta Fortuna – Córdoba CF, `18:30`, `FINISHED` 2-2, 4 goles; el calendario
 declarado la tiene el 2026-11-01 a las 16:00Z (relleno), y SPEC-071 CA-1 la
 empareja por la ventana de ±3 días.
 
+## Calendario de Segunda RFEF (SPEC-074), 2026-11-10 10:26Z
+
+`calendar-segunda-rfef-g1-2026-27-2026-11-10.json` es la respuesta **byte a
+byte** de otro endpoint del explorer desplegado,
+`GET /api/export/calendar?competition=segunda-rfef-g1&season=2026-27` (el que
+lee `calendario:sync`, ADR-026), pedida por el implementador de SPEC-074 con
+el Bearer real (GET de solo lectura; el token no está en ningún fichero).
+Cabeceras en el `.headers` de al lado (`HTTP/1.1 200 OK`,
+`Content-Length: 51073`, `Date: Tue, 10 Nov 2026 10:26:47 GMT`,
+`X-Vercel-Cache: BYPASS`). `exportedAt` `2026-11-10T10:26:48Z`, 18 equipos,
+306 partidos, sha256 `1c3f9a6b…c3087ff2`. Trae las filiales con su nombre
+nuevo (`alaves-b` «Alavés B», `eibar-b` «Eibar B», `astorga` «Atlético
+Astorga») y `racing-ferrol` «Racing Club de Ferrol» para Rayo Cantabria.
+`sync-rfef.test.ts` (`src/calendar/`) la sincroniza contra el calendario y el
+alias del repo (SPEC-074 CA-1). No es un export de partidos: `alias.test.ts`
+la lee con los demás `.json` y no encuentra filas con `codGrupo`.
+
 ## Alias
 
 `data/alias/2026-27/rfef.json` resuelve todos los nombres de las cinco
