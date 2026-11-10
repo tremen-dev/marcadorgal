@@ -33,21 +33,13 @@
         "id": "chromium",
         "name": "chromium",
         "testDir": "D:/src/tremen-dev/marcadorgal/e2e",
-        "testIgnore": [
-          "**/*.db.spec.ts"
-        ],
-        "testMatch": [
-          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
-        ],
+        "testIgnore": ["**/*.db.spec.ts"],
+        "testMatch": ["**/*.@(spec|test).?(c|m)[jt]s?(x)"],
         "timeout": 30000
       }
     ],
     "quiet": false,
-    "reporter": [
-      [
-        "json"
-      ]
-    ],
+    "reporter": [["json"]],
     "reportSlowTests": {
       "max": 5,
       "threshold": 300000
