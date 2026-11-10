@@ -1,15 +1,28 @@
-import primeraDivision2026 from "../../data/calendario/2026-27/primera-division.json";
-import primeraRfef2026 from "../../data/calendario/2026-27/primera-rfef-g1.json";
-import segundaDivision2026 from "../../data/calendario/2026-27/segunda-division.json";
-import segundaRfef2026 from "../../data/calendario/2026-27/segunda-rfef-g1.json";
-import terceraRfef2026 from "../../data/calendario/2026-27/tercera-rfef-g1.json";
-import galegos2026 from "../../data/galegos/2026-27.json";
+import primeraDivision2026 from "../../data/calendario/2026-27/primera-division.json" with {
+  type: "json",
+};
+import primeraRfef2026 from "../../data/calendario/2026-27/primera-rfef-g1.json" with {
+  type: "json",
+};
+import segundaDivision2026 from "../../data/calendario/2026-27/segunda-division.json" with {
+  type: "json",
+};
+import segundaRfef2026 from "../../data/calendario/2026-27/segunda-rfef-g1.json" with {
+  type: "json",
+};
+import terceraRfef2026 from "../../data/calendario/2026-27/tercera-rfef-g1.json" with {
+  type: "json",
+};
+import galegos2026 from "../../data/galegos/2026-27.json" with { type: "json" };
 import { GalicianTeamsFile } from "../model/index.ts";
 
 // SPEC-033 CA-4 (H-3): the Equipo galego of a season, resolved on the server
 // from data/galegos/<season>.json to the names of the declared calendar.
 // Bundled as JSON (no file reads at request time); the view matches rows by
 // name, unique in the season (galicians.test.ts). A new season adds its line.
+// The import attributes are what lets plain Node load this module through
+// src/social/config.ts (tools/social-informe.mjs, SPEC-079 CA-3); the
+// bundler and vitest accept them too.
 type Declared = {
   ids: unknown;
   calendars: readonly { teams: readonly { id: string; name: string }[] }[];
