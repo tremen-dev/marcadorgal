@@ -12,7 +12,8 @@
       "!next-env.d.ts",
       "!.sdd.json",
       "!src/sources/rfef/fixtures/*.html",
-      "!src/sources/rfef/fixtures/export/*.json"
+      "!src/sources/rfef/fixtures/export/*.json",
+      "!e2e/fixtures/vercel-insights-script.js"
     ]
   },
   "formatter": { "enabled": true, "indentStyle": "space", "indentWidth": 2 },
