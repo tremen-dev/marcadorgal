@@ -37,20 +37,25 @@
     </div>
   </div>
 
+  <!-- Tira de días opcional (SPEC-061, SHOW_DAY_STRIP; oculta por defecto). Se se serve,
+       ‹ e › van nos seus extremos (SPEC-027 CA-6) e non no título: nunca nos dous sitios. -->
   <div style="height: 40px; flex: none; display: flex; align-items: center; gap: 3px; padding: 0 10px; border-bottom: 1px solid #2A2620; background: #131211">
-    <span style="width: 26px; text-align: center; font: 400 14px/1 var(--sans); color: #716F6C">‹</span>
     <span style="flex: 1; text-align: center; padding: 6px 0; border-radius: 7px; font: 500 11px/1 var(--mono); color: #716F6C">{{ t.d0 }}</span>
     <span style="flex: 1; text-align: center; padding: 6px 0; border-radius: 7px; background: #0099CC; font: 600 11px/1 var(--mono); color: #00151F">{{ t.d1 }}</span>
     <span style="flex: 1; text-align: center; padding: 6px 0; border-radius: 7px; font: 500 11px/1 var(--mono); color: #716F6C">{{ t.d2 }}</span>
     <span style="flex: 1; text-align: center; padding: 6px 0; border-radius: 7px; font: 500 11px/1 var(--mono); color: #716F6C">{{ t.d3 }}</span>
-    <span style="width: 26px; text-align: center; font: 400 14px/1 var(--sans); color: #716F6C">›</span>
   </div>
 
-  <div style="height: 42px; flex: none; display: flex; align-items: center; gap: 8px; padding: 0 14px; border-bottom: 1px solid #2A2620">
-    <div style="display: inline-flex; padding: 3px; border-radius: 999px; background: #1A1815; border: 1px solid #2A2620">
-      <span style="{{ vXor }}" onClick="{{ setXor }}">{{ t.xornada }}</span>
-      <span style="{{ vGlo }}" onClick="{{ setGlo }}">{{ t.global }}</span>
-    </div>
+  <!-- SPEC-072 (H-1 = A): ‹ e › flanquean o título (o <h1>) na fila de 42 px, sen altura extra. -->
+  <div style="height: 42px; flex: none; display: flex; align-items: center; gap: 8px; padding: 0 14px 0 4px; border-bottom: 1px solid #2A2620">
+    <span style="display: inline-flex; align-items: center; align-self: stretch">
+      <span style="width: 26px; align-self: stretch; display: inline-flex; align-items: center; justify-content: center; font: 400 14px/1 var(--sans); color: #716F6C">‹</span>
+      <div style="display: inline-flex; padding: 3px; border-radius: 999px; background: #1A1815; border: 1px solid #2A2620">
+        <span style="{{ vXor }}" onClick="{{ setXor }}">{{ t.xornada }}</span>
+        <span style="{{ vGlo }}" onClick="{{ setGlo }}">{{ t.global }}</span>
+      </div>
+      <span style="width: 26px; align-self: stretch; display: inline-flex; align-items: center; justify-content: center; font: 400 14px/1 var(--sans); color: #716F6C">›</span>
+    </span>
     <span style="flex: 1"></span>
     <span class="n" style="font-size: 11px; color: #716F6C">{{ shown }}</span>
   </div>

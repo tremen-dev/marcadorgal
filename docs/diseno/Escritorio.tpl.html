@@ -27,7 +27,12 @@
   <div style="height: 56px; flex: none; display: flex; align-items: center; gap: 28px; padding: 0 20px; border-bottom: 1px solid #2A2620">
     <span style="font: 800 21px/1 var(--sans); letter-spacing: -.045em; color: #F5F1EA">marcador<span style="color: #0099CC">▮</span>gal</span>
     <div style="display: flex; gap: 22px">
-      <span style="font: 600 13px/1 var(--sans); color: #F5F1EA; padding-bottom: 4px; box-shadow: inset 0 -2px 0 #0099CC">{{ t.xornada }}</span>
+      <!-- SPEC-072 (H-1 = A): ‹ e › flanquean o título (o <h1>), na barra superior. -->
+      <span style="display: inline-flex; align-items: center; margin-left: -12px">
+        <span style="width: 24px; text-align: center; font: 400 15px/1 var(--sans); color: #716F6C">‹</span>
+        <span style="font: 600 13px/1 var(--sans); color: #F5F1EA; padding-bottom: 4px; box-shadow: inset 0 -2px 0 #0099CC">{{ t.xornada }}</span>
+        <span style="width: 24px; text-align: center; font: 400 15px/1 var(--sans); color: #716F6C">›</span>
+      </span>
       <span style="font: 500 13px/1 var(--sans); color: #A7A5A0">{{ t.global }}</span>
       <span style="font: 500 13px/1 var(--sans); color: #A7A5A0">{{ t.tables }}</span>
     </div>
@@ -43,13 +48,13 @@
     </div>
   </div>
 
+  <!-- Tira de días opcional (SPEC-061, SHOW_DAY_STRIP; oculta por defecto). Se se serve,
+       ‹ e › van nos seus extremos (SPEC-027 CA-6) e non no título: nunca nos dous sitios. -->
   <div style="height: 44px; flex: none; display: flex; align-items: center; gap: 4px; padding: 0 20px; border-bottom: 1px solid #2A2620; background: #131211">
-    <span style="font: 400 15px/1 var(--sans); color: #716F6C; padding-right: 8px">‹</span>
     <span style="padding: 6px 12px; border-radius: 7px; font: 500 12px/1 var(--mono); color: #716F6C">{{ t.d0 }}</span>
     <span style="padding: 6px 12px; border-radius: 7px; background: #0099CC; font: 600 12px/1 var(--mono); color: #00151F">{{ t.d1 }}</span>
     <span style="padding: 6px 12px; border-radius: 7px; font: 500 12px/1 var(--mono); color: #716F6C">{{ t.d2 }}</span>
     <span style="padding: 6px 12px; border-radius: 7px; font: 500 12px/1 var(--mono); color: #716F6C">{{ t.d3 }}</span>
-    <span style="font: 400 15px/1 var(--sans); color: #716F6C; padding-left: 8px">›</span>
     <span style="flex: 1"></span>
     <div style="display: flex; gap: 6px">
       <span style="{{ fAll }}" onClick="{{ setAll }}">{{ t.all }} <span class="n" style="opacity: .55">{{ nAll }}</span></span>

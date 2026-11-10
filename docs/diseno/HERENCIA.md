@@ -34,3 +34,13 @@ Lo que **no** se hereda está enumerado en `docs/adr/ADR-005-sistema-de-diseno-h
   referencia del bloque dibujado es `Marca.dc.html`, que presenta el logotipo
   con el bloque, el icono de una barra (oscuro y celeste, a 72/32/16 px) y
   guarda las semillas A/B/C en un bloque `data-historia` con su color original.
+- **2026-11-10 (SPEC-072 CA-8, H-1 = A).** Cambian `Movil.tpl.html` y
+  `Escritorio.tpl.html`, y con `node build.mjs` sus `.dc.html` (y
+  `Global.dc.html`, sin cambios de contido). Las ‹ › de semana (SPEC-027
+  CA-6) pasan a flanquear el título: en móvil, a ambos lados del texto en la
+  fila de 42 px (el glifo de ‹ sobre el margen de 14 px; caja de 26 px y
+  alto de la fila), sin altura extra; en escritorio, en la barra superior,
+  cajas de 24 px y alto de la barra. Mismo glifo y color que antes (sans 400
+  14/15 px, `--fg-dim`). La tira de días sigue dibujada como opcional
+  (SPEC-061, `SHOW_DAY_STRIP`) y sin flechas: si se sirve, las ‹ › vuelven a
+  sus extremos y no al título; nunca están en los dos sitios.
