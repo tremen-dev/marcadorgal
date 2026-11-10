@@ -20,6 +20,14 @@ import {
 } from "../src/calendar/aviso.ts";
 
 export const ETIQUETA = "bot-calendario";
+
+/**
+ * Parses the JSON of a gh list command. With no matches, gh label list --json
+ * prints nothing at all instead of [] (gh 2.83), so empty output is [].
+ */
+export function listaJson(salida) {
+  return salida.trim() === "" ? [] : JSON.parse(salida);
+}
 export const TITULAR = "albertofojo";
 const TITULO = "El bot del calendario está fallando";
 
@@ -39,7 +47,7 @@ export function observacionesDeJobs(env) {
 /** The watchman: are the scheduled runs of calendario-semanal.yml coming? */
 export function observacionesVigia({ gh, ahora, simular }) {
   if (simular === "fallo") return [{ causa: "sin-ejecuciones", resultado: "fallo" }];
-  const runs = JSON.parse(
+  const runs = listaJson(
     gh([
       "run",
       "list",
@@ -57,7 +65,7 @@ export function observacionesVigia({ gh, ahora, simular }) {
 }
 
 function asegurarEtiqueta(gh) {
-  const etiquetas = JSON.parse(
+  const etiquetas = listaJson(
     gh(["label", "list", "--search", ETIQUETA, "--limit", "100", "--json", "name"]),
   );
   if (etiquetas.some((e) => e.name === ETIQUETA)) return;
@@ -74,7 +82,7 @@ function asegurarEtiqueta(gh) {
 
 /** Decides and acts. Returns the action taken and the issue number, if any. */
 export function avisar({ gh, observaciones, ejecucion }) {
-  const abiertos = JSON.parse(
+  const abiertos = listaJson(
     gh([
       "issue",
       "list",

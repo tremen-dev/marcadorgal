@@ -60,6 +60,8 @@ function ghFalso(etiquetas: string[] = []) {
       );
     }
     if (grupo === "label" && verbo === "list") {
+      // Like the real gh 2.83: no matching label prints nothing, not [].
+      if (labels.length === 0) return "";
       return JSON.stringify(labels.map((name) => ({ name })));
     }
     if (grupo === "label" && verbo === "create") {
@@ -257,5 +259,37 @@ describe("SPEC-075 CA-4/CA-5 the watchman's observation", () => {
       }),
     ).toEqual([{ causa: "sin-ejecuciones", resultado: "fallo" }]);
     expect(f.llamadas).toEqual([]);
+  });
+});
+
+describe("SPEC-075 CA-5 fix: gh prints nothing for an empty list", () => {
+  it("opens the issue when label list, issue list and run list print nothing", () => {
+    const creadas: string[][] = [];
+    const gh: Gh = (args) => {
+      const [grupo, verbo] = args;
+      if (verbo === "list") return "";
+      if (grupo === "label" && verbo === "create") {
+        creadas.push(args);
+        return "";
+      }
+      if (grupo === "issue" && verbo === "create") {
+        creadas.push(args);
+        return "https://github.com/tremen-dev/marcadorgal/issues/9\n";
+      }
+      throw new Error(`unexpected gh ${args.join(" ")}`);
+    };
+    const observaciones = m.observacionesVigia({
+      gh,
+      ahora: "2026-11-10T13:00:00Z",
+    });
+    expect(observaciones).toEqual([
+      { causa: "sin-ejecuciones", resultado: "fallo" },
+    ]);
+    const r = m.avisar({ gh, observaciones, ejecucion: "https://x/runs/1" });
+    expect(r).toEqual({ accion: "abrir", numero: 9 });
+    expect(creadas.map((a) => `${a[0]} ${a[1]}`)).toEqual([
+      "label create",
+      "issue create",
+    ]);
   });
 });
