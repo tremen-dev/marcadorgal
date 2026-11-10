@@ -118,7 +118,13 @@ for (const { lang, prefix, home, dict } of LANGS) {
         const header = await page.locator("header").boundingBox();
         const main = await page.locator("main").boundingBox();
         const filters = await box(page, "filters");
-        if (header === null || main === null) throw new Error("layout");
+        // The controls bar that holds the filters (and the strip, if any).
+        const controls = await page
+          .getByTestId("filters")
+          .locator("..")
+          .boundingBox();
+        if (header === null || main === null || controls === null)
+          throw new Error("layout");
         if (width < 1024) {
           // The 42 px row under the header, as before (SPEC-061 CA-3): the
           // filters right under it and main right under the filters.
@@ -134,8 +140,18 @@ for (const { lang, prefix, home, dict } of LANGS) {
           expect(prev.y + prev.height).toBeLessThanOrEqual(
             header.y + header.height + 0.5,
           );
+          // Desktop: the 56 px top bar and the 44 px controls bar, as before
+          // (Escritorio.tpl.html); the filters need not fill the bar.
+          expect(Math.round(header.height)).toBe(56);
+          expect(Math.round(controls.y)).toBe(
+            Math.round(header.y + header.height),
+          );
+          expect(Math.round(controls.height)).toBe(44);
         }
-        expect(Math.round(main.y)).toBe(Math.round(filters.y + filters.height));
+        // No new band: main starts right under the controls bar.
+        expect(Math.round(main.y)).toBe(
+          Math.round(controls.y + controls.height),
+        );
         const truncated = await page
           .locator("h1, h1 span")
           .evaluateAll(
