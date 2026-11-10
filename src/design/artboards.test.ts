@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import { COLORS } from "./tokens";
 
 // SPEC-045 CA-2 (H-2, H-3): the artboards of docs/diseno/ (D-8) draw what
 // production paints since SPEC-040: no sidebar, no detail panel and no star
@@ -139,7 +140,7 @@ describe("SPEC-081 CA-8 the motto in the artboards", () => {
       const motto = styleWith(html, "var(--hand)");
       expect(motto.get("font-weight")).toBe("400");
       expect(px(motto.get("font-size"))).toBe(size);
-      expect(motto.get("color")).toBe("#F5F1EA");
+      expect(motto.get("color")).toBe(COLORS.fg.value);
       expect(motto.get("opacity")).toBe(".72");
       // The wordmark and the motto share one wrapper, right after the bar.
       const brand = html.match(
