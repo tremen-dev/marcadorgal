@@ -135,7 +135,9 @@ function mapCreatePost(
         }
       : { outcome: "rejected", reason: `GraphQL: ${redact(message)}` };
   }
-  if (createPost.__typename === "PostActionSuccess")
+  // The discriminant of the union is the shape, not the literal: a
+  // MutationError may be named anything (InvalidInputError, ...).
+  if ("post" in createPost)
     return { outcome: "sent", providerPostId: createPost.post.id };
   return {
     outcome: "rejected",
