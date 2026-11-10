@@ -12,8 +12,9 @@ import styles from "./Xornada.module.css";
 
 // SPEC-027 CA-6 (H-6): ‹ and › to the neighbour weeks, outside the part
 // that scrolls. Plain links without the fragment; with no neighbour, a gap of
-// the same width that is neither read nor focused.
-function WeekArrow({
+// the same width that is neither read nor focused. SPEC-072 (H-1 = A):
+// without the strip, the same arrows flank the title (XornadaHeader).
+export function WeekArrow({
   href,
   dir,
   locale,

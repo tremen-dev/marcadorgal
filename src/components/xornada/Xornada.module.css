@@ -244,6 +244,27 @@ a.weekArrow:focus-visible {
   top: calc(100% + var(--hairline) + var(--bar-mobile-days));
 }
 
+/* SPEC-072 (H-1 = A): the <h1> fills the row's height; the text is centred
+   in it. ‹ and › are its siblings, so they stay out of its name. */
+.heading {
+  min-width: 0;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+/* With the arrows, «‹ Xornada · 30 out – 2 nov ›»: the glyph of ‹ on the
+   14 px gutter (26 px box, glyph centred), the row's full height as the
+   target (≥ 24 px, ADR-005 exc. 6). */
+.title[data-arrows] {
+  padding-left: 4px;
+}
+
+.title .weekArrow {
+  align-self: stretch;
+}
+
 /* The active tab of Escritorio.tpl.html: sans 600 13 px, 2 px brand
    underline inside. Decoration only: the title is the text. D-2: it wraps,
    never truncates. */
@@ -848,16 +869,25 @@ section.competition[data-user-hidden="true"] {
     font-size: 21px;
   }
 
-  /* In the header, 28 px after the logo (8 of gap + 20). */
+  /* In the header, 28 px after the logo (8 of gap + 20). SPEC-072: the
+     bar's full height, so ‹ and › are 56 px targets. */
   .title,
   .bar[data-strip] .title {
     position: static;
     height: auto;
     flex: 0 1 auto;
+    align-self: stretch;
     min-width: 0;
     margin-left: 20px;
     padding: 0;
     border-bottom: 0;
+  }
+
+  /* ‹'s glyph about where the title starts without arrows (the strip and
+     the arrows never go together, so no data-strip here). */
+  .bar .title[data-arrows] {
+    margin-left: var(--space-8);
+    padding-left: 0;
   }
 
   .titleSpace {

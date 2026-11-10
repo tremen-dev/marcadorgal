@@ -1,6 +1,8 @@
+import type { Neighbours } from "@/board/weeks";
 import { LOCALES, type Locale, t } from "@/i18n";
 import { Wordmark } from "../brand/Wordmark";
 import styles from "./Xornada.module.css";
+import { WeekArrow } from "./XornadaControls";
 
 // SPEC-028 CA-4 (H-5): the logo goes back to the current xornada, a plain
 // navigation (cached, the same with and without JavaScript).
@@ -13,12 +15,23 @@ type Props = {
   heading: string;
   // The strip is served: on mobile the title row goes under it.
   strip: boolean;
+  // SPEC-072 CA-1 (H-1 = A): ‹ and › on both sides of the title's text, when
+  // the strip that used to hold them is not served.
+  arrows?: Neighbours;
 };
 
 // The top bar: logo, the visible title and gl·es. SPEC-028 CA-6 (H-6 = A):
 // on desktop the title sits where Escritorio.tpl.html has the «Xornada» tab;
 // on mobile it is the 42 px row of Movil.tpl.html's segment, under the strip.
-export function XornadaHeader({ locale, paths, heading, strip }: Props) {
+// SPEC-072: the row is the title's room; the arrows are siblings of the
+// <h1>, so they never enter its accessible name.
+export function XornadaHeader({
+  locale,
+  paths,
+  heading,
+  strip,
+  arrows,
+}: Props) {
   return (
     <header className={styles.bar} data-strip={strip ? "true" : undefined}>
       <a
@@ -29,9 +42,19 @@ export function XornadaHeader({ locale, paths, heading, strip }: Props) {
       >
         <Wordmark />
       </a>
-      <h1 className={styles.title} data-testid="xornada-title">
-        <span className={styles.titleText}>{heading}</span>
-      </h1>
+      <div
+        className={styles.title}
+        data-arrows={arrows ? "true" : undefined}
+        data-testid="xornada-title-row"
+      >
+        {arrows && (
+          <WeekArrow href={arrows.previous} dir="previous" locale={locale} />
+        )}
+        <h1 className={styles.heading} data-testid="xornada-title">
+          <span className={styles.titleText}>{heading}</span>
+        </h1>
+        {arrows && <WeekArrow href={arrows.next} dir="next" locale={locale} />}
+      </div>
       <span className={styles.spacer} />
       <nav
         className={styles.locales}
