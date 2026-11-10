@@ -86,6 +86,18 @@ tipo: roadmap
 
 ## Después (comprometido, sin empezar)
 
+- **EPIC-009 — Producción con público: capacidad y visitas medidas.**
+  *(Borrador, 2026-11-10.)* Medir visitas sin cookie ni terceros (únicos,
+  páginas, origen, dispositivo), con un informe reproducible por jornada y una
+  prueba de carga a 1.000 visitantes a la vez. Se cierra cuando una jornada
+  real queda medida y la prueba pasa sin errores.
+  *Por qué aquí:* es el primer entregable que desbloquea EPIC-008 (la cifra
+  de audiencia) y el que dirá si las campañas de EPIC-007 traen gente. No
+  compite por el dato con EPIC-003/004. Queda detrás de ellas porque, con
+  el tráfico de hoy, la arquitectura actual aguanta (CDN, SPEC-030). La
+  invalidación de caché por cambio queda fuera: el titular da por buena la
+  antigüedad de ≤ 40 s.
+
 - **EPIC-005 — Operador y fuentes push.** Panel mínimo con Auth, webhook
   genérico. *Renumerada el 2026-10-10*: la segunda fuente automática salió
   a EPIC-004 (fuente RFEF). Cierra cuando el operador
@@ -160,7 +172,7 @@ tipo: roadmap
   *Por qué aquí:* sin visitas medidas no hay precio alto que pedir, y el
   criterio de corte aparca lo que depende de un acuerdo sin firmar. Sube a
   «Después» cuando el titular decida medir la audiencia (su primer
-  entregable); depende de que EPIC-007 tenga publicador.
+  entregable, que ahora es EPIC-009); depende de que EPIC-007 tenga publicador.
 
 ## Criterios de corte
 
