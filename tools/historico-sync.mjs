@@ -90,8 +90,10 @@ async function main() {
     console.log(`  Partidos emparejados:   ${report.matchesPaired}`);
     console.log(`  Sen emparejar:          ${report.matchesUnpaired}`);
     console.log(`  Ambiguos:               ${report.matchesAmbiguous}`);
+    // SPEC-071 CA-4: paired with a row of another day of the window (±3).
+    console.log(`  Noutro día (±3):        ${report.matchesOtherDay}`);
     console.log(
-      "Emparejados (fecha · matchId · codActa · local–visitante · marcador · goles):",
+      "Emparejados (fecha [→ fecha da fila] · matchId · codActa · local–visitante · marcador · goles):",
     );
     for (const line of report.pairedLines) console.log(`  ${line}`);
     console.log("Sen emparejar (fecha · matchId · causa):");

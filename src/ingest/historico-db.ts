@@ -3,6 +3,7 @@ import {
   type DayMatchesResponse,
   getDayMatches,
 } from "../lib/explorer-client.ts";
+import { type RowsByDay, windowDaysOf } from "../lib/explorer-window.ts";
 import type { AliasFile } from "../model/index.ts";
 import {
   type HistoricoArgs,
@@ -117,6 +118,7 @@ export async function historicoSync(
     matchesPaired: 0,
     matchesUnpaired: 0,
     matchesAmbiguous: 0,
+    matchesOtherDay: 0,
     pairedLines: [],
     unpaired: [],
     ambiguous: [],
@@ -129,6 +131,18 @@ export async function historicoSync(
       : (fn: (tx: TransactionSql) => Promise<void>) =>
           (sql as TransactionSql).savepoint(fn);
 
+  // Each day of the export is asked once per run (SPEC-071 CA-4): the
+  // windows of neighbouring dates overlap.
+  const exportDays = new Map<string, Promise<DayMatchesResponse["matches"]>>();
+  const exportOf = (day: string) => {
+    let rows = exportDays.get(day);
+    if (!rows) {
+      rows = fetcher(day).then((r) => r.matches ?? []);
+      exportDays.set(day, rows);
+    }
+    return rows;
+  };
+
   for (const date of dates) {
     const localMatches = matchesByDate.get(date) ?? [];
     if (localMatches.length === 0) continue;
@@ -136,29 +150,39 @@ export async function historicoSync(
     report.datesProcessed += 1;
     report.matchesScanned += localMatches.length;
 
-    let explorerResponse: DayMatchesResponse;
-    try {
-      explorerResponse = await fetcher(date);
-    } catch (e) {
-      console.warn(
-        `[historico:sync] Non se puideron obter partidos de Explorer para ${date}:`,
-        e,
-      );
-      continue;
+    // The window of every match of a Madrid date is the same: date ± 3. A
+    // day that does not come leaves the whole date out, as before: a
+    // missing neighbour could hide the FINISHED row of a replayed match.
+    const rowsByDay = new Map<string, DayMatchesResponse["matches"]>();
+    let failed = false;
+    for (const day of windowDaysOf(date)) {
+      try {
+        rowsByDay.set(day, await exportOf(day));
+      } catch (e) {
+        console.warn(
+          `[historico:sync] Non se puideron obter partidos de Explorer para ${day}:`,
+          e,
+        );
+        failed = true;
+        break;
+      }
     }
+    if (failed) continue;
 
     const dayPlan = planDaySync(
       date,
       localMatches,
-      explorerResponse.matches ?? [],
+      rowsByDay as RowsByDay,
       aliasesFor(date),
     );
 
     report.matchesPaired += dayPlan.matches.length;
     report.matchesUnpaired += dayPlan.unpaired.length;
     report.matchesAmbiguous += dayPlan.ambiguous.length;
-    for (const p of dayPlan.matches)
+    for (const p of dayPlan.matches) {
       report.pairedLines.push(pairedLine(date, p));
+      if (p.rowDate !== date) report.matchesOtherDay += 1;
+    }
     for (const u of dayPlan.unpaired) report.unpaired.push({ date, ...u });
     for (const a of dayPlan.ambiguous) report.ambiguous.push({ date, ...a });
 

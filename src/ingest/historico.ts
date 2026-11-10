@@ -4,9 +4,13 @@ import {
   type Candidate,
   candidateOf,
   isSameMatch,
-  pickRow,
   rowCompetitionId,
 } from "../lib/explorer-identity.ts";
+import {
+  pickRowInWindow,
+  type RowsByDay,
+  rowsInWindow,
+} from "../lib/explorer-window.ts";
 import type {
   AliasFile,
   CompetitionId,
@@ -49,6 +53,9 @@ export type MatchToSync = {
 export type MatchSyncPlan = {
   match: MatchToSync;
   explorerMatch: DayMatchesResponse["matches"][number];
+  // The Madrid day of the export the row came from (SPEC-071): the day it
+  // was played, not always the one declared.
+  rowDate: string;
   needsDecision: boolean;
   finalScore: { home: number; away: number } | null;
   goals: PublicGoal[];
@@ -78,6 +85,8 @@ export type HistoricoSyncReport = {
   matchesPaired: number;
   matchesUnpaired: number;
   matchesAmbiguous: number;
+  // SPEC-071 CA-4: paired with a row of another day than the kickoff's.
+  matchesOtherDay: number;
   // fecha · matchId · codActa · local–visitante de la fila · marcador · nº goles
   pairedLines: string[];
   unpaired: { date: string; matchId: string; reason: UnpairedReason }[];
@@ -157,32 +166,37 @@ export function toPublicMatchMock(m: MatchToSync): PublicMatch {
   };
 }
 
+// The rows of the window of each local match (SPEC-071): the export by day,
+// or the rows of one day, which are then the rows of `date`.
 export function planDaySync(
   date: string,
   localMatches: readonly MatchToSync[],
-  explorerMatches: DayMatchesResponse["matches"],
+  explorerMatches: DayMatchesResponse["matches"] | RowsByDay,
   aliases: AliasFile | null = null,
 ): DaySyncPlan {
   const plans: MatchSyncPlan[] = [];
   const unpaired: DaySyncPlan["unpaired"] = [];
   const ambiguous: DaySyncPlan["ambiguous"] = [];
+  const rowsByDay: RowsByDay = Array.isArray(explorerMatches)
+    ? new Map([[date, explorerMatches]])
+    : (explorerMatches as RowsByDay);
 
   for (const lm of localMatches) {
-    const pairing = pickRow(
-      explorerMatches,
+    const pairing = pickRowInWindow(
+      rowsByDay,
       (row) => isSameMatch(lm, row, aliases),
       lm.kickoff,
     );
     if (pairing.kind === "ambiguous") {
       ambiguous.push({
         matchId: lm.matchId,
-        candidates: pairing.candidates.map(candidateOf),
+        candidates: pairing.candidates.map((c) => candidateOf(c.row)),
       });
       continue;
     }
     if (pairing.kind === "unpaired") {
-      const inCompetition = explorerMatches.some(
-        (row) => rowCompetitionId(row, aliases) === lm.competitionId,
+      const inCompetition = rowsInWindow(rowsByDay, lm.kickoff).some(
+        ({ row }) => rowCompetitionId(row, aliases) === lm.competitionId,
       );
       unpaired.push({
         matchId: lm.matchId,
@@ -212,6 +226,7 @@ export function planDaySync(
     plans.push({
       match: lm,
       explorerMatch: em,
+      rowDate: pairing.date,
       needsDecision,
       finalScore,
       goals,
@@ -226,7 +241,8 @@ export function planDaySync(
   };
 }
 
-// One line per paired match (SPEC-070 CA-7).
+// One line per paired match (SPEC-070 CA-7); the day of the row after the
+// declared one when they differ (SPEC-071 CA-4).
 export function pairedLine(date: string, p: MatchSyncPlan): string {
   const row = candidateOf(p.explorerMatch);
   const home = p.explorerMatch.homeScore ?? p.explorerMatch.golesLocal ?? null;
@@ -234,7 +250,7 @@ export function pairedLine(date: string, p: MatchSyncPlan): string {
     p.explorerMatch.awayScore ?? p.explorerMatch.golesVisitante ?? null;
   const score = home === null || away === null ? "—" : `${home}-${away}`;
   return [
-    date,
+    p.rowDate === date ? date : `${date} → ${p.rowDate}`,
     p.match.matchId,
     row.codActa ?? "sen acta",
     `${row.home ?? "?"}–${row.away ?? "?"}`,

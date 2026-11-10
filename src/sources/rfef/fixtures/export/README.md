@@ -109,6 +109,21 @@ de SPEC-039 como `docs/epicas/EPIC-004-fuente-rfef/_qa/SPEC-039/export-2026-11-0
 
 No tiene `.headers`: no es una captura íntegra.
 
+## Ventana (SPEC-071), 2026-11-10 02:14Z
+
+`export-2026-10-31-celta-fortuna-cordoba.json` es la respuesta **byte a byte**
+del endpoint desplegado a `?date=2026-10-31`, pedida por el implementador de
+SPEC-071 con el Bearer real (GET de solo lectura; el token no está en ningún
+fichero). Cabeceras en `export-2026-10-31-celta-fortuna-cordoba.headers`
+(`HTTP/1.1 200 OK`, `Content-Length: 18668`, `Date: Tue, 10 Nov 2026 02:14:39
+GMT`, `X-Vercel-Cache: BYPASS`). `exportedAt` `2026-11-10T02:14:39.574Z`, 25
+filas, sha256 `8f6f588b…babc26ce`. A diferencia de `export-2026-10-31.json`
+(capturado el 11-01), trae los campos de explorer v2 (`canonical*`,
+`liveProvider`, `goals`). La fila que importa es `70695028`: Segunda J12, RC
+Celta Fortuna – Córdoba CF, `18:30`, `FINISHED` 2-2, 4 goles; el calendario
+declarado la tiene el 2026-11-01 a las 16:00Z (relleno), y SPEC-071 CA-1 la
+empareja por la ventana de ±3 días.
+
 ## Alias
 
 `data/alias/2026-27/rfef.json` resuelve todos los nombres de las cinco
