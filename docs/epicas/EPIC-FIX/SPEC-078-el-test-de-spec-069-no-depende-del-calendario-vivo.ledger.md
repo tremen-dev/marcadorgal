@@ -1,4 +1,4 @@
----
+ tsc 0, biome 0, test 1 fallo tolerado (test-db Windows; CI 42812274857 en 197ee71: test-db 11/11), build 0; diff solo test+fixtures+package*; 0.5.7→0.5.8 | ⚠️ |reproducido: kickoff→2027-01-01 + alias −6 (Palmas/Sabadell/Eldense) → 74/74; además `matches: []` → 74/74; restaurado, data/ limpio; vivo → 74/74 | ✅ |`git diff origin/main...HEAD`: en ese `it` solo +3 líneas de comentario; aserciones intactas; verde | ✅ |6/6 `git hash-object` = `git rev-parse 197ee71:<origen>`; README con origen+blob; test estructural presente y verde | ✅ |---
 id: SPEC-078
 tipo: ledger
 epica: EPIC-FIX
@@ -6,7 +6,7 @@ epica: EPIC-FIX
 # Ledger — SPEC-078 El test de SPEC-069 no depende del calendario vivo
 
 ## Resumen
-- Fase: borrador
+- Fase: hecho (verificado GREEN 2026-11-10)
 - Rama: `ft/SPEC-078-test-spec069-sin-calendario-vivo`
 
 ## Matriz de criterios de aceptación
@@ -15,10 +15,10 @@ epica: EPIC-FIX
 <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
-| CA-1 | `src/sources/rfef/fixtures/calendario-2026-27/*.json` (5), `fixtures/alias-2026-27-rfef.json` (copias de 197ee71, blobs idénticos), `fixtures/README.md` §SPEC-078, `explorer.test.ts` (const `FROZEN`) | `explorer.test.ts` › «SPEC-078 … this file reads neither the live calendar nor the live alias» (rojo antes del cambio, verde después) | | 🚧 |
-| CA-2 | `explorer.test.ts`: solo el comentario del `it` «CA-2 all its observations come out…» (+3 líneas) | ese mismo caso, aserciones intactas | | 🚧 |
-| CA-3 | sin código: demostración abajo | `npx vitest run src/sources/rfef/explorer.test.ts` con `data/` perturbado → 74/74 | | 🚧 |
-| CA-4 | `package.json`/`package-lock.json` 0.5.7 → 0.5.8 | `npm run gates` (abajo) | | 🚧 |
+| CA-1 | `src/sources/rfef/fixtures/calendario-2026-27/*.json` (5), `fixtures/alias-2026-27-rfef.json` (copias de 197ee71, blobs idénticos), `fixtures/README.md` §SPEC-078, `explorer.test.ts` (const `FROZEN`) | `explorer.test.ts` › «SPEC-078 … this file reads neither the live calendar nor the live alias» (rojo antes del cambio, verde después) | 6/6 `git hash-object` = `git rev-parse 197ee71:<origen>`; README con origen y blob; test estructural presente y verde | ✅ |
+| CA-2 | `explorer.test.ts`: solo el comentario del `it` «CA-2 all its observations come out…» (+3 líneas) | ese mismo caso, aserciones intactas | `git diff origin/main...HEAD`: en ese `it` solo +3 líneas de comentario; aserciones intactas; verde | ✅ |
+| CA-3 | sin código: demostración abajo | `npx vitest run src/sources/rfef/explorer.test.ts` con `data/` perturbado → 74/74 | reproducido: kickoff a 2027-01-01 + alias sin 6 entradas (Palmas/Sabadell/Eldense) → 74/74; `matches: []` → 74/74; restaurado, data/ limpio; vivo → 74/74 | ✅ |
+| CA-4 | `package.json`/`package-lock.json` 0.5.7 → 0.5.8 | `npm run gates` (abajo) | tsc ok, biome ok, test 1 fallo tolerado (test-db Windows; CI 42812274857 @197ee71: test-db 11/11), build 0; diff solo test+fixtures+package*; 0.5.7→0.5.8 | ⚠️ |
 
 ### Evidencia del implementador (2026-11-10)
 - **CA-1** copias: `git show 197ee71:data/calendario/2026-27/<c>.json > fixtures/calendario-2026-27/<c>.json` y `git show 197ee71:data/alias/2026-27/rfef.json > fixtures/alias-2026-27-rfef.json`; `git hash-object` de cada copia = `git rev-parse 197ee71:<origen>` (6 de 6). Las Palmas–Eldense J13: congelado `2026-11-08T17:30:00Z`, vivo `2026-11-09T19:30:00Z`.
@@ -27,6 +27,10 @@ epica: EPIC-FIX
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
+**GREEN — 2026-11-10.** CA-1, CA-2, CA-3 ✅; CA-4 ⚠️ por la salvedad que la propia spec acepta.
+- CA-1: blobs de las 6 copias idénticos a 197ee71 (`git hash-object` vs `git rev-parse`); `explorer.test.ts` lee solo `src/sources/rfef/fixtures/`; caso «SPEC-078 … neither the live calendar nor the live alias» verde.
+- CA-3 (reproducido por el verificador): `segunda-division.json` J13 Las Palmas–Eldense `2026-11-09T19:30:00Z` → `2027-01-01T12:00:00Z` y `rfef.json` sin las 6 entradas de Palmas/Sabadell/Eldense (183 → 177): `npx vitest run src/sources/rfef/explorer.test.ts` → `Tests 74 passed (74)`. Además `matches: []`: `74 passed (74)`. `git checkout -- data/calendario/2026-27/segunda-division.json data/alias/2026-27/rfef.json`; `git status --short -- data/` vacío; con `data/` vivo: 74/74.
+- CA-4: `npm run gates` → exit 1: typecheck ok, `Checked 450 files … No fixes applied`, `Test Files 1 failed | 158 passed (159)`, `Tests 1 failed | 2626 passed | 3 skipped (2630)`; único fallo `src/db/test-db.test.ts › wins over a .env file in the cwd too` (tolerado por la spec). `gh run view 42812274857`: main @197ee71, jobs gates/e2e/version success, `✓ src/db/test-db.test.ts (11 tests)`. `npm run build` aparte → exit 0. `git diff --name-only origin/main...HEAD`: solo test, fixtures/**, package*.json y docs de la spec; versión 0.5.7 → 0.5.8 en package.json y package-lock (×2).
 
 ## Evidencia visual
 <!-- Tabla CA → captura en _qa/SPEC-078/. Informe HTML opcional: _qa/SPEC-078/informe.html -->
