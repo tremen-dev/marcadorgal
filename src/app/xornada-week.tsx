@@ -7,6 +7,7 @@ import { nowInstant } from "@/clock";
 import { SnapshotFreshness } from "@/components/xornada/SnapshotFreshness";
 import { XornadaScreen } from "@/components/xornada/XornadaScreen";
 import type { Locale } from "@/i18n";
+import { rfefAliasesOrNull } from "@/ingest/aliases";
 import { enrichMatchesWithGoals } from "@/lib/explorer-enrichment";
 import { buildXornada, xornadaDays } from "@/xornada/view";
 import {
@@ -45,7 +46,11 @@ export async function WeekXornada({
   let matches = read.kind === "page" ? read.matches : null;
   if (matches !== null) {
     try {
-      matches = await enrichMatchesWithGoals(matches);
+      matches = await enrichMatchesWithGoals(
+        matches,
+        undefined,
+        rfefAliasesOrNull(seasonOf(now)),
+      );
     } catch (_e) {
       // Graceful fallback
     }

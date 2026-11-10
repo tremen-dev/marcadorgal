@@ -7,6 +7,7 @@ import { galicianNames } from "@/calendar/galicians";
 import { nowInstant } from "@/clock";
 import { XornadaScreen } from "@/components/xornada/XornadaScreen";
 import { type Locale, t } from "@/i18n";
+import { rfefAliasesOrNull } from "@/ingest/aliases";
 import { enrichMatchesWithGoals } from "@/lib/explorer-enrichment";
 import { fetchWomenXornadaMatches } from "@/lib/explorer-xornada";
 import type { Instant, PublicMatch } from "@/model";
@@ -114,7 +115,11 @@ export async function HomeXornada({ locale }: { locale: Locale }) {
 
   if (matches !== null) {
     try {
-      matches = await enrichMatchesWithGoals(matches);
+      matches = await enrichMatchesWithGoals(
+        matches,
+        undefined,
+        rfefAliasesOrNull(season),
+      );
     } catch (_e) {
       // Graceful fallback
     }

@@ -38,6 +38,14 @@ const nextConfig: NextConfig = {
   // (ADR-008 §8): tracing has to carry those files into the deployment.
   outputFileTracingIncludes: {
     "/api/ingest/tick": ["./data/alias/**/*.json"],
+    // SPEC-070 CA-11: the board and the xornada pages pair the rows of the
+    // explorer export with the rfef alias (codGrupo -> competition, name ->
+    // team). Next matches these keys with picomatch({ contains: true }), so
+    // "/" reaches every server route: the cost is one 22 KB JSON each.
+    "/api/board": ["./data/alias/**/rfef.json"],
+    "/": ["./data/alias/**/rfef.json"],
+    "/es": ["./data/alias/**/rfef.json"],
+    "/xornada/*": ["./data/alias/**/rfef.json"],
   },
 };
 

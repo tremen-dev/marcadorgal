@@ -1,0 +1,14 @@
+# antes (98c96b2, next build): ocurrencias de data/alias/2026-27/rfef.json
+.next/server/app/api/board/route.js.nft.json -> 0
+.next/server/app/(gl)/page.js.nft.json -> 0
+.next/server/app/(es)/es/page.js.nft.json -> 0
+.next/server/app/(gl)/xornada/[fecha]/page.js.nft.json -> 0
+.next/server/app/(es)/es/xornada/[fecha]/page.js.nft.json -> 0
+.next/server/app/api/ingest/tick/route.js.nft.json -> 1
+# despues (rama, next build)
+.next/server/app/api/board/route.js.nft.json -> data/alias/2026-27/rfef.json 
+.next/server/app/(gl)/page.js.nft.json -> data/alias/2026-27/rfef.json 
+.next/server/app/(es)/es/page.js.nft.json -> data/alias/2026-27/rfef.json 
+.next/server/app/(gl)/xornada/[fecha]/page.js.nft.json -> data/alias/2026-27/rfef.json 
+.next/server/app/(es)/es/xornada/[fecha]/page.js.nft.json -> data/alias/2026-27/rfef.json 
+.next/server/app/api/ingest/tick/route.js.nft.json -> data/alias/2026-27/rfef.json 

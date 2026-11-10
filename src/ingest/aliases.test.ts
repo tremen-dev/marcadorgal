@@ -1,9 +1,9 @@
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { afterAll, describe, expect, it } from "vitest";
+import { afterAll, describe, expect, it, vi } from "vitest";
 import { AliasFile } from "@/model";
-import { loadAliasFile } from "./aliases.ts";
+import { loadAliasFile, rfefAliasesOrNull } from "./aliases.ts";
 
 const root = path.join(tmpdir(), `marcadorgal-alias-${crypto.randomUUID()}`);
 
@@ -62,5 +62,20 @@ describe("CA-4 loadAliasFile", () => {
     const aliases = loadAliasFile("2026-27", "api-football");
     expect(aliases.source).toBe("api-football");
     expect(aliases.teams.length).toBeGreaterThan(0);
+  });
+});
+
+describe("SPEC-070 CA-11 rfefAliasesOrNull", () => {
+  it("is the rfef alias of the season when the file is there", () => {
+    const real = rfefAliasesOrNull("2026-27");
+    expect(real?.source).toBe("rfef");
+    expect(real?.competitions?.["33836087"]).toBe("segunda-division");
+  });
+
+  it("is null, with a warning, when the file is not deployed", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    expect(rfefAliasesOrNull("2040-41", root)).toBeNull();
+    expect(warn).toHaveBeenCalled();
+    warn.mockRestore();
   });
 });

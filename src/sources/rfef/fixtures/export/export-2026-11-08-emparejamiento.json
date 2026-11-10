@@ -1,0 +1,78 @@
+{
+  "exportedAt": "2026-11-09T11:42:38.910Z",
+  "date": "2026-11-08",
+  "matches": [
+    {
+      "codActa": "70692248",
+      "codGrupo": "33836117",
+      "codCompeticion": "33836116",
+      "jornada": "9",
+      "fechaIso": "2026-11-08",
+      "horaTexto": "16:30",
+      "codEquipoLocal": null,
+      "equipoLocal": "Real Oviedo",
+      "codEquipoVisitante": null,
+      "equipoVisitante": "Real Sporting de Gijón",
+      "golesLocal": 0,
+      "golesVisitante": 0,
+      "estado": "FINISHED",
+      "lastSeenAt": "2026-11-09T03:03:54.568Z",
+      "lastChangedAt": "2026-11-08T17:34:08.822Z",
+      "lastReadAt": "2026-11-09T03:03:54.568Z",
+      "strategy": "static:packed_ntype",
+      "discardedReadings": 8,
+      "minute": null,
+      "addedMinute": null,
+      "halfTime": false,
+      "canonicalHomeTeamId": "real-oviedo",
+      "canonicalAwayTeamId": "sporting-gijon",
+      "liveProvider": "rfef",
+      "lastArbitratedAt": "2026-11-08T17:34:08.822Z"
+    },
+    {
+      "codActa": "70695047",
+      "codGrupo": "33836087",
+      "codCompeticion": "33836086",
+      "jornada": "13",
+      "fechaIso": "2026-11-08",
+      "horaTexto": "18:30",
+      "codEquipoLocal": null,
+      "equipoLocal": "Real Sporting de Gijón",
+      "codEquipoVisitante": null,
+      "equipoVisitante": "Real Valladolid CF",
+      "golesLocal": 1,
+      "golesVisitante": 2,
+      "estado": "FINISHED",
+      "lastSeenAt": "2026-11-09T03:03:53.547Z",
+      "lastChangedAt": "2026-11-08T19:40:16.846Z",
+      "lastReadAt": "2026-11-09T03:03:53.547Z",
+      "strategy": "static:plain_text+static:packed_ntype",
+      "discardedReadings": 6,
+      "minute": null,
+      "addedMinute": null,
+      "halfTime": false,
+      "canonicalCompetitionId": "segunda-division",
+      "canonicalHomeTeamId": "sporting-gijon",
+      "canonicalAwayTeamId": "valladolid",
+      "liveProvider": "rfef",
+      "lastArbitratedAt": "2026-11-08T19:40:16.846Z",
+      "goals": [
+        {
+          "team": "away",
+          "player": "Julien Ponceau",
+          "minute": 4
+        },
+        {
+          "team": "away",
+          "player": "Tai Abed",
+          "minute": 39
+        },
+        {
+          "team": "home",
+          "player": "Guillermo Rosas",
+          "minute": 83
+        }
+      ]
+    }
+  ]
+}

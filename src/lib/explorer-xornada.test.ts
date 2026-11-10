@@ -145,6 +145,8 @@ describe("fetchWomenXornadaMatches", () => {
       exportedAt: "2026-11-07T00:00:00Z",
       matches: [
         {
+          // SPEC-070 CA-6: the row has to say its competition to be used.
+          canonicalCompetitionId: "liga-f",
           canonicalHomeTeamId: "depor-abanca",
           canonicalAwayTeamId: "valencia-cf",
           estado: "LIVE_PROVISIONAL",
@@ -226,5 +228,92 @@ describe("fetchWomenXornadaMatches", () => {
     const matches = await fetchWomenXornadaMatches("2026-11-07T20:00:00Z");
     expect(matches).toHaveLength(1);
     expect(matches[0].competitionId).toBe("liga-f");
+  });
+});
+
+describe("SPEC-070 CA-6 the women xornada pairs by competition", () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  const ligaFOnly = async (comp: string) => {
+    if (comp !== "liga-f") throw new Error("not this one");
+    return {
+      competition: "liga-f",
+      season: "2026-27",
+      exportedAt: "2026-11-07T00:00:00Z",
+      teams: [],
+      ignoredRounds: {},
+      matches: [
+        {
+          externalId: "liga-f-2026-27-j10-depor-abanca-valencia-cf",
+          round: 10,
+          kickoff: "2026-11-09T11:00:00Z",
+          home: "depor-abanca",
+          away: "valencia-cf",
+          timeConfirmed: true,
+        },
+      ],
+    };
+  };
+
+  const row = (
+    competition: string | undefined,
+    homeScore: number,
+    player: string,
+  ) => ({
+    codActa: `${competition}-${homeScore}`,
+    canonicalCompetitionId: competition,
+    canonicalHomeTeamId: "depor-abanca",
+    canonicalAwayTeamId: "valencia-cf",
+    estado: "FINISHED" as const,
+    homeScore,
+    awayScore: 0,
+    goals: [{ team: "home" as const, player, minute: 10 }],
+  });
+
+  it("same canonical teams, other competition: only the liga-f row is used", async () => {
+    vi.spyOn(client, "getOfficialCalendar").mockImplementation(ligaFOnly);
+    vi.spyOn(client, "getDayMatches").mockResolvedValue({
+      date: "2026-11-09",
+      exportedAt: "2026-11-09T20:00:00Z",
+      // The other competition last: the old Map kept the last one.
+      matches: [
+        row("liga-f", 2, "Ligaf"),
+        row("primera-federacion-fem", 5, "Otra"),
+      ],
+    });
+    const [m] = await fetchWomenXornadaMatches("2026-11-08T20:00:00Z");
+    expect(m?.status).toBe("finished");
+    expect(m?.score).toEqual({ home: 2, away: 0 });
+    expect(m?.goals?.map((g) => g.player)).toEqual(["Ligaf"]);
+  });
+
+  it("a row without competition is not used", async () => {
+    vi.spyOn(client, "getOfficialCalendar").mockImplementation(ligaFOnly);
+    vi.spyOn(client, "getDayMatches").mockResolvedValue({
+      date: "2026-11-09",
+      exportedAt: "2026-11-09T20:00:00Z",
+      matches: [row(undefined, 4, "Sen competición")],
+    });
+    const [m] = await fetchWomenXornadaMatches("2026-11-08T20:00:00Z");
+    expect(m?.status).toBe("scheduled");
+    expect(m?.goals).toBeUndefined();
+  });
+
+  it("two rows of the same competition and teams: no data of the day", async () => {
+    vi.spyOn(client, "getOfficialCalendar").mockImplementation(ligaFOnly);
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    vi.spyOn(client, "getDayMatches").mockResolvedValue({
+      date: "2026-11-09",
+      exportedAt: "2026-11-09T20:00:00Z",
+      matches: [row("liga-f", 2, "Unha"), row("liga-f", 3, "Outra")],
+    });
+    const [m] = await fetchWomenXornadaMatches("2026-11-08T20:00:00Z");
+    expect(m?.status).toBe("scheduled");
+    expect(m?.score).toBeNull();
+    expect(m?.goals).toBeUndefined();
+    const text = warn.mock.calls.map((c) => c.join(" ")).join("\n");
+    expect(text).toContain("liga-f-2026-27-j10-depor-abanca-valencia-cf");
   });
 });

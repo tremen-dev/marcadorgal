@@ -6,7 +6,9 @@
 //
 // Usage: npm run historico:sync -- [--desde <YYYY-MM-DD>] [--hasta <YYYY-MM-DD>] [--dry-run]
 import postgres from "postgres";
+import { seasonOf } from "../src/board/current.ts";
 import { sqlOptionsFor } from "../src/db/connect.ts";
+import { loadAliasFile } from "../src/ingest/aliases.ts";
 import { parseHistoricoArgs, HISTORICO_USAGE } from "../src/ingest/historico.ts";
 import { historicoSync } from "../src/ingest/historico-db.ts";
 
@@ -61,7 +63,11 @@ async function main() {
   );
 
   try {
-    const report = await historicoSync(sql, args);
+    // SPEC-070: the identity of the rfef adapter, alias of the season of
+    // each date (codGrupo -> competition, name -> team).
+    const aliasesFor = (date) =>
+      loadAliasFile(seasonOf(`${date}T12:00:00Z`), "rfef");
+    const report = await historicoSync(sql, args, undefined, aliasesFor);
 
     console.log("\n=======================================================");
     console.log(
@@ -80,6 +86,24 @@ async function main() {
         ).padStart(3)} goles`,
       );
     }
+    console.log("-------------------------------------------------------");
+    console.log(`  Partidos emparejados:   ${report.matchesPaired}`);
+    console.log(`  Sen emparejar:          ${report.matchesUnpaired}`);
+    console.log(`  Ambiguos:               ${report.matchesAmbiguous}`);
+    console.log(
+      "Emparejados (fecha · matchId · codActa · local–visitante · marcador · goles):",
+    );
+    for (const line of report.pairedLines) console.log(`  ${line}`);
+    console.log("Sen emparejar (fecha · matchId · causa):");
+    for (const u of report.unpaired)
+      console.log(`  ${u.date} · ${u.matchId} · ${u.reason}`);
+    console.log("Ambiguos (fecha · matchId · candidatas):");
+    for (const a of report.ambiguous)
+      console.log(
+        `  ${a.date} · ${a.matchId} · ${a.candidates
+          .map((c) => `${c.codActa ?? "sen acta"} ${c.home ?? "?"}–${c.away ?? "?"}`)
+          .join("; ")}`,
+      );
     console.log("=======================================================\n");
   } catch (err) {
     console.error("[historico:sync] Erro durante a execución:", err);

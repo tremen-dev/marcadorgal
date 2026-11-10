@@ -4,6 +4,11 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import nextConfig from "../../next.config.ts";
 
+const picomatch: (
+  glob: string,
+  options: { dot: boolean; contains: boolean },
+) => (s: string) => boolean = require("next/dist/compiled/picomatch");
+
 // The second trigger of the tick (ADR-002 §1): Vercel Cron every minute as a
 // backup of pg_cron. It invokes by GET with Authorization: Bearer
 // $CRON_SECRET, which is the same value as INGEST_TICK_TOKEN (H-2).
@@ -47,6 +52,29 @@ describe("SPEC-008 CA-5 the cron path carries the alias", () => {
     const cronPath = vercelJson().crons?.[0].path as string;
     const file = path.join(root, "src/app", cronPath, "route.ts");
     expect(existsSync(file)).toBe(true);
+  });
+});
+
+// SPEC-070 CA-11: the web routes that enrich with the export resolve its rows
+// with the rfef alias, so the file has to be traced into their functions too.
+// Next matches the keys with picomatch({ contains: true }) against the route
+// without route groups (collect-build-traces.js): the same matcher here.
+describe("SPEC-070 CA-11 the web routes carry the rfef alias", () => {
+  const routes = [
+    "/api/board",
+    "/",
+    "/es",
+    "/xornada/[fecha]",
+    "/es/xornada/[fecha]",
+  ];
+  it.each(routes)("%s has an entry with data/alias/**/rfef.json", (route) => {
+    const tracing = nextConfig.outputFileTracingIncludes ?? {};
+    const includes = Object.entries(tracing)
+      .filter(([glob]) => picomatch(glob, { dot: true, contains: true })(route))
+      .flatMap(([, files]) => files);
+    expect(
+      includes.some((f) => /^\.\/data\/alias\/\*\*\/(rfef|\*)\.json$/.test(f)),
+    ).toBe(true);
   });
 });
 

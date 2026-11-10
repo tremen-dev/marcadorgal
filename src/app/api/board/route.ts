@@ -1,6 +1,7 @@
 import { boardResponse } from "@/board/http";
 import { readPublicXornada, seasonOf } from "@/board/reader";
 import { nowInstant } from "@/clock";
+import { rfefAliasesOrNull } from "@/ingest/aliases";
 import { enrichMatchesWithGoals } from "@/lib/explorer-enrichment";
 import { fetchWomenXornadaMatches } from "@/lib/explorer-xornada";
 import type { Instant, PublicMatch } from "@/model";
@@ -14,7 +15,11 @@ async function readBoard(now: Instant): Promise<PublicMatch[] | null> {
   if (rawMatches === null) return null;
   let matches = rawMatches;
   try {
-    matches = await enrichMatchesWithGoals(matches);
+    matches = await enrichMatchesWithGoals(
+      matches,
+      undefined,
+      rfefAliasesOrNull(seasonOf(now)),
+    );
   } catch (_e) {
     // Graceful fallback: maintain existing matches
   }

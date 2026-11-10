@@ -91,6 +91,24 @@ de `"espn"` a `"proveedor-inventado"`. Quedan una fila `"espn"` (CE Sabadell FC
 – Real Sociedad B, descanso), una inventada y una `"marca"` (Liga F, fuera de
 las cinco competiciones). No tiene `.headers`: no es una captura íntegra.
 
+## Emparejamiento estricto (SPEC-070), 2026-11-08
+
+`export-2026-11-08-emparejamiento.json` **no es byte a byte**: son dos filas
+copiadas tal cual (mismo contenido, reserializado con 2 espacios) de la
+respuesta real del endpoint desplegado a `?date=2026-11-08` guardada en el QA
+de SPEC-039 como `docs/epicas/EPIC-004-fuente-rfef/_qa/SPEC-039/export-2026-11-08-acta.json`
+(`exportedAt` `2026-11-09T11:42:38.910Z`, 33 filas, sha256 `25a7abd8…3efc5fc3`,
+24539 bytes), con su `exportedAt` y su `date`:
+
+- `70692248`: juvenil (`codGrupo` 33836117, fuera del mapa), Real Oviedo –
+  Real Sporting de Gijón, 16:30, `FINISHED` 0-0, **sin**
+  `canonicalCompetitionId`. Es la fila que `historico:sync --dry-run` tomó
+  por Sporting–Valladolid.
+- `70695047`: Segunda (`codGrupo` 33836087), Real Sporting de Gijón – Real
+  Valladolid CF, 18:30, `FINISHED` 1-2, 3 goles. La buena.
+
+No tiene `.headers`: no es una captura íntegra.
+
 ## Alias
 
 `data/alias/2026-27/rfef.json` resuelve todos los nombres de las cinco
