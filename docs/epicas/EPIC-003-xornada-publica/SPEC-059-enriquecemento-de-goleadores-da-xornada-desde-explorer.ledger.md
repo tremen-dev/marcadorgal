@@ -53,3 +53,39 @@ UI (Playwright) no ejecutada: requiere Supabase local y Explorer real; el RED de
 - **F-SPEC-059-1 (CA-4, bloqueante):** sin timeout en la llamada a Explorer del camino de `HomeXornada`/`WeekXornada`/`/api/board`. Arreglo: timeout corto (p. ej. `AbortSignal.timeout`) en `getDayMatches`/`fetchExplorer` para este uso, y test con fetcher que no resuelve que demuestre que se devuelven los partidos intactos dentro del límite.
 - **F-SPEC-059-2 (CA-1, no bloqueante si el arquitecto enmienda):** nota de enmienda en SPEC-059 CA-1 por SPEC-070 (sin nombres aproximados).
 - **F-SPEC-059-3 (CA-3, no bloqueante):** test que fije que el enriquecimiento no altera `score`, `status`, `minute`, `halfTime`, `homeScoredAt`, `awayScoredAt`.
+
+## Corrección del RED (sdd-implementador, 2026-11-11, rama `ft/SPEC-059-timeout-explorer`, commit c48e381)
+
+| CA | Implementado (fichero) | Test (fichero/caso) |
+| :--- | :--- | :--- |
+| CA-4 (F-SPEC-059-1) | `src/lib/explorer-enrichment.ts`: `EXPLORER_ENRICHMENT_TIMEOUT_MS = 2000`, `withDeadline` por fecha, opción `timeoutMs`; fetcher por defecto `getDayMatches(date, undefined, { timeoutMs })`. `src/lib/explorer-client.ts`: `ExplorerRequestOptions` en `fetchExplorer`/`getDayMatches` → `AbortSignal.timeout` solo si se pide | `explorer-enrichment.test.ts` «returns the matches intact when Explorer never answers (CA-4 timeout)» (timers falsos: pendiente a 1999 ms, resuelto a 2000 ms), «honours an injected timeout…», «keeps the enrichment timeout short…»; `explorer-client.test.ts` «getDayMatches with timeoutMs aborts…» (TimeoutError), «…sends no abort signal unless a timeout is asked» |
+| CA-3 (F-SPEC-059-3) | sin cambio de código (`{...m, goals}`) | `explorer-enrichment.test.ts` «only adds goals: certified fields stay untouched (CA-3)»: `score`, `status`, `minute`, `halfTime`, `homeScoredAt`, `awayScoredAt` y resto iguales aunque la fila de Explorer traiga otros valores; la entrada no muta |
+
+Evidencia:
+- RED previo: `npx vitest run src/lib/explorer-enrichment.test.ts src/lib/explorer-client.test.ts` → 4 failed (los de timeout).
+- Sonda del verificador `node --experimental-strip-types …/scratchpad/probe/hang.mts` → `enrichMatchesWithGoals con Explorer colgado: resolved (2012 ms)` (antes `still-pending-after-10s`).
+- Mutación 1 (sin `withDeadline`): 2 failed («…never answers (CA-4 timeout)», «honours an injected timeout…»). Mutación 2 (sin `signal` en el cliente): 1 failed («getDayMatches with timeoutMs aborts…»). Ambas revertidas.
+- `npm run gates` → exit 0; `Checked 487 files … No fixes applied`; `Test Files 173 passed (173)`, `Tests 2923 passed | 3 skipped (2926)`; `✓ Compiled successfully`.
+
+### Salvedades / follow-ups
+- Valor 2 s elegido por el implementador: ni la spec ni un ADR fijan cifra. `/directos`, `explorer-xornada.ts` y la ingesta siguen sin timeout (comportamiento previo, fuera de esta spec).
+- Observación `goals: []` sin tocar (EPIC-MEJORA). F-SPEC-059-2 (nota de enmienda por SPEC-070) queda al arquitecto.
+
+### Cómo retomar (handoff)
+Re-verificar CA-3 y CA-4 con los tests citados y la sonda `hang.mts`; el resto de CA no cambió.
+
+## Re-verificación (sdd-verificador, 2026-11-11, rama `ft/SPEC-059-timeout-explorer` en e00954f)
+
+| CA | Verif. | Evidencia | Estado |
+| :--- | :--- | :--- | :--- |
+| CA-1 | ✅ | Spec enmendada (e6e4120): identidad SPEC-070 vía `isSamePublicMatch`/`pickRow`. Los tres sitios (`xornada-home.tsx:118`, `xornada-week.tsx:49`, `api/board/route.ts:18`) llaman `enrichMatchesWithGoals(matches, undefined, aliases)` → fetcher por defecto con timeout | ✅ |
+| CA-2 | ✅ | Sin cambios; tests de `sanitizeGoals` en verde | ✅ |
+| CA-3 | ⚠️ | Test «only adds goals: certified fields stay untouched (CA-3)»: `rest` igual a `structuredClone` previo aunque Explorer traiga 9-9/FINISHED; entrada no muta. Coherencia del `ETag` SSR↔board solo por inspección (misma función y argumentos en ambos caminos), sin test | ⚠️ |
+| CA-4 | ✅ | Sonda `hang.mts` (fetch que nunca responde e ignora el aborto) → `resolved (2033 ms)`. Sonda nueva `hang-real.mts` (servidor HTTP real que acepta y no responde, fetch real, 2 fechas) → `resolved intact=true (2036 ms) hits=2 socketsClosed=2` (en paralelo, y el socket se aborta de verdad); modo 500 → `resolved intact=true (68 ms)`. Mutación (worktree con `explorer-enrichment.ts` y `explorer-client.ts` de c48e381~1 y tests nuevos): `4 failed | 24 passed` (los tres de timeout y el de límite ≤ 2 s). Otros usos del cliente: `getOfficialCalendar`, `getStandings`, scorers, goalkeepers, `/directos` y `explorer-xornada.ts` no pasan `options` → sin `signal` (test «…sends no abort signal unless a timeout is asked») | ✅ |
+| CA-5 | ✅ | `npm run gates` → exit 0: `Checked 487 files … No fixes applied`; `Test Files 173 passed (173)`, `Tests 2923 passed | 3 skipped (2926)`; `✓ Compiled successfully` | ✅ |
+
+UI en navegador no ejecutada: la portada necesita Supabase y Explorer reales (sin Docker no es barata); el `next dev` ajeno en :3011 devolvió `/` 500 y `/api/board` 503, no atribuible a esta spec. El CA-4 se demuestra en la función que usan los tres caminos.
+
+### Veredicto del verificador: GREEN
+
+Salvedad aceptada: CA-3 (`ETag` sin test, coherencia por construcción). Follow-ups ya en EPIC-MANT (M-15, M-16).

@@ -85,6 +85,30 @@ Pendientes de especificar, con su procedencia:
   ventana de medición de SPEC-009. Modo de fallo: gasto de presupuesto del
   proveedor que no aparece en el informe de la jornada. Procedencia: hallazgo del
   arquitecto al escribir SPEC-010, 2026-09-22. **→ especificado en SPEC-010.**
+- **M-13 — herramientas muertas de api-football.** `tools/informe-jornada.mjs
+  --contrastar`, `tools/reconciliar-cierre.mjs` y `tools/reconciliar-sin-directo.mjs`
+  buscan api-football en `SOURCES` y abortan siempre; sobran
+  `tools/legacy-api-football.mjs`, las referencias a `API_FOOTBALL_KEY` en
+  `tools/medir-directo.mjs` y `tools/tick-salud.mjs`, y el comentario desfasado
+  de `src/sources/registry.ts:5`. Modo de fallo: quien las lance cree tener un
+  contraste o una reconciliación y obtiene un aborto; el código muerto despista.
+  Procedencia: O-1 de la verificación de SPEC-062, 2026-11-11 (su ledger).
+- **M-14 — `calendario-sync --source api-football` falla tarde.** Acepta el flag
+  y cae con «ningún importador cubre»; debería rechazarlo explícitamente al
+  parsear argumentos. Modo de fallo: error engañoso que apunta al calendario y
+  no al flag. Procedencia: O-2 de la verificación de SPEC-062, 2026-11-11.
+- **M-15 — otros caminos a Explorer sin timeout.** `/directos`,
+  `src/lib/explorer-xornada.ts` y la ingesta llaman `getDayMatches`/`fetchExplorer`
+  sin `timeoutMs`. Modo de fallo: Explorer colgado bloquea esas rutas hasta el
+  límite de la función. Procedencia: salvedad del implementador al corregir
+  SPEC-059, 2026-11-11 (ledger de SPEC-059).
+- **M-16 — `goals: []` frente a `undefined` en `enrichMatchesWithGoals`.** Un
+  partido que llegue con `goals: []` y sin goles válidos de Explorer se queda
+  con `[]`. Modo de fallo latente: si una fuente empieza a mandar `goals: []`,
+  `[]` («sin goleadores») y `undefined` («sin dato») dejan de distinguirse; hoy
+  no ocurre porque `web.xornada` no trae `goals`. Va a MANT y no a MEJORA
+  porque tiene modo de fallo escribible (regla de EPIC-MEJORA). Procedencia: observación del
+  verificador de SPEC-059, 2026-11-11.
 
 ## Riesgos
 

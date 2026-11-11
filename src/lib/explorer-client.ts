@@ -120,10 +120,16 @@ export type GoalkeepersResponse = {
   }>;
 };
 
+// Per-call options. Without timeoutMs the request has no deadline (the
+// historic behaviour every caller but the enrichment keeps); with it, the
+// request is aborted with a TimeoutError after that many milliseconds.
+export type ExplorerRequestOptions = { timeoutMs?: number };
+
 export async function fetchExplorer<T>(
   path: string,
   params?: Record<string, string>,
   customFetch: typeof fetch = fetch,
+  options: ExplorerRequestOptions = {},
 ): Promise<T> {
   const url = new URL(path, getExplorerUrl());
   if (params) {
@@ -141,6 +147,9 @@ export async function fetchExplorer<T>(
     // Next.js ISR revalidation when called in server components
     ...(typeof fetch !== "undefined" && "next" in customFetch
       ? { next: { revalidate: 15 } }
+      : {}),
+    ...(options.timeoutMs !== undefined
+      ? { signal: AbortSignal.timeout(options.timeoutMs) }
       : {}),
   });
 
@@ -168,11 +177,13 @@ export async function getOfficialCalendar(
 export async function getDayMatches(
   date: string,
   customFetch?: typeof fetch,
+  options?: ExplorerRequestOptions,
 ): Promise<DayMatchesResponse> {
   return fetchExplorer<DayMatchesResponse>(
     "/api/export/matches",
     { date },
     customFetch,
+    options,
   );
 }
 

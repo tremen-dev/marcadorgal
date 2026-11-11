@@ -2,12 +2,14 @@
 id: SPEC-062
 tipo: spec
 epica: EPIC-004
-estado: en-progreso
+estado: hecho
 historial:
   - {estado: borrador, fecha: 2026-11-08, por: sdd-arquitecto}
   - {estado: bloqueada, fecha: 2026-11-08, por: sdd-implementador}
   - {estado: aprobada, fecha: 2026-11-11, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-11-11, por: sdd-verificador}
+  - {estado: en-revision, fecha: 2026-11-11, por: sdd-implementador}
+  - {estado: hecho, fecha: 2026-11-11, por: sdd-verificador}
 aprobada-por: Alberto Fojo
 ---
 # SPEC-062 — Extracción de la lógica de API-Football hacia MarcadorGal Explorer

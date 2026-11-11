@@ -2,7 +2,7 @@
 id: SPEC-059
 tipo: spec
 epica: EPIC-003
-estado: en-progreso
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-08, por: sdd-arquitecto}
@@ -10,6 +10,8 @@ historial:
   - {estado: en-progreso, fecha: 2026-11-08, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-11-08, por: sdd-implementador}
   - {estado: en-progreso, fecha: 2026-11-11, por: sdd-verificador}
+  - {estado: en-revision, fecha: 2026-11-11, por: sdd-implementador}
+  - {estado: hecho, fecha: 2026-11-11, por: sdd-verificador}
 ---
 # SPEC-059 — Enriquecemento de goleadores da xornada pública desde Explorer
 
@@ -45,3 +47,5 @@ Actualmente só os partidos femininos (`fetchWomenXornadaMatches`) integraban go
 - `src/app/xornada-week.tsx` (invocación do enriquecemento en `WeekXornada`)
 - `src/app/api/board/route.ts` (invocación do enriquecemento en `/api/board`)
 - `docs/epicas/EPIC-003-xornada-publica/SPEC-059-enriquecemento-de-goleadores-da-xornada-desde-explorer.ledger.md`
+
+> **Enmienda 2026-11-11** (SPEC-070, decisión del titular del 2026-11-10): en CA-1, la correlación Explorer↔partido deja de aceptar la «coincidencia normalizada de nombres de equipo»; pasa a la regla de identidad de SPEC-070 (competición por `codGrupo` del alias rfef o `canonicalCompetitionId`; cada equipo por alias rfef o `canonical*TeamId` **igual** al id local, nunca por nombres aproximados). En CA-4, «sin degradar el tiempo de respuesta» se concreta en un límite de 2 s por consulta a Explorer (`EXPLORER_ENRICHMENT_TIMEOUT_MS`); pasado, esa fecha queda sin goles. La letra original de arriba no se reescribe; manda [SPEC-070](../EPIC-FIX/SPEC-070-emparejamiento-estricto-con-el-export-de-explorer.md).

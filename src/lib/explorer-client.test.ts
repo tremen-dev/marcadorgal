@@ -34,6 +34,26 @@ describe("CA-5 explorer-client", () => {
     expect(calls[0].url).toContain("/api/export/matches?date=2026-11-08");
   });
 
+  it("getDayMatches sends no abort signal unless a timeout is asked (SPEC-059 CA-4)", async () => {
+    calls.length = 0;
+    await getDayMatches("2026-11-08", stub);
+    expect(calls[0].init?.signal).toBeUndefined();
+  });
+
+  it("getDayMatches with timeoutMs aborts a request that never answers (SPEC-059 CA-4)", async () => {
+    const hanging = ((_url: string | URL | Request, init?: RequestInit) =>
+      new Promise<Response>((_resolve, reject) => {
+        init?.signal?.addEventListener("abort", () =>
+          reject(init.signal?.reason),
+        );
+      })) as typeof fetch;
+    const started = Date.now();
+    await expect(
+      getDayMatches("2026-11-08", hanging, { timeoutMs: 30 }),
+    ).rejects.toMatchObject({ name: "TimeoutError" });
+    expect(Date.now() - started).toBeLessThan(1000);
+  });
+
   it("getStandings requests /api/export/standings", async () => {
     calls.length = 0;
     await getStandings("primera-division", "2026-27", stub);

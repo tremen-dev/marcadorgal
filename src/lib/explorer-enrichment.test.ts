@@ -5,7 +5,9 @@ import type {
   MatchId,
   PublicMatch,
 } from "../model/index.ts";
+import type { DayMatchesResponse } from "./explorer-client.ts";
 import {
+  EXPLORER_ENRICHMENT_TIMEOUT_MS,
   enrichMatchesWithGoals,
   isMatchEqual,
   sanitizeGoals,
@@ -215,6 +217,92 @@ describe("explorer-enrichment", () => {
       const enriched = await enrichMatchesWithGoals([match], mockFetcher);
       expect(enriched[0]?.goals).toBeUndefined();
       expect(enriched[0]?.matchId).toBe(match.matchId);
+    });
+
+    it("returns the matches intact when Explorer never answers (CA-4 timeout)", async () => {
+      vi.useFakeTimers();
+      try {
+        const match = createMockMatch();
+        const neverAnswers = vi.fn(
+          () => new Promise<never>(() => {}),
+        ) as unknown as (date: string) => Promise<DayMatchesResponse>;
+
+        let settled = false;
+        const pending = enrichMatchesWithGoals([match], neverAnswers).then(
+          (r) => {
+            settled = true;
+            return r;
+          },
+        );
+
+        await vi.advanceTimersByTimeAsync(EXPLORER_ENRICHMENT_TIMEOUT_MS - 1);
+        expect(settled).toBe(false);
+        await vi.advanceTimersByTimeAsync(1);
+        const enriched = await pending;
+
+        expect(settled).toBe(true);
+        expect(enriched).toEqual([match]);
+        expect(enriched[0]?.goals).toBeUndefined();
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it("honours an injected timeout for a fetcher that never answers (CA-4)", async () => {
+      const match = createMockMatch();
+      const neverAnswers = () => new Promise<DayMatchesResponse>(() => {});
+      const started = Date.now();
+      const enriched = await enrichMatchesWithGoals(
+        [match],
+        neverAnswers,
+        null,
+        { timeoutMs: 20 },
+      );
+      expect(Date.now() - started).toBeLessThan(1000);
+      expect(enriched).toEqual([match]);
+    });
+
+    it("keeps the enrichment timeout short enough not to delay the front page", () => {
+      expect(EXPLORER_ENRICHMENT_TIMEOUT_MS).toBeGreaterThan(0);
+      expect(EXPLORER_ENRICHMENT_TIMEOUT_MS).toBeLessThanOrEqual(3000);
+    });
+
+    it("only adds goals: certified fields stay untouched (CA-3)", async () => {
+      const match = createMockMatch({
+        status: "live",
+        score: { home: 1, away: 2 },
+        minute: 67,
+        halfTime: false,
+        homeScoredAt: "2026-11-07T20:20:00.000Z" as Instant,
+        awayScoredAt: "2026-11-07T21:05:00.000Z" as Instant,
+      } as Partial<PublicMatch>);
+      const before = structuredClone(match);
+      const mockFetcher = vi.fn().mockResolvedValue({
+        date: "2026-11-07",
+        exportedAt: "2026-11-07T22:30:00Z",
+        matches: [
+          {
+            canonicalCompetitionId: "primera-division",
+            canonicalHomeTeamId: "valencia",
+            canonicalAwayTeamId: "real-madrid",
+            estado: "FINISHED",
+            homeScore: 9,
+            awayScore: 9,
+            minute: 90,
+            halfTime: true,
+            goals: [
+              { team: "home", player: "Hugo Duro", minute: 20 },
+              { team: "away", player: "Mbappé", minute: 50 },
+            ],
+          },
+        ],
+      });
+
+      const [enriched] = await enrichMatchesWithGoals([match], mockFetcher);
+      expect(enriched?.goals).toHaveLength(2);
+      const { goals: _goals, ...rest } = enriched as PublicMatch;
+      expect(rest).toEqual(before);
+      expect(match).toEqual(before);
     });
 
     it("handles empty matches array", async () => {
