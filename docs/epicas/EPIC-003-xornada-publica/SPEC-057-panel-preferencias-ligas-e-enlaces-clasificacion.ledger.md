@@ -85,9 +85,23 @@ Notas (no bloquean): `· Depor ABANCA` / `· As Celtas` son nombres propios fija
 | CA-4 | `CA-4-persistencia-r2-gl.png`, `CA-4-persistencia-r2-es.png` |
 | CA-5 | `CA-5-storage-bloqueado-local-r2-gl.png`, `CA-5-storage-bloqueado-local-r2-es.png` |
 
+## Implementador — cierre de findings, 3ª ronda (2026-11-11, rama `ft/SPEC-082-cabecera-movil-ligera`, eb58a3f)
+| CA | Implementado (fichero) | Test (fichero/caso) |
+|---|---|---|
+| CA-3 | `src/components/xornada/Xornada.module.css` (`.switchInput` sin `outline: none`; `.switchInput:focus-visible` con anillo `var(--focus-ring) solid var(--marca)`, offset `var(--focus-ring)`) | `e2e/ligas-preferencias.spec.ts` «CA-3 a switch reached with Tab shows a focus ring» (gl, es) |
+| CA-6 | `src/design/tokens.ts` (`ELEVATION`: `--velo`, `--sombra-dialogo`), `src/design/css.ts`, `src/design/tokens.css` (regenerado), `Xornada.module.css` (`.dialogOverlay`, `.dialogCard` por `var()`), `docs/diseno/HERENCIA.md` | `src/design/no-hex.test.ts` «SPEC-057 CA-6 no rgb()/hsl() literal in CSS outside tokens.css» (guarda sobre `src/**/*.css` + autocomprobación del patrón) |
+
+Evidencia:
+- Rojo previo: `npx vitest run src/design/no-hex.test.ts` → 1 failed, offenders `["src/components/xornada/Xornada.module.css"]`. `npx playwright test e2e/ligas-preferencias.spec.ts -g "focus ring"` → 2 failed (gl, es) en `expect(ring.outline || ring.shadow).toBe(true)`.
+- Verde: `npx vitest run src/design` → 11 ficheros, 201 passed. `npx playwright test e2e/ligas-preferencias.spec.ts` → 14 passed.
+- `npm run gates` → exit 0; biome 474 ficheros sin cambios; vitest 168 ficheros, 2816 passed / 3 skipped; `next build` ok.
+- `grep -rn "rgba\?(\|hsl" --include=*.css src | grep -v tokens.css` → vacío.
+
 ## Cómo retomar (handoff)
 Spec devuelta a `en-progreso`. Arreglar F-1 (mover la comprobación dentro del `try`) es urgente por estar en prod. F-2 requiere decisión del titular/arquitecto (¿se enmienda CA-2 con el interruptor?). Después, tests para CA-1/2/3/5 (incluido almacenamiento bloqueado) y nueva verificación.
 
 Implementador (2026-11-11): F-1, F-3, F-4 y F-5 cerrados (tabla «Implementador — cierre de findings»); F-2 cerrado por la enmienda de la spec y cubierto por tests. Spec en `en-revision`; toca nueva verificación. Rama `ft/SPEC-082-cabecera-movil-ligera` (PR conjunto con SPEC-082).
 
 Verificador (2026-11-11, 2ª ronda): RED por F-7 y F-8; spec a `en-progreso`.
+
+Implementador (2026-11-11, 3ª ronda): F-7 y F-8 cerrados (tabla «cierre de findings, 3ª ronda»). Spec en `en-revision`; toca nueva verificación. Sin subida de versión (PR conjunto con SPEC-082).
