@@ -34,6 +34,13 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    # Imagen oficial de Playwright: trae Chromium y sus dependencias del
+    # sistema, así el job no depende de apt ni de los mirrors de Ubuntu
+    # (2026-11-11: fallos de DNS al resolver archive.ubuntu.com).
+    # La etiqueta debe coincidir con la versión de @playwright/test.
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      options: --ipc=host
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -41,7 +48,6 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
       - run: npm run e2e
         env:
           CI: true
