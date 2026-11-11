@@ -128,6 +128,7 @@ Actualizado: 2026-11-11
 | SPEC-047 — entorno-de-base-local-y-gates-en-windows | borrador | 2026-11-03 (sdd-arquitecto) |
 | SPEC-063 — gate-de-version-en-cada-pr | hecho | 2026-11-08 (sdd-verificador) |
 | SPEC-083 — mantenimiento-de-ligas-y-artefactos-sdd | hecho | 2026-11-11 (sdd-verificador) |
+| SPEC-084 — provisional-fuera-de-la-portada-y-explicado-en-el-aviso-legal | hecho | 2026-11-11 (sdd-verificador) |
 
 ## ADRs
 
@@ -171,7 +172,7 @@ Actualizado: 2026-11-11
 
 ## Resumen
 
-- hecho: 75
+- hecho: 76
 - en-revision: 4
 - aprobada: 1
 - borrador: 1
