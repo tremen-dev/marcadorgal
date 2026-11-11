@@ -401,7 +401,6 @@ test.describe("SPEC-081 CA-7 no layout shift when Caveat arrives late", () => {
       const rects = () =>
         Promise.all([LOGO, LEMA, TITLE_ROW, LOCALES].map((s) => box(page, s)));
       const before = await rects();
-      await capture(page, `ca7-antes-${width}`);
       expect(await caveatLoaded(page)).toBe(true);
       const after = await rects();
       await capture(page, `ca7-despois-${width}`);
