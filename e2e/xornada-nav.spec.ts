@@ -92,9 +92,10 @@ for (const route of routes) {
         };
         const title = await box("h1");
         if (width >= 1024) {
-          // In the 56 px header, 28 px after the logo.
+          // In the 56 px header, 28 px after the logo's block: since
+          // SPEC-081 the motto sits between them, so after the motto.
           const header = await box("header");
-          const logoBox = await box('[data-testid="home-link"]');
+          const logoBox = await box('[data-testid="xornada-lema"]');
           expect(header.height).toBe(56);
           expect(title.y).toBeGreaterThanOrEqual(header.y);
           expect(title.y + title.height).toBeLessThanOrEqual(

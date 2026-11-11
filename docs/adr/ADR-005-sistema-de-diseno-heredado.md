@@ -33,6 +33,7 @@ divergencias con el dominio que hay que resolver antes de codificarlo.
   _Enmendado por ADR-029: la marca pasa a celeste `#0099CC`; el verde `#4CC38A` existe ahora solo como color semántico de victoria (ADR-029 §2). El resto de este ADR sigue vigente._
 - Dígitos tabulares en todo número. Sin escudos. Solo modo oscuro. Geist
   autoalojada. Objetivo táctil 44 px, foco visible, campos ≥ 16 px.
+  _Familias ampliadas por ADR-035: Caveat autoalojada como tercera familia (`--hand`), solo para el lema de marca. El resto de este ADR sigue vigente._
 
 ### Excepciones (lo que no se hereda)
 1. Literales de estado: se usan los de `dominio.md` (Programado · En xogo ·

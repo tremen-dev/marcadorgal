@@ -66,6 +66,8 @@ export const gl = {
     next: "Xornada seguinte",
     // SPEC-028 CA-4: the logo, back to the current xornada.
     home: "marcador.gal, xornada actual",
+    // SPEC-081 CA-2: the motto by the logo, always in Galician (also in /es).
+    lema: "todo o fútbol galego",
     // SPEC-028 CA-5, CA-6: the visible title, «Xornada · 10–12 out».
     heading: "Xornada · {range}",
     rangeOneDay: "{day} {month}",

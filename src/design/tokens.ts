@@ -45,6 +45,9 @@ export const STATE_COLOR: Readonly<Record<StateSemantic, StateColorToken>> = {
 export const FAMILIES = {
   sans: "'Geist',ui-sans-serif,system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif",
   mono: "'Geist Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace",
+  // ADR-035: only the brand motto, never data. Geist's stack behind it, not
+  // the generic `cursive` (Comic Sans on Windows).
+  hand: "'Caveat','Geist',ui-sans-serif,system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif",
 } as const;
 
 export type FamilyToken = keyof typeof FAMILIES;
@@ -132,4 +135,6 @@ export const FACES = [
   { family: "Geist", weight: 800, file: "Geist-ExtraBold.woff2" },
   { family: "Geist Mono", weight: 500, file: "GeistMono-Medium.woff2" },
   { family: "Geist Mono", weight: 600, file: "GeistMono-SemiBold.woff2" },
+  // ADR-035: the motto's hand, latin subset (with «ú»), OFL in Caveat-OFL.txt.
+  { family: "Caveat", weight: 400, file: "Caveat-Regular.woff2" },
 ] as const;

@@ -33,6 +33,7 @@ sufrió por no tener CI.
 - Instantes como cadena ISO-8601 UTC en el modelo, `timestamptz` en columnas.
 - **CSS Modules + variables CSS** generadas desde `src/design/tokens.ts`.
   Sin Tailwind. Geist y Geist Mono autoalojadas.
+  _Familias ampliadas por ADR-035: Caveat autoalojada como tercera familia, solo para el lema de marca. El resto de este ADR sigue vigente._
 - **Vitest** (unidad e integración), **Playwright** (pantalla real),
   **Biome** (lint y formato), **GitHub Actions** en cada PR ejecutando
   `npm run gates` (typecheck + lint + test + build).

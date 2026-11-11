@@ -25,7 +25,11 @@
 <div style="width: 1440px; height: 900px; background: #111110; display: flex; flex-direction: column; overflow: hidden">
 
   <div style="height: 56px; flex: none; display: flex; align-items: center; gap: 28px; padding: 0 20px; border-bottom: 1px solid #2A2620">
-    <span style="font: 800 21px/1 var(--sans); letter-spacing: -.045em; color: #F5F1EA">marcador<span style="color: #0099CC">▮</span>gal</span>
+    <div style="display: flex; align-items: baseline; gap: 10px">
+      <span style="font: 800 21px/1 var(--sans); letter-spacing: -.045em; color: #F5F1EA">marcador<span style="color: #0099CC">▮</span>gal</span>
+      <!-- SPEC-081 (ADR-035): o lema, Caveat 400 19 px, --fg ao 72 %, á dereita do wordmark, na súa liña base, a 10 px. Sempre en galego. -->
+      <span style="font-family: var(--hand); font-weight: 400; font-size: 19px; line-height: 1; color: #F5F1EA; opacity: .72; white-space: nowrap">todo o fútbol galego</span>
+    </div>
     <div style="display: flex; gap: 22px">
       <!-- SPEC-072 (H-1 = A): ‹ e › flanquean o título (o <h1>), na barra superior. -->
       <span style="display: inline-flex; align-items: center; margin-left: -12px">

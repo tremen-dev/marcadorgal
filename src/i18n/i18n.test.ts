@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { globSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { MatchStatus, Qualifier } from "@/model";
 import { es } from "./es";
@@ -91,6 +91,24 @@ describe("CA-8 dictionaries", () => {
       postponed: "Aplazado",
       suspended: "Suspendido",
     });
+  });
+});
+
+describe("SPEC-081 CA-2 the motto", () => {
+  it("is «todo o fútbol galego» in both locales: always Galician", () => {
+    expect(t("gl", "xornada.lema")).toBe("todo o fútbol galego");
+    expect(t("es", "xornada.lema")).toBe("todo o fútbol galego");
+  });
+
+  it("no component writes it as a literal: it comes through t()", () => {
+    const literal = ["todo o", "fútbol galego"].join(" ");
+    const offenders = globSync("src/**/*.tsx").filter((file) =>
+      readFileSync(file, "utf8").toLowerCase().includes(literal),
+    );
+    expect(offenders).toEqual([]);
+    expect(
+      readFileSync("src/components/xornada/XornadaHeader.tsx", "utf8"),
+    ).toMatch(/t\(locale, "xornada\.lema"\)/);
   });
 });
 
