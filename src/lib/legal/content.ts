@@ -49,7 +49,7 @@ export const LEGAL_DOCS_GL: Record<
     title: "Aviso legal",
     description:
       "Identificación do titular, condicións de uso e descargo deportivo de marcador.gal.",
-    lastUpdated: "Novembro de 2026",
+    lastUpdated: "11 de novembro de 2026",
     sections: [
       {
         title: "1. Titular do servizo",
@@ -77,7 +77,8 @@ export const LEGAL_DOCS_GL: Record<
       {
         title: "4. Dispoñibilidade do servizo",
         content: [
-          "marcador.gal é un servizo gratuíto e independente. Aínda que traballamos para ofrecer a máxima precisión e inmediatez mediante reconciled multiffuente, o servizo ofrécese sen garantías de exactitude inmediata ou dispoñibilidade ininterrompida ante caídas de fontes externas ou problemas de rede.",
+          "marcador.gal é un servizo gratuíto e independente. Aínda que traballamos para ofrecer a máxima precisión e inmediatez mediante reconciliación multifonte, o servizo ofrécese sen garantías de exactitude inmediata ou dispoñibilidade ininterrompida ante caídas de fontes externas ou problemas de rede.",
+          "Algúns resultados son provisionais: son datos dunha soa fonte, aínda sen confirmar por outra. Se a fonte os cambia, o resultado corríxese en canto recibimos o cambio.",
         ],
       },
     ],
@@ -160,7 +161,7 @@ export const LEGAL_DOCS_ES: Record<
     title: "Aviso legal",
     description:
       "Identificación del titular, condiciones de uso y descargo deportivo de marcador.gal.",
-    lastUpdated: "Noviembre de 2026",
+    lastUpdated: "11 de noviembre de 2026",
     sections: [
       {
         title: "1. Titular del servicio",
@@ -189,6 +190,7 @@ export const LEGAL_DOCS_ES: Record<
         title: "4. Disponibilidad del servicio",
         content: [
           "marcador.gal es un servicio gratuito e independiente. Aunque trabajamos para ofrecer la máxima precisión e inmediatez mediante reconciliación multifuente, el servicio se ofrece sin garantías de exactitud inmediata o disponibilidad ininterrumpida ante caídas de fuentes externas o problemas de red.",
+          "Algunos resultados son provisionales: son datos de una sola fuente, aún sin confirmar por otra. Si la fuente los cambia, el resultado se corrige en cuanto recibimos el cambio.",
         ],
       },
     ],

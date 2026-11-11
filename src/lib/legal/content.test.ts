@@ -99,3 +99,41 @@ describe("audience measurement (SPEC-077 CA-6)", () => {
     expect(es).toContain("Vercel Web Analytics");
   });
 });
+
+// SPEC-084 CA-4: the provisional results, explained in the aviso legal
+// (the screen no longer marks them by default, CA-1).
+describe("provisional results in the aviso legal (SPEC-084 CA-4)", () => {
+  const paragraph = (doc: (typeof LEGAL_DOCS_GL)["avisoLegal"]) =>
+    doc.sections.flatMap((s) => s.content).find((p) => /provisiona/.test(p));
+
+  it.each([
+    ["gl", LEGAL_DOCS_GL, /dunha soa fonte/, /sen confirmar/, /corríxese/],
+    ["es", LEGAL_DOCS_ES, /de una sola fuente/, /sin confirmar/, /se corrige/],
+  ] as const)(
+    "%s: some results are provisional, from one source, unconfirmed, corrected if the source changes",
+    (_, docs, one, unconfirmed, corrected) => {
+      const text = paragraph(docs.avisoLegal);
+      expect(text).toBeDefined();
+      expect(text).toMatch(/[Aa]lg[uú]n/);
+      expect(text).toMatch(one);
+      expect(text).toMatch(unconfirmed);
+      expect(text).toMatch(corrected);
+      expect(text).toMatch(/fonte os cambia|fuente los cambia/);
+    },
+  );
+
+  it("the aviso legal carries a new lastUpdated in gl and es", () => {
+    expect(LEGAL_DOCS_GL.avisoLegal.lastUpdated).toBe("11 de novembro de 2026");
+    expect(LEGAL_DOCS_ES.avisoLegal.lastUpdated).toBe(
+      "11 de noviembre de 2026",
+    );
+  });
+
+  // Asked by the titular at the gate of SPEC-084: the erratum of section 4.
+  it("section 4 in gl is in Galician, like its es twin", () => {
+    const gl = JSON.stringify(LEGAL_DOCS_GL.avisoLegal);
+    expect(gl).not.toContain("reconciled");
+    expect(gl).not.toContain("multiffuente");
+    expect(gl).toContain("reconciliación multifonte");
+  });
+});
