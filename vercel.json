@@ -1,3 +1,4 @@
 {
-  "crons": [{ "path": "/api/ingest/tick", "schedule": "* * * * *" }]
+  "crons": [{ "path": "/api/ingest/tick", "schedule": "* * * * *" }],
+  "regions": ["dub1"]
 }
