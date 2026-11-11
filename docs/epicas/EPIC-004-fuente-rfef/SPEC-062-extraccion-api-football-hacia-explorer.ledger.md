@@ -1,3 +1,8 @@
+---
+id: SPEC-062
+tipo: ledger
+epica: EPIC-004
+---
 # Ledger de SPEC-062 — Extracción de la lógica de API-Football hacia MarcadorGal Explorer
 
 Criterios de aceptación y evidencia de verificación de SPEC-062.
