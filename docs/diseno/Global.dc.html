@@ -33,11 +33,7 @@
     </div>
     <span style="flex: 1"></span>
     <span class="n" style="font-size: 11px; color: #716F6C">{{ shown }}</span>
-    <div style="display: inline-flex; align-items: center; gap: 2px; font: 500 12px/1 var(--mono)">
-      <span style="{{ glStyle }}" onClick="{{ setGl }}">gl</span>
-      <span style="color: #716F6C; opacity: .45">·</span>
-      <span style="{{ esStyle }}" onClick="{{ setEs }}">es</span>
-    </div>
+    <!-- SPEC-082 CA-1: sen gl·es na cabeceira; vive no pé de SPEC-058 (non debuxado aquí). -->
   </div>
 
   <div style="height: 44px; flex: none; display: flex; align-items: center; gap: 4px; padding: 0 20px; border-bottom: 1px solid #2A2620; background: #131211">
@@ -433,8 +429,6 @@ class Component extends DCLogic {
     var PILL_OFF = 'padding:6px 13px;border-radius:999px;border:1px solid #2A2620;font:600 12px/1 var(--sans);color:#A7A5A0;cursor:pointer';
     var LIVE_ON = 'padding:6px 13px;border-radius:999px;background:rgba(255,107,0,.14);border:1px solid #FF6B00;font:600 12px/1 var(--sans);color:#FF6B00;cursor:pointer';
     var LIVE_OFF = 'padding:6px 13px;border-radius:999px;border:1px solid rgba(255,107,0,.4);font:600 12px/1 var(--sans);color:#FF6B00;cursor:pointer';
-    var LANG_ON = 'padding:6px 8px;border-radius:6px;background:rgba(0,153,204,.12);color:#0099CC;text-transform:uppercase;letter-spacing:.05em;cursor:pointer';
-    var LANG_OFF = 'padding:6px 8px;border-radius:6px;color:#716F6C;text-transform:uppercase;letter-spacing:.05em;cursor:pointer';
 
     return {
       t: t,
@@ -444,10 +438,6 @@ class Component extends DCLogic {
       c3: this.buildColumn(['g1b', 'g2a', 'g2b', 'fem'], byId, t),
       c4: this.buildColumn(['ea', 'hyp', 'p1f'], byId, t),
       nAll: nAll, nLive: nLive, nFin: nFin, nFav: nFav,
-      glStyle: lang === 'gl' ? LANG_ON : LANG_OFF,
-      esStyle: lang === 'es' ? LANG_ON : LANG_OFF,
-      setGl: function () { self.setState({ lang: 'gl' }); },
-      setEs: function () { self.setState({ lang: 'es' }); },
       fAll: this.state.filter === 'all' ? PILL_ON : PILL_OFF,
       fLive: this.state.filter === 'live' ? LIVE_ON : LIVE_OFF,
       fFin: this.state.filter === 'fin' ? PILL_ON : PILL_OFF,
