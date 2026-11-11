@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
@@ -418,5 +418,28 @@ describe("SPEC-008 CA-8 calendario-semanal.yml", () => {
   it("splits the two jobs by event", () => {
     expect(str(obj(jobs.sync).if)).toContain("github.event_name != 'push'");
     expect(str(obj(jobs.load).if)).toContain("github.event_name == 'push'");
+  });
+});
+
+// SPEC-062 CA-3: API-Football is retired; neither the documented environment
+// nor any workflow asks for its key (REMOTE_SECRETS only blanks it).
+describe("SPEC-062 CA-3 no API_FOOTBALL_KEY in env template or workflows", () => {
+  const workflowsDir = path.join(root, ".github/workflows");
+  const files = [
+    ".env.example",
+    ...readdirSync(workflowsDir)
+      .filter((name) => /\.ya?ml$/.test(name))
+      .map((name) => `.github/workflows/${name}`),
+  ];
+
+  it("checks at least .env.example and the calendar workflow", () => {
+    expect(files).toContain(".env.example");
+    expect(files).toContain(".github/workflows/calendario-semanal.yml");
+  });
+
+  it.each(files)("%s does not mention API_FOOTBALL_KEY", (file) => {
+    expect(readFileSync(path.join(root, file), "utf8")).not.toContain(
+      "API_FOOTBALL_KEY",
+    );
   });
 });

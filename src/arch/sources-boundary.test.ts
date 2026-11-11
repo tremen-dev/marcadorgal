@@ -1,5 +1,6 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
+import ts from "typescript";
 import { describe, expect, it } from "vitest";
 import { checkSourceImports } from "./sources-boundary";
 
@@ -89,5 +90,27 @@ describe("CA-14 src/sources tree", () => {
       checkSourceImports(path.relative(root, abs), readFileSync(abs, "utf8")),
     );
     expect(violations).toEqual([]);
+  });
+});
+
+// SPEC-062 CA-5: API-Football left this repo for explorer. Its adapter folder
+// is gone and no module under src/ imports anything named after it.
+describe("SPEC-062 CA-5 no coupling to api-football", () => {
+  const srcDir = path.join(root, "src");
+
+  it("src/sources/api-football does not exist", () => {
+    expect(existsSync(path.join(sourcesDir, "api-football"))).toBe(false);
+  });
+
+  it("no file under src/ imports an api-football module", () => {
+    const offenders = walk(srcDir).flatMap((abs) =>
+      ts
+        .preProcessFile(readFileSync(abs, "utf8"), true, true)
+        .importedFiles.filter(({ fileName }) =>
+          fileName.includes("api-football"),
+        )
+        .map(({ fileName }) => `${path.relative(root, abs)} -> ${fileName}`),
+    );
+    expect(offenders).toEqual([]);
   });
 });
