@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-11-10
+Actualizado: 2026-11-11
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -57,6 +57,7 @@ Actualizado: 2026-11-10
 | SPEC-064 — assets-de-redes-sociales-y-og-png-con-la-identidad-celeste | hecho | 2026-11-08 (sdd-verificador) |
 | SPEC-065 — identidad-celeste-tokens-wordmark-con-bloque-dibujado-e-icono-de-barra-sola | hecho | 2026-11-08 (sdd-verificador) |
 | SPEC-068 — goleadores-colgados-de-su-equipo-en-la-fila-de-partido | hecho | 2026-11-09 (sdd-verificador) |
+| SPEC-081 — lema-manuscrito-todo-o-futbol-galego-junto-al-logo | hecho | 2026-11-11 (sdd-verificador) |
 
 ## EPIC-004 — fuente-rfef (aprobada)
 
@@ -86,6 +87,11 @@ Actualizado: 2026-11-10
 | SPEC-066 — goles-a-la-cola-de-redes-deteccion-outbox-publicador-con-doble-plantillas-y-configuracion | hecho | 2026-11-09 (sdd-verificador) |
 | SPEC-067 — publicador-de-buffer-cliente-graphql-sonda-contra-la-api-real-y-encendido | hecho | 2026-11-10 (sdd-verificador) |
 | SPEC-079 — informe-automatico-de-la-cola-de-redes-tras-cada-jornada | hecho | 2026-11-10 (sdd-verificador) |
+
+## EPIC-008 — patrocinio-en-pantalla-y-en-redes (borrador)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
 
 ## EPIC-009 — produccion-con-publico-capacidad-y-visitas-medidas (aprobada)
 
@@ -164,10 +170,11 @@ Actualizado: 2026-11-10
 | ADR-032 | aprobada | las-alertas-internas-de-los-workflows-son-un-issue-de-github-por-incidente | 2026-11-10 (Alberto Fojo) |
 | ADR-033 | aprobada | medicion-de-visitas-con-vercel-web-analytics-sin-cookie | 2026-11-10 (Alberto Fojo) |
 | ADR-034 | aprobada | back-fill-historico-explorer-manda-en-jornadas-pasadas-y-el-operador-corrige-el-cierre | 2026-11-10 (sdd-orquestador) |
+| ADR-035 | aprobada | caveat-autoalojada-como-tercera-familia-solo-para-el-lema-enmienda-adr-005 | 2026-11-10 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 71
+- hecho: 72
 - en-revision: 3
 - borrador: 2
 - feito: 1
