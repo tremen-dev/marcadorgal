@@ -389,6 +389,11 @@ test.describe("SPEC-082 CA-6 without JavaScript", () => {
       page,
     }) => {
       await page.setViewportSize({ width: 360, height: 900 });
+      // SPEC-084: the fonts already in cache, so the swap of the web fonts
+      // (a shift of the list, not of the header) is out of the measure; the
+      // fold of the first paint and the hydration are still measured.
+      await page.goto(path);
+      await page.evaluate(() => document.fonts.ready);
       await page.addInitScript(() => {
         const w = window as unknown as { __shifts: number[] };
         w.__shifts = [];
