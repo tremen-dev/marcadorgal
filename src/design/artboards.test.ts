@@ -241,4 +241,3 @@ describe("SPEC-083 CA-5 Global without gl·es", () => {
     );
   });
 });
-
