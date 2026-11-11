@@ -8,3 +8,36 @@
 | CA-4 Persistencia en localStorage | `src/lib/league-preferences.ts`, `src/lib/league-preferences.test.ts` | 5 pruebas unitarias de persistencia, fallback y eventos de DOM | ✅ Completado |
 | CA-5 Resiliencia SSR e hidratación | `src/components/xornada/XornadaFilters.tsx` | Atributo `data-user-hidden` en cliente; render SSR completo sin JS | ✅ Completado |
 | CA-6 Calidad y gates | Suite completa (`npm run gates`, `npx playwright test`) | Biome (0 errores), TypeScript (0 errores), Vitest (2225 pruebas), Playwright (250 pruebas) | ✅ Completado |
+
+## Matriz del verificador (2026-11-11, código de main en 90bec70)
+<!-- La tabla de arriba es la mitad del implementador (formato previo a la plantilla). Esta es la del verificador. -->
+| CA | Test que lo demuestra | Verif. | Estado |
+|---|---|---|---|
+| CA-1 | ninguno automatizado | Prod `/` y `/es` (390 y 1440): sin `CompetitionNav`, la pantalla empieza por logo/lema y `Xornada · 6–16 nov`. Local: `CompetitionNav` presente en `/competicion`, `/clasificacion`, `/calendario` y `/directos` (200) | ⚠️ sin test |
+| CA-2 | ninguno automatizado | Con `SHOW_TABLE_LINK=false` (defecto y prod: 0 enlaces en `curl https://marcador.gal/`) el enlace no existe. Con `true`: `Táboa ↗`/`Tabla ↗`, href `/competicion/<id>` y `/es/competicion/<id>`, `aria-label` con competición, Tab+Enter navega. Está fuera de `<summary>`: al plegar la columna desaparece | ❌ |
+| CA-3 | ninguno automatizado | Disparador `leagues-preferences-trigger`, `role=dialog`, `aria-modal=true`, Escape y clic exterior cierran, 8 switches con `· Depor ABANCA`/`· As Celtas`, presets funcionan, última liga deshabilitada + aviso. Desvíos: etiquetas de preset (`Feminino`, `RFEF / Galegas`, `Profesional` ≠ `Só …`); en `/es` nombres en galego (`Primeira División`) y `aria-label="Atallos rápidos"` literal | ⚠️ |
+| CA-4 | `src/lib/league-preferences.test.ts` (5 casos) | Clave `marcadorgal:preferences:visible-leagues:v1`; sin valor → todas; toggle oculta al instante; persiste tras recarga (gl y es) | ✅ |
+| CA-5 | ninguno específico (e2e `xornada.spec.ts` CA-5 sin JS es de SPEC-021/023) | Sin JS: 5/5 secciones demo y 8 en prod. Hidratación con prefs guardadas: sin errores de consola. **localStorage bloqueado (getter lanza `SecurityError`): la portada entera cae a «This page couldn't load»**, local y prod; `/directos`, `/competicion`, `/aviso-legal` cargan bien | ❌ |
+| CA-6 | gates + e2e | `tsc` 0; `biome check` 0 (473 ficheros); vitest 2807 ok/3 skip (168 ficheros, worktree LF); `npx playwright test` 352 ok/1 skip (incluye `next build`). Pero 8 colores de liga como `rgb()` literales en `src/lib/league-preferences.ts` fuera de tokens, y textos sin i18n (ver CA-3) | ❌ |
+
+## Veredicto del verificador
+**RED** — 2026-11-11, sdd-verificador. Gates y suite e2e verdes, pero CA-2, CA-5 y CA-6 no se cumplen y CA-1/CA-3 no tienen test.
+
+Findings:
+1. **F-SPEC-057-1 (CA-5, grave, en prod).** `src/lib/league-preferences.ts:91` y `:110` evalúan `!window.localStorage` fuera del `try`; si el navegador bloquea el almacenamiento, el getter lanza dentro del `useEffect` de `LeaguesPreferencesTrigger` y React tumba toda la portada. Reproducido en `https://marcador.gal/` (captura `CA-5-storage-bloqueado-prod.png`).
+2. **F-SPEC-057-2 (CA-2).** El enlace está tras `SHOW_TABLE_LINK` (defecto `false`, commit 07c17a5) y en prod no se pinta; la spec no recoge el interruptor. Además vive en un subheader fuera de `<summary>` y se oculta con la columna plegada. Hace falta enmendar la spec (arquitecto) o encender el enlace.
+3. **F-SPEC-057-3 (CA-6 tokens).** `KNOWN_COMPETITIONS[].colorRgb` son 8 `rgb(...)` inventados y pintados en línea; esquivan la guarda `no-hex` pero no son tokens de `src/design/tokens.ts` (D-8). El test unitario fija `rgb(` en vez de exigir tokens.
+4. **F-SPEC-057-4 (CA-6 bilingüismo / CA-3).** En `/es` los switches muestran `defaultName` en galego (no usan `nameKey`) y la toolbar lleva `aria-label="Atallos rápidos"` sin i18n. Presets con etiquetas distintas a las de la spec.
+5. **F-SPEC-057-5 (CA-1, CA-2, CA-3, CA-5).** Sin test automatizado (ni e2e ni unitario de componente) que los demuestre; solo CA-4 tiene tests.
+
+## Evidencia visual
+| CA | Captura (`_qa/SPEC-057/`) |
+|---|---|
+| CA-1 | `CA-1-prod-gl-mobile.png`, `CA-1-prod-gl-desktop.png`, `CA-1-prod-es-mobile.png`, `CA-1-prod-es-desktop.png` |
+| CA-2 | `CA-2-enlace-gl.png`, `CA-2-enlace-es.png`, `CA-2-plegada-gl.png`, `CA-2-plegada-es.png` (servidor con `SHOW_TABLE_LINK=true`) |
+| CA-3 | `CA-3-panel-gl.png`, `CA-3-panel-es.png`, `CA-3-al-menos-una-gl.png`, `CA-3-al-menos-una-es.png` |
+| CA-4 | `CA-4-persistencia-gl.png`, `CA-4-persistencia-es.png` |
+| CA-5 | `CA-5-sin-js.png`, `CA-5-storage-bloqueado-local.png`, `CA-5-storage-bloqueado-prod.png` |
+
+## Cómo retomar (handoff)
+Spec devuelta a `en-progreso`. Arreglar F-1 (mover la comprobación dentro del `try`) es urgente por estar en prod. F-2 requiere decisión del titular/arquitecto (¿se enmienda CA-2 con el interruptor?). Después, tests para CA-1/2/3/5 (incluido almacenamiento bloqueado) y nueva verificación.
