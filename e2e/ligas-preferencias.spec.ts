@@ -2,6 +2,7 @@ import { expect, type Page, test } from "@playwright/test";
 import { explorerAppPort } from "../playwright.config";
 import { es } from "../src/i18n/es";
 import { gl } from "../src/i18n/gl";
+import { GALICIAN_CLUBS } from "../src/model/clubs";
 import { openFilters } from "./filters-panel";
 
 // SPEC-057: the home without CompetitionNav, the table link behind
@@ -104,8 +105,18 @@ for (const route of routes) {
             .filter({ has: page.getByTestId(`toggle-competition-${id}`) }),
         ).toContainText(name);
       }
-      await expect(dialog).toContainText("· Depor ABANCA");
-      await expect(dialog).toContainText("· As Celtas");
+      // SPEC-083 CA-1 (amends SPEC-057 CA-3): a switch names its league
+      // only, never a team.
+      const switches = await dialog.locator("li").allInnerTexts();
+      expect(switches).toHaveLength(Object.keys(names).length);
+      const teams = Object.values(GALICIAN_CLUBS).flatMap((club) => [
+        club.name,
+        club.shortName,
+      ]);
+      for (const text of switches)
+        for (const team of teams) expect(text).not.toContain(team);
+      await expect(dialog).not.toContainText("Depor ABANCA");
+      await expect(dialog).not.toContainText("As Celtas");
       if (route.lang === "es") {
         await expect(dialog).toContainText("Primera División");
         await expect(dialog).not.toContainText("Primeira División");

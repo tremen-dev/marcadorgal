@@ -1,3 +1,4 @@
+import { leagueColor } from "../../design/league-color.ts";
 import { type Locale, t } from "../../i18n/index.ts";
 import type { GroupedCompetitionMatches } from "../../lib/explorer-matches.ts";
 import { TeamGoals } from "../goals/TeamGoals.tsx";
@@ -56,7 +57,8 @@ export function DirectosView({ date, groupedCompetitions, locale }: Props) {
             <span
               className={styles.compDot}
               style={{
-                backgroundColor: comp.metadata?.color || "var(--marca)",
+                backgroundColor:
+                  leagueColor(comp.competitionId) ?? "var(--marca)",
               }}
               aria-hidden="true"
             />

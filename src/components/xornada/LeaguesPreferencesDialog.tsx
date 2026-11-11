@@ -180,11 +180,6 @@ export function LeaguesPreferencesTrigger({ locale }: { locale: Locale }) {
                         <span className={styles.itemName}>
                           {t(locale, comp.nameKey)}
                         </span>
-                        {comp.featuredBadge && (
-                          <span className={styles.itemBadge}>
-                            · {comp.featuredBadge}
-                          </span>
-                        )}
                       </span>
                       <input
                         type="checkbox"

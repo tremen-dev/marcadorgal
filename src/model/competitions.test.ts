@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   ALLOWED_COMPETITIONS,
+  COMPETITIONS_METADATA,
   CompetitionCode,
   getCompetitionMetadata,
   getCompetitionsByCategory,
@@ -72,5 +73,14 @@ describe("Women and Men Competitions Model", () => {
   it("checks allowed competitions correctly", () => {
     expect(isAllowedCompetition("liga-f")).toBe(true);
     expect(isAllowedCompetition("copa-reina")).toBe(false);
+  });
+
+  // SPEC-083 CA-2: the colour of a league lives in src/design (LEAGUE_COLORS),
+  // which src/model does not import.
+  it("SPEC-083 CA-2 the metadata carries no colour", () => {
+    for (const meta of Object.values(COMPETITIONS_METADATA)) {
+      expect(meta).not.toHaveProperty("color");
+      expect(meta).not.toHaveProperty("accentColor");
+    }
   });
 });

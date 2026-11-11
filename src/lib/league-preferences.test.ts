@@ -44,6 +44,17 @@ describe("SPEC-057 league-preferences", () => {
     expect(KNOWN_COMPETITIONS.length).toBe(8);
   });
 
+  // SPEC-083 CA-1 (amends SPEC-057 CA-3): a switch names its league only.
+  it("SPEC-083 CA-1 no item carries a featured team badge", () => {
+    for (const comp of KNOWN_COMPETITIONS)
+      expect(comp).not.toHaveProperty("featuredBadge");
+    const dialog = readFileSync(
+      "src/components/xornada/LeaguesPreferencesDialog.tsx",
+      "utf8",
+    );
+    expect(dialog).not.toContain("featuredBadge");
+  });
+
   // SPEC-057 CA-6 (F-3): each league's colour is a token of tokens.ts,
   // consumed through its CSS variable; never a literal rgb()/hsl()/#hex.
   it("each league colour is a var() of a LEAGUE_COLORS token defined in tokens.css", () => {

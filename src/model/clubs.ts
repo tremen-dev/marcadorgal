@@ -7,10 +7,6 @@ export type GalicianClub = {
   gender: "masculino" | "femenino";
   city: string;
   shield: string;
-  colors: {
-    primary: string;
-    secondary: string;
-  };
   stadium?: string;
   isGalician: true;
 };
@@ -26,10 +22,6 @@ export const GALICIAN_CLUBS: Record<string, GalicianClub> = {
     city: "A Coruña",
     stadium: "Cidade Deportiva de Abegondo / Riazor",
     shield: "/escudos/depor-abanca.svg",
-    colors: {
-      primary: "rgb(0, 75, 155)",
-      secondary: "rgb(255, 255, 255)",
-    },
     isGalician: true,
   },
   "as-celtas": {
@@ -42,10 +34,6 @@ export const GALICIAN_CLUBS: Record<string, GalicianClub> = {
     city: "Vigo",
     stadium: "A Madroa / Balaídos",
     shield: "/escudos/as-celtas.svg",
-    colors: {
-      primary: "rgb(135, 206, 235)",
-      secondary: "rgb(220, 38, 38)",
-    },
     isGalician: true,
   },
   "depor-abanca-b": {
@@ -58,10 +46,6 @@ export const GALICIAN_CLUBS: Record<string, GalicianClub> = {
     city: "A Coruña",
     stadium: "Cidade Deportiva de Abegondo",
     shield: "/escudos/depor-abanca.svg",
-    colors: {
-      primary: "rgb(0, 75, 155)",
-      secondary: "rgb(255, 255, 255)",
-    },
     isGalician: true,
   },
   "lugo-femenino": {
@@ -74,10 +58,6 @@ export const GALICIAN_CLUBS: Record<string, GalicianClub> = {
     city: "Lugo",
     stadium: "A Campiña",
     shield: "/escudos/lugo.svg",
-    colors: {
-      primary: "rgb(220, 38, 38)",
-      secondary: "rgb(0, 75, 155)",
-    },
     isGalician: true,
   },
   celta: {
@@ -90,10 +70,6 @@ export const GALICIAN_CLUBS: Record<string, GalicianClub> = {
     city: "Vigo",
     stadium: "Abanca-Balaídos",
     shield: "/escudos/celta.svg",
-    colors: {
-      primary: "rgb(135, 206, 235)",
-      secondary: "rgb(220, 38, 38)",
-    },
     isGalician: true,
   },
   deportivo: {
@@ -106,10 +82,6 @@ export const GALICIAN_CLUBS: Record<string, GalicianClub> = {
     city: "A Coruña",
     stadium: "Abanca-Riazor",
     shield: "/escudos/deportivo.svg",
-    colors: {
-      primary: "rgb(0, 75, 155)",
-      secondary: "rgb(255, 255, 255)",
-    },
     isGalician: true,
   },
   "racing-ferrol": {
@@ -122,10 +94,6 @@ export const GALICIAN_CLUBS: Record<string, GalicianClub> = {
     city: "Ferrol",
     stadium: "A Malata",
     shield: "/escudos/racing-ferrol.svg",
-    colors: {
-      primary: "rgb(0, 128, 0)",
-      secondary: "rgb(255, 255, 255)",
-    },
     isGalician: true,
   },
   lugo: {
@@ -138,10 +106,6 @@ export const GALICIAN_CLUBS: Record<string, GalicianClub> = {
     city: "Lugo",
     stadium: "Anxo Carro",
     shield: "/escudos/lugo.svg",
-    colors: {
-      primary: "rgb(220, 38, 38)",
-      secondary: "rgb(0, 75, 155)",
-    },
     isGalician: true,
   },
   pontevedra: {
@@ -154,10 +118,6 @@ export const GALICIAN_CLUBS: Record<string, GalicianClub> = {
     city: "Pontevedra",
     stadium: "Pasarón",
     shield: "/escudos/pontevedra.svg",
-    colors: {
-      primary: "rgb(128, 0, 0)",
-      secondary: "rgb(255, 255, 255)",
-    },
     isGalician: true,
   },
   "ourense-cf": {
@@ -170,10 +130,6 @@ export const GALICIAN_CLUBS: Record<string, GalicianClub> = {
     city: "Ourense",
     stadium: "O Couto",
     shield: "/escudos/ourense-cf.svg",
-    colors: {
-      primary: "rgb(37, 99, 235)",
-      secondary: "rgb(255, 255, 255)",
-    },
     isGalician: true,
   },
 };
