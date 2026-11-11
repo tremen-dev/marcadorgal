@@ -35,3 +35,21 @@ Criterios de aceptación e evidencia de verificación de SPEC-059.
 - `npm run typecheck` (`tsc --noEmit`): 0 erros.
 - `npm run test` (`vitest run`): 141 ficheiros de test, 2268 pasados, 0 fallos.
 - `next build`: compilado con éxito en 11.2s sen erros de páxinas estáticas ou SSR.
+
+## Verificación (sdd-verificador, 2026-11-11, código de `main` en beab20b)
+
+| CA | Verif. | Evidencia | Estado |
+| :--- | :--- | :--- | :--- |
+| CA-1 | ⚠️ | `enrichMatchesWithGoals`: candidatos `live` o marcador > 0 sin goles; fechas `toMadridDate` deduplicadas; `Promise.allSettled`. Llamado en `xornada-home.tsx:118`, `xornada-week.tsx:49`, `api/board/route.ts:18`. Emparejamiento: ya no por nombres normalizados sino por la identidad de SPEC-070 (alias rfef o `canonical*TeamId` igual), decisión del titular 2026-11-10; la spec no lleva nota de enmienda | ⚠️ |
+| CA-2 | ✅ | `sanitizeGoals` descarta vacíos, «Goleador Local/Visitante», prefijo `goleador `; sin goles válidos no se asigna `goals` (test «leaves goals undefined…») | ✅ |
+| CA-3 | ⚠️ | `{...m, goals}` solo añade `goals`; SSR y `/api/board` aplican el mismo enriquecimiento. Sin test que fije la preservación de campos ni la coherencia del `ETag` SSR↔board | ⚠️ |
+| CA-4 | ❌ | Error/HTTP: `allSettled` + `try/catch` → partidos intactos (test «handles network failure»). **Timeout: no existe.** `fetchExplorer` no lleva `AbortSignal`/timeout; con Explorer colgado la portada y `/api/board` esperan indefinidamente. Sonda: `node --experimental-strip-types scratchpad/probe/hang.mts` (fetch global que nunca responde, fetcher por defecto) → `enrichMatchesWithGoals con Explorer colgado: still-pending-after-10s (10008 ms)` | ❌ |
+| CA-5 | ✅ | `npm run gates`: typecheck 0, `biome check` 486 ficheros sin errores, vitest 172 ficheros / 2905 pasados / 3 skipped; `next build` → `✓ Compiled successfully` (reintentado aparte por bloqueo de otro build concurrente). `npx vitest run src/lib/explorer-enrichment.test.ts src/lib/explorer-emparejamiento.test.ts` → 31 pasados | ✅ |
+
+UI (Playwright) no ejecutada: requiere Supabase local y Explorer real; el RED de CA-4 no depende de ella.
+
+### Veredicto del verificador: RED
+
+- **F-SPEC-059-1 (CA-4, bloqueante):** sin timeout en la llamada a Explorer del camino de `HomeXornada`/`WeekXornada`/`/api/board`. Arreglo: timeout corto (p. ej. `AbortSignal.timeout`) en `getDayMatches`/`fetchExplorer` para este uso, y test con fetcher que no resuelve que demuestre que se devuelven los partidos intactos dentro del límite.
+- **F-SPEC-059-2 (CA-1, no bloqueante si el arquitecto enmienda):** nota de enmienda en SPEC-059 CA-1 por SPEC-070 (sin nombres aproximados).
+- **F-SPEC-059-3 (CA-3, no bloqueante):** test que fije que el enriquecimiento no altera `score`, `status`, `minute`, `halfTime`, `homeScoredAt`, `awayScoredAt`.
