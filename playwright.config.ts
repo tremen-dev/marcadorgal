@@ -42,6 +42,8 @@ export default defineConfig({
         NEXT_PUBLIC_REALTIME: "",
         RECENT_GOAL_MARK: "",
         SHOW_DAY_STRIP: "true",
+        // SPEC-057 CA-2: the table link at its default (off).
+        SHOW_TABLE_LINK: "",
         VERCEL_ENV: "development",
       },
       timeout: 180_000,

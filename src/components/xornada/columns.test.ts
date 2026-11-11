@@ -118,6 +118,43 @@ for (const [locale, dict] of [
       expect(shown).toContain('data-testid="competition-table-link"');
     });
 
+    // SPEC-057 CA-2: off by default (0 links to /competicion/); on, each
+    // column links outside its <summary> to its competition, labelled by i18n.
+    it("SPEC-057 CA-2 the table link: off by default, on per column", () => {
+      const props = {
+        locale,
+        competitions: buildXornada(MATCHES),
+        days: xornadaDays(MATCHES, "2026-10-03T16:50:00Z"),
+        paths: { gl: "/demo/xornada", es: "/es/demo/xornada" },
+        provisionalDisplay: "label" as const,
+      };
+      const off = renderToStaticMarkup(createElement(XornadaBody, props));
+      expect(off).not.toContain("/competicion/");
+      const on = renderToStaticMarkup(
+        createElement(XornadaBody, { ...props, showTableLink: true }),
+      );
+      const prefix = locale === "es" ? "/es" : "";
+      const links = [
+        ...on.matchAll(
+          /<a href="([^"]+)"[^>]*data-testid="competition-table-link" aria-label="([^"]+)">(.*?)<\/a>/g,
+        ),
+      ];
+      expect(links.map((m) => m[1])).toEqual([
+        `${prefix}/competicion/primera-division`,
+        `${prefix}/competicion/segunda-division`,
+      ]);
+      expect(links.map((m) => m[2])).toEqual([
+        dict.competitions.tableLinkLabel.replace("{name}", "primera-division"),
+        dict.competitions.tableLinkLabel.replace("{name}", "segunda-division"),
+      ]);
+      expect(links[0][3]).toContain(`${dict.competitions.tableLink}<`);
+      expect(links[0][3]).toContain("↗");
+      // Outside the <summary>: no interactive nested in it.
+      for (const summary of on.matchAll(/<summary[\s\S]*?<\/summary>/g)) {
+        expect(summary[0]).not.toContain("<a ");
+      }
+    });
+
     it("the sections, in tier order, inside one grid of columns", () => {
       const grid =
         /<div class="[^"]*columns[^"]*" data-testid="xornada-columns">/.exec(

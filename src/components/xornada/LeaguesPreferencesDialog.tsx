@@ -128,7 +128,7 @@ export function LeaguesPreferencesTrigger({ locale }: { locale: Locale }) {
             <div
               className={styles.presetsBar}
               role="toolbar"
-              aria-label="Atallos rápidos"
+              aria-label={t(locale, "competitions.presetsLabel")}
             >
               <button
                 type="button"
@@ -174,11 +174,11 @@ export function LeaguesPreferencesTrigger({ locale }: { locale: Locale }) {
                       <span className={styles.itemMeta}>
                         <span
                           className={styles.leagueDot}
-                          style={{ backgroundColor: comp.colorRgb }}
+                          style={{ backgroundColor: comp.color }}
                           aria-hidden="true"
                         />
                         <span className={styles.itemName}>
-                          {comp.defaultName}
+                          {t(locale, comp.nameKey)}
                         </span>
                         {comp.featuredBadge && (
                           <span className={styles.itemBadge}>

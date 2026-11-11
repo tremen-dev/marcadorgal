@@ -53,3 +53,7 @@ Lo que **no** se hereda está enumerado en `docs/adr/ADR-005-sistema-de-diseno-h
   wordmark y alineado a su izquierda (18 + 2 + 16 px en la barra de 52); en
   escritorio, 19 px a su derecha, en su línea base y a 10 px. Siempre en
   galego, también en `/es`.
+- **2026-11-11 (SPEC-057 CA-6).** Tokens por liga solo en código, sin
+  artboard: `LEAGUE_COLORS` en `src/design/tokens.ts` (`--liga-<id>` en
+  `tokens.css`, ocho ligas) para el punto de identificación de cada liga en el
+  panel «⚙ Ligas»; nunca indican estado y van siempre junto al nombre.

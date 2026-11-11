@@ -32,6 +32,28 @@ export const COLORS = {
 
 export type ColorToken = keyof typeof COLORS;
 
+// SPEC-057 CA-6: the dot of each league in the panel of visible leagues
+// (docs/diseno/HERENCIA.md, 2026-11-11). Identification only: never a state,
+// and always next to the league's name.
+export const LEAGUE_COLORS = {
+  "liga-f": { value: "#E4007C", css: "--liga-liga-f" },
+  "primera-federacion-fem": {
+    value: "#A21CAF",
+    css: "--liga-primera-federacion-fem",
+  },
+  "segunda-federacion-fem-g1": {
+    value: "#7C3AED",
+    css: "--liga-segunda-federacion-fem-g1",
+  },
+  "primera-division": { value: "#EF4444", css: "--liga-primera-division" },
+  "segunda-division": { value: "#3B82F6", css: "--liga-segunda-division" },
+  "primera-rfef-g1": { value: "#10B981", css: "--liga-primera-rfef-g1" },
+  "segunda-rfef-g1": { value: "#F59E0B", css: "--liga-segunda-rfef-g1" },
+  "tercera-rfef-g1": { value: "#6366F1", css: "--liga-tercera-rfef-g1" },
+} as const satisfies Record<string, Color>;
+
+export type LeagueColorToken = keyof typeof LEAGUE_COLORS;
+
 export type StateSemantic = "live" | "awaiting" | "alert";
 export type StateColorToken = "ember" | "amber" | "red";
 

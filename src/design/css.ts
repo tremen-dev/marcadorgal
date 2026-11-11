@@ -5,6 +5,7 @@ import {
   GRID,
   HAIRLINE_PX,
   INPUT_FONT_PX,
+  LEAGUE_COLORS,
   LIVE_DOT,
   LIVE_EDGE,
   MEASURE,
@@ -23,6 +24,8 @@ const kebab = (name: string): string =>
 export function renderTokensCss(): string {
   const vars: [string, string][] = [];
   for (const color of Object.values(COLORS))
+    vars.push([color.css, color.value]);
+  for (const color of Object.values(LEAGUE_COLORS))
     vars.push([color.css, color.value]);
   for (const [name, stack] of Object.entries(FAMILIES))
     vars.push([`--${name}`, stack]);

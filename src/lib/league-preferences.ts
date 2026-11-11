@@ -1,77 +1,43 @@
 // SPEC-057: Preferencias de competiciones visibles en portada y persistencia en localStorage.
 
+import { LEAGUE_COLORS, type LeagueColorToken } from "@/design/tokens";
+import type { TranslationKey } from "@/i18n";
+
 export const LEAGUES_PREFERENCES_KEY =
   "marcadorgal:preferences:visible-leagues:v1";
 export const LEAGUES_PREFERENCE_EVENT = "marcadorgal:leagues-preference-change";
 
 export interface CompetitionPreferenceItem {
-  id: string;
-  nameKey: string;
-  defaultName: string;
+  id: LeagueColorToken;
+  // SPEC-057 CA-3: the switch's name, resolved in the page's language.
+  nameKey: `competitions.names.${LeagueColorToken}` & TranslationKey;
   featuredBadge?: string;
   category: "femenino" | "masculino";
-  colorRgb: string;
+  // SPEC-057 CA-6: the CSS variable of the league's token (tokens.ts).
+  color: string;
 }
 
+const item = (
+  id: LeagueColorToken,
+  category: CompetitionPreferenceItem["category"],
+  featuredBadge?: string,
+): CompetitionPreferenceItem => ({
+  id,
+  nameKey: `competitions.names.${id}`,
+  category,
+  color: `var(${LEAGUE_COLORS[id].css})`,
+  ...(featuredBadge ? { featuredBadge } : {}),
+});
+
 export const KNOWN_COMPETITIONS: readonly CompetitionPreferenceItem[] = [
-  {
-    id: "liga-f",
-    nameKey: "competitions.liga-f",
-    defaultName: "Liga F Moeve",
-    featuredBadge: "Depor ABANCA",
-    category: "femenino",
-    colorRgb: "rgb(228, 0, 124)",
-  },
-  {
-    id: "primera-federacion-fem",
-    nameKey: "competitions.primera-federacion-fem",
-    defaultName: "1ª Federación Fem.",
-    category: "femenino",
-    colorRgb: "rgb(162, 28, 175)",
-  },
-  {
-    id: "segunda-federacion-fem-g1",
-    nameKey: "competitions.segunda-federacion-fem-g1",
-    defaultName: "2ª Federación Fem. G1",
-    featuredBadge: "As Celtas",
-    category: "femenino",
-    colorRgb: "rgb(124, 58, 237)",
-  },
-  {
-    id: "primera-division",
-    nameKey: "competitions.primera-division",
-    defaultName: "Primeira División",
-    category: "masculino",
-    colorRgb: "rgb(239, 68, 68)",
-  },
-  {
-    id: "segunda-division",
-    nameKey: "competitions.segunda-division",
-    defaultName: "Segunda División",
-    category: "masculino",
-    colorRgb: "rgb(59, 130, 246)",
-  },
-  {
-    id: "primera-rfef-g1",
-    nameKey: "competitions.primera-rfef-g1",
-    defaultName: "1ª RFEF G1",
-    category: "masculino",
-    colorRgb: "rgb(16, 185, 129)",
-  },
-  {
-    id: "segunda-rfef-g1",
-    nameKey: "competitions.segunda-rfef-g1",
-    defaultName: "2ª RFEF G1",
-    category: "masculino",
-    colorRgb: "rgb(245, 158, 11)",
-  },
-  {
-    id: "tercera-rfef-g1",
-    nameKey: "competitions.tercera-rfef-g1",
-    defaultName: "3ª RFEF G1",
-    category: "masculino",
-    colorRgb: "rgb(99, 102, 241)",
-  },
+  item("liga-f", "femenino", "Depor ABANCA"),
+  item("primera-federacion-fem", "femenino"),
+  item("segunda-federacion-fem-g1", "femenino", "As Celtas"),
+  item("primera-division", "masculino"),
+  item("segunda-division", "masculino"),
+  item("primera-rfef-g1", "masculino"),
+  item("segunda-rfef-g1", "masculino"),
+  item("tercera-rfef-g1", "masculino"),
 ];
 
 export const ALL_COMPETITION_IDS: readonly string[] = KNOWN_COMPETITIONS.map(
@@ -87,9 +53,12 @@ export const PRESET_IDS = {
   pro: ["primera-division", "segunda-division"],
 } as const;
 
+// SPEC-057 CA-5: merely touching window.localStorage may throw
+// (SecurityError when the browser blocks storage), so it is inside the try.
 export function getStoredVisibleCompetitions(): string[] | null {
-  if (typeof window === "undefined" || !window.localStorage) return null;
+  if (typeof window === "undefined") return null;
   try {
+    if (!window.localStorage) return null;
     const raw = window.localStorage.getItem(LEAGUES_PREFERENCES_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
@@ -107,8 +76,9 @@ export function getStoredVisibleCompetitions(): string[] | null {
 }
 
 export function saveStoredVisibleCompetitions(ids: readonly string[]): void {
-  if (typeof window === "undefined" || !window.localStorage) return;
+  if (typeof window === "undefined") return;
   try {
+    if (!window.localStorage) return;
     window.localStorage.setItem(LEAGUES_PREFERENCES_KEY, JSON.stringify(ids));
     window.dispatchEvent(
       new CustomEvent(LEAGUES_PREFERENCE_EVENT, { detail: ids }),

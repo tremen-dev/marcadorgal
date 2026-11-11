@@ -128,7 +128,9 @@ export function CompetitionSection({
               }
               className={styles.tableLink}
               data-testid="competition-table-link"
-              aria-label={`${t(locale, "competitions.tableLink")} - ${competition.name}`}
+              aria-label={t(locale, "competitions.tableLinkLabel", {
+                name: competition.name,
+              })}
             >
               <span>{t(locale, "competitions.tableLink")}</span>
               <span className={styles.tableLinkArrow} aria-hidden="true">
