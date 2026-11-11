@@ -34,11 +34,13 @@
     <span style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A7A5A0" stroke-width="1.75" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
     </span>
-    <div style="display: inline-flex; align-items: center; gap: 2px; font: 500 12px/1 var(--mono)">
-      <span style="{{ glStyle }}" onClick="{{ setGl }}">gl</span>
-      <span style="color: #716F6C; opacity: .45">·</span>
-      <span style="{{ esStyle }}" onClick="{{ setEs }}">es</span>
-    </div>
+    <!-- SPEC-082 CA-3/CA-5: o botón de filtros onde estaba gl·es (que vai ao pé de SPEC-058, non debuxado aquí).
+         44 × 44 px, icono en --fg-dim (--fg e --bg-step co panel aberto). A insignia «1» (exemplo: un filtro activo)
+         en --marca sobre --marca-ink, díxitos tabulares, absoluta sobre o icono: non despraza nada. -->
+    <span style="{{ filtersBtn }}" onClick="{{ toggleFilters }}">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 5.5h14M5.5 10h9M8 14.5h4"/></svg>
+      <span class="n" style="position: absolute; top: 5px; right: 3px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px; background: #0099CC; color: #00151F; font-weight: 700; font-size: 10px; line-height: 16px; text-align: center">1</span>
+    </span>
   </div>
 
   <!-- Tira de días opcional (SPEC-061, SHOW_DAY_STRIP; oculta por defecto). Se se serve,
@@ -64,11 +66,14 @@
     <span class="n" style="font-size: 11px; color: #716F6C">{{ shown }}</span>
   </div>
 
-  <div style="height: 42px; flex: none; display: flex; align-items: center; gap: 6px; padding: 0 14px; border-bottom: 1px solid #2A2620">
+  <!-- SPEC-082 CA-4: o panel aberto, en fluxo baixo a fila do título (pregado, non ocupa nada). Escoller un chip
+       aplica o filtro e prega o panel; «⚙ Ligas» abre o seu diálogo (SPEC-057) sen pregalo. En escritorio, sen pregar. -->
+  <div style="{{ panelStyle }}">
     <span style="{{ fAll }}" onClick="{{ setAll }}">{{ t.all }}</span>
     <span style="{{ fLive }}" onClick="{{ setLive }}">{{ t.live }} <span class="n">{{ nLive }}</span></span>
     <span style="{{ fFin }}" onClick="{{ setFin }}">{{ t.fin }}</span>
     <span style="{{ fFav }}" onClick="{{ setFav }}">★ <span class="n">{{ nFav }}</span></span>
+    <span style="margin-left: auto; padding: 6px 11px; border-radius: 999px; border: 1px solid #2A2620; font-family: var(--sans); font-weight: 600; font-size: 12px; line-height: 1; color: #A7A5A0">⚙ {{ t.leagues }}</span>
   </div>
 
   <div style="flex: 1; min-height: 0; overflow: hidden">
@@ -246,7 +251,7 @@ class Component extends DCLogic {
             pickHint:'Toca calquera fila para ver de onde vén o seu marcador.',
             mine:'As miñas ligas', nat:'Nacional', follow:'Equipos seguidos', more:'Máis',
             hint:'Toca unha fila para seguila · toca a competición para pregala',
-            noCrawl:'non rastrexable', weight:'peso', rule:'regra', stamp:'sáb 30 · 18:43' },
+            noCrawl:'non rastrexable', weight:'peso', rule:'regra', stamp:'sáb 30 · 18:43', leagues:'Ligas' },
       es: { xornada:'Jornada', global:'Global', tables:'Clasificaciones', all:'Todos', live:'En directo',
             fin:'Finalizados', d0:'vie 29', d1:'SÁB 30', d2:'dom 31', d3:'lun 01', none:'nada aquí',
             post:'apl', postLong:'aplazado', round:'jornada', search:'Buscar equipo', trace:'Traza',
@@ -255,7 +260,7 @@ class Component extends DCLogic {
             pickHint:'Toca cualquier fila para ver de dónde viene su marcador.',
             mine:'Mis ligas', nat:'Nacional', follow:'Equipos seguidos', more:'Más',
             hint:'Toca una fila para seguirla · toca la competición para plegarla',
-            noCrawl:'no rastreable', weight:'peso', rule:'regla', stamp:'sáb 30 · 18:43' }
+            noCrawl:'no rastreable', weight:'peso', rule:'regla', stamp:'sáb 30 · 18:43', leagues:'Ligas' }
     };
   }
 
@@ -269,7 +274,7 @@ class Component extends DCLogic {
         if (comps[i][3][j][7]) stars[comps[i][0] + ':' + j] = true;
       }
     }
-    this.state = { lang: 'gl', filter: 'all', mode: 'xornada', stars: stars, collapsed: {} };
+    this.state = { lang: 'gl', filter: 'all', mode: 'xornada', stars: stars, collapsed: {}, filtersOpen: true };
   }
 
   passes(m, key) {
@@ -433,8 +438,8 @@ class Component extends DCLogic {
     var PILL_OFF = 'padding:6px 12px;border-radius:999px;border:1px solid #2A2620;font:600 12px/1 var(--sans);color:#A7A5A0;cursor:pointer';
     var LIVE_ON = 'padding:6px 12px;border-radius:999px;background:rgba(255,107,0,.14);border:1px solid #FF6B00;font:600 12px/1 var(--sans);color:#FF6B00;cursor:pointer';
     var LIVE_OFF = 'padding:6px 12px;border-radius:999px;border:1px solid rgba(255,107,0,.4);font:600 12px/1 var(--sans);color:#FF6B00;cursor:pointer';
-    var LANG_ON = 'padding:6px 8px;border-radius:6px;background:rgba(0,153,204,.12);color:#0099CC;text-transform:uppercase;letter-spacing:.05em;cursor:pointer';
-    var LANG_OFF = 'padding:6px 8px;border-radius:6px;color:#716F6C;text-transform:uppercase;letter-spacing:.05em;cursor:pointer';
+    var open = this.state.filtersOpen;
+    var BTN = 'position:relative;flex:none;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;margin-right:-10px;border-radius:6px;cursor:pointer;';
     var SEG_ON = 'padding:6px 14px;border-radius:999px;background:#0099CC;font:600 12px/1 var(--sans);color:#00151F;cursor:pointer';
     var SEG_OFF = 'padding:6px 14px;border-radius:999px;font:600 12px/1 var(--sans);color:#A7A5A0;cursor:pointer';
 
@@ -450,18 +455,19 @@ class Component extends DCLogic {
       vGlo: isGlobal ? SEG_ON : SEG_OFF,
       setXor: function () { self.setState({ mode: 'xornada' }); },
       setGlo: function () { self.setState({ mode: 'global' }); },
-      glStyle: lang === 'gl' ? LANG_ON : LANG_OFF,
-      esStyle: lang === 'es' ? LANG_ON : LANG_OFF,
-      setGl: function () { self.setState({ lang: 'gl' }); },
-      setEs: function () { self.setState({ lang: 'es' }); },
+      filtersBtn: BTN + (open ? 'background:#221F1A;color:#F5F1EA' : 'color:#716F6C'),
+      toggleFilters: function () { self.setState({ filtersOpen: !open }); },
+      panelStyle: open
+        ? 'height:42px;flex:none;display:flex;align-items:center;gap:6px;padding:0 14px;border-bottom:1px solid #2A2620'
+        : 'display:none',
       fAll: this.state.filter === 'all' ? PILL_ON : PILL_OFF,
       fLive: this.state.filter === 'live' ? LIVE_ON : LIVE_OFF,
       fFin: this.state.filter === 'fin' ? PILL_ON : PILL_OFF,
       fFav: this.state.filter === 'fav' ? PILL_ON : PILL_OFF,
-      setAll: function () { self.setState({ filter: 'all' }); },
-      setLive: function () { self.setState({ filter: 'live' }); },
-      setFin: function () { self.setState({ filter: 'fin' }); },
-      setFav: function () { self.setState({ filter: 'fav' }); }
+      setAll: function () { self.setState({ filter: 'all', filtersOpen: false }); },
+      setLive: function () { self.setState({ filter: 'live', filtersOpen: false }); },
+      setFin: function () { self.setState({ filter: 'fin', filtersOpen: false }); },
+      setFav: function () { self.setState({ filter: 'fav', filtersOpen: false }); }
     };
   }
 }

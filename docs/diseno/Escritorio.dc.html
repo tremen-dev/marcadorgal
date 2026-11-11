@@ -45,11 +45,7 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#716F6C" stroke-width="1.75" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
       <span style="font: 400 13px/1 var(--sans); color: #716F6C">{{ t.search }}</span>
     </div>
-    <div style="display: inline-flex; align-items: center; gap: 2px; font: 500 12px/1 var(--mono)">
-      <span style="{{ glStyle }}" onClick="{{ setGl }}">gl</span>
-      <span style="color: #716F6C; opacity: .45">·</span>
-      <span style="{{ esStyle }}" onClick="{{ setEs }}">es</span>
-    </div>
+    <!-- SPEC-082 CA-1: sen gl·es na cabeceira; vive no pé de SPEC-058 (non debuxado aquí). -->
   </div>
 
   <!-- Tira de días opcional (SPEC-061, SHOW_DAY_STRIP; oculta por defecto). Se se serve,
@@ -351,7 +347,7 @@ class Component extends DCLogic {
             pickHint:'Toca calquera fila para ver de onde vén o seu marcador.',
             mine:'As miñas ligas', nat:'Nacional', follow:'Equipos seguidos', more:'Máis',
             hint:'Toca unha fila para seguila · toca a competición para pregala',
-            noCrawl:'non rastrexable', weight:'peso', rule:'regra', stamp:'sáb 30 · 18:43' },
+            noCrawl:'non rastrexable', weight:'peso', rule:'regra', stamp:'sáb 30 · 18:43', leagues:'Ligas' },
       es: { xornada:'Jornada', global:'Global', tables:'Clasificaciones', all:'Todos', live:'En directo',
             fin:'Finalizados', d0:'vie 29', d1:'SÁB 30', d2:'dom 31', d3:'lun 01', none:'nada aquí',
             post:'apl', postLong:'aplazado', round:'jornada', search:'Buscar equipo', trace:'Traza',
@@ -360,7 +356,7 @@ class Component extends DCLogic {
             pickHint:'Toca cualquier fila para ver de dónde viene su marcador.',
             mine:'Mis ligas', nat:'Nacional', follow:'Equipos seguidos', more:'Más',
             hint:'Toca una fila para seguirla · toca la competición para plegarla',
-            noCrawl:'no rastreable', weight:'peso', rule:'regla', stamp:'sáb 30 · 18:43' }
+            noCrawl:'no rastreable', weight:'peso', rule:'regla', stamp:'sáb 30 · 18:43', leagues:'Ligas' }
     };
   }
 
@@ -516,16 +512,10 @@ class Component extends DCLogic {
     var PILL_OFF = 'padding:6px 13px;border-radius:999px;border:1px solid #2A2620;font:600 12px/1 var(--sans);color:#A7A5A0;cursor:pointer';
     var LIVE_ON = 'padding:6px 13px;border-radius:999px;background:rgba(255,107,0,.14);border:1px solid #FF6B00;font:600 12px/1 var(--sans);color:#FF6B00;cursor:pointer';
     var LIVE_OFF = 'padding:6px 13px;border-radius:999px;border:1px solid rgba(255,107,0,.4);font:600 12px/1 var(--sans);color:#FF6B00;cursor:pointer';
-    var LANG_ON = 'padding:6px 8px;border-radius:6px;background:rgba(0,153,204,.12);color:#0099CC;text-transform:uppercase;letter-spacing:.05em;cursor:pointer';
-    var LANG_OFF = 'padding:6px 8px;border-radius:6px;color:#716F6C;text-transform:uppercase;letter-spacing:.05em;cursor:pointer';
 
     var vals = {
       t: t,
       nAll: nAll, nLive: nLive, nFin: nFin,
-      glStyle: lang === 'gl' ? LANG_ON : LANG_OFF,
-      esStyle: lang === 'es' ? LANG_ON : LANG_OFF,
-      setGl: function () { self.setState({ lang: 'gl' }); },
-      setEs: function () { self.setState({ lang: 'es' }); },
       fAll: this.state.filter === 'all' ? PILL_ON : PILL_OFF,
       fLive: this.state.filter === 'live' ? LIVE_ON : LIVE_OFF,
       fFin: this.state.filter === 'fin' ? PILL_ON : PILL_OFF,
