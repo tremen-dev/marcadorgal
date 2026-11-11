@@ -13,6 +13,7 @@ import { xornadaHeading } from "../src/components/xornada/labels";
 import { es } from "../src/i18n/es";
 import { gl } from "../src/i18n/gl";
 import { xornadaDays } from "../src/xornada/view";
+import { openFilters } from "./filters-panel";
 
 // SPEC-072 CA-3, CA-4, CA-5: ‹ and › over the e2e:db seed, served as in
 // production (SHOW_DAY_STRIP empty, noStripPort): they flank the title.
@@ -98,6 +99,8 @@ for (const { lang, prefix, home, dict } of LANGS) {
       }) => {
         await page.setViewportSize({ width, height: 800 });
         await page.goto(`${origin}${home}`);
+        // SPEC-082 CA-4: on mobile the panel is measured open.
+        await openFilters(page);
         const h1 = page.locator("h1");
         await expect(h1).toHaveAccessibleName(/^[^‹›]+$/);
         expect(await h1.textContent()).not.toMatch(

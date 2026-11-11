@@ -100,3 +100,13 @@ export type CountTemplates = { readonly one: string; readonly other: string };
 export function formatCount(templates: CountTemplates, n: number): string {
   return (n === 1 ? templates.one : templates.other).replace("{n}", String(n));
 }
+
+// SPEC-082 CA-5: how many filters of the folded panel are on: the status
+// pill (not Todos) and the leagues (any of them hidden). The day belongs to
+// the strip, outside the panel, so it never counts.
+export function activeFilterCount(
+  state: XornadaState,
+  hiddenLeagues: readonly string[],
+): number {
+  return (state.filter !== null ? 1 : 0) + (hiddenLeagues.length > 0 ? 1 : 0);
+}

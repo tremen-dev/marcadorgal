@@ -12,6 +12,7 @@ import {
 } from "../src/board/weeks";
 import { es } from "../src/i18n/es";
 import { gl } from "../src/i18n/gl";
+import { openFilters } from "./filters-panel";
 
 // SPEC-027 CA-3, CA-5 and CA-6 over the local Supabase with the e2e:db
 // seed (the Realtime switch on). The expected weeks and rows are computed
@@ -179,11 +180,13 @@ for (const { lang, prefix, home: homePath, dict } of LANGS) {
         weekXornada(index, previous).length,
       );
       // «En xogo»: only live rows, or «nada aquí».
+      await openFilters(page);
       await page.getByTestId("filter-live").click();
       const live = await visibleRows(page);
       expect(live.every((r) => r.status === "live")).toBe(true);
       if (live.length === 0)
         await expect(page.getByTestId("xornada-empty")).toBeVisible();
+      await openFilters(page);
       await page.getByTestId("filter-all").click();
       // SPEC-023 CA-5: folding from the header hides the rows, not the head
       // (SPEC-028: the sidebar no longer folds).

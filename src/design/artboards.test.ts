@@ -167,3 +167,48 @@ describe("SPEC-081 CA-8 the motto in the artboards", () => {
     );
   });
 });
+
+// SPEC-082 CA-8 (D-8): gl·es leaves the header of both artboards (it lives
+// in the footer of SPEC-058, not drawn); Movil draws the filters button with
+// its badge «1» and the open panel.
+describe("SPEC-082 CA-8 the light mobile header", () => {
+  for (const name of [
+    "Movil.tpl.html",
+    "Movil.dc.html",
+    "Escritorio.tpl.html",
+    "Escritorio.dc.html",
+  ])
+    it(`${name} draws no gl·es in the header`, () => {
+      const html = read(name);
+      for (const gone of [
+        "{{ glStyle }}",
+        "{{ esStyle }}",
+        "{{ setGl }}",
+        "setGl:",
+      ])
+        expect(html, gone).not.toContain(gone);
+    });
+
+  it("Movil.dc.html draws the filters button with its badge and the open panel", () => {
+    const html = read("Movil.dc.html");
+    expect(html).toContain(
+      '<span style="{{ filtersBtn }}" onClick="{{ toggleFilters }}">',
+    );
+    expect(html).toMatch(
+      /stroke="currentColor"[^>]*><path d="M3 5\.5h14M5\.5 10h9M8 14\.5h4"\/>/,
+    );
+    const badge = styleWith(html, "position: absolute; top: 5px");
+    expect(badge.get("background")).toBe(COLORS.brand.value);
+    expect(badge.get("color")).toBe(COLORS.brandInk.value);
+    expect(html).toMatch(/text-align: center">1<\/span>/);
+    expect(html).toContain('<div style="{{ panelStyle }}">');
+    expect(html).toContain("⚙ {{ t.leagues }}");
+  });
+
+  it("HERENCIA.md says gl·es lives in the footer of SPEC-058", () => {
+    const herencia = read("HERENCIA.md");
+    expect(herencia).toMatch(
+      /\*\*2026-11-\d\d \(SPEC-082[^)]*\)\.\*\*[\s\S]*gl·es[\s\S]*SPEC-058/,
+    );
+  });
+});

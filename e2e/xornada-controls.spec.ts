@@ -3,6 +3,7 @@ import { expect, type Page, test } from "@playwright/test";
 import { boxPort } from "../playwright.config";
 import { es } from "../src/i18n/es";
 import { gl } from "../src/i18n/gl";
+import { openFilters } from "./filters-panel";
 
 // SPEC-023: strip of days, filters, folding and desktop over the demo
 // (Friday 2 to Monday 5 of October 2026; «now» is Saturday 3).
@@ -160,6 +161,7 @@ for (const route of routes) {
         const total = (await allRows(page)).length;
 
         // En xogo: only live rows, #f=live.
+        await openFilters(page);
         await page.getByTestId("filter-live").click();
         await expect(page).toHaveURL(new RegExp(`${route.path}#f=live$`));
         await expect(page.getByTestId("filter-live")).toHaveAttribute(
@@ -170,6 +172,7 @@ for (const route of routes) {
         expect(rows.length).toBeGreaterThan(0);
         expect(rows.every((r) => r.status === "live")).toBe(true);
         await capture(page, `en-xogo-${route.lang}-${width}`);
+        await openFilters(page);
         await page.getByTestId("filter-all").click();
         await expect(page).toHaveURL(new RegExp(`${route.path}$`));
         expect(await visibleRows(page)).toHaveLength(total);
@@ -193,6 +196,7 @@ for (const route of routes) {
 
         // Day and filter combine; nothing left says «nada aquí».
         await page.getByTestId("day-link").nth(0).click();
+        await openFilters(page);
         await page.getByTestId("filter-live").click();
         await expect(page).toHaveURL(/#d=2026-10-02&f=live$/);
         await expect(page.getByTestId("xornada-empty")).toHaveText(
@@ -390,6 +394,7 @@ for (const route of routes) {
         expect(truncated).toBe(0);
       }
       // Rematados: no live left, the total shows in words.
+      await openFilters(page);
       await page.getByTestId("filter-finished").click();
       await expect(live).toBeHidden();
       const total = head.getByTestId("competition-total");
@@ -462,8 +467,10 @@ for (const route of routes) {
         expect(friday.every((s) => s.live === 0)).toBe(true);
         await page.getByTestId("day-link").nth(1).click();
         await check();
+        await openFilters(page);
         await page.getByTestId("filter-finished").click();
         expect((await check()).every((s) => s.live === 0)).toBe(true);
+        await openFilters(page);
         await page.getByTestId("filter-live").click();
         await check();
         await page.goto(`${route.path}#d=2026-10-04&f=finished`);
@@ -489,6 +496,9 @@ for (const route of routes) {
       await expect(
         page.locator('[data-testid="competition-total"]:visible'),
       ).toHaveCount(0);
+      // SPEC-082 CA-3: folded behind the filters button until it opens.
+      await expect(page.getByTestId("filters")).toBeHidden();
+      await openFilters(page);
       await expect(page.getByTestId("filters")).toBeVisible();
     });
   });

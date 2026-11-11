@@ -53,3 +53,26 @@ Lo que **no** se hereda está enumerado en `docs/adr/ADR-005-sistema-de-diseno-h
   wordmark y alineado a su izquierda (18 + 2 + 16 px en la barra de 52); en
   escritorio, 19 px a su derecha, en su línea base y a 10 px. Siempre en
   galego, también en `/es`.
+- **2026-11-11 (SPEC-057 CA-6).** Tokens por liga solo en código, sin
+  artboard: `LEAGUE_COLORS` en `src/design/tokens.ts` (`--liga-<id>` en
+  `tokens.css`, ocho ligas) para el punto de identificación de cada liga en el
+  panel «⚙ Ligas»; nunca indican estado y van siempre junto al nombre.
+- **2026-11-11 (SPEC-057 CA-6/CA-3, F-SPEC-057-7/8).** Elevación solo en
+  código, sin artboard: `ELEVATION` en `src/design/tokens.ts` (`--velo`, el
+  velo negro al 75 % tras un diálogo modal, y `--sombra-dialogo`, la sombra de
+  su tarjeta). Los interruptores del panel «⚙ Ligas» marcan el foco de teclado
+  con un anillo de `--focus-ring` en `--marca`, separado `--focus-ring` del
+  control.
+- **2026-11-11 (SPEC-082 CA-8, H-1).** Cabecera móvil ligera. `gl·es` sale
+  de la cabecera de `Movil.tpl.html` y `Escritorio.tpl.html` (y con
+  `node build.mjs` de sus `.dc.html`; `Global.dc.html` solo recoge la cadena
+  `leagues` de `_logic.js`): vive en el pie de SPEC-058 en todas las páginas
+  públicas y todas las anchuras, sin artboard de pie (H-1: basta esta
+  entrada). En móvil, donde estaba `gl·es`, el botón de filtros: 44 × 44 px,
+  icono de tres trazos en `currentColor` (`--fg-dim`; `--fg` sobre
+  `--bg-step` con el panel abierto), solo icono con nombre accesible (H-3), y
+  una insignia con el número de filtros activos («1» en el artboard) en
+  `--marca` sobre `--marca-ink`, mono 700 10 px, absoluta sobre el icono. Los
+  chips y «⚙ Ligas» pasan a un panel plegable bajo la fila del título;
+  `Movil.tpl.html` lo dibuja abierto y el botón lo pliega. En escritorio nada
+  se pliega.

@@ -1,6 +1,7 @@
 import type { Neighbours } from "@/board/weeks";
-import { LOCALES, type Locale, t } from "@/i18n";
+import { type Locale, t } from "@/i18n";
 import { Wordmark } from "../brand/Wordmark";
+import { FiltersToggle } from "./FiltersToggle";
 import styles from "./Xornada.module.css";
 import { WeekArrow } from "./XornadaControls";
 
@@ -10,26 +11,29 @@ const HOME: Readonly<Record<Locale, string>> = { gl: "/", es: "/es" };
 
 type Props = {
   locale: Locale;
-  paths: Readonly<Record<Locale, string>>;
   // SPEC-028 CA-6: the text of the one <h1> (xornadaHeading).
   heading: string;
   // The strip is served: on mobile the title row goes under it.
   strip: boolean;
+  // SPEC-082 CA-3: the screen has the filters panel, so the bar carries the
+  // button that unfolds it on mobile.
+  filters: boolean;
   // SPEC-072 CA-1 (H-1 = A): ‹ and › on both sides of the title's text, when
   // the strip that used to hold them is not served.
   arrows?: Neighbours;
 };
 
-// The top bar: logo and motto, the visible title and gl·es. SPEC-028 CA-6 (H-6 = A):
+// The top bar: logo and motto, the visible title and, on mobile, the filters
+// button (SPEC-082: gl·es moved to the footer). SPEC-028 CA-6 (H-6 = A):
 // on desktop the title sits where Escritorio.tpl.html has the «Xornada» tab;
 // on mobile it is the 42 px row of Movil.tpl.html's segment, under the strip.
 // SPEC-072: the row is the title's room; the arrows are siblings of the
 // <h1>, so they never enter its accessible name.
 export function XornadaHeader({
   locale,
-  paths,
   heading,
   strip,
+  filters,
   arrows,
 }: Props) {
   return (
@@ -68,33 +72,7 @@ export function XornadaHeader({
         {arrows && <WeekArrow href={arrows.next} dir="next" locale={locale} />}
       </div>
       <span className={styles.spacer} />
-      <nav
-        className={styles.locales}
-        aria-label={t(locale, "xornada.locale")}
-        data-testid="locale-switch"
-      >
-        {LOCALES.map((other, i) => (
-          <span key={other}>
-            {i > 0 && (
-              <span className={styles.localeDot} aria-hidden="true">
-                ·
-              </span>
-            )}
-            <a
-              className={
-                other === locale ? styles.localeCurrent : styles.locale
-              }
-              href={paths[other]}
-              hrefLang={other}
-              lang={other}
-              aria-current={other === locale ? "page" : undefined}
-              data-locale-href={paths[other]}
-            >
-              {t(locale, `locales.${other}`)}
-            </a>
-          </span>
-        ))}
-      </nav>
+      {filters && <FiltersToggle locale={locale} />}
     </header>
   );
 }

@@ -79,6 +79,13 @@ export const es: Dictionary = {
     // SPEC-068 CA-3: the note after a scorer's name, penalty or own goal.
     goalPenalty: "(p.)",
     goalOwnGoal: "(p.p.)",
+    // SPEC-082 CA-5: the name of the folded filters button (mobile), with
+    // no filter on and with n of them on.
+    filters: "Filtros",
+    filtersActive: {
+      one: "Filtros: {n} activo",
+      other: "Filtros: {n} activos",
+    },
   },
   weekday: {
     mon: "lun",
@@ -119,11 +126,13 @@ export const es: Dictionary = {
     overview: "Competición",
     backToHome: "Volver a la jornada",
     tableLink: "Tabla",
+    tableLinkLabel: "Tabla de {name}",
     viewFullTable: "Ver tabla completa",
     viewRounds: "Ver jornadas",
     preferencesButton: "Ligas",
     preferencesTitle: "Ligas visibles",
     preferencesSubtitle: "Personaliza las ligas que quieres ver",
+    presetsLabel: "Accesos rápidos",
     presetAll: "Todas",
     presetWomen: "Femenino",
     presetModest: "RFEF / Gallegas",
@@ -145,6 +154,16 @@ export const es: Dictionary = {
     live: "En directo",
     noMatches: "No hay partidos registrados para esta fecha.",
     galicianTeam: "Equipo gallego",
+    names: {
+      "liga-f": "Liga F Moeve",
+      "primera-federacion-fem": "1ª Federación Fem.",
+      "segunda-federacion-fem-g1": "2ª Federación Fem. G1",
+      "primera-division": "Primera División",
+      "segunda-division": "Segunda División",
+      "primera-rfef-g1": "1ª RFEF G1",
+      "segunda-rfef-g1": "2ª RFEF G1",
+      "tercera-rfef-g1": "3ª RFEF G1",
+    },
   },
   footer: {
     by: "Un proyecto de",

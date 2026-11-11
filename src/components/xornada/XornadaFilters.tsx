@@ -16,6 +16,7 @@ import {
   type XornadaState,
 } from "@/xornada/filter";
 import { provisionalLegendShown } from "@/xornada/qualifier";
+import { FILTER_STATE_EVENT } from "./filters-panel";
 
 // SPEC-023 CA-6 (amended by SPEC-024 H-1): the filter component of the
 // screen, next to XornadaLive. It renders nothing: it reads the fragment and
@@ -128,8 +129,9 @@ function apply(root: HTMLElement, state: XornadaState): void {
     if (key in counts) el.textContent = String(counts[key]);
   }
 
-  // gl·es keeps the fragment (CA-4).
-  for (const link of root.querySelectorAll<HTMLAnchorElement>(
+  // gl·es keeps the fragment (CA-4). SPEC-082 CA-2: it lives in the footer,
+  // outside the screen, so it is looked up in the whole document.
+  for (const link of document.querySelectorAll<HTMLAnchorElement>(
     "a[data-locale-href]",
   )) {
     link.setAttribute("href", `${link.dataset.localeHref}${fragmentOf(state)}`);
@@ -148,6 +150,10 @@ export function XornadaFilters() {
     const set = (next: XornadaState) => {
       state = next;
       apply(root, state);
+      // SPEC-082 CA-5: the filters button counts the status pill.
+      document.dispatchEvent(
+        new CustomEvent(FILTER_STATE_EVENT, { detail: state }),
+      );
     };
     const fromHash = () => set(parseFragment(window.location.hash, days()));
 

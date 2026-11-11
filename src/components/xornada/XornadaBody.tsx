@@ -65,9 +65,9 @@ export function XornadaBody({
           keeps the title in step with the days. */}
       <XornadaHeader
         locale={locale}
-        paths={paths}
         heading={xornadaHeading(days, locale)}
         strip={hasRows && showDayStrip}
+        filters={hasRows}
         // SPEC-072 CA-1: with the strip, the arrows stay at its ends
         // (SPEC-027 CA-6); without it, they flank the title. Never both.
         arrows={hasRows && !showDayStrip ? arrows : undefined}
@@ -78,6 +78,9 @@ export function XornadaBody({
           {showDayStrip && (
             <DayStrip days={days} locale={locale} arrows={arrows} />
           )}
+          {/* The title row's room on mobile (SPEC-082: the panel under it
+              may be folded, so the room is its own). */}
+          <div className={styles.titleRoom} />
           <FilterPills
             counts={countFilters(rows, null)}
             locale={locale}

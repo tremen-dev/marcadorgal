@@ -166,3 +166,51 @@
     justify-content: space-between;
   }
 }
+
+/* SPEC-082 CA-2: gl·es, moved from the Xornada header (SPEC-019 CA-6).
+   Mono 12 px; each link a 44 × 44 px target on mobile (ADR-005). */
+.locales {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.localeItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.locale {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--touch-target);
+  min-height: var(--touch-target);
+  padding: 0 var(--space-8);
+  border-radius: 6px;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--fg-dim);
+}
+
+.locale:hover {
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.localeCurrent {
+  composes: locale;
+  color: var(--marca);
+  background: color-mix(in srgb, var(--marca) 12%, transparent);
+}
+
+.localeDot {
+  color: var(--fg-dim);
+  opacity: 0.45;
+}

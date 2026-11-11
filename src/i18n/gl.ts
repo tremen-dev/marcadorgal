@@ -83,6 +83,13 @@ export const gl = {
     // SPEC-068 CA-3: the note after a scorer's name, penalty or own goal.
     goalPenalty: "(p.)",
     goalOwnGoal: "(p.p.)",
+    // SPEC-082 CA-5: the name of the folded filters button (mobile), with
+    // no filter on and with n of them on.
+    filters: "Filtros",
+    filtersActive: {
+      one: "Filtros: {n} activo",
+      other: "Filtros: {n} activos",
+    },
   },
   weekday: {
     mon: "lun",
@@ -123,11 +130,13 @@ export const gl = {
     overview: "Competición",
     backToHome: "Volver á xornada",
     tableLink: "Táboa",
+    tableLinkLabel: "Táboa de {name}",
     viewFullTable: "Ver táboa completa",
     viewRounds: "Ver xornadas",
     preferencesButton: "Ligas",
     preferencesTitle: "Ligas visibles",
     preferencesSubtitle: "Personaliza as ligas que queres ver",
+    presetsLabel: "Atallos rápidos",
     presetAll: "Todas",
     presetWomen: "Feminino",
     presetModest: "RFEF / Galegas",
@@ -149,6 +158,16 @@ export const gl = {
     live: "En directo",
     noMatches: "Non hai partidos rexistrados para esta data.",
     galicianTeam: "Equipo galego",
+    names: {
+      "liga-f": "Liga F Moeve",
+      "primera-federacion-fem": "1ª Federación Fem.",
+      "segunda-federacion-fem-g1": "2ª Federación Fem. G1",
+      "primera-division": "Primeira División",
+      "segunda-division": "Segunda División",
+      "primera-rfef-g1": "1ª RFEF G1",
+      "segunda-rfef-g1": "2ª RFEF G1",
+      "tercera-rfef-g1": "3ª RFEF G1",
+    },
   },
   footer: {
     by: "Un proxecto de",

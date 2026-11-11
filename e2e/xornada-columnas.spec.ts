@@ -3,6 +3,7 @@ import { type Browser, expect, type Page, test } from "@playwright/test";
 import { es } from "../src/i18n/es";
 import { gl } from "../src/i18n/gl";
 import { DEMO_MATCHES } from "../src/xornada/demo";
+import { openFilters } from "./filters-panel";
 
 // SPEC-040 CA-5 and CA-6 over the demonstration (Friday 2 to Monday 5 of
 // October 2026, the five competitions): desktop in 360 px columns without the
@@ -194,14 +195,17 @@ for (const route of routes) {
 
         // En xogo: every competition of the demo has a live match, so the
         // live counts stay and all five keep their cells, in order.
+        await openFilters(page);
         await page.getByTestId("filter-live").click();
         await expect(page).toHaveURL(/#f=live$/);
         await check();
         expect(slots(await boxes(page))).toEqual(cells);
         await capture(page, `columnas-en-xogo-${route.lang}-${width}`);
         // Rematados: no live left, the counters change to the totals.
+        await openFilters(page);
         await page.getByTestId("filter-finished").click();
         expect(await check()).not.toEqual(before);
+        await openFilters(page);
         await page.getByTestId("filter-all").click();
 
         // A day: the counters follow it; the competitions left take the

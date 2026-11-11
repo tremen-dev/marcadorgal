@@ -1,10 +1,12 @@
 import {
   COLORS,
+  ELEVATION,
   FAMILIES,
   FOCUS_RING_PX,
   GRID,
   HAIRLINE_PX,
   INPUT_FONT_PX,
+  LEAGUE_COLORS,
   LIVE_DOT,
   LIVE_EDGE,
   MEASURE,
@@ -24,6 +26,10 @@ export function renderTokensCss(): string {
   const vars: [string, string][] = [];
   for (const color of Object.values(COLORS))
     vars.push([color.css, color.value]);
+  for (const color of Object.values(LEAGUE_COLORS))
+    vars.push([color.css, color.value]);
+  for (const layer of Object.values(ELEVATION))
+    vars.push([layer.css, layer.value]);
   for (const [name, stack] of Object.entries(FAMILIES))
     vars.push([`--${name}`, stack]);
   for (const [role, t] of Object.entries(TYPE)) {

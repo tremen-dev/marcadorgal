@@ -2,6 +2,7 @@ import { mkdirSync } from "node:fs";
 import { expect, type Page, test } from "@playwright/test";
 import { es } from "../src/i18n/es";
 import { gl } from "../src/i18n/gl";
+import { openFilters } from "./filters-panel";
 
 // SPEC-028 over the demo (Friday 2 to Monday 5 of October 2026): the logo
 // goes home (CA-4) and the title says which xornada is on screen (CA-6), at
@@ -103,20 +104,27 @@ for (const route of routes) {
           );
           expect(Math.round(title.x - (logoBox.x + logoBox.width))).toBe(28);
         } else {
-          // The 42 px row between the strip and the filters.
+          // The 42 px row between the strip and the filters. SPEC-082: the
+          // panel is folded, so the list comes right after the row; opened,
+          // the panel takes that place.
           const strip = await box('[data-testid="day-strip"]');
-          const filters = await box('[data-testid="filters"]');
           expect(title.height).toBe(42);
           expect(Math.round(title.y)).toBe(Math.round(strip.y + strip.height));
+          const list = await box("main");
+          expect(Math.round(list.y)).toBe(Math.round(title.y + title.height));
+          await openFilters(page);
+          const filters = await box('[data-testid="filters"]');
           expect(Math.round(filters.y)).toBe(
             Math.round(title.y + title.height),
           );
         }
         // The range is the week's: choosing a day or a filter keeps it.
         await page.getByTestId("day-link").nth(1).click();
+        await openFilters(page);
         await page.getByTestId("filter-finished").click();
         await expect(h1).toHaveText(heading);
         await page.getByTestId("day-link").nth(1).click();
+        await openFilters(page);
         await page.getByTestId("filter-all").click();
         await capture(page, `titulo-${route.lang}-${width}`);
 
