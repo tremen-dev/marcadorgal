@@ -328,9 +328,18 @@ a.weekArrow:focus-visible {
 }
 
 /* The title row's room on mobile: under the strip (before the filters) or,
-   with no strip, under the header. */
-.controls .filters {
-  margin-top: var(--bar-mobile-segment);
+   with no strip, under the header. SPEC-082: its own block, so the room
+   stays when the panel under it is folded. */
+.titleRoom {
+  height: var(--bar-mobile-segment);
+  flex: none;
+}
+
+/* SPEC-082 CA-3, CA-4: on mobile the pills and «Ligas» are folded behind
+   the filters button until it opens them, in flow under the title row.
+   Without JavaScript a <noscript> style shows them (CA-6). */
+.controls .filters:not([data-open]) {
+  display: none;
 }
 
 .titleSpace {
@@ -341,41 +350,56 @@ a.weekArrow:focus-visible {
   flex: 1;
 }
 
-.locales {
+/* SPEC-082 CA-3: the filters button, at the right of the bar where gl·es
+   was; a 44 × 44 px target. CA-5: the badge sits over the icon (absolute),
+   so it moves nothing; its number is also in the button's name. */
+.filtersToggle {
+  position: relative;
+  flex: none;
   display: inline-flex;
   align-items: center;
-  gap: 2px;
-  font-family: var(--mono);
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 1;
-}
-
-.locale {
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--touch-target);
-  padding: 0 var(--space-8);
+  justify-content: center;
+  width: var(--touch-target);
+  height: var(--touch-target);
+  margin-right: -10px;
+  padding: 0;
+  border: 0;
   border-radius: 6px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  background: transparent;
   color: var(--fg-dim);
+  cursor: pointer;
 }
 
-.locale:hover {
+.filtersToggle:hover,
+.filtersToggle[aria-expanded="true"] {
   color: var(--fg);
-  text-decoration: none;
 }
 
-.localeCurrent {
-  composes: locale;
-  color: var(--marca);
-  background: color-mix(in srgb, var(--marca) 12%, transparent);
+.filtersToggle[aria-expanded="true"] {
+  background: var(--bg-step);
 }
 
-.localeDot {
-  color: var(--fg-dim);
-  opacity: 0.45;
+.filtersIcon {
+  display: block;
+}
+
+.filtersBadge {
+  position: absolute;
+  top: 5px;
+  right: 3px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: var(--radius-pill);
+  background: var(--marca);
+  color: var(--marca-ink);
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 10px;
+  line-height: 16px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  pointer-events: none;
 }
 
 .competitions {
@@ -955,8 +979,19 @@ section.competition[data-user-hidden="true"] {
     padding-left: 0;
   }
 
-  .titleSpace {
+  .titleSpace,
+  .titleRoom {
     display: none;
+  }
+
+  /* SPEC-082 CA-3: no folding on desktop: no button, the filters as they
+     were (SPEC-023). */
+  .filtersToggle {
+    display: none;
+  }
+
+  .controls .filters:not([data-open]) {
+    display: flex;
   }
 
   .controls {

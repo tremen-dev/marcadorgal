@@ -4,6 +4,7 @@ import { getAppVersionDisplay } from "@/lib/version";
 import { Wordmark } from "../brand/Wordmark";
 import { MailboxLink } from "../common/MailboxLink";
 import styles from "./Footer.module.css";
+import { LocaleSwitch } from "./LocaleSwitch";
 
 type Props = {
   locale: Locale;
@@ -69,6 +70,9 @@ export function Footer({ locale }: Props) {
             </span>
             <MailboxLink className={styles.navLink} />
           </div>
+
+          {/* SPEC-082 CA-2: gl·es, here on every public page. */}
+          <LocaleSwitch locale={locale} />
         </div>
 
         {/* Bottom row: Disclaimer & Copyright on left, {tremen.dev} lockup on right */}

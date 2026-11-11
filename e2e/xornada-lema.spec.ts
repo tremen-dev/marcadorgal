@@ -14,7 +14,9 @@ const MOTTO = gl.xornada.lema;
 const LEMA = '[data-testid="xornada-lema"]';
 const LOGO = '[data-testid="home-link"]';
 const TITLE_ROW = '[data-testid="xornada-title-row"]';
-const LOCALES = '[data-testid="locale-switch"]';
+// SPEC-082 (amends CA-4/CA-5): gl·es left the header for the footer; on
+// mobile the measures are taken against the filters button in its place.
+const TOGGLE = '[data-testid="filters-toggle"]';
 
 const rgb = (value: string): string => {
   const [r, g, b] = [1, 3, 5].map((i) =>
@@ -163,8 +165,9 @@ test.describe("SPEC-081 CA-4 desktop: the motto never pushes", () => {
             logo: await box(page, LOGO),
             lema: await box(page, LEMA),
             title: await box(page, TITLE_ROW),
-            locales: await box(page, LOCALES),
           };
+          // SPEC-082 CA-3: on desktop the filters button is not painted.
+          await expect(page.locator(TOGGLE)).toBeHidden();
           const names = Object.keys(rects) as (keyof typeof rects)[];
           for (const a of names)
             for (const b of names)
@@ -185,9 +188,7 @@ test.describe("SPEC-081 CA-4 desktop: the motto never pushes", () => {
             };
           });
           expect(title).toEqual({ lines: 1, fits: true });
-          expect(rects.locales.x + rects.locales.width).toBeLessThanOrEqual(
-            width,
-          );
+          expect(rects.title.x + rects.title.width).toBeLessThanOrEqual(width);
           if (arrows) await capture(page, `ca4-${lang}-${width}-flechas`);
         });
 
@@ -280,7 +281,6 @@ test.describe("SPEC-081 CA-5 mobile: under the wordmark, the bar still 52 px", (
         ).toBe("52px");
         const logo = await box(page, LOGO);
         const motto = await box(page, LEMA);
-        const locales = await box(page, LOCALES);
         expect(motto.y).toBeGreaterThanOrEqual(logo.y + logo.height);
         expect(Math.abs(motto.x - logo.x)).toBeLessThanOrEqual(0.5);
         for (const r of [logo, motto]) {
@@ -288,8 +288,14 @@ test.describe("SPEC-081 CA-5 mobile: under the wordmark, the bar still 52 px", (
           expect(r.y + r.height).toBeLessThanOrEqual(bar.y + bar.height - 2);
         }
         expect(overlap(logo, motto)).toBe(false);
-        expect(overlap(logo, locales)).toBe(false);
-        expect(overlap(motto, locales)).toBe(false);
+        // SPEC-082: the filters button, where gl·es was, when the screen
+        // has rows to filter.
+        if ((await page.locator(TOGGLE).count()) > 0) {
+          const toggle = await box(page, TOGGLE);
+          expect(overlap(logo, toggle)).toBe(false);
+          expect(overlap(motto, toggle)).toBe(false);
+          expect(toggle.x + toggle.width).toBeLessThanOrEqual(width);
+        }
         // Below the header nothing moves: the same tops without the motto.
         const below = [
           TITLE_ROW,
@@ -399,7 +405,7 @@ test.describe("SPEC-081 CA-7 no layout shift when Caveat arrives late", () => {
         (window as unknown as { __shifts: unknown[] }).__shifts = [];
       });
       const rects = () =>
-        Promise.all([LOGO, LEMA, TITLE_ROW, LOCALES].map((s) => box(page, s)));
+        Promise.all([LOGO, LEMA, TITLE_ROW, "header"].map((s) => box(page, s)));
       const before = await rects();
       expect(await caveatLoaded(page)).toBe(true);
       const after = await rects();

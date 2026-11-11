@@ -2,6 +2,7 @@ import type { Neighbours } from "@/board/weeks";
 import { type Locale, t } from "@/i18n";
 import type { FilterCounts } from "@/xornada/filter";
 import type { XornadaDay } from "@/xornada/view";
+import { FiltersPanel } from "./FiltersPanel";
 import { LeaguesPreferencesTrigger } from "./LeaguesPreferencesDialog";
 import { dayLabel } from "./labels";
 import styles from "./Xornada.module.css";
@@ -107,11 +108,7 @@ export function FilterPills({
   selfHref: string;
 }) {
   return (
-    <nav
-      className={styles.filters}
-      aria-label={t(locale, "filter.label")}
-      data-testid="filters"
-    >
+    <FiltersPanel label={t(locale, "filter.label")}>
       <a
         className={styles.pill}
         href={selfHref}
@@ -147,6 +144,6 @@ export function FilterPills({
         </span>
       </a>
       <LeaguesPreferencesTrigger locale={locale} />
-    </nav>
+    </FiltersPanel>
   );
 }

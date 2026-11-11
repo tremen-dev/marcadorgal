@@ -72,11 +72,11 @@ for (const [locale, dict] of [
     const html = body(locale);
 
     it("no sidebar: no nav, no entry, no «Competicións»", () => {
-      // By default the day-strip is hidden: the filters and gl·es are the only navs; none of competitions.
+      // By default the day-strip is hidden: the filters are the only nav (SPEC-082: gl·es is in the footer); none of competitions.
       const navs = [...html.matchAll(/<nav[^>]*data-testid="([^"]+)"/g)].map(
         (m) => m[1],
       );
-      expect(navs).toEqual(["locale-switch", "filters"]);
+      expect(navs).toEqual(["filters"]);
       expect(html.slice(html.indexOf("<main"))).not.toContain("<nav");
       expect(html).not.toContain("sidebar");
       expect(html).not.toContain("data-competition-link");
@@ -99,7 +99,7 @@ for (const [locale, dict] of [
       const navs = [
         ...withStrip.matchAll(/<nav[^>]*data-testid="([^"]+)"/g),
       ].map((m) => m[1]);
-      expect(navs).toEqual(["locale-switch", "day-strip", "filters"]);
+      expect(navs).toEqual(["day-strip", "filters"]);
     });
 
     it("links each competition to its table only with showTableLink", () => {

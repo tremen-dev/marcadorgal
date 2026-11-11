@@ -2,6 +2,7 @@ import { expect, type Page, test } from "@playwright/test";
 import { explorerAppPort } from "../playwright.config";
 import { es } from "../src/i18n/es";
 import { gl } from "../src/i18n/gl";
+import { openFilters } from "./filters-panel";
 
 // SPEC-057: the home without CompetitionNav, the table link behind
 // SHOW_TABLE_LINK (off on this server), the panel of visible leagues and its
@@ -89,6 +90,7 @@ for (const route of routes) {
       page,
     }) => {
       await page.goto(route.demo);
+      await openFilters(page);
       await page.getByTestId("leagues-preferences-trigger").click();
       const dialog = page.getByTestId("leagues-preferences-dialog");
       await expect(dialog).toHaveAttribute("role", "dialog");
@@ -155,6 +157,7 @@ for (const route of routes) {
       page,
     }) => {
       await page.goto(route.demo);
+      await openFilters(page);
       await page.getByTestId("leagues-preferences-trigger").click();
       await expect(
         page.getByTestId("leagues-preferences-dialog"),
@@ -202,6 +205,7 @@ for (const route of routes) {
       await page.goto(route.demo);
       await expect(page.getByTestId("competition")).toHaveCount(5);
       expect(await visibleLeagues(page)).toEqual(DEMO_LEAGUES);
+      await openFilters(page);
       await page.getByTestId("leagues-preferences-trigger").click();
       await page.getByTestId("preset-pro").click();
       expect(await visibleLeagues(page)).toEqual([

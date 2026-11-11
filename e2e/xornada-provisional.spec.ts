@@ -4,6 +4,7 @@ import { PROVISIONAL_DISPLAY } from "../src/app/config";
 import { COLORS } from "../src/design/tokens";
 import { es } from "../src/i18n/es";
 import { gl } from "../src/i18n/gl";
+import { openFilters } from "./filters-panel";
 
 // SPEC-034 CA-6 over the demonstration, in the default mode (mark): the
 // glyph * in each provisional row, one legend at the foot of the list that
@@ -132,6 +133,7 @@ for (const route of routes) {
         await capture(page, `provisional-${route.lang}-${width}`);
 
         // Rematados still leaves a provisional (Albacete–Cádiz, Saturday).
+        await openFilters(page);
         await page.getByTestId("filter-finished").click();
         await expect(page).toHaveURL(/f=finished/);
         await expect(legend(page)).toBeVisible();

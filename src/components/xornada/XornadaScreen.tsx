@@ -93,6 +93,12 @@ export function XornadaScreen({
         />
       )}
       {(hasRows || live !== undefined) && <XornadaFilters />}
+      {/* SPEC-082 CA-6: without JavaScript there is no button to open the
+          panel: the pills and «Ligas» are shown as before (SPEC-023 CA-6).
+          With it, the first paint is already folded. */}
+      <noscript>
+        <style>{`.${styles.filtersToggle}{display:none}.${styles.controls} .${styles.filters}:not([data-open]){display:flex}`}</style>
+      </noscript>
     </div>
   );
 }

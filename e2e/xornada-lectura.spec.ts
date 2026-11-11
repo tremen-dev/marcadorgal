@@ -6,6 +6,7 @@ import { es } from "../src/i18n/es";
 import { gl } from "../src/i18n/gl";
 import { DEMO_MATCHES } from "../src/xornada/demo";
 import { madridDate } from "../src/xornada/view";
+import { openFilters } from "./filters-panel";
 
 // SPEC-033 over the demonstration (Friday 2 to Monday 5 of October 2026;
 // «now» is Saturday 3): chronological rows, the Equipo galego mark and the
@@ -305,6 +306,8 @@ for (const route of routes) {
         await page.getByTestId("day-link").nth(0).click();
         expect((await state()).every((c) => c.shown)).toBe(true);
 
+        await openFilters(page);
+
         await page.getByTestId("filter-live").click();
         await expect(page).toHaveURL(/#f=live$/);
         seen = await state();
@@ -313,6 +316,7 @@ for (const route of routes) {
           expect(c.statuses.every((st) => st === "live")).toBe(true);
         }
         await capture(page, `lectura-en-xogo-${route.lang}-${width}`);
+        await openFilters(page);
         await page.getByTestId("filter-all").click();
         expect((await state()).every((c) => c.shown)).toBe(true);
       });
