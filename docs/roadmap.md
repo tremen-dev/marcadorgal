@@ -155,6 +155,11 @@ tipo: roadmap
   bloqueantes. Existe para que eso no muera en el ledger de una spec cerrada,
   que nadie relee. Se vacía entre épicas o cuando algo de dentro se vuelve
   urgente. Un fallo que ya hace daño no vive aquí: es EPIC-FIX y salta la cola.
+- **EPIC-MEJORA — Mejoras.** *(Borrador, 2026-11-11.)* Cubo hermano de
+  EPIC-MANT para pulidos de producto, UX y calidad que no son fallo ni
+  capacidad con épica propia: lo que las verificaciones mandan «a EPIC-MEJORA»
+  y las ideas menores del titular. Si aparece un modo de fallo, la entrada pasa
+  a EPIC-MANT. Se vacía en los huecos entre épicas.
 
 ## Más adelante (idea, sin compromiso)
 
