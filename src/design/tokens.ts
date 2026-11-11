@@ -54,6 +54,16 @@ export const LEAGUE_COLORS = {
 
 export type LeagueColorToken = keyof typeof LEAGUE_COLORS;
 
+// SPEC-057 CA-6 (F-SPEC-057-7): the veil behind a modal dialog and the
+// shadow that lifts its card (docs/diseno/HERENCIA.md, 2026-11-11).
+export const ELEVATION = {
+  veil: { value: "rgba(0, 0, 0, 0.75)", css: "--velo" },
+  dialogShadow: {
+    value: "0 16px 40px rgba(0, 0, 0, 0.85)",
+    css: "--sombra-dialogo",
+  },
+} as const satisfies Record<string, Color>;
+
 export type StateSemantic = "live" | "awaiting" | "alert";
 export type StateColorToken = "ember" | "amber" | "red";
 

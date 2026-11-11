@@ -57,3 +57,9 @@ Lo que **no** se hereda está enumerado en `docs/adr/ADR-005-sistema-de-diseno-h
   artboard: `LEAGUE_COLORS` en `src/design/tokens.ts` (`--liga-<id>` en
   `tokens.css`, ocho ligas) para el punto de identificación de cada liga en el
   panel «⚙ Ligas»; nunca indican estado y van siempre junto al nombre.
+- **2026-11-11 (SPEC-057 CA-6/CA-3, F-SPEC-057-7/8).** Elevación solo en
+  código, sin artboard: `ELEVATION` en `src/design/tokens.ts` (`--velo`, el
+  velo negro al 75 % tras un diálogo modal, y `--sombra-dialogo`, la sombra de
+  su tarjeta). Los interruptores del panel «⚙ Ligas» marcan el foco de teclado
+  con un anillo de `--focus-ring` en `--marca`, separado `--focus-ring` del
+  control.

@@ -26,6 +26,8 @@
   --liga-primera-rfef-g1: #10B981;
   --liga-segunda-rfef-g1: #F59E0B;
   --liga-tercera-rfef-g1: #6366F1;
+  --velo: rgba(0, 0, 0, 0.75);
+  --sombra-dialogo: 0 16px 40px rgba(0, 0, 0, 0.85);
   --sans: 'Geist',ui-sans-serif,system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
   --mono: 'Geist Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
   --hand: 'Caveat','Geist',ui-sans-serif,system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;

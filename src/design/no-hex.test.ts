@@ -26,6 +26,25 @@ describe("CA-12 no hex outside the tokens", () => {
   });
 });
 
+// SPEC-057 CA-6 (F-SPEC-057-7): no colour function in CSS outside tokens.css
+// either; a veil or a shadow is a token of tokens.ts like any other colour.
+const COLOR_FN = /(?<![\w-])(?:rgba?|hsla?)\(/;
+
+describe("SPEC-057 CA-6 no rgb()/hsl() literal in CSS outside tokens.css", () => {
+  it("no src/**/*.css but tokens.css contains rgb(, rgba(, hsl( or hsla(", () => {
+    const offenders = sources()
+      .filter((file) => file.endsWith(".css") && !ALLOWED.has(file))
+      .filter((file) => COLOR_FN.test(readFileSync(file, "utf8")));
+    expect(offenders).toEqual([]);
+  });
+
+  it("the pattern catches the literals it is meant to", () => {
+    for (const literal of ["rgba(0, 0, 0, 0.75)", "rgb(1 2 3)", "hsl(0 0% 0%)"])
+      expect(COLOR_FN.test(`a { color: ${literal}; }`)).toBe(true);
+    expect(COLOR_FN.test("a { color: var(--velo); }")).toBe(false);
+  });
+});
+
 // SPEC-020 CA-6: the waiting page left /; the screen that replaced it keeps
 // the guarantee.
 describe("CA-11 Xornada.module.css consumes tokens.css", () => {

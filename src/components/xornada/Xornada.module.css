@@ -1153,7 +1153,7 @@ section.competition[data-user-hidden="true"] {
 .dialogOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
+  background: var(--velo);
   backdrop-filter: blur(4px);
   z-index: 1000;
   display: flex;
@@ -1186,7 +1186,7 @@ section.competition[data-user-hidden="true"] {
   border: var(--hairline) solid var(--line-strong);
   border-radius: var(--radius-lg);
   padding: var(--space-24);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85);
+  box-shadow: var(--sombra-dialogo);
   display: flex;
   flex-direction: column;
   gap: var(--space-16);
@@ -1339,11 +1339,16 @@ section.competition[data-user-hidden="true"] {
   border: var(--hairline) solid var(--line);
   position: relative;
   cursor: pointer;
-  outline: none;
   transition:
     background-color 200ms ease,
     border-color 200ms ease;
   flex-shrink: 0;
+}
+
+/* SPEC-057 CA-3 (F-SPEC-057-8): a ring around the switch, not only a colour. */
+.switchInput:focus-visible {
+  outline: var(--focus-ring) solid var(--marca);
+  outline-offset: var(--focus-ring);
 }
 
 .switchInput:before {

@@ -151,6 +151,38 @@ for (const route of routes) {
       await expect(dialog).toHaveCount(0);
     });
 
+    test("CA-3 a switch reached with Tab shows a focus ring", async ({
+      page,
+    }) => {
+      await page.goto(route.demo);
+      await page.getByTestId("leagues-preferences-trigger").click();
+      await expect(
+        page.getByTestId("leagues-preferences-dialog"),
+      ).toBeVisible();
+
+      let onSwitch = false;
+      for (let i = 0; i < 20 && !onSwitch; i++) {
+        await page.keyboard.press("Tab");
+        onSwitch = await page.evaluate(
+          () =>
+            document.activeElement
+              ?.getAttribute("data-testid")
+              ?.startsWith("toggle-competition-") ?? false,
+        );
+      }
+      expect(onSwitch).toBe(true);
+
+      const ring = await page.evaluate(() => {
+        const el = document.activeElement as HTMLElement;
+        const s = getComputedStyle(el);
+        return {
+          outline: s.outlineStyle !== "none" && s.outlineWidth !== "0px",
+          shadow: s.boxShadow !== "none",
+        };
+      });
+      expect(ring.outline || ring.shadow).toBe(true);
+    });
+
     test("CA-5 without JavaScript every league is served", async ({
       browser,
     }) => {
