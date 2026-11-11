@@ -9,12 +9,12 @@ Criterios de aceptación y evidencia de verificación de SPEC-062.
 
 | Criterio | Módulos afectados | Pruebas | Estado |
 | :--- | :--- | :--- | :--- |
-| CA-1 Desacoplamiento del núcleo de ingesta y adaptadores | `src/sources/registry.ts`, `src/ingest/adapters.ts`, `src/decide/engine.ts` | `src/sources/registry.test.ts` (`SOURCES` = `[rfef]`, `sourceConfig("api-football")` undefined), `src/ingest/rfef-alta.test.ts` (`ADAPTERS` = `["rfef"]`) | ✅ Verificado |
-| CA-2 Desacoplamiento de importadores de calendario | `src/calendar/importers.ts`, `src/sources/rfef/calendar.ts` | `src/calendar/importers.test.ts` (nuevo: `IMPORTERS` = `[rfefCalendar]`, `importerFor("api-football")` undefined), `src/calendar/cli.test.ts` | ✅ Verificado |
-| CA-3 Saneamiento de herramientas CLI y variables de entorno | `.env.example`, `.github/workflows/calendario-semanal.yml`, `tools/calendario-sync.mjs`, `tools/informe-jornada.mjs`, `tools/reconciliar-cierre.mjs`, `tools/reconciliar-sin-directo.mjs`, `tools/legacy-api-football.mjs` | `src/calendar/cli.test.ts` (sale 1 sin `RFEF_EXPLORER_TOKEN`), `src/arch/deploy.test.ts` (workflow con `RFEF_EXPLORER_TOKEN`; nuevo «SPEC-062 CA-3 no API_FOOTBALL_KEY in env template or workflows») | ✅ Verificado |
-| CA-4 Aislamiento y retirada del directorio `src/sources/api-football/` | `src/sources/api-football/` (eliminado), `src/decide/fixtures/girona-albacete-observations.ts`, `src/medicion/goal-events.ts`, `src/medicion/fixtures/live-2026-09-26.json` | `src/decide/replay.test.ts`, `src/ingest/goal-events.test.ts`, `src/medicion/generar-informe.db.test.ts` (suite db, fuera de `npm run gates`) | ✅ Verificado |
-| CA-5 Actualización de tests de arquitectura y contratos | `src/arch/deploy.test.ts`, `src/arch/sources-boundary.test.ts`, `src/arch/source-contract.test.ts` | `src/arch/sources-boundary.test.ts` (nuevo «SPEC-062 CA-5 no coupling to api-football»: no existe `src/sources/api-football`, nada bajo `src/` importa `api-football`), `src/arch/deploy.test.ts` (CA-3), `src/arch/source-contract.test.ts` (sin usos de api-football) | ✅ Verificado |
-| CA-6 Gates en verde | Suite completa (`npm run gates`) | `npm run gates` en `71a97fd`: ver evidencia CA-6 | ✅ Verificado |
+| CA-1 Desacoplamiento del núcleo de ingesta y adaptadores | `src/sources/registry.ts`, `src/ingest/adapters.ts`, `src/decide/engine.ts` | `src/sources/registry.test.ts` (`SOURCES` = `[rfef]`, `sourceConfig("api-football")` undefined), `src/ingest/rfef-alta.test.ts` (`ADAPTERS` = `["rfef"]`) | ✅ Verificado (2.ª verif. 2026-11-11, GREEN) |
+| CA-2 Desacoplamiento de importadores de calendario | `src/calendar/importers.ts`, `src/sources/rfef/calendar.ts` | `src/calendar/importers.test.ts` (nuevo: `IMPORTERS` = `[rfefCalendar]`, `importerFor("api-football")` undefined), `src/calendar/cli.test.ts` | ✅ Verificado (2.ª verif. 2026-11-11, GREEN) |
+| CA-3 Saneamiento de herramientas CLI y variables de entorno | `.env.example`, `.github/workflows/calendario-semanal.yml`, `tools/calendario-sync.mjs`, `tools/informe-jornada.mjs`, `tools/reconciliar-cierre.mjs`, `tools/reconciliar-sin-directo.mjs`, `tools/legacy-api-football.mjs` | `src/calendar/cli.test.ts` (sale 1 sin `RFEF_EXPLORER_TOKEN`), `src/arch/deploy.test.ts` (workflow con `RFEF_EXPLORER_TOKEN`; nuevo «SPEC-062 CA-3 no API_FOOTBALL_KEY in env template or workflows») | ✅ Verificado (2.ª verif. 2026-11-11, GREEN) |
+| CA-4 Aislamiento y retirada del directorio `src/sources/api-football/` | `src/sources/api-football/` (eliminado), `src/decide/fixtures/girona-albacete-observations.ts`, `src/medicion/goal-events.ts`, `src/medicion/fixtures/live-2026-09-26.json` | `src/decide/replay.test.ts`, `src/ingest/goal-events.test.ts`, `src/medicion/generar-informe.db.test.ts` (suite db, fuera de `npm run gates`) | ✅ Verificado (2.ª verif. 2026-11-11, GREEN) |
+| CA-5 Actualización de tests de arquitectura y contratos | `src/arch/deploy.test.ts`, `src/arch/sources-boundary.test.ts`, `src/arch/source-contract.test.ts` | `src/arch/sources-boundary.test.ts` (nuevo «SPEC-062 CA-5 no coupling to api-football»: no existe `src/sources/api-football`, nada bajo `src/` importa `api-football`), `src/arch/deploy.test.ts` (CA-3), `src/arch/source-contract.test.ts` (sin usos de api-football) | ✅ Verificado (2.ª verif. 2026-11-11, GREEN) |
+| CA-6 Gates en verde | Suite completa (`npm run gates`) | `npm run gates` en `71a97fd`: ver evidencia CA-6 | ✅ Verificado (2.ª verif. 2026-11-11, GREEN) |
 
 ## Evidencia de Verificación
 
@@ -73,6 +73,22 @@ Comando runtime: `node --experimental-strip-types check062.mts` (importa `import
 - F-1: `src/calendar/importers.test.ts` (nuevo). F-2: `src/arch/deploy.test.ts` › «SPEC-062 CA-3 …». F-3: `src/arch/sources-boundary.test.ts` › «SPEC-062 CA-5 …». F-4: citas de la tabla y la evidencia de arriba corregidas a ficheros reales. Commit `71a97fd`.
 - Mutación (revertida): `IMPORTERS` con un segundo importador `id: "api-football"` + `API_FOOTBALL_KEY=` en `.env.example` + `src/sources/api-football/results.ts` + `src/ingest/zz-mut.ts` importándolo → `vitest run` de los 3 ficheros: «Tests 5 failed \| 47 passed (52)», fallan exactamente los 5 casos nuevos. Restaurado: «Tests 52 passed (52)».
 - Columna «Estado» de la primera tabla: no es mía (la dejó así la iteración anterior); la decide el verificador.
+
+## Veredicto del verificador (2.ª verificación) — 2026-11-11 — GREEN
+
+Sobre `50347c2` (rama `ft/SPEC-062-tests-desacoplamiento`). F-1..F-4 resueltos.
+
+| CA | Implementado | Test | Verif. | Estado |
+| :--- | :--- | :--- | :--- | :--- |
+| CA-1 | sí | `src/sources/registry.test.ts`, `src/ingest/rfef-alta.test.ts` | sin cambios desde la 1.ª verificación; suite verde | ✅ |
+| CA-2 | sí | `src/calendar/importers.test.ts` (2 casos) | mutación `IMPORTERS` + importador `id: "api-football"` → fallan los 2 | ✅ |
+| CA-3 | sí (`API_FOOTBALL_KEY` en `REMOTE_SECRETS` solo para vaciarlo: permitido) | `src/calendar/cli.test.ts:41`, `src/arch/deploy.test.ts` › «SPEC-062 CA-3 …» | mutación `API_FOOTBALL_KEY=` en `.env.example` y comentario en `calendario-semanal.yml` → falla el caso de cada fichero | ✅ |
+| CA-4 | sí | `src/decide/replay.test.ts` (fixture `girona-albacete-observations.ts`), `src/ingest/goal-events.test.ts` | suite verde; todas las rutas citadas existen | ✅ |
+| CA-5 | sí | `src/arch/sources-boundary.test.ts` › «SPEC-062 CA-5 …» | mutación directorio `src/sources/api-football/` + `import()` dinámico y `export * from` en `src/ingest/zz-mut.ts` → fallan ambos casos | ✅ |
+| CA-6 | — | `npm run gates` | `EXIT=0`: `tsc` sin salida; biome «Checked 487 files… No fixes applied»; vitest «Test Files 173 passed (173) / Tests 2917 passed \| 3 skipped (2920)»; `next build` «✓ Compiled successfully»; sin `warn` en el log | ✅ |
+
+Mutaciones revertidas (`git status` limpio salvo ficheros ajenos). Combinada: `vitest run` de los 3 ficheros → «Tests 5 failed \| 47 passed (52)»; `.env.example` + re-export → «Tests 2 failed \| 48 passed (50)».
+Ledger: todas las rutas citadas existen (comprobado fichero a fichero). O-1/O-2 siguen abiertas para EPIC-MANT, no bloqueantes.
 
 ## Cómo retomar (handoff)
 
