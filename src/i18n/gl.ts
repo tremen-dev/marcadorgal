@@ -83,6 +83,13 @@ export const gl = {
     // SPEC-068 CA-3: the note after a scorer's name, penalty or own goal.
     goalPenalty: "(p.)",
     goalOwnGoal: "(p.p.)",
+    // SPEC-082 CA-5: the name of the folded filters button (mobile), with
+    // no filter on and with n of them on.
+    filters: "Filtros",
+    filtersActive: {
+      one: "Filtros: {n} activo",
+      other: "Filtros: {n} activos",
+    },
   },
   weekday: {
     mon: "lun",

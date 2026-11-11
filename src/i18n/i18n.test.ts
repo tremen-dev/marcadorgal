@@ -311,3 +311,28 @@ describe("SPEC-024 CA-8 freshness of the screen", () => {
     expect(es.freshness.offline).toBe("Sin conexión");
   });
 });
+
+describe("SPEC-082 CA-5/CA-7 the filters button", () => {
+  it("is «Filtros» with no filter on, in both locales", () => {
+    expect(t("gl", "xornada.filters")).toBe("Filtros");
+    expect(t("es", "xornada.filters")).toBe("Filtros");
+  });
+
+  it("says how many are on, singular and plural, in both locales", () => {
+    for (const locale of ["gl", "es"] as const) {
+      expect(t(locale, "xornada.filtersActive.one", { n: 1 })).toBe(
+        "Filtros: 1 activo",
+      );
+      expect(t(locale, "xornada.filtersActive.other", { n: 2 })).toBe(
+        "Filtros: 2 activos",
+      );
+    }
+  });
+
+  it("no component writes them as a literal", () => {
+    const offenders = globSync("src/**/*.tsx").filter((file) =>
+      /["'>]Filtros/.test(readFileSync(file, "utf8")),
+    );
+    expect(offenders).toEqual([]);
+  });
+});

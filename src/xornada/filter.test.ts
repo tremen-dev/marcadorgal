@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import * as filterModule from "./filter";
 import {
+  activeFilterCount,
   competitionCounts,
   countFilters,
   EMPTY_STATE,
@@ -205,5 +206,22 @@ describe("SPEC-040 CA-3 no day groups", () => {
       false,
       false,
     ]);
+  });
+});
+
+// SPEC-082 CA-5: the number on the folded filters button.
+describe("SPEC-082 CA-5 activeFilterCount", () => {
+  it.each([
+    [EMPTY_STATE, [], 0],
+    [{ day: null, filter: "live" }, [], 1],
+    [{ day: null, filter: "finished" }, [], 1],
+    [EMPTY_STATE, ["liga-f"], 1],
+    [EMPTY_STATE, ["liga-f", "primera-division"], 1],
+    [{ day: null, filter: "live" }, ["liga-f"], 2],
+    // The day is the strip's, outside the panel: it never counts.
+    [{ day: "2026-10-03", filter: null }, [], 0],
+    [{ day: "2026-10-03", filter: "finished" }, ["tercera-rfef-g1"], 2],
+  ] as const)("%o with hidden %o → %i", (state, hidden, n) => {
+    expect(activeFilterCount(state, hidden)).toBe(n);
   });
 });
