@@ -49,7 +49,7 @@ Actualizado: 2026-11-11
 | SPEC-051 — manifiesto-pwa-e-pantalla-completa-standalone | hecho | 2026-11-07 (sdd-verificador) |
 | SPEC-055 — soporte-futbol-femenino-e-integracion-explorer | hecho | 2026-11-07 (sdd-implementador) |
 | SPEC-056 — despliegue-interactivo-de-goleadores-por-equipo | hecho | 2026-11-07 (sdd-implementador) |
-| SPEC-057 — panel-preferencias-ligas-e-enlaces-clasificacion | borrador | 2026-11-07 (sdd-arquitecto) |
+| SPEC-057 — panel-preferencias-ligas-e-enlaces-clasificacion | hecho | 2026-11-11 (sdd-verificador) |
 | SPEC-058 — footer-de-produccion-version-identidad-tremen-dev-e-informacion-legal | hecho | 2026-11-07 (sdd-verificador) |
 | SPEC-059 — enriquecemento-de-goleadores-da-xornada-desde-explorer | feito | 2026-11-08 (sdd-implementador) |
 | SPEC-060 — ingesta-historica-resultados-y-goleadores | hecho | 2026-11-10 (titular) |
@@ -58,6 +58,7 @@ Actualizado: 2026-11-11
 | SPEC-065 — identidad-celeste-tokens-wordmark-con-bloque-dibujado-e-icono-de-barra-sola | hecho | 2026-11-08 (sdd-verificador) |
 | SPEC-068 — goleadores-colgados-de-su-equipo-en-la-fila-de-partido | hecho | 2026-11-09 (sdd-verificador) |
 | SPEC-081 — lema-manuscrito-todo-o-futbol-galego-junto-al-logo | hecho | 2026-11-11 (sdd-verificador) |
+| SPEC-082 — cabecera-movil-ligera-idioma-al-pie-y-filtros-plegados | hecho | 2026-11-11 (sdd-verificador) |
 
 ## EPIC-004 — fuente-rfef (aprobada)
 
@@ -169,8 +170,8 @@ Actualizado: 2026-11-11
 
 ## Resumen
 
-- hecho: 72
+- hecho: 74
 - en-revision: 3
-- borrador: 2
 - feito: 1
 - implementada: 1
+- borrador: 1
