@@ -59,7 +59,35 @@ Salvedades / follow-ups:
 - F-SPEC-057-6: `src/model/competitions.ts` (`COMPETITIONS_METADATA[].color/accentColor`) sigue con `rgb()` literales; fuera del panel y de esta spec, no se pintan en el panel.
 - La subida de versión de `package.json` queda para el PR conjunto con SPEC-082 (indicación del orquestador).
 
+## Matriz del verificador — 2ª ronda (2026-11-11, rama `ft/SPEC-082-cabecera-movil-ligera` en e4c5c28, spec enmendada)
+| CA | Test que lo demuestra | Verif. | Estado |
+|---|---|---|---|
+| CA-1 | `e2e/ligas-preferencias.spec.ts` «CA-1 no CompetitionNav…», «CA-1 CompetitionNav stays…» (gl, es) | e2e verde; aserta 0 `competition-nav` en portada y nada visible sobre el logo; nav presente en `/directos`, `/competicion`, `/clasificacion`, `/calendario` | ✅ |
+| CA-2 | `columns.test.ts` «SPEC-057 CA-2…»; e2e «CA-2 off by default» | Apagado: 0 enlaces. Servidor local con `SHOW_TABLE_LINK=true`: 5 enlaces `/competicion/<id>` y `/es/competicion/<id>`, `Táboa ↗`/`Tabla ↗`, `aria-label` «Táboa de Primeira División», ninguno dentro de `<summary>`, foco + `Enter` navega (gl y es) | ✅ |
+| CA-3 | e2e «CA-3 switches named…» (gl, es); `league-preferences.test.ts` nameKey | Panel con presets `Todas/Feminino/RFEF / Galegas/Profesional` (es: `Femenino/RFEF / Gallegas`), nombres en es por `nameKey`, toolbar con `aria-label` i18n, última liga bloqueada. **Pero los interruptores no muestran foco de teclado**: `.switchInput { outline: none }` anula el anillo global `:focus-visible`; con foco, `outlineStyle: none`, `boxShadow: none` (captura `CA-3-foco-switch-gl.png`) | ❌ |
+| CA-4 | `league-preferences.test.ts` | Local: preset `Profesional` → clave `marcadorgal:preferences:visible-leagues:v1` = `["primera-division","segunda-division"]`, oculta al instante y persiste tras recarga (gl, es) | ✅ |
+| CA-5 | `league-preferences.test.ts` «with localStorage blocked…», «with setItem throwing…»; e2e «CA-5 without JavaScript…», «CA-5 with storage blocked…» | Chrome local con getter de `localStorage` lanzando `SecurityError`: demo gl/es carga 5/5 secciones, preset `Profesional` funciona en memoria, 0 `pageerror`; `/` y `/es` cargan (logo visible, 0 errores). F-1 cerrado | ✅ |
+| CA-6 | gates + e2e; tests de tokens e i18n | `tsc` 0; `biome check` 0 (474 ficheros, worktree LF); vitest 2814 ok/3 skip (168 ficheros); `npx playwright test` 364 ok/1 skip. Colores de liga ya son `var(--liga-<id>)` de `LEAGUE_COLORS`. **Pero el CSS del panel conserva 2 literales `rgba()`**: `Xornada.module.css:1156` (`.dialogOverlay` `background: rgba(0, 0, 0, 0.75)`) y `:1189` (`.dialogCard` `box-shadow: … rgba(0, 0, 0, 0.85)`); son los únicos `rgba(` de todo `src/**/*.css` fuera de tokens | ❌ |
+
+## Veredicto del verificador — 2ª ronda
+**RED** — 2026-11-11, sdd-verificador. F-1..F-5 cerrados (almacenamiento bloqueado verificado en local, nameKey, i18n, tests). Quedan dos incumplimientos nuevos/no detectados en la 1ª ronda.
+
+Findings:
+1. **F-SPEC-057-7 (CA-6 tokens).** `src/components/xornada/Xornada.module.css:1156` y `:1189` usan `rgba(0, 0, 0, …)` literales en el overlay y la sombra del panel; CA-6 prohíbe `rgb()` literales en estilos del panel. Deben salir de tokens de `src/design/tokens.ts` (p. ej. un token de velo/sombra) y conviene una guarda de test que lo cubra para el CSS del panel.
+2. **F-SPEC-057-8 (CA-3 accesibilidad).** `.switchInput` (`Xornada.module.css`, bloque SPEC-057) declara `outline: none` sin `:focus-visible` propio: navegando con teclado por el diálogo, el interruptor enfocado no se distingue. Añadir un indicador de foco (o no anular el anillo global) y un caso e2e que lo compruebe.
+
+Notas (no bloquean): `· Depor ABANCA` / `· As Celtas` son nombres propios fijados en `KNOWN_COMPETITIONS` (CA-3 los cita literales); F-SPEC-057-6 (`COMPETITIONS_METADATA` con `rgb()`) sigue fuera del panel. El `aria-label` del enlace usa `competition.name` (nombre canónico, igual en gl y es por dominio). La portada real no se probó con datos en local (sin lector, estado vacío); el panel se probó sobre `/demo/xornada` y `/es/demo/xornada`, mismo `XornadaBody`.
+
+| CA | Capturas 2ª ronda (`_qa/SPEC-057/`) |
+|---|---|
+| CA-2 | `CA-2-enlace-r2-gl.png`, `CA-2-enlace-r2-es.png` |
+| CA-3 | `CA-3-panel-r2-gl.png`, `CA-3-panel-r2-es.png`, `CA-3-foco-switch-gl.png`, `CA-3-foco-switch-es.png` |
+| CA-4 | `CA-4-persistencia-r2-gl.png`, `CA-4-persistencia-r2-es.png` |
+| CA-5 | `CA-5-storage-bloqueado-local-r2-gl.png`, `CA-5-storage-bloqueado-local-r2-es.png` |
+
 ## Cómo retomar (handoff)
 Spec devuelta a `en-progreso`. Arreglar F-1 (mover la comprobación dentro del `try`) es urgente por estar en prod. F-2 requiere decisión del titular/arquitecto (¿se enmienda CA-2 con el interruptor?). Después, tests para CA-1/2/3/5 (incluido almacenamiento bloqueado) y nueva verificación.
 
 Implementador (2026-11-11): F-1, F-3, F-4 y F-5 cerrados (tabla «Implementador — cierre de findings»); F-2 cerrado por la enmienda de la spec y cubierto por tests. Spec en `en-revision`; toca nueva verificación. Rama `ft/SPEC-082-cabecera-movil-ligera` (PR conjunto con SPEC-082).
+
+Verificador (2026-11-11, 2ª ronda): RED por F-7 y F-8; spec a `en-progreso`.

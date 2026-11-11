@@ -2,7 +2,7 @@
 id: SPEC-057
 tipo: spec
 epica: EPIC-003
-estado: en-revision
+estado: en-progreso
 historial:
   - {estado: borrador, fecha: 2026-11-07, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-11-11, por: Alberto Fojo}
@@ -10,6 +10,7 @@ historial:
   - {estado: en-revision, fecha: 2026-11-11, por: sdd-orquestador}
   - {estado: en-progreso, fecha: 2026-11-11, por: sdd-verificador}
   - {estado: en-revision, fecha: 2026-11-11, por: sdd-implementador}
+  - {estado: en-progreso, fecha: 2026-11-11, por: sdd-verificador}
 aprobada-por: Alberto Fojo
 ---
 # SPEC-057 — Panel de preferencias de ligas visibles e enlaces a clasificación en cabeceiras de columna
