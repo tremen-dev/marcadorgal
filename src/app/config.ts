@@ -1,4 +1,7 @@
-import type { ProvisionalDisplay } from "@/xornada/qualifier";
+import {
+  PROVISIONAL_DISPLAYS,
+  type ProvisionalDisplay,
+} from "@/xornada/qualifier";
 import { RECENT_GOAL_MARKS, type RecentGoalMark } from "@/xornada/recent-goal";
 
 // The web's configuration: editorial choices of the public screen, versioned
@@ -6,7 +9,18 @@ import { RECENT_GOAL_MARKS, type RecentGoalMark } from "@/xornada/recent-goal";
 
 // SPEC-034 CA-5 (H-1..H-4): how the screen presents a provisional Decision.
 // "label" (the word), "mark" (the glyph * with a legend) or "hidden".
-export const PROVISIONAL_DISPLAY: ProvisionalDisplay = "mark";
+// SPEC-084 CA-1: hidden by default; the aviso legal explains it.
+export const PROVISIONAL_DISPLAY: ProvisionalDisplay = "hidden";
+
+// SPEC-084 CA-3 (H-1): the ?provisional= of the demonstration (and only
+// there) picks the mode. Absent, or not exactly a mode, it is
+// PROVISIONAL_DISPLAY; repeated, the first one counts.
+export function provisionalDisplay(
+  param: string | readonly string[] | undefined,
+): ProvisionalDisplay {
+  const wanted = typeof param === "string" ? param : param?.[0];
+  return PROVISIONAL_DISPLAYS.find((m) => m === wanted) ?? PROVISIONAL_DISPLAY;
+}
 
 // SPEC-041 CA-3 (H-4): how long a goal pulses, in minutes, and how the
 // number is marked: "box" (a neutral box around it) or "label" (the «GOL»

@@ -1,5 +1,6 @@
 import { mkdirSync } from "node:fs";
 import { expect, type Page, test } from "@playwright/test";
+import { PROVISIONAL_DISPLAY } from "../src/app/config";
 import { es } from "../src/i18n/es";
 import { gl } from "../src/i18n/gl";
 
@@ -56,7 +57,13 @@ for (const route of routes) {
         } else {
           expect(row.margin, row.text).toMatch(/^\d{2}:\d{2}$/);
         }
-        if (row.qualifier !== "confirmado") {
+        // SPEC-084 CA-2: in the default mode (hidden) a provisional row
+        // says nothing; sen sinal always says its label (D-9).
+        if (row.qualifier === "provisional" && PROVISIONAL_DISPLAY === "hidden")
+          expect(row.text, row.text).not.toContain(
+            route.dict.qualifier.provisional,
+          );
+        else if (row.qualifier !== "confirmado") {
           const qualifier = row.qualifier as keyof typeof route.dict.qualifier;
           expect(row.text, row.text).toContain(route.dict.qualifier[qualifier]);
         }

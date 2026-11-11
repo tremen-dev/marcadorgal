@@ -5,6 +5,7 @@ import { PROVISIONAL_DISPLAYS } from "@/xornada/qualifier";
 import { RECENT_GOAL_MARKS } from "@/xornada/recent-goal";
 import {
   PROVISIONAL_DISPLAY,
+  provisionalDisplay,
   RECENT_GOAL_MARK,
   RECENT_GOAL_MINUTES,
   recentGoalMark,
@@ -14,14 +15,36 @@ import {
   showTableLink,
 } from "./config";
 
-// SPEC-034 CA-5 (H-1, H-2): the mode lives in one constant of the web.
-describe("SPEC-034 CA-5 PROVISIONAL_DISPLAY", () => {
+// SPEC-034 CA-5 (H-1): the mode lives in one constant of the web.
+// SPEC-084 CA-1 amends SPEC-034 CA-5/H-2: hidden by default; the
+// explanation lives in the aviso legal.
+describe("SPEC-084 CA-1 PROVISIONAL_DISPLAY", () => {
   it("is one of the three modes", () => {
     expect(PROVISIONAL_DISPLAYS).toContain(PROVISIONAL_DISPLAY);
   });
 
-  it("is mark by default (H-2); hidden is valid but not the default (H-4)", () => {
-    expect(PROVISIONAL_DISPLAY).toBe("mark");
+  it("is hidden by default (SPEC-084)", () => {
+    expect(PROVISIONAL_DISPLAY).toBe("hidden");
+  });
+});
+
+// SPEC-084 CA-3 (H-1): the demonstration picks the mode by ?provisional=;
+// absent or not exactly a mode, it is PROVISIONAL_DISPLAY.
+describe("SPEC-084 CA-3 provisionalDisplay(param)", () => {
+  it.each([
+    ["label", "label"],
+    ["mark", "mark"],
+    ["hidden", "hidden"],
+    [undefined, "hidden"],
+    ["", "hidden"],
+    ["Mark", "hidden"],
+    [" mark", "hidden"],
+    ["glyph", "hidden"],
+    [["mark"], "mark"],
+    [["label", "mark"], "label"],
+    [[], "hidden"],
+  ] as const)("%j -> %s", (param, expected) => {
+    expect(provisionalDisplay(param)).toBe(expected);
   });
 });
 
