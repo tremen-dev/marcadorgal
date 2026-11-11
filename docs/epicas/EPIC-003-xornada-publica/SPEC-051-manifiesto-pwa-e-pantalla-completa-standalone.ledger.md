@@ -1,3 +1,8 @@
+---
+id: SPEC-051
+tipo: ledger
+epica: EPIC-003
+---
 # Ledger de SPEC-051
 
 Criterios de aceptación y evidencia de verificación de SPEC-051.

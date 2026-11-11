@@ -24,8 +24,6 @@ export type CompetitionMetadata = {
   shortName: string;
   category: CompetitionCategory;
   tier: number;
-  color: string;
-  accentColor: string;
   featuredGalicianTeamId?: string;
 };
 
@@ -41,8 +39,6 @@ export const COMPETITIONS_METADATA: Record<
     shortName: "Liga F",
     category: "femenino",
     tier: 1,
-    color: "rgb(228, 0, 124)",
-    accentColor: "rgb(255, 46, 147)",
     featuredGalicianTeamId: "depor-abanca",
   },
   "primera-federacion-fem": {
@@ -53,8 +49,6 @@ export const COMPETITIONS_METADATA: Record<
     shortName: "1ª Fed. Fem.",
     category: "femenino",
     tier: 2,
-    color: "rgb(162, 28, 175)",
-    accentColor: "rgb(192, 38, 211)",
   },
   "segunda-federacion-fem-g1": {
     id: "segunda-federacion-fem-g1",
@@ -64,8 +58,6 @@ export const COMPETITIONS_METADATA: Record<
     shortName: "2ª Fed. Fem. G1",
     category: "femenino",
     tier: 3,
-    color: "rgb(124, 58, 237)",
-    accentColor: "rgb(139, 92, 246)",
     featuredGalicianTeamId: "as-celtas",
   },
   "primera-division": {
@@ -76,8 +68,6 @@ export const COMPETITIONS_METADATA: Record<
     shortName: "1ª División",
     category: "masculino",
     tier: 1,
-    color: "rgb(255, 75, 75)",
-    accentColor: "rgb(255, 107, 0)",
     featuredGalicianTeamId: "celta",
   },
   "segunda-division": {
@@ -88,8 +78,6 @@ export const COMPETITIONS_METADATA: Record<
     shortName: "2ª División",
     category: "masculino",
     tier: 2,
-    color: "rgb(37, 99, 235)",
-    accentColor: "rgb(59, 130, 246)",
     featuredGalicianTeamId: "deportivo",
   },
   "primera-rfef-g1": {
@@ -100,8 +88,6 @@ export const COMPETITIONS_METADATA: Record<
     shortName: "1ª RFEF G1",
     category: "masculino",
     tier: 3,
-    color: "rgb(5, 150, 105)",
-    accentColor: "rgb(16, 185, 129)",
     featuredGalicianTeamId: "lugo",
   },
   "segunda-rfef-g1": {
@@ -112,8 +98,6 @@ export const COMPETITIONS_METADATA: Record<
     shortName: "2ª RFEF G1",
     category: "masculino",
     tier: 4,
-    color: "rgb(217, 119, 6)",
-    accentColor: "rgb(245, 158, 11)",
     featuredGalicianTeamId: "pontevedra",
   },
   "tercera-rfef-g1": {
@@ -124,8 +108,6 @@ export const COMPETITIONS_METADATA: Record<
     shortName: "3ª RFEF G1",
     category: "masculino",
     tier: 5,
-    color: "rgb(79, 70, 229)",
-    accentColor: "rgb(99, 102, 241)",
   },
 };
 

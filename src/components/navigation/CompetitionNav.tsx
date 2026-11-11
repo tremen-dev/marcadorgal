@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { leagueColor } from "../../design/league-color.ts";
 import { type Locale, t } from "../../i18n/index.ts";
 import {
   COMPETITIONS_METADATA,
@@ -99,16 +100,10 @@ export function CompetitionNav({
             >
               <span
                 className={styles.leagueDot}
-                style={{ backgroundColor: comp.color }}
+                style={{ backgroundColor: leagueColor(comp.id) }}
                 aria-hidden="true"
               />
               <span>{comp.shortName}</span>
-              {comp.id === "liga-f" && (
-                <span className={styles.featuredTeamTag}>· Depor ABANCA</span>
-              )}
-              {comp.id === "segunda-federacion-fem-g1" && (
-                <span className={styles.featuredTeamTag}>· As Celtas</span>
-              )}
             </a>
           );
         })}

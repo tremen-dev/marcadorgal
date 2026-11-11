@@ -51,7 +51,7 @@ Actualizado: 2026-11-11
 | SPEC-056 — despliegue-interactivo-de-goleadores-por-equipo | hecho | 2026-11-07 (sdd-implementador) |
 | SPEC-057 — panel-preferencias-ligas-e-enlaces-clasificacion | hecho | 2026-11-11 (sdd-verificador) |
 | SPEC-058 — footer-de-produccion-version-identidad-tremen-dev-e-informacion-legal | hecho | 2026-11-07 (sdd-verificador) |
-| SPEC-059 — enriquecemento-de-goleadores-da-xornada-desde-explorer | feito | 2026-11-08 (sdd-implementador) |
+| SPEC-059 — enriquecemento-de-goleadores-da-xornada-desde-explorer | en-revision | 2026-11-08 (sdd-implementador) |
 | SPEC-060 — ingesta-historica-resultados-y-goleadores | hecho | 2026-11-10 (titular) |
 | SPEC-061 — tira-de-dias-configurable-e-oculta-por-defecto | hecho | 2026-11-08 (sdd-verificador) |
 | SPEC-064 — assets-de-redes-sociales-y-og-png-con-la-identidad-celeste | hecho | 2026-11-08 (sdd-verificador) |
@@ -73,7 +73,7 @@ Actualizado: 2026-11-11
 | SPEC-052 — minuto-y-descanso-desde-explorer | hecho | 2026-11-07 (sdd-verificador) |
 | SPEC-053 — ampliar-ventana-live-explorer | hecho | 2026-11-07 (sdd-implementador) |
 | SPEC-054 — resolucion-robusta-equipos-explorer | hecho | 2026-11-07 (sdd-implementador) |
-| SPEC-062 — extraccion-api-football-hacia-explorer | implementada | 2026-11-08 (sdd-implementador) |
+| SPEC-062 — extraccion-api-football-hacia-explorer | aprobada | 2026-11-11 (Alberto Fojo) |
 
 ## EPIC-006 — patrocinio (aprobada)
 
@@ -127,6 +127,8 @@ Actualizado: 2026-11-11
 | SPEC-043 — migraciones-automaticas-al-fusionar | hecho | 2026-11-02 (sdd-verificador) |
 | SPEC-047 — entorno-de-base-local-y-gates-en-windows | borrador | 2026-11-03 (sdd-arquitecto) |
 | SPEC-063 — gate-de-version-en-cada-pr | hecho | 2026-11-08 (sdd-verificador) |
+| SPEC-083 — mantenimiento-de-ligas-y-artefactos-sdd | hecho | 2026-11-11 (sdd-verificador) |
+| SPEC-084 — provisional-fuera-de-la-portada-y-explicado-en-el-aviso-legal | hecho | 2026-11-11 (sdd-verificador) |
 
 ## ADRs
 
@@ -170,8 +172,7 @@ Actualizado: 2026-11-11
 
 ## Resumen
 
-- hecho: 74
-- en-revision: 3
-- feito: 1
-- implementada: 1
+- hecho: 76
+- en-revision: 4
+- aprobada: 1
 - borrador: 1

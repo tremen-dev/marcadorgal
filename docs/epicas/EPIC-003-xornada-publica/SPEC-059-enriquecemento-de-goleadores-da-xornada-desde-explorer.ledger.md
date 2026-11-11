@@ -1,3 +1,8 @@
+---
+id: SPEC-059
+tipo: ledger
+epica: EPIC-003
+---
 # Ledger de SPEC-059 — Enriquecemento de goleadores da xornada pública desde Explorer
 
 Criterios de aceptación e evidencia de verificación de SPEC-059.

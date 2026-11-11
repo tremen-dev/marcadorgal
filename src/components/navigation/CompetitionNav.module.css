@@ -107,10 +107,3 @@
   border-radius: 50%;
   display: inline-block;
 }
-
-.featuredTeamTag {
-  font-family: var(--sans);
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--marca);
-}

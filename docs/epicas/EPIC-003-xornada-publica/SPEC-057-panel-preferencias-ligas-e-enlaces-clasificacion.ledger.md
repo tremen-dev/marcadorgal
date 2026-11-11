@@ -1,3 +1,8 @@
+---
+id: SPEC-057
+tipo: ledger
+epica: EPIC-003
+---
 # SPEC-057 — Panel de preferencias de ligas visibles e enlaces a clasificación en cabeceiras de columna
 
 | Criterio | Módulos afectados | Pruebas | Estado |
@@ -9,7 +14,7 @@
 | CA-5 Resiliencia SSR e hidratación | `src/components/xornada/XornadaFilters.tsx` | Atributo `data-user-hidden` en cliente; render SSR completo sin JS | ✅ Completado |
 | CA-6 Calidad y gates | Suite completa (`npm run gates`, `npx playwright test`) | Biome (0 errores), TypeScript (0 errores), Vitest (2225 pruebas), Playwright (250 pruebas) | ✅ Completado |
 
-## Matriz del verificador (2026-11-11, código de main en 90bec70)
+## Matriz del verificador (2026-11-11, código de main en 90bec70) (superada: ver 3ª ronda, GREEN)
 <!-- La tabla de arriba es la mitad del implementador (formato previo a la plantilla). Esta es la del verificador. -->
 | CA | Test que lo demuestra | Verif. | Estado |
 |---|---|---|---|
@@ -20,7 +25,7 @@
 | CA-5 | ninguno específico (e2e `xornada.spec.ts` CA-5 sin JS es de SPEC-021/023) | Sin JS: 5/5 secciones demo y 8 en prod. Hidratación con prefs guardadas: sin errores de consola. **localStorage bloqueado (getter lanza `SecurityError`): la portada entera cae a «This page couldn't load»**, local y prod; `/directos`, `/competicion`, `/aviso-legal` cargan bien | ❌ |
 | CA-6 | gates + e2e | `tsc` 0; `biome check` 0 (473 ficheros); vitest 2807 ok/3 skip (168 ficheros, worktree LF); `npx playwright test` 352 ok/1 skip (incluye `next build`). Pero 8 colores de liga como `rgb()` literales en `src/lib/league-preferences.ts` fuera de tokens, y textos sin i18n (ver CA-3) | ❌ |
 
-## Veredicto del verificador
+## Veredicto del verificador (superada: ver 3ª ronda, GREEN)
 **RED** — 2026-11-11, sdd-verificador. Gates y suite e2e verdes, pero CA-2, CA-5 y CA-6 no se cumplen y CA-1/CA-3 no tienen test.
 
 Findings:
@@ -59,7 +64,7 @@ Salvedades / follow-ups:
 - F-SPEC-057-6: `src/model/competitions.ts` (`COMPETITIONS_METADATA[].color/accentColor`) sigue con `rgb()` literales; fuera del panel y de esta spec, no se pintan en el panel.
 - La subida de versión de `package.json` queda para el PR conjunto con SPEC-082 (indicación del orquestador).
 
-## Matriz del verificador — 2ª ronda (2026-11-11, rama `ft/SPEC-082-cabecera-movil-ligera` en e4c5c28, spec enmendada)
+## Matriz del verificador — 2ª ronda (2026-11-11, rama `ft/SPEC-082-cabecera-movil-ligera` en e4c5c28, spec enmendada) (superada: ver 3ª ronda, GREEN)
 | CA | Test que lo demuestra | Verif. | Estado |
 |---|---|---|---|
 | CA-1 | `e2e/ligas-preferencias.spec.ts` «CA-1 no CompetitionNav…», «CA-1 CompetitionNav stays…» (gl, es) | e2e verde; aserta 0 `competition-nav` en portada y nada visible sobre el logo; nav presente en `/directos`, `/competicion`, `/clasificacion`, `/calendario` | ✅ |
@@ -69,7 +74,7 @@ Salvedades / follow-ups:
 | CA-5 | `league-preferences.test.ts` «with localStorage blocked…», «with setItem throwing…»; e2e «CA-5 without JavaScript…», «CA-5 with storage blocked…» | Chrome local con getter de `localStorage` lanzando `SecurityError`: demo gl/es carga 5/5 secciones, preset `Profesional` funciona en memoria, 0 `pageerror`; `/` y `/es` cargan (logo visible, 0 errores). F-1 cerrado | ✅ |
 | CA-6 | gates + e2e; tests de tokens e i18n | `tsc` 0; `biome check` 0 (474 ficheros, worktree LF); vitest 2814 ok/3 skip (168 ficheros); `npx playwright test` 364 ok/1 skip. Colores de liga ya son `var(--liga-<id>)` de `LEAGUE_COLORS`. **Pero el CSS del panel conserva 2 literales `rgba()`**: `Xornada.module.css:1156` (`.dialogOverlay` `background: rgba(0, 0, 0, 0.75)`) y `:1189` (`.dialogCard` `box-shadow: … rgba(0, 0, 0, 0.85)`); son los únicos `rgba(` de todo `src/**/*.css` fuera de tokens | ❌ |
 
-## Veredicto del verificador — 2ª ronda
+## Veredicto del verificador — 2ª ronda (superada: ver 3ª ronda, GREEN)
 **RED** — 2026-11-11, sdd-verificador. F-1..F-5 cerrados (almacenamiento bloqueado verificado en local, nameKey, i18n, tests). Quedan dos incumplimientos nuevos/no detectados en la 1ª ronda.
 
 Findings:

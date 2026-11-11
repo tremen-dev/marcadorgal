@@ -76,3 +76,17 @@ Lo que **no** se hereda está enumerado en `docs/adr/ADR-005-sistema-de-diseno-h
   chips y «⚙ Ligas» pasan a un panel plegable bajo la fila del título;
   `Movil.tpl.html` lo dibuja abierto y el botón lo pliega. En escritorio nada
   se pliega.
+- **2026-11-11 (SPEC-083 CA-5).** `Global.tpl.html` deja de dibujar `gl·es`
+  en la cabecera, como `Escritorio.tpl.html` desde SPEC-082 (y con
+  `node build.mjs` su `Global.dc.html`): vive en el pie de SPEC-058.
+- **2026-11-11 (SPEC-083 CA-4).** Estado vacío por ligas, solo en código y
+  sin artboard: cuando ninguna de las ligas elegidas en «⚙ Ligas» juega en la
+  xornada, el mismo párrafo `.empty` de «nada aquí» (sans 500 15/1.4,
+  `--fg-dim`, sin color nuevo) dice «Ningunha das túas ligas xoga nesta
+  xornada. Cámbiaas en ⚙ Ligas.»; si el vacío viene del filtro de estado,
+  sigue «nada aquí».
+- **2026-11-11 (SPEC-083 CA-2).** Los tokens `--liga-<id>` de SPEC-057 pintan
+  también el punto de cada liga en `CompetitionNav`, la insignia de
+  `CompetitionHeader` y el punto de cada competición en `/directos`; en las
+  cinco ligas masculinas sustituyen a los `rgb()` que llevaba el modelo (p. ej.
+  1ª División pasa a `#EF4444`).

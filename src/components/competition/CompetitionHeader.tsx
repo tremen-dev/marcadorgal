@@ -1,3 +1,4 @@
+import { leagueColor } from "../../design/league-color.ts";
 import { type Locale, t } from "../../i18n/index.ts";
 import {
   type CompetitionMetadata,
@@ -35,7 +36,7 @@ export function CompetitionHeader({ competition, locale, activeTab }: Props) {
       <div className={styles.titleRow}>
         <span
           className={styles.badge}
-          style={{ backgroundColor: competition.color }}
+          style={{ backgroundColor: leagueColor(competition.id) }}
           aria-hidden="true"
         />
         <h1 className={styles.title}>{competition.officialName}</h1>

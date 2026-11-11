@@ -205,3 +205,19 @@ describe("SPEC-068 CA-7 /directos paints the same scorers", () => {
     expect(html).not.toMatch(/goalsBox|goalItem|goalPenalty/);
   });
 });
+
+// SPEC-083 CA-2: the dot of each competition is its league's token.
+describe("SPEC-083 CA-2 /directos paints the league tokens", () => {
+  it("each section's dot is var(--liga-<id>)", () => {
+    const html = renderDirectos();
+    const dots = [
+      ...html.matchAll(
+        /data-competition="([\w-]+)"[\s\S]*?class="[^"]*compDot[^"]*" style="background-color:([^"]+)"/g,
+      ),
+    ].map((m) => [m[1], m[2]]);
+    expect(dots).toEqual([
+      ["liga-f", "var(--liga-liga-f)"],
+      ["primera-federacion-fem", "var(--liga-primera-federacion-fem)"],
+    ]);
+  });
+});

@@ -1,3 +1,8 @@
+---
+id: SPEC-060
+tipo: ledger
+epica: EPIC-003
+---
 # Ledger de SPEC-060 — Ingesta histórica de resultados y goleadores desde la jornada inicial hasta la actual
 
 Criterios de aceptación y evidencia de verificación de SPEC-060.

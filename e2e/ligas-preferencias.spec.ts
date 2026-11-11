@@ -2,6 +2,7 @@ import { expect, type Page, test } from "@playwright/test";
 import { explorerAppPort } from "../playwright.config";
 import { es } from "../src/i18n/es";
 import { gl } from "../src/i18n/gl";
+import { GALICIAN_CLUBS } from "../src/model/clubs";
 import { openFilters } from "./filters-panel";
 
 // SPEC-057: the home without CompetitionNav, the table link behind
@@ -104,8 +105,18 @@ for (const route of routes) {
             .filter({ has: page.getByTestId(`toggle-competition-${id}`) }),
         ).toContainText(name);
       }
-      await expect(dialog).toContainText("· Depor ABANCA");
-      await expect(dialog).toContainText("· As Celtas");
+      // SPEC-083 CA-1 (amends SPEC-057 CA-3): a switch names its league
+      // only, never a team.
+      const switches = await dialog.locator("li").allInnerTexts();
+      expect(switches).toHaveLength(Object.keys(names).length);
+      const teams = Object.values(GALICIAN_CLUBS).flatMap((club) => [
+        club.name,
+        club.shortName,
+      ]);
+      for (const text of switches)
+        for (const team of teams) expect(text).not.toContain(team);
+      await expect(dialog).not.toContainText("Depor ABANCA");
+      await expect(dialog).not.toContainText("As Celtas");
       if (route.lang === "es") {
         await expect(dialog).toContainText("Primera División");
         await expect(dialog).not.toContainText("Primeira División");
@@ -184,6 +195,44 @@ for (const route of routes) {
         };
       });
       expect(ring.outline || ring.shadow).toBe(true);
+    });
+
+    // SPEC-083 CA-4: a xornada with matches and none of the chosen leagues
+    // says why, after the preset and after a reload; the status filter keeps
+    // «nada aquí»; back to Todas, nothing to say.
+    test("SPEC-083 CA-4 the empty state names the leagues", async ({
+      page,
+    }) => {
+      const empty = page.getByTestId("xornada-empty");
+      const x = route.dict.xornada;
+      await page.goto(route.demo);
+      await openFilters(page);
+      await page.getByTestId("leagues-preferences-trigger").click();
+      await page.getByTestId("preset-women").click();
+      await expect(empty).toBeVisible();
+      await expect(empty).toHaveText(x.leaguesEmpty);
+      await page.keyboard.press("Escape");
+
+      await page.reload();
+      await expect(empty).toBeVisible();
+      await expect(empty).toHaveText(x.leaguesEmpty);
+      expect(await visibleLeagues(page)).toEqual([]);
+
+      await openFilters(page);
+      await page.getByTestId("leagues-preferences-trigger").click();
+      await page.getByTestId("preset-all").click();
+      await expect(empty).toBeHidden();
+      expect(await visibleLeagues(page)).toEqual(DEMO_LEAGUES);
+      await page.keyboard.press("Escape");
+
+      // The status filter empties it: «nada aquí», not the leagues.
+      await page.goto(`${route.demo}#d=2026-10-02&f=live`);
+      await expect(empty).toBeVisible();
+      await expect(empty).toHaveText(x.empty);
+
+      await page.reload();
+      await expect(empty).toBeVisible();
+      await expect(empty).toHaveText(x.empty);
     });
 
     test("CA-5 without JavaScript every league is served", async ({

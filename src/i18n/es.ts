@@ -54,6 +54,9 @@ export const es: Dictionary = {
     firstPartLong: "primera parte",
     secondPartLong: "segunda parte",
     empty: "nada aquí",
+    // SPEC-083 CA-4: empty because none of the chosen leagues plays.
+    leaguesEmpty:
+      "Ninguna de tus ligas juega en esta jornada. Cámbialas en ⚙ Ligas.",
     round: "jornada {n}",
     matchCountOne: "{n} partido",
     matchCount: "{n} partidos",

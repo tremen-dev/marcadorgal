@@ -11,7 +11,6 @@ export interface CompetitionPreferenceItem {
   id: LeagueColorToken;
   // SPEC-057 CA-3: the switch's name, resolved in the page's language.
   nameKey: `competitions.names.${LeagueColorToken}` & TranslationKey;
-  featuredBadge?: string;
   category: "femenino" | "masculino";
   // SPEC-057 CA-6: the CSS variable of the league's token (tokens.ts).
   color: string;
@@ -20,19 +19,17 @@ export interface CompetitionPreferenceItem {
 const item = (
   id: LeagueColorToken,
   category: CompetitionPreferenceItem["category"],
-  featuredBadge?: string,
 ): CompetitionPreferenceItem => ({
   id,
   nameKey: `competitions.names.${id}`,
   category,
   color: `var(${LEAGUE_COLORS[id].css})`,
-  ...(featuredBadge ? { featuredBadge } : {}),
 });
 
 export const KNOWN_COMPETITIONS: readonly CompetitionPreferenceItem[] = [
-  item("liga-f", "femenino", "Depor ABANCA"),
+  item("liga-f", "femenino"),
   item("primera-federacion-fem", "femenino"),
-  item("segunda-federacion-fem-g1", "femenino", "As Celtas"),
+  item("segunda-federacion-fem-g1", "femenino"),
   item("primera-division", "masculino"),
   item("segunda-division", "masculino"),
   item("primera-rfef-g1", "masculino"),

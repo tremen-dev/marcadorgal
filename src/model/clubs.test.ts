@@ -58,4 +58,10 @@ describe("Galician Clubs Catalog and Escudos", () => {
       ).toBe(true);
     }
   });
+
+  // SPEC-083 CA-2: a club carries no colours (nobody painted them).
+  it("SPEC-083 CA-2 no club carries colours", () => {
+    for (const club of Object.values(GALICIAN_CLUBS))
+      expect(club).not.toHaveProperty("colors");
+  });
 });

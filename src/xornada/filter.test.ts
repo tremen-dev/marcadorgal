@@ -5,6 +5,7 @@ import {
   competitionCounts,
   countFilters,
   EMPTY_STATE,
+  emptyReason,
   formatCount,
   fragmentOf,
   parseFragment,
@@ -223,5 +224,30 @@ describe("SPEC-082 CA-5 activeFilterCount", () => {
     [{ day: "2026-10-03", filter: "finished" }, ["tercera-rfef-g1"], 2],
   ] as const)("%o with hidden %o → %i", (state, hidden, n) => {
     expect(activeFilterCount(state, hidden)).toBe(n);
+  });
+});
+
+// SPEC-083 CA-4: why nothing is left on the screen. The leagues, when no
+// chosen league has a section; the status filter otherwise.
+describe("SPEC-083 CA-4 emptyReason", () => {
+  const s = (userHidden: boolean, anyMatch: boolean) => ({
+    userHidden,
+    anyMatch,
+  });
+
+  it("nothing to say while a section shows", () => {
+    expect(emptyReason([s(false, true), s(true, true)])).toBeNull();
+  });
+
+  it("the leagues when every section is of a league not chosen", () => {
+    expect(emptyReason([s(true, true), s(true, false)])).toBe("leagues");
+  });
+
+  it("the status filter when a chosen league has no matching row", () => {
+    expect(emptyReason([s(false, false), s(true, true)])).toBe("filter");
+  });
+
+  it("the status filter when there are no sections at all", () => {
+    expect(emptyReason([])).toBe("filter");
   });
 });

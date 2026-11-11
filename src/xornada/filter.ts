@@ -93,6 +93,20 @@ export function competitionCounts(
   return { matching, live };
 }
 
+// SPEC-083 CA-4: why the screen is empty, or null while a section shows.
+// «leagues» when no section is of a chosen league (whatever the status
+// filter); «filter» when a chosen league has rows but none matches.
+export type EmptyReason = "leagues" | "filter";
+
+export function emptyReason(
+  sections: readonly { userHidden: boolean; anyMatch: boolean }[],
+): EmptyReason | null {
+  if (sections.some((s) => !s.userHidden && s.anyMatch)) return null;
+  if (sections.length > 0 && sections.every((s) => s.userHidden))
+    return "leagues";
+  return "filter";
+}
+
 export type CountTemplates = { readonly one: string; readonly other: string };
 
 // SPEC-023 B-3: «1 partido», «N partidos». The templates come from i18n with

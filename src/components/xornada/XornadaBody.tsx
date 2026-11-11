@@ -117,6 +117,8 @@ export function XornadaBody({
             hidden
             data-xornada-empty
             data-testid="xornada-empty"
+            data-empty-filter={t(locale, "xornada.empty")}
+            data-empty-leagues={t(locale, "xornada.leaguesEmpty")}
           >
             {t(locale, "xornada.empty")}
           </p>

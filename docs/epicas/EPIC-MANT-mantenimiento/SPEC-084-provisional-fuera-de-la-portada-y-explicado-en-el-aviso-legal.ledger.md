@@ -1,0 +1,49 @@
+---
+id: SPEC-084
+tipo: ledger
+epica: EPIC-MANT
+---
+# Ledger — SPEC-084 Provisional fuera de la portada y explicado en el aviso legal
+
+## Resumen
+- Fase: hecho <!-- refleja el estado de la spec; la fuente de verdad es el frontmatter de la spec -->
+- Rama: `ft/SPEC-083-mantenimiento-ligas-y-artefactos` (PR #137; ver H-2)
+
+## Matriz de criterios de aceptación
+<!-- Escritores: sdd-implementador rellena Implementado y Test; sdd-verificador rellena Verif. y Estado. Nunca al revés. -->
+<!-- Estados por CA: ✅ cerrado · ⚠️ parcial/con salvedad · 🚧 en curso · ❌ sin empezar · n-a -->
+<!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->
+| CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
+|---|---|---|---|---|
+| CA-1 | `src/app/config.ts` (`PROVISIONAL_DISPLAY = "hidden"`) | `src/app/config.test.ts` «SPEC-084 CA-1 PROVISIONAL_DISPLAY»; `e2e/xornada-provisional.spec.ts` «SPEC-084 CA-1 the default mode is hidden» | `config.test.ts` verde (vitest 2905 ✓); e2e «SPEC-084 CA-1 the default mode is hidden» ✓; HTML servido de `/` y `/es` lleva `provisionalDisplay:"hidden"` (también con `?provisional=mark`) | ✅ |
+| CA-2 | `src/app/config.ts` (el modo `hidden` ya existía, SPEC-034 CA-4) | `e2e/xornada-provisional.spec.ts` «SPEC-084 CA-2 hidden at {390,1440}px with JS (default / ?provisional=hidden / ?provisional=Mark)» y «… without JS», gl y es; `e2e/xornada.spec.ts` «CA-3 every row says…» (provisional sin palabra en `hidden`) | e2e CA-2 gl/es × 390/1440 × JS/sin JS ✓ (33/33); flujo propio JS y sin JS a 390: 4 `li[data-qualifier=provisional]`, 0 mark, 0 leyenda, 0 qualifier, sin palabra; `sen_sinal` = «sen sinal»/«sin señal» ×3 | ✅ |
+| CA-3 | `src/app/config.ts` `provisionalDisplay(param)`; `src/app/demo-xornada.tsx`; `src/app/(gl)/demo/xornada/page.tsx`; `src/app/(es)/es/demo/xornada/page.tsx` | `src/app/config.test.ts` «SPEC-084 CA-3 provisionalDisplay(param)» (tabla valor → modo); `e2e/xornada-provisional.spec.ts` «SPEC-034 CA-3 mark …» (aserciones previas, por `?provisional=mark`) y «SPEC-084 CA-3 label … with/without JS»; unitarios de `provisional.test.ts`/`qualifier.test.ts` sin cambios (ya pasaban el modo explícito) | flujo propio gl/es JS y sin JS: `mark` → 4 glifos + 1 leyenda; `label` → 4 qualifier «provisional»; `hidden`/ausente/`bad` → nada; tabla del resolutor ✓; aserciones previas de `mark` conservadas en e2e ✓ | ✅ |
+| CA-4 | `src/lib/legal/content.ts` (párrafo en apartado 4 gl/es; `lastUpdated` 11 nov 2026) | `src/lib/legal/content.test.ts` «provisional results in the aviso legal (SPEC-084 CA-4)» | curl y Playwright (JS y sin JS): párrafo presente en `/aviso-legal` y `/es/aviso-legal`; `lastUpdated` 11 nov 2026 gl/es; errata ausente, «reconciliación multifonte» presente (gl); sin `font:` ni hex nuevos en `content.ts` | ✅ |
+| CA-5 | — (sin cambios en fronteras; versión 0.10.1 sin tocar) | `npm run gates` exit 0 (172 ficheros, 2905 tests); `npx playwright test` exit 0: 457 passed, 1 skipped; `git diff origin/main --stat -- src/sources src/decide src/ingest src/board src/app/api supabase` vacío | typecheck exit 0; biome 486 ficheros sin cambios; vitest 172 ficheros, 2905 ✓/3 skip; build (webServer de Playwright) ✓; `npx playwright test --workers=2`: 457 passed, 1 skipped, exit 0; diff de fronteras vacío; versión 0.10.1 sin tocar | ✅ |
+
+## Veredicto del verificador
+<!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
+**GREEN — 2026-11-11.** CA-1..CA-5 ✅. Gates propios en verde (typecheck, biome, vitest 2905, Playwright 457/1 skip con `--workers=2`). Flujo real en Playwright local, gl y es, con y sin JS. Errata del aviso legal (pedida por el titular en el gate) corregida y probada.
+
+Juicio sobre `e2e/cabecera-movil.spec.ts` (SPEC-082 CA-6): aceptado. Medición por nodo a 360 px, `/demo/xornada` y `/es/demo/xornada`, 3 rondas cada uno: caché fría CLS 0,01012 siempre, causado solo por `section#xornada-segunda-division`, `section#xornada-primera-rfef-g1` y `span[team-name]` (lista); **ningún nodo dentro de `header`**. Caché caliente 0 y sin `.woff2` 0. El cambio no oculta un desplazamiento de la cabecera hoy. Riesgo residual: con caché caliente el test ya no detectaría un futuro desplazamiento de la cabecera por cambio de fuente (F-SPEC-084-3).
+
+## Evidencia visual
+<!-- Tabla CA → captura en _qa/SPEC-084/. Informe HTML opcional: _qa/SPEC-084/informe.html -->
+| CA | Capturas (`_qa/SPEC-084/`) |
+|---|---|
+| CA-2 | `oculto-{gl,es}-{390,1440}.png`, `oculto-nojs-{gl,es}-{390,1440}.png` |
+| CA-3 | `provisional-{gl,es}-{390,1440}.png`, `provisional-nojs-*`, `provisional-oculta-*` (modo `mark` por `?provisional=mark`) |
+| CA-4 | `ca4-_aviso-legal-390.png`, `ca4-_es_aviso-legal-390.png` |
+
+## Salvedades / follow-ups
+<!-- IDs F-SPEC-084-1, F-SPEC-084-2… con destino (spec futura o EPIC-MEJORA). -->
+- **Cambio pedido por el titular en el gate (fuera del alcance escrito de la spec):** corregida la errata «reconciled multiffuente» del apartado 4 del aviso legal gl → «reconciliación multifonte», coherente con el es «reconciliación multifuente». Test: `src/lib/legal/content.test.ts` «section 4 in gl is in Galician, like its es twin». Commit 0288d0f.
+- Desviación menor: `e2e/xornada.spec.ts` (SPEC-019 CA-3, «every row says … its qualifier») asumía la palabra visible en filas provisionales; ahora afirma su ausencia cuando el defecto es `hidden` (sen_sinal sigue exigiendo su etiqueta).
+- Desviación (test de otra spec): `e2e/cabecera-movil.spec.ts` «SPEC-082 CA-6 … no layout shift in the header» sumaba todo el CLS de la página. Con `hidden` pasó a 0,0101 (> 0,01) en 8 de 10 repeticiones; con `mark`, 10/10 en verde. Causa medida con PerformanceObserver: el cambio de fuente web desplaza ~4 px las filas de la lista (no la cabecera); con las `.woff2` bloqueadas, CLS 0. `hidden` solo deja otras filas dentro de los 900 px. Cambio: una primera visita para tener las fuentes en caché antes de medir (sigue midiendo pliegue de primera pintura e hidratación). `--repeat-each=5`: 325 passed.
+- F-SPEC-084-2: CLS real de ~0,01 por cambio de fuente en la primera visita a la xornada a 360 px (previo a SPEC-084; métricas de fallback de las fuentes). Destino: EPIC-MEJORA.
+- F-SPEC-084-3 (verificador): el test de CLS de cabecera de SPEC-082 CA-6 mide con caché caliente; más robusto sería medir en frío y sumar solo los desplazamientos cuyas fuentes estén dentro de `header`. Destino: EPIC-MEJORA, no bloquea.
+- F-SPEC-084-1: el enlace «Todos» del filtro (navegación real a la ruta) no conserva `?provisional=`; solo afecta a la demo con parámetro, no a producción. Sin destino salvo que el titular lo pida.
+
+## Cómo retomar (handoff)
+<!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->
+CA-1..CA-5 implementados en `ft/SPEC-083-mantenimiento-ligas-y-artefactos` (PR #137, H-2): commits 9e610d5 (modo `hidden` + parámetro de demo + e2e), 0288d0f (aviso legal + errata) y el de cierre (test CLS de SPEC-082 + ledger). Sin subida de versión (0.10.1 de SPEC-083). Falta: verificación (sdd-verificador). Capturas: `QA_CAPTURE_DIR=_qa/SPEC-084 npx playwright test e2e/xornada-provisional.spec.ts` genera `oculto-*`, `provisional-*`.

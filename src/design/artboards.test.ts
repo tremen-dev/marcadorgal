@@ -212,3 +212,32 @@ describe("SPEC-082 CA-8 the light mobile header", () => {
     );
   });
 });
+
+// SPEC-083 CA-5 (D-8): Global follows Escritorio; gl·es lives in the footer
+// of SPEC-058 (not drawn).
+describe("SPEC-083 CA-5 Global without gl·es", () => {
+  for (const name of ["Global.tpl.html", "Global.dc.html"])
+    it(`${name} draws no gl·es in the header`, () => {
+      const html = read(name);
+      for (const gone of [
+        "{{ glStyle }}",
+        "{{ esStyle }}",
+        "{{ setGl }}",
+        "setGl:",
+        "LANG_ON",
+      ])
+        expect(html, gone).not.toContain(gone);
+    });
+
+  it("Global.tpl.html leaves the SPEC-082 note in its place", () => {
+    expect(read("Global.tpl.html")).toContain(
+      "<!-- SPEC-082 CA-1: sen gl·es na cabeceira; vive no pé de SPEC-058 (non debuxado aquí). -->",
+    );
+  });
+
+  it("HERENCIA.md records it", () => {
+    expect(read("HERENCIA.md")).toMatch(
+      /\*\*2026-11-\d\d \(SPEC-083 CA-5\)\.\*\*[\s\S]*Global/,
+    );
+  });
+});

@@ -61,3 +61,5 @@ Cambiar cuándo una Decision es `provisional` (motor, EPIC-002); configurar
 - **Resolución del titular (2026-10-12, Alberto Fojo):** H-1 → opción 1,
   constante en código. H-2 → `mark` por defecto. H-3 → `*`. H-4 → `hidden`
   queda disponible, pero no es el valor por defecto.
+
+> **Enmienda 2026-11-11** (SPEC-084, decisión del titular): el valor inicial de CA-5 pasa de `mark` a `hidden`; H-2 («`mark` por defecto») queda sustituida por esa elección, y los e2e de CA-6 del modo por defecto pasan a cubrir `hidden`. La letra original de arriba no se reescribe; manda [SPEC-084](../EPIC-MANT-mantenimiento/SPEC-084-provisional-fuera-de-la-portada-y-explicado-en-el-aviso-legal.md).
