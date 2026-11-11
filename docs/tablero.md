@@ -130,7 +130,7 @@ Actualizado: 2026-11-11
 | SPEC-083 — mantenimiento-de-ligas-y-artefactos-sdd | hecho | 2026-11-11 (sdd-verificador) |
 | SPEC-084 — provisional-fuera-de-la-portada-y-explicado-en-el-aviso-legal | hecho | 2026-11-11 (sdd-verificador) |
 
-## EPIC-MEJORA — mejoras (borrador)
+## EPIC-MEJORA — mejoras (aprobada)
 
 | Spec | Estado | Último cambio |
 |---|---|---|

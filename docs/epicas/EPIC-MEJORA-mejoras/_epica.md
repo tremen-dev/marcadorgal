@@ -1,9 +1,11 @@
 ---
 id: EPIC-MEJORA
 tipo: epica
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-11-11, por: sdd-producto}
+  - {estado: aprobada, fecha: 2026-11-11, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # EPIC-MEJORA — Mejoras
 
