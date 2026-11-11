@@ -39,5 +39,27 @@ Findings:
 | CA-4 | `CA-4-persistencia-gl.png`, `CA-4-persistencia-es.png` |
 | CA-5 | `CA-5-sin-js.png`, `CA-5-storage-bloqueado-local.png`, `CA-5-storage-bloqueado-prod.png` |
 
+## Implementador — cierre de findings (2026-11-11, rama `ft/SPEC-082-cabecera-movil-ligera`)
+| CA | Implementado (fichero) | Test (fichero/caso) |
+|---|---|---|
+| CA-1 | sin cambios (`src/app/xornada-home.tsx`) | `e2e/ligas-preferencias.spec.ts` «CA-1 no CompetitionNav on the home…» y «CA-1 CompetitionNav stays on /directos and /competicion» (gl, es) |
+| CA-2 | `src/components/xornada/CompetitionSection.tsx` (`aria-label` por `competitions.tableLinkLabel`), `playwright.config.ts` (`SHOW_TABLE_LINK: ""` en el servidor por defecto) | `src/components/xornada/columns.test.ts` «SPEC-057 CA-2 the table link: off by default, on per column» (gl, es; href, aria-label, fuera de `<summary>`); `e2e/ligas-preferencias.spec.ts` «CA-2 off by default…»; `src/app/config.test.ts` `SHOW_TABLE_LINK` |
+| CA-3 | `src/components/xornada/LeaguesPreferencesDialog.tsx` (nombre por `nameKey`, toolbar `competitions.presetsLabel`), `src/i18n/gl.ts`, `src/i18n/es.ts` (`competitions.names.*`, `presetsLabel`), `src/lib/league-preferences.ts` (sin `defaultName`) | `src/lib/league-preferences.test.ts` «each nameKey resolves in gl and es…»; `e2e/ligas-preferencias.spec.ts` «CA-3 switches named in the page's language, presets and the last league» (gl, es) |
+| CA-4 | sin cambios | `src/lib/league-preferences.test.ts` (casos previos) |
+| CA-5 | `src/lib/league-preferences.ts` (acceso a `window.localStorage` dentro del `try` en lectura y escritura) | `src/lib/league-preferences.test.ts` «with localStorage blocked…», «with setItem throwing…»; `e2e/ligas-preferencias.spec.ts` «CA-5 without JavaScript…», «CA-5 with storage blocked…» (gl, es) |
+| CA-6 | `src/design/tokens.ts` (`LEAGUE_COLORS`), `src/design/css.ts`, `src/design/tokens.css` (regenerado), `src/lib/league-preferences.ts` (`color: var(--liga-<id>)`), `docs/diseno/HERENCIA.md` | `src/lib/league-preferences.test.ts` «each league colour is a var() of a LEAGUE_COLORS token…», «the source of league-preferences has no literal colour»; `src/i18n/i18n.test.ts` (paridad) |
+
+Evidencia:
+- Rojo previo: `npx vitest run src/lib/league-preferences.test.ts` → 4 failed (entre ellos `SecurityError: blocked` lanzado por `getStoredVisibleCompetitions`). E2E «CA-5 with storage blocked» con el acceso de nuevo fuera del `try` → 2 failed (gl, es); restaurado → pasa.
+- `npx playwright test e2e/ligas-preferencias.spec.ts` → 12 passed.
+- `npm run gates` → exit 0; vitest 168 ficheros, 2814 passed / 3 skipped; `next build` ok.
+- `npx playwright test` (suite completa) → 364 passed / 1 skipped.
+
+Salvedades / follow-ups:
+- F-SPEC-057-6: `src/model/competitions.ts` (`COMPETITIONS_METADATA[].color/accentColor`) sigue con `rgb()` literales; fuera del panel y de esta spec, no se pintan en el panel.
+- La subida de versión de `package.json` queda para el PR conjunto con SPEC-082 (indicación del orquestador).
+
 ## Cómo retomar (handoff)
 Spec devuelta a `en-progreso`. Arreglar F-1 (mover la comprobación dentro del `try`) es urgente por estar en prod. F-2 requiere decisión del titular/arquitecto (¿se enmienda CA-2 con el interruptor?). Después, tests para CA-1/2/3/5 (incluido almacenamiento bloqueado) y nueva verificación.
+
+Implementador (2026-11-11): F-1, F-3, F-4 y F-5 cerrados (tabla «Implementador — cierre de findings»); F-2 cerrado por la enmienda de la spec y cubierto por tests. Spec en `en-revision`; toca nueva verificación. Rama `ft/SPEC-082-cabecera-movil-ligera` (PR conjunto con SPEC-082).
