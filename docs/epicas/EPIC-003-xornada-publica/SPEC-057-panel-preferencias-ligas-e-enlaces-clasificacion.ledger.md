@@ -105,3 +105,28 @@ Implementador (2026-11-11): F-1, F-3, F-4 y F-5 cerrados (tabla «Implementador 
 Verificador (2026-11-11, 2ª ronda): RED por F-7 y F-8; spec a `en-progreso`.
 
 Implementador (2026-11-11, 3ª ronda): F-7 y F-8 cerrados (tabla «cierre de findings, 3ª ronda»). Spec en `en-revision`; toca nueva verificación. Sin subida de versión (PR conjunto con SPEC-082).
+
+## Matriz del verificador — 3ª ronda (2026-11-11, rama `ft/SPEC-082-cabecera-movil-ligera` en 5424f5a, spec enmendada)
+| CA | Test que lo demuestra | Verif. | Estado |
+|---|---|---|---|
+| CA-1 | `e2e/ligas-preferencias.spec.ts` «CA-1 no CompetitionNav…», «CA-1 CompetitionNav stays…» (gl, es) | Servidor local (build de la rama): `/` y `/es` a 390 y 1440 con 0 `competition-nav` y logo visible arriba; `/directos`, `/competicion/…`, `/clasificacion/…`, `/calendario/…` → 200 con nav (gl, es) | ✅ |
+| CA-2 | `columns.test.ts` «SPEC-057 CA-2…»; `config.test.ts` `SHOW_TABLE_LINK`; e2e «CA-2 off by default» | Apagado: 0 enlaces (gl, es). `SHOW_TABLE_LINK=true`: 5 enlaces `/competicion/<id>` y `/es/competicion/<id>`, `Táboa↗`/`Tabla↗`, `aria-label` «Táboa de …»/«Tabla de …», ninguno en `<summary>`; foco + `Enter` navega | ✅ |
+| CA-3 | e2e «CA-3 switches named…», «CA-3 a switch reached with Tab shows a focus ring» (gl, es); `league-preferences.test.ts` nameKey | `role=dialog`, `aria-modal=true`; Escape y clic exterior cierran; 8 switches con nombre por idioma (`Primeira`/`Primera División`) y `· Depor ABANCA`/`· As Celtas`; toolbar `Atallos rápidos`/`Accesos rápidos`; presets `Todas/Feminino/RFEF / Galegas/Profesional` (es `Femenino/RFEF / Gallegas`) aplican lo esperado; última liga deshabilitada + aviso. Foco por Tab en el switch: `outline: 2px solid` (`--marca`), `:focus-visible` (F-8 cerrado) | ✅ |
+| CA-4 | `league-preferences.test.ts` | Clave `marcadorgal:preferences:visible-leagues:v1`: sin valor → 5/5 visibles; preset cambia al instante y persiste tras recarga (gl, es) | ✅ |
+| CA-5 | `league-preferences.test.ts` (storage bloqueado, `setItem` que lanza); e2e «CA-5 without JavaScript…», «CA-5 with storage blocked…» | Sin JS: 5/5 secciones. Getter de `localStorage` lanzando `SecurityError`: `/`, `/es` y demo cargan, preset en memoria funciona, 0 `pageerror`. Hidratación con pref guardada: solo la liga guardada visible, 0 errores de consola ni de hidratación | ✅ |
+| CA-6 | gates + e2e; `no-hex.test.ts` (guarda `rgb()/hsl()` en CSS); tests de tokens e i18n | Worktree LF: `tsc` 0; `biome check` 474 ficheros 0; vitest 168 ficheros, 2816 ok / 3 skip (una 1ª pasada tuvo 1 timeout en `api/ingest/tick/route.test.ts` por correr a la vez que Playwright; aislado 6/6 y pasada completa limpia). `npx playwright test` (árbol principal, incluye `next build`) 366 ok / 1 skip. 0 `#hex`/`rgb(`/`hsl(`/`outline: none`/`font:` en `Xornada.module.css`, `league-preferences.ts` y componentes del panel; velo y sombra = `--velo`/`--sombra-dialogo` (F-7 cerrado) | ✅ |
+
+## Veredicto del verificador — 3ª ronda
+**GREEN** — 2026-11-11, sdd-verificador. Todos los CA ✅ contra la spec enmendada; F-1..F-5, F-7 y F-8 cerrados.
+
+Notas (no bloquean): F-SPEC-057-6 (`COMPETITIONS_METADATA` con `rgb()` en `src/model/competitions.ts`) sigue abierto como follow-up fuera del panel. En `/demo/xornada` (solo ligas masculinas) el preset `Feminino` deja 0 columnas visibles sin mensaje: la selección no está vacía (CA-3 se cumple), pero una jornada sin partidos femeninos muestra pantalla vacía; candidato a mejora. La portada local no tiene lector (estado vacío); el panel se probó sobre la demo, mismo `XornadaBody`.
+
+| CA | Capturas 3ª ronda (`_qa/SPEC-057/`) |
+|---|---|
+| CA-1 | `CA-1-r3-gl-mobile.png`, `CA-1-r3-gl-desktop.png`, `CA-1-r3-es-mobile.png`, `CA-1-r3-es-desktop.png` |
+| CA-2 | `CA-2-enlace-r3-gl.png`, `CA-2-enlace-r3-es.png` |
+| CA-3 | `CA-3-panel-r3-gl.png`, `CA-3-panel-r3-es.png`, `CA-3-foco-switch-r3-gl.png`, `CA-3-foco-switch-r3-es.png`, `CA-3-al-menos-una-r3-gl.png`, `CA-3-al-menos-una-r3-es.png` |
+| CA-4 | `CA-4-persistencia-r3-gl.png`, `CA-4-persistencia-r3-es.png` |
+| CA-5 | `CA-5-sin-js-r3-gl.png`, `CA-5-sin-js-r3-es.png`, `CA-5-storage-bloqueado-r3-gl.png`, `CA-5-storage-bloqueado-r3-es.png` |
+
+Verificador (2026-11-11, 3ª ronda): GREEN; spec a `hecho`.
