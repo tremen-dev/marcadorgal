@@ -17,6 +17,7 @@ const TICK_PATH = "/api/ingest/tick";
 
 type VercelJson = {
   crons?: { path: string; schedule: string }[];
+  regions?: string[];
 };
 
 const vercelJson = (): VercelJson =>
@@ -33,7 +34,21 @@ describe("SPEC-008 CA-5 vercel.json", () => {
   });
 
   it("declares nothing else", () => {
-    expect(Object.keys(vercelJson())).toEqual(["crons"]);
+    expect(Object.keys(vercelJson()).sort()).toEqual(["crons", "regions"]);
+  });
+});
+
+// SPEC-085 CA-1 (ADR-037): every function of the project, the tick included,
+// runs in dub1, next to the database in eu-west-1. One region only: the
+// database is one and lives in Ireland. Explorer is another project (cdg1).
+describe("SPEC-085 CA-1 vercel.json pins the functions to dub1", () => {
+  it("declares exactly one region, dub1", () => {
+    expect(vercelJson().regions).toEqual(["dub1"]);
+  });
+
+  it("sets no per-function region that would override it", () => {
+    const config = vercelJson() as Record<string, unknown>;
+    expect(config).not.toHaveProperty("functions");
   });
 });
 
