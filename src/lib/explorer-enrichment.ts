@@ -83,18 +83,52 @@ export function toMadridDate(isoInstant: string): string {
 }
 
 /**
+ * Límite para cada consulta a Explorer no enriquecemento (SPEC-059 CA-4). A
+ * portada, a vista de xornada e /api/board agardan por ela antes de responder,
+ * e os goleadores son un engadido: mellor sen eles que unha portada lenta.
+ * Ningunha spec nin ADR fixa a cifra; 2 s cobren unha resposta normal do
+ * export (centos de ms) e o arranque en frío dunha función de Vercel, e
+ * cortan o resto. Os demais usos de explorer-client non levan este límite.
+ */
+export const EXPLORER_ENRICHMENT_TIMEOUT_MS = 2000;
+
+export type EnrichmentOptions = { timeoutMs?: number };
+
+// Resolve co valor do fetcher ou rexeita cando pasa o límite, aínda que o
+// fetcher inxectado ignore o sinal de aborto; o temporizador límpase sempre.
+function withDeadline<T>(work: Promise<T>, timeoutMs: number): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const deadline = new Promise<never>((_resolve, reject) => {
+    timer = setTimeout(
+      () => reject(new Error(`[explorer-enrichment] timeout ${timeoutMs} ms`)),
+      timeoutMs,
+    );
+  });
+  return Promise.race([work, deadline]).finally(() => clearTimeout(timer));
+}
+
+/**
  * Enriquece os partidos de PublicMatch cos goles procedentes da API Explorer.
  *
  * @param matches Partidos actuais da xornada (normalmente de Postgres web.xornada).
  * @param fetcher Inxectador de fetch para facilitar probas unitarias (por defecto getDayMatches).
  * @param aliases Alias rfef da tempada (SPEC-070 CA-11); sen el, a competición
  *   sae só de canonicalCompetitionId e os equipos só de ids canónicos iguais.
+ * @param options.timeoutMs Límite por consulta (por defecto
+ *   EXPLORER_ENRICHMENT_TIMEOUT_MS); pasado, a data quédase sen goles.
  */
 export async function enrichMatchesWithGoals(
   matches: PublicMatch[],
-  fetcher: (date: string) => Promise<DayMatchesResponse> = getDayMatches,
+  fetcher?: (date: string) => Promise<DayMatchesResponse>,
   aliases: AliasFile | null = null,
+  options: EnrichmentOptions = {},
 ): Promise<PublicMatch[]> {
+  const timeoutMs = options.timeoutMs ?? EXPLORER_ENRICHMENT_TIMEOUT_MS;
+  // O fetcher por defecto aborta de verdade a petición (libera o socket); o
+  // withDeadline de abaixo garante o límite tamén para fetchers inxectados.
+  const fetchDay =
+    fetcher ??
+    ((date: string) => getDayMatches(date, undefined, { timeoutMs }));
   if (!matches || matches.length === 0) {
     return matches;
   }
@@ -118,7 +152,9 @@ export async function enrichMatchesWithGoals(
   // Todas as filas de cada día, con ou sen goles: a ambigüidade mírase sobre
   // todas (SPEC-070 CA-5), non só sobre as que traen goles.
   const rowsByDate = new Map<string, ExplorerRow[]>();
-  const results = await Promise.allSettled(dates.map((date) => fetcher(date)));
+  const results = await Promise.allSettled(
+    dates.map((date) => withDeadline(fetchDay(date), timeoutMs)),
+  );
   results.forEach((res, i) => {
     if (res.status === "fulfilled" && Array.isArray(res.value?.matches)) {
       rowsByDate.set(dates[i] as string, res.value.matches);
