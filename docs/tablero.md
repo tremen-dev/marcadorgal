@@ -88,11 +88,6 @@ Actualizado: 2026-11-11
 | SPEC-067 — publicador-de-buffer-cliente-graphql-sonda-contra-la-api-real-y-encendido | hecho | 2026-11-10 (sdd-verificador) |
 | SPEC-079 — informe-automatico-de-la-cola-de-redes-tras-cada-jornada | hecho | 2026-11-10 (sdd-verificador) |
 
-## EPIC-008 — patrocinio-en-pantalla-y-en-redes (borrador)
-
-| Spec | Estado | Último cambio |
-|---|---|---|
-
 ## EPIC-009 — produccion-con-publico-capacidad-y-visitas-medidas (aprobada)
 
 | Spec | Estado | Último cambio |
