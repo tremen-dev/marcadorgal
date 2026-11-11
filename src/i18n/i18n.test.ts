@@ -233,6 +233,16 @@ describe("SPEC-023 Xornada controls", () => {
     expect(t("es", "xornada.empty")).toBe("nada aquí");
   });
 
+  // SPEC-083 CA-4: nothing left because no chosen league plays.
+  it("SPEC-083 CA-4 leaguesEmpty in gl and es", () => {
+    expect(t("gl", "xornada.leaguesEmpty")).toBe(
+      "Ningunha das túas ligas xoga nesta xornada. Cámbiaas en ⚙ Ligas.",
+    );
+    expect(t("es", "xornada.leaguesEmpty")).toBe(
+      "Ninguna de tus ligas juega en esta jornada. Cámbialas en ⚙ Ligas.",
+    );
+  });
+
   // SPEC-040 CA-4 (H-5): no sidebar, so no «Competicións» title.
   it("CA-5/CA-7 round and counts: «xornada N», «N partidos»", () => {
     expect(t("gl", "xornada.round", { n: 8 })).toBe("xornada 8");

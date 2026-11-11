@@ -1,11 +1,16 @@
 "use client";
 
 import { useEffect } from "react";
-import { LEAGUES_PREFERENCE_EVENT } from "@/lib/league-preferences";
+import {
+  applyVisibleCompetitionsToDom,
+  getStoredVisibleCompetitions,
+  LEAGUES_PREFERENCE_EVENT,
+} from "@/lib/league-preferences";
 import {
   competitionCounts,
   countFilters,
   EMPTY_STATE,
+  emptyReason,
   formatCount,
   fragmentOf,
   parseFragment,
@@ -51,18 +56,16 @@ function apply(root: HTMLElement, state: XornadaState): void {
   }));
   for (const row of rows) row.el.hidden = !rowMatches(row, state);
 
-  let anyVisible = false;
+  const sections: { userHidden: boolean; anyMatch: boolean }[] = [];
   for (const section of root.querySelectorAll<HTMLElement>(
     "section[data-competition]",
   )) {
     const userHidden = section.getAttribute("data-user-hidden") === "true";
-    const visible =
-      !userHidden &&
-      [...section.querySelectorAll<HTMLElement>(ROWS)].some(
-        (row) => !row.hidden,
-      );
-    section.hidden = !visible;
-    anyVisible ||= visible;
+    const anyMatch = [...section.querySelectorAll<HTMLElement>(ROWS)].some(
+      (row) => !row.hidden,
+    );
+    section.hidden = userHidden || !anyMatch;
+    sections.push({ userHidden, anyMatch });
   }
   // F-4: each header's count (SPEC-040 CA-4) follows the state.
   for (const section of root.querySelectorAll<HTMLElement>(
@@ -93,8 +96,22 @@ function apply(root: HTMLElement, state: XornadaState): void {
     }
   }
 
+  // SPEC-083 CA-4: the empty state says whether the leagues or the status
+  // filter left nothing.
   const empty = root.querySelector<HTMLElement>("[data-xornada-empty]");
-  if (empty) empty.hidden = anyVisible;
+  if (empty) {
+    const reason = emptyReason(sections);
+    empty.hidden = reason === null;
+    if (reason !== null) {
+      const text =
+        reason === "leagues"
+          ? empty.dataset.emptyLeagues
+          : empty.dataset.emptyFilter;
+      if (text !== undefined && empty.textContent !== text)
+        empty.textContent = text;
+      empty.dataset.emptyReason = reason;
+    }
+  }
 
   // SPEC-034 CA-3: the legend of the mark follows the visible rows (a folded
   // competition still counts: folding does not hide its rows). It is only
@@ -156,6 +173,16 @@ export function XornadaFilters() {
       );
     };
     const fromHash = () => set(parseFragment(window.location.hash, days()));
+    // SPEC-083 CA-4: the leagues are on the sections before the empty state
+    // is decided, whichever component's effect runs first: on load (the
+    // stored preference) and on every change (the event's list).
+    const onLeagues = (event: Event) => {
+      const ids = (event as CustomEvent<readonly string[]>).detail;
+      if (Array.isArray(ids)) applyVisibleCompetitionsToDom(ids, root);
+      fromHash();
+    };
+    const stored = getStoredVisibleCompetitions();
+    if (stored) applyVisibleCompetitionsToDom(stored, root);
 
     const onClick = (event: MouseEvent) => {
       if (
@@ -189,13 +216,13 @@ export function XornadaFilters() {
     root.addEventListener("click", onClick);
     window.addEventListener("hashchange", fromHash);
     document.addEventListener(REPAINT_EVENT, fromHash);
-    window.addEventListener(LEAGUES_PREFERENCE_EVENT, fromHash);
+    window.addEventListener(LEAGUES_PREFERENCE_EVENT, onLeagues);
     fromHash();
     return () => {
       root.removeEventListener("click", onClick);
       window.removeEventListener("hashchange", fromHash);
       document.removeEventListener(REPAINT_EVENT, fromHash);
-      window.removeEventListener(LEAGUES_PREFERENCE_EVENT, fromHash);
+      window.removeEventListener(LEAGUES_PREFERENCE_EVENT, onLeagues);
     };
   }, []);
   return null;

@@ -58,6 +58,9 @@ export const gl = {
     firstPartLong: "primeira parte",
     secondPartLong: "segunda parte",
     empty: "nada aquí",
+    // SPEC-083 CA-4: empty because none of the chosen leagues plays.
+    leaguesEmpty:
+      "Ningunha das túas ligas xoga nesta xornada. Cámbiaas en ⚙ Ligas.",
     round: "xornada {n}",
     matchCountOne: "{n} partido",
     matchCount: "{n} partidos",

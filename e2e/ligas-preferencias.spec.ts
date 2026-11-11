@@ -197,6 +197,44 @@ for (const route of routes) {
       expect(ring.outline || ring.shadow).toBe(true);
     });
 
+    // SPEC-083 CA-4: a xornada with matches and none of the chosen leagues
+    // says why, after the preset and after a reload; the status filter keeps
+    // «nada aquí»; back to Todas, nothing to say.
+    test("SPEC-083 CA-4 the empty state names the leagues", async ({
+      page,
+    }) => {
+      const empty = page.getByTestId("xornada-empty");
+      const x = route.dict.xornada;
+      await page.goto(route.demo);
+      await openFilters(page);
+      await page.getByTestId("leagues-preferences-trigger").click();
+      await page.getByTestId("preset-women").click();
+      await expect(empty).toBeVisible();
+      await expect(empty).toHaveText(x.leaguesEmpty);
+      await page.keyboard.press("Escape");
+
+      await page.reload();
+      await expect(empty).toBeVisible();
+      await expect(empty).toHaveText(x.leaguesEmpty);
+      expect(await visibleLeagues(page)).toEqual([]);
+
+      await openFilters(page);
+      await page.getByTestId("leagues-preferences-trigger").click();
+      await page.getByTestId("preset-all").click();
+      await expect(empty).toBeHidden();
+      expect(await visibleLeagues(page)).toEqual(DEMO_LEAGUES);
+      await page.keyboard.press("Escape");
+
+      // The status filter empties it: «nada aquí», not the leagues.
+      await page.goto(`${route.demo}#d=2026-10-02&f=live`);
+      await expect(empty).toBeVisible();
+      await expect(empty).toHaveText(x.empty);
+
+      await page.reload();
+      await expect(empty).toBeVisible();
+      await expect(empty).toHaveText(x.empty);
+    });
+
     test("CA-5 without JavaScript every league is served", async ({
       browser,
     }) => {
