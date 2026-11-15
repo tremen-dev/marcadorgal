@@ -13,9 +13,17 @@ import type {
   DayMatchesResponse,
   OfficialCalendarResponse,
 } from "./explorer-client.ts";
-import { enrichMatchesWithGoals } from "./explorer-enrichment.ts";
+import * as client from "./explorer-client.ts";
+import {
+  EXPLORER_ENRICHMENT_TIMEOUT_MS,
+  enrichMatchesWithGoals,
+} from "./explorer-enrichment.ts";
 import { fetchWomenXornadaMatches } from "./explorer-xornada.ts";
-import { type BoardExplorer, readXornadaBoard } from "./xornada-board.ts";
+import {
+  type BoardExplorer,
+  readXornadaBoard,
+  renderExplorer,
+} from "./xornada-board.ts";
 
 // SPEC-085: one read of the board for /, /es and /api/board, with its
 // dependencies injected (reader, Explorer, clock). No network: doubles only.
@@ -242,4 +250,65 @@ describe("SPEC-085 CA-2 /, /es and /api/board share the read", () => {
       );
     },
   );
+});
+
+describe("SPEC-085 CA-3 Explorer with a deadline in the render", () => {
+  const never = <T>() => new Promise<T>(() => {});
+
+  it("an Explorer that never answers: the read resolves within the deadline + 200 ms, without women", async () => {
+    quiet();
+    const d = doubles();
+    const timeoutMs = 300;
+    const start = performance.now();
+    const read = await readXornadaBoard(
+      {
+        reader: d.reader,
+        explorer: { calendar: never, dayMatches: never },
+        now: NOW,
+        aliases: null,
+        timeoutMs,
+      },
+      "gl",
+    );
+    expect(performance.now() - start).toBeLessThanOrEqual(timeoutMs + 200);
+    expect(read?.matches).toEqual([MEN]);
+    vi.restoreAllMocks();
+  });
+
+  it("the calendar answers, the days never: still within the deadline + 200 ms", async () => {
+    quiet();
+    const d = doubles({ calendar: 200 });
+    const timeoutMs = 300;
+    const start = performance.now();
+    const read = await readXornadaBoard(
+      {
+        reader: d.reader,
+        explorer: { calendar: d.explorer.calendar, dayMatches: never },
+        now: NOW,
+        aliases: null,
+        timeoutMs,
+      },
+      "gl",
+    );
+    expect(performance.now() - start).toBeLessThanOrEqual(timeoutMs + 200);
+    expect(read?.matches[0]).toEqual(MEN);
+    vi.restoreAllMocks();
+  });
+
+  it("the explorer of the render asks every request with EXPLORER_ENRICHMENT_TIMEOUT_MS", async () => {
+    const calendar = vi
+      .spyOn(client, "getOfficialCalendar")
+      .mockResolvedValue(CALENDAR);
+    const day = vi.spyOn(client, "getDayMatches").mockResolvedValue(DAY);
+    const explorer = renderExplorer();
+    await explorer.calendar("liga-f", "2026-27");
+    await explorer.dayMatches("2026-11-08");
+    expect(calendar).toHaveBeenCalledWith("liga-f", "2026-27", undefined, {
+      timeoutMs: EXPLORER_ENRICHMENT_TIMEOUT_MS,
+    });
+    expect(day).toHaveBeenCalledWith("2026-11-08", undefined, {
+      timeoutMs: EXPLORER_ENRICHMENT_TIMEOUT_MS,
+    });
+    vi.restoreAllMocks();
+  });
 });

@@ -67,7 +67,7 @@ export async function HomeXornada({ locale }: { locale: Locale }) {
   const read = await readXornadaBoard(
     {
       reader: publicXornadaReader(),
-      explorer: renderExplorer,
+      explorer: renderExplorer(),
       now,
       aliases: rfefAliasesOrNull(season),
     },

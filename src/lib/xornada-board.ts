@@ -3,12 +3,12 @@ import { type IndexReader, readHome } from "../board/week-read.ts";
 import type { Neighbours } from "../board/weeks.ts";
 import type { Locale } from "../i18n/index.ts";
 import type { AliasFile, Instant, PublicMatch } from "../model/index.ts";
-import { getDayMatches, getOfficialCalendar } from "./explorer-client.ts";
 import {
   EXPLORER_ENRICHMENT_TIMEOUT_MS,
   enrichMatchesWithGoals,
 } from "./explorer-enrichment.ts";
 import {
+  clientExplorer,
   fetchWomenXornadaMatches,
   type WomenExplorer,
 } from "./explorer-xornada.ts";
@@ -41,9 +41,9 @@ export async function readXornadaBoard(
   const timeoutMs = deps.timeoutMs ?? EXPLORER_ENRICHMENT_TIMEOUT_MS;
   const explorer = deps.explorer;
 
-  const women = fetchWomenXornadaMatches(now, seasonOf(now), explorer).catch(
-    () => [] as PublicMatch[],
-  );
+  const women = fetchWomenXornadaMatches(now, seasonOf(now), explorer, {
+    timeoutMs,
+  }).catch(() => [] as PublicMatch[]);
 
   let read: BoardRead;
   try {
@@ -74,11 +74,7 @@ export async function readXornadaBoard(
   };
 }
 
-// Explorer as the render reads it: the client of explorer-client.
-export const renderExplorer: BoardExplorer = {
-  calendar: (competition, season) => getOfficialCalendar(competition, season),
-  dayMatches: (date) =>
-    getDayMatches(date, undefined, {
-      timeoutMs: EXPLORER_ENRICHMENT_TIMEOUT_MS,
-    }),
-};
+// Explorer as the render reads it (CA-3): every request with the deadline
+// of the enrichment, which aborts the socket.
+export const renderExplorer = (): BoardExplorer =>
+  clientExplorer(EXPLORER_ENRICHMENT_TIMEOUT_MS);

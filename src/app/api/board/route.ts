@@ -17,7 +17,7 @@ async function readBoard(now: Instant): Promise<PublicMatch[] | null> {
   const read = await readXornadaBoard(
     {
       reader,
-      explorer: renderExplorer,
+      explorer: renderExplorer(),
       now,
       aliases: rfefAliasesOrNull(seasonOf(now)),
     },
