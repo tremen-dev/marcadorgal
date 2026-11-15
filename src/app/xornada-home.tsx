@@ -1,16 +1,12 @@
 import type { Metadata } from "next";
 import { boardEtag } from "@/board/http";
 import { publicXornadaReader, seasonOf } from "@/board/reader";
-import { readHome } from "@/board/week-read";
-import type { Neighbours } from "@/board/weeks";
 import { galicianNames } from "@/calendar/galicians";
 import { nowInstant } from "@/clock";
 import { XornadaScreen } from "@/components/xornada/XornadaScreen";
 import { type Locale, t } from "@/i18n";
 import { rfefAliasesOrNull } from "@/ingest/aliases";
-import { enrichMatchesWithGoals } from "@/lib/explorer-enrichment";
-import { fetchWomenXornadaMatches } from "@/lib/explorer-xornada";
-import type { Instant, PublicMatch } from "@/model";
+import { readXornadaBoard, renderExplorer } from "@/lib/xornada-board";
 import { buildXornada, xornadaDays } from "@/xornada/view";
 import {
   PROVISIONAL_DISPLAY,
@@ -64,29 +60,20 @@ export function homeMetadata(locale: Locale): Metadata {
   };
 }
 
-// SPEC-027: the same reads as before (index, then the rows of the current
-// xornada) and, from that index, the arrows of the home week.
-async function snapshot(
-  now: Instant,
-  locale: Locale,
-): Promise<{ matches: PublicMatch[]; arrows: Neighbours } | null> {
-  const reader = publicXornadaReader();
-  if (reader === null) return null;
-  try {
-    return await readHome(reader, now, locale);
-  } catch (e) {
-    console.error(
-      `xornada: read failed: ${e instanceof Error ? e.message : String(e)}`,
-    );
-    return null;
-  }
-}
-
 export async function HomeXornada({ locale }: { locale: Locale }) {
   const now = nowInstant();
-  const read = await snapshot(now, locale);
-  let matches = read?.matches ?? null;
   const season = seasonOf(now);
+  // SPEC-085 CA-2: the shared read of the board (rows, scorers, women).
+  const read = await readXornadaBoard(
+    {
+      reader: publicXornadaReader(),
+      explorer: renderExplorer,
+      now,
+      aliases: rfefAliasesOrNull(season),
+    },
+    locale,
+  );
+  const matches = read?.matches ?? null;
   const galicians = new Set([
     ...galicianNames(season),
     "Deportivo ABANCA",
@@ -112,27 +99,6 @@ export async function HomeXornada({ locale }: { locale: Locale }) {
     "Victoria CF",
     "Victoria Cf",
   ]);
-
-  if (matches !== null) {
-    try {
-      matches = await enrichMatchesWithGoals(
-        matches,
-        undefined,
-        rfefAliasesOrNull(season),
-      );
-    } catch (_e) {
-      // Graceful fallback
-    }
-
-    try {
-      const womenMatches = await fetchWomenXornadaMatches(now, season);
-      if (womenMatches.length > 0) {
-        matches = [...matches, ...womenMatches];
-      }
-    } catch (_e) {
-      // Graceful fallback
-    }
-  }
 
   return (
     <XornadaScreen

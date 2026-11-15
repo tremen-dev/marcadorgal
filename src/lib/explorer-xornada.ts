@@ -9,6 +9,7 @@ import { CompetitionId, MatchId } from "../model/ids.ts";
 import { Instant } from "../model/instant.ts";
 import { PublicMatch } from "../model/public.ts";
 import {
+  type DayMatchesResponse,
   getDayMatches,
   getOfficialCalendar,
   type OfficialCalendarResponse,
@@ -163,14 +164,30 @@ export function findActiveRound(
   return rounds[rounds.length - 1] ?? 1;
 }
 
+// The two Explorer reads of the women xornada (SPEC-085 CA-2): injected by
+// the board read, the client by default.
+export type WomenExplorer = {
+  calendar(
+    competition: string,
+    season: string,
+  ): Promise<OfficialCalendarResponse>;
+  dayMatches(date: string): Promise<DayMatchesResponse>;
+};
+
+const clientExplorer = (): WomenExplorer => ({
+  calendar: (competition, season) => getOfficialCalendar(competition, season),
+  dayMatches: (date) => getDayMatches(date),
+});
+
 export async function fetchWomenXornadaMatches(
   nowIso: string = nowInstant(),
   season: string = "2026-27",
+  explorer: WomenExplorer = clientExplorer(),
 ): Promise<PublicMatch[]> {
   try {
     const calendarResults = await Promise.allSettled(
       WOMEN_COMPETITIONS.map(async (comp) => {
-        const cal = await getOfficialCalendar(comp, season);
+        const cal = await explorer.calendar(comp, season);
         return { comp, cal };
       }),
     );
@@ -224,7 +241,7 @@ export async function fetchWomenXornadaMatches(
     await Promise.all(
       [...allDates].map(async (d) => {
         try {
-          const res = await getDayMatches(d);
+          const res = await explorer.dayMatches(d);
           if (res?.matches) rowsByDate.set(d, res.matches);
         } catch (_e) {
           // Ignore per-day errors

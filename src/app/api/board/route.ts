@@ -1,37 +1,30 @@
 import { boardResponse } from "@/board/http";
-import { readPublicXornada, seasonOf } from "@/board/reader";
+import { publicXornadaReader, seasonOf } from "@/board/reader";
 import { nowInstant } from "@/clock";
 import { rfefAliasesOrNull } from "@/ingest/aliases";
-import { enrichMatchesWithGoals } from "@/lib/explorer-enrichment";
-import { fetchWomenXornadaMatches } from "@/lib/explorer-xornada";
+import { readXornadaBoard, renderExplorer } from "@/lib/xornada-board";
 import type { Instant, PublicMatch } from "@/model";
 
 // GET /api/board (SPEC-020 CA-7): the current xornada as { matches }, cached
 // by the CDN (ADR-014 §6). Rendered per request; the cache lives in headers.
 export const dynamic = "force-dynamic";
 
+// SPEC-085 CA-2: the same read as / and /es. No reader: null (503, «not
+// set»); a failed base: thrown, so the 503 says «read failed» as before.
 async function readBoard(now: Instant): Promise<PublicMatch[] | null> {
-  const rawMatches = await readPublicXornada(now);
-  if (rawMatches === null) return null;
-  let matches = rawMatches;
-  try {
-    matches = await enrichMatchesWithGoals(
-      matches,
-      undefined,
-      rfefAliasesOrNull(seasonOf(now)),
-    );
-  } catch (_e) {
-    // Graceful fallback: maintain existing matches
-  }
-  try {
-    const womenMatches = await fetchWomenXornadaMatches(now, seasonOf(now));
-    if (womenMatches.length > 0) {
-      return [...matches, ...womenMatches];
-    }
-  } catch (_e) {
-    // Graceful fallback: maintain existing matches
-  }
-  return matches;
+  const reader = publicXornadaReader();
+  if (reader === null) return null;
+  const read = await readXornadaBoard(
+    {
+      reader,
+      explorer: renderExplorer,
+      now,
+      aliases: rfefAliasesOrNull(seasonOf(now)),
+    },
+    "gl",
+  );
+  if (read === null) throw new Error("the public reader failed");
+  return read.matches;
 }
 
 export function GET(request: Request): Promise<Response> {
