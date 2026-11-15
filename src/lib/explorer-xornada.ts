@@ -8,12 +8,17 @@ import {
 import { CompetitionId, MatchId } from "../model/ids.ts";
 import { Instant } from "../model/instant.ts";
 import { PublicMatch } from "../model/public.ts";
+import { withDeadline } from "./deadline.ts";
 import {
+  type DayMatchesResponse,
   getDayMatches,
   getOfficialCalendar,
   type OfficialCalendarResponse,
 } from "./explorer-client.ts";
-import { toMadridDate } from "./explorer-enrichment.ts";
+import {
+  EXPLORER_ENRICHMENT_TIMEOUT_MS,
+  toMadridDate,
+} from "./explorer-enrichment.ts";
 import {
   candidateOf,
   type ExplorerRow,
@@ -163,235 +168,269 @@ export function findActiveRound(
   return rounds[rounds.length - 1] ?? 1;
 }
 
+// The two Explorer reads of the women xornada (SPEC-085 CA-2): injected by
+// the board read, the client by default.
+export type WomenExplorer = {
+  calendar(
+    competition: string,
+    season: string,
+  ): Promise<OfficialCalendarResponse>;
+  dayMatches(date: string): Promise<DayMatchesResponse>;
+};
+
+// Every request with its deadline (SPEC-085 CA-3, M-15): it aborts the socket.
+export const clientExplorer = (timeoutMs: number): WomenExplorer => ({
+  calendar: (competition, season) =>
+    getOfficialCalendar(competition, season, undefined, { timeoutMs }),
+  dayMatches: (date) => getDayMatches(date, undefined, { timeoutMs }),
+});
+
+// SPEC-085 CA-3: the whole read (calendars, then days) has one deadline,
+// EXPLORER_ENRICHMENT_TIMEOUT_MS by default; past it, no women ([]).
 export async function fetchWomenXornadaMatches(
   nowIso: string = nowInstant(),
   season: string = "2026-27",
+  explorer?: WomenExplorer,
+  options: { timeoutMs?: number } = {},
 ): Promise<PublicMatch[]> {
+  const timeoutMs = options.timeoutMs ?? EXPLORER_ENRICHMENT_TIMEOUT_MS;
   try {
-    const calendarResults = await Promise.allSettled(
-      WOMEN_COMPETITIONS.map(async (comp) => {
-        const cal = await getOfficialCalendar(comp, season);
-        return { comp, cal };
-      }),
+    return await withDeadline(
+      womenMatches(nowIso, season, explorer ?? clientExplorer(timeoutMs)),
+      timeoutMs,
+      "explorer-xornada",
     );
-
-    const compDataList: Array<{
-      comp: CompetitionCode;
-      meta: CompetitionMetadata | undefined;
-      roundMatches: OfficialCalendarResponse["matches"];
-      teamsMap: Map<string, string>;
-    }> = [];
-
-    const allDates = new Set<string>([nowIso.slice(0, 10)]);
-
-    for (const res of calendarResults) {
-      if (
-        res.status !== "fulfilled" ||
-        !res.value.cal?.matches ||
-        res.value.cal.matches.length === 0
-      ) {
-        continue;
-      }
-      const { comp, cal } = res.value;
-      const round = findActiveRound(cal, nowIso);
-      const roundMatches = cal.matches.filter((m) => m.round === round);
-      if (roundMatches.length === 0) continue;
-
-      for (const m of roundMatches) {
-        allDates.add(toMadridDate(m.kickoff));
-      }
-
-      const meta = getCompetitionMetadata(comp);
-      const teamsMap = new Map(
-        (cal.teams || []).map((t) => [t.externalId, t.externalName]),
-      );
-
-      compDataList.push({
-        comp,
-        meta,
-        roundMatches,
-        teamsMap,
-      });
-    }
-
-    if (compDataList.length === 0) {
-      return [];
-    }
-
-    // Every row of each day, never keyed by teams alone: a Map by
-    // home-away kept the last row of any competition (SPEC-070 CA-6).
-    const rowsByDate = new Map<string, ExplorerRow[]>();
-    await Promise.all(
-      [...allDates].map(async (d) => {
-        try {
-          const res = await getDayMatches(d);
-          if (res?.matches) rowsByDate.set(d, res.matches);
-        } catch (_e) {
-          // Ignore per-day errors
-        }
-      }),
-    );
-
-    const results: PublicMatch[] = [];
-
-    for (const { comp, meta, roundMatches, teamsMap } of compDataList) {
-      const competitionName = meta?.name || meta?.officialName || comp;
-      const tier = (meta?.tier ?? 1) as 1 | 2 | 3 | 4 | 5;
-
-      for (const m of roundMatches) {
-        const homeNames = resolveTeamNames(m.home, teamsMap.get(m.home));
-        const awayNames = resolveTeamNames(m.away, teamsMap.get(m.away));
-
-        // Identity of SPEC-070 without alias: the competition of the row is
-        // its canonicalCompetitionId and each side a canonical id equal to
-        // the calendar's (or the calendar's without -femenino).
-        const homeIds = [m.home, m.home.replace(/-femenino$/, "")];
-        const pairing = pickRow(
-          rowsByDate.get(toMadridDate(m.kickoff)) ?? [],
-          (row) =>
-            homeIds.some((homeTeamId) =>
-              isSameMatch(
-                { competitionId: comp, homeTeamId, awayTeamId: m.away },
-                row,
-                null,
-              ),
-            ),
-          m.kickoff,
-        );
-        if (pairing.kind === "ambiguous") {
-          console.warn(
-            `[explorer-xornada] ${m.externalId}: varias filas do export cumpren a identidade, sen datos do día:`,
-            pairing.candidates
-              .map((r) => {
-                const c = candidateOf(r);
-                return `${c.codActa ?? "sen acta"} ${c.home ?? "?"}–${c.away ?? "?"}`;
-              })
-              .join("; "),
-          );
-        }
-        const dayMatch = pairing.kind === "paired" ? pairing.row : null;
-
-        const rawStatus = dayMatch?.estado;
-        let status:
-          | "scheduled"
-          | "live"
-          | "finished"
-          | "postponed"
-          | "suspended" = "scheduled";
-        let halfTime = false;
-        let homeScore: number | null = null;
-        let awayScore: number | null = null;
-        let minute: number | null = null;
-        let addedMinute: number | null = null;
-
-        if (rawStatus === "LIVE_PROVISIONAL") {
-          status = "live";
-          halfTime = dayMatch?.halfTime ?? false;
-          homeScore = dayMatch?.homeScore ?? dayMatch?.golesLocal ?? 0;
-          awayScore = dayMatch?.awayScore ?? dayMatch?.golesVisitante ?? 0;
-          minute = dayMatch?.minute ?? null;
-          addedMinute = dayMatch?.addedMinute ?? null;
-        } else if (rawStatus === "FINISHED") {
-          status = "finished";
-          homeScore = dayMatch?.homeScore ?? dayMatch?.golesLocal ?? 0;
-          awayScore = dayMatch?.awayScore ?? dayMatch?.golesVisitante ?? 0;
-        } else if (rawStatus === "POSTPONED") {
-          status = "postponed";
-        } else if (rawStatus === "SUSPENDED") {
-          status = "suspended";
-          homeScore = dayMatch?.homeScore ?? null;
-          awayScore = dayMatch?.awayScore ?? null;
-        }
-
-        const matchId = MatchId.parse(m.externalId);
-        const competitionId = CompetitionId.parse(comp);
-
-        const goals = (dayMatch?.goals || []).map((g) => ({
-          team: g.team,
-          player: g.player,
-          minute: g.minute,
-          penalty: g.penalty,
-          ownGoal: g.ownGoal,
-        }));
-
-        const baseFields = {
-          matchId,
-          competitionId,
-          competitionName,
-          tier,
-          round: m.round,
-          kickoff: Instant.parse(m.kickoff),
-          home: {
-            name: homeNames.name,
-            shortName: homeNames.shortName,
-          },
-          away: {
-            name: awayNames.name,
-            shortName: awayNames.shortName,
-          },
-          qualifier: "confirmado" as const,
-          version: 1,
-          observedAt: Instant.parse(nowIso),
-          decidedAt: Instant.parse(nowIso),
-          homeScoredAt: null,
-          awayScoredAt: null,
-          goals: goals.length > 0 ? goals : undefined,
-        };
-
-        if (status === "live") {
-          results.push(
-            PublicMatch.parse({
-              status: "live",
-              halfTime,
-              score: { home: homeScore ?? 0, away: awayScore ?? 0 },
-              minute,
-              addedMinute,
-              ...baseFields,
-            }),
-          );
-        } else if (status === "finished") {
-          results.push(
-            PublicMatch.parse({
-              status: "finished",
-              score: { home: homeScore ?? 0, away: awayScore ?? 0 },
-              minute: null,
-              ...baseFields,
-            }),
-          );
-        } else if (status === "postponed") {
-          results.push(
-            PublicMatch.parse({
-              status: "postponed",
-              score: null,
-              minute: null,
-              ...baseFields,
-            }),
-          );
-        } else if (status === "suspended") {
-          results.push(
-            PublicMatch.parse({
-              status: "suspended",
-              score: { home: homeScore ?? 0, away: awayScore ?? 0 },
-              minute: null,
-              ...baseFields,
-            }),
-          );
-        } else {
-          results.push(
-            PublicMatch.parse({
-              status: "scheduled",
-              score: null,
-              minute: null,
-              ...baseFields,
-            }),
-          );
-        }
-      }
-    }
-
-    return results;
   } catch (e) {
     console.error("fetchWomenXornadaMatches failed:", e);
     return [];
   }
+}
+
+async function womenMatches(
+  nowIso: string,
+  season: string,
+  explorer: WomenExplorer,
+): Promise<PublicMatch[]> {
+  const calendarResults = await Promise.allSettled(
+    WOMEN_COMPETITIONS.map(async (comp) => {
+      const cal = await explorer.calendar(comp, season);
+      return { comp, cal };
+    }),
+  );
+
+  const compDataList: Array<{
+    comp: CompetitionCode;
+    meta: CompetitionMetadata | undefined;
+    roundMatches: OfficialCalendarResponse["matches"];
+    teamsMap: Map<string, string>;
+  }> = [];
+
+  const allDates = new Set<string>([nowIso.slice(0, 10)]);
+
+  for (const res of calendarResults) {
+    if (
+      res.status !== "fulfilled" ||
+      !res.value.cal?.matches ||
+      res.value.cal.matches.length === 0
+    ) {
+      continue;
+    }
+    const { comp, cal } = res.value;
+    const round = findActiveRound(cal, nowIso);
+    const roundMatches = cal.matches.filter((m) => m.round === round);
+    if (roundMatches.length === 0) continue;
+
+    for (const m of roundMatches) {
+      allDates.add(toMadridDate(m.kickoff));
+    }
+
+    const meta = getCompetitionMetadata(comp);
+    const teamsMap = new Map(
+      (cal.teams || []).map((t) => [t.externalId, t.externalName]),
+    );
+
+    compDataList.push({
+      comp,
+      meta,
+      roundMatches,
+      teamsMap,
+    });
+  }
+
+  if (compDataList.length === 0) {
+    return [];
+  }
+
+  // Every row of each day, never keyed by teams alone: a Map by
+  // home-away kept the last row of any competition (SPEC-070 CA-6).
+  const rowsByDate = new Map<string, ExplorerRow[]>();
+  await Promise.all(
+    [...allDates].map(async (d) => {
+      try {
+        const res = await explorer.dayMatches(d);
+        if (res?.matches) rowsByDate.set(d, res.matches);
+      } catch (_e) {
+        // Ignore per-day errors
+      }
+    }),
+  );
+
+  const results: PublicMatch[] = [];
+
+  for (const { comp, meta, roundMatches, teamsMap } of compDataList) {
+    const competitionName = meta?.name || meta?.officialName || comp;
+    const tier = (meta?.tier ?? 1) as 1 | 2 | 3 | 4 | 5;
+
+    for (const m of roundMatches) {
+      const homeNames = resolveTeamNames(m.home, teamsMap.get(m.home));
+      const awayNames = resolveTeamNames(m.away, teamsMap.get(m.away));
+
+      // Identity of SPEC-070 without alias: the competition of the row is
+      // its canonicalCompetitionId and each side a canonical id equal to
+      // the calendar's (or the calendar's without -femenino).
+      const homeIds = [m.home, m.home.replace(/-femenino$/, "")];
+      const pairing = pickRow(
+        rowsByDate.get(toMadridDate(m.kickoff)) ?? [],
+        (row) =>
+          homeIds.some((homeTeamId) =>
+            isSameMatch(
+              { competitionId: comp, homeTeamId, awayTeamId: m.away },
+              row,
+              null,
+            ),
+          ),
+        m.kickoff,
+      );
+      if (pairing.kind === "ambiguous") {
+        console.warn(
+          `[explorer-xornada] ${m.externalId}: varias filas do export cumpren a identidade, sen datos do día:`,
+          pairing.candidates
+            .map((r) => {
+              const c = candidateOf(r);
+              return `${c.codActa ?? "sen acta"} ${c.home ?? "?"}–${c.away ?? "?"}`;
+            })
+            .join("; "),
+        );
+      }
+      const dayMatch = pairing.kind === "paired" ? pairing.row : null;
+
+      const rawStatus = dayMatch?.estado;
+      let status:
+        | "scheduled"
+        | "live"
+        | "finished"
+        | "postponed"
+        | "suspended" = "scheduled";
+      let halfTime = false;
+      let homeScore: number | null = null;
+      let awayScore: number | null = null;
+      let minute: number | null = null;
+      let addedMinute: number | null = null;
+
+      if (rawStatus === "LIVE_PROVISIONAL") {
+        status = "live";
+        halfTime = dayMatch?.halfTime ?? false;
+        homeScore = dayMatch?.homeScore ?? dayMatch?.golesLocal ?? 0;
+        awayScore = dayMatch?.awayScore ?? dayMatch?.golesVisitante ?? 0;
+        minute = dayMatch?.minute ?? null;
+        addedMinute = dayMatch?.addedMinute ?? null;
+      } else if (rawStatus === "FINISHED") {
+        status = "finished";
+        homeScore = dayMatch?.homeScore ?? dayMatch?.golesLocal ?? 0;
+        awayScore = dayMatch?.awayScore ?? dayMatch?.golesVisitante ?? 0;
+      } else if (rawStatus === "POSTPONED") {
+        status = "postponed";
+      } else if (rawStatus === "SUSPENDED") {
+        status = "suspended";
+        homeScore = dayMatch?.homeScore ?? null;
+        awayScore = dayMatch?.awayScore ?? null;
+      }
+
+      const matchId = MatchId.parse(m.externalId);
+      const competitionId = CompetitionId.parse(comp);
+
+      const goals = (dayMatch?.goals || []).map((g) => ({
+        team: g.team,
+        player: g.player,
+        minute: g.minute,
+        penalty: g.penalty,
+        ownGoal: g.ownGoal,
+      }));
+
+      const baseFields = {
+        matchId,
+        competitionId,
+        competitionName,
+        tier,
+        round: m.round,
+        kickoff: Instant.parse(m.kickoff),
+        home: {
+          name: homeNames.name,
+          shortName: homeNames.shortName,
+        },
+        away: {
+          name: awayNames.name,
+          shortName: awayNames.shortName,
+        },
+        qualifier: "confirmado" as const,
+        version: 1,
+        observedAt: Instant.parse(nowIso),
+        decidedAt: Instant.parse(nowIso),
+        homeScoredAt: null,
+        awayScoredAt: null,
+        goals: goals.length > 0 ? goals : undefined,
+      };
+
+      if (status === "live") {
+        results.push(
+          PublicMatch.parse({
+            status: "live",
+            halfTime,
+            score: { home: homeScore ?? 0, away: awayScore ?? 0 },
+            minute,
+            addedMinute,
+            ...baseFields,
+          }),
+        );
+      } else if (status === "finished") {
+        results.push(
+          PublicMatch.parse({
+            status: "finished",
+            score: { home: homeScore ?? 0, away: awayScore ?? 0 },
+            minute: null,
+            ...baseFields,
+          }),
+        );
+      } else if (status === "postponed") {
+        results.push(
+          PublicMatch.parse({
+            status: "postponed",
+            score: null,
+            minute: null,
+            ...baseFields,
+          }),
+        );
+      } else if (status === "suspended") {
+        results.push(
+          PublicMatch.parse({
+            status: "suspended",
+            score: { home: homeScore ?? 0, away: awayScore ?? 0 },
+            minute: null,
+            ...baseFields,
+          }),
+        );
+      } else {
+        results.push(
+          PublicMatch.parse({
+            status: "scheduled",
+            score: null,
+            minute: null,
+            ...baseFields,
+          }),
+        );
+      }
+    }
+  }
+
+  return results;
 }

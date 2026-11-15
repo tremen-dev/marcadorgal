@@ -165,11 +165,13 @@ export async function getOfficialCalendar(
   competition: string,
   season: string = "2026-27",
   customFetch?: typeof fetch,
+  options?: ExplorerRequestOptions,
 ): Promise<OfficialCalendarResponse> {
   return fetchExplorer<OfficialCalendarResponse>(
     "/api/export/calendar",
     { competition, season },
     customFetch,
+    options,
   );
 }
 

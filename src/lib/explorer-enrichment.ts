@@ -1,4 +1,5 @@
 import type { AliasFile, PublicGoal, PublicMatch } from "../model/index.ts";
+import { withDeadline as deadline } from "./deadline.ts";
 import { type DayMatchesResponse, getDayMatches } from "./explorer-client.ts";
 import {
   candidateOf,
@@ -94,19 +95,6 @@ export const EXPLORER_ENRICHMENT_TIMEOUT_MS = 2000;
 
 export type EnrichmentOptions = { timeoutMs?: number };
 
-// Resolve co valor do fetcher ou rexeita cando pasa o límite, aínda que o
-// fetcher inxectado ignore o sinal de aborto; o temporizador límpase sempre.
-function withDeadline<T>(work: Promise<T>, timeoutMs: number): Promise<T> {
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  const deadline = new Promise<never>((_resolve, reject) => {
-    timer = setTimeout(
-      () => reject(new Error(`[explorer-enrichment] timeout ${timeoutMs} ms`)),
-      timeoutMs,
-    );
-  });
-  return Promise.race([work, deadline]).finally(() => clearTimeout(timer));
-}
-
 /**
  * Enriquece os partidos de PublicMatch cos goles procedentes da API Explorer.
  *
@@ -153,7 +141,9 @@ export async function enrichMatchesWithGoals(
   // todas (SPEC-070 CA-5), non só sobre as que traen goles.
   const rowsByDate = new Map<string, ExplorerRow[]>();
   const results = await Promise.allSettled(
-    dates.map((date) => withDeadline(fetchDay(date), timeoutMs)),
+    dates.map((date) =>
+      deadline(fetchDay(date), timeoutMs, "explorer-enrichment"),
+    ),
   );
   results.forEach((res, i) => {
     if (res.status === "fulfilled" && Array.isArray(res.value?.matches)) {
