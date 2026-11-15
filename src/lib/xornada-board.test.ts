@@ -21,8 +21,10 @@ import {
 import { fetchWomenXornadaMatches } from "./explorer-xornada.ts";
 import {
   type BoardExplorer,
+  cachedCalendar,
   readXornadaBoard,
   renderExplorer,
+  WOMEN_CALENDAR_TTL_S,
 } from "./xornada-board.ts";
 
 // SPEC-085: one read of the board for /, /es and /api/board, with its
@@ -310,5 +312,90 @@ describe("SPEC-085 CA-3 Explorer with a deadline in the render", () => {
       timeoutMs: EXPLORER_ENRICHMENT_TIMEOUT_MS,
     });
     vi.restoreAllMocks();
+  });
+});
+
+describe("SPEC-085 CA-4 the women calendar is cached", () => {
+  const plus = (seconds: number) =>
+    new Date(Date.parse(NOW) + seconds * 1000).toISOString() as Instant;
+
+  function counted(fails = 0) {
+    const d = doubles();
+    const calls = new Map<string, number>();
+    let failures = fails;
+    const calendar = async (competition: string, season: string) => {
+      calls.set(competition, (calls.get(competition) ?? 0) + 1);
+      if (failures > 0) {
+        failures -= 1;
+        throw new Error("explorer down");
+      }
+      return d.explorer.calendar(competition, season);
+    };
+    return { d, calls, calendar };
+  }
+
+  it("H-2: one hour", () => {
+    expect(WOMEN_CALENDAR_TTL_S).toBe(3600);
+  });
+
+  it("two reads within the TTL: one call per competition; past it, another", async () => {
+    const { d, calls, calendar } = counted();
+    let now = NOW;
+    const explorer = {
+      calendar: cachedCalendar(calendar, () => now),
+      dayMatches: d.explorer.dayMatches,
+    };
+    const read = () =>
+      readXornadaBoard(
+        { reader: d.reader, explorer, now, aliases: null },
+        "gl",
+      );
+
+    await read();
+    now = plus(WOMEN_CALENDAR_TTL_S - 1);
+    const second = await read();
+    expect(Object.fromEntries(calls)).toEqual({
+      "liga-f": 1,
+      "primera-federacion-fem": 1,
+      "segunda-federacion-fem-g1": 1,
+    });
+    expect(second?.matches).toHaveLength(2);
+
+    now = plus(WOMEN_CALENDAR_TTL_S + 1);
+    await read();
+    expect(Object.fromEntries(calls)).toEqual({
+      "liga-f": 2,
+      "primera-federacion-fem": 2,
+      "segunda-federacion-fem-g1": 2,
+    });
+  });
+
+  it("a failure of Explorer is not cached", async () => {
+    quiet();
+    const { d, calls, calendar } = counted(3);
+    const explorer = {
+      calendar: cachedCalendar(calendar, () => NOW),
+      dayMatches: d.explorer.dayMatches,
+    };
+    const read = () =>
+      readXornadaBoard(
+        { reader: d.reader, explorer, now: NOW, aliases: null },
+        "gl",
+      );
+    expect((await read())?.matches).toEqual([
+      expect.objectContaining({ matchId: MEN.matchId }),
+    ]);
+    expect((await read())?.matches).toHaveLength(2);
+    expect(calls.get("liga-f")).toBe(2);
+    vi.restoreAllMocks();
+  });
+
+  it("the season is part of the key", async () => {
+    const { calls, calendar } = counted();
+    const cached = cachedCalendar(calendar, () => NOW);
+    await cached("liga-f", "2026-27");
+    await cached("liga-f", "2027-28");
+    await cached("liga-f", "2026-27");
+    expect(calls.get("liga-f")).toBe(2);
   });
 });

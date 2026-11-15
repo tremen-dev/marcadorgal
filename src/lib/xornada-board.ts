@@ -1,6 +1,7 @@
 import { seasonOf } from "../board/current.ts";
 import { type IndexReader, readHome } from "../board/week-read.ts";
 import type { Neighbours } from "../board/weeks.ts";
+import { nowInstant } from "../clock.ts";
 import type { Locale } from "../i18n/index.ts";
 import type { AliasFile, Instant, PublicMatch } from "../model/index.ts";
 import {
@@ -74,7 +75,42 @@ export async function readXornadaBoard(
   };
 }
 
+// SPEC-085 CA-4 (H-2): the official calendar of a women competition changes
+// with postponements, not minute by minute (the live state comes from the
+// day's matches): it is reused for an hour within the same instance.
+export const WOMEN_CALENDAR_TTL_S = 3600;
+
+type CalendarFetch = BoardExplorer["calendar"];
+
+// The calendar by competition and season, kept for ttlS by the given clock.
+// A failure is never kept: the next read asks again.
+export function cachedCalendar(
+  fetchCalendar: CalendarFetch,
+  clock: () => Instant,
+  ttlS: number = WOMEN_CALENDAR_TTL_S,
+): CalendarFetch {
+  const kept = new Map<
+    string,
+    { at: number; calendar: Awaited<ReturnType<CalendarFetch>> }
+  >();
+  return async (competition, season) => {
+    const key = `${competition}|${season}`;
+    const now = Date.parse(clock());
+    const hit = kept.get(key);
+    if (hit !== undefined && now - hit.at < ttlS * 1000) return hit.calendar;
+    const calendar = await fetchCalendar(competition, season);
+    kept.set(key, { at: now, calendar });
+    return calendar;
+  };
+}
+
 // Explorer as the render reads it (CA-3): every request with the deadline
-// of the enrichment, which aborts the socket.
-export const renderExplorer = (): BoardExplorer =>
-  clientExplorer(EXPLORER_ENRICHMENT_TIMEOUT_MS);
+// of the enrichment, which aborts the socket; the calendar from the cache of
+// this instance (CA-4).
+const client = clientExplorer(EXPLORER_ENRICHMENT_TIMEOUT_MS);
+const renderCalendar = cachedCalendar(client.calendar, nowInstant);
+
+export const renderExplorer = (): BoardExplorer => ({
+  calendar: renderCalendar,
+  dayMatches: client.dayMatches,
+});
