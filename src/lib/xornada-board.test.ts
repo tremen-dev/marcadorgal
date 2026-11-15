@@ -178,25 +178,49 @@ async function serialToday({ reader, explorer }: Doubles) {
   return { matches, arrows: read.arrows };
 }
 
+// Virtual time (F-SPEC-085-8): the clock only moves when the test advances
+// it, so a cold start or a loaded machine cannot change the result.
+function track<T>(work: Promise<T>) {
+  const state: { done: boolean; value?: T } = { done: false };
+  void work.then((value) => {
+    state.done = true;
+    state.value = value;
+  });
+  return state;
+}
+
 const quiet = () => {
   vi.spyOn(console, "error").mockImplementation(() => {});
   vi.spyOn(console, "warn").mockImplementation(() => {});
 };
 
 describe("SPEC-085 CA-2 one read of the board, in parallel", () => {
-  it("the women do not wait for the base nor the scorers (< 250 ms)", async () => {
-    const d = doubles({ base: 100, day: 100, calendar: 100 });
-    const start = performance.now();
-    const read = await readXornadaBoard(
-      { ...d, now: NOW, aliases: null },
-      "gl",
-    );
-    const elapsed = performance.now() - start;
-    expect(elapsed).toBeLessThan(250);
-    expect(read?.matches.map((m) => m.matchId)).toEqual([
-      MEN.matchId,
-      "liga-f-2026-27-j10-depor-abanca-valencia-cf",
-    ]);
+  it("the women do not wait for the base nor the scorers (200 virtual ms < 250; in series, 400)", async () => {
+    vi.useFakeTimers();
+    try {
+      const slow = { base: 100, day: 100, calendar: 100 };
+      const read = track(
+        readXornadaBoard({ ...doubles(slow), now: NOW, aliases: null }, "gl"),
+      );
+      // The old serial composition, on the same clock: it must still be
+      // waiting when the parallel read is done, or this test discriminates
+      // nothing.
+      const serial = track(serialToday(doubles(slow)));
+
+      await vi.advanceTimersByTimeAsync(200);
+      expect(read.done).toBe(true);
+      expect(serial.done).toBe(false);
+      expect(read.value?.matches.map((m) => m.matchId)).toEqual([
+        MEN.matchId,
+        "liga-f-2026-27-j10-depor-abanca-valencia-cf",
+      ]);
+
+      await vi.advanceTimersByTimeAsync(200);
+      expect(serial.done).toBe(true);
+      expect(read.value).toEqual(serial.value);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it.each([
@@ -257,44 +281,60 @@ describe("SPEC-085 CA-2 /, /es and /api/board share the read", () => {
 describe("SPEC-085 CA-3 Explorer with a deadline in the render", () => {
   const never = <T>() => new Promise<T>(() => {});
 
-  it("an Explorer that never answers: the read resolves within the deadline + 200 ms, without women", async () => {
+  it("an Explorer that never answers: the read resolves at the deadline (virtual time), without women", async () => {
     quiet();
-    const d = doubles();
-    const timeoutMs = 300;
-    const start = performance.now();
-    const read = await readXornadaBoard(
-      {
-        reader: d.reader,
-        explorer: { calendar: never, dayMatches: never },
-        now: NOW,
-        aliases: null,
-        timeoutMs,
-      },
-      "gl",
-    );
-    expect(performance.now() - start).toBeLessThanOrEqual(timeoutMs + 200);
-    expect(read?.matches).toEqual([MEN]);
-    vi.restoreAllMocks();
+    vi.useFakeTimers();
+    try {
+      const d = doubles();
+      const timeoutMs = 300;
+      const read = track(
+        readXornadaBoard(
+          {
+            reader: d.reader,
+            explorer: { calendar: never, dayMatches: never },
+            now: NOW,
+            aliases: null,
+            timeoutMs,
+          },
+          "gl",
+        ),
+      );
+      await vi.advanceTimersByTimeAsync(timeoutMs - 1);
+      expect(read.done).toBe(false);
+      await vi.advanceTimersByTimeAsync(1);
+      expect(read.done).toBe(true);
+      expect(read.value?.matches).toEqual([MEN]);
+    } finally {
+      vi.useRealTimers();
+      vi.restoreAllMocks();
+    }
   });
 
-  it("the calendar answers, the days never: still within the deadline + 200 ms", async () => {
+  it("the calendar answers, the days never: still done at the deadline (virtual time)", async () => {
     quiet();
-    const d = doubles({ calendar: 200 });
-    const timeoutMs = 300;
-    const start = performance.now();
-    const read = await readXornadaBoard(
-      {
-        reader: d.reader,
-        explorer: { calendar: d.explorer.calendar, dayMatches: never },
-        now: NOW,
-        aliases: null,
-        timeoutMs,
-      },
-      "gl",
-    );
-    expect(performance.now() - start).toBeLessThanOrEqual(timeoutMs + 200);
-    expect(read?.matches[0]).toEqual(MEN);
-    vi.restoreAllMocks();
+    vi.useFakeTimers();
+    try {
+      const d = doubles({ calendar: 200 });
+      const timeoutMs = 300;
+      const read = track(
+        readXornadaBoard(
+          {
+            reader: d.reader,
+            explorer: { calendar: d.explorer.calendar, dayMatches: never },
+            now: NOW,
+            aliases: null,
+            timeoutMs,
+          },
+          "gl",
+        ),
+      );
+      await vi.advanceTimersByTimeAsync(timeoutMs);
+      expect(read.done).toBe(true);
+      expect(read.value?.matches[0]).toEqual(MEN);
+    } finally {
+      vi.useRealTimers();
+      vi.restoreAllMocks();
+    }
   });
 
   it("the explorer of the render asks every request with EXPLORER_ENRICHMENT_TIMEOUT_MS", async () => {

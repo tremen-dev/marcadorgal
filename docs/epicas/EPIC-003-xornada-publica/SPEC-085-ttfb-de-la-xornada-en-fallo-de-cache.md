@@ -2,7 +2,7 @@
 id: SPEC-085
 tipo: spec
 epica: EPIC-003
-estado: en-progreso
+estado: en-revision
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-11, por: sdd-arquitecto}
@@ -12,6 +12,7 @@ historial:
   - {estado: en-progreso, fecha: 2026-11-15, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-11-15, por: sdd-implementador}
   - {estado: en-progreso, fecha: 2026-11-15, por: sdd-verificador}
+  - {estado: en-revision, fecha: 2026-11-15, por: sdd-implementador}
 ---
 # SPEC-085 — TTFB de la xornada en fallo de caché
 
