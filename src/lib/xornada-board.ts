@@ -31,6 +31,23 @@ export type BoardReadDeps = {
 
 export type BoardRead = { matches: PublicMatch[]; arrows: Neighbours };
 
+// SPEC-085 CA-5: within one read, each date is asked once between the
+// scorers and the women; the second asker shares the first request.
+function oncePerDay(explorer: BoardExplorer): BoardExplorer {
+  const days = new Map<string, ReturnType<BoardExplorer["dayMatches"]>>();
+  return {
+    calendar: explorer.calendar,
+    dayMatches: (date) => {
+      let day = days.get(date);
+      if (day === undefined) {
+        day = explorer.dayMatches(date);
+        days.set(date, day);
+      }
+      return day;
+    },
+  };
+}
+
 // null: no reader, or the base failed (logged). A failure of Explorer never
 // becomes a state (D-9): the rows stay without scorers, or without women.
 export async function readXornadaBoard(
@@ -40,7 +57,7 @@ export async function readXornadaBoard(
   const { reader, now } = deps;
   if (reader === null) return null;
   const timeoutMs = deps.timeoutMs ?? EXPLORER_ENRICHMENT_TIMEOUT_MS;
-  const explorer = deps.explorer;
+  const explorer = oncePerDay(deps.explorer);
 
   const women = fetchWomenXornadaMatches(now, seasonOf(now), explorer, {
     timeoutMs,

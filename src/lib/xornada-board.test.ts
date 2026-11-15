@@ -399,3 +399,61 @@ describe("SPEC-085 CA-4 the women calendar is cached", () => {
     expect(calls.get("liga-f")).toBe(2);
   });
 });
+
+describe("SPEC-085 CA-5 one request per day", () => {
+  it("each date reaches /api/export/matches once between scorers and women", async () => {
+    const d = doubles({ base: 20, day: 30 });
+    const perDate = new Map<string, number>();
+    const dayMatches = (date: string) => {
+      perDate.set(date, (perDate.get(date) ?? 0) + 1);
+      return d.explorer.dayMatches(date);
+    };
+    const read = await readXornadaBoard(
+      {
+        reader: d.reader,
+        explorer: { calendar: d.explorer.calendar, dayMatches },
+        now: NOW,
+        aliases: null,
+      },
+      "gl",
+    );
+    expect(Object.fromEntries(perDate)).toEqual({ "2026-11-08": 1 });
+    expect(read?.matches[0]?.goals).toHaveLength(1);
+    expect(read?.matches[1]?.status).toBe("live");
+  });
+
+  it("the women ask first and the scorers later: still once", async () => {
+    const d = doubles({ base: 80, day: 200 });
+    let calls = 0;
+    const dayMatches = (date: string) => {
+      calls += 1;
+      return d.explorer.dayMatches(date);
+    };
+    await readXornadaBoard(
+      {
+        reader: d.reader,
+        explorer: { calendar: d.explorer.calendar, dayMatches },
+        now: NOW,
+        aliases: null,
+      },
+      "gl",
+    );
+    expect(calls).toBe(1);
+  });
+
+  it("two reads do not share their days", async () => {
+    const d = doubles();
+    let calls = 0;
+    const explorer = {
+      calendar: d.explorer.calendar,
+      dayMatches: (date: string) => {
+        calls += 1;
+        return d.explorer.dayMatches(date);
+      },
+    };
+    const deps = { reader: d.reader, explorer, now: NOW, aliases: null };
+    await readXornadaBoard(deps, "gl");
+    await readXornadaBoard(deps, "gl");
+    expect(calls).toBe(2);
+  });
+});
