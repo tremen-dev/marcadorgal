@@ -9,6 +9,7 @@ import { Instant } from "../model/instant.ts";
 import { PublicMatch } from "../model/public.ts";
 import type { MatchState } from "../model/state.ts";
 import { explorerRowState } from "../sources/rfef/explorer.ts";
+import { LIVE_BEFORE_MINUTES } from "../sources/rfef/state.ts";
 import { withDeadline } from "./deadline.ts";
 import {
   type DayMatchesResponse,
@@ -28,11 +29,10 @@ import {
   pickRow,
 } from "./explorer-identity.ts";
 
-export const WOMEN_COMPETITIONS: readonly CompetitionCode[] = [
-  "liga-f",
-  "primera-federacion-fem",
-  "segunda-federacion-fem-g1",
-];
+// SPEC-088 CA-1: only competitions whose calendar in explorer is the
+// official one. The federation calendars it serves are a generated
+// round-robin; adding one back needs a spec and a real calendar.
+export const WOMEN_COMPETITIONS: readonly CompetitionCode[] = ["liga-f"];
 
 const WOMEN_TEAM_NAMES: Readonly<
   Record<string, { name: string; shortName: string }>
@@ -323,7 +323,7 @@ async function womenMatches(
         continue;
       }
       const dayMatch = pairing.kind === "paired" ? pairing.row : null;
-      const view = viewOf(dayMatch, m.kickoff);
+      const view = viewOf(dayMatch, m, nowIso);
       if (view === null) continue;
 
       const homeNames = resolveTeamNames(m.home, teamsMap.get(m.home));
@@ -378,11 +378,39 @@ const SCHEDULED: View = {
   at: null,
 };
 
+// SPEC-088 CA-2/CA-3: how long a match with no played row may still say
+// scheduled. A confirmed time, until kickoff plus the margin the ingest
+// grants before it; an unconfirmed one (00:00Z is "that day"), the whole
+// Madrid day of its kickoff.
+function stillScheduled(
+  match: { kickoff: string; timeConfirmed: boolean },
+  nowIso: string,
+): boolean {
+  // A kickoff that is not an instant is not judged here: PublicMatch rejects
+  // it below, with its warn (SPEC-086 CA-5).
+  if (!Instant.safeParse(match.kickoff).success) return true;
+  if (match.timeConfirmed) {
+    return (
+      Date.parse(nowIso) <
+      Date.parse(match.kickoff) + LIVE_BEFORE_MINUTES * 60_000
+    );
+  }
+  return toMadridDate(nowIso) <= toMadridDate(match.kickoff);
+}
+
 // The state of a calendar match off its export row, with the rules of the
 // ingest (explorerRowState, ADR-023 §5): null when it must not come out.
-// Without a row, or with a SCHEDULED one, it is scheduled without a Decision.
-function viewOf(row: ExplorerRow | null, kickoff: string): View | null {
-  if (row === null || row.estado === "SCHEDULED") return SCHEDULED;
+// Without a row, or with a SCHEDULED one, it is scheduled without a Decision
+// while stillScheduled (SPEC-088 CA-2..CA-4); past it, it does not come out.
+function viewOf(
+  row: ExplorerRow | null,
+  match: { kickoff: string; timeConfirmed: boolean },
+  nowIso: string,
+): View | null {
+  const { kickoff } = match;
+  if (row === null || row.estado === "SCHEDULED") {
+    return stillScheduled(match, nowIso) ? SCHEDULED : null;
+  }
   // SPEC-086 CA-6: a row that has played without its clock does not come out.
   const lastSeenAt = Instant.safeParse(row.lastSeenAt);
   if (!lastSeenAt.success) return null;
