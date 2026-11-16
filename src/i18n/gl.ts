@@ -172,6 +172,10 @@ export const gl = {
       "tercera-rfef-g1": "3ª RFEF G1",
     },
   },
+  directos: {
+    // SPEC-087 CA-4: explorer failed; never the text of an empty day (D-9).
+    unavailable: "Os directos non están dispoñibles agora mesmo.",
+  },
   footer: {
     by: "Un proxecto de",
     version: "versión",

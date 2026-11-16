@@ -29,14 +29,12 @@ describe("SPEC-087 CA-1 directosDate", () => {
     expect(directosDate("2026-11-24", "2026-11-15T23:30:00Z")).toBeNull();
   });
 
-  it.each([
-    "2026-11-16",
-    "2026-11-09",
-    "2026-11-23",
-    "2026-11-12",
-  ])("a real date within ±7 days: %s", (raw) => {
-    expect(directosDate(raw, NOW)).toBe(raw);
-  });
+  it.each(["2026-11-16", "2026-11-09", "2026-11-23", "2026-11-12"])(
+    "a real date within ±7 days: %s",
+    (raw) => {
+      expect(directosDate(raw, NOW)).toBe(raw);
+    },
+  );
 
   it.each([
     ["2026-02-30", "not a calendar date"],
@@ -75,8 +73,7 @@ const DAY: DayMatchesResponse = {
 };
 
 type GetDay = NonNullable<DirectosDeps["getDayMatches"]>;
-const answering = (body: DayMatchesResponse) =>
-  vi.fn<GetDay>(async () => body);
+const answering = (body: DayMatchesResponse) => vi.fn<GetDay>(async () => body);
 
 describe("SPEC-087 CA-2 an invalid date redirects without asking explorer", () => {
   it.each([
