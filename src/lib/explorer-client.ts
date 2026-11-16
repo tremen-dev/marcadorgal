@@ -70,6 +70,10 @@ export type DayMatchesResponse = {
     minute?: number | null;
     addedMinute?: number | null;
     halfTime?: boolean;
+    // The instant of the last answer of the RFEF in which explorer read the
+    // row (export-matches.ts of explorer, ADR-023 §5): the clock of the row
+    // (SPEC-086 CA-6). Read as untrusted: validated before use.
+    lastSeenAt?: string;
   }>;
 };
 

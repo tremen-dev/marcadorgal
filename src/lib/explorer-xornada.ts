@@ -5,9 +5,10 @@ import {
   type CompetitionMetadata,
   getCompetitionMetadata,
 } from "../model/competitions.ts";
-import { CompetitionId, MatchId } from "../model/ids.ts";
 import { Instant } from "../model/instant.ts";
 import { PublicMatch } from "../model/public.ts";
+import type { MatchState } from "../model/state.ts";
+import { explorerRowState } from "../sources/rfef/explorer.ts";
 import { withDeadline } from "./deadline.ts";
 import {
   type DayMatchesResponse,
@@ -17,6 +18,7 @@ import {
 } from "./explorer-client.ts";
 import {
   EXPLORER_ENRICHMENT_TIMEOUT_MS,
+  sanitizeGoals,
   toMadridDate,
 } from "./explorer-enrichment.ts";
 import {
@@ -262,15 +264,21 @@ async function womenMatches(
   }
 
   // Every row of each day, never keyed by teams alone: a Map by
-  // home-away kept the last row of any competition (SPEC-070 CA-6).
+  // home-away kept the last row of any competition (SPEC-070 CA-6). A day
+  // that cannot be read stays out of the map (SPEC-086 CA-1): its matches do
+  // not come out, never as scheduled.
   const rowsByDate = new Map<string, ExplorerRow[]>();
   await Promise.all(
     [...allDates].map(async (d) => {
       try {
         const res = await explorer.dayMatches(d);
-        if (res?.matches) rowsByDate.set(d, res.matches);
-      } catch (_e) {
-        // Ignore per-day errors
+        if (!Array.isArray(res?.matches)) throw new Error("no matches");
+        rowsByDate.set(d, res.matches);
+      } catch (e) {
+        console.error(
+          `[explorer-xornada] o día ${d} non se puido ler, os seus partidos non saen:`,
+          e,
+        );
       }
     }),
   );
@@ -282,15 +290,15 @@ async function womenMatches(
     const tier = (meta?.tier ?? 1) as 1 | 2 | 3 | 4 | 5;
 
     for (const m of roundMatches) {
-      const homeNames = resolveTeamNames(m.home, teamsMap.get(m.home));
-      const awayNames = resolveTeamNames(m.away, teamsMap.get(m.away));
+      const rows = rowsByDate.get(toMadridDate(m.kickoff));
+      if (rows === undefined) continue; // SPEC-086 CA-1
 
       // Identity of SPEC-070 without alias: the competition of the row is
       // its canonicalCompetitionId and each side a canonical id equal to
       // the calendar's (or the calendar's without -femenino).
       const homeIds = [m.home, m.home.replace(/-femenino$/, "")];
       const pairing = pickRow(
-        rowsByDate.get(toMadridDate(m.kickoff)) ?? [],
+        rows,
         (row) =>
           homeIds.some((homeTeamId) =>
             isSameMatch(
@@ -302,8 +310,9 @@ async function womenMatches(
         m.kickoff,
       );
       if (pairing.kind === "ambiguous") {
+        // SPEC-086 CA-1 (refines SPEC-070 CA-6): the match does not come out.
         console.warn(
-          `[explorer-xornada] ${m.externalId}: varias filas do export cumpren a identidade, sen datos do día:`,
+          `[explorer-xornada] ${m.externalId}: varias filas do export cumpren a identidade, o partido non sae:`,
           pairing.candidates
             .map((r) => {
               const c = candidateOf(r);
@@ -311,126 +320,92 @@ async function womenMatches(
             })
             .join("; "),
         );
+        continue;
       }
       const dayMatch = pairing.kind === "paired" ? pairing.row : null;
+      const view = viewOf(dayMatch, m.kickoff);
+      if (view === null) continue;
 
-      const rawStatus = dayMatch?.estado;
-      let status:
-        | "scheduled"
-        | "live"
-        | "finished"
-        | "postponed"
-        | "suspended" = "scheduled";
-      let halfTime = false;
-      let homeScore: number | null = null;
-      let awayScore: number | null = null;
-      let minute: number | null = null;
-      let addedMinute: number | null = null;
+      const homeNames = resolveTeamNames(m.home, teamsMap.get(m.home));
+      const awayNames = resolveTeamNames(m.away, teamsMap.get(m.away));
+      const goals = sanitizeGoals(dayMatch?.goals ?? []);
 
-      if (rawStatus === "LIVE_PROVISIONAL") {
-        status = "live";
-        halfTime = dayMatch?.halfTime ?? false;
-        homeScore = dayMatch?.homeScore ?? dayMatch?.golesLocal ?? 0;
-        awayScore = dayMatch?.awayScore ?? dayMatch?.golesVisitante ?? 0;
-        minute = dayMatch?.minute ?? null;
-        addedMinute = dayMatch?.addedMinute ?? null;
-      } else if (rawStatus === "FINISHED") {
-        status = "finished";
-        homeScore = dayMatch?.homeScore ?? dayMatch?.golesLocal ?? 0;
-        awayScore = dayMatch?.awayScore ?? dayMatch?.golesVisitante ?? 0;
-      } else if (rawStatus === "POSTPONED") {
-        status = "postponed";
-      } else if (rawStatus === "SUSPENDED") {
-        status = "suspended";
-        homeScore = dayMatch?.homeScore ?? null;
-        awayScore = dayMatch?.awayScore ?? null;
-      }
-
-      const matchId = MatchId.parse(m.externalId);
-      const competitionId = CompetitionId.parse(comp);
-
-      const goals = (dayMatch?.goals || []).map((g) => ({
-        team: g.team,
-        player: g.player,
-        minute: g.minute,
-        penalty: g.penalty,
-        ownGoal: g.ownGoal,
-      }));
-
-      const baseFields = {
-        matchId,
-        competitionId,
+      const candidate = {
+        ...view.state,
+        matchId: m.externalId,
+        competitionId: comp,
         competitionName,
         tier,
         round: m.round,
-        kickoff: Instant.parse(m.kickoff),
-        home: {
-          name: homeNames.name,
-          shortName: homeNames.shortName,
-        },
-        away: {
-          name: awayNames.name,
-          shortName: awayNames.shortName,
-        },
+        kickoff: m.kickoff,
+        home: { name: homeNames.name, shortName: homeNames.shortName },
+        away: { name: awayNames.name, shortName: awayNames.shortName },
         qualifier: "confirmado" as const,
-        version: 1,
-        observedAt: Instant.parse(nowIso),
-        decidedAt: Instant.parse(nowIso),
+        // SPEC-086 CA-6: the clocks are the row's, never the render's.
+        version: view.at === null ? 0 : 1,
+        observedAt: view.at,
+        decidedAt: view.at,
         homeScoredAt: null,
         awayScoredAt: null,
-        goals: goals.length > 0 ? goals : undefined,
+        ...(goals.length > 0 ? { goals } : {}),
       };
 
-      if (status === "live") {
-        results.push(
-          PublicMatch.parse({
-            status: "live",
-            halfTime,
-            score: { home: homeScore ?? 0, away: awayScore ?? 0 },
-            minute,
-            addedMinute,
-            ...baseFields,
-          }),
+      // SPEC-086 CA-5: one match that does not validate is dropped alone.
+      const parsed = PublicMatch.safeParse(candidate);
+      if (!parsed.success) {
+        console.warn(
+          `[explorer-xornada] ${m.externalId}: non valida como PublicMatch, descartado:`,
+          parsed.error.issues
+            .map((i) => `${i.path.join(".")}: ${i.message}`)
+            .join("; "),
         );
-      } else if (status === "finished") {
-        results.push(
-          PublicMatch.parse({
-            status: "finished",
-            score: { home: homeScore ?? 0, away: awayScore ?? 0 },
-            minute: null,
-            ...baseFields,
-          }),
-        );
-      } else if (status === "postponed") {
-        results.push(
-          PublicMatch.parse({
-            status: "postponed",
-            score: null,
-            minute: null,
-            ...baseFields,
-          }),
-        );
-      } else if (status === "suspended") {
-        results.push(
-          PublicMatch.parse({
-            status: "suspended",
-            score: { home: homeScore ?? 0, away: awayScore ?? 0 },
-            minute: null,
-            ...baseFields,
-          }),
-        );
-      } else {
-        results.push(
-          PublicMatch.parse({
-            status: "scheduled",
-            score: null,
-            minute: null,
-            ...baseFields,
-          }),
-        );
+        continue;
       }
+      results.push(parsed.data);
     }
   }
 
   return results;
+}
+
+type View = {
+  state: MatchState;
+  at: string | null;
+};
+
+const SCHEDULED: View = {
+  state: { status: "scheduled", score: null, minute: null },
+  at: null,
+};
+
+// The state of a calendar match off its export row, with the rules of the
+// ingest (explorerRowState, ADR-023 §5): null when it must not come out.
+// Without a row, or with a SCHEDULED one, it is scheduled without a Decision.
+function viewOf(row: ExplorerRow | null, kickoff: string): View | null {
+  if (row === null || row.estado === "SCHEDULED") return SCHEDULED;
+  // SPEC-086 CA-6: a row that has played without its clock does not come out.
+  const lastSeenAt = Instant.safeParse(row.lastSeenAt);
+  if (!lastSeenAt.success) return null;
+  // SPEC-086 CA-2: one score per side, either naming; never a 0 of our own.
+  const state = explorerRowState(
+    {
+      estado: row.estado,
+      golesLocal: row.homeScore ?? row.golesLocal ?? null,
+      golesVisitante: row.awayScore ?? row.golesVisitante ?? null,
+      lastSeenAt: lastSeenAt.data,
+      minute: row.minute,
+      addedMinute: row.addedMinute,
+      halfTime: row.halfTime,
+    },
+    kickoff,
+  );
+  if (typeof state === "string") return null;
+  return {
+    // PublicMatch says halfTime explicitly in live (SPEC-021 CA-6).
+    state:
+      state.status === "live"
+        ? { ...state, halfTime: state.halfTime ?? false }
+        : state,
+    at: lastSeenAt.data,
+  };
 }
