@@ -102,7 +102,12 @@ describe("SPEC-089 CA-3 CalendarView in Madrid time", () => {
         calendarData: {
           matches: [
             { ...local.matches[0], externalId: "a", timeConfirmed: true },
-            { ...local.matches[0], externalId: "b", round: 2, timeConfirmed: false },
+            {
+              ...local.matches[0],
+              externalId: "b",
+              round: 2,
+              timeConfirmed: false,
+            },
           ],
         },
         locale: "gl",
