@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-11-11
+Actualizado: 2026-11-16
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -37,7 +37,7 @@ Actualizado: 2026-11-11
 | SPEC-023 — escritorio-tira-de-dias-filtros-y-plegar-competicion | hecho | 2026-10-08 (sdd-verificador) |
 | SPEC-024 — realtime-fallback-y-frescura | hecho | 2026-10-09 (sdd-verificador) |
 | SPEC-025 — medicion-de-latencia-gol-pantalla-con-segundo-reloj-y-sonda-sintetica | en-revision | 2026-10-09 (sdd-implementador) |
-| SPEC-026 — primera-pintura-en-movil-con-3g | en-revision | 2026-10-09 (sdd-implementador) |
+| SPEC-026 — primera-pintura-en-movil-con-3g | hecho | 2026-11-15 (sdd-verificador) |
 | SPEC-027 — navegar-entre-xornadas | hecho | 2026-10-10 (sdd-verificador) |
 | SPEC-028 — mejoras-de-navegacion-lateral-logo-y-titulo-de-la-xornada | hecho | 2026-10-10 (sdd-verificador) |
 | SPEC-033 — mejoras-de-lectura-cabecera-por-dia-equipos-gallegos-y-favicon | hecho | 2026-10-12 (sdd-verificador) |
@@ -59,6 +59,7 @@ Actualizado: 2026-11-11
 | SPEC-068 — goleadores-colgados-de-su-equipo-en-la-fila-de-partido | hecho | 2026-11-09 (sdd-verificador) |
 | SPEC-081 — lema-manuscrito-todo-o-futbol-galego-junto-al-logo | hecho | 2026-11-11 (sdd-verificador) |
 | SPEC-082 — cabecera-movil-ligera-idioma-al-pie-y-filtros-plegados | hecho | 2026-11-11 (sdd-verificador) |
+| SPEC-085 — ttfb-de-la-xornada-en-fallo-de-cache | hecho | 2026-11-15 (sdd-verificador) |
 
 ## EPIC-004 — fuente-rfef (aprobada)
 
@@ -129,6 +130,7 @@ Actualizado: 2026-11-11
 | SPEC-063 — gate-de-version-en-cada-pr | hecho | 2026-11-08 (sdd-verificador) |
 | SPEC-083 — mantenimiento-de-ligas-y-artefactos-sdd | hecho | 2026-11-11 (sdd-verificador) |
 | SPEC-084 — provisional-fuera-de-la-portada-y-explicado-en-el-aviso-legal | hecho | 2026-11-11 (sdd-verificador) |
+| SPEC-086 — la-xornada-femenina-no-degrada-ni-inventa-ante-un-fallo-o-un-hueco-de-explorer | hecho | 2026-11-16 (sdd-verificador) |
 
 ## EPIC-MEJORA — mejoras (aprobada)
 
@@ -174,9 +176,11 @@ Actualizado: 2026-11-11
 | ADR-033 | aprobada | medicion-de-visitas-con-vercel-web-analytics-sin-cookie | 2026-11-10 (Alberto Fojo) |
 | ADR-034 | aprobada | back-fill-historico-explorer-manda-en-jornadas-pasadas-y-el-operador-corrige-el-cierre | 2026-11-10 (sdd-orquestador) |
 | ADR-035 | aprobada | caveat-autoalojada-como-tercera-familia-solo-para-el-lema-enmienda-adr-005 | 2026-11-10 (Alberto Fojo) |
+| ADR-037 | aprobada | funciones-de-vercel-en-dub1-junto-a-la-base | 2026-11-12 (Alberto Fojo) |
+| ADR-038 | borrador | speed-insights-para-medir-la-carga-real-sin-cookie | 2026-11-11 (sdd-arquitecto) |
 
 ## Resumen
 
-- hecho: 78
-- en-revision: 3
+- hecho: 81
+- en-revision: 2
 - borrador: 1
