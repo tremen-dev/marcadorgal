@@ -7,12 +7,9 @@ import {
 } from "./explorer-xornada.ts";
 
 describe("WOMEN_COMPETITIONS", () => {
-  it("includes all three female categories: liga-f, primera-federacion-fem, and segunda-federacion-fem-g1", () => {
-    expect(WOMEN_COMPETITIONS).toEqual([
-      "liga-f",
-      "primera-federacion-fem",
-      "segunda-federacion-fem-g1",
-    ]);
+  // SPEC-088 CA-1: the federation calendars of explorer are generated.
+  it("is only liga-f, the competition with an official calendar", () => {
+    expect(WOMEN_COMPETITIONS).toEqual(["liga-f"]);
   });
 });
 
@@ -67,8 +64,8 @@ describe("fetchWomenXornadaMatches", () => {
     vi.restoreAllMocks();
   });
 
-  it("fetches matches for all three competitions in parallel and resolves canonical names", async () => {
-    vi.spyOn(client, "getOfficialCalendar").mockImplementation(
+  it("asks only liga-f even if the federation calendars answer (SPEC-088 CA-1)", async () => {
+    const calendar = vi.spyOn(client, "getOfficialCalendar").mockImplementation(
       async (comp: string) => {
         if (comp === "liga-f") {
           return {
@@ -168,7 +165,8 @@ describe("fetchWomenXornadaMatches", () => {
 
     const matches = await fetchWomenXornadaMatches("2026-11-07T20:00:00Z");
 
-    expect(matches).toHaveLength(3);
+    expect(matches).toHaveLength(1);
+    expect(calendar.mock.calls.map((c) => c[0])).toEqual(["liga-f"]);
 
     const ligaFMatch = matches.find((m) => m.competitionId === "liga-f");
     expect(ligaFMatch).toBeDefined();
@@ -179,20 +177,6 @@ describe("fetchWomenXornadaMatches", () => {
       expect(ligaFMatch.minute).toBe(34);
     }
 
-    const fed1Match = matches.find(
-      (m) => m.competitionId === "primera-federacion-fem",
-    );
-    expect(fed1Match).toBeDefined();
-    expect(fed1Match?.tier).toBe(2);
-    expect(fed1Match?.status).toBe("scheduled");
-
-    const fed2Match = matches.find(
-      (m) => m.competitionId === "segunda-federacion-fem-g1",
-    );
-    expect(fed2Match).toBeDefined();
-    expect(fed2Match?.tier).toBe(3);
-    expect(fed2Match?.status).toBe("scheduled");
-    expect(fed2Match?.home.name).toBe("RC Celta Femenino / As Celtas");
   });
 
   it("handles graceful failure when one competition throws an error", async () => {
