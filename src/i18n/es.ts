@@ -154,6 +154,11 @@ export const es: Dictionary = {
     form: "Forma",
     confirmedTime: "Horario confirmado",
     tbdTime: "Horario por confirmar",
+    // SPEC-089 CA-4/CA-5: no official data in marcador.gal, not a failure.
+    calendarNotOffered:
+      "El calendario oficial de esta competición aún no está en marcador.gal.",
+    standingsNotOffered:
+      "La clasificación oficial de esta competición aún no está en marcador.gal.",
     live: "En directo",
     noMatches: "No hay partidos registrados para esta fecha.",
     galicianTeam: "Equipo gallego",
