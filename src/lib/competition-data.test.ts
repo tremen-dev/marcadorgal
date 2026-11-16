@@ -184,15 +184,18 @@ describe("SPEC-089 CA-2 local calendar keeps Galician shields", () => {
       ["Racing de Ferrol", "CD Lugo", "Pontevedra CF"],
     ],
     ["segunda-rfef-g1", ["ourense-cf"], ["Ourense CF"]],
-  ] as const)("%s paints shield and highlight by id", async (id, clubs, names) => {
-    const explorer = fakeExplorer();
-    const html = await render(
-      CompetitionCalendarPage({ id, locale: "gl", explorer }),
-    );
-    for (const club of clubs) expect(html).toContain(`/escudos/${club}.svg`);
-    for (const name of names) expect(html).toContain(name);
-    expect(cards(html)).toBeGreaterThan(0);
-  });
+  ] as const)(
+    "%s paints shield and highlight by id",
+    async (id, clubs, names) => {
+      const explorer = fakeExplorer();
+      const html = await render(
+        CompetitionCalendarPage({ id, locale: "gl", explorer }),
+      );
+      for (const club of clubs) expect(html).toContain(`/escudos/${club}.svg`);
+      for (const name of names) expect(html).toContain(name);
+      expect(cards(html)).toBeGreaterThan(0);
+    },
+  );
 
   it("the loader carries the ids of the file", async () => {
     const result = await loadCompetitionCalendar(
