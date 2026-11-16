@@ -168,6 +168,10 @@ export const es: Dictionary = {
       "tercera-rfef-g1": "3ª RFEF G1",
     },
   },
+  directos: {
+    // SPEC-087 CA-4: explorer failed; never the text of an empty day (D-9).
+    unavailable: "Los directos no están disponibles en este momento.",
+  },
   footer: {
     by: "Un proyecto de",
     version: "versión",

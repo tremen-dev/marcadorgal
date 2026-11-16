@@ -1,6 +1,9 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import { t } from "@/i18n";
+import { es } from "@/i18n/es";
+import { gl } from "@/i18n/gl";
 import type { MatchId, Score } from "@/model";
 import type { XornadaRow } from "@/xornada/view";
 import type {
@@ -220,4 +223,55 @@ describe("SPEC-083 CA-2 /directos paints the league tokens", () => {
       ["primera-federacion-fem", "var(--liga-primera-federacion-fem)"],
     ]);
   });
+});
+
+// SPEC-087 CA-4 and CA-5: a failing explorer is said in words, apart from an
+// empty day (D-9).
+describe("SPEC-087 CA-4 /directos says when it is unavailable", () => {
+  const TEXT = {
+    gl: "Os directos non están dispoñibles agora mesmo.",
+    es: "Los directos no están disponibles en este momento.",
+  } as const;
+
+  it("both dictionaries carry directos.unavailable", () => {
+    expect(gl.directos.unavailable).toBe(TEXT.gl);
+    expect(es.directos.unavailable).toBe(TEXT.es);
+  });
+
+  it.each(["gl", "es"] as const)(
+    "%s: the unavailable state, not the empty one",
+    (locale) => {
+      const html = renderToStaticMarkup(
+        createElement(DirectosView, {
+          date: "2026-11-16",
+          groupedCompetitions: [],
+          unavailable: true,
+          locale,
+        }),
+      );
+      const [state] = elements(html, "directos-unavailable");
+      expect(state).toBeDefined();
+      expect(state).toContain(TEXT[locale]);
+      expect(html).not.toContain(t(locale, "competitions.noMatches"));
+      expect(TEXT[locale]).not.toBe(t(locale, "competitions.noMatches"));
+      expect(html).toContain("2026-11-16");
+    },
+  );
+});
+
+describe("SPEC-087 CA-5 an empty day keeps its text", () => {
+  it.each(["gl", "es"] as const)(
+    "%s: competitions.noMatches, no unavailable state",
+    (locale) => {
+      const html = renderToStaticMarkup(
+        createElement(DirectosView, {
+          date: "2026-11-16",
+          groupedCompetitions: [],
+          locale,
+        }),
+      );
+      expect(html).toContain(t(locale, "competitions.noMatches"));
+      expect(html).not.toContain('data-testid="directos-unavailable"');
+    },
+  );
 });

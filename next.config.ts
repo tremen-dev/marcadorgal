@@ -26,6 +26,10 @@ const nextConfig: NextConfig = {
     return [
       { source: "/", headers: home },
       { source: "/es", headers: home },
+      // SPEC-087 CA-6: /directos reads explorer per request; the CDN keeps
+      // it like / (the query is part of the key: ?date= is its own entry).
+      { source: "/directos", headers: home },
+      { source: "/es/directos", headers: home },
       // SPEC-027 CA-4: the week pages, ISR of 10 s on demand, the same.
       { source: "/xornada/:fecha", headers: cache },
       { source: "/es/xornada/:fecha", headers: cache },

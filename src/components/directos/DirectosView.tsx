@@ -8,14 +8,39 @@ import styles from "./DirectosView.module.css";
 type Props = {
   date: string;
   groupedCompetitions: GroupedCompetitionMatches[];
+  // SPEC-087 CA-4: explorer failed; said in words, apart from an empty day.
+  unavailable?: boolean;
   locale: Locale;
 };
 
-export function DirectosView({ date, groupedCompetitions, locale }: Props) {
+export function DirectosView({
+  date,
+  groupedCompetitions,
+  unavailable = false,
+  locale,
+}: Props) {
   const totalLive = groupedCompetitions.reduce(
     (acc, g) => acc + g.liveCount,
     0,
   );
+
+  if (unavailable) {
+    return (
+      <div className={styles.container} data-testid="directos-view">
+        <CompetitionNav locale={locale} />
+        <div className={styles.dateBar}>
+          <span className={styles.dateText}>{date}</span>
+        </div>
+        <p
+          className={styles.emptyState}
+          data-testid="directos-unavailable"
+          role="status"
+        >
+          {t(locale, "directos.unavailable")}
+        </p>
+      </div>
+    );
+  }
 
   if (groupedCompetitions.length === 0) {
     return (
