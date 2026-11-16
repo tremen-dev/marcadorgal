@@ -5,11 +5,11 @@ import { StandingsTable } from "../components/competition/StandingsTable.tsx";
 import { CompetitionNav } from "../components/navigation/CompetitionNav.tsx";
 import { type Locale, t } from "../i18n/index.ts";
 import {
-  getOfficialCalendar,
-  getStandings,
-  type OfficialCalendarResponse,
-  type StandingsResponse,
-} from "../lib/explorer-client.ts";
+  type CompetitionExplorer,
+  type CompetitionResult,
+  loadCompetitionCalendar,
+  loadCompetitionStandings,
+} from "../lib/competition-data.ts";
 import {
   getCompetitionMetadata,
   isAllowedCompetition,
@@ -19,9 +19,41 @@ import styles from "./CompetitionPage.module.css";
 type PageProps = {
   id: string;
   locale: Locale;
+  // Injected in tests (SPEC-089); the explorer client by default.
+  explorer?: CompetitionExplorer;
 };
 
-export async function CompetitionOverviewPage({ id, locale }: PageProps) {
+// SPEC-089: the data, a failure (xornada.unavailable, D-9) or the explicit
+// state that marcador.gal has no official data (CA-4/CA-5), always in text.
+function Section<T>({
+  result,
+  locale,
+  notOffered,
+  children,
+}: {
+  result: CompetitionResult<T>;
+  locale: Locale;
+  notOffered:
+    | "competitions.calendarNotOffered"
+    | "competitions.standingsNotOffered";
+  children: (data: T) => React.ReactNode;
+}) {
+  if (result.kind === "ok") return children(result.data);
+  return (
+    <p className={styles.emptyMessage}>
+      {t(
+        locale,
+        result.kind === "notOffered" ? notOffered : "xornada.unavailable",
+      )}
+    </p>
+  );
+}
+
+export async function CompetitionOverviewPage({
+  id,
+  locale,
+  explorer,
+}: PageProps) {
   if (!isAllowedCompetition(id)) {
     notFound();
   }
@@ -31,20 +63,10 @@ export async function CompetitionOverviewPage({ id, locale }: PageProps) {
     notFound();
   }
 
-  let standingsData: StandingsResponse | null = null;
-  let calendarData: OfficialCalendarResponse | null = null;
-
-  try {
-    standingsData = await getStandings(id, "2026-27");
-  } catch (_e) {
-    // Graceful fallback if explorer endpoint is not accessible
-  }
-
-  try {
-    calendarData = await getOfficialCalendar(id, "2026-27");
-  } catch (_e) {
-    // Graceful fallback
-  }
+  const [standings, calendar] = await Promise.all([
+    loadCompetitionStandings(id, explorer),
+    loadCompetitionCalendar(id, explorer),
+  ]);
 
   const prefix = locale === "es" ? "/es" : "";
 
@@ -69,13 +91,13 @@ export async function CompetitionOverviewPage({ id, locale }: PageProps) {
               {t(locale, "competitions.viewFullTable")} ›
             </a>
           </div>
-          {standingsData && standingsData.standings.length > 0 ? (
-            <StandingsTable standingsData={standingsData} locale={locale} />
-          ) : (
-            <p className={styles.emptyMessage}>
-              {t(locale, "xornada.unavailable")}
-            </p>
-          )}
+          <Section
+            result={standings}
+            locale={locale}
+            notOffered="competitions.standingsNotOffered"
+          >
+            {(data) => <StandingsTable standingsData={data} locale={locale} />}
+          </Section>
         </section>
 
         {/* Calendar preview */}
@@ -89,20 +111,24 @@ export async function CompetitionOverviewPage({ id, locale }: PageProps) {
               {t(locale, "competitions.viewRounds")} ›
             </a>
           </div>
-          {calendarData && calendarData.matches.length > 0 ? (
-            <CalendarView calendarData={calendarData} locale={locale} />
-          ) : (
-            <p className={styles.emptyMessage}>
-              {t(locale, "xornada.unavailable")}
-            </p>
-          )}
+          <Section
+            result={calendar}
+            locale={locale}
+            notOffered="competitions.calendarNotOffered"
+          >
+            {(data) => <CalendarView calendarData={data} locale={locale} />}
+          </Section>
         </section>
       </main>
     </div>
   );
 }
 
-export async function CompetitionStandingsPage({ id, locale }: PageProps) {
+export async function CompetitionStandingsPage({
+  id,
+  locale,
+  explorer,
+}: PageProps) {
   if (!isAllowedCompetition(id)) {
     notFound();
   }
@@ -112,12 +138,7 @@ export async function CompetitionStandingsPage({ id, locale }: PageProps) {
     notFound();
   }
 
-  let standingsData: StandingsResponse | null = null;
-  try {
-    standingsData = await getStandings(id, "2026-27");
-  } catch (_e) {
-    // Graceful fallback
-  }
+  const standings = await loadCompetitionStandings(id, explorer);
 
   return (
     <div className={styles.page} data-testid="competition-standings-page">
@@ -133,20 +154,24 @@ export async function CompetitionStandingsPage({ id, locale }: PageProps) {
           <h2 className={styles.sectionTitle}>
             {t(locale, "competitions.standings")} · {meta.officialName}
           </h2>
-          {standingsData && standingsData.standings.length > 0 ? (
-            <StandingsTable standingsData={standingsData} locale={locale} />
-          ) : (
-            <p className={styles.emptyMessage}>
-              {t(locale, "xornada.unavailable")}
-            </p>
-          )}
+          <Section
+            result={standings}
+            locale={locale}
+            notOffered="competitions.standingsNotOffered"
+          >
+            {(data) => <StandingsTable standingsData={data} locale={locale} />}
+          </Section>
         </section>
       </main>
     </div>
   );
 }
 
-export async function CompetitionCalendarPage({ id, locale }: PageProps) {
+export async function CompetitionCalendarPage({
+  id,
+  locale,
+  explorer,
+}: PageProps) {
   if (!isAllowedCompetition(id)) {
     notFound();
   }
@@ -156,12 +181,7 @@ export async function CompetitionCalendarPage({ id, locale }: PageProps) {
     notFound();
   }
 
-  let calendarData: OfficialCalendarResponse | null = null;
-  try {
-    calendarData = await getOfficialCalendar(id, "2026-27");
-  } catch (_e) {
-    // Graceful fallback
-  }
+  const calendar = await loadCompetitionCalendar(id, explorer);
 
   return (
     <div className={styles.page} data-testid="competition-calendar-page">
@@ -177,13 +197,13 @@ export async function CompetitionCalendarPage({ id, locale }: PageProps) {
           <h2 className={styles.sectionTitle}>
             {t(locale, "competitions.calendar")} · {meta.officialName}
           </h2>
-          {calendarData && calendarData.matches.length > 0 ? (
-            <CalendarView calendarData={calendarData} locale={locale} />
-          ) : (
-            <p className={styles.emptyMessage}>
-              {t(locale, "xornada.unavailable")}
-            </p>
-          )}
+          <Section
+            result={calendar}
+            locale={locale}
+            notOffered="competitions.calendarNotOffered"
+          >
+            {(data) => <CalendarView calendarData={data} locale={locale} />}
+          </Section>
         </section>
       </main>
     </div>

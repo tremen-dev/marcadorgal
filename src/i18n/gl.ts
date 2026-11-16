@@ -158,6 +158,11 @@ export const gl = {
     form: "Forma",
     confirmedTime: "Horario confirmado",
     tbdTime: "Horario por confirmar",
+    // SPEC-089 CA-4/CA-5: no official data in marcador.gal, not a failure.
+    calendarNotOffered:
+      "O calendario oficial desta competición aínda non está en marcador.gal.",
+    standingsNotOffered:
+      "A clasificación oficial desta competición aínda non está en marcador.gal.",
     live: "En directo",
     noMatches: "Non hai partidos rexistrados para esta data.",
     galicianTeam: "Equipo galego",

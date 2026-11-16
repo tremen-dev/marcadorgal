@@ -29,3 +29,14 @@ export function formatDay(instant: Instant, locale: Locale): string {
   }).format(date);
   return `${weekday} ${day}`;
 }
+
+// «set», «sept», «nov»: ICU short month, lowercase, without its trailing dot (SPEC-089 CA-3).
+export function formatMonth(instant: Instant, locale: Locale): string {
+  return new Intl.DateTimeFormat(locale, {
+    month: "short",
+    timeZone: TIME_ZONE,
+  })
+    .format(new Date(instant))
+    .toLowerCase()
+    .replace(/\.$/, "");
+}

@@ -1,25 +1,72 @@
-import { type Locale, t } from "../../i18n/index.ts";
-import type { OfficialCalendarResponse } from "../../lib/explorer-client.ts";
+import {
+  formatDay,
+  formatMonth,
+  formatTime,
+  type Locale,
+  t,
+} from "../../i18n/index.ts";
+import type { Instant } from "../../model/index.ts";
 import { getGalicianClub, isGalicianClub } from "../../model/index.ts";
 import styles from "./CalendarView.module.css";
 
+// One match of the calendar view. timeConfirmed is what explorer says; the
+// local calendar does not know it, so it carries none and shows no badge
+// (SPEC-089 CA-3). An OfficialCalendarResponse fits as it is: explorer gives
+// ids in home/away. The local calendar gives the visible name in home/away
+// and the team id of the file in homeId/awayId (SPEC-089 F-V-1).
+export type CalendarViewMatch = {
+  externalId: string;
+  round: number;
+  kickoff: string;
+  home: string;
+  away: string;
+  homeId?: string;
+  awayId?: string;
+  timeConfirmed?: boolean;
+};
+
+export type CalendarViewData = { matches: readonly CalendarViewMatch[] };
+
 type Props = {
-  calendarData: OfficialCalendarResponse;
+  calendarData: CalendarViewData;
   locale: Locale;
 };
+
+// Day, month and hour in Europe/Madrid whatever the process clock (SPEC-089 CA-3).
+function formatKickoff(kickoff: string, locale: Locale): string {
+  if (Number.isNaN(new Date(kickoff).getTime())) return kickoff;
+  const instant = kickoff as Instant;
+  return `${formatDay(instant, locale)} ${formatMonth(instant, locale)} · ${formatTime(instant, locale)}`;
+}
+
+// Inside a round: by kickoff, then by key in code order (not locale); an
+// unparsable kickoff goes last with the same tie-break (SPEC-089 CA-8). The
+// key is externalId: matchId for the local calendar, explorer's id otherwise.
+function compareMatches(a: CalendarViewMatch, b: CalendarViewMatch): number {
+  const ta = Date.parse(a.kickoff);
+  const tb = Date.parse(b.kickoff);
+  const aBad = Number.isNaN(ta);
+  const bBad = Number.isNaN(tb);
+  if (aBad !== bBad) return aBad ? 1 : -1;
+  if (!aBad && ta !== tb) return ta - tb;
+  if (a.externalId === b.externalId) return 0;
+  return a.externalId < b.externalId ? -1 : 1;
+}
 
 export function CalendarView({ calendarData, locale }: Props) {
   const matches = calendarData.matches || [];
 
   // Group matches by round
-  const byRound = new Map<number, typeof matches>();
+  const byRound = new Map<number, CalendarViewMatch[]>();
   for (const match of matches) {
     const list = byRound.get(match.round) ?? [];
     list.push(match);
     byRound.set(match.round, list);
   }
 
-  const rounds = [...byRound.entries()].sort(([a], [b]) => a - b);
+  const rounds = [...byRound.entries()]
+    .sort(([a], [b]) => a - b)
+    .map(([round, list]) => [round, [...list].sort(compareMatches)] as const);
 
   return (
     <div className={styles.container} data-testid="calendar-view">
@@ -36,30 +83,25 @@ export function CalendarView({ calendarData, locale }: Props) {
 
           <div className={styles.matchesList}>
             {roundMatches.map((m) => {
-              const homeClub = getGalicianClub(m.home);
-              const awayClub = getGalicianClub(m.away);
+              const homeKey = m.homeId ?? m.home;
+              const awayKey = m.awayId ?? m.away;
+              const homeClub = getGalicianClub(homeKey);
+              const awayClub = getGalicianClub(awayKey);
 
               const isGalician =
-                isGalicianClub(m.home) ||
-                isGalicianClub(m.away) ||
+                isGalicianClub(homeKey) ||
+                isGalicianClub(awayKey) ||
                 m.home.toLowerCase().includes("deportivo abanca") ||
                 m.away.toLowerCase().includes("deportivo abanca") ||
                 m.home.toLowerCase().includes("as celtas") ||
                 m.away.toLowerCase().includes("as celtas");
 
-              const homeName = homeClub?.name || m.home;
-              const awayName = awayClub?.name || m.away;
+              const homeName =
+                m.homeId === undefined ? homeClub?.name || m.home : m.home;
+              const awayName =
+                m.awayId === undefined ? awayClub?.name || m.away : m.away;
 
-              const date = new Date(m.kickoff);
-              const formattedDate = !Number.isNaN(date.getTime())
-                ? date.toLocaleDateString(locale === "gl" ? "gl-ES" : "es-ES", {
-                    weekday: "short",
-                    day: "numeric",
-                    month: "short",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })
-                : m.kickoff;
+              const formattedDate = formatKickoff(m.kickoff, locale);
 
               return (
                 <div
@@ -111,11 +153,12 @@ export function CalendarView({ calendarData, locale }: Props) {
 
                   <div className={styles.matchInfo}>
                     <span className={styles.kickoffTime}>{formattedDate}</span>
-                    {m.timeConfirmed ? (
+                    {m.timeConfirmed === true && (
                       <span className={styles.confirmedBadge}>
                         {t(locale, "competitions.confirmedTime")}
                       </span>
-                    ) : (
+                    )}
+                    {m.timeConfirmed === false && (
                       <span className={styles.tbdBadge}>
                         {t(locale, "competitions.tbdTime")}
                       </span>
