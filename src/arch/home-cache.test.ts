@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import nextConfig from "../../next.config.ts";
+import { BOARD_CACHE_CONTROL, HOME_CDN_CACHE_CONTROL } from "../board/http.ts";
 
 // SPEC-030 CA-1 and CA-2 (H-1 a): / and /es are rendered per request and
 // cached by the CDN with the directives of ADR-014 §6, never ISR, never
@@ -39,5 +40,34 @@ describe("SPEC-030 CA-1 / and /es are dynamic", () => {
 
   it("CA-5: expireTime is unchanged (the week pages are still ISR)", () => {
     expect(nextConfig.expireTime).toBe(40);
+  });
+});
+
+// SPEC-087 CA-6: /directos and /es/directos are dynamic too and get the very
+// same two headers as / (ADR-014 §6, SPEC-030), so the CDN absorbs the visits
+// instead of explorer.
+describe("SPEC-087 CA-6 /directos and /es/directos are cached by the CDN", () => {
+  const PAGES = [
+    "src/app/(gl)/directos/page.tsx",
+    "src/app/(es)/es/directos/page.tsx",
+  ];
+
+  it.each(PAGES)("%s: force-dynamic, no revalidate", (page) => {
+    const source = readFileSync(page, "utf8");
+    expect(source).toMatch(/export const dynamic = "force-dynamic";/);
+    expect(source).not.toMatch(/export const revalidate/);
+  });
+
+  it("carry the headers of /: Cache-Control and Vercel-CDN-Cache-Control", async () => {
+    const rules = (await nextConfig.headers?.()) ?? [];
+    const headersOf = (source: string) =>
+      rules.find((r) => r.source === source)?.headers;
+    for (const source of ["/directos", "/es/directos"]) {
+      expect(headersOf(source)).toEqual(headersOf("/"));
+      expect(headersOf(source)).toEqual([
+        { key: "Cache-Control", value: BOARD_CACHE_CONTROL },
+        { key: "Vercel-CDN-Cache-Control", value: HOME_CDN_CACHE_CONTROL },
+      ]);
+    }
   });
 });
