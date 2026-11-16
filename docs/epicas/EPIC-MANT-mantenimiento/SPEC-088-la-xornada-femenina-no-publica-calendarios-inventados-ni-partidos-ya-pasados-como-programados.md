@@ -2,13 +2,14 @@
 id: SPEC-088
 tipo: spec
 epica: EPIC-MANT
-estado: en-revision
+estado: hecho
 aprobada-por: Alberto Fojo (delegada en Claude)
 historial:
   - {estado: borrador, fecha: 2026-11-16, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-11-16, por: Alberto Fojo (delegada en Claude)}
   - {estado: en-progreso, fecha: 2026-11-16, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-11-16, por: sdd-implementador}
+  - {estado: hecho, fecha: 2026-11-16, por: sdd-verificador}
 ---
 # SPEC-088 — La xornada femenina no publica calendarios inventados ni partidos ya pasados como programados
 
