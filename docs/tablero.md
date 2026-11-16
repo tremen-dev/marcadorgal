@@ -131,7 +131,7 @@ Actualizado: 2026-11-16
 | SPEC-083 — mantenimiento-de-ligas-y-artefactos-sdd | hecho | 2026-11-11 (sdd-verificador) |
 | SPEC-084 — provisional-fuera-de-la-portada-y-explicado-en-el-aviso-legal | hecho | 2026-11-11 (sdd-verificador) |
 | SPEC-086 — la-xornada-femenina-no-degrada-ni-inventa-ante-un-fallo-o-un-hueco-de-explorer | hecho | 2026-11-16 (sdd-verificador) |
-| SPEC-087 — directos-con-fecha-validada-plazo-cache-de-cdn-y-estado-no-disponible | en-revision | 2026-11-16 (sdd-implementador) |
+| SPEC-087 — directos-con-fecha-validada-plazo-cache-de-cdn-y-estado-no-disponible | hecho | 2026-11-16 (sdd-verificador) |
 
 ## EPIC-MEJORA — mejoras (aprobada)
 
@@ -182,6 +182,6 @@ Actualizado: 2026-11-16
 
 ## Resumen
 
-- hecho: 81
-- en-revision: 3
+- hecho: 82
+- en-revision: 2
 - borrador: 1
