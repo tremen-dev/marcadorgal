@@ -5,13 +5,17 @@ import styles from "./CalendarView.module.css";
 
 // One match of the calendar view. timeConfirmed is what explorer says; the
 // local calendar does not know it, so it carries none and shows no badge
-// (SPEC-089 CA-3). An OfficialCalendarResponse fits as it is.
+// (SPEC-089 CA-3). An OfficialCalendarResponse fits as it is: explorer gives
+// ids in home/away. The local calendar gives the visible name in home/away
+// and the team id of the file in homeId/awayId (SPEC-089 F-V-1).
 export type CalendarViewMatch = {
   externalId: string;
   round: number;
   kickoff: string;
   home: string;
   away: string;
+  homeId?: string;
+  awayId?: string;
   timeConfirmed?: boolean;
 };
 
@@ -57,19 +61,23 @@ export function CalendarView({ calendarData, locale }: Props) {
 
           <div className={styles.matchesList}>
             {roundMatches.map((m) => {
-              const homeClub = getGalicianClub(m.home);
-              const awayClub = getGalicianClub(m.away);
+              const homeKey = m.homeId ?? m.home;
+              const awayKey = m.awayId ?? m.away;
+              const homeClub = getGalicianClub(homeKey);
+              const awayClub = getGalicianClub(awayKey);
 
               const isGalician =
-                isGalicianClub(m.home) ||
-                isGalicianClub(m.away) ||
+                isGalicianClub(homeKey) ||
+                isGalicianClub(awayKey) ||
                 m.home.toLowerCase().includes("deportivo abanca") ||
                 m.away.toLowerCase().includes("deportivo abanca") ||
                 m.home.toLowerCase().includes("as celtas") ||
                 m.away.toLowerCase().includes("as celtas");
 
-              const homeName = homeClub?.name || m.home;
-              const awayName = awayClub?.name || m.away;
+              const homeName =
+                m.homeId === undefined ? homeClub?.name || m.home : m.home;
+              const awayName =
+                m.awayId === undefined ? awayClub?.name || m.away : m.away;
 
               const formattedDate = formatKickoff(m.kickoff, locale);
 

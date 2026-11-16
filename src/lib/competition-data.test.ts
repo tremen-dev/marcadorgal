@@ -170,6 +170,54 @@ describe("SPEC-089 CA-2 local calendar", () => {
   });
 });
 
+// F-V-1: the local file carries ids; the shield and the Galician highlight
+// come from the id, the visible name from teams[].name.
+describe("SPEC-089 CA-2 local calendar keeps Galician shields", () => {
+  const cards = (html: string) =>
+    (html.match(/matchCardGalician/g) ?? []).length;
+
+  it.each([
+    ["primera-division", ["celta", "deportivo"], ["RC Celta", "RC Deportivo"]],
+    [
+      "primera-rfef-g1",
+      ["racing-ferrol", "lugo", "pontevedra"],
+      ["Racing de Ferrol", "CD Lugo", "Pontevedra CF"],
+    ],
+    ["segunda-rfef-g1", ["ourense-cf"], ["Ourense CF"]],
+  ] as const)("%s paints shield and highlight by id", async (id, clubs, names) => {
+    const explorer = fakeExplorer();
+    const html = await render(
+      CompetitionCalendarPage({ id, locale: "gl", explorer }),
+    );
+    for (const club of clubs) expect(html).toContain(`/escudos/${club}.svg`);
+    for (const name of names) expect(html).toContain(name);
+    expect(cards(html)).toBeGreaterThan(0);
+  });
+
+  it("the loader carries the ids of the file", async () => {
+    const result = await loadCompetitionCalendar(
+      "primera-division",
+      fakeExplorer(),
+    );
+    if (result.kind !== "ok") throw new Error("not ok");
+    const celta = result.data.matches.find((m) => m.homeId === "celta");
+    expect(celta?.home).toBe("RC Celta");
+  });
+
+  it("liga-f via explorer keeps its shield and highlight", async () => {
+    const html = await render(
+      CompetitionCalendarPage({
+        id: "liga-f",
+        locale: "gl",
+        explorer: fakeExplorer(),
+      }),
+    );
+    expect(html).toContain("/escudos/depor-abanca.svg");
+    expect(html).toContain("Deportivo ABANCA");
+    expect(cards(html)).toBe(1);
+  });
+});
+
 describe("SPEC-089 CA-4 no official calendar", () => {
   for (const id of NO_CALENDAR)
     for (const locale of ["gl", "es"] as const)

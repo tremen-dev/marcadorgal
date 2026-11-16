@@ -38,8 +38,9 @@ export type CompetitionResult<T> =
 const UNAVAILABLE = { kind: "unavailable" } as const;
 const NOT_OFFERED = { kind: "notOffered" } as const;
 
-// The declared calendar with the names of teams[].name; no timeConfirmed:
-// the file does not say it (CA-3). An invalid file never falls to explorer.
+// The declared calendar with the names of teams[].name and the ids of the
+// file for shield and highlight (F-V-1); no timeConfirmed: the file does not
+// say it (CA-3). An invalid file never falls to explorer.
 function localCalendar(
   id: string,
   files: Readonly<Record<string, unknown>> | undefined,
@@ -63,6 +64,8 @@ function localCalendar(
         kickoff: m.kickoff,
         home: names.get(m.home) ?? m.home,
         away: names.get(m.away) ?? m.away,
+        homeId: m.home,
+        awayId: m.away,
       })),
     },
   };
