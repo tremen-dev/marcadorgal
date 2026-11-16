@@ -1,18 +1,39 @@
-import { type Locale, t } from "../../i18n/index.ts";
-import type { OfficialCalendarResponse } from "../../lib/explorer-client.ts";
+import { formatDay, formatTime, type Locale, t } from "../../i18n/index.ts";
+import type { Instant } from "../../model/index.ts";
 import { getGalicianClub, isGalicianClub } from "../../model/index.ts";
 import styles from "./CalendarView.module.css";
 
+// One match of the calendar view. timeConfirmed is what explorer says; the
+// local calendar does not know it, so it carries none and shows no badge
+// (SPEC-089 CA-3). An OfficialCalendarResponse fits as it is.
+export type CalendarViewMatch = {
+  externalId: string;
+  round: number;
+  kickoff: string;
+  home: string;
+  away: string;
+  timeConfirmed?: boolean;
+};
+
+export type CalendarViewData = { matches: readonly CalendarViewMatch[] };
+
 type Props = {
-  calendarData: OfficialCalendarResponse;
+  calendarData: CalendarViewData;
   locale: Locale;
 };
+
+// Day and hour in Europe/Madrid whatever the process clock (SPEC-089 CA-3).
+function formatKickoff(kickoff: string, locale: Locale): string {
+  if (Number.isNaN(new Date(kickoff).getTime())) return kickoff;
+  const instant = kickoff as Instant;
+  return `${formatDay(instant, locale)} · ${formatTime(instant, locale)}`;
+}
 
 export function CalendarView({ calendarData, locale }: Props) {
   const matches = calendarData.matches || [];
 
   // Group matches by round
-  const byRound = new Map<number, typeof matches>();
+  const byRound = new Map<number, CalendarViewMatch[]>();
   for (const match of matches) {
     const list = byRound.get(match.round) ?? [];
     list.push(match);
@@ -50,16 +71,7 @@ export function CalendarView({ calendarData, locale }: Props) {
               const homeName = homeClub?.name || m.home;
               const awayName = awayClub?.name || m.away;
 
-              const date = new Date(m.kickoff);
-              const formattedDate = !Number.isNaN(date.getTime())
-                ? date.toLocaleDateString(locale === "gl" ? "gl-ES" : "es-ES", {
-                    weekday: "short",
-                    day: "numeric",
-                    month: "short",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })
-                : m.kickoff;
+              const formattedDate = formatKickoff(m.kickoff, locale);
 
               return (
                 <div
@@ -111,11 +123,12 @@ export function CalendarView({ calendarData, locale }: Props) {
 
                   <div className={styles.matchInfo}>
                     <span className={styles.kickoffTime}>{formattedDate}</span>
-                    {m.timeConfirmed ? (
+                    {m.timeConfirmed === true && (
                       <span className={styles.confirmedBadge}>
                         {t(locale, "competitions.confirmedTime")}
                       </span>
-                    ) : (
+                    )}
+                    {m.timeConfirmed === false && (
                       <span className={styles.tbdBadge}>
                         {t(locale, "competitions.tbdTime")}
                       </span>
