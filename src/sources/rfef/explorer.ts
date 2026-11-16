@@ -147,16 +147,30 @@ function readExport(body: string): ExplorerExport {
   return parsed.data;
 }
 
-const scoreOf = (row: ExplorerMatch) =>
+// What the state of a row reads (ADR-023 §5): the ingest passes the whole
+// ExplorerMatch; the women xornada (SPEC-086) builds it off its export row.
+export type ExplorerStateRow = Pick<
+  ExplorerMatch,
+  | "estado"
+  | "golesLocal"
+  | "golesVisitante"
+  | "lastSeenAt"
+  | "minute"
+  | "addedMinute"
+  | "halfTime"
+>;
+
+const scoreOf = (row: ExplorerStateRow) =>
   row.golesLocal === null || row.golesVisitante === null
     ? null
     : { home: row.golesLocal, away: row.golesVisitante };
 
 // ADR-023 §5, with the declared kickoff and the row's lastSeenAt as clock.
-// SCHEDULED is decided before this is called: it never gets here.
-function rowState(
-  row: ExplorerMatch,
-  kickoff: Instant,
+// SCHEDULED is decided before this is called: it never gets here. Shared with
+// the women xornada (SPEC-086 CA-2, CA-3), which never re-writes the rule.
+export function explorerRowState(
+  row: ExplorerStateRow,
+  kickoff: string,
 ): MatchState | SkippedReason {
   const score = scoreOf(row);
   switch (row.estado) {
@@ -293,7 +307,7 @@ export function createRfefExplorer({
       }
       // The live window is measured against the declared kickoff, never
       // against the row's own hour (ADR-023 §5).
-      const state = rowState(row, match.kickoff);
+      const state = explorerRowState(row, match.kickoff);
       if (typeof state === "string") {
         out.skipped.push({
           externalMatchId: row.codActa,

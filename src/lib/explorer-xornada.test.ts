@@ -153,6 +153,8 @@ describe("fetchWomenXornadaMatches", () => {
           homeScore: 1,
           awayScore: 0,
           minute: 34,
+          // SPEC-086 CA-3, CA-6: its clock, inside the live window.
+          lastSeenAt: "2026-11-09T20:34:00Z",
           goals: [
             {
               team: "home",
@@ -269,6 +271,7 @@ describe("SPEC-070 CA-6 the women xornada pairs by competition", () => {
     estado: "FINISHED" as const,
     homeScore,
     awayScore: 0,
+    lastSeenAt: "2026-11-09T13:00:00Z",
     goals: [{ team: "home" as const, player, minute: 10 }],
   });
 
@@ -301,7 +304,9 @@ describe("SPEC-070 CA-6 the women xornada pairs by competition", () => {
     expect(m?.goals).toBeUndefined();
   });
 
-  it("two rows of the same competition and teams: no data of the day", async () => {
+  // Refined by SPEC-086 CA-1: the ambiguous match no longer comes out as
+  // scheduled, it does not come out.
+  it("two rows of the same competition and teams: the match does not come out", async () => {
     vi.spyOn(client, "getOfficialCalendar").mockImplementation(ligaFOnly);
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     vi.spyOn(client, "getDayMatches").mockResolvedValue({
@@ -309,10 +314,8 @@ describe("SPEC-070 CA-6 the women xornada pairs by competition", () => {
       exportedAt: "2026-11-09T20:00:00Z",
       matches: [row("liga-f", 2, "Unha"), row("liga-f", 3, "Outra")],
     });
-    const [m] = await fetchWomenXornadaMatches("2026-11-08T20:00:00Z");
-    expect(m?.status).toBe("scheduled");
-    expect(m?.score).toBeNull();
-    expect(m?.goals).toBeUndefined();
+    const matches = await fetchWomenXornadaMatches("2026-11-08T20:00:00Z");
+    expect(matches).toEqual([]);
     const text = warn.mock.calls.map((c) => c.join(" ")).join("\n");
     expect(text).toContain("liga-f-2026-27-j10-depor-abanca-valencia-cf");
   });

@@ -92,6 +92,7 @@ const DAY: DayMatchesResponse = {
       homeScore: 1,
       awayScore: 0,
       minute: 40,
+      lastSeenAt: "2026-11-08T11:40:00Z",
       goals: [{ team: "home", player: "Athenea", minute: 12 }],
     },
   ],
