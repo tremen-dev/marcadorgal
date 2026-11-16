@@ -65,8 +65,9 @@ describe("fetchWomenXornadaMatches", () => {
   });
 
   it("asks only liga-f even if the federation calendars answer (SPEC-088 CA-1)", async () => {
-    const calendar = vi.spyOn(client, "getOfficialCalendar").mockImplementation(
-      async (comp: string) => {
+    const calendar = vi
+      .spyOn(client, "getOfficialCalendar")
+      .mockImplementation(async (comp: string) => {
         if (comp === "liga-f") {
           return {
             competition: "liga-f",
@@ -134,8 +135,7 @@ describe("fetchWomenXornadaMatches", () => {
           };
         }
         throw new Error("Unknown competition");
-      },
-    );
+      });
 
     vi.spyOn(client, "getDayMatches").mockResolvedValue({
       date: "2026-11-09",
@@ -176,7 +176,6 @@ describe("fetchWomenXornadaMatches", () => {
       expect(ligaFMatch.score).toEqual({ home: 1, away: 0 });
       expect(ligaFMatch.minute).toBe(34);
     }
-
   });
 
   it("handles graceful failure when one competition throws an error", async () => {
