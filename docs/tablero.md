@@ -133,6 +133,7 @@ Actualizado: 2026-11-16
 | SPEC-086 — la-xornada-femenina-no-degrada-ni-inventa-ante-un-fallo-o-un-hueco-de-explorer | hecho | 2026-11-16 (sdd-verificador) |
 | SPEC-087 — directos-con-fecha-validada-plazo-cache-de-cdn-y-estado-no-disponible | hecho | 2026-11-16 (sdd-verificador) |
 | SPEC-088 — la-xornada-femenina-no-publica-calendarios-inventados-ni-partidos-ya-pasados-como-programados | hecho | 2026-11-16 (sdd-verificador) |
+| SPEC-089 — las-paginas-de-competicion-no-publican-calendarios-ni-clasificaciones-inventados | hecho | 2026-11-16 (sdd-verificador) |
 
 ## EPIC-MEJORA — mejoras (aprobada)
 
@@ -183,6 +184,6 @@ Actualizado: 2026-11-16
 
 ## Resumen
 
-- hecho: 83
+- hecho: 84
 - en-revision: 2
 - borrador: 1
