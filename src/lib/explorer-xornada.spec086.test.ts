@@ -22,6 +22,10 @@ const D1 = "2026-11-08";
 const D2 = "2026-11-09";
 const KO1 = "2026-11-08T11:00:00Z"; // 12:00 in Madrid
 const KO2 = "2026-11-09T11:00:00Z";
+// Later the same Madrid day: a match without a played row still scheduled at
+// NOW / NOW2 (SPEC-088 CA-2 bounds "no row -> scheduled" to kickoff + 10 min).
+const KO1_LATE = "2026-11-08T17:00:00Z";
+const KO2_LATE = "2026-11-09T17:00:00Z";
 const NOW = "2026-11-08T12:00:00Z";
 const MIN = 60_000;
 const at = (instant: string, minutes: number) =>
@@ -96,12 +100,13 @@ const one = (extra: Partial<Row>) =>
     [D1]: day(D1, [row("depor-abanca", "valencia-cf", extra)]),
   });
 
+// SPEC-088 refines "no row -> scheduled": only until its term (CA-2/CA-3).
 describe("SPEC-086 CA-1 an unreadable day is never scheduled", () => {
   const fixtures = [
     fixture("depor-abanca", "valencia-cf", KO1, "d1-depor"),
     fixture("eibar-femenino", "granada-femenino", KO1, "d1-eibar"),
     fixture("madrid-cff", "alaves", KO2, "d2-madrid"),
-    fixture("sevilla-fc", "athletic-femenino", KO2, "d2-sevilla"),
+    fixture("sevilla-fc", "athletic-femenino", KO2_LATE, "d2-sevilla"),
     fixture("fc-barcelona", "real-madrid-femenino", KO2, "d2-barca"),
   ];
   const d2 = day(D2, [
@@ -294,7 +299,7 @@ describe("SPEC-086 CA-5 a bad match does not take the rest down", () => {
             "2026-11-08 11:00",
             "bad-one",
           ),
-          fixture("madrid-cff", "alaves"),
+          fixture("madrid-cff", "alaves", KO1_LATE),
         ],
         { [D1]: day(D1, [row("depor-abanca", "valencia-cf")]) },
       ),
@@ -319,8 +324,8 @@ describe("SPEC-086 CA-6 the clocks of the row", () => {
         explorerOf(
           [
             fixture("depor-abanca", "valencia-cf"),
-            fixture("madrid-cff", "alaves"),
-            fixture("eibar-femenino", "granada-femenino"),
+            fixture("madrid-cff", "alaves", KO1_LATE),
+            fixture("eibar-femenino", "granada-femenino", KO1_LATE),
           ],
           {
             [D1]: day(D1, [
@@ -375,7 +380,7 @@ describe("SPEC-086 CA-7 stable ETag", () => {
       [
         fixture("depor-abanca", "valencia-cf"),
         fixture("madrid-cff", "alaves"),
-        fixture("eibar-femenino", "granada-femenino"),
+        fixture("eibar-femenino", "granada-femenino", KO1_LATE),
       ],
       {
         [D1]: day(D1, [
