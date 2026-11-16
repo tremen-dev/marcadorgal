@@ -117,3 +117,98 @@ describe("SPEC-089 CA-3 CalendarView in Madrid time", () => {
     expect(html).toContain("Horario por confirmar");
   });
 });
+
+// SPEC-089 CA-3 (amended 2026-11-16): «<day> <month> · <time>» in Madrid.
+describe("SPEC-089 CA-3 CalendarView date with month", () => {
+  const cases = [
+    {
+      kickoff: "2026-09-05T16:00:00Z",
+      gl: "sáb 5 set · 18:00",
+      es: "sáb 5 sept · 18:00",
+    },
+    {
+      kickoff: "2026-11-15T17:00:00Z",
+      gl: "dom 15 nov · 18:00",
+      es: "dom 15 nov · 18:00",
+    },
+    {
+      kickoff: "2026-11-21T23:30:00Z",
+      gl: "dom 22 nov · 00:30",
+      es: "dom 22 nov · 00:30",
+    },
+  ] as const;
+
+  it("paints the spec cases with TZ=UTC in gl and es", () => {
+    const previous = process.env.TZ;
+    process.env.TZ = "UTC";
+    try {
+      for (const c of cases) {
+        for (const locale of ["gl", "es"] as const) {
+          const html = renderToStaticMarkup(
+            createElement(CalendarView, {
+              calendarData: {
+                matches: [
+                  {
+                    externalId: "x",
+                    round: 1,
+                    kickoff: c.kickoff,
+                    home: "Alondras CF",
+                    away: "CD Antela",
+                  },
+                ],
+              },
+              locale,
+            }),
+          );
+          expect(html).toContain(`>${c[locale]}<`);
+        }
+      }
+    } finally {
+      if (previous === undefined) delete process.env.TZ;
+      else process.env.TZ = previous;
+    }
+  });
+});
+
+// SPEC-089 CA-8: rounds ascending; inside a round by kickoff, then by key
+// in code order; an unparsable kickoff goes last with the same tie-break.
+describe("SPEC-089 CA-8 CalendarView order inside the round", () => {
+  const m = (externalId: string, round: number, kickoff: string) => ({
+    externalId,
+    round,
+    kickoff,
+    home: `H-${externalId}`,
+    away: `A-${externalId}`,
+  });
+  const ids = (html: string) =>
+    [...html.matchAll(/data-match-id="([^"]+)"/g)].map((x) => x[1]);
+  const render = (matches: ReturnType<typeof m>[]) =>
+    renderToStaticMarkup(
+      createElement(CalendarView, { calendarData: { matches }, locale: "gl" }),
+    );
+
+  const b = m("b", 1, "2026-09-05T16:00:00Z");
+  const c = m("c", 1, "2026-09-05T14:00:00Z");
+  const a = m("a", 1, "2026-09-05T14:00:00Z");
+
+  it("18:00 b, 16:00 c, 16:00 a → 16:00 a, 16:00 c, 18:00 b", () => {
+    expect(ids(render([b, c, a]))).toEqual(["a", "c", "b"]);
+  });
+
+  it("two permutations give the same DOM", () => {
+    expect(render([b, c, a])).toBe(render([a, b, c]));
+    expect(render([c, a, b])).toBe(render([b, a, c]));
+  });
+
+  it("rounds ascending, unparsable kickoff last, code-order tie-break", () => {
+    const html = render([
+      m("z", 2, "2026-09-12T10:00:00Z"),
+      m("B", 1, "pendiente"),
+      m("a", 1, "pendiente"),
+      m("y", 1, "2026-09-05T20:00:00Z"),
+      m("x", 0, "2026-08-30T10:00:00Z"),
+    ]);
+    // "B" < "a" in code order (localeCompare would put "a" first).
+    expect(ids(html)).toEqual(["x", "y", "B", "a", "z"]);
+  });
+});

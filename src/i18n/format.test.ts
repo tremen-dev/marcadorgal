@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatDay, formatTime } from "./format";
+import { formatDay, formatMonth, formatTime } from "./format";
 
 describe("CA-10 formatTime (Europe/Madrid, 24 h)", () => {
   it.each([
@@ -22,5 +22,15 @@ describe("CA-10 formatDay (weekday abbreviated, no dot, day without zero)", () =
   ])("%s → gl %s · es %s", (instant, glExpected, esExpected) => {
     expect(formatDay(instant, "gl")).toBe(glExpected);
     expect(formatDay(instant, "es")).toBe(esExpected);
+  });
+});
+
+describe("SPEC-089 CA-3 formatMonth (ICU short, lowercase, no dot, Madrid)", () => {
+  it("gl set / es sept; the Madrid day decides the month", () => {
+    expect(formatMonth("2026-09-05T16:00:00Z", "gl")).toBe("set");
+    expect(formatMonth("2026-09-05T16:00:00Z", "es")).toBe("sept");
+    expect(formatMonth("2026-11-15T17:00:00Z", "gl")).toBe("nov");
+    expect(formatMonth("2026-11-15T17:00:00Z", "es")).toBe("nov");
+    expect(formatMonth("2026-11-30T23:30:00Z", "gl")).toBe("dec");
   });
 });

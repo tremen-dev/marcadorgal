@@ -1,4 +1,10 @@
-import { formatDay, formatTime, type Locale, t } from "../../i18n/index.ts";
+import {
+  formatDay,
+  formatMonth,
+  formatTime,
+  type Locale,
+  t,
+} from "../../i18n/index.ts";
 import type { Instant } from "../../model/index.ts";
 import { getGalicianClub, isGalicianClub } from "../../model/index.ts";
 import styles from "./CalendarView.module.css";
@@ -26,11 +32,25 @@ type Props = {
   locale: Locale;
 };
 
-// Day and hour in Europe/Madrid whatever the process clock (SPEC-089 CA-3).
+// Day, month and hour in Europe/Madrid whatever the process clock (SPEC-089 CA-3).
 function formatKickoff(kickoff: string, locale: Locale): string {
   if (Number.isNaN(new Date(kickoff).getTime())) return kickoff;
   const instant = kickoff as Instant;
-  return `${formatDay(instant, locale)} · ${formatTime(instant, locale)}`;
+  return `${formatDay(instant, locale)} ${formatMonth(instant, locale)} · ${formatTime(instant, locale)}`;
+}
+
+// Inside a round: by kickoff, then by key in code order (not locale); an
+// unparsable kickoff goes last with the same tie-break (SPEC-089 CA-8). The
+// key is externalId: matchId for the local calendar, explorer's id otherwise.
+function compareMatches(a: CalendarViewMatch, b: CalendarViewMatch): number {
+  const ta = Date.parse(a.kickoff);
+  const tb = Date.parse(b.kickoff);
+  const aBad = Number.isNaN(ta);
+  const bBad = Number.isNaN(tb);
+  if (aBad !== bBad) return aBad ? 1 : -1;
+  if (!aBad && ta !== tb) return ta - tb;
+  if (a.externalId === b.externalId) return 0;
+  return a.externalId < b.externalId ? -1 : 1;
 }
 
 export function CalendarView({ calendarData, locale }: Props) {
@@ -44,7 +64,9 @@ export function CalendarView({ calendarData, locale }: Props) {
     byRound.set(match.round, list);
   }
 
-  const rounds = [...byRound.entries()].sort(([a], [b]) => a - b);
+  const rounds = [...byRound.entries()]
+    .sort(([a], [b]) => a - b)
+    .map(([round, list]) => [round, [...list].sort(compareMatches)] as const);
 
   return (
     <div className={styles.container} data-testid="calendar-view">

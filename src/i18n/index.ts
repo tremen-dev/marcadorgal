@@ -1,7 +1,7 @@
 import { es } from "./es";
 import { type Dictionary, gl } from "./gl";
 
-export { formatDay, formatTime } from "./format";
+export { formatDay, formatMonth, formatTime } from "./format";
 export type { Dictionary } from "./gl";
 
 export const LOCALES = ["gl", "es"] as const;
