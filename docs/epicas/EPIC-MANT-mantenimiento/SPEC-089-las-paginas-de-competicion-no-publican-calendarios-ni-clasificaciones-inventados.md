@@ -2,7 +2,7 @@
 id: SPEC-089
 tipo: spec
 epica: EPIC-MANT
-estado: en-revision
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-16, por: sdd-arquitecto}
@@ -13,6 +13,7 @@ historial:
   - {estado: en-revision, fecha: 2026-11-16, por: sdd-implementador}
   - {estado: en-progreso, fecha: 2026-11-16, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-11-16, por: sdd-implementador}
+  - {estado: hecho, fecha: 2026-11-16, por: sdd-verificador}
 ---
 # SPEC-089 — Las páginas de competición no publican calendarios ni clasificaciones inventados
 
