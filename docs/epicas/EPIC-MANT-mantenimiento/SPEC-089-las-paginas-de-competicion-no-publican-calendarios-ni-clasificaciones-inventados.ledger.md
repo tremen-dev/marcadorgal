@@ -22,6 +22,7 @@ epica: EPIC-MANT
 | CA-5 | Ídem + `competitions.standingsNotOffered` | `src/lib/competition-data.test.ts` «SPEC-089 CA-5»: las `none` (5 tras CA-7) en gl y es, portada y clasificación | Tests verdes. Navegador: texto decidido en portada y clasificación de las 5 `none`, gl y es; el stub no recibe `standings` de ellas. La lista de 5 depende de CA-7 | ✅ |
 | CA-6 | `src/app/competition-page.tsx` (explorer inyectable, `clientCompetitionExplorer` por defecto) | `src/lib/competition-data.test.ts` «SPEC-089 CA-6»: liga-f y clasificaciones explorer; fallo y vacío → unavailable; 8×3 páginas responden; suites existentes de CalendarView/StandingsTable/CompetitionHeader/CompetitionNav verdes; «keeps Galician shields»: liga-f vía explorer conserva `/escudos/depor-abanca.svg`, «Deportivo ABANCA» y 1 `matchCardGalician` | Suite 3073 passed / 3 skipped; 96 páginas (8×3×gl/es×2 viewports) HTTP 200 sin scroll horizontal; stub caído → «Os resultados non están dispoñibles agora mesmo.» en liga-f y 1ª Div. Regresión visible fuera de la lista del CA: F-V-1 | ⚠️ |
 | CA-7 | Decisión aplicada en `src/lib/competition-sources.ts` (`primera-rfef-g1` → standings `none`) | Evidencia abajo («CA-7 evidencia»); el test de CA-1 refleja la decisión | Evidencia registrada (HTTP 503, 0 filas). La regla del CA no cubre «sin tabla»: la decisión `none` es conservadora pero no tiene la aceptación del titular (F-V-2) | ⚠️ |
+| CA-8 | | | | ❌ |
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
