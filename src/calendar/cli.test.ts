@@ -183,6 +183,79 @@ describe("SPEC-015 calendario:sync against the fake provider", () => {
   });
 });
 
+// SPEC-090: tercera-rfef-g1 comes from its declared file, so explorer's 503
+// for it cannot stop the merge of the other four; nor are the women's ones
+// asked for.
+describe("SPEC-090 calendario:sync does not ask explorer for what is not its own", () => {
+  const fake = pathToFileURL(
+    path.join(root, "src/calendar/cli.fake-provider.mjs"),
+  ).href;
+  const soon = new Date(Date.now() + 2 * 86_400_000)
+    .toISOString()
+    .replace(/\.\d{3}Z$/, "Z");
+  const moved = "primera-division-2026-27-j21-alaves-barcelona";
+
+  it("CA-4 tercera answers 503 and one reschedule in primera: exit 0, no tercera request, auto=si", () => {
+    const output = path.join(cleanCwd, `github-output-${Math.random()}`);
+    const log = path.join(cleanCwd, `provider-log-${Math.random()}`);
+    writeFileSync(output, "");
+    writeFileSync(log, "");
+    const r = spawnSync(
+      process.execPath,
+      [
+        "--import",
+        fake,
+        path.join(root, "tools", "calendario-sync.mjs"),
+        "2026-27",
+        "--dry-run",
+      ],
+      {
+        cwd: cleanCwd,
+        env: {
+          ...cleanEnv,
+          RFEF_EXPLORER_TOKEN: "fake",
+          GITHUB_OUTPUT: output,
+          FAKE_PROVIDER_LOG: log,
+          FAKE_CALENDAR_STATUS: JSON.stringify({ "tercera-rfef-g1": 503 }),
+          FAKE_PROVIDER_KICKOFFS: JSON.stringify({ [moved]: soon }),
+        },
+        encoding: "utf8",
+      },
+    );
+    expect(r.status, r.stderr).toBe(0);
+    const calendarRequests = readFileSync(log, "utf8")
+      .split("\n")
+      .filter((u) => u.includes("/api/export/calendar"));
+    expect(calendarRequests).toHaveLength(4);
+    expect(
+      calendarRequests.filter((u) => u.includes("competition=tercera-rfef-g1")),
+    ).toEqual([]);
+    expect(r.stdout).toMatch(/rescheduled: 1/);
+    expect(readFileSync(output, "utf8")).toContain("auto=si\n");
+  });
+
+  it("CA-3 segunda-federacion-fem-g1 is still an unknown competition: exit 1", () => {
+    const r = spawnSync(
+      process.execPath,
+      [
+        "--import",
+        fake,
+        path.join(root, "tools", "calendario-sync.mjs"),
+        "2026-27",
+        "segunda-federacion-fem-g1",
+        "--dry-run",
+      ],
+      {
+        cwd: cleanCwd,
+        env: { ...cleanEnv, RFEF_EXPLORER_TOKEN: "fake" },
+        encoding: "utf8",
+      },
+    );
+    expect(r.status).toBe(1);
+    expect(r.stderr).toMatch(/desconocidas: segunda-federacion-fem-g1/);
+  });
+});
+
 // SPEC-071 CA-6: the tool corrects the kickoff of a match already played with
 // the export of matches; Tercera included, from --reales-desde on demand.
 describe("SPEC-071 calendario:sync corrects the real kickoffs", () => {

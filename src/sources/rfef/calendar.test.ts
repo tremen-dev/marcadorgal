@@ -7,6 +7,22 @@ import {
   rfefCalendar,
 } from "./calendar.ts";
 
+// A ctx.fetch spy: records every request and answers what it is told to.
+const spyFetch = (status = 200, body: unknown = {}) => {
+  const calls: string[] = [];
+  const fetch = (async (url: string | URL | Request) => {
+    calls.push(String(url));
+    return new Response(JSON.stringify(body), {
+      status,
+      headers: { "content-type": "application/json" },
+    });
+  }) as typeof globalThis.fetch;
+  return {
+    calls,
+    ctx: { apiKey: "t", fetch, userAgent: "marcador.gal (test)" },
+  };
+};
+
 const samplePayload = {
   competition: "segunda-division",
   season: "2026-27",
@@ -181,22 +197,6 @@ describe("CA-1 rfefCalendar", () => {
     });
   });
 
-  it("preserves declared benchmark calendar for tercera-rfef-g1", () => {
-    const calendar = createRfefCalendar("https://test-explorer.vercel.app");
-    const rawTercera = {
-      competition: "tercera-rfef-g1",
-      season: "2026-27",
-      exportedAt: "2026-11-06T22:50:00Z",
-      teams: [{ externalId: "synthetic-team", externalName: "Synthetic Team" }],
-      matches: [],
-      ignoredRounds: {},
-    };
-    const parsed = calendar.parse(rawTercera);
-    expect(parsed.teams).toHaveLength(18);
-    expect(parsed.matches).toHaveLength(306);
-    expect(parsed.teams.some((t) => t.externalId === "alondras")).toBe(true);
-  });
-
   it("throws when response is not ok", async () => {
     const stub = (async () => {
       return new Response("Not Found", { status: 404 });
@@ -210,5 +210,114 @@ describe("CA-1 rfefCalendar", () => {
         userAgent: "marcador.gal (test)",
       }),
     ).rejects.toThrow(/responded 404/);
+  });
+});
+
+describe("SPEC-090 CA-1 tercera-rfef-g1 comes from the declared file, never from explorer", () => {
+  const calendar = createRfefCalendar("https://test-explorer.vercel.app");
+  const declared = JSON.parse(
+    readFileSync(
+      new URL(
+        "../../../data/calendario/2026-27/tercera-rfef-g1.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  ) as {
+    teams: { id: string; name: string }[];
+    matches: { round: number; kickoff: string; home: string; away: string }[];
+  };
+
+  it("fetch + parse calls ctx.fetch 0 times and yields the 306 declared matches and teams", async () => {
+    const { calls, ctx } = spyFetch(503);
+    const parsed = calendar.parse(
+      await calendar.fetch("tercera-rfef-g1", "2026-27", ctx),
+    );
+    expect(calls).toEqual([]);
+    expect(ImportedCalendar.safeParse(parsed).success).toBe(true);
+    expect(parsed.matches).toHaveLength(306);
+    expect(parsed.teams).toEqual(
+      declared.teams.map((t) => ({ externalId: t.id, externalName: t.name })),
+    );
+    expect(parsed.matches).toEqual(
+      declared.matches.map((m) => ({
+        externalId: `2026-27-3rfef-j${m.round}-${m.home}-${m.away}`,
+        round: m.round,
+        kickoff: m.kickoff,
+        home: m.home,
+        away: m.away,
+        timeConfirmed: true,
+      })),
+    );
+    expect(parsed.ignoredRounds).toEqual({});
+  });
+
+  it("parse refuses an explorer response for tercera-rfef-g1", () => {
+    expect(() =>
+      calendar.parse({
+        competition: "tercera-rfef-g1",
+        season: "2026-27",
+        exportedAt: "2026-11-06T22:50:00Z",
+        teams: [
+          { externalId: "synthetic-team", externalName: "Synthetic Team" },
+        ],
+        matches: [],
+        ignoredRounds: {},
+      }),
+    ).toThrow(/tercera-rfef-g1/);
+  });
+});
+
+describe("SPEC-090 CA-2 tercera without a declared file is not invented", () => {
+  it("fetch throws naming competition and season, without calling ctx.fetch", async () => {
+    const calendar = createRfefCalendar("https://test-explorer.vercel.app");
+    const { calls, ctx } = spyFetch(200, {
+      competition: "tercera-rfef-g1",
+      season: "2099-00",
+      exportedAt: "2099-01-01T00:00:00Z",
+      teams: [],
+      matches: [],
+    });
+    const err = await calendar.fetch("tercera-rfef-g1", "2099-00", ctx).then(
+      () => null,
+      (e: Error) => e,
+    );
+    expect(err).toBeInstanceOf(Error);
+    expect(err?.message).toContain("tercera-rfef-g1");
+    expect(err?.message).toContain("2099-00");
+    expect(calls).toEqual([]);
+  });
+});
+
+describe("SPEC-090 CA-3 covers is the five of D-3", () => {
+  const FIVE = [
+    "primera-division",
+    "segunda-division",
+    "primera-rfef-g1",
+    "segunda-rfef-g1",
+    "tercera-rfef-g1",
+  ];
+  const WOMEN = [
+    "liga-f",
+    "primera-federacion-fem",
+    "segunda-federacion-fem-g1",
+  ];
+
+  it("true for the five, false for the women's three", () => {
+    for (const id of FIVE)
+      expect(rfefCalendar.covers(id, "2026-27")).toBe(true);
+    for (const id of WOMEN)
+      expect(rfefCalendar.covers(id, "2026-27")).toBe(false);
+  });
+
+  it("fetch of any women's competition throws does not cover without calling ctx.fetch", async () => {
+    const calendar = createRfefCalendar("https://test-explorer.vercel.app");
+    for (const id of WOMEN) {
+      const { calls, ctx } = spyFetch();
+      await expect(calendar.fetch(id, "2026-27", ctx)).rejects.toThrow(
+        /does not cover/,
+      );
+      expect(calls).toEqual([]);
+    }
   });
 });

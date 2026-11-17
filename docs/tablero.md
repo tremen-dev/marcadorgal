@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-11-16
+Actualizado: 2026-11-17
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -134,6 +134,7 @@ Actualizado: 2026-11-16
 | SPEC-087 — directos-con-fecha-validada-plazo-cache-de-cdn-y-estado-no-disponible | hecho | 2026-11-16 (sdd-verificador) |
 | SPEC-088 — la-xornada-femenina-no-publica-calendarios-inventados-ni-partidos-ya-pasados-como-programados | hecho | 2026-11-16 (sdd-verificador) |
 | SPEC-089 — las-paginas-de-competicion-no-publican-calendarios-ni-clasificaciones-inventados | hecho | 2026-11-16 (sdd-verificador) |
+| SPEC-090 — el-bot-del-calendario-no-pide-a-explorer-lo-que-no-es-suyo | hecho | 2026-11-17 (sdd-verificador) |
 
 ## EPIC-MEJORA — mejoras (aprobada)
 
@@ -184,6 +185,6 @@ Actualizado: 2026-11-16
 
 ## Resumen
 
-- hecho: 84
+- hecho: 85
 - en-revision: 2
 - borrador: 1
