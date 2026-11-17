@@ -2,7 +2,7 @@
 id: SPEC-091
 tipo: spec
 epica: EPIC-MANT
-estado: en-progreso
+estado: en-revision
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-17, por: sdd-arquitecto}
@@ -10,6 +10,7 @@ historial:
   - {estado: en-progreso, fecha: 2026-11-17, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-11-17, por: sdd-implementador}
   - {estado: en-progreso, fecha: 2026-11-17, por: sdd-verificador}
+  - {estado: en-revision, fecha: 2026-11-17, por: sdd-implementador}
 ---
 # SPEC-091 — Vuelve 2ª Federación Femenina G1 con calendario y clasificación oficiales
 
