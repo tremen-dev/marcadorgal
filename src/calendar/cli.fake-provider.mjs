@@ -6,7 +6,10 @@
 // diff. FAKE_PROVIDER_KICKOFFS ({ matchId: kickoff }) moves matches and
 // FAKE_PROVIDER_RENAMES ({ externalId: name }) renames teams at the provider.
 // FAKE_EXPORT_MATCHES gives the export of matches by day (SPEC-071).
-import { readFileSync } from "node:fs";
+// FAKE_CALENDAR_STATUS ({ competitionId: status }) answers that status to the
+// calendar requests of a competition, and FAKE_PROVIDER_LOG (a file path) gets
+// every requested url, one per line (SPEC-090).
+import { appendFileSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -81,7 +84,12 @@ function explorerResponse(competitionId) {
 // ({ "YYYY-MM-DD": rows }) answers ?date=, every other day is empty.
 const exportMatches = JSON.parse(process.env.FAKE_EXPORT_MATCHES ?? "{}");
 
+const calendarStatus = JSON.parse(process.env.FAKE_CALENDAR_STATUS ?? "{}");
+
 globalThis.fetch = async (url) => {
+  if (process.env.FAKE_PROVIDER_LOG) {
+    appendFileSync(process.env.FAKE_PROVIDER_LOG, `${url}\n`);
+  }
   const parsed = new URL(url);
   if (parsed.pathname === "/api/export/matches") {
     const date = parsed.searchParams.get("date");
@@ -100,6 +108,12 @@ globalThis.fetch = async (url) => {
   if (!competitionId)
     throw new Error(`fake provider: unknown league or competition in ${url}`);
 
+  if (comp && calendarStatus[comp]) {
+    return new Response(JSON.stringify({ error: "fake status" }), {
+      status: calendarStatus[comp],
+      headers: { "content-type": "application/json" },
+    });
+  }
   if (comp) {
     return new Response(JSON.stringify(explorerResponse(competitionId)), {
       status: 200,
