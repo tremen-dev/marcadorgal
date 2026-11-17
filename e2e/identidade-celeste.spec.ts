@@ -180,7 +180,7 @@ test.describe("SPEC-065 CA-7 victory in the form guide", () => {
       test(`${prefix}/clasificacion at ${width} px`, async ({ page }) => {
         await page.setViewportSize({ width, height: 900 });
         await page.goto(
-          `http://localhost:${explorerAppPort}${prefix}/clasificacion/primera-rfef-g1`,
+          `http://localhost:${explorerAppPort}${prefix}/clasificacion/primera-division`,
         );
         const cells = await page.locator("table td span").evaluateAll((els) =>
           els
