@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 import type { MatchStatus } from "@/model";
 import type { XornadaIndexEntry } from "./row";
 import {
+  homeArrows,
   homeWeek,
+  homeWeeks,
   neighbourWeeks,
   seasonWeeks,
   weekArrows,
@@ -211,17 +213,25 @@ describe("SPEC-027 CA-2 homeWeek and the neighbours", () => {
     });
   });
 
-  it("mixed Wednesday: Primera already in the next round, Tercera not → home is the next week and ‹ brings Primera J8 and Tercera J6", () => {
+  // SPEC-092 CA-1 (H-1) amends this case: / mixes 10-10 (Segunda J5,
+  // Tercera J6) and 10-17 (Primera J9) and neither is covered, so there is
+  // no home week; ‹ is the first week shown and still brings Primera J8
+  // and Tercera J6, › its next one.
+  it("mixed Wednesday: Primera already in the next round, Tercera not → no home week; ‹ brings Primera J8 and Tercera J6", () => {
     const now = "2026-10-14T12:00:00Z";
-    expect(homeWeek(season, now)).toBe("2026-10-17");
-    const previous = neighbourWeeks(seasonWeeks(season), "2026-10-17").previous;
-    expect(previous).toBe("2026-10-10");
+    expect(homeWeeks(season, now)).toEqual(["2026-10-10", "2026-10-17"]);
+    expect(homeWeek(season, now)).toBeNull();
+    expect(homeArrows(season, now, "gl")).toEqual({
+      previous: "/xornada/2026-10-10",
+      next: "/xornada/2026-10-17",
+    });
+    const previous = "2026-10-10";
     const rounds = Object.fromEntries(
       ["primera", "tercera"].map((c) => [
         c,
         [
           ...new Set(
-            weekXornada(season, previous ?? "")
+            weekXornada(season, previous)
               .filter((e) => e.competitionId === c)
               .map((e) => e.round),
           ),

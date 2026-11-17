@@ -5,6 +5,7 @@ import { LOCAL_DATABASE_URL } from "../playwright.db.config";
 import { seasonOf } from "../src/board/current";
 import type { XornadaIndexEntry } from "../src/board/row";
 import {
+  homeArrows,
   homeWeek,
   neighbourWeeks,
   seasonWeeks,
@@ -27,8 +28,11 @@ const LANGS = [
 ] as const;
 
 let index: XornadaIndexEntry[];
-let home: string;
+// SPEC-092 CA-5: H may be null while / mixes weeks; ‹ and › of / come
+// from homeArrows, whatever the day.
+let home: string | null;
 let previous: string;
+let next: string;
 let first: string;
 
 test.beforeAll(async () => {
@@ -46,17 +50,23 @@ test.beforeAll(async () => {
       kickoff: r.kickoff.toISOString(),
       status: r.status,
     })) as XornadaIndexEntry[];
-    home = homeWeek(index, now) ?? "";
-    const weeks = seasonWeeks(index);
-    previous = neighbourWeeks(weeks, home).previous ?? "";
-    first = weeks[0];
+    home = homeWeek(index, now);
+    const arrows = homeArrows(index, now, "gl");
+    previous = arrows.previous?.replace("/xornada/", "") ?? "";
+    next = arrows.next?.replace("/xornada/", "") ?? "";
+    first = seasonWeeks(index)[0];
   } finally {
     await sql.end();
   }
-  expect(home).not.toBe("");
   expect(previous).not.toBe("");
+  expect(next).not.toBe("");
   expect(first < previous).toBe(true);
 });
+
+// Where › of the week of ‹ leads: back to / when H exists; otherwise to
+// the other week shown (SPEC-092 CA-5).
+const back = (prefix: string, homePath: string): string =>
+  home === null ? `${prefix}/xornada/${next}` : homePath;
 
 const ids = (page: Page): Promise<string[]> =>
   page
@@ -130,9 +140,13 @@ for (const { lang, prefix, home: homePath, dict } of LANGS) {
       const permanent = await get(`${prefix}/xornada/${monday}`);
       expect(permanent.status()).toBe(308);
       expect(location(permanent)).toEqual([`${prefix}/xornada/${previous}`]);
-      const temporary = await get(`${prefix}/xornada/${home}`);
-      expect(temporary.status()).toBe(307);
-      expect(location(temporary)).toEqual([homePath]);
+      if (home !== null) {
+        const temporary = await get(`${prefix}/xornada/${home}`);
+        expect(temporary.status()).toBe(307);
+        expect(location(temporary)).toEqual([homePath]);
+      } else
+        for (const shown of [previous, next])
+          expect((await get(`${prefix}/xornada/${shown}`)).status()).toBe(200);
       for (const missing of ["2099-08-15", "2026-02-30", "semana"])
         expect((await get(`${prefix}/xornada/${missing}`)).status()).toBe(404);
     });
@@ -217,14 +231,14 @@ for (const { lang, prefix, home: homePath, dict } of LANGS) {
             homePath,
             {
               previous: `${prefix}/xornada/${previous}`,
-              next: `${prefix}/xornada/${neighbourWeeks(seasonWeeks(index), home).next}`,
+              next: `${prefix}/xornada/${next}`,
             },
           ],
           [
             `${prefix}/xornada/${previous}`,
             {
               previous: `${prefix}/xornada/${neighbourWeeks(seasonWeeks(index), previous).previous}`,
-              next: homePath,
+              next: back(prefix, homePath),
             },
           ],
         ] as const) {
@@ -309,7 +323,9 @@ for (const { lang, prefix, home: homePath, dict } of LANGS) {
       );
       expect(page.url()).not.toContain("#");
       await page.getByTestId("week-next").click();
-      await expect(page).toHaveURL(new RegExp(`:\\d+${homePath}$`));
+      await expect(page).toHaveURL(
+        new RegExp(`:\\d+${back(prefix, homePath)}$`),
+      );
       await page.goto(`${prefix}/xornada/${first}`);
       await expect(page.getByTestId("week-previous")).toHaveCount(0);
       const gap = page.getByTestId("week-previous-gap");
