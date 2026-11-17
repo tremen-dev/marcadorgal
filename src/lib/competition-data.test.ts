@@ -85,9 +85,15 @@ const LOCAL = [
   "segunda-rfef-g1",
   "tercera-rfef-g1",
 ] as const;
-const NO_CALENDAR = ["primera-federacion-fem", "segunda-federacion-fem-g1"];
+// SPEC-091 CA-2: G1 has its official calendar and table since 2026-11-17.
+const NO_CALENDAR = ["primera-federacion-fem"];
 // CA-7: primera-rfef-g1 could not be shown to be the Group 1 (ledger).
-const STANDINGS_EXPLORER = ["primera-division", "segunda-division", "liga-f"];
+const STANDINGS_EXPLORER = [
+  "primera-division",
+  "segunda-division",
+  "liga-f",
+  "segunda-federacion-fem-g1",
+];
 const NO_STANDINGS = ALLOWED_COMPETITIONS.filter(
   (id) => !STANDINGS_EXPLORER.includes(id),
 );
@@ -102,7 +108,10 @@ describe("SPEC-089 CA-1 explicit source map", () => {
     expect(COMPETITION_SOURCES).toEqual({
       "liga-f": { calendar: "explorer", standings: "explorer" },
       "primera-federacion-fem": { calendar: "none", standings: "none" },
-      "segunda-federacion-fem-g1": { calendar: "none", standings: "none" },
+      "segunda-federacion-fem-g1": {
+        calendar: "explorer",
+        standings: "explorer",
+      },
       "primera-division": { calendar: "local", standings: "explorer" },
       "segunda-division": { calendar: "local", standings: "explorer" },
       "primera-rfef-g1": { calendar: "local", standings: "none" },
@@ -257,7 +266,6 @@ describe("SPEC-089 CA-5 no real standings", () => {
       [
         "primera-federacion-fem",
         "primera-rfef-g1",
-        "segunda-federacion-fem-g1",
         "segunda-rfef-g1",
         "tercera-rfef-g1",
       ].sort(),
@@ -303,7 +311,21 @@ describe("SPEC-089 CA-6 no regression", () => {
     const standings = await loadCompetitionStandings("liga-f", explorer);
     expect(explorer.calendar).toHaveBeenCalledWith("liga-f", "2026-27");
     expect(explorer.standings).toHaveBeenCalledWith("liga-f", "2026-27");
-    expect(calendar).toEqual({ kind: "ok", data: explorerCalendar });
+    // SPEC-091 CA-7: by name, with the ids for shield and highlight.
+    expect(calendar).toEqual({
+      kind: "ok",
+      data: {
+        matches: [
+          {
+            ...explorerCalendar.matches[0],
+            home: "Deportivo ABANCA",
+            away: "FC Barcelona",
+            homeId: "depor-abanca",
+            awayId: "barcelona-femenino",
+          },
+        ],
+      },
+    });
     expect(standings).toEqual({ kind: "ok", data: explorerStandings });
     const html = await render(
       CompetitionOverviewPage({ id: "liga-f", locale: "gl", explorer }),

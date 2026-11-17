@@ -145,6 +145,26 @@ del Rayo Cantabria), retirada por SPEC-076: sin el override ya no sincroniza
 limpia. No es un export de partidos: `alias.test.ts` la lee con los demás
 `.json` y no encuentra filas con `codGrupo`.
 
+## 2ª Federación Femenina G1 (SPEC-091), 2026-11-17 12:20Z
+
+Lectura única de producción hecha por el orquestador de SPEC-091 (GET de solo
+lectura con el Bearer real; el token no está en ningún fichero), guardada
+**tal cual**, sin `.headers`. Explorer encendió `fem-galicia` el 2026-11-17
+hacia las 10:15Z: los tres días de partidos **no traen ninguna fila de G1**
+(la primera jornada con filas es la del sábado 2026-11-21).
+
+| Fichero | Petición | `exportedAt` / `updatedAt` | Contenido |
+|---|---|---|---|
+| `calendar-segunda-federacion-fem-g1-2026-27-2026-11-17T1220Z.json` | `/api/export/calendar?competition=segunda-federacion-fem-g1&season=2026-27` | `2026-11-17T12:20:34Z` | 14 equipos, 182 partidos, 26 jornadas; 175 con `dateConfirmed:false` (fecha nominal 00:00Z) y 7 fechados (J10) |
+| `standings-segunda-federacion-fem-g1-2026-27-2026-11-17T1220Z.json` | `/api/export/standings?competition=segunda-federacion-fem-g1&season=2026-27` | `2026-11-17T10:35:04.021Z` | 14 filas RFEF; 1ª Depor ABANCA B, 22 pts |
+| `export-2026-11-14-2026-11-17T1220Z.json` | `/api/export/matches?date=2026-11-14` | `2026-11-17T12:20:35.493Z` | 22 filas masculinas y juvenil, ninguna de G1 |
+| `export-2026-11-15-2026-11-17T1220Z.json` | `/api/export/matches?date=2026-11-15` | `2026-11-17T12:20:35.928Z` | 23 filas masculinas y juvenil, ninguna de G1 |
+| `export-2026-11-17-2026-11-17T1220Z.json` | `/api/export/matches?date=2026-11-17` | `2026-11-17T12:20:36.308Z` | 0 filas |
+
+`explorer-xornada.spec091.test.ts` empareja toda fila de G1 de los
+`export-*.json` de esta carpeta contra el calendario (SPEC-070, sin alias):
+una captura con filas de G1 que se añada aquí entra sola en ese caso.
+
 ## Alias
 
 `data/alias/2026-27/rfef.json` resuelve todos los nombres de las cinco

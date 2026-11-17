@@ -6,7 +6,8 @@ export type GalicianClub = {
   competitionId: string;
   gender: "masculino" | "femenino";
   city: string;
-  shield: string;
+  // SPEC-091: a club without a vector shield yet has none (victoria).
+  shield?: string;
   stadium?: string;
   isGalician: true;
 };
@@ -46,6 +47,19 @@ export const GALICIAN_CLUBS: Record<string, GalicianClub> = {
     city: "A Coruña",
     stadium: "Cidade Deportiva de Abegondo",
     shield: "/escudos/depor-abanca.svg",
+    isGalician: true,
+  },
+  // SPEC-091 CA-8: Victoria CF, A Coruña (nota 1 of the gate). The club
+  // only publishes a bitmap shield: none until there is a vector one
+  // (ledger, salvedad).
+  victoria: {
+    id: "victoria",
+    canonicalId: "victoria",
+    name: "Victoria CF",
+    shortName: "Victoria",
+    competitionId: "segunda-federacion-fem-g1",
+    gender: "femenino",
+    city: "A Coruña",
     isGalician: true,
   },
   "lugo-femenino": {
@@ -147,6 +161,7 @@ export function getClubShield(teamIdOrName: string): string | undefined {
   if (byId) return byId.shield;
   const normalized = teamIdOrName.toLowerCase();
   for (const club of Object.values(GALICIAN_CLUBS)) {
+    if (club.shield === undefined) continue;
     if (
       normalized.includes(club.id) ||
       normalized.includes(club.name.toLowerCase()) ||

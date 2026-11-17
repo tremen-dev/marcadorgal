@@ -19,7 +19,8 @@ export const COMPETITION_SOURCES: Readonly<
   "liga-f": { calendar: "explorer", standings: "explorer" },
   // Explorer generates a round-robin and fills the table with zeros.
   "primera-federacion-fem": { calendar: "none", standings: "none" },
-  "segunda-federacion-fem-g1": { calendar: "none", standings: "none" },
+  // SPEC-091 CA-2: the official calendar and table since 2026-11-17.
+  "segunda-federacion-fem-g1": { calendar: "explorer", standings: "explorer" },
   "primera-division": { calendar: "local", standings: "explorer" },
   "segunda-division": { calendar: "local", standings: "explorer" },
   // CA-7: the MARCA table could not be shown to be the Group 1 (ledger);

@@ -58,6 +58,8 @@ export const es: Dictionary = {
     leaguesEmpty:
       "Ninguna de tus ligas juega en esta jornada. Cámbialas en ⚙ Ligas.",
     round: "jornada {n}",
+    // SPEC-091 CA-6: a scheduled match whose hour is not fixed yet.
+    timeTbd: "Hora por confirmar",
     matchCountOne: "{n} partido",
     matchCount: "{n} partidos",
     // SPEC-027 CA-6: the arrows of the strip, to the neighbour weeks.
@@ -154,6 +156,8 @@ export const es: Dictionary = {
     form: "Forma",
     confirmedTime: "Horario confirmado",
     tbdTime: "Horario por confirmar",
+    // SPEC-091 CA-7: a match whose date is only nominal.
+    dateTbd: "Fecha por confirmar",
     // SPEC-089 CA-4/CA-5: no official data in marcador.gal, not a failure.
     calendarNotOffered:
       "El calendario oficial de esta competición aún no está en marcador.gal.",

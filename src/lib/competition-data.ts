@@ -10,6 +10,7 @@ import {
   type OfficialCalendarResponse,
   type StandingsResponse,
 } from "./explorer-client.ts";
+import { resolveTeamNames } from "./explorer-xornada.ts";
 
 export const COMPETITION_SEASON = "2026-27";
 
@@ -85,10 +86,31 @@ export async function loadCompetitionCalendar(
   if (source === "local") return localCalendar(id, files);
   try {
     const data = await explorer.calendar(id, COMPETITION_SEASON);
-    return data.matches.length > 0 ? { kind: "ok", data } : UNAVAILABLE;
+    return data.matches.length > 0
+      ? { kind: "ok", data: explorerCalendar(data) }
+      : UNAVAILABLE;
   } catch {
     return UNAVAILABLE;
   }
+}
+
+// SPEC-091 CA-7/CA-8: explorer gives ids in home/away; the page paints the
+// name (the Galician club, the table, explorer's name) and keeps the id for
+// shield and highlight, as the local calendar does (F-V-1).
+function explorerCalendar(data: OfficialCalendarResponse): CalendarViewData {
+  const given = new Map(
+    (data.teams ?? []).map((team) => [team.externalId, team.externalName]),
+  );
+  const nameOf = (id: string) => resolveTeamNames(id, given.get(id)).name;
+  return {
+    matches: data.matches.map((m) => ({
+      ...m,
+      home: nameOf(m.home),
+      away: nameOf(m.away),
+      homeId: m.home,
+      awayId: m.away,
+    })),
+  };
 }
 
 export async function loadCompetitionStandings(

@@ -9,7 +9,7 @@ import { Instant } from "../model/instant.ts";
 import { PublicMatch } from "../model/public.ts";
 import type { MatchState } from "../model/state.ts";
 import { explorerRowState } from "../sources/rfef/explorer.ts";
-import { LIVE_BEFORE_MINUTES } from "../sources/rfef/state.ts";
+import { LIVE_BEFORE_MINUTES, madridToUtc } from "../sources/rfef/state.ts";
 import { withDeadline } from "./deadline.ts";
 import {
   type DayMatchesResponse,
@@ -28,11 +28,18 @@ import {
   isSameMatch,
   pickRow,
 } from "./explorer-identity.ts";
+import {
+  type KickoffPrecision,
+  kickoffPrecision,
+} from "./kickoff-precision.ts";
 
 // SPEC-088 CA-1: only competitions whose calendar in explorer is the
-// official one. The federation calendars it serves are a generated
-// round-robin; adding one back needs a spec and a real calendar.
-export const WOMEN_COMPETITIONS: readonly CompetitionCode[] = ["liga-f"];
+// official one. SPEC-091 CA-2: 2ª Fed. Fem. G1 is official since
+// 2026-11-17; 1ª Fed. Fem. is still a generated round-robin.
+export const WOMEN_COMPETITIONS: readonly CompetitionCode[] = [
+  "liga-f",
+  "segunda-federacion-fem-g1",
+];
 
 const WOMEN_TEAM_NAMES: Readonly<
   Record<string, { name: string; shortName: string }>
@@ -125,9 +132,30 @@ const WOMEN_TEAM_NAMES: Readonly<
     shortName: "Oviedo",
   },
   "sporting-gijon-b": { name: "Real Sporting B", shortName: "Sporting B" },
+
+  // SPEC-091 CA-8: the ids of the official G1 calendar of explorer that the
+  // entries above do not cover (F-SPEC-091-1 cleans the old ones).
+  arratia: { name: "CD Arratia", shortName: "Arratia" },
+  "burgos-femenino": { name: "Burgos CF", shortName: "Burgos" },
+  "eibar-femenino-b": { name: "SD Eibar B", shortName: "Eibar B" },
+  "osasuna-femenino-b": { name: "CA Osasuna B", shortName: "Osasuna B" },
+  "rayo-vallecano-femenino": {
+    name: "Rayo Vallecano",
+    shortName: "Rayo",
+  },
+  "real-aviles-industrial": {
+    name: "Real Avilés Industrial",
+    shortName: "Avilés",
+  },
 };
 
-function resolveTeamNames(teamId: string, fallbackName?: string) {
+// The visible name of an explorer team id (SPEC-091 CA-8): the Galician
+// club, then the table, then the name explorer gives; never the id when
+// either knows it.
+export function resolveTeamNames(
+  teamId: string,
+  fallbackName?: string,
+): { name: string; shortName: string } {
   const galician = getGalicianClub(teamId);
   if (galician) {
     return { name: galician.name, shortName: galician.shortName };
@@ -243,7 +271,7 @@ async function womenMatches(
     if (roundMatches.length === 0) continue;
 
     for (const m of roundMatches) {
-      allDates.add(toMadridDate(m.kickoff));
+      for (const d of rowDays(m, nowIso)) allDates.add(d);
     }
 
     const meta = getCompetitionMetadata(comp);
@@ -290,8 +318,15 @@ async function womenMatches(
     const tier = (meta?.tier ?? 1) as 1 | 2 | 3 | 4 | 5;
 
     for (const m of roundMatches) {
-      const rows = rowsByDate.get(toMadridDate(m.kickoff));
-      if (rows === undefined) continue; // SPEC-086 CA-1
+      const precision = kickoffPrecision(m);
+      // SPEC-086 CA-1: a day that cannot be read leaves its matches out; a
+      // round match needs both of its days (SPEC-091 CA-5).
+      const days = rowDays(m, nowIso);
+      if (days.some((d) => !rowsByDate.has(d))) continue;
+      const rowDay = new Map<ExplorerRow, string>();
+      for (const d of days)
+        for (const r of rowsByDate.get(d) ?? []) rowDay.set(r, d);
+      const rows = [...rowDay.keys()];
 
       // Identity of SPEC-070 without alias: the competition of the row is
       // its canonicalCompetitionId and each side a canonical id equal to
@@ -323,7 +358,15 @@ async function womenMatches(
         continue;
       }
       const dayMatch = pairing.kind === "paired" ? pairing.row : null;
-      const view = viewOf(dayMatch, m, nowIso);
+      // A match without a confirmed hour (date or round) has no real
+      // kickoff: its live window runs from the hour of the row, on the day of
+      // the row (SPEC-091 CA-5/CA-6, V-1); with no reliable hour, the row's
+      // Madrid day (V-3). Never the nominal 00:00Z.
+      const stateKickoff =
+        precision !== "exact" && dayMatch !== null
+          ? (liveKickoff(rowDay.get(dayMatch), dayMatch) ?? m.kickoff)
+          : m.kickoff;
+      const view = viewOf(dayMatch, precision, m.kickoff, stateKickoff, nowIso);
       if (view === null) continue;
 
       const homeNames = resolveTeamNames(m.home, teamsMap.get(m.home));
@@ -338,6 +381,8 @@ async function womenMatches(
         tier,
         round: m.round,
         kickoff: m.kickoff,
+        // SPEC-091 CA-5/CA-6: absent is exact (every male match).
+        ...(precision === "exact" ? {} : { kickoffPrecision: precision }),
         home: { name: homeNames.name, shortName: homeNames.shortName },
         away: { name: awayNames.name, shortName: awayNames.shortName },
         qualifier: "confirmado" as const,
@@ -381,35 +426,84 @@ const SCHEDULED: View = {
 // SPEC-088 CA-2/CA-3: how long a match with no played row may still say
 // scheduled. A confirmed time, until kickoff plus the margin the ingest
 // grants before it; an unconfirmed one (00:00Z is "that day"), the whole
-// Madrid day of its kickoff.
+// Madrid day of its kickoff. SPEC-091 CA-5: a round match, its nominal day.
 function stillScheduled(
-  match: { kickoff: string; timeConfirmed: boolean },
+  precision: KickoffPrecision,
+  kickoff: string,
   nowIso: string,
 ): boolean {
   // A kickoff that is not an instant is not judged here: PublicMatch rejects
   // it below, with its warn (SPEC-086 CA-5).
-  if (!Instant.safeParse(match.kickoff).success) return true;
-  if (match.timeConfirmed) {
+  if (!Instant.safeParse(kickoff).success) return true;
+  if (precision === "exact") {
     return (
-      Date.parse(nowIso) <
-      Date.parse(match.kickoff) + LIVE_BEFORE_MINUTES * 60_000
+      Date.parse(nowIso) < Date.parse(kickoff) + LIVE_BEFORE_MINUTES * 60_000
     );
   }
-  return toMadridDate(nowIso) <= toMadridDate(match.kickoff);
+  return toMadridDate(nowIso) <= toMadridDate(kickoff);
+}
+
+// The Madrid days whose export rows a calendar match is paired against: its
+// day; a round match also today, since the RFEF may play the round on
+// another day of the weekend (SPEC-091 CA-5, nota 5).
+function rowDays(
+  match: { kickoff: string; timeConfirmed: boolean; dateConfirmed?: boolean },
+  nowIso: string,
+): string[] {
+  const nominal = toMadridDate(match.kickoff);
+  if (kickoffPrecision(match) !== "round") return [nominal];
+  const today = toMadridDate(nowIso);
+  return today === nominal ? [nominal] : [nominal, today];
+}
+
+// The instant of the row's own day and hour in Madrid ("HH:MM"), or null.
+function rowKickoff(
+  date: string | undefined,
+  horaTexto: string | undefined,
+): string | null {
+  const d = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date ?? "");
+  const h = /^(\d{2}):(\d{2})$/.exec(horaTexto ?? "");
+  if (d === null || h === null) return null;
+  const ms = madridToUtc(
+    Number(d[1]),
+    Number(d[2]),
+    Number(d[3]),
+    Number(h[1]),
+    Number(h[2]),
+  );
+  return Number.isNaN(ms) ? null : new Date(ms).toISOString();
+}
+
+// The kickoff that opens the live window of a match without a confirmed
+// hour, off its row: the row's hour on the row's day; without a reliable
+// hour, the row's Madrid day is the window (SPEC-088 CA-3 reads a 00:00Z
+// kickoff as "that day"), so a row seen that day is judged from its own
+// lastSeenAt and one seen on another day is not (null).
+function liveKickoff(
+  date: string | undefined,
+  row: ExplorerRow,
+): string | null {
+  const byHour = rowKickoff(date, row.horaTexto);
+  if (byHour !== null) return byHour;
+  const seen = Instant.safeParse(row.lastSeenAt);
+  if (!seen.success || date === undefined) return null;
+  return toMadridDate(seen.data) === date ? seen.data : null;
 }
 
 // The state of a calendar match off its export row, with the rules of the
 // ingest (explorerRowState, ADR-023 §5): null when it must not come out.
 // Without a row, or with a SCHEDULED one, it is scheduled without a Decision
 // while stillScheduled (SPEC-088 CA-2..CA-4); past it, it does not come out.
+// `stateKickoff` is the kickoff of the live window (SPEC-091 CA-5).
 function viewOf(
   row: ExplorerRow | null,
-  match: { kickoff: string; timeConfirmed: boolean },
+  precision: KickoffPrecision,
+  kickoff: string,
+  stateKickoff: string,
   nowIso: string,
 ): View | null {
-  const { kickoff } = match;
   if (row === null || row.estado === "SCHEDULED") {
-    return stillScheduled(match, nowIso) ? SCHEDULED : null;
+    return stillScheduled(precision, kickoff, nowIso) ? SCHEDULED : null;
   }
   // SPEC-086 CA-6: a row that has played without its clock does not come out.
   const lastSeenAt = Instant.safeParse(row.lastSeenAt);
@@ -425,7 +519,7 @@ function viewOf(
       addedMinute: row.addedMinute,
       halfTime: row.halfTime,
     },
-    kickoff,
+    stateKickoff,
   );
   if (typeof state === "string") return null;
   return {

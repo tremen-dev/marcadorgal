@@ -395,18 +395,24 @@ describe("SPEC-085 CA-4 the women calendar is cached", () => {
     await read();
     now = plus(WOMEN_CALENDAR_TTL_S - 1);
     const second = await read();
-    // SPEC-088 CA-1: liga-f is the only women competition.
-    expect(Object.fromEntries(calls)).toEqual({ "liga-f": 1 });
+    // SPEC-091 CA-2: liga-f and G1 are the women competitions.
+    expect(Object.fromEntries(calls)).toEqual({
+      "liga-f": 1,
+      "segunda-federacion-fem-g1": 1,
+    });
     expect(second?.matches).toHaveLength(2);
 
     now = plus(WOMEN_CALENDAR_TTL_S + 1);
     await read();
-    expect(Object.fromEntries(calls)).toEqual({ "liga-f": 2 });
+    expect(Object.fromEntries(calls)).toEqual({
+      "liga-f": 2,
+      "segunda-federacion-fem-g1": 2,
+    });
   });
 
   it("a failure of Explorer is not cached", async () => {
     quiet();
-    // The one women calendar (SPEC-088 CA-1) fails on the first read.
+    // The first women calendar asked (liga-f) fails on the first read.
     const { d, calls, calendar } = counted(1);
     const explorer = {
       calendar: cachedCalendar(calendar, () => NOW),

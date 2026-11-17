@@ -22,6 +22,10 @@ export type { QualifierKey } from "./qualifier";
 
 export type Margin =
   | { kind: "time"; kickoff: Instant }
+  // SPEC-091 CA-6: the day is known, the hour is not.
+  | { kind: "timeTbd" }
+  // SPEC-091 CA-5: only the round is known (xornada.round).
+  | { kind: "round"; round: number }
   | { kind: "minute"; minute: number; addedMinute: number | null }
   // SPEC-021: half-time, a moment inside live with no minute to run. The
   // source's minute is kept in the data (N-3) and silenced here.
@@ -104,12 +108,20 @@ function partOf(m: PublicMatch): MatchPart | null {
 
 function dateOf(m: PublicMatch, day: string): RowDate | null {
   if (m.status === "live") return null;
+  // SPEC-091 CA-5: a nominal date is not a date.
+  if (m.kickoffPrecision === "round") return null;
   const { weekdayKey, dayOfMonth, monthKey } = calendarDay(day);
   return { weekdayKey, dayOfMonth, monthKey };
 }
 
 function marginOf(m: PublicMatch): Margin {
-  if (m.status === "scheduled") return { kind: "time", kickoff: m.kickoff };
+  if (m.status === "scheduled") {
+    // SPEC-091 CA-5/CA-6: never the hour of a nominal 00:00Z.
+    if (m.kickoffPrecision === "round")
+      return { kind: "round", round: m.round };
+    if (m.kickoffPrecision === "date") return { kind: "timeTbd" };
+    return { kind: "time", kickoff: m.kickoff };
+  }
   if (m.status === "live" && m.halfTime) return { kind: "halfTime" };
   if (m.status === "live" && m.minute !== null)
     return { kind: "minute", minute: m.minute, addedMinute: m.addedMinute };
@@ -288,12 +300,14 @@ function dayOf(date: string, today: string): XornadaDay {
 }
 
 // The distinct Madrid dates of the kickoffs, ascending. `now` only marks today.
+// SPEC-091 CA-5: the nominal date of a round match is not a day.
 export function xornadaDays(
-  matches: readonly Pick<PublicMatch, "kickoff">[],
+  matches: readonly Pick<PublicMatch, "kickoff" | "kickoffPrecision">[],
   now: Instant,
 ): XornadaDay[] {
   const today = madridDate(now);
-  return [...new Set(matches.map((m) => madridDate(m.kickoff)))]
+  const dated = matches.filter((m) => m.kickoffPrecision !== "round");
+  return [...new Set(dated.map((m) => madridDate(m.kickoff)))]
     .sort(compareText)
     .map((date) => dayOf(date, today));
 }

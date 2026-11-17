@@ -116,9 +116,13 @@ export function MatchRow({
   const marginText =
     margin.kind === "time"
       ? formatTime(margin.kickoff, locale)
-      : margin.kind === "minute"
-        ? minuteLabel(margin)
-        : t(locale, row.statusKey);
+      : margin.kind === "timeTbd"
+        ? t(locale, "xornada.timeTbd")
+        : margin.kind === "round"
+          ? t(locale, "xornada.round", { n: margin.round })
+          : margin.kind === "minute"
+            ? minuteLabel(margin)
+            : t(locale, row.statusKey);
   // SPEC-021 H-2: at half-time there is no minute to run, so no live dot;
   // the ember inset still says the match is in play.
   const showDot = isLive && !noSignal && margin.kind !== "halfTime";
