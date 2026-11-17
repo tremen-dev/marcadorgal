@@ -358,11 +358,13 @@ async function womenMatches(
         continue;
       }
       const dayMatch = pairing.kind === "paired" ? pairing.row : null;
-      // A round match has no real kickoff: its live window runs from the
-      // hour of the row, on the day of the row (SPEC-091 CA-5).
+      // A match without a confirmed hour (date or round) has no real
+      // kickoff: its live window runs from the hour of the row, on the day of
+      // the row (SPEC-091 CA-5/CA-6, V-1); with no reliable hour, the row's
+      // Madrid day (V-3). Never the nominal 00:00Z.
       const stateKickoff =
-        precision === "round" && dayMatch !== null
-          ? (rowKickoff(rowDay.get(dayMatch), dayMatch.horaTexto) ?? m.kickoff)
+        precision !== "exact" && dayMatch !== null
+          ? (liveKickoff(rowDay.get(dayMatch), dayMatch) ?? m.kickoff)
           : m.kickoff;
       const view = viewOf(dayMatch, precision, m.kickoff, stateKickoff, nowIso);
       if (view === null) continue;
@@ -470,6 +472,22 @@ function rowKickoff(
     Number(h[2]),
   );
   return Number.isNaN(ms) ? null : new Date(ms).toISOString();
+}
+
+// The kickoff that opens the live window of a match without a confirmed
+// hour, off its row: the row's hour on the row's day; without a reliable
+// hour, the row's Madrid day is the window (SPEC-088 CA-3 reads a 00:00Z
+// kickoff as "that day"), so a row seen that day is judged from its own
+// lastSeenAt and one seen on another day is not (null).
+function liveKickoff(
+  date: string | undefined,
+  row: ExplorerRow,
+): string | null {
+  const byHour = rowKickoff(date, row.horaTexto);
+  if (byHour !== null) return byHour;
+  const seen = Instant.safeParse(row.lastSeenAt);
+  if (!seen.success || date === undefined) return null;
+  return toMadridDate(seen.data) === date ? seen.data : null;
 }
 
 // The state of a calendar match off its export row, with the rules of the

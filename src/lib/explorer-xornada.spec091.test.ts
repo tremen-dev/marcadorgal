@@ -623,3 +623,118 @@ describe("SPEC-091 CA-10 no regression", () => {
     expect(boardEtag(second)).toBe(boardEtag(first));
   });
 });
+
+// Verifier RED, iteration 1 (ledger): the live window of a match without a
+// confirmed hour starts at the hour of its row, on the row's day (V-1); a
+// row in play with no reliable hour is judged against the row's Madrid day,
+// never against the nominal 00:00Z (V-3).
+describe("SPEC-091 CA-4/CA-6 a date match with a LIVE row (V-1)", () => {
+  it.each([G1, "liga-f"])(
+    "%s: a 1-0 row at minute 20 of an 18:00 match comes out live",
+    async (comp) => {
+      const fx: Fixture = {
+        externalId: `${comp}-date-live`,
+        round: 10,
+        kickoff: "2026-11-22T00:00:00Z",
+        home: comp === G1 ? "depor-abanca-b" : "depor-abanca",
+        away: comp === G1 ? "victoria" : "valencia-cf",
+        timeConfirmed: false,
+      };
+      const row: Row = {
+        codActa: `acta-${comp}`,
+        canonicalCompetitionId: comp,
+        canonicalHomeTeamId: fx.home,
+        canonicalAwayTeamId: fx.away,
+        estado: "LIVE_PROVISIONAL",
+        homeScore: 1,
+        awayScore: 0,
+        minute: 20,
+        horaTexto: "18:00",
+        lastSeenAt: "2026-11-22T17:19:00Z",
+      };
+      const matches = await fetchWomenXornadaMatches(
+        "2026-11-22T17:20:00Z",
+        "2026-27",
+        explorerOf({ [SUN]: day(SUN, [row]) }, { [comp]: [fx] }),
+      );
+      expect(matches).toHaveLength(1);
+      expect(matches[0]).toMatchObject({
+        status: "live",
+        score: { home: 1, away: 0 },
+        minute: 20,
+        kickoffPrecision: "date",
+      });
+    },
+  );
+});
+
+describe("SPEC-091 CA-5/CA-6 a LIVE row without a reliable hour (V-3)", () => {
+  const ROUND: Fixture = {
+    externalId: "2026-27-2fed-fem-j11-depor-abanca-b-victoria",
+    round: 11,
+    kickoff: "2026-11-29T00:00:00Z",
+    home: "depor-abanca-b",
+    away: "victoria",
+    timeConfirmed: false,
+    dateConfirmed: false,
+  };
+  const DATE: Fixture = { ...ROUND, dateConfirmed: undefined };
+  const liveRow = (fx: Fixture, extra: Partial<Row> = {}): Row =>
+    g1Row(fx, {
+      estado: "LIVE_PROVISIONAL",
+      homeScore: 0,
+      awayScore: 1,
+      minute: 35,
+      ...extra,
+    });
+  const runOn = (fx: Fixture, now: string, date: string, rows: Row[]) =>
+    fetchWomenXornadaMatches(
+      now,
+      "2026-27",
+      explorerOf({ [date]: day(date, rows) }, { [G1]: [fx] }),
+    );
+
+  it.each([
+    ["round, today saturday", ROUND, "2026-11-28"],
+    ["round, the nominal sunday", ROUND, "2026-11-29"],
+    ["date", DATE, "2026-11-29"],
+  ] as const)(
+    "%s: no horaTexto, seen that Madrid day: live",
+    async (_, fx, date) => {
+      const seen = `${date}T17:35:00Z`;
+      const matches = await runOn(fx, at(seen, 1), date, [
+        liveRow(fx, { lastSeenAt: seen }),
+      ]);
+      expect(matches).toHaveLength(1);
+      expect(matches[0]).toMatchObject({
+        status: "live",
+        score: { home: 0, away: 1 },
+      });
+    },
+  );
+
+  it("a malformed horaTexto is no hour: judged by the row's day, live", async () => {
+    const seen = "2026-11-28T17:35:00Z";
+    const matches = await runOn(ROUND, at(seen, 1), "2026-11-28", [
+      liveRow(ROUND, { horaTexto: "a confirmar", lastSeenAt: seen }),
+    ]);
+    expect(matches[0]).toMatchObject({ status: "live" });
+  });
+
+  it("no horaTexto, seen on another Madrid day than the row's: does not come out", async () => {
+    // A saturday row last seen on friday 23:30 in Madrid.
+    const seen = "2026-11-27T22:30:00Z";
+    const matches = await runOn(ROUND, "2026-11-28T10:00:00Z", "2026-11-28", [
+      liveRow(ROUND, { lastSeenAt: seen }),
+    ]);
+    expect(matches).toEqual([]);
+  });
+
+  it("with a horaTexto, the hour rules: a row seen far from it does not come out", async () => {
+    const seen = "2026-11-28T20:00:00Z"; // 21:00 Madrid, kickoff 12:00
+    const matches = await runOn(ROUND, at(seen, 1), "2026-11-28", [
+      liveRow(ROUND, { horaTexto: "12:00", lastSeenAt: seen }),
+    ]);
+    expect(matches).toEqual([]);
+  });
+});
