@@ -4,8 +4,8 @@ import { LOCAL_DATABASE_URL, noStripPort } from "../playwright.db.config";
 import { seasonOf } from "../src/board/current";
 import type { XornadaIndexEntry } from "../src/board/row";
 import {
+  homeArrows,
   homeWeek,
-  neighbourWeeks,
   seasonWeeks,
   weekXornada,
 } from "../src/board/weeks";
@@ -24,7 +24,10 @@ const LANGS = [
 ] as const;
 
 let index: XornadaIndexEntry[];
+// SPEC-092 CA-5: ‹ and › of / from homeArrows; › of the week of ‹ goes
+// back to / when H exists, otherwise to the other week shown.
 let previous: string;
+let next: string | null;
 let first: string;
 
 test.beforeAll(async () => {
@@ -42,10 +45,13 @@ test.beforeAll(async () => {
       kickoff: r.kickoff.toISOString(),
       status: r.status,
     })) as XornadaIndexEntry[];
-    const home = homeWeek(index, now) ?? "";
-    const weeks = seasonWeeks(index);
-    previous = neighbourWeeks(weeks, home).previous ?? "";
-    first = weeks[0];
+    const arrows = homeArrows(index, now, "gl");
+    previous = arrows.previous?.replace("/xornada/", "") ?? "";
+    next =
+      homeWeek(index, now) === null
+        ? (arrows.next?.replace("/xornada/", "") ?? "")
+        : null;
+    first = seasonWeeks(index)[0];
   } finally {
     await sql.end();
   }
@@ -83,7 +89,11 @@ for (const { lang, prefix, home, dict } of LANGS) {
       await expect(page).toHaveURL(`${origin}${prefix}/xornada/${previous}`);
       await expect(page.locator("h1")).toHaveText(headingOf(previous, lang));
       await page.getByTestId("week-next").click();
-      await expect(page).toHaveURL(`${origin}${home}`);
+      await expect(page).toHaveURL(
+        next === null
+          ? `${origin}${home}`
+          : `${origin}${prefix}/xornada/${next}`,
+      );
       await page.goto(`${origin}${prefix}/xornada/${first}`);
       await expect(page.getByTestId("week-previous")).toHaveCount(0);
       await expect(page.getByTestId("week-previous-gap")).toHaveAttribute(

@@ -3,12 +3,7 @@ import postgres from "postgres";
 import { LOCAL_DATABASE_URL } from "../playwright.db.config";
 import { seasonOf } from "../src/board/current";
 import type { XornadaIndexEntry } from "../src/board/row";
-import {
-  homeWeek,
-  neighbourWeeks,
-  seasonWeeks,
-  weekXornada,
-} from "../src/board/weeks";
+import { homeArrows, weekXornada } from "../src/board/weeks";
 
 // SPEC-060 CA-6 (V-6) over the local Supabase with the e2e:db seed: a match
 // of a past week with a final and goals in match_goals, as historico:sync
@@ -32,8 +27,8 @@ test.beforeAll(async () => {
     kickoff: r.kickoff.toISOString(),
     status: r.status,
   })) as XornadaIndexEntry[];
-  const home = homeWeek(index, now) ?? "";
-  week = neighbourWeeks(seasonWeeks(index), home).previous ?? "";
+  // SPEC-092 CA-5: the week of ‹ on /, with a mix or without it.
+  week = homeArrows(index, now, "gl").previous?.replace("/xornada/", "") ?? "";
   expect(week).not.toBe("");
   const unseeded = new Set(
     rows.filter((r) => r.version === 0).map((r) => r.match_id),

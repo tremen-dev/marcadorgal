@@ -4,7 +4,7 @@ import postgres from "postgres";
 import { LOCAL_DATABASE_URL } from "../playwright.db.config";
 import { seasonOf } from "../src/board/current";
 import type { XornadaIndexEntry } from "../src/board/row";
-import { homeWeek, neighbourWeeks, seasonWeeks } from "../src/board/weeks";
+import { homeArrows } from "../src/board/weeks";
 import { xornadaHeading } from "../src/components/xornada/labels";
 import { xornadaDays } from "../src/xornada/view";
 
@@ -36,8 +36,9 @@ test.beforeAll(async () => {
       kickoff: r.kickoff.toISOString(),
       status: r.status,
     })) as XornadaIndexEntry[];
-    const home = homeWeek(index, now) ?? "";
-    previous = neighbourWeeks(seasonWeeks(index), home).previous ?? "";
+    // SPEC-092 CA-5: the week of ‹ on /, with a mix or without it.
+    previous =
+      homeArrows(index, now, "gl").previous?.replace("/xornada/", "") ?? "";
   } finally {
     await sql.end();
   }
