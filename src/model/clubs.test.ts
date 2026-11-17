@@ -47,6 +47,8 @@ describe("Galician Clubs Catalog and Escudos", () => {
 
   it("verifies that all referenced escudo SVG files exist in public/escudos", () => {
     for (const club of Object.values(GALICIAN_CLUBS)) {
+      // SPEC-091: victoria has no shield yet (ledger, salvedad).
+      if (club.shield === undefined) continue;
       const filePath = path.join(
         process.cwd(),
         "public",

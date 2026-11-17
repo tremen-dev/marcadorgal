@@ -27,6 +27,9 @@ export type OfficialCalendarResponse = {
     home: string;
     away: string;
     timeConfirmed: boolean;
+    // SPEC-091 CA-3: absent means true; false means kickoff is the nominal
+    // date at 00:00Z and only orders (kickoff-precision.ts).
+    dateConfirmed?: boolean;
   }>;
   ignoredRounds: Record<string, unknown>;
 };

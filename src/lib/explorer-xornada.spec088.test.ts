@@ -75,11 +75,12 @@ const scheduledRow: Row = {
 };
 
 describe("SPEC-088 CA-1 only official calendars", () => {
-  it("WOMEN_COMPETITIONS is exactly liga-f", () => {
-    expect(WOMEN_COMPETITIONS).toEqual(["liga-f"]);
+  // SPEC-091 CA-2 amends this CA: G1 has its official calendar.
+  it("WOMEN_COMPETITIONS is exactly liga-f and G1", () => {
+    expect(WOMEN_COMPETITIONS).toEqual(["liga-f", "segunda-federacion-fem-g1"]);
   });
 
-  it("with the three answering, only liga-f comes out and only liga-f is asked", async () => {
+  it("with the three answering, primera-federacion-fem is never asked nor comes out (SPEC-091 CA-2)", async () => {
     const calls: string[] = [];
     const explorer = explorerOf(
       {
@@ -95,8 +96,11 @@ describe("SPEC-088 CA-1 only official calendars", () => {
       "2026-27",
       explorer,
     );
-    expect(matches.map((m) => m.competitionId)).toEqual(["liga-f"]);
-    expect(calls).toEqual(["liga-f"]);
+    expect(matches.map((m) => m.competitionId).sort()).toEqual([
+      "liga-f",
+      "segunda-federacion-fem-g1",
+    ]);
+    expect([...calls].sort()).toEqual(["liga-f", "segunda-federacion-fem-g1"]);
   });
 });
 

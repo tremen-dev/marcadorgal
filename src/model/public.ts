@@ -31,6 +31,11 @@ const fields = {
   tier: z.int().min(1).max(5),
   round: z.int().min(1),
   kickoff: Instant,
+  // SPEC-091 CA-5/CA-6 (ADR-014 §3, optional): how much of the kickoff is
+  // real. Absent is exact; "date", the day without the hour; "round", only
+  // the round (the kickoff is a nominal date that orders). No male match
+  // carries it.
+  kickoffPrecision: z.enum(["date", "round"]).optional(),
   home: PublicTeam,
   away: PublicTeam,
   qualifier: Qualifier,

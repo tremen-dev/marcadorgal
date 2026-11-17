@@ -8,8 +8,9 @@ import {
 
 describe("WOMEN_COMPETITIONS", () => {
   // SPEC-088 CA-1: the federation calendars of explorer are generated.
-  it("is only liga-f, the competition with an official calendar", () => {
-    expect(WOMEN_COMPETITIONS).toEqual(["liga-f"]);
+  // SPEC-091 CA-2 (amends SPEC-088 CA-1): G1 has its official calendar.
+  it("is liga-f and G1, the competitions with an official calendar", () => {
+    expect(WOMEN_COMPETITIONS).toEqual(["liga-f", "segunda-federacion-fem-g1"]);
   });
 });
 
@@ -64,7 +65,7 @@ describe("fetchWomenXornadaMatches", () => {
     vi.restoreAllMocks();
   });
 
-  it("asks only liga-f even if the federation calendars answer (SPEC-088 CA-1)", async () => {
+  it("never asks primera-federacion-fem even if it answers (SPEC-088 CA-1, SPEC-091 CA-2)", async () => {
     const calendar = vi
       .spyOn(client, "getOfficialCalendar")
       .mockImplementation(async (comp: string) => {
@@ -165,8 +166,12 @@ describe("fetchWomenXornadaMatches", () => {
 
     const matches = await fetchWomenXornadaMatches("2026-11-07T20:00:00Z");
 
-    expect(matches).toHaveLength(1);
-    expect(calendar.mock.calls.map((c) => c[0])).toEqual(["liga-f"]);
+    // SPEC-091 CA-2: G1 is asked and its match comes out (scheduled).
+    expect(matches).toHaveLength(2);
+    expect(calendar.mock.calls.map((c) => c[0])).toEqual([
+      "liga-f",
+      "segunda-federacion-fem-g1",
+    ]);
 
     const ligaFMatch = matches.find((m) => m.competitionId === "liga-f");
     expect(ligaFMatch).toBeDefined();
