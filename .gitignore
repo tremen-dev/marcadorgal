@@ -15,3 +15,6 @@ next-env.d.ts
 *.tsbuildinfo
 
 .env*
+
+# Vídeos de media/ (se regeneran con su grabador)
+media/**/*.mp4
