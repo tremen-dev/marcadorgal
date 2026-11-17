@@ -135,6 +135,7 @@ Actualizado: 2026-11-17
 | SPEC-088 — la-xornada-femenina-no-publica-calendarios-inventados-ni-partidos-ya-pasados-como-programados | hecho | 2026-11-16 (sdd-verificador) |
 | SPEC-089 — las-paginas-de-competicion-no-publican-calendarios-ni-clasificaciones-inventados | hecho | 2026-11-16 (sdd-verificador) |
 | SPEC-090 — el-bot-del-calendario-no-pide-a-explorer-lo-que-no-es-suyo | hecho | 2026-11-17 (sdd-verificador) |
+| SPEC-091 — vuelve-2-federacion-femenina-g1-con-calendario-y-clasificacion-oficiales | hecho | 2026-11-17 (sdd-verificador) |
 
 ## EPIC-MEJORA — mejoras (aprobada)
 
@@ -185,6 +186,6 @@ Actualizado: 2026-11-17
 
 ## Resumen
 
-- hecho: 85
+- hecho: 86
 - en-revision: 2
 - borrador: 1
