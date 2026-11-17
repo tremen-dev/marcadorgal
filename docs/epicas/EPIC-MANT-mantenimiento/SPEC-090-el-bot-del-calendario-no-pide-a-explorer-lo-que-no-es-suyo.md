@@ -2,12 +2,13 @@
 id: SPEC-090
 tipo: spec
 epica: EPIC-MANT
-estado: en-progreso
+estado: en-revision
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-17, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-11-17, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-11-17, por: sdd-implementador}
+  - {estado: en-revision, fecha: 2026-11-17, por: sdd-implementador}
 ---
 # SPEC-090 — El bot del calendario no pide a explorer lo que no es suyo
 
