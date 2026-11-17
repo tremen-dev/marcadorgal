@@ -24,9 +24,24 @@ const MADRID_DATE = new Intl.DateTimeFormat("en-CA", {
 
 const DAY_MS = 86_400_000;
 
+// weekOf is pure and its inputs repeat (the medians of the rounds of a
+// season): a bounded memo spares the Intl formatting on every render.
+const WEEK_OF = new Map<number, string>();
+const WEEK_OF_MAX = 4096;
+
 // The civil date in Madrid, then civil arithmetic in UTC: the change of
 // time moves the instant of Tuesday 00:00, never the date.
 export function weekOf(instant: Instant | number): string {
+  const at = typeof instant === "number" ? instant : Date.parse(instant);
+  const known = WEEK_OF.get(at);
+  if (known !== undefined) return known;
+  if (WEEK_OF.size >= WEEK_OF_MAX) WEEK_OF.clear();
+  const week = civilWeekOf(at);
+  WEEK_OF.set(at, week);
+  return week;
+}
+
+function civilWeekOf(instant: number): string {
   const parts = MADRID_DATE.formatToParts(new Date(instant));
   const part = (type: Intl.DateTimeFormatPartTypes) =>
     Number(parts.find((p) => p.type === type)?.value);
@@ -41,7 +56,19 @@ export function weekOf(instant: Instant | number): string {
 const roundKey = (e: Entry): string =>
   `${e.season}\u0000${e.competitionId}\u0000${e.round}`;
 
+// The index is read-only (readonly everywhere): one render asks the weeks
+// of the same index several times, so they are kept per array.
+const ROUND_WEEKS = new WeakMap<readonly Entry[], Map<string, string>>();
+
 function roundWeeks(index: readonly Entry[]): Map<string, string> {
+  const known = ROUND_WEEKS.get(index);
+  if (known !== undefined) return known;
+  const weeks = computeRoundWeeks(index);
+  ROUND_WEEKS.set(index, weeks);
+  return weeks;
+}
+
+function computeRoundWeeks(index: readonly Entry[]): Map<string, string> {
   const kickoffs = new Map<string, number[]>();
   for (const e of index) {
     const key = roundKey(e);
@@ -69,27 +96,63 @@ export function seasonWeeks(index: readonly Entry[]): string[] {
   return [...new Set(roundWeeks(index).values())].sort();
 }
 
-const inSeason = <T extends Entry>(index: readonly T[], now: Instant): T[] => {
+// The same array when it is already the season of now (the usual case),
+// so that the weeks kept per array serve the whole render.
+const inSeason = <T extends Entry>(
+  index: readonly T[],
+  now: Instant,
+): readonly T[] => {
   const season = seasonOf(now);
-  return index.filter((e) => e.season === season);
+  return index.every((e) => e.season === season)
+    ? index
+    : index.filter((e) => e.season === season);
 };
 
-// The week of / and /es: the latest week among the rounds currentRound
-// chooses per competition (SPEC-020 CA-5). null for an empty season.
-export function homeWeek(index: readonly Entry[], now: Instant): string | null {
+// The rounds currentRound chooses per competition in the season of now
+// (SPEC-020 CA-5), as roundKey.
+function chosenRounds(season: readonly Entry[], now: Instant): Set<string> {
   const byCompetition = new Map<string, Entry[]>();
-  for (const e of inSeason(index, now)) {
+  for (const e of season) {
     const group = byCompetition.get(e.competitionId) ?? [];
     group.push(e);
     byCompetition.set(e.competitionId, group);
   }
-  let home: string | null = null;
+  const chosen = new Set<string>();
   for (const group of byCompetition.values()) {
     const round = currentRound(group, now);
-    const [week] = seasonWeeks(group.filter((e) => e.round === round));
-    if (week !== undefined && (home === null || week > home)) home = week;
+    const e = group.find((x) => x.round === round);
+    if (e !== undefined) chosen.add(roundKey(e));
   }
-  return home;
+  return chosen;
+}
+
+type Home = { shown: string[]; home: string | null };
+
+// SPEC-092 CA-1 (H-1, amends SPEC-027 CA-2). S: the weeks of the chosen
+// rounds, ascending, without repeats; more than one is a mix. H, the week
+// of / and /es: without a mix, the only week shown; with a mix, the only
+// covered week shown (all of its rounds chosen, so / paints it whole);
+// null if there is none or more than one, and for an empty season.
+function homeOf(index: readonly Entry[], now: Instant): Home {
+  const season = inSeason(index, now);
+  const weeks = roundWeeks(season);
+  const chosen = chosenRounds(season, now);
+  const shown = [
+    ...new Set([...chosen].map((key) => weeks.get(key) as string)),
+  ].sort();
+  if (shown.length <= 1) return { shown, home: shown[0] ?? null };
+  const covered = shown.filter((week) =>
+    [...weeks].every(([key, w]) => w !== week || chosen.has(key)),
+  );
+  return { shown, home: covered.length === 1 ? covered[0] : null };
+}
+
+export function homeWeeks(index: readonly Entry[], now: Instant): string[] {
+  return homeOf(index, now).shown;
+}
+
+export function homeWeek(index: readonly Entry[], now: Instant): string | null {
+  return homeOf(index, now).home;
 }
 
 export type Neighbours = { previous: string | null; next: string | null };
@@ -121,21 +184,46 @@ export function weekHref(
   return `${PREFIX[locale]}/xornada/${week}`;
 }
 
-// The destinations of ‹ and › from `week` (on / it is homeWeek), within the
-// season of now; null where there is no neighbour.
+const arrowsTo = (
+  previous: string | null,
+  next: string | null,
+  home: string | null,
+  locale: Locale,
+): Neighbours => ({
+  previous: previous === null ? null : weekHref(previous, home, locale),
+  next: next === null ? null : weekHref(next, home, locale),
+});
+
+// The destinations of ‹ and › from the page of `week`, within the season of
+// now; null where there is no neighbour. Only H is / (/es).
 export function weekArrows(
   index: readonly Entry[],
   week: string,
   now: Instant,
   locale: Locale,
 ): Neighbours {
-  const home = homeWeek(index, now);
   const { previous, next } = neighbourWeeks(
     seasonWeeks(inSeason(index, now)),
     week,
   );
-  return {
-    previous: previous === null ? null : weekHref(previous, home, locale),
-    next: next === null ? null : weekHref(next, home, locale),
-  };
+  return arrowsTo(previous, next, homeWeek(index, now), locale);
+}
+
+// SPEC-092 CA-2 (H-2): the destinations of ‹ and › on / and /es. With H,
+// its neighbours; with a mix and no H, ‹ is the first week shown (it has
+// rounds / does not paint) and › its next one. Only H is / (/es).
+export function homeArrows(
+  index: readonly Entry[],
+  now: Instant,
+  locale: Locale,
+): Neighbours {
+  const { shown, home: week } = homeOf(index, now);
+  const from = week ?? shown[0];
+  if (from === undefined) return { previous: null, next: null };
+  const { previous, next } = neighbourWeeks(
+    seasonWeeks(inSeason(index, now)),
+    from,
+  );
+  if (week !== null) return arrowsTo(previous, next, week, locale);
+  return arrowsTo(from, next, null, locale);
 }

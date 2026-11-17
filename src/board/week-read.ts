@@ -3,7 +3,7 @@ import type { Instant, PublicMatch } from "../model/index.ts";
 import { currentXornada, seasonOf } from "./current.ts";
 import type { XornadaIndexEntry } from "./row.ts";
 import { weekPage } from "./week-route.ts";
-import { homeWeek, type Neighbours, weekArrows } from "./weeks.ts";
+import { homeArrows, type Neighbours } from "./weeks.ts";
 
 // SPEC-027 (N-1): the pages read as today, the index of the season of now
 // and then the rows by id, through the reader they are given (the public
@@ -14,10 +14,8 @@ export type IndexReader = {
   matches(ids: readonly string[]): Promise<PublicMatch[]>;
 };
 
-const NO_ARROWS: Neighbours = { previous: null, next: null };
-
 // / and /es: the current xornada (SPEC-020 CA-5) and the arrows of the home
-// week. A failed read throws and the page decides, as before.
+// (SPEC-092 CA-2). A failed read throws and the page decides, as before.
 export async function readHome(
   reader: IndexReader,
   now: Instant,
@@ -27,11 +25,7 @@ export async function readHome(
   const matches = await reader.matches(
     currentXornada(index, now).map((e) => e.matchId),
   );
-  const home = homeWeek(index, now);
-  return {
-    matches,
-    arrows: home === null ? NO_ARROWS : weekArrows(index, home, now, locale),
-  };
+  return { matches, arrows: homeArrows(index, now, locale) };
 }
 
 export type WeekRead =
