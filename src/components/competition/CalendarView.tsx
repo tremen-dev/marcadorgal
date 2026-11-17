@@ -5,6 +5,7 @@ import {
   type Locale,
   t,
 } from "../../i18n/index.ts";
+import { kickoffPrecision } from "../../lib/kickoff-precision.ts";
 import type { Instant } from "../../model/index.ts";
 import { getGalicianClub, isGalicianClub } from "../../model/index.ts";
 import styles from "./CalendarView.module.css";
@@ -23,6 +24,8 @@ export type CalendarViewMatch = {
   homeId?: string;
   awayId?: string;
   timeConfirmed?: boolean;
+  // SPEC-091 CA-3: explorer's; absent means true.
+  dateConfirmed?: boolean;
 };
 
 export type CalendarViewData = { matches: readonly CalendarViewMatch[] };
@@ -32,11 +35,17 @@ type Props = {
   locale: Locale;
 };
 
-// Day, month and hour in Europe/Madrid whatever the process clock (SPEC-089 CA-3).
-function formatKickoff(kickoff: string, locale: Locale): string {
+// Day, month and hour in Europe/Madrid whatever the process clock (SPEC-089
+// CA-3). SPEC-091 CA-7: without the hour when only the day is known.
+function formatKickoff(
+  kickoff: string,
+  locale: Locale,
+  withTime: boolean,
+): string {
   if (Number.isNaN(new Date(kickoff).getTime())) return kickoff;
   const instant = kickoff as Instant;
-  return `${formatDay(instant, locale)} ${formatMonth(instant, locale)} · ${formatTime(instant, locale)}`;
+  const date = `${formatDay(instant, locale)} ${formatMonth(instant, locale)}`;
+  return withTime ? `${date} · ${formatTime(instant, locale)}` : date;
 }
 
 // Inside a round: by kickoff, then by key in code order (not locale); an
@@ -101,7 +110,15 @@ export function CalendarView({ calendarData, locale }: Props) {
               const awayName =
                 m.awayId === undefined ? awayClub?.name || m.away : m.away;
 
-              const formattedDate = formatKickoff(m.kickoff, locale);
+              // SPEC-091 CA-7: the local calendar says no precision (exact,
+              // no badge); explorer's, by its two flags.
+              const precision =
+                m.timeConfirmed === undefined
+                  ? "exact"
+                  : kickoffPrecision({
+                      timeConfirmed: m.timeConfirmed,
+                      dateConfirmed: m.dateConfirmed,
+                    });
 
               return (
                 <div
@@ -152,16 +169,31 @@ export function CalendarView({ calendarData, locale }: Props) {
                   </div>
 
                   <div className={styles.matchInfo}>
-                    <span className={styles.kickoffTime}>{formattedDate}</span>
-                    {m.timeConfirmed === true && (
-                      <span className={styles.confirmedBadge}>
-                        {t(locale, "competitions.confirmedTime")}
-                      </span>
-                    )}
-                    {m.timeConfirmed === false && (
+                    {precision === "round" ? (
+                      // The round is already the header of the section.
                       <span className={styles.tbdBadge}>
-                        {t(locale, "competitions.tbdTime")}
+                        {t(locale, "competitions.dateTbd")}
                       </span>
+                    ) : (
+                      <>
+                        <span className={styles.kickoffTime}>
+                          {formatKickoff(
+                            m.kickoff,
+                            locale,
+                            precision === "exact",
+                          )}
+                        </span>
+                        {m.timeConfirmed === true && precision === "exact" && (
+                          <span className={styles.confirmedBadge}>
+                            {t(locale, "competitions.confirmedTime")}
+                          </span>
+                        )}
+                        {precision === "date" && (
+                          <span className={styles.tbdBadge}>
+                            {t(locale, "competitions.tbdTime")}
+                          </span>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
