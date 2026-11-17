@@ -2,7 +2,7 @@
 id: SPEC-092
 tipo: spec
 epica: EPIC-FIX
-estado: en-progreso
+estado: en-revision
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-17, por: sdd-arquitecto}
@@ -10,6 +10,7 @@ historial:
   - {estado: en-progreso, fecha: 2026-11-17, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-11-17, por: sdd-implementador}
   - {estado: en-progreso, fecha: 2026-11-17, por: sdd-verificador}
+  - {estado: en-revision, fecha: 2026-11-17, por: sdd-implementador}
 ---
 # SPEC-092 — La semana siguiente a la portada es alcanzable cuando la portada mezcla semanas
 
