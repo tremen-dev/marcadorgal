@@ -284,8 +284,16 @@ for (const { lang, prefix, home: homePath, dict } of LANGS) {
           ).toBe(true);
           expect(await noPageScroll(page)).toBe(true);
           // Reachable with the keyboard, with a visible ring.
+          // The cap follows the number of focusables: with a mixed home the
+          // strip shows more days, so › comes later in the tab order
+          // (SPEC-092 F-SPEC-092-5).
+          const focusables = await page
+            .locator(
+              'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])',
+            )
+            .count();
           let reached = 0;
-          for (let i = 0; i < 12 && reached < 2; i++) {
+          for (let i = 0; i <= focusables && reached < 2; i++) {
             await page.keyboard.press("Tab");
             const focused = await page.evaluate(() =>
               document.activeElement?.getAttribute("data-testid"),

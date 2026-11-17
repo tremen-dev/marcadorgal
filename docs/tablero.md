@@ -116,6 +116,7 @@ Actualizado: 2026-11-17
 | SPEC-076 — retirar-override-rayo-cantabria | hecho | 2026-11-10 (sdd-verificador) |
 | SPEC-078 — el-test-de-spec-069-no-depende-del-calendario-vivo | hecho | 2026-11-10 (sdd-verificador) |
 | SPEC-080 — test-db-path-delimiter-windows | hecho | 2026-11-10 (sdd-verificador) |
+| SPEC-092 — la-semana-siguiente-a-la-portada-es-alcanzable-cuando-la-portada-mezcla-semanas | hecho | 2026-11-17 (sdd-verificador) |
 
 ## EPIC-MANT — mantenimiento (borrador)
 
@@ -186,6 +187,6 @@ Actualizado: 2026-11-17
 
 ## Resumen
 
-- hecho: 86
+- hecho: 87
 - en-revision: 2
 - borrador: 1
