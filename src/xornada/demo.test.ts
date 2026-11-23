@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { PublicMatch } from "@/model";
 import { DEMO_MATCHES, DEMO_NOW, demoMatches, isDemoAvailable } from "./demo";
 import { recentGoals } from "./recent-goal";
+import { squareGoals } from "./scorers";
 import { buildXornada, xornadaDays } from "./view";
 
 const xornada = buildXornada([...DEMO_MATCHES]);
@@ -183,16 +184,15 @@ describe("SPEC-068 CA-8 scorers in the demonstration", () => {
   const matches = demoMatches(NOW);
   const withGoals = matches.filter((m) => (m.goals?.length ?? 0) > 0);
 
-  it("every match with goals has as many per side as its score says", () => {
+  // SPEC-094 CA-6: the scorers no longer add up in every row on purpose;
+  // what adds up is the squared list each row paints.
+  it("every match with goals has a score, and its squared lines add up to it", () => {
     expect(withGoals.length).toBeGreaterThan(0);
     for (const m of withGoals) {
       expect(m.score, m.matchId).not.toBeNull();
-      const goals = m.goals ?? [];
+      const squared = squareGoals(m.goals, m.score);
       expect(
-        {
-          home: goals.filter((g) => g.team === "home").length,
-          away: goals.filter((g) => g.team === "away").length,
-        },
+        { home: squared.home.length, away: squared.away.length },
         m.matchId,
       ).toEqual(m.score);
     }
@@ -247,5 +247,44 @@ describe("SPEC-068 CA-8 scorers in the demonstration", () => {
     expect(without.length).toBeGreaterThan(0);
     // Among them, rows with a score (0-0 or no list), not only scheduled.
     expect(without.some((m) => m.score !== null)).toBe(true);
+  });
+});
+
+describe("SPEC-094 CA-6 the demonstration squares the scorers", () => {
+  const matches = demoMatches("2026-11-02T18:00:00.000Z");
+  const side = (m: (typeof matches)[number], team: "home" | "away") =>
+    (m.goals ?? []).filter((g) => g.team === team).length;
+  const scoreOf = (m: (typeof matches)[number], team: "home" | "away") =>
+    m.score?.[team] ?? 0;
+  const sides = ["home", "away"] as const;
+
+  it("has a side with fewer scorers than goals, in a row that has scorers", () => {
+    expect(
+      matches.some(
+        (m) =>
+          (m.goals?.length ?? 0) > 0 &&
+          sides.some((t) => side(m, t) > 0 && side(m, t) < scoreOf(m, t)),
+      ),
+    ).toBe(true);
+  });
+
+  it("has a side with more scorers than goals", () => {
+    expect(
+      matches.some((m) => sides.some((t) => side(m, t) > scoreOf(m, t))),
+    ).toBe(true);
+  });
+
+  it("has a goal without minute", () => {
+    expect(
+      matches.some((m) => (m.goals ?? []).some((g) => g.minute === undefined)),
+    ).toBe(true);
+  });
+
+  it("keeps Sevilla 2–1 Getafe with goals in the score and no scorer", () => {
+    const sevilla = matches.find(
+      (m) => m.matchId === "primera-division-2026-27-j8-sevilla-fc-getafe-cf",
+    );
+    expect(sevilla?.score).toEqual({ home: 2, away: 1 });
+    expect(sevilla?.goals ?? []).toEqual([]);
   });
 });
