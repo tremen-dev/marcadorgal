@@ -16,7 +16,7 @@ epica: EPIC-MANT
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
 | CA-1 | `src/ingest/tick.ts` (`withDeadline`, `fetchWithSignal`, `attemptTimeoutMs`), `src/ingest/constants.ts` (`SOURCE_ATTEMPT_TIMEOUT_MS`) | `src/ingest/tick.spec093.test.ts` › «SPEC-093 CA-1 the deadline of the attempt» (6 casos) | | ❌ |
-| CA-2 | | | | ❌ |
+| CA-2 | `src/ingest/salud.ts` (`isOrphan`, fila `sin cerrar`, razón), `src/ingest/constants.ts` (`SALUD_ORPHAN_MINUTES`) | `src/ingest/salud.test.ts` › «SPEC-093 CA-2 tickSalud sees the orphan attempt» (4 casos) | | ❌ |
 | CA-3 | | | | ❌ |
 | CA-4 | | | | ❌ |
 | CA-5 | | | | ❌ |

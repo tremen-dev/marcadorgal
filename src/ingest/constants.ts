@@ -57,6 +57,13 @@ export const CADENCE_JITTER_SECONDS = 5;
 export const SALUD_RECENT_MINUTES = 10;
 export const SALUD_FAILURES_SHOWN = 5;
 
+// An attempt still open after this long is not in flight: it is an orphan
+// (SPEC-093 CA-2). The route of the tick has maxDuration = 60 s, so an attempt
+// open for longer was killed with the function and will never get its
+// closeAttempt; tick:salud says so and turns red. Two minutes leave margin
+// over the 60 s and stay well inside the ten of the short window.
+export const SALUD_ORPHAN_MINUTES = 2;
+
 // A run pg_cron has not finished yet is neither a success nor a failure: it
 // is still going (SPEC-010 CA-1). These are the four non terminal statuses of
 // pg_cron, and a tick sent through pg_net passes through sending and
