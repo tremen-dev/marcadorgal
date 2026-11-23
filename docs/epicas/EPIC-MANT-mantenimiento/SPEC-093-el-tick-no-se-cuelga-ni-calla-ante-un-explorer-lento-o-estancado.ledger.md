@@ -1,4 +1,4 @@
----
+---undefined Tests OK. Recorrido con servidor HTTP local y `fetch` real (undici), plazo 1500 ms: sin respuesta → cerrado en 1538 ms, `ok=false`, `rfef: sin respuesta de la fuente en el plazo del intento (1500 ms)`, `engine`+`social` presentes; cabeceras y cuerpo sin fin → igual (1582 ms). Producción usa el valor por defecto (único uso de `attemptTimeoutMs`) | ✅ Tests OK. `tickSalud` directo: abierto desde now−3 min → `sin cerrar`, `REVISAR` y razón «intento sin cerrar de rfef desde …»; abierto desde now−1 min → `abierto`, `OK` | ✅ Tests OK; lectura de `parseRequest`: la lectura se empuja tras resolver y antes del `continue` de `SCHEDULED`; `observations` sin cambios | ✅ Tests OK. Recorrido con el adaptador real sirviendo `export-local-2026-11-01.json` por HTTP: now 18:20 → `ok=false`, `rfef: fuente estancada: última lectura hace 7 min`, 1 observación insertada, `details` con `ultimaLectura`/`edadLecturaMin=7`, `tickSalud` en rojo; now 18:14 → `ok=true`, `edadLecturaMin=1`, salud OK | ✅ Tests OK. `grep -rnE` de la URL fija y los tres alias en `src/`+`tools/` (sin tests) → sin líneas. Consumidores de `explorer-client` capturan el error (`competition-data`, `directos`, `explorer-xornada`, `allSettled` en enriquecimiento). e2e con el mock renombrado: 457 passed, 1 skipped | ✅ `rg -n "API-Football" src/sources/registry.ts` → exit 1, sin líneas; comentario leído: única fuente, RN-04, `liveProvider`, SPEC-049 | ✅ |undefined|undefined|undefined|undefined|undefined|
 id: SPEC-093
 tipo: ledger
 epica: EPIC-MANT
@@ -24,9 +24,16 @@ epica: EPIC-MANT
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
+**GREEN** — 2026-11-23, sdd-verificador, sobre `431f4e6`.
+- Worktree LF: `npm run typecheck` exit 0; `npm run lint` «Checked 508 files … No fixes applied»; `npm run test` 185 ficheros, 4838 passed, 3 skipped.
+- Árbol principal: `npm run build` OK; `npx playwright test` (Chromium local, sin Docker ni Supabase) 457 passed, 1 skipped (4.3 min).
+- Recorrido real de CA-1/CA-2/CA-4 con un explorer doble HTTP en 127.0.0.1 (cuelga, cuerpo sin fin, export con `lastSeenAt` viejos) contra `runTick` + BD de memoria + `tickSalud`; sin red externa ni producción.
+- No corrido `test:db` (Docker): el cambio no toca SQL.
+- ADR-028: `patch` (0.11.4) coherente con la spec («ADR-028: `patch`»).
 
 ## Evidencia visual
 <!-- Tabla CA → captura en _qa/SPEC-093/. Informe HTML opcional: _qa/SPEC-093/informe.html -->
+n-a: la spec no cambia UI; sin capturas.
 
 ## Salvedades / follow-ups
 <!-- IDs F-SPEC-093-1, F-SPEC-093-2… con destino (spec futura o EPIC-MEJORA). -->

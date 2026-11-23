@@ -2,13 +2,14 @@
 id: SPEC-093
 tipo: spec
 epica: EPIC-MANT
-estado: en-revision
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-23, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-11-23, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-11-23, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-11-23, por: sdd-implementador}
+  - {estado: hecho, fecha: 2026-11-23, por: sdd-verificador}
 ---
 # SPEC-093 — El tick no se cuelga ni calla ante un explorer lento o estancado
 
