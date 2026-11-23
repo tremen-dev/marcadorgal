@@ -148,6 +148,7 @@ Actualizado: 2026-11-23
 
 | Spec | Estado | Último cambio |
 |---|---|---|
+| SPEC-094 — los-goleadores-siempre-cuadran-con-el-marcador | hecho | 2026-11-23 (sdd-verificador) |
 
 ## ADRs
 
@@ -194,6 +195,6 @@ Actualizado: 2026-11-23
 
 ## Resumen
 
-- hecho: 88
+- hecho: 89
 - en-revision: 2
 - borrador: 1
