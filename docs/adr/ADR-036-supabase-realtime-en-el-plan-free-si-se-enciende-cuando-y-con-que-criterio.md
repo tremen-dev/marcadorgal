@@ -54,6 +54,7 @@ from (select *, lag(status) over w p_status, lag(home_score) over w p_home,
 where decided_at >= now() - interval '30 days';
 ```
 
+**Precondición (goleadores):** el delta de `board_delta` lleva la fila de `web.xornada`, cuyos `goals` salen de `match_goals`, que está vacía en directo (los goleadores en directo los añade `enrichMatchesWithGoals` al leer de explorer). Como `applyDelta` (`src/xornada/live.ts`) sustituye la fila entera, cada delta borra los goleadores pintados hasta el siguiente `/api/board`: 30 s con C′ y `RECONCILE_MS` (5 min) en el modo SPEC-024. La spec de C′ debe resolverlo, por ejemplo conservando los goles pintados si el delta no trae goles.
 **Activación** (orden de N-1, la base antes que la variable): 1) cerrar el alta de usuarios en Auth y comprobarlo; 2) spec de C′ aprobada y desplegada con la variable apagada; 3) migración `enable trigger board_delta` por GitHub Actions (ADR-024); 4) `NEXT_PUBLIC_REALTIME=on` **solo en Production** y redespliegue; 5) primer día: conexiones pico y mensajes en el panel.
 **Marcha atrás**: 1) migración `disable trigger board_delta`, que corta los mensajes al momento (con C′ el polling sigue y nadie ve un dato viejo); 2) quitar la variable y redesplegar, que cierra los sockets. El alta en Auth sigue cerrada.
 

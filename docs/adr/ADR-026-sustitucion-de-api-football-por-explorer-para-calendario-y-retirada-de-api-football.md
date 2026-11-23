@@ -22,6 +22,7 @@ Mantener API-Football en `src/sources/registry.ts` provoca errores 401/403 o fal
 
 ## Decisión
 1. **Explorer como importador oficial del calendario (`CalendarImporter`).** Se implementa `rfefCalendar` en `src/sources/rfef/calendar.ts`, registrado como primer importador en `src/calendar/importers.ts`. Consume `GET /api/export/calendar` de explorer autenticado con `RFEF_EXPLORER_TOKEN` (o `EXPLORER_API_KEY`).
+   *Nota (2026-11-23): SPEC-093 retira el alias `EXPLORER_API_KEY`; solo vale `RFEF_EXPLORER_TOKEN`. Sin ADR nuevo, por decisión del titular (H-1 de SPEC-093).*
 2. **Desacoplamiento de `tools/calendario-sync.mjs`.** La herramienta de sincronización acepta credenciales de explorer (`RFEF_EXPLORER_TOKEN`), manteniendo compatibilidad retroactiva.
 3. **Retirada de API-Football de las fuentes activas.** Se retira `api-football` de `SOURCES` en `src/sources/registry.ts`. La fuente `rfef` pasa a prioridad 50 (`FEDERATION_PRIORITY`, ADR-017 §5 restaurado), siendo la fuente autoritativa oficial de las cinco divisiones.
 4. **Cliente de consumo de nuevas entidades.** Se añade `src/lib/explorer-client.ts` con funciones tipadas para consumir el calendario oficial, partidos con goles en directo, clasificaciones, Pichichi y Trofeo Zamora.
