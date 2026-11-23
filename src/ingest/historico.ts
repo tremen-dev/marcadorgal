@@ -161,7 +161,8 @@ export type MatchPlan =
       correct: boolean;
       // Valid goals of Explorer (placeholders of SPEC-059 dropped).
       goals: PublicGoal[];
-      // CA-3: the valid goals of each team add up to its score.
+      // CA-3: the valid goals of each team add up to its score, and (SPEC-094
+      // CA-5) every one of them has its minute.
       goalsComplete: boolean;
       // Complete and different from what is stored.
       replaceGoals: boolean;
@@ -171,6 +172,9 @@ export function completeGoals(
   goals: readonly PublicGoal[],
   score: Score,
 ): boolean {
+  // SPEC-094 CA-5: match_goals admits no gaps, so a goal without minute
+  // leaves the list incomplete.
+  if (goals.some((g) => g.minute === undefined)) return false;
   const home = goals.filter((g) => g.team === "home").length;
   const away = goals.filter((g) => g.team === "away").length;
   return home === score.home && away === score.away;
@@ -295,6 +299,10 @@ export function historicoFailed(report: HistoricoReport): boolean {
 const scoreText = (score: Score | null) =>
   score === null ? "" : ` ${score.home}-${score.away}`;
 
+// SPEC-094 CA-5: the valid goals with their minute.
+const timed = (goals: readonly PublicGoal[]) =>
+  goals.filter((g) => g.minute !== undefined).length;
+
 const head = (date: string, m: MatchToSync) =>
   `${date} · ${m.competitionId} · J${m.round} · ${m.homeName}–${m.awayName}`;
 
@@ -376,7 +384,7 @@ export function formatHistoricoReport(report: HistoricoReport): string[] {
   for (const { date, plan } of incomplete)
     if (plan.kind === "finished")
       lines.push(
-        `  ${head(date, plan.match)} ·${scoreText(plan.score)} · goles válidos ${plan.goals.length}`,
+        `  ${head(date, plan.match)} ·${scoreText(plan.score)} · goles válidos ${timed(plan.goals)} · sin minuto ${plan.goals.length - timed(plan.goals)}`,
       );
 
   const byRound = new Map<string, Totals>();

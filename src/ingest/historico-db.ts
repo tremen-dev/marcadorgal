@@ -213,6 +213,10 @@ async function applyDate(
   for (const p of withGoals(plans)) {
     await tx.sql`delete from match_goals where match_id = ${p.match.matchId}`;
     for (const g of p.goals) {
+      // SPEC-094 CA-5: completeGoals lets through only goals with minute;
+      // if one slips by, the date is undone rather than written with a gap.
+      if (g.minute === undefined)
+        throw new Error(`gol sen minuto en ${p.match.matchId}`);
       await tx.sql`insert into match_goals
           (match_id, team, player, minute, penalty, own_goal)
         values (${p.match.matchId}, ${g.team}, ${g.player}, ${g.minute},

@@ -150,6 +150,57 @@ describe("SPEC-060 CA-3 completeGoals", () => {
   });
 });
 
+describe("SPEC-094 CA-5 match_goals admits no gaps", () => {
+  it("completeGoals is false when a goal has no minute, even if the counts add up", () => {
+    const goals = [
+      { team: "home" as const, player: "A", minute: 1 },
+      { team: "away" as const, player: "B" },
+    ];
+    expect(completeGoals(goals, { home: 1, away: 1 })).toBe(false);
+  });
+
+  it("FINISHED 2-1 with a goal without minute: corrects the score, leaves match_goals, reports it incomplete", () => {
+    const stored = [{ team: "home" as const, player: "Aspas", minute: 23 }];
+    const [plan] = plan15(
+      [local({ score: { home: 1, away: 1 }, goals: stored })],
+      [
+        explorer({
+          goals: [
+            { team: "home", player: "Aspas", minute: 23 },
+            { team: "away", player: "Budimir", minute: 60 },
+            { team: "home", player: "Swedberg" },
+          ],
+        }),
+      ],
+    );
+    expect(plan).toMatchObject({
+      kind: "finished",
+      correct: true,
+      goalsComplete: false,
+      replaceGoals: false,
+    });
+    if (plan.kind !== "finished") throw new Error("unreachable");
+    expect(plan.goals).toHaveLength(3);
+
+    const lines = formatHistoricoReport({
+      desde: "2026-08-15",
+      hasta: "2026-08-15",
+      dryRun: true,
+      datesProcessed: 1,
+      entries: [{ date: "2026-08-15", plan }],
+      failed: [],
+      aborted: null,
+    });
+    const at = lines.indexOf("Goles incompletos (1):");
+    expect(at).toBeGreaterThan(-1);
+    expect(lines[at + 1]).toMatch(/ · 2-1 · goles válidos 2 · sin minuto 1$/);
+    expect(lines.find((l) => l.includes("Por jornada:"))).toBeDefined();
+    expect(lines[lines.indexOf("Por jornada:") + 1]).toMatch(
+      /1 marcadores · 0 goleadores$/,
+    );
+  });
+});
+
 describe("SPEC-060 CA-2 CA-3 planDaySync", () => {
   it("corrects a finished 1-1 that Explorer gives FINISHED 2-1 and replaces the goals", () => {
     const [plan] = plan15([local()], [explorer()]);
@@ -377,7 +428,7 @@ describe("SPEC-060 CA-4 CA-5 formatHistoricoReport", () => {
       "  2026-08-16 · segunda-division-2026-27-j1-deportivo-leganes · sen acta · Deportivo–Leganés · 1-0 · 0 goles",
     ]);
     expect(lines[at("Goles incompletos (1):") + 1]).toBe(
-      "  2026-08-16 · segunda-division · J1 · Deportivo–Leganés · 1-0 · goles válidos 0",
+      "  2026-08-16 · segunda-division · J1 · Deportivo–Leganés · 1-0 · goles válidos 0 · sin minuto 0",
     );
     expect(lines[at("Por jornada:") + 1]).toBe(
       "  primera-division J1: 1 marcadores · 1 goleadores",
