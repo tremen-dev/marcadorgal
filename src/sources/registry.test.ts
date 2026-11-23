@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   FEDERATION_PRIORITY,
@@ -99,5 +100,23 @@ describe("CA-2 SourceConfig", () => {
 
   it("rejects an unknown key", () => {
     expect(ok({ ...valid, apiKey: "secret" })).toBe(false);
+  });
+});
+
+// SPEC-093 CA-6: the comment of the registry tells the truth of ADR-026.
+describe("SPEC-093 CA-6 the comment of the registry", () => {
+  const text = readFileSync(new URL("./registry.ts", import.meta.url), "utf8");
+
+  it("no longer names API-Football nor its priority 10", () => {
+    expect(text).not.toMatch(/API-Football/i);
+    expect(text).not.toMatch(/[Pp]riority 10\b/);
+  });
+
+  it("says rfef is the only registered source, that RN-04 cannot fire and where the arbitration lives", () => {
+    expect(text).toMatch(/only registered source/);
+    expect(text).toContain("ADR-026");
+    expect(text).toContain("RN-04");
+    expect(text).toContain("liveProvider");
+    expect(text).toContain("SPEC-049");
   });
 });
