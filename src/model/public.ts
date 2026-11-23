@@ -18,7 +18,7 @@ export type PublicTeam = z.infer<typeof PublicTeam>;
 export const PublicGoal = z.strictObject({
   team: z.enum(["home", "away"]),
   player: z.string().min(1),
-  minute: z.int().min(0),
+  minute: z.int().min(0).optional(),
   penalty: z.boolean().optional(),
   ownGoal: z.boolean().optional(),
 });
