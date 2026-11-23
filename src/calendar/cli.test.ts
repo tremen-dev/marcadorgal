@@ -17,6 +17,9 @@ const cleanEnv = { ...process.env };
 delete cleanEnv.API_FOOTBALL_KEY;
 delete cleanEnv.RFEF_EXPLORER_TOKEN;
 delete cleanEnv.DATABASE_URL;
+// The origin is only read by the fake provider, which never leaves the
+// machine; without it the tool stops before asking (SPEC-093 CA-5).
+cleanEnv.RFEF_EXPLORER_URL = "https://explorer.test";
 
 const run = (tool: string, ...args: string[]) =>
   spawnSync(process.execPath, [path.join(root, "tools", tool), ...args], {
@@ -42,6 +45,24 @@ describe("CA-7 calendario:sync", () => {
     const r = run("calendario-sync.mjs", "2026-27", "--dry-run");
     expect(r.status).toBe(1);
     expect(r.stderr).toMatch(/RFEF_EXPLORER_TOKEN/);
+  });
+
+  it("exits 1 without RFEF_EXPLORER_URL (SPEC-093 CA-5)", () => {
+    const r = spawnSync(
+      process.execPath,
+      [path.join(root, "tools", "calendario-sync.mjs"), "2026-27", "--dry-run"],
+      {
+        cwd: cleanCwd,
+        env: {
+          ...cleanEnv,
+          RFEF_EXPLORER_TOKEN: "fake",
+          RFEF_EXPLORER_URL: "",
+        },
+        encoding: "utf8",
+      },
+    );
+    expect(r.status).toBe(1);
+    expect(r.stderr).toMatch(/RFEF_EXPLORER_URL/);
   });
 
   it("exits 1 without a season", () => {

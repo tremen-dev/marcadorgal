@@ -100,13 +100,19 @@ export const COMPETITION_TEAM_OVERRIDES: Readonly<
   >
 > = {};
 
-export function createRfefCalendar(baseUrl?: string): CalendarImporter {
-  const origin = (
-    baseUrl ||
-    process.env.RFEF_EXPLORER_URL ||
-    "https://marcadorgal-explorer.vercel.app"
-  ).replace(/\/+$/, "");
+// The origin and the token of explorer, read when a calendar is asked for and
+// never before (rfefCalendar is built at import time): only RFEF_EXPLORER_URL
+// and RFEF_EXPLORER_TOKEN, and without one of them nothing is asked (SPEC-093
+// CA-5). Tercera goes by file and needs neither (SPEC-090 CA-1).
+function requiredEnv(
+  name: "RFEF_EXPLORER_URL" | "RFEF_EXPLORER_TOKEN",
+): string {
+  const value = process.env[name];
+  if (!value) throw new Error(`${name} is not set`);
+  return value;
+}
 
+export function createRfefCalendar(baseUrl?: string): CalendarImporter {
   return {
     id: RFEF_SOURCE_ID,
 
@@ -131,11 +137,11 @@ export function createRfefCalendar(baseUrl?: string): CalendarImporter {
           calendar: JSON.parse(readFileSync(file, "utf8")),
         };
       }
-      const token =
-        ctx.apiKey ||
-        process.env.RFEF_EXPLORER_TOKEN ||
-        process.env.EXPLORER_API_KEY ||
-        "";
+      const origin = (baseUrl || requiredEnv("RFEF_EXPLORER_URL")).replace(
+        /\/+$/,
+        "",
+      );
+      const token = ctx.apiKey || requiredEnv("RFEF_EXPLORER_TOKEN");
       const url = `${origin}${CALENDAR_EXPORT_PATH}?competition=${competitionId}&season=${season}`;
       const res = await ctx.fetch(url, {
         headers: {

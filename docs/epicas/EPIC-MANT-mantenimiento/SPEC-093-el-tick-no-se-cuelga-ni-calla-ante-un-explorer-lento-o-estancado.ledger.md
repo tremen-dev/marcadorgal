@@ -19,7 +19,7 @@ epica: EPIC-MANT
 | CA-2 | `src/ingest/salud.ts` (`isOrphan`, fila `sin cerrar`, razón), `src/ingest/constants.ts` (`SALUD_ORPHAN_MINUTES`) | `src/ingest/salud.test.ts` › «SPEC-093 CA-2 tickSalud sees the orphan attempt» (4 casos) | | ❌ |
 | CA-3 | `src/model/source.ts` (`SourceReading`, `ParseResult.readings?`), `src/sources/rfef/explorer.ts` (`parseRequest`, `parse`) | `src/sources/rfef/explorer.test.ts` › «SPEC-093 CA-3 the readings of the source» (7 casos); ajustados con `said()` los 5 casos de SPEC-038 que comparaban el resultado entero | | ❌ |
 | CA-4 | `src/ingest/tick.ts` (`readingAge`, veredicto en `runAttempt`, `details.ultimaLectura`/`edadLecturaMin`) | `src/ingest/tick.spec093.test.ts` › «SPEC-093 CA-4 the stalled source» (7 casos, uno sobre `export-local-2026-11-01.json` con el adaptador real y `tickSalud`) | | ❌ |
-| CA-5 | | | | ❌ |
+| CA-5 | `src/lib/explorer-client.ts` (`requiredEnv`), `src/sources/rfef/calendar.ts` (`requiredEnv`, origen leído en `fetch`), `tools/calendario-sync.mjs` (solo `RFEF_EXPLORER_TOKEN`, y sale 1 sin `RFEF_EXPLORER_URL`), `playwright.config.ts` (mock con `RFEF_EXPLORER_URL`) | `src/lib/explorer-sin-respaldo.test.ts` › «SPEC-093 CA-5 no silent fallback to explorer» (10 casos) y «… no alias and no fixed url in the code» (3 casos); `src/calendar/cli.test.ts` › «exits 1 without RFEF_EXPLORER_URL (SPEC-093 CA-5)»; `src/lib/explorer-client.test.ts` con `vi.stubEnv` | | ❌ |
 | CA-6 | | | | ❌ |
 
 ## Veredicto del verificador

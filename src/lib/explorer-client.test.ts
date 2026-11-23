@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   getDayMatches,
   getDayMatchesRaw,
@@ -9,6 +9,15 @@ import {
 } from "./explorer-client.ts";
 
 describe("CA-5 explorer-client", () => {
+  // The two variables are required (SPEC-093 CA-5): no fixed url to fall to.
+  beforeEach(() => {
+    vi.stubEnv("RFEF_EXPLORER_URL", "https://explorer.test");
+    vi.stubEnv("RFEF_EXPLORER_TOKEN", "tok");
+  });
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
   const calls: { url: string; init: RequestInit | undefined }[] = [];
   const stub = (async (url: string | URL | Request, init?: RequestInit) => {
     calls.push({ url: String(url), init });
