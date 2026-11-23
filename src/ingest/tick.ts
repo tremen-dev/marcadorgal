@@ -1,3 +1,4 @@
+import { OBSERVATION_WINDOW_MINUTES } from "../decide/thresholds.ts";
 import {
   HOUR_MS,
   type Instant,
@@ -6,6 +7,7 @@ import {
   Observation,
   type SourceAdapter,
   type SourceConfig,
+  type SourceReading,
   shiftInstant,
   type WindowMatch,
 } from "../model/index.ts";
@@ -199,6 +201,47 @@ const fetchWithSignal =
       signal:
         init?.signal == null ? signal : AbortSignal.any([init.signal, signal]),
     });
+
+// How old the newest reading of the source is (SPEC-093 CA-4), over the
+// matches of the window (never the recovery set) that have kicked off and are
+// not closed: only of those must the source be rereading something. Without
+// such a match, or without a reading of one, there is no verdict.
+type ReadingAge = {
+  ultimaLectura: Instant;
+  edadLecturaMin: number;
+  stale: boolean;
+};
+
+function readingAge(
+  own: readonly WindowRow[],
+  readings: readonly SourceReading[],
+  now: Instant,
+): ReadingAge | null {
+  const started = new Set(
+    own
+      .filter(
+        (m) =>
+          Date.parse(m.kickoff) <= Date.parse(now) &&
+          (m.status === "scheduled" || m.status === "live"),
+      )
+      .map((m) => m.id as string),
+  );
+  let newest: Instant | null = null;
+  for (const r of readings)
+    if (
+      started.has(r.matchId) &&
+      (newest === null || Date.parse(r.readAt) > Date.parse(newest))
+    )
+      newest = r.readAt;
+  if (newest === null) return null;
+  const age = Date.parse(now) - Date.parse(newest);
+  return {
+    ultimaLectura: newest,
+    edadLecturaMin: Math.floor(age / MINUTE_MS),
+    // RN-01 drops what is older than this: past it, the source is stalled.
+    stale: age > OBSERVATION_WINDOW_MINUTES * MINUTE_MS,
+  };
+}
 
 // One tick: retention, window, one attempt per pull source and season, the
 // sweep and, last, the social dispatch (SPEC-066 CA-11), which runs whether
@@ -465,10 +508,25 @@ async function runAttempt(
     // and no migration: a transport or request-shape failure is not a match
     // state (D-9), and its home is this row (ADR-003).
     const broken = parsed.requestErrors;
-    const ok = broken.length === 0;
-    const error = ok
-      ? undefined
-      : `${config.id}: ${broken.length} de ${requests} peticiones con error del proveedor: ${oneLine(broken[0].error)}`;
+    // A source that answers but stopped rereading (SPEC-093 CA-4) is the
+    // same kind of failure (N-2, D-9): its observations are in and the engine
+    // decided as always, but the row is not ok. Never a state of the match.
+    const age = readingAge(own, parsed.readings ?? [], now);
+    const stale = age?.stale === true;
+    const ok = broken.length === 0 && !stale;
+    const errors = [
+      ...(broken.length === 0
+        ? []
+        : [
+            `${config.id}: ${broken.length} de ${requests} peticiones con error del proveedor: ${oneLine(broken[0].error)}`,
+          ]),
+      ...(stale
+        ? [
+            `${config.id}: fuente estancada: última lectura hace ${age.edadLecturaMin} min`,
+          ]
+        : []),
+    ];
+    const error = ok ? undefined : errors.join(" · ");
 
     const result: AttemptSummary = {
       ...base,
@@ -501,6 +559,12 @@ async function runAttempt(
         requestErrors: broken.length,
         fueraDeVentana: outOfWindow,
         ...(recovery === undefined ? {} : { recuperacion: recovery }),
+        ...(age === null
+          ? {}
+          : {
+              ultimaLectura: age.ultimaLectura,
+              edadLecturaMin: age.edadLecturaMin,
+            }),
       },
     });
     return result;
