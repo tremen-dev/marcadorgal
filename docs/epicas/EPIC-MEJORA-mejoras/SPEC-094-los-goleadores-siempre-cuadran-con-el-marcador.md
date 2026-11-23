@@ -2,13 +2,14 @@
 id: SPEC-094
 tipo: spec
 epica: EPIC-MEJORA
-estado: en-revision
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-23, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-11-23, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-11-23, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-11-23, por: sdd-implementador}
+  - {estado: hecho, fecha: 2026-11-23, por: sdd-verificador}
 ---
 # SPEC-094 — Los goleadores siempre cuadran con el marcador
 
