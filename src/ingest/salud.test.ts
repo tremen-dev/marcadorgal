@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { type Instant, MINUTE_MS, shiftInstant } from "@/model";
 import { SILENCE_MINUTES } from "../decide/index.ts";
-import { SALUD_RECENT_MINUTES } from "./constants.ts";
+import { SALUD_ORPHAN_MINUTES, SALUD_RECENT_MINUTES } from "./constants.ts";
 import { type SaludInput, tickSalud } from "./salud.ts";
 
 const NOW = "2026-09-25T18:40:00.000Z" as Instant;
@@ -417,5 +417,64 @@ describe("SPEC-029 CA-5 tickSalud with purge-cron-history", () => {
     );
     expect(report.ok).toBe(false);
     expect(report.text).toMatch(/FALLO {2}\S+ {2}purge-cron-history {2}failed/);
+  });
+});
+
+// SPEC-093 CA-2: an attempt Vercel killed half way never gets its
+// closeAttempt. Past SALUD_ORPHAN_MINUTES (longer than maxDuration) it is not
+// still going: it is an orphan, and the light is red. A recent open attempt
+// is the normal case (SPEC-010 CA-1) and stays `abierto`.
+describe("SPEC-093 CA-2 tickSalud sees the orphan attempt", () => {
+  const open = (startedAt: Instant) => ({
+    startedAt,
+    sourceId: "rfef",
+    ok: null,
+    error: null,
+    details: null,
+  });
+
+  it("the threshold is 2 min, longer than the 60 s of maxDuration", () => {
+    expect(SALUD_ORPHAN_MINUTES).toBe(2);
+    expect(SALUD_ORPHAN_MINUTES * 60).toBeGreaterThan(60);
+  });
+
+  it("an open attempt older than 2 min is REVISAR, `sin cerrar`, and the reason names it", () => {
+    const startedAt = at(-3);
+    const report = tickSalud(clean({ attempts: [open(startedAt)] }));
+    expect(report.ok).toBe(false);
+    expect(report.text).toContain(`${startedAt}  rfef  sin cerrar`);
+    expect(report.text).not.toContain(`${startedAt}  rfef  abierto`);
+    expect(report.text).toContain("REVISAR");
+    expect(report.text).toMatch(
+      new RegExp(`intento sin cerrar.*rfef.*${startedAt.replace(/\./g, ".")}`),
+    );
+  });
+
+  it("an open attempt younger than 2 min is still `abierto` and keeps the light green", () => {
+    const startedAt = at(-1);
+    const report = tickSalud(
+      clean({
+        attempts: [
+          open(startedAt),
+          {
+            startedAt: at(-2),
+            sourceId: "rfef",
+            ok: true,
+            error: null,
+            details: null,
+          },
+        ],
+      }),
+    );
+    expect(report.ok).toBe(true);
+    expect(report.text).toContain(`${startedAt}  rfef  abierto`);
+    expect(report.text).not.toContain("sin cerrar");
+  });
+
+  it("exactly at the threshold it is not yet an orphan", () => {
+    const report = tickSalud(
+      clean({ attempts: [open(at(-SALUD_ORPHAN_MINUTES))] }),
+    );
+    expect(report.ok).toBe(true);
   });
 });

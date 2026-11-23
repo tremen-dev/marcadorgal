@@ -30,6 +30,17 @@ export const RECOVERY_HORIZON_HOURS: Readonly<Record<string, number>> = {
 // until it rereads the row, so asking every 30 s would bring nothing new.
 export const RECOVERY_POLL_MINUTES = 5;
 
+// The deadline of one attempt of a pull source (SPEC-093 CA-1): the whole
+// fetch of the attempt, headers and bodies, every request together. Without
+// it undici waits up to 300 s, Vercel kills the route at its maxDuration of
+// 60 s and the attempt is left open, with no sweep (RN-05, RN-02) and no
+// social dispatch in that tick. The export of explorer answers in hundreds of
+// ms and a cold start of explorer in seconds: 10 s is more than 3x of margin.
+// Two seasons at once (only at the turn of the season) are 20 s, below the
+// 30 s cadence and far from the 60 of maxDuration. The 2 s of the enrichment
+// do not serve here: a false cut costs a whole attempt, not a few scorers.
+export const SOURCE_ATTEMPT_TIMEOUT_MS = 10_000;
+
 // Cadence (RN-08, ADR-008 §3): the registry declares 30 s, and the guard
 // tolerates the jitter of the two triggers. Worst case: two calls 25 s apart.
 export const CADENCE_JITTER_SECONDS = 5;
@@ -45,6 +56,13 @@ export const CADENCE_JITTER_SECONDS = 5;
 // whole report has to fit in one screen while a matchday is running.
 export const SALUD_RECENT_MINUTES = 10;
 export const SALUD_FAILURES_SHOWN = 5;
+
+// An attempt still open after this long is not in flight: it is an orphan
+// (SPEC-093 CA-2). The route of the tick has maxDuration = 60 s, so an attempt
+// open for longer was killed with the function and will never get its
+// closeAttempt; tick:salud says so and turns red. Two minutes leave margin
+// over the 60 s and stay well inside the ten of the short window.
+export const SALUD_ORPHAN_MINUTES = 2;
 
 // A run pg_cron has not finished yet is neither a success nor a failure: it
 // is still going (SPEC-010 CA-1). These are the four non terminal statuses of

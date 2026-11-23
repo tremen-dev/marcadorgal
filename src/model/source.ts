@@ -118,11 +118,22 @@ export const RequestError = z.strictObject({
 });
 export type RequestError = z.infer<typeof RequestError>;
 
+// What the source read of a match, apart from what it said of it (SPEC-093
+// CA-3): its own clock of the last time it read the row, whatever the state.
+// The core tells a stalled source from a quiet match with it (CA-4).
+export const SourceReading = z.strictObject({
+  matchId: MatchId,
+  readAt: Instant,
+});
+export type SourceReading = z.infer<typeof SourceReading>;
+
 export const ParseResult = z.strictObject({
   observations: z.array(ParsedObservation),
   unresolved: z.array(Unresolved),
   skipped: z.array(Skipped),
   requestErrors: z.array(RequestError),
+  // Optional: only a source with a clock of its own reads gives it.
+  readings: z.array(SourceReading).optional(),
 });
 export type ParseResult = z.infer<typeof ParseResult>;
 

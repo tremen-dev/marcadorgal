@@ -2,9 +2,11 @@ import { FEDERATION_PRIORITY, SourceConfig } from "../model/index.ts";
 
 // Registry of sources (ADR-003, D-7, RN-08, ADR-026): configuration validated
 // at import time. No adapter is imported here (N-5): the id -> instance table is
-// the core's. Priority 10 for API-Football (now deprecated/backup);
-// rfef elevated to priority 50 as official federation source (ADR-017 §5 restored,
-// ADR-026); operator 100 (N-4). The 30 s cadence is the tick cadence (ADR-002).
+// the core's. rfef is the only registered source (ADR-026), with the priority
+// of the federation (50, ADR-017 §5) and the operator above it (100, N-4). With
+// a single source RN-04 cannot fire: the arbitration between providers lives in
+// explorer, which says whose reading it took (liveProvider, SPEC-049). The 30 s
+// cadence is the tick cadence (ADR-002).
 const FIVE = [
   "primera-division",
   "segunda-division",

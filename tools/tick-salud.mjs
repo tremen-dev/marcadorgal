@@ -2,7 +2,8 @@
 // Says whether the deployed tick is alive (SPEC-008 CA-7, N-5). Reads the two
 // clocks (cron.job, cron.job_run_details), what pg_net got back, the last
 // attempts, the open alerts and the matches in window now. Exits 1 when the
-// last hour has a failed run or a finished attempt with ok = false.
+// last hour has a failed run or a finished attempt with ok = false, or when
+// an attempt has been open for longer than SALUD_ORPHAN_MINUTES (SPEC-093).
 //
 // Usage: npm run tick:salud
 import { nowInstant } from "../src/clock.ts";

@@ -74,7 +74,7 @@ export default defineConfig({
         DATABASE_URL_PUBLIC: "",
         NEXT_PUBLIC_REALTIME: "",
         RECENT_GOAL_MARK: "",
-        EXPLORER_BASE_URL: `http://127.0.0.1:${explorerMockPort}`,
+        RFEF_EXPLORER_URL: `http://127.0.0.1:${explorerMockPort}`,
         RFEF_EXPLORER_TOKEN: "e2e",
         VERCEL_ENV: "development",
       },

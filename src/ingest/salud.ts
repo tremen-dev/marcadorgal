@@ -7,6 +7,7 @@ import {
 import {
   SALUD_FAILURES_SHOWN,
   SALUD_IN_FLIGHT_STATUSES,
+  SALUD_ORPHAN_MINUTES,
   SALUD_RECENT_MINUTES,
 } from "./constants.ts";
 
@@ -109,6 +110,15 @@ export function tickSalud(input: SaludInput): SaludReport {
     (a) => a.ok === false && a.startedAt >= since,
   );
   const brokenRecent = broken.filter((a) => a.startedAt >= recentSince);
+  // An attempt open for longer than maxDuration was killed with the function
+  // and will never close (SPEC-093 CA-2): it is not in flight, it is red.
+  const orphanBefore = shiftInstant(
+    input.now,
+    -SALUD_ORPHAN_MINUTES * MINUTE_MS,
+  );
+  const isOrphan = (a: SaludAttempt): boolean =>
+    a.ok === null && a.startedAt < orphanBefore;
+  const orphans = input.attempts.filter(isOrphan);
 
   const out: string[] = [`tick:salud · ${input.now}`, ""];
 
@@ -163,7 +173,7 @@ export function tickSalud(input: SaludInput): SaludReport {
     ...list(
       input.attempts.map(
         (a) =>
-          `  ${a.startedAt}  ${a.sourceId}  ${a.ok === null ? "abierto" : a.ok ? "ok" : "FALLO"}` +
+          `  ${a.startedAt}  ${a.sourceId}  ${isOrphan(a) ? "sin cerrar" : a.ok === null ? "abierto" : a.ok ? "ok" : "FALLO"}` +
           `${a.error === null ? "" : `  ${a.error}`}${detailsOf(a.details)}`,
       ),
     ),
@@ -188,7 +198,11 @@ export function tickSalud(input: SaludInput): SaludReport {
 
   // The verdict is about now, not about the hour: what is already fixed does
   // not keep the light red, but it is still said out loud.
-  const ok = failedRecent.length === 0 && brokenRecent.length === 0 && !silent;
+  const ok =
+    failedRecent.length === 0 &&
+    brokenRecent.length === 0 &&
+    orphans.length === 0 &&
+    !silent;
   const stale = failed.length + (broken.length - brokenRecent.length);
   out.push("", ok ? "OK" : "REVISAR: el tick no está sano");
   // A red light with no reason sends you digging.
@@ -197,6 +211,10 @@ export function tickSalud(input: SaludInput): SaludReport {
       anyActive
         ? `  sin ejecuciones en los últimos ${SALUD_RECENT_MINUTES} min habiendo un job activo`
         : `  sin ejecuciones en los últimos ${SALUD_RECENT_MINUTES} min y ningún job activo: el tick está INACTIVO`,
+    );
+  for (const orphan of orphans)
+    out.push(
+      `  intento sin cerrar de ${orphan.sourceId} desde ${orphan.startedAt}: más de ${SALUD_ORPHAN_MINUTES} min abierto, la función murió antes de cerrarlo`,
     );
   if (ok && stale > 0)
     out.push(

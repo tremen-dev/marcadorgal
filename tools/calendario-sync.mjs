@@ -65,11 +65,15 @@ if (realesDesde === null) {
 // Determine default importer based on flags or available credentials
 const defaultSourceId = sourceArg || "rfef";
 
-const apiKey =
-  process.env.RFEF_EXPLORER_TOKEN || process.env.EXPLORER_API_KEY || process.env.EXPLORER_TOKEN;
+// Only the canonical name (SPEC-093 CA-5, ADR-026 §1).
+const apiKey = process.env.RFEF_EXPLORER_TOKEN;
 
 if (!apiKey) {
   console.error("RFEF_EXPLORER_TOKEN no está definida (H-1)");
+  process.exit(1);
+}
+if (!process.env.RFEF_EXPLORER_URL) {
+  console.error("RFEF_EXPLORER_URL no está definida (SPEC-093)");
   process.exit(1);
 }
 const unknown = requested.filter((id) => !COMPETITIONS.some((c) => c.id === id));

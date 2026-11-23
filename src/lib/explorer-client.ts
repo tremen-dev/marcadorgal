@@ -1,19 +1,17 @@
-function getExplorerUrl(): string {
-  return (
-    process.env.EXPLORER_BASE_URL ||
-    process.env.RFEF_EXPLORER_URL ||
-    "https://marcadorgal-explorer.vercel.app"
-  );
+// The origin and the Bearer of explorer: the two variables the tick reads
+// (src/ingest/adapters.ts) and no other name (SPEC-093 CA-5, ADR-026 §1).
+// Without either one, the request never leaves: the error names the variable
+// instead of falling back to a fixed url and an empty token.
+function requiredEnv(
+  name: "RFEF_EXPLORER_URL" | "RFEF_EXPLORER_TOKEN",
+): string {
+  const value = process.env[name];
+  if (!value) throw new Error(`${name} is not set`);
+  return value;
 }
 
-function getApiToken(): string {
-  return (
-    process.env.RFEF_EXPLORER_TOKEN ||
-    process.env.EXPLORER_API_KEY ||
-    process.env.EXPLORER_TOKEN ||
-    ""
-  );
-}
+const getExplorerUrl = (): string => requiredEnv("RFEF_EXPLORER_URL");
+const getApiToken = (): string => requiredEnv("RFEF_EXPLORER_TOKEN");
 
 export type OfficialCalendarResponse = {
   competition: string;
