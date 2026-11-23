@@ -12,7 +12,11 @@ import {
 import { storeCapture } from "../raw/capture.ts";
 import type { RawStore } from "../raw/store.ts";
 import { madridDateOf } from "../sources/rfef/explorer.ts";
-import { RECOVERY_HORIZON_HOURS, RECOVERY_POLL_MINUTES } from "./constants.ts";
+import {
+  RECOVERY_HORIZON_HOURS,
+  RECOVERY_POLL_MINUTES,
+  SOURCE_ATTEMPT_TIMEOUT_MS,
+} from "./constants.ts";
 import type { IngestDb, IngestTx, WindowRow } from "./db.ts";
 import type { EngineCounts } from "./engine.ts";
 import { errorMessage, type PurgeOutcome, purgeRaw } from "./purge.ts";
@@ -116,6 +120,9 @@ export type TickInput = {
   afterInsert?: AfterInsert;
   sweep?: EngineSweep;
   social?: SocialDispatch;
+  // The deadline of each attempt in ms (SPEC-093 CA-1):
+  // SOURCE_ATTEMPT_TIMEOUT_MS unless a test injects a shorter one.
+  attemptTimeoutMs?: number;
 };
 
 const toWindowMatch = ({
@@ -155,6 +162,43 @@ const emptySummary = (
 // The error of an attempt is one line: tick:salud prints it inline and the
 // report of the matchday has to explain every not ok row (SPEC-009 CA-7).
 const oneLine = (text: string): string => text.replace(/\s+/g, " ").trim();
+
+// The deadline of an attempt (SPEC-093 CA-1): the core puts it on the fetch
+// it hands the adapter, which never reads a clock, and also races it against
+// the whole fetch of the adapter, so a body that never ends or a fetch deaf
+// to its signal still closes the attempt in time. One deadline for every
+// request of the attempt, not one per request.
+async function withDeadline<T>(
+  sourceId: string,
+  ms: number,
+  run: (signal: AbortSignal) => Promise<T>,
+): Promise<T> {
+  const controller = new AbortController();
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const expired = new Promise<never>((_resolve, reject) => {
+    timer = setTimeout(() => {
+      const error = new Error(
+        `${sourceId}: sin respuesta de la fuente en el plazo del intento (${ms} ms)`,
+      );
+      controller.abort(error);
+      reject(error);
+    }, ms);
+  });
+  try {
+    return await Promise.race([run(controller.signal), expired]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+const fetchWithSignal =
+  (fetch: typeof globalThis.fetch, signal: AbortSignal): typeof fetch =>
+  (input, init) =>
+    fetch(input, {
+      ...init,
+      signal:
+        init?.signal == null ? signal : AbortSignal.any([init.signal, signal]),
+    });
 
 // One tick: retention, window, one attempt per pull source and season, the
 // sweep and, last, the social dispatch (SPEC-066 CA-11), which runs whether
@@ -279,7 +323,15 @@ async function runIngest(input: TickInput): Promise<TickSummary> {
 }
 
 async function runAttempt(
-  { db, store, adapterFor, fetch, now, afterInsert }: TickInput,
+  {
+    db,
+    store,
+    adapterFor,
+    fetch,
+    now,
+    afterInsert,
+    attemptTimeoutMs = SOURCE_ATTEMPT_TIMEOUT_MS,
+  }: TickInput,
   config: SourceConfig,
   season: string,
   own: WindowRow[],
@@ -316,13 +368,15 @@ async function runAttempt(
     const present = new Set(
       own.filter((m) => !isInExtension(m, now)).map((m) => m.competitionId),
     );
-    const capture = await pull.call(adapter, {
-      now,
-      competitions: config.competitions.filter((c) => present.has(c)),
-      matches: [...own, ...recovered].map(toWindowMatch),
-      fetch,
-      userAgent: config.userAgent,
-    });
+    const capture = await withDeadline(config.id, attemptTimeoutMs, (signal) =>
+      pull.call(adapter, {
+        now,
+        competitions: config.competitions.filter((c) => present.has(c)),
+        matches: [...own, ...recovered].map(toWindowMatch),
+        fetch: fetchWithSignal(fetch, signal),
+        userAgent: config.userAgent,
+      }),
+    );
     requests = capture.requests.length;
 
     // Raw before parse, in the strong sense (D-6, RN-09, ADR-007 §6).
