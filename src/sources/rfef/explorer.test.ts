@@ -133,6 +133,9 @@ const empty = {
   skipped: [],
   requestErrors: [],
 };
+// What the rows say, without what explorer read (SPEC-093 CA-3): a SCHEDULED
+// row still says nothing, but it does leave its reading.
+const said = ({ readings: _read, ...rest }: ParseResult) => rest;
 
 // Real rows of the five competitions used below. LIVE_PROVISIONAL and
 // SCHEDULED-with-a-score only exist in the local captures (taken during the
@@ -310,12 +313,12 @@ describe("CA-1 contract and real fixtures", () => {
       true,
     );
     expect(result.skipped).toEqual([]);
-    expect(JSON.stringify(result)).not.toContain("silva");
+    expect(JSON.stringify(said(result))).not.toContain("silva");
   });
 
   it("export-2026-11-02, deployed and local: only SCHEDULED, so nothing at all", () => {
-    expect(parseBodies([fixture("2026-11-02")])).toEqual(empty);
-    expect(parseBodies([fixtureLocal("2026-11-02")])).toEqual(empty);
+    expect(said(parseBodies([fixture("2026-11-02")]))).toEqual(empty);
+    expect(said(parseBodies([fixtureLocal("2026-11-02")]))).toEqual(empty);
   });
 
   it("tolerates unknown fields in the body and in a row", () => {
@@ -578,11 +581,11 @@ describe("CA-3 mapping and clocks (ADR-023 §5), one case per row over real rows
   });
 
   it("SCHEDULED gives nothing: no observation, no skipped, no unresolved", () => {
-    expect(parseRows([PORTUGALETE_SCHEDULED])).toEqual(empty);
+    expect(said(parseRows([PORTUGALETE_SCHEDULED]))).toEqual(empty);
     // A SCHEDULED row that carries a score (Tercera, 2026-10-31) says nothing either.
     const barco = rowLocal("2026-10-31", "c.d. barco", "SCHEDULED");
     expect(barco.golesLocal).toBe(4);
-    expect(parseRows([barco])).toEqual(empty);
+    expect(said(parseRows([barco]))).toEqual(empty);
   });
 
   it("LIVE_PROVISIONAL inside the window is live with minute null, addedMinute null and no halfTime; observedAt is lastSeenAt", () => {
@@ -856,7 +859,10 @@ describe("CA-3 mapping and clocks (ADR-023 §5), one case per row over real rows
     expect(femenino.estado).toBe("FINISHED");
     expect(juvenil.estado).toBe("LIVE_PROVISIONAL");
     expect(juvenilDeployed.estado).toBe("FINISHED");
-    expect(parseRows([femenino, juvenil, juvenilDeployed])).toEqual(empty);
+    expect(parseRows([femenino, juvenil, juvenilDeployed])).toEqual({
+      ...empty,
+      readings: [],
+    });
   });
 });
 
@@ -1049,7 +1055,7 @@ describe("CA-4 identity (ADR-017 §2): the same as adapter.ts", () => {
       const withoutCanonical = parseRows([
         { ...ZAMORA, codGrupo: "desconocido" },
       ]);
-      expect(withoutCanonical).toEqual(empty);
+      expect(withoutCanonical).toEqual({ ...empty, readings: [] });
 
       const withCanonical = parseRows([
         {
@@ -1247,4 +1253,101 @@ describe("SPEC-069 liveProvider is open; estado and goals[].team stay closed", (
       expect(result.observations).toHaveLength(1);
     },
   );
+});
+
+// SPEC-093 CA-3: what explorer read, apart from what it says. Every row
+// resolved against the declared calendar leaves {matchId, readAt =
+// lastSeenAt}, whatever its estado: the core tells a stalled source from a
+// quiet match with these (CA-4). observations does not change.
+describe("SPEC-093 CA-3 the readings of the source", () => {
+  const idOf = (r: ExplorerMatch): string => {
+    const [observation] = parseRows([
+      { ...r, estado: "FINISHED", golesLocal: 0, golesVisitante: 0 },
+    ]).observations;
+    if (observation === undefined) throw new Error("row does not resolve");
+    return observation.matchId;
+  };
+
+  it("a SCHEDULED row gives a reading and nothing else", () => {
+    const result = parseRows([PORTUGALETE_SCHEDULED]);
+    expect(result.readings).toEqual([
+      {
+        matchId: idOf(PORTUGALETE_SCHEDULED),
+        readAt: PORTUGALETE_SCHEDULED.lastSeenAt,
+      },
+    ]);
+    expect(result.observations).toEqual([]);
+    expect(result.skipped).toEqual([]);
+    expect(result.unresolved).toEqual([]);
+  });
+
+  it("a live row gives its observation and a reading at its lastSeenAt", () => {
+    const result = parseRows([AMOREBIETA]);
+    expect(result.readings).toEqual([
+      {
+        matchId: "segunda-rfef-g1-2026-27-j9-amorebieta-gimnastica",
+        readAt: AMOREBIETA.lastSeenAt,
+      },
+    ]);
+  });
+
+  it("a skipped row gives a reading too", () => {
+    const result = parseRows([ARENTEIRO]);
+    expect(result.skipped).toHaveLength(1);
+    expect(result.readings).toEqual([
+      { matchId: idOf(ARENTEIRO), readAt: ARENTEIRO.lastSeenAt },
+    ]);
+  });
+
+  it("an unresolved row and a group outside the map give none", () => {
+    const unknown = {
+      ...ZAMORA,
+      equipoLocal: "Equipo Desconocido 1",
+      equipoVisitante: "Equipo Desconocido 2",
+    };
+    const femenino = rowLocal("2026-11-01", "CD Alba Femenino");
+    expect(parseRows([unknown, femenino]).readings).toEqual([]);
+  });
+
+  it("over a whole real export: one reading per resolved row, and each observation has its reading at observedAt", () => {
+    for (const body of [fixtureLocal("2026-11-01"), fixture("2026-11-01")]) {
+      const result = parseBodies([body]);
+      const readings = result.readings ?? [];
+      expect(readings.length).toBeGreaterThanOrEqual(
+        result.observations.length + result.skipped.length,
+      );
+      for (const o of result.observations)
+        expect(readings).toContainEqual({
+          matchId: o.matchId,
+          readAt: o.observedAt,
+        });
+    }
+  });
+
+  it("a body that could not be read gives no readings", () => {
+    const result = parseBodies(["not json"]);
+    expect(result.requestErrors).toHaveLength(1);
+    expect(result.readings).toEqual([]);
+  });
+
+  it("the field is optional in the contract and validated when present", () => {
+    expect(ParseResult.safeParse(empty).success).toBe(true);
+    expect(
+      ParseResult.safeParse({
+        ...empty,
+        readings: [
+          {
+            matchId: "segunda-rfef-g1-2026-27-j9-amorebieta-gimnastica",
+            readAt: "2026-11-01T18:12:37.720Z",
+          },
+        ],
+      }).success,
+    ).toBe(true);
+    expect(
+      ParseResult.safeParse({
+        ...empty,
+        readings: [{ matchId: "x", readAt: "yesterday" }],
+      }).success,
+    ).toBe(false);
+  });
 });

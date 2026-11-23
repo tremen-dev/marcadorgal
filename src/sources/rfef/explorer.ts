@@ -275,19 +275,24 @@ export function createRfefExplorer({
   }
 
   function parseRequest(body: string) {
-    const out: Omit<ParseResult, "requestErrors"> = {
+    const out: Required<Omit<ParseResult, "requestErrors">> = {
       observations: [],
       unresolved: [],
       skipped: [],
+      readings: [],
     };
     for (const row of readExport(body).matches) {
       const competitionId =
         competitionOf.get(row.codGrupo) ??
         (row.canonicalCompetitionId as CompetitionId | undefined);
       if (competitionId === undefined) continue; // juvenil, femenino: ignored
+      const match = resolveMatch(row, competitionId);
+      // What explorer read, whatever it says (SPEC-093 CA-3): the reading of
+      // every row resolved against the declared calendar, SCHEDULED included.
+      if (typeof match !== "string")
+        out.readings.push({ matchId: match.id, readAt: row.lastSeenAt });
       // A row without a state says nothing (ADR-023 §5): not even identity.
       if (row.estado === "SCHEDULED") continue;
-      const match = resolveMatch(row, competitionId);
       if (typeof match === "string") {
         out.unresolved.push({
           reason: match,
@@ -376,6 +381,7 @@ export function createRfefExplorer({
         unresolved: [],
         skipped: [],
         requestErrors: [],
+        readings: [],
       };
       for (const request of raw.requests) {
         // Per request (SPEC-011 CA-2): a body explorer could not serve as the
@@ -386,6 +392,7 @@ export function createRfefExplorer({
           result.observations.push(...out.observations);
           result.unresolved.push(...out.unresolved);
           result.skipped.push(...out.skipped);
+          result.readings?.push(...out.readings);
         } catch (e) {
           const error: RequestError = { url: request.url, error: messageOf(e) };
           result.requestErrors.push(error);
