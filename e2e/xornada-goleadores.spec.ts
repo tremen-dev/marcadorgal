@@ -269,8 +269,13 @@ for (const route of routes) {
           els.map((el) => el.getAttribute("data-match-id") ?? ""),
         );
         expect(ids).toContain(NO_SCORERS);
+        // Many rows: unfold each with a click, without waiting for the fold's
+        // transition (the lines are counted, not measured).
+        test.setTimeout(90_000);
         for (const id of ids) {
-          const r = await open(page, id);
+          const r = row(page, id);
+          await r.click();
+          await expect(r).toHaveAttribute("aria-expanded", "true");
           const scores = await r.getByTestId("score").allTextContents();
           expect(scores, id).toHaveLength(2);
           for (const [i, side] of (["home", "away"] as const).entries()) {
