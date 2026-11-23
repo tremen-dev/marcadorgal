@@ -86,6 +86,36 @@ describe("explorer-enrichment", () => {
     });
   });
 
+  describe("SPEC-094 CA-4 sanitizeGoals keeps a goal without minute", () => {
+    it("keeps a goal with minute absent, null or not numeric, without the minute key, after those with minute", () => {
+      const raw = [
+        { team: "home", player: "Absent" },
+        { team: "away", player: "Null", minute: null },
+        { team: "home", player: "Text", minute: "45" },
+        { team: "home", player: "NaN", minute: Number.NaN },
+        { team: "away", player: "Timed", minute: 30, penalty: true },
+      ];
+      const result = sanitizeGoals(raw);
+      expect(result).toEqual([
+        { team: "away", player: "Timed", minute: 30, penalty: true },
+        { team: "home", player: "Absent" },
+        { team: "away", player: "Null" },
+        { team: "home", player: "Text" },
+        { team: "home", player: "NaN" },
+      ]);
+      for (const g of result.slice(1)) expect("minute" in g).toBe(false);
+    });
+
+    it("still drops the synthetic author, the invalid team and the empty player without minute", () => {
+      const raw = [
+        { team: "home", player: "Goleador local" },
+        { team: "middle", player: "Nobody" },
+        { team: "away", player: "   " },
+      ];
+      expect(sanitizeGoals(raw)).toEqual([]);
+    });
+  });
+
   describe("isMatchEqual", () => {
     it("matches by canonicalCompetitionId and canonical team IDs", () => {
       const pm = createMockMatch();

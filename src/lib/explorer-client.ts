@@ -64,7 +64,8 @@ export type DayMatchesResponse = {
     goals?: Array<{
       team: "home" | "away";
       player: string;
-      minute: number;
+      // SPEC-094 CA-4: explorer may send a goal without minute.
+      minute?: number | null;
       penalty?: boolean;
       ownGoal?: boolean;
     }>;

@@ -34,24 +34,27 @@ export function sanitizeGoals(rawGoals: unknown[]): PublicGoal[] {
       continue;
     }
 
+    // SPEC-094 CA-4: a goal without a usable minute stays, without the key.
     const minute =
       typeof g.minute === "number" && !Number.isNaN(g.minute)
         ? Math.max(0, Math.round(g.minute))
         : null;
 
-    if (minute === null) continue;
-
     result.push({
       team,
       player,
-      minute,
+      ...(minute === null ? {} : { minute }),
       ...(g.penalty === true ? { penalty: true } : {}),
       ...(g.ownGoal === true ? { ownGoal: true } : {}),
     });
   }
 
-  // Ordenar por minuto cronolóxico
-  return result.sort((a, b) => a.minute - b.minute);
+  // Ordenar por minuto cronolóxico; os sen minuto, ao final (SPEC-094 CA-4).
+  return result.sort(
+    (a, b) =>
+      (a.minute ?? Number.POSITIVE_INFINITY) -
+      (b.minute ?? Number.POSITIVE_INFINITY),
+  );
 }
 
 /**

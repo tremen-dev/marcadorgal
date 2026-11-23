@@ -265,14 +265,19 @@ describe("SPEC-086 CA-4 sanitized goals", () => {
     return m;
   };
 
-  it("only the valid goal comes out", async () => {
+  // SPEC-094 CA-4: a goal with a minute that is not a number stays, without
+  // minute, after those with one.
+  it("only the valid goals come out", async () => {
     const m = await goalsOf([
       { team: "home", player: "Goleador Local", minute: 10 },
       { team: "home", minute: 20 },
       { team: "away", player: "Athenea", minute: "x" },
       { team: "home", player: "Millene", minute: 33 },
     ]);
-    expect(m?.goals).toEqual([{ team: "home", player: "Millene", minute: 33 }]);
+    expect(m?.goals).toEqual([
+      { team: "home", player: "Millene", minute: 33 },
+      { team: "away", player: "Athenea" },
+    ]);
   });
 
   it("no valid goal: goals absent", async () => {
