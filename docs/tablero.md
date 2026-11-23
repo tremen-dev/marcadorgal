@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-11-17
+Actualizado: 2026-11-23
 
 ## EPIC-001 — cimientos (hecho)
 
@@ -90,6 +90,11 @@ Actualizado: 2026-11-17
 | SPEC-067 — publicador-de-buffer-cliente-graphql-sonda-contra-la-api-real-y-encendido | hecho | 2026-11-10 (sdd-verificador) |
 | SPEC-079 — informe-automatico-de-la-cola-de-redes-tras-cada-jornada | hecho | 2026-11-10 (sdd-verificador) |
 
+## EPIC-008 — patrocinio-en-pantalla-y-en-redes (borrador)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
+
 ## EPIC-009 — produccion-con-publico-capacidad-y-visitas-medidas (aprobada)
 
 | Spec | Estado | Último cambio |
@@ -137,6 +142,7 @@ Actualizado: 2026-11-17
 | SPEC-089 — las-paginas-de-competicion-no-publican-calendarios-ni-clasificaciones-inventados | hecho | 2026-11-16 (sdd-verificador) |
 | SPEC-090 — el-bot-del-calendario-no-pide-a-explorer-lo-que-no-es-suyo | hecho | 2026-11-17 (sdd-verificador) |
 | SPEC-091 — vuelve-2-federacion-femenina-g1-con-calendario-y-clasificacion-oficiales | hecho | 2026-11-17 (sdd-verificador) |
+| SPEC-093 — el-tick-no-se-cuelga-ni-calla-ante-un-explorer-lento-o-estancado | hecho | 2026-11-23 (sdd-verificador) |
 
 ## EPIC-MEJORA — mejoras (aprobada)
 
@@ -182,11 +188,12 @@ Actualizado: 2026-11-17
 | ADR-033 | aprobada | medicion-de-visitas-con-vercel-web-analytics-sin-cookie | 2026-11-10 (Alberto Fojo) |
 | ADR-034 | aprobada | back-fill-historico-explorer-manda-en-jornadas-pasadas-y-el-operador-corrige-el-cierre | 2026-11-10 (sdd-orquestador) |
 | ADR-035 | aprobada | caveat-autoalojada-como-tercera-familia-solo-para-el-lema-enmienda-adr-005 | 2026-11-10 (Alberto Fojo) |
+| ADR-036 | borrador | supabase-realtime-en-el-plan-free-si-se-enciende-cuando-y-con-que-criterio | 2026-11-11 (sdd-arquitecto) |
 | ADR-037 | aprobada | funciones-de-vercel-en-dub1-junto-a-la-base | 2026-11-12 (Alberto Fojo) |
 | ADR-038 | borrador | speed-insights-para-medir-la-carga-real-sin-cookie | 2026-11-11 (sdd-arquitecto) |
 
 ## Resumen
 
-- hecho: 87
+- hecho: 88
 - en-revision: 2
 - borrador: 1
