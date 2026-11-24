@@ -12,6 +12,9 @@ playwright-report/
 .DS_Store
 tools/medicion-*.log
 next-env.d.ts
+
+# Diagramas de Archify (locales, no se versionan)
+.archify/
 *.tsbuildinfo
 
 .env*
