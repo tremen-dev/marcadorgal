@@ -38,6 +38,7 @@ El objetivo de esta especificación es:
 ### CA-3: Saneamiento de herramientas CLI y variables de entorno
 - En `src/db/env.ts`, se retira `API_FOOTBALL_KEY` de `REMOTE_SECRETS` (o se mantiene solo si fuese estrictamente necesario para compatibilidad retroactiva sin uso).
 - En `tools/calendario-sync.mjs`, se elimina el flag `--source api-football` y la verificación obligatoria de `API_FOOTBALL_KEY`. El script utiliza exclusivamente las credenciales de Explorer (`RFEF_EXPLORER_TOKEN` / `EXPLORER_API_KEY`).
+  *Nota (2026-11-24): SPEC-093 retiró el alias `EXPLORER_API_KEY`; solo vale `RFEF_EXPLORER_TOKEN`.*
 - En `.env.example` y configuraciones de despliegue, se elimina la recomendación de configurar `API_FOOTBALL_KEY`.
 
 ### CA-4: Aislamiento y retirada del directorio `src/sources/api-football/`
