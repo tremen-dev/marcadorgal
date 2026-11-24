@@ -119,14 +119,31 @@ describe("SPEC-068 CA-1 every list hangs from its team", () => {
     expect(sidesClose).toBeGreaterThan(awayBlock);
   });
 
-  it("emits no block for a team without goals", () => {
+  // SPEC-094 CA-2 (H-1): a side with goals in the score and no scorer
+  // gets «gol» lines; only a side with 0 in the score emits no block.
+  it("emits «gol» lines for a team without scorers and no block for a team with 0", () => {
     const html = render(
       mockRow({ goals: [{ team: "away", player: "Alexia", minute: 45 }] }),
     );
     const blocks = elements(html, "team-goals");
-    expect(blocks).toHaveLength(1);
-    expect(attr(blocks[0], "data-team")).toBe("away");
-    expect(html).not.toContain(`id="goals-${MATCH_ID}-home"`);
+    expect(blocks.map((b) => attr(b, "data-team"))).toEqual(["home", "away"]);
+    const homeLines = elements(blocks[0], "goal-line");
+    expect(homeLines).toHaveLength(1);
+    expect(attr(homeLines[0], "data-unknown")).toBe("true");
+    expect(text(elements(homeLines[0], "goal-player")[0])).toBe(
+      gl.xornada.goalUnknown,
+    );
+
+    const nil = render(
+      mockRow({
+        score: { home: 0, away: 1 } as Score,
+        goals: [{ team: "away", player: "Alexia", minute: 45 }],
+      }),
+    );
+    const only = elements(nil, "team-goals");
+    expect(only).toHaveLength(1);
+    expect(attr(only[0], "data-team")).toBe("away");
+    expect(nil).not.toContain(`id="goals-${MATCH_ID}-home"`);
   });
 
   it("has no ⚽, no match-goals and no team name outside its team-name and the aria-label", () => {
@@ -146,6 +163,7 @@ describe("SPEC-068 CA-2 minute first, whole name, ordered by minute", () => {
   it("gives every line its minute first, as {minute}', and the player as it comes", () => {
     const html = render(
       mockRow({
+        score: { home: 1, away: 0 } as Score,
         goals: [
           {
             team: "home",
@@ -172,6 +190,7 @@ describe("SPEC-068 CA-2 minute first, whole name, ordered by minute", () => {
   it("orders the lines of a block by minute ascending, arrival order on a tie, whatever the arrival order", () => {
     const html = render(
       mockRow({
+        score: { home: 5, away: 1 } as Score,
         goals: [
           { team: "away", player: "Alexia", minute: 45 },
           { team: "home", player: "Tercera", minute: 88 },
@@ -204,6 +223,7 @@ describe("SPEC-068 CA-2 minute first, whole name, ordered by minute", () => {
 describe("SPEC-068 CA-3 penalty and own goal as a grey note", () => {
   it("adds goal-kind after the player with the i18n text of gl and es", () => {
     const row = mockRow({
+      score: { home: 3, away: 0 } as Score,
       goals: [
         { team: "home", player: "Millene", minute: 23, penalty: true },
         { team: "home", player: "Aitana", minute: 61, ownGoal: true },
@@ -297,7 +317,10 @@ describe("SPEC-068 CA-5 served folded, aria-controls lists the blocks", () => {
       expect(count(both, `id="goals-${MATCH_ID}-${side}"`)).toBe(1);
 
     const awayOnly = render(
-      mockRow({ goals: [{ team: "away", player: "Alexia", minute: 45 }] }),
+      mockRow({
+        score: { home: 0, away: 1 } as Score,
+        goals: [{ team: "away", player: "Alexia", minute: 45 }],
+      }),
     );
     expect(attr(elements(awayOnly, "match-row")[0], "aria-controls")).toBe(
       `goals-${MATCH_ID}-away`,
@@ -341,9 +364,37 @@ describe("SPEC-056 kept: affordance, button role and localized label", () => {
     expect(html).toContain("▸");
   });
 
-  it("renders no block nor interactive role when the row has no goals", () => {
+  // SPEC-094 CA-2 (H-1): goals in the score without any scorer still give
+  // the row its folded box, with «gol» lines.
+  it("renders the box with «gol» lines when the score has goals and there is no scorer", () => {
     for (const goals of [[], undefined]) {
       const html = render(mockRow({ goals }));
+      expect(html).toContain('data-has-goals="true"');
+      expect(html).toContain('role="button"');
+      expect(attr(elements(html, "match-row")[0], "aria-controls")).toBe(
+        `goals-${MATCH_ID}-home goals-${MATCH_ID}-away`,
+      );
+      expect(html).toContain('data-testid="goals-affordance"');
+      const lines = elements(html, "goal-line");
+      expect(lines).toHaveLength(3);
+      for (const line of lines) expect(attr(line, "data-unknown")).toBe("true");
+    }
+  });
+
+  it("renders no block nor interactive role when the score has no goals", () => {
+    const listed = [{ team: "home" as const, player: "Alexia", minute: 45 }];
+    for (const [score, goals] of [
+      [null, listed],
+      [{ home: 0, away: 0 }, listed],
+      [{ home: 0, away: 0 }, []],
+      [null, undefined],
+    ] as const) {
+      const html = render(
+        mockRow({
+          score: score as Score | null,
+          goals: goals as PublicGoal[] | undefined,
+        }),
+      );
       expect(html).not.toContain('data-testid="team-goals"');
       expect(html).not.toContain('data-has-goals="true"');
       expect(html).not.toContain('role="button"');
@@ -363,5 +414,118 @@ describe("SPEC-056 kept: affordance, button role and localized label", () => {
       mockRow({ margin: { kind: "halfTime" }, part: "halfTime" }),
     );
     expect(html).toContain("DESCANSO");
+  });
+});
+
+describe("SPEC-094 CA-2 the block paints only the squared list", () => {
+  it("1–0 with two home scorers: exactly one home goal-line, the earliest", () => {
+    const html = render(
+      mockRow({
+        score: { home: 1, away: 0 } as Score,
+        goals: [
+          { team: "home", player: "Late", minute: 80 },
+          { team: "home", player: "Early", minute: 12 },
+        ],
+      }),
+    );
+    const blocks = elements(html, "team-goals");
+    expect(blocks.map((b) => attr(b, "data-team"))).toEqual(["home"]);
+    const lines = elements(blocks[0], "goal-line");
+    expect(lines).toHaveLength(1);
+    expect(text(elements(lines[0], "goal-player")[0])).toBe("Early");
+  });
+
+  it("the goal-lines of each side add up to its score", () => {
+    const html = render(
+      mockRow({
+        score: { home: 3, away: 1 } as Score,
+        goals: [
+          { team: "home", player: "A", minute: 10 },
+          { team: "away", player: "B", minute: 20 },
+          { team: "away", player: "C", minute: 30 },
+        ],
+      }),
+    );
+    const [home, away] = elements(html, "team-goals");
+    expect(elements(home, "goal-line")).toHaveLength(3);
+    expect(elements(away, "goal-line")).toHaveLength(1);
+  });
+
+  it("marks the last line of the squared list, also a «gol» line", () => {
+    const now = Date.parse("2026-11-08T18:30:00.000Z");
+    const html = render(
+      mockRow({
+        score: { home: 2, away: 0 } as Score,
+        homeScoredAt: new Date(now - 60_000).toISOString() as Instant,
+        goals: [{ team: "home", player: "Known", minute: 30 }],
+      }),
+      "gl",
+      { now, minutes: 5, mark: "label" },
+    );
+    const lines = elements(elements(html, "team-goals")[0], "goal-line");
+    expect(lines.map((l) => attr(l, "data-recent"))).toEqual(["false", "true"]);
+    expect(attr(lines[1], "data-unknown")).toBe("true");
+    expect(elements(lines[1], "recent-scorer-badge")).toHaveLength(1);
+  });
+});
+
+describe("SPEC-094 CA-3 the line without author", () => {
+  it("is a goal-line with data-unknown, an empty minute, «gol» in gl and es and no kind", () => {
+    const row = mockRow({ score: { home: 1, away: 0 } as Score, goals: [] });
+    for (const locale of ["gl", "es"] as const) {
+      const dict = locale === "gl" ? gl : es;
+      const lines = elements(render(row, locale), "goal-line");
+      expect(lines).toHaveLength(1);
+      expect(attr(lines[0], "data-unknown")).toBe("true");
+      const minute = elements(lines[0], "goal-minute");
+      expect(minute).toHaveLength(1);
+      expect(text(minute[0])).toBe("");
+      expect(text(elements(lines[0], "goal-player")[0])).toBe(
+        dict.xornada.goalUnknown,
+      );
+      expect(elements(lines[0], "goal-kind")).toHaveLength(0);
+    }
+    expect(gl.xornada.goalUnknown).toBe("gol");
+    expect(es.xornada.goalUnknown).toBe("gol");
+  });
+
+  it("a known scorer's line carries no data-unknown", () => {
+    const html = render(
+      mockRow({
+        score: { home: 1, away: 0 } as Score,
+        goals: [{ team: "home", player: "Known", minute: 3 }],
+      }),
+    );
+    expect(attr(elements(html, "goal-line")[0], "data-unknown")).toBeNull();
+  });
+
+  it("reads with the same tokens as the name: no colour of its own in the CSS", () => {
+    const css = readFileSync(
+      "src/components/goals/TeamGoals.module.css",
+      "utf8",
+    );
+    expect(css).not.toMatch(/data-unknown/);
+  });
+});
+
+describe("SPEC-094 CA-4 a goal without minute", () => {
+  it("paints an empty goal-minute without ', after the lines with minute", () => {
+    const html = render(
+      mockRow({
+        score: { home: 2, away: 0 } as Score,
+        goals: [
+          { team: "home", player: "NoMinute" },
+          { team: "home", player: "Fifty", minute: 50 },
+        ],
+      }),
+    );
+    const lines = elements(html, "goal-line");
+    expect(lines.map((l) => text(elements(l, "goal-player")[0]))).toEqual([
+      "Fifty",
+      "NoMinute",
+    ]);
+    expect(text(elements(lines[0], "goal-minute")[0])).toBe("50'");
+    expect(text(elements(lines[1], "goal-minute")[0])).toBe("");
+    expect(attr(lines[1], "data-unknown")).toBeNull();
   });
 });

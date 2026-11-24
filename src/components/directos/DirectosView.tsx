@@ -1,6 +1,7 @@
 import { leagueColor } from "../../design/league-color.ts";
 import { type Locale, t } from "../../i18n/index.ts";
 import type { GroupedCompetitionMatches } from "../../lib/explorer-matches.ts";
+import { squareGoals } from "../../xornada/scorers.ts";
 import { TeamGoals } from "../goals/TeamGoals.tsx";
 import { CompetitionNav } from "../navigation/CompetitionNav.tsx";
 import styles from "./DirectosView.module.css";
@@ -98,6 +99,13 @@ export function DirectosView({
           <div className={styles.matchesList}>
             {comp.matches.map((m) => {
               const isLive = m.status === "live";
+              // SPEC-094 CA-2: the scorers squared with the score.
+              const squared = squareGoals(
+                m.goals,
+                m.homeScore === null || m.awayScore === null
+                  ? null
+                  : { home: m.homeScore, away: m.awayScore },
+              );
 
               const marginLabel = (() => {
                 if (isLive) {
@@ -183,7 +191,7 @@ export function DirectosView({
                           always open, by the component MatchRow uses. */}
                       <TeamGoals
                         team="home"
-                        goals={m.goals}
+                        lines={squared.home}
                         locale={locale}
                         id={`goals-${m.id}-home`}
                       />
@@ -213,7 +221,7 @@ export function DirectosView({
                       </div>
                       <TeamGoals
                         team="away"
-                        goals={m.goals}
+                        lines={squared.away}
                         locale={locale}
                         id={`goals-${m.id}-away`}
                       />

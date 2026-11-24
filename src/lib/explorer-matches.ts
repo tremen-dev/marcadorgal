@@ -10,7 +10,8 @@ import type { DayMatchesResponse } from "./explorer-client.ts";
 export type TransformedGoal = {
   team: "home" | "away";
   player: string;
-  minute: number;
+  // SPEC-094 CA-4: absent when the source gives none.
+  minute?: number;
   penalty?: boolean;
   ownGoal?: boolean;
 };
@@ -142,7 +143,7 @@ export function transformExplorerMatches(
       goals: (raw.goals || []).map((g) => ({
         team: g.team,
         player: g.player,
-        minute: g.minute,
+        ...(typeof g.minute === "number" ? { minute: g.minute } : {}),
         penalty: g.penalty,
         ownGoal: g.ownGoal,
       })),

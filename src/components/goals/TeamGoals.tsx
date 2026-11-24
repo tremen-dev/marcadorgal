@@ -1,17 +1,21 @@
 import { type Locale, t } from "@/i18n";
 import type { Instant, PublicGoal } from "@/model";
 import { isRecent, pulseIterations } from "@/xornada/recent-goal";
+import type { ScorerLine } from "@/xornada/scorers";
 import styles from "./TeamGoals.module.css";
 
 // SPEC-068: the scorers of one side, hung from their team. The position
 // attributes the goal, so the block carries no team name, icon nor rule.
 // Shared by MatchRow (folded, SPEC-056) and DirectosView (always open).
+// SPEC-094 CA-2: it paints the side's squared list (squareGoals) and nothing
+// else, so its lines always add up to the side's score.
 
 export type TeamSide = "home" | "away";
 
 type Props = {
   team: TeamSide;
-  goals: readonly PublicGoal[];
+  // The side's lines, squared with its score by squareGoals.
+  lines: readonly ScorerLine[];
   locale: Locale;
   // `goals-{matchId}-{home|away}`, the target of the row's aria-controls.
   id?: string;
@@ -27,10 +31,6 @@ type Props = {
 const cx = (...names: (string | false | undefined)[]): string =>
   names.filter(Boolean).join(" ");
 
-// CA-2: by minute ascending; on a tie, arrival order (Array.sort is stable).
-export const sortGoals = (goals: readonly PublicGoal[]): PublicGoal[] =>
-  [...goals].sort((a, b) => a.minute - b.minute);
-
 // CA-3: the note after the name, a grey annotation and never a state.
 function kindKey(goal: PublicGoal) {
   if (goal.penalty) return "xornada.goalPenalty" as const;
@@ -40,16 +40,16 @@ function kindKey(goal: PublicGoal) {
 
 export function TeamGoals({
   team,
-  goals,
+  lines,
   locale,
   id,
   expanded,
   recent = null,
 }: Props) {
-  const own = sortGoals(goals.filter((g) => g.team === team));
-  if (own.length === 0) return null;
+  if (lines.length === 0) return null;
   const folded = expanded !== undefined;
-  // CA-4: only the last line by minute of a side that just scored.
+  // CA-4: only the last line of a side that just scored (SPEC-094: the last
+  // of the squared list, also a line without author).
   const marked =
     recent !== null && isRecent(recent.until, recent.now) ? recent : null;
   return (
@@ -66,24 +66,30 @@ export function TeamGoals({
     >
       <div className={styles.clip}>
         <div className={styles.list}>
-          {own.map((g, idx) => {
-            const kind = kindKey(g);
-            const isLast = idx === own.length - 1;
+          {lines.map((line, idx) => {
+            const goal = line.kind === "scorer" ? line.goal : null;
+            const kind = goal === null ? null : kindKey(goal);
+            const isLast = idx === lines.length - 1;
             const scorer = isLast ? marked : null;
             return (
               <div
                 // biome-ignore lint/suspicious/noArrayIndexKey: goals have no id
-                key={`${g.minute}-${g.player}-${idx}`}
+                key={`${goal?.minute ?? ""}-${goal?.player ?? ""}-${idx}`}
                 className={styles.line}
                 data-testid="goal-line"
                 data-team={team}
+                data-unknown={goal === null ? "true" : undefined}
                 data-recent={scorer !== null ? "true" : "false"}
               >
+                {/* SPEC-094 CA-3, CA-4: without author or without minute the
+                    column stays, empty. */}
                 <span className={styles.minute} data-testid="goal-minute">
-                  {g.minute}&apos;
+                  {goal?.minute !== undefined && <>{goal.minute}&apos;</>}
                 </span>
                 <span className={styles.player} data-testid="goal-player">
-                  {g.player}
+                  {goal === null
+                    ? t(locale, "xornada.goalUnknown")
+                    : goal.player}
                 </span>
                 {kind !== null && (
                   <span className={styles.kind} data-testid="goal-kind">

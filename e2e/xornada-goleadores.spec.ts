@@ -16,8 +16,12 @@ const WIDTHS = [360, 1440] as const;
 const BOTH = "primera-division-2026-27-j8-real-betis-rc-deportivo";
 // Bilbao Athletic 1–0 UD Ourense, live, home scored 1 min ago (SPEC-041).
 const LIVE = "primera-rfef-g1-2026-27-j6-bilbao-athletic-ud-ourense";
-// Sevilla 2–1 Getafe: a score, no list of goals.
-const NO_GOALS = "primera-division-2026-27-j8-sevilla-fc-getafe-cf";
+// Sevilla 2–1 Getafe: a score, no list of goals. SPEC-094 (H-1): it gains
+// its box, with «gol» lines.
+const NO_SCORERS = "primera-division-2026-27-j8-sevilla-fc-getafe-cf";
+// SPEC-094 CA-6: rows without goals in the score, which gain nothing.
+const NIL = "segunda-division-2026-27-j9-celta-fortuna-ce-sabadell"; // 0–0 live
+const UNPLAYED = "primera-division-2026-27-j8-athletic-club-real-sociedad";
 
 const rgb = (value: string): string => {
   const [r, g, b] = [1, 3, 5].map((i) =>
@@ -241,14 +245,72 @@ for (const route of routes) {
         await expect(r).toHaveAttribute("aria-expanded", "true");
         await page.keyboard.press("Space");
         await expect(r).toHaveAttribute("aria-expanded", "false");
-        // A row without goals gains nothing.
-        const plain = row(page, NO_GOALS);
+        // A row without goals in the score gains nothing (SPEC-094 CA-6:
+        // 0–0 instead of Sevilla, which now has its box).
+        const plain = row(page, NIL);
         await expect(plain).not.toHaveAttribute("role", /.+/);
         await expect(plain).not.toHaveAttribute("aria-expanded", /.+/);
         await expect(plain).not.toHaveAttribute("aria-controls", /.+/);
         await expect(blocks(plain)).toHaveCount(0);
         await plain.click();
         await expect(plain).not.toHaveAttribute("aria-expanded", /.+/);
+      });
+
+      // SPEC-094 CA-6: the goal-lines of each side add up to its score, in
+      // every row with a box, Sevilla (no scorer) included.
+      test("SPEC-094 CA-6: every unfolded row's goal-lines add up to its score, «gol» in the route's language", async ({
+        page,
+      }) => {
+        await ready(page, route.path, width);
+        const boxed = page.locator(
+          '[data-testid="match-row"][data-has-goals="true"]',
+        );
+        const ids = await boxed.evaluateAll((els) =>
+          els.map((el) => el.getAttribute("data-match-id") ?? ""),
+        );
+        expect(ids).toContain(NO_SCORERS);
+        // Many rows: unfold each with a click, without waiting for the fold's
+        // transition (the lines are counted, not measured).
+        test.setTimeout(90_000);
+        for (const id of ids) {
+          const r = row(page, id);
+          await r.click();
+          await expect(r).toHaveAttribute("aria-expanded", "true");
+          const scores = await r.getByTestId("score").allTextContents();
+          expect(scores, id).toHaveLength(2);
+          for (const [i, side] of (["home", "away"] as const).entries()) {
+            const lines = r.locator(
+              `[data-testid="goal-line"][data-team="${side}"]`,
+            );
+            await expect(lines, `${id} ${side}`).toHaveCount(
+              Number(scores[i].trim()),
+            );
+          }
+          for (const unknown of await r
+            .locator('[data-testid="goal-line"][data-unknown="true"]')
+            .all()) {
+            await expect(unknown.getByTestId("goal-player")).toHaveText(
+              route.dict.xornada.goalUnknown,
+            );
+            await expect(unknown.getByTestId("goal-minute")).toHaveText("");
+            await expect(unknown.getByTestId("goal-player")).toHaveCSS(
+              "color",
+              FG_MUTED,
+            );
+          }
+        }
+        // Sevilla 2–1 without any scorer: 2 + 1 «gol» lines.
+        const sevilla = row(page, NO_SCORERS);
+        await expect(
+          sevilla.locator('[data-testid="goal-line"][data-unknown="true"]'),
+        ).toHaveCount(3);
+        // A row without goals in the score (0–0, not started) gains no box.
+        for (const id of [NIL, UNPLAYED]) {
+          const plain = row(page, id);
+          await expect(plain).toHaveCount(1);
+          await expect(plain).not.toHaveAttribute("data-has-goals", /.+/);
+          await expect(blocks(plain)).toHaveCount(0);
+        }
       });
     });
   }

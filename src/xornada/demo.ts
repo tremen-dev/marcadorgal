@@ -125,7 +125,8 @@ function demoMatch(
   away: Side,
   state: State,
   qualifier: "confirmado" | "provisional" | "sen_sinal" = "confirmado",
-  // SPEC-068 CA-8: the scorers, as many per side as the score says.
+  // SPEC-068 CA-8: the scorers, as many per side as the score says, but
+  // for the rows of SPEC-094 CA-6, which do not add up on purpose.
   goals?: PublicGoal[],
 ): unknown {
   const undecided = state.status === "scheduled" && qualifier === "confirmado";
@@ -148,15 +149,16 @@ function demoMatch(
 
 // SPEC-068 CA-8: invented scorers (the results are invented too). Given out
 // of minute order on purpose: the row sorts them.
+// SPEC-094 CA-6: a null minute is a goal the source gave without one.
 const goal = (
   team: "home" | "away",
-  minute: number,
+  minute: number | null,
   player: string,
   kind?: "penalty" | "ownGoal",
 ): PublicGoal => ({
   team,
   player,
-  minute,
+  ...(minute === null ? {} : { minute }),
   ...(kind === undefined ? {} : { [kind]: true }),
 });
 
@@ -207,6 +209,7 @@ const RAW: unknown[] = [
     "2026-10-03T16:00:00Z",
     team("Sevilla FC", "Sevilla"),
     team("Getafe CF", "Getafe"),
+    // SPEC-094 CA-6 (H-1): goals in the score and no scorer at all.
     live(2, 1, 46),
     "provisional",
   ),
@@ -240,6 +243,9 @@ const RAW: unknown[] = [
     team("SD Compostela", "Compostela"),
     team("Ourense CF"),
     live(2, 0, 90, 5),
+    "confirmado",
+    // SPEC-094 CA-6: a side with fewer scorers than goals.
+    [goal("home", 51, "Álex Fernández")],
   ),
   demoMatch(
     SEGUNDA_RFEF,
@@ -304,6 +310,14 @@ const RAW: unknown[] = [
     team("Cádiz CF", "Cádiz"),
     finished(2, 1),
     "provisional",
+    // SPEC-094 CA-6: a side with more scorers than goals (the source ahead
+    // of the score); the last by minute is left out.
+    [
+      goal("home", 89, "Jefté Betancor"),
+      goal("away", 34, "Chris Ramos"),
+      goal("home", 12, "Agus Medina"),
+      goal("home", 70, "Javi Villar"),
+    ],
   ),
   demoMatch(
     SEGUNDA,
@@ -331,6 +345,9 @@ const RAW: unknown[] = [
     team("Pontevedra CF", "Pontevedra"),
     team("Zamora CF", "Zamora"),
     finished(1, 0),
+    "confirmado",
+    // SPEC-094 CA-6: a goal the source gave without minute.
+    [goal("home", null, "Brais Abelenda")],
   ),
   demoMatch(
     PRIMERA_RFEF,

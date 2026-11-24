@@ -1351,3 +1351,28 @@ describe("SPEC-093 CA-3 the readings of the source", () => {
     ).toBe(false);
   });
 });
+
+// SPEC-094 CA-4: a goal without minute never rejects the export of its date;
+// the tick reads no goals, so its observations stay the same.
+describe("SPEC-094 CA-4 a goal without minute in the export", () => {
+  it("parses the fixture with a goal without minute (absent and null) into the same observations as without it", () => {
+    const body = JSON.parse(fixture("2026-11-01")) as {
+      matches: Record<string, unknown>[];
+    };
+    const zamora = body.matches.find(
+      (m) => m.equipoLocal === "Zamora CF" && m.estado === "FINISHED",
+    );
+    if (zamora === undefined) throw new Error("no Zamora row");
+    const goals = (zamora.goals as unknown[] | undefined) ?? [];
+    zamora.goals = [
+      ...goals,
+      { team: "home", player: "Sen minuto" },
+      { team: "away", player: "Minuto nulo", minute: null },
+    ];
+    const withGoal = parseBodies([JSON.stringify(body)]);
+    const without = parseBodies([fixture("2026-11-01")]);
+    expect(withGoal.requestErrors).toEqual([]);
+    expect(withGoal.observations).toHaveLength(28);
+    expect(withGoal.observations).toEqual(without.observations);
+  });
+});

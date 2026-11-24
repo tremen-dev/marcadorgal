@@ -43,7 +43,9 @@ export type ExplorerStatus = z.infer<typeof ExplorerStatus>;
 export const ExplorerGoal = z.looseObject({
   team: z.enum(["home", "away"]),
   player: z.string().min(1),
-  minute: z.int().min(0),
+  // SPEC-094 CA-4: a goal without minute never rejects the export; the tick
+  // reads no goals.
+  minute: z.int().min(0).nullable().optional(),
   penalty: z.boolean().optional(),
   ownGoal: z.boolean().optional(),
 });

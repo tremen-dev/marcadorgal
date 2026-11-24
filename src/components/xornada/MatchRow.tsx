@@ -8,6 +8,7 @@ import {
   recentGoals,
   watchRecentGoal,
 } from "@/xornada/recent-goal";
+import { squareGoals } from "@/xornada/scorers";
 import { minuteLabel, type XornadaRow } from "@/xornada/view";
 import { TeamGoals } from "../goals/TeamGoals";
 import { rowDateLabel } from "./labels";
@@ -101,13 +102,15 @@ export function MatchRow({
   const noSignal = row.qualifier === "sen_sinal";
   const { margin, qualifierDisplay: qualifier } = row;
 
-  const allGoals = row.goals ?? [];
-  const hasGoals = allGoals.length > 0;
+  // SPEC-094 CA-2: the scorers squared with the score; the row has its box
+  // when some side has goals in the score, known scorers or not (H-1).
+  const squared = squareGoals(row.goals, row.score);
+  const hasGoals = squared.home.length > 0 || squared.away.length > 0;
   // SPEC-068 CA-1, CA-5: one block per side with goals, each with its id;
   // aria-controls lists the ids of the blocks present, in DOM order.
   const goalsId = (side: "home" | "away") => `goals-${row.matchId}-${side}`;
   const controls = (["home", "away"] as const)
-    .filter((side) => allGoals.some((g) => g.team === side))
+    .filter((side) => squared[side].length > 0)
     .map(goalsId)
     .join(" ");
 
@@ -213,7 +216,7 @@ export function MatchRow({
     return (
       <TeamGoals
         team={side}
-        goals={allGoals}
+        lines={squared[side]}
         locale={locale}
         id={goalsId(side)}
         expanded={isExpanded}

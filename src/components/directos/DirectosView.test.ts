@@ -275,3 +275,47 @@ describe("SPEC-087 CA-5 an empty day keeps its text", () => {
     },
   );
 });
+
+describe("SPEC-094 CA-2 DirectosView paints the squared list", () => {
+  const withMatch = (
+    homeScore: number | null,
+    awayScore: number | null,
+    goals: TransformedGoal[],
+  ): GroupedCompetitionMatches[] => [
+    {
+      ...sampleData[0],
+      matches: [{ ...sampleData[0].matches[0], homeScore, awayScore, goals }],
+    },
+  ];
+  const renderWith = (data: GroupedCompetitionMatches[]) =>
+    renderToStaticMarkup(
+      createElement(DirectosView, {
+        date: "2026-11-08",
+        groupedCompetitions: data,
+        locale: "gl",
+      }),
+    );
+
+  it("cuts the extra scorers and fills with «gol» lines, side by side", () => {
+    const html = renderWith(
+      withMatch(1, 2, [
+        { team: "home", player: "Late", minute: 80 },
+        { team: "home", player: "Early", minute: 10 },
+        { team: "away", player: "Only", minute: 30 },
+      ]),
+    );
+    const [home, away] = elements(html, "team-goals");
+    expect(elements(home, "goal-line")).toHaveLength(1);
+    expect(home).toContain("Early");
+    expect(home).not.toContain("Late");
+    expect(elements(away, "goal-line")).toHaveLength(2);
+    expect(elements(away, "goal-line")[1]).toContain('data-unknown="true"');
+  });
+
+  it("emits no block without a score, even with listed goals", () => {
+    const html = renderWith(
+      withMatch(null, null, [{ team: "home", player: "Early", minute: 10 }]),
+    );
+    expect(elements(html, "team-goals")).toHaveLength(0);
+  });
+});
